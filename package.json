@@ -1,0 +1,22 @@
+{
+  "name": "hexploration",
+  "version": "1.0.0",
+  "description": "Exploration game on the blockchain.",
+  "main": "truffle-config.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/StudioMaxIO/hexploration.git"
+  },
+  "author": "Max Meier & Lucky Machines, LLC",
+  "license": "GPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/StudioMaxIO/hexploration/issues"
+  },
+  "homepage": "https://github.com/StudioMaxIO/hexploration#readme"
+}
