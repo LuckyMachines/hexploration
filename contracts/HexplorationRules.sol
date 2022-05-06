@@ -16,5 +16,8 @@ contract HexplorationZone is Ruleset {
         // - space by space changes if pass-through effects required
         // - all the inventory stuff
         // - submitting choices
+        //
+        // - can move
+        // - override
     }
 }

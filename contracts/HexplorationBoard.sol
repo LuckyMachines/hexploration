@@ -34,7 +34,6 @@ contract HexplorationBoard is HexGrid {
 
     // VERIFIED CONTROLLER functions
     // We can assume these have been pre-verified
-
     function moveThroughPath(string[] memory zonePath, uint256 gameID)
         external
         onlyRole(VERIFIED_CONTROLLER_ROLE)
