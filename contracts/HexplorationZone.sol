@@ -45,7 +45,7 @@ contract HexplorationZone is PlayZone {
         uint256 gameID,
         string memory zoneAlias
     ) public view override returns (bool canEnter) {
-        super.playerCanExit(playerAddress, gameID, zoneAlias);
+        canEnter = super.playerCanEnter(playerAddress, gameID, zoneAlias);
     }
 
     function playerCanExit(
@@ -53,7 +53,7 @@ contract HexplorationZone is PlayZone {
         uint256 gameID,
         string memory zoneAlias
     ) public view override returns (bool canExit) {
-        super.playerCanExit(playerAddress, gameID, zoneAlias);
+        canExit = super.playerCanExit(playerAddress, gameID, zoneAlias);
     }
 
     // Override for custom game
