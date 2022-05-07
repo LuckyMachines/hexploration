@@ -21,7 +21,7 @@
   "homepage": "https://github.com/StudioMaxIO/hexploration#readme",
   "dependencies": {
     "@chainlink/contracts": "^0.4.0",
-    "@luckymachines/game-core": "0.0.2",
+    "@luckymachines/game-core": "0.0.4",
     "@openzeppelin/contracts": "^4.6.0",
     "web3": "^1.7.3"
   }
