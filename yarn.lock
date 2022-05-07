@@ -199,10 +199,10 @@
     "@ethersproject/properties" "^5.6.0"
     "@ethersproject/strings" "^5.6.0"
 
-"@luckymachines/game-core@0.0.2":
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/@luckymachines/game-core/-/game-core-0.0.2.tgz#9ae2135844d4fb187452111db83f1ea482218c4a"
-  integrity sha512-KLQllnV7ruElszj/BGMt6CkHpFIJwTpsYkl0gNo58sz50+5BG59EfMH1fr4Xyokx3ea2p0ttrdCN6VdcnyPHVA==
+"@luckymachines/game-core@0.0.4":
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/@luckymachines/game-core/-/game-core-0.0.4.tgz#e337da5835667c61c5fe18a78942182b44271627"
+  integrity sha512-WkGEbWH2OMk4VErB+iwz1lXlh6AjB3nwWTvvPmb8KccWH3P6oeXR91lzyse4EIbWGal0OotY+inJCjUEOFqLPQ==
   dependencies:
     "@openzeppelin/contracts" "^4.6.0"
 
