@@ -10,7 +10,7 @@ contract HexplorationBoard is HexGrid {
         keccak256("VERIFIED_CONTROLLER_ROLE");
 
     HexplorationZone internal HEX_ZONE;
-    // game ID => zone alias
+    // game ID => zone alias returns bool
     mapping(uint256 => mapping(string => bool)) public zoneEnabled;
 
     constructor(
