@@ -3,7 +3,7 @@ pragma solidity >=0.7.0 <0.9.0;
 
 import "@luckymachines/game-core/contracts/src/v0.0/Ruleset.sol";
 
-contract HexplorationZone is Ruleset {
+contract HexplorationRules is Ruleset {
     constructor(address adminAddress, address factoryAddress)
         Ruleset(adminAddress, factoryAddress)
     {
