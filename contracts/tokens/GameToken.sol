@@ -18,17 +18,38 @@ contract GameToken is AccessControlEnumerable {
 
     bytes32 public constant CONTROLLER_ROLE = keccak256("CONTROLLER_ROLE");
     // tokenType => game ID => playerID =>
-    // (playerID can be 0 if not assigned to any player)
+    // (playerID 0 is bank)
     mapping(string => mapping(uint256 => mapping(uint256 => uint256)))
         public balance;
-
+    mapping(string => bool) internal tokenTypeSet;
     string[] public tokenTypes;
 
-    constructor(string[] memory _tokenTypes, address controllerAddress) {
-        tokenTypes = _tokenTypes;
+    constructor(address controllerAddress) {
         _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
         // controller is only one who can send tokens around
         _setupRole(CONTROLLER_ROLE, controllerAddress);
+    }
+
+    function addTokenTypes(string[] memory _tokenTypes)
+        public
+        onlyRole(DEFAULT_ADMIN_ROLE)
+    {
+        for (uint256 i = 0; i < _tokenTypes.length; i++) {
+            string memory tokenType = _tokenTypes[i];
+            if (!tokenTypeSet[tokenType]) {
+                tokenTypes.push(tokenType);
+                tokenTypeSet[tokenType] = true;
+            }
+        }
+    }
+
+    function mint(
+        string memory tokenType,
+        uint256 gameID,
+        uint256 quantity
+    ) public onlyRole(DEFAULT_ADMIN_ROLE) {
+        require(tokenTypeSet[tokenType], "Token type not set");
+        balance[tokenType][gameID][0] = quantity;
     }
 
     function transfer(
