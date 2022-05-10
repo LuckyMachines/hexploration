@@ -1,12 +1,18 @@
 const HDWalletProvider = require("@truffle/hdwallet-provider");
 require("dotenv").config();
 const private_key_test = process.env.PRIVATE_KEY_TEST;
+const private_key_ganache = process.env.PRIVATE_KEY_GANACHE;
 const mumbai_url = process.env.RPC_URL_MUMBAI;
 
 module.exports = {
   networks: {
     ganache: {
-      host: "127.0.0.1",
+      provider: () => {
+        return new HDWalletProvider({
+          privateKeys: [private_key_ganache],
+          providerOrUrl: "http://127.0.0.1:7545"
+        });
+      },
       port: 7545,
       network_id: "*"
     },
