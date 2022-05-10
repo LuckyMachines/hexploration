@@ -10,13 +10,51 @@ contract ItemDeck is AccessControlEnumerable {
     // controller role should be set to a controller contract
     bytes32 public constant CONTROLLER_ROLE = keccak256("CONTROLLER_ROLE");
 
-    constructor() {}
+    string[] _cards;
 
-    function drawCard(uint256 randomSeed)
+    // mappings from card name
+    mapping(string => string) public description;
+    mapping(string => uint16) public quantity;
+
+    constructor() {
+        _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
+    }
+
+    function addCards(
+        string[] memory titles,
+        string[] memory descriptions,
+        uint16[] memory quantities
+    ) public onlyRole(DEFAULT_ADMIN_ROLE) {
+        require(
+            titles.length == descriptions.length &&
+                titles.length == quantities.length,
+            "array quantity mismatch"
+        );
+        for (uint256 i = 0; i < titles.length; i++) {
+            // only add if not already added and set quantity is not 0
+            string memory title = titles[i];
+            if (quantity[title] == 0 && quantities[i] != 0) {
+                _cards.push(title);
+                description[title] = descriptions[i];
+                quantity[title] = quantities[i];
+            }
+        }
+    }
+
+    // this function does not provide randomness,
+    // passing the same random word will yield the same draw.
+    // randomness should come from controller
+    function drawCard(uint256 randomWord)
         public
+        view
         virtual
-        onlyRole(CONTROLLER_ROLE)
-    {}
+        returns (string memory)
+    {
+        uint256 cardIndex = randomWord % _cards.length;
+        return _cards[cardIndex];
+    }
 
-    function getDeck() public view returns (string[] memory) {}
+    function getDeck() public view returns (string[] memory) {
+        return _cards;
+    }
 }
