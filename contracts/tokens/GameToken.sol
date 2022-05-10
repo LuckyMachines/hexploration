@@ -3,6 +3,9 @@ pragma solidity >=0.7.0 <0.9.0;
 
 import "@openzeppelin/contracts/access/AccessControlEnumerable.sol";
 
+// Allows a collection of tokens to be created within a token group or contract
+// these tokens exclusively for in game use and by default only controllable by
+// a game controller
 contract GameToken is AccessControlEnumerable {
     event Transfer(
         uint256 indexed gameID,
