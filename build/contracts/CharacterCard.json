@@ -1,0 +1,197 @@
+{
+  "contractName": "CharacterCard",
+  "abi": [
+    {
+      "inputs": [],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    }
+  ],
+  "metadata": "{\"compiler\":{\"version\":\"0.8.11+commit.d7f03943\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"project:/contracts/state/CharacterCard.sol\":\"CharacterCard\"},\"evmVersion\":\"byzantium\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"project:/contracts/state/CharacterCard.sol\":{\"keccak256\":\"0x0c08e792318e98d371647f53dbe5d9eb39dd3ae27215f2ec1a405e73e2f9d78b\",\"license\":\"GPL-3.0\",\"urls\":[\"bzz-raw://dbf6f401cfe280c46f5dc8756cb0f915c901ad4346752c6f33764e79fc215163\",\"dweb:/ipfs/QmP5Nn7ZxkAmoSxyb2aLa1AEDamaPEJM2BPVpcdxQC7big\"]}},\"version\":1}",
+  "bytecode": "0x6080604052348015600f57600080fd5b50603f80601d6000396000f3fe6080604052600080fdfea26469706673582212206b87837782b8f7af9c9175d050456ed224bb837f174e78d9f2d55466cefd1fec64736f6c634300080b0033",
+  "deployedBytecode": "0x6080604052600080fdfea26469706673582212206b87837782b8f7af9c9175d050456ed224bb837f174e78d9f2d55466cefd1fec64736f6c634300080b0033",
+  "immutableReferences": {},
+  "generatedSources": [],
+  "deployedGeneratedSources": [],
+  "sourceMap": "69:47:29:-:0;;;98:16;;;;;;;;;;69:47;;;;;;",
+  "deployedSourceMap": "69:47:29:-:0;;;;;",
+  "source": "// SPDX-License-Identifier: GPL-3.0\npragma solidity >=0.7.0 <0.9.0;\n\ncontract CharacterCard {\n    constructor() {}\n}\n",
+  "sourcePath": "/Users/maxmeier/Developer/Lucky Machines/hexploration/contracts/state/CharacterCard.sol",
+  "ast": {
+    "absolutePath": "project:/contracts/state/CharacterCard.sol",
+    "exportedSymbols": {
+      "CharacterCard": [
+        5800
+      ]
+    },
+    "id": 5801,
+    "license": "GPL-3.0",
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 5795,
+        "literals": [
+          "solidity",
+          ">=",
+          "0.7",
+          ".0",
+          "<",
+          "0.9",
+          ".0"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "36:31:29"
+      },
+      {
+        "abstract": false,
+        "baseContracts": [],
+        "canonicalName": "CharacterCard",
+        "contractDependencies": [],
+        "contractKind": "contract",
+        "fullyImplemented": true,
+        "id": 5800,
+        "linearizedBaseContracts": [
+          5800
+        ],
+        "name": "CharacterCard",
+        "nameLocation": "78:13:29",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "body": {
+              "id": 5798,
+              "nodeType": "Block",
+              "src": "112:2:29",
+              "statements": []
+            },
+            "id": 5799,
+            "implemented": true,
+            "kind": "constructor",
+            "modifiers": [],
+            "name": "",
+            "nameLocation": "-1:-1:-1",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 5796,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "109:2:29"
+            },
+            "returnParameters": {
+              "id": 5797,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "112:0:29"
+            },
+            "scope": 5800,
+            "src": "98:16:29",
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "public"
+          }
+        ],
+        "scope": 5801,
+        "src": "69:47:29",
+        "usedErrors": []
+      }
+    ],
+    "src": "36:81:29"
+  },
+  "legacyAST": {
+    "absolutePath": "project:/contracts/state/CharacterCard.sol",
+    "exportedSymbols": {
+      "CharacterCard": [
+        5800
+      ]
+    },
+    "id": 5801,
+    "license": "GPL-3.0",
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 5795,
+        "literals": [
+          "solidity",
+          ">=",
+          "0.7",
+          ".0",
+          "<",
+          "0.9",
+          ".0"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "36:31:29"
+      },
+      {
+        "abstract": false,
+        "baseContracts": [],
+        "canonicalName": "CharacterCard",
+        "contractDependencies": [],
+        "contractKind": "contract",
+        "fullyImplemented": true,
+        "id": 5800,
+        "linearizedBaseContracts": [
+          5800
+        ],
+        "name": "CharacterCard",
+        "nameLocation": "78:13:29",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "body": {
+              "id": 5798,
+              "nodeType": "Block",
+              "src": "112:2:29",
+              "statements": []
+            },
+            "id": 5799,
+            "implemented": true,
+            "kind": "constructor",
+            "modifiers": [],
+            "name": "",
+            "nameLocation": "-1:-1:-1",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 5796,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "109:2:29"
+            },
+            "returnParameters": {
+              "id": 5797,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "112:0:29"
+            },
+            "scope": 5800,
+            "src": "98:16:29",
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "public"
+          }
+        ],
+        "scope": 5801,
+        "src": "69:47:29",
+        "usedErrors": []
+      }
+    ],
+    "src": "36:81:29"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.8.11+commit.d7f03943.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "3.4.4",
+  "updatedAt": "2022-05-10T22:43:52.526Z",
+  "devdoc": {
+    "kind": "dev",
+    "methods": {},
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {},
+    "version": 1
+  }
+}

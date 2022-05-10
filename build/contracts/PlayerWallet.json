@@ -1,0 +1,345 @@
+{
+  "contractName": "PlayerWallet",
+  "abi": [
+    {
+      "inputs": [],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    }
+  ],
+  "metadata": "{\"compiler\":{\"version\":\"0.8.11+commit.d7f03943\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"project:/contracts/state/PlayerWallet.sol\":\"PlayerWallet\"},\"evmVersion\":\"byzantium\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"@openzeppelin/contracts/access/AccessControl.sol\":{\"keccak256\":\"0xb4d87ee2ead4bd192b41c128f287d4b7f24b9e0cd740cc9b476881c461286007\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://861c3abaa2b388a0228469080470d2254e8e91fd09aa0abda8b9ef3babf03ee5\",\"dweb:/ipfs/QmZFg88WPesuMo6GMtf3fi9NHQ5tENYLDZsFQSWgoq13TN\"]},\"@openzeppelin/contracts/access/AccessControlEnumerable.sol\":{\"keccak256\":\"0x13f5e15f2a0650c0b6aaee2ef19e89eaf4870d6e79662d572a393334c1397247\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://7ee05f28f549a5d6515e152580716b87636ed4bfab9812499a6e3803df88288b\",\"dweb:/ipfs/QmeEnhdwY1t5Y3YU5a4ffzgXuToydH2PNdNxV9W7dEPRQJ\"]},\"@openzeppelin/contracts/access/IAccessControl.sol\":{\"keccak256\":\"0x59ce320a585d7e1f163cd70390a0ef2ff9cec832e2aa544293a00692465a7a57\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://bb2c137c343ef0c4c7ce7b18c1d108afdc9d315a04e48307288d2d05adcbde3a\",\"dweb:/ipfs/QmUxhrAQM3MM3FF5j7AtcXLXguWCJBHJ14BRdVtuoQc8Fh\"]},\"@openzeppelin/contracts/access/IAccessControlEnumerable.sol\":{\"keccak256\":\"0xba4459ab871dfa300f5212c6c30178b63898c03533a1ede28436f11546626676\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://3dcc7b09bfa6e18aab262ca372f4a9b1fc82e294b430706a4e1378cf58e6a276\",\"dweb:/ipfs/QmT8oSAcesdctR15HMLhr2a1HRpXymxdjTfdtfTYJcj2N2\"]},\"@openzeppelin/contracts/utils/Context.sol\":{\"keccak256\":\"0xe2e337e6dde9ef6b680e07338c493ebea1b5fd09b43424112868e9cc1706bca7\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://6df0ddf21ce9f58271bdfaa85cde98b200ef242a05a3f85c2bc10a8294800a92\",\"dweb:/ipfs/QmRK2Y5Yc6BK7tGKkgsgn3aJEQGi5aakeSPZvS65PV8Xp3\"]},\"@openzeppelin/contracts/utils/Strings.sol\":{\"keccak256\":\"0x32c202bd28995dd20c4347b7c6467a6d3241c74c8ad3edcbb610cd9205916c45\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://8179c356adb19e70d6b31a1eedc8c5c7f0c00e669e2540f4099e3844c6074d30\",\"dweb:/ipfs/QmWFbivarEobbqhS1go64ootVuHfVohBseerYy9FTEd1W2\"]},\"@openzeppelin/contracts/utils/introspection/ERC165.sol\":{\"keccak256\":\"0xd10975de010d89fd1c78dc5e8a9a7e7f496198085c151648f20cba166b32582b\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://fb0048dee081f6fffa5f74afc3fb328483c2a30504e94a0ddd2a5114d731ec4d\",\"dweb:/ipfs/QmZptt1nmYoA5SgjwnSgWqgUSDgm4q52Yos3xhnMv3MV43\"]},\"@openzeppelin/contracts/utils/introspection/IERC165.sol\":{\"keccak256\":\"0x447a5f3ddc18419d41ff92b3773fb86471b1db25773e07f877f548918a185bf1\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://be161e54f24e5c6fae81a12db1a8ae87bc5ae1b0ddc805d82a1440a68455088f\",\"dweb:/ipfs/QmP7C3CHdY9urF4dEMb9wmsp1wMxHF6nhA2yQE5SKiPAdy\"]},\"@openzeppelin/contracts/utils/structs/EnumerableSet.sol\":{\"keccak256\":\"0xacac2065b3ed1facff1163435890d4a6bcdc474e857e8e2c91ae5fb50418f723\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://acd44ec097dd623f40870ca848c31deb02dca032ec9c56bd2e52ee103d35ce6d\",\"dweb:/ipfs/Qme3CuA45xCft72RjE6s4bmhffpe2NHvHULH9fh5oPbzBv\"]},\"project:/contracts/state/GameWallet.sol\":{\"keccak256\":\"0x591434cf29b4564e9b87424c3d5d9a80ee0ab4aad4632fd73a19e996f3bdcf0e\",\"license\":\"GPL-3.0\",\"urls\":[\"bzz-raw://58bb05009e1761ab31094701365b9ee04a0b449695e5be6f7be9249354d180b6\",\"dweb:/ipfs/QmcT9HoWWGpXSCTnofnCGKx8wiuywaiiK7nQTdpe27dga3\"]},\"project:/contracts/state/PlayerWallet.sol\":{\"keccak256\":\"0x971e7914b669057601958be9a84f4a33391190192d13bb4d12b6268d9ab54da6\",\"license\":\"GPL-3.0\",\"urls\":[\"bzz-raw://e540f83ee897cbfb7fd00ae4f2ad77103a7bfeae0b8f2183fa1fe9f93bed42d9\",\"dweb:/ipfs/QmU2ZeE8CLSnAmVhmdV12sgnkC3kn2ui2aRY2MGKhyRpjE\"]},\"project:/contracts/tokens/GameToken.sol\":{\"keccak256\":\"0x17416a245599244d6ea2dd695e37058119bf9bbd3a2c0ec03b9aa65a64a1e329\",\"license\":\"GPL-3.0\",\"urls\":[\"bzz-raw://19750d753ad3406a33ac3c13e883951df773b4af9c9e79865ce4f9b6841af0a8\",\"dweb:/ipfs/QmTsKm9ZDZN1Wfsxa2Ak7PA6nN1QVoA4ThLuLhrMQTUyFY\"]}},\"version\":1}",
+  "bytecode": "0x6080604052348015600f57600080fd5b50603f80601d6000396000f3fe6080604052600080fdfea26469706673582212208b0dc247858cddfa9f94b16e0ae210da32ee2a33fd80a183f7144811681b5eae64736f6c634300080b0033",
+  "deployedBytecode": "0x6080604052600080fdfea26469706673582212208b0dc247858cddfa9f94b16e0ae210da32ee2a33fd80a183f7144811681b5eae64736f6c634300080b0033",
+  "immutableReferences": {},
+  "generatedSources": [],
+  "deployedGeneratedSources": [],
+  "sourceMap": "97:73:31:-:0;;;139:29;;;;;;;;;;97:73;;;;;;",
+  "deployedSourceMap": "97:73:31:-:0;;;;;",
+  "source": "// SPDX-License-Identifier: GPL-3.0\npragma solidity >=0.7.0 <0.9.0;\n\nimport \"./GameWallet.sol\";\n\ncontract PlayerWallet is GameWallet {\n    constructor() GameWallet() {}\n}\n",
+  "sourcePath": "/Users/maxmeier/Developer/Lucky Machines/hexploration/contracts/state/PlayerWallet.sol",
+  "ast": {
+    "absolutePath": "project:/contracts/state/PlayerWallet.sol",
+    "exportedSymbols": {
+      "AccessControl": [
+        3515
+      ],
+      "AccessControlEnumerable": [
+        3640
+      ],
+      "Context": [
+        3760
+      ],
+      "ERC165": [
+        4061
+      ],
+      "EnumerableSet": [
+        4672
+      ],
+      "GameToken": [
+        6176
+      ],
+      "GameWallet": [
+        5808
+      ],
+      "IAccessControl": [
+        3713
+      ],
+      "IAccessControlEnumerable": [
+        3738
+      ],
+      "IERC165": [
+        4073
+      ],
+      "PlayerWallet": [
+        5820
+      ],
+      "Strings": [
+        4037
+      ]
+    },
+    "id": 5821,
+    "license": "GPL-3.0",
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 5810,
+        "literals": [
+          "solidity",
+          ">=",
+          "0.7",
+          ".0",
+          "<",
+          "0.9",
+          ".0"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "36:31:31"
+      },
+      {
+        "absolutePath": "project:/contracts/state/GameWallet.sol",
+        "file": "./GameWallet.sol",
+        "id": 5811,
+        "nameLocation": "-1:-1:-1",
+        "nodeType": "ImportDirective",
+        "scope": 5821,
+        "sourceUnit": 5809,
+        "src": "69:26:31",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "abstract": false,
+        "baseContracts": [
+          {
+            "baseName": {
+              "id": 5812,
+              "name": "GameWallet",
+              "nodeType": "IdentifierPath",
+              "referencedDeclaration": 5808,
+              "src": "122:10:31"
+            },
+            "id": 5813,
+            "nodeType": "InheritanceSpecifier",
+            "src": "122:10:31"
+          }
+        ],
+        "canonicalName": "PlayerWallet",
+        "contractDependencies": [],
+        "contractKind": "contract",
+        "fullyImplemented": true,
+        "id": 5820,
+        "linearizedBaseContracts": [
+          5820,
+          5808
+        ],
+        "name": "PlayerWallet",
+        "nameLocation": "106:12:31",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "body": {
+              "id": 5818,
+              "nodeType": "Block",
+              "src": "166:2:31",
+              "statements": []
+            },
+            "id": 5819,
+            "implemented": true,
+            "kind": "constructor",
+            "modifiers": [
+              {
+                "arguments": [],
+                "id": 5816,
+                "kind": "baseConstructorSpecifier",
+                "modifierName": {
+                  "id": 5815,
+                  "name": "GameWallet",
+                  "nodeType": "IdentifierPath",
+                  "referencedDeclaration": 5808,
+                  "src": "153:10:31"
+                },
+                "nodeType": "ModifierInvocation",
+                "src": "153:12:31"
+              }
+            ],
+            "name": "",
+            "nameLocation": "-1:-1:-1",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 5814,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "150:2:31"
+            },
+            "returnParameters": {
+              "id": 5817,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "166:0:31"
+            },
+            "scope": 5820,
+            "src": "139:29:31",
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "public"
+          }
+        ],
+        "scope": 5821,
+        "src": "97:73:31",
+        "usedErrors": []
+      }
+    ],
+    "src": "36:135:31"
+  },
+  "legacyAST": {
+    "absolutePath": "project:/contracts/state/PlayerWallet.sol",
+    "exportedSymbols": {
+      "AccessControl": [
+        3515
+      ],
+      "AccessControlEnumerable": [
+        3640
+      ],
+      "Context": [
+        3760
+      ],
+      "ERC165": [
+        4061
+      ],
+      "EnumerableSet": [
+        4672
+      ],
+      "GameToken": [
+        6176
+      ],
+      "GameWallet": [
+        5808
+      ],
+      "IAccessControl": [
+        3713
+      ],
+      "IAccessControlEnumerable": [
+        3738
+      ],
+      "IERC165": [
+        4073
+      ],
+      "PlayerWallet": [
+        5820
+      ],
+      "Strings": [
+        4037
+      ]
+    },
+    "id": 5821,
+    "license": "GPL-3.0",
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 5810,
+        "literals": [
+          "solidity",
+          ">=",
+          "0.7",
+          ".0",
+          "<",
+          "0.9",
+          ".0"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "36:31:31"
+      },
+      {
+        "absolutePath": "project:/contracts/state/GameWallet.sol",
+        "file": "./GameWallet.sol",
+        "id": 5811,
+        "nameLocation": "-1:-1:-1",
+        "nodeType": "ImportDirective",
+        "scope": 5821,
+        "sourceUnit": 5809,
+        "src": "69:26:31",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "abstract": false,
+        "baseContracts": [
+          {
+            "baseName": {
+              "id": 5812,
+              "name": "GameWallet",
+              "nodeType": "IdentifierPath",
+              "referencedDeclaration": 5808,
+              "src": "122:10:31"
+            },
+            "id": 5813,
+            "nodeType": "InheritanceSpecifier",
+            "src": "122:10:31"
+          }
+        ],
+        "canonicalName": "PlayerWallet",
+        "contractDependencies": [],
+        "contractKind": "contract",
+        "fullyImplemented": true,
+        "id": 5820,
+        "linearizedBaseContracts": [
+          5820,
+          5808
+        ],
+        "name": "PlayerWallet",
+        "nameLocation": "106:12:31",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "body": {
+              "id": 5818,
+              "nodeType": "Block",
+              "src": "166:2:31",
+              "statements": []
+            },
+            "id": 5819,
+            "implemented": true,
+            "kind": "constructor",
+            "modifiers": [
+              {
+                "arguments": [],
+                "id": 5816,
+                "kind": "baseConstructorSpecifier",
+                "modifierName": {
+                  "id": 5815,
+                  "name": "GameWallet",
+                  "nodeType": "IdentifierPath",
+                  "referencedDeclaration": 5808,
+                  "src": "153:10:31"
+                },
+                "nodeType": "ModifierInvocation",
+                "src": "153:12:31"
+              }
+            ],
+            "name": "",
+            "nameLocation": "-1:-1:-1",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 5814,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "150:2:31"
+            },
+            "returnParameters": {
+              "id": 5817,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "166:0:31"
+            },
+            "scope": 5820,
+            "src": "139:29:31",
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "public"
+          }
+        ],
+        "scope": 5821,
+        "src": "97:73:31",
+        "usedErrors": []
+      }
+    ],
+    "src": "36:135:31"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.8.11+commit.d7f03943.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "3.4.4",
+  "updatedAt": "2022-05-10T22:43:52.526Z",
+  "devdoc": {
+    "kind": "dev",
+    "methods": {},
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {},
+    "version": 1
+  }
+}
