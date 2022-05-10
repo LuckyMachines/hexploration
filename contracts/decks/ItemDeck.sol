@@ -8,6 +8,7 @@ contract ItemDeck is AccessControlEnumerable {
     // We can set card "quantities" for desireable probability
 
     // controller role should be set to a controller contract
+    // not used by default, provided if going to make custom deck with limited access
     bytes32 public constant CONTROLLER_ROLE = keccak256("CONTROLLER_ROLE");
 
     string[] _cards;
