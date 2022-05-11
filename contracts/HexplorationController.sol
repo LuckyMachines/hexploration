@@ -5,7 +5,7 @@ import "@luckymachines/game-core/contracts/src/v0.0/GameController.sol";
 import "./HexplorationBoard.sol";
 import "./HexplorationZone.sol";
 
-contract HexplorationController is GameController, AccessControlEnumerable {
+contract HexplorationController is GameController {
     // functions are meant to be called directly by players by default
     // we are adding the ability of a Controller Admin or Keeper to
     // execute the game aspects not directly controlled by players
@@ -24,6 +24,8 @@ contract HexplorationController is GameController, AccessControlEnumerable {
         );
         _;
     }
+
+    constructor() GameController(_msgSender()) {}
 
     function addKeeper(address keeperAddress)
         public
