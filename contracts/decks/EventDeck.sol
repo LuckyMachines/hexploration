@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity >=0.7.0 <0.9.0;
 
-import "./ItemDeck.sol";
+import "./CardDeck.sol";
 
-contract EventDeck is ItemDeck {
-    constructor() ItemDeck() {
+contract EventDeck is CardDeck {
+    constructor() CardDeck() {
         string[] memory cards = new string[](24);
         string[] memory descriptions = new string[](24);
         uint16[] memory quantities = new uint16[](24);

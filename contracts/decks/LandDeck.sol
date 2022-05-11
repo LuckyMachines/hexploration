@@ -1,16 +1,16 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity >=0.7.0 <0.9.0;
 
-import "./ItemDeck.sol";
+import "./CardDeck.sol";
 
-contract LandDeck is ItemDeck {
+contract LandDeck is CardDeck {
     string public constant card0 = "Plains";
     string public constant card1 = "Jungle";
     string public constant card2 = "Mountain";
     string public constant card3 = "Desert";
     string public constant card4 = "Landing Site";
 
-    constructor() ItemDeck() {
+    constructor() CardDeck() {
         string[] memory cards = new string[](5);
         string[] memory descriptions = new string[](5);
         uint16[] memory quantities = new uint16[](5);

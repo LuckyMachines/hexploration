@@ -3,7 +3,7 @@ pragma solidity >=0.7.0 <0.9.0;
 
 import "@openzeppelin/contracts/access/AccessControlEnumerable.sol";
 
-contract ItemDeck is AccessControlEnumerable {
+contract CardDeck is AccessControlEnumerable {
     // This is an infinite deck, cards drawn are not removed from deck
     // We can set card "quantities" for desireable probability
 
