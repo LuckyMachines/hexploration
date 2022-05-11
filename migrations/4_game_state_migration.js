@@ -41,19 +41,42 @@ module.exports = async (deployer, network, [defaultAccount]) => {
 
   console.log("Setting token types on wallets...\n");
   const boardWallet = await BoardWallet.deployed();
-  const playerWallet = await PlayerWallet.deployed();
   const zoneWallet = await ZoneWallet.deployed();
+  const playerWallet = await PlayerWallet.deployed();
 
   console.log("Board Wallet:");
-  const boardTokenTypes = ["Day", "Night"];
-  const boardTokenAddresses = [DayNightTokens.address, DayNightTokens.address];
+  let boardTokenTypes = ["Day", "Night"];
+  let boardTokenAddresses = [DayNightTokens.address, DayNightTokens.address];
   await boardWallet.addTokenTypes(boardTokenAddresses, boardTokenTypes);
+  console.log("done\n");
 
   console.log("Zone Wallet:");
-  // disaster
-  // enemy
+  boardTokenTypes = [
+    "EarthQuake",
+    "Volcano",
+    "Pirate",
+    "Pirate Ship",
+    "Deathbot",
+    "Guardian",
+    "Sandworm",
+    "Dragon"
+  ];
+  boardTokenAddresses = [
+    DisasterTokens.address,
+    DisasterTokens.address,
+    EnemyTokens.address,
+    EnemyTokens.address,
+    EnemyTokens.address,
+    EnemyTokens.address,
+    EnemyTokens.address,
+    EnemyTokens.address
+  ];
+  await zoneWallet.addTokenTypes(boardTokenAddresses, boardTokenTypes);
+  console.log("done\n");
 
   console.log("Player Wallet:");
-  // item
-  // player status
+  boardTokenTypes = ["Stunned", "Burned"];
+  boardTokenAddresses = [ItemTokens.address, ItemTokens.address];
+  await zoneWallet.addTokenTypes(boardTokenAddresses, boardTokenTypes);
+  console.log("done\n");
 };
