@@ -47,7 +47,7 @@ contract GameToken is AccessControlEnumerable {
         string memory tokenType,
         uint256 gameID,
         uint256 quantity
-    ) public onlyRole(DEFAULT_ADMIN_ROLE) {
+    ) public onlyRole(CONTROLLER_ROLE) {
         require(tokenTypeSet[tokenType], "Token type not set");
         balance[tokenType][gameID][0] = quantity;
     }
