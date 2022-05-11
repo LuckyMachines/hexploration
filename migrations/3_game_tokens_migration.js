@@ -1,4 +1,3 @@
-// Game Tokens
 const DayNightTokens = artifacts.require("DayNight");
 const DisasterTokens = artifacts.require("Disaster");
 const EnemyTokens = artifacts.require("Enemy");
