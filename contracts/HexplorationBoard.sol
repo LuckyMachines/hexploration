@@ -6,8 +6,6 @@ import "./HexplorationZone.sol";
 
 contract HexplorationBoard is HexGrid {
     // This role is a hybrid controller, assumes on chain verification of moves before submission
-    bytes32 public constant VERIFIED_CONTROLLER_ROLE =
-        keccak256("VERIFIED_CONTROLLER_ROLE");
 
     HexplorationZone internal HEX_ZONE;
     // game ID => zone alias returns bool
