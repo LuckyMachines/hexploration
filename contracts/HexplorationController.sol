@@ -25,7 +25,7 @@ contract HexplorationController is GameController {
         _;
     }
 
-    constructor() GameController(_msgSender()) {}
+    constructor(address adminAddress) GameController(adminAddress) {}
 
     function addKeeper(address keeperAddress)
         public
