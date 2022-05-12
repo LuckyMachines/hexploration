@@ -79,4 +79,12 @@ module.exports = async (deployer, network, [defaultAccount]) => {
   boardTokenAddresses = [ItemTokens.address, ItemTokens.address];
   await zoneWallet.addTokenTypes(boardTokenAddresses, boardTokenTypes);
   console.log("done\n");
+
+  if (network.startsWith("ganache")) {
+    console.log(`
+  GANACHE_BOARD_WALLET: "${BoardWallet.address}",
+  GANACHE_PLAYER_WALLET: "${PlayerWallet.address}",
+  GANACHE_ZONE_WALLET: "${ZoneWallet.address}",
+  GANACHE_CHARACTER_CARD: "${CharacterCard.address}"`);
+  }
 };
