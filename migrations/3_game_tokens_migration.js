@@ -6,7 +6,7 @@ const PlayerStatusTokens = artifacts.require("PlayerStatus");
 
 module.exports = async (deployer, network, [defaultAccount]) => {
   const HexplorationControllerAddress = network.startsWith("ganache")
-    ? "0xbF542fa921003cE0085cB27E55188e5DF67Aa7Eb"
+    ? "0x00113c35B3FfA233Ba4DE3cE4ff7818126b6d21a"
     : "0x0000000000000000000000000000000000000000";
   console.log("Controller address set to:", HexplorationControllerAddress);
   console.log("Deploying Day Night Tokens");
@@ -42,5 +42,14 @@ module.exports = async (deployer, network, [defaultAccount]) => {
     await deployer.deploy(PlayerStatusTokens, HexplorationControllerAddress);
   } catch (err) {
     console.error(err);
+  }
+
+  if (network.startsWith("ganache")) {
+    console.log(`
+  GANACHE_DAY_NIGHT_TOKEN: "${DayNightTokens.address}",
+  GANACHE_DISASTER_TOKEN: "${DisasterTokens.address}",
+  GANACHE_ENEMY_TOKEN: "${EnemyTokens.address}",
+  GANACHE_ITEM_TOKEN: "${ItemTokens.address}",
+  GANACHE_PLAYER_STATUS_TOKEN: "${PlayerStatusTokens.address}"`);
   }
 };
