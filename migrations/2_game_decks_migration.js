@@ -1,6 +1,5 @@
 const EventDeck = artifacts.require("EventDeck");
 const AmbushDeck = artifacts.require("AmbushDeck");
-const ItemDeck = artifacts.require("ItemDeck");
 const LandDeck = artifacts.require("LandDeck");
 const TreasureDeck = artifacts.require("TreasureDeck");
 
@@ -17,13 +16,6 @@ module.exports = async (deployer, network, [defaultAccount]) => {
   console.log("Deploying Ambush Deck");
   try {
     await deployer.deploy(AmbushDeck);
-  } catch (err) {
-    console.error(err);
-  }
-
-  console.log("Deploying Item Deck");
-  try {
-    await deployer.deploy(ItemDeck);
   } catch (err) {
     console.error(err);
   }
