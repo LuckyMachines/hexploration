@@ -379,10 +379,10 @@
   resolved "https://registry.yarnpkg.com/@jridgewell/sourcemap-codec/-/sourcemap-codec-1.4.13.tgz#b6461fb0c2964356c469e115f504c95ad97ab88c"
   integrity sha512-GryiOJmNcWbovBxTfZSF71V/mXbgcV3MewDe3kIMCLyIh5e7SKAeUZs+rMnJ8jkMolZ/4/VsdBmMrw3l+VdZ3w==
 
-"@luckymachines/game-core@0.0.6":
-  version "0.0.6"
-  resolved "https://registry.yarnpkg.com/@luckymachines/game-core/-/game-core-0.0.6.tgz#facda3aa354071ee0cd69592017cd65b0868d588"
-  integrity sha512-BV2Vds0xycbwfWiF2OExiNV0+5HU2UZ0mqVFAZ8ljw79m9RawqoAeovmYjRhmXxxc1FCTzpdWmNGBeEp/HeY1g==
+"@luckymachines/game-core@0.0.7":
+  version "0.0.7"
+  resolved "https://registry.yarnpkg.com/@luckymachines/game-core/-/game-core-0.0.7.tgz#569cee0607a79d38f4b49a17321e3b1955d654ac"
+  integrity sha512-GfQCvPYdAfkzuJVg6WZVpeMRZraV0WFeesSv5U8jNDjANaXQn9ugE7BZ4/UhJTk7en0JYVGqZTYd8BObsjiVVA==
   dependencies:
     "@openzeppelin/contracts" "^4.6.0"
 
