@@ -10,7 +10,12 @@ contract HexplorationZone is PlayZone {
         Plains,
         Desert,
         Mountain,
-        LandingSite
+        LandingSite,
+        Relic1,
+        Relic2,
+        Relic3,
+        Relic4,
+        Relic5
     }
 
     // Mappings from game ID => zone alias
