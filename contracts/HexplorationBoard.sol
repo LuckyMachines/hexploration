@@ -22,6 +22,10 @@ contract HexplorationBoard is HexGrid {
         HEX_ZONE = HexplorationZone(zoneAddress);
     }
 
+    function hexZoneAddress() public view returns (address) {
+        return address(HEX_ZONE);
+    }
+
     // VERIFIED CONTROLLER functions
     // We can assume these have been pre-verified
 
