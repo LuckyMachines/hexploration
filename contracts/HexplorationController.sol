@@ -35,16 +35,6 @@ contract HexplorationController is GameController {
     }
 
     // Admin or Keeper Interactions
-    function startGame(uint256 gameID, address boardAddress)
-        public
-        onlyAdminKeeper
-    {
-        HexplorationBoard board = HexplorationBoard(boardAddress);
-        PlayerRegistry pr = PlayerRegistry(board.prAddress());
-
-        // start game init on game board, might not need to do this function...
-        // move all registered players to site
-    }
 
     //Player Interactions
     function moveThroughPath(
@@ -81,8 +71,8 @@ contract HexplorationController is GameController {
         uint256 gameID,
         address boardAddress
     ) public {
-        // TODO: ensure landing site has not been set
-        // might make this automatic and not a player choice
+        // TODO: decide if this is done by a leader or automatically
+        // game will begin and registration locked after this...
         HexplorationBoard board = HexplorationBoard(boardAddress);
         PlayerRegistry pr = PlayerRegistry(board.prAddress());
         require(pr.isRegistered(gameID, msg.sender), "player not registered");
