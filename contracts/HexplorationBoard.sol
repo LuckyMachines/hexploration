@@ -41,8 +41,10 @@ contract HexplorationBoard is HexGrid {
         HexplorationZone.Tile tile,
         uint256 gameID
     ) public onlyRole(VERIFIED_CONTROLLER_ROLE) {
-        HEX_ZONE.setTile(tile, gameID, zoneAlias);
-        zoneEnabled[gameID][zoneAlias] = true;
+        if (!zoneEnabled[gameID][zoneAlias]) {
+            HEX_ZONE.setTile(tile, gameID, zoneAlias);
+            zoneEnabled[gameID][zoneAlias] = true;
+        }
     }
 
     // pass path and what tiles should be
