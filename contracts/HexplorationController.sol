@@ -34,6 +34,18 @@ contract HexplorationController is GameController {
         grantRole(KEEPER_ROLE, keeperAddress);
     }
 
+    // Admin or Keeper Interactions
+    function startGame(uint256 gameID, address boardAddress)
+        public
+        onlyAdminKeeper
+    {
+        HexplorationBoard board = HexplorationBoard(boardAddress);
+        PlayerRegistry pr = PlayerRegistry(board.prAddress());
+
+        // start game init on game board, might not need to do this function...
+        // move all registered players to site
+    }
+
     //Player Interactions
     function moveThroughPath(
         string[] memory zonePath,
@@ -62,5 +74,23 @@ contract HexplorationController is GameController {
             gameID,
             tiles
         );
+    }
+
+    function chooseLandingSite(
+        string memory zoneChoice,
+        uint256 gameID,
+        address boardAddress
+    ) public {
+        // TODO: ensure landing site has not been set
+        // might make this automatic and not a player choice
+        HexplorationBoard board = HexplorationBoard(boardAddress);
+        PlayerRegistry pr = PlayerRegistry(board.prAddress());
+        require(pr.isRegistered(gameID, msg.sender), "player not registered");
+
+        board.enableZone(zoneChoice, HexplorationZone.Tile.LandingSite, gameID);
+        // set landing site at space on board
+        board.setInitialPlayZone(zoneChoice, gameID);
+        board.start();
+        // run loop to continue startup process
     }
 }

@@ -32,6 +32,10 @@ contract HexplorationBoard is HexGrid {
         _randomness = randomness;
     }
 
+    function start(uint256 gameID) public onlyRole(VERIFIED_CONTROLLER_ROLE) {
+        startGame(gameID);
+    }
+
     function enableZone(
         string memory zoneAlias,
         HexplorationZone.Tile tile,
