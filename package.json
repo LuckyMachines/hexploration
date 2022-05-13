@@ -21,7 +21,7 @@
   "homepage": "https://github.com/StudioMaxIO/hexploration#readme",
   "dependencies": {
     "@chainlink/contracts": "^0.4.0",
-    "@luckymachines/game-core": "0.0.8",
+    "@luckymachines/game-core": "0.0.9",
     "@openzeppelin/contracts": "^4.6.0",
     "@truffle/hdwallet-provider": "^2.0.8",
     "dotenv": "^16.0.1",

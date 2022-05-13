@@ -33,7 +33,7 @@ contract HexplorationBoard is HexGrid {
     }
 
     function start(uint256 gameID) public onlyRole(VERIFIED_CONTROLLER_ROLE) {
-        startGame(gameID);
+        _gamesNeedUpdates.push(gameID);
     }
 
     function enableZone(
