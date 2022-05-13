@@ -7,7 +7,7 @@ contract HexplorationZone is PlayZone {
     enum Tile {
         Default,
         Jungle,
-        Plain,
+        Plains,
         Desert,
         Mountain,
         Base

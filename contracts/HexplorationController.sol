@@ -33,4 +33,34 @@ contract HexplorationController is GameController {
     {
         grantRole(KEEPER_ROLE, keeperAddress);
     }
+
+    //Player Interactions
+    function moveThroughPath(
+        string[] memory zonePath,
+        uint256 gameID,
+        address boardAddress
+    ) public {
+        // TODO:
+        // verify move is valid
+        // pick tiles from deck
+        HexplorationBoard board = HexplorationBoard(boardAddress);
+        PlayerRegistry pr = PlayerRegistry(board.prAddress());
+        require(pr.isRegistered(gameID, msg.sender), "player not registered");
+
+        HexplorationZone.Tile[] memory tiles = new HexplorationZone.Tile[](
+            zonePath.length
+        );
+        for (uint256 i = 0; i < zonePath.length; i++) {
+            tiles[i] = i == 0 ? HexplorationZone.Tile.Jungle : i == 1
+                ? HexplorationZone.Tile.Plains
+                : HexplorationZone.Tile.Mountain;
+        }
+
+        HexplorationBoard(boardAddress).moveThroughPath(
+            zonePath,
+            msg.sender,
+            gameID,
+            tiles
+        );
+    }
 }
