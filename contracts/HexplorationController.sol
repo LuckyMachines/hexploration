@@ -90,7 +90,7 @@ contract HexplorationController is GameController {
         board.enableZone(zoneChoice, HexplorationZone.Tile.LandingSite, gameID);
         // set landing site at space on board
         board.setInitialPlayZone(zoneChoice, gameID);
-        board.start();
+        board.start(gameID);
         // run loop to continue startup process
     }
 }
