@@ -29,6 +29,13 @@ contract HexplorationBoard is HexGrid {
     // VERIFIED CONTROLLER functions
     // We can assume these have been pre-verified
 
+    function lockRegistration(uint256 gameID)
+        public
+        onlyRole(VERIFIED_CONTROLLER_ROLE)
+    {
+        PLAYER_REGISTRY.lockRegistration(gameID);
+    }
+
     function enterPlayer(
         address playerAddress,
         uint256 gameID,

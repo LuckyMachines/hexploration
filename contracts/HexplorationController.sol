@@ -44,7 +44,7 @@ contract HexplorationController is GameController {
         require(board.gameState(gameID) == 0, "game already started");
 
         PlayerRegistry pr = PlayerRegistry(board.prAddress());
-        pr.lockRegistration(gameID);
+        board.lockRegistration(gameID);
         uint256 totalRegistrations = pr.totalRegistrations(gameID);
         string memory startZone = board.initialPlayZone(gameID);
         for (uint256 i = 0; i < totalRegistrations; i++) {
