@@ -40,15 +40,16 @@ contract HexplorationController is GameController {
     }
 
     function startGame(uint256 gameID, address boardAddress) public {
-        //TODO:
-        // move all players from queue to landing site
         HexplorationBoard board = HexplorationBoard(boardAddress);
+        require(board.gameState(gameID) == 0, "game already started");
+
         PlayerRegistry pr = PlayerRegistry(board.prAddress());
         pr.lockRegistration(gameID);
         uint256 totalRegistrations = pr.totalRegistrations(gameID);
+        string memory startZone = board.initialPlayZone(gameID);
         for (uint256 i = 0; i < totalRegistrations; i++) {
-            uint256 playerID = i + 1;
-            // move player to starting space
+            address playerAddress = pr.playerAddress(gameID, i + 1);
+            board.enterPlayer(playerAddress, gameID, startZone);
         }
         // set game to initialized
         board.setGameState(2, gameID);
@@ -98,8 +99,6 @@ contract HexplorationController is GameController {
         board.enableZone(zoneChoice, HexplorationZone.Tile.LandingSite, gameID);
         // set landing site at space on board
         board.setInitialPlayZone(zoneChoice, gameID);
-        board.start(gameID);
-        // run loop to continue startup process
     }
 
     // TODO: limit this to authorized game starters
