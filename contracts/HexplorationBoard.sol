@@ -29,6 +29,13 @@ contract HexplorationBoard is HexGrid {
     // VERIFIED CONTROLLER functions
     // We can assume these have been pre-verified
 
+    function requestNewGame(address gameRegistryAddress)
+        external
+        onlyRole(VERIFIED_CONTROLLER_ROLE)
+    {
+        GameRegistry(gameRegistryAddress).registerGame();
+    }
+
     function setRandomness(uint256 randomness)
         external
         onlyRole(VERIFIED_CONTROLLER_ROLE)

@@ -86,4 +86,20 @@ contract HexplorationController is GameController {
         board.start(gameID);
         // run loop to continue startup process
     }
+
+    // TODO: limit this to authorized game starters
+    function requestNewGame(address gameRegistryAddress, address boardAddress)
+        public
+    {
+        HexplorationBoard board = HexplorationBoard(boardAddress);
+        board.requestNewGame(gameRegistryAddress);
+    }
+
+    function latestGame(address gameRegistryAddress, address boardAddress)
+        public
+        view
+        returns (uint256)
+    {
+        return GameRegistry(gameRegistryAddress).latestGame(boardAddress);
+    }
 }
