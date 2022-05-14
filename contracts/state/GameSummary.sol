@@ -11,7 +11,7 @@ library GameSummary {
     function activeZones(address gameBoardAddress, uint256 gameID)
         public
         view
-        returns (string[] memory zones, HexplorationZone.Tile[] memory tiles)
+        returns (string[] memory zones, uint16[] memory tiles)
     {
         HexplorationBoard board = HexplorationBoard(gameBoardAddress);
         string[] memory allZones = board.getZoneAliases();
@@ -23,7 +23,7 @@ library GameSummary {
             }
         }
         zones = new string[](activeZoneCount);
-        tiles = new HexplorationZone.Tile[](activeZoneCount);
+        tiles = new uint16[](activeZoneCount);
 
         activeZoneCount = 0;
         for (uint256 i = 0; i < allZones.length; i++) {
@@ -32,7 +32,9 @@ library GameSummary {
                 HexplorationZone hexZone = HexplorationZone(
                     board.hexZoneAddress()
                 );
-                tiles[activeZoneCount] = hexZone.tile(gameID, allZones[i]);
+                tiles[activeZoneCount] = uint16(
+                    hexZone.tile(gameID, allZones[i])
+                );
                 activeZoneCount++;
             }
         }

@@ -35,6 +35,9 @@ contract HexplorationController is GameController {
     }
 
     // Admin or Keeper Interactions
+    function runBoardUpdate(address boardAddress) public {
+        HexplorationBoard(boardAddress).runUpdate();
+    }
 
     //Player Interactions
     function moveThroughPath(
