@@ -39,6 +39,21 @@ contract HexplorationController is GameController {
         HexplorationBoard(boardAddress).runUpdate();
     }
 
+    function startGame(uint256 gameID, address boardAddress) public {
+        //TODO:
+        // move all players from queue to landing site
+        HexplorationBoard board = HexplorationBoard(boardAddress);
+        PlayerRegistry pr = PlayerRegistry(board.prAddress());
+        pr.lockRegistration(gameID);
+        uint256 totalRegistrations = pr.totalRegistrations(gameID);
+        for (uint256 i = 0; i < totalRegistrations; i++) {
+            uint256 playerID = i + 1;
+            // move player to starting space
+        }
+        // set game to initialized
+        board.setGameState(2, gameID);
+    }
+
     //Player Interactions
     function moveThroughPath(
         string[] memory zonePath,
