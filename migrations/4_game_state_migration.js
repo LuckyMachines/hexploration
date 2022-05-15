@@ -77,7 +77,6 @@ module.exports = async (deployer, network, [defaultAccount]) => {
     console.log(`
   GANACHE_BOARD_WALLET: "${BoardWallet.address}",
   GANACHE_PLAYER_WALLET: "${PlayerWallet.address}",
-  GANACHE_ZONE_WALLET: "${ZoneWallet.address}",
-  GANACHE_CHARACTER_CARD: "${CharacterCard.address}"`);
+  GANACHE_ZONE_WALLET: "${ZoneWallet.address}"`);
   }
 };

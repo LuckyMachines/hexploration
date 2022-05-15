@@ -3,45 +3,61 @@ const DisasterTokens = artifacts.require("Disaster");
 const EnemyTokens = artifacts.require("Enemy");
 const ItemTokens = artifacts.require("Item");
 const PlayerStatusTokens = artifacts.require("PlayerStatus");
+const Controller = artifacts.require("HexplorationController");
 
 module.exports = async (deployer, network, [defaultAccount]) => {
-  const HexplorationControllerAddress = network.startsWith("ganache")
-    ? "0x8137A825fC2e6Dd9E09e900698f866c185Be988A"
+  const hexplorationControllerAddress = network.startsWith("ganache")
+    ? "0x51040309cb73510d622FeB012132d7F5F9bBb45B"
     : "0x0000000000000000000000000000000000000000";
-  console.log("Controller address set to:", HexplorationControllerAddress);
+  console.log("Controller address set to:", hexplorationControllerAddress);
   console.log("Deploying Day Night Tokens");
   try {
-    await deployer.deploy(DayNightTokens, HexplorationControllerAddress);
+    await deployer.deploy(DayNightTokens, hexplorationControllerAddress);
   } catch (err) {
     console.error(err);
   }
 
   console.log("Deploying Disaster Tokens");
   try {
-    await deployer.deploy(DisasterTokens, HexplorationControllerAddress);
+    await deployer.deploy(DisasterTokens, hexplorationControllerAddress);
   } catch (err) {
     console.error(err);
   }
 
   console.log("Deploying Enemy Tokens");
   try {
-    await deployer.deploy(EnemyTokens, HexplorationControllerAddress);
+    await deployer.deploy(EnemyTokens, hexplorationControllerAddress);
   } catch (err) {
     console.error(err);
   }
 
   console.log("Deploying Item Tokens");
   try {
-    await deployer.deploy(ItemTokens, HexplorationControllerAddress);
+    await deployer.deploy(ItemTokens, hexplorationControllerAddress);
   } catch (err) {
     console.error(err);
   }
 
   console.log("Deploying Player Status Tokens");
   try {
-    await deployer.deploy(PlayerStatusTokens, HexplorationControllerAddress);
+    await deployer.deploy(PlayerStatusTokens, hexplorationControllerAddress);
   } catch (err) {
     console.error(err);
+  }
+
+  console.log("Adding tokens to controller");
+  try {
+    let hexController = await Controller.at(hexplorationControllerAddress);
+    await hexController.setTokenAddresses(
+      DayNightTokens.address,
+      DisasterTokens.address,
+      EnemyTokens.address,
+      ItemTokens.address,
+      PlayerStatusTokens.address
+    );
+    console.log("tokens added to contoller:", hexplorationControllerAddress);
+  } catch (err) {
+    console.log(err.message);
   }
 
   if (network.startsWith("ganache")) {

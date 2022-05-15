@@ -119,6 +119,8 @@ contract HexplorationController is GameController {
         ITEM_TOKEN.mint("Off", gameID, 1000);
         PLAYER_STATUS_TOKEN.mint("Stunned", gameID, 1000);
         PLAYER_STATUS_TOKEN.mint("Burned", gameID, 1000);
+        // Transfer day token to board
+        DAY_NIGHT_TOKEN.transfer("Day", gameID, 0, 1, 1);
     }
 
     //Player Interactions

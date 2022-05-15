@@ -52,26 +52,20 @@ contract GameToken is AccessControlEnumerable {
         balance[tokenType][gameID][0] = quantity;
     }
 
+    // from ID + to ID can be player IDs or any other ID used in game.
     function transfer(
         string memory tokenType,
         uint256 gameID,
-        uint256 fromPlayerID,
-        uint256 toPlayerID,
+        uint256 fromID,
+        uint256 toID,
         uint256 quantity
     ) public onlyRole(CONTROLLER_ROLE) {
         require(
-            balance[tokenType][gameID][fromPlayerID] >= quantity,
+            balance[tokenType][gameID][fromID] >= quantity,
             "from balance too low"
         );
-        balance[tokenType][gameID][toPlayerID] += quantity;
-        balance[tokenType][gameID][fromPlayerID] -= quantity;
-        emit Transfer(
-            gameID,
-            fromPlayerID,
-            toPlayerID,
-            _msgSender(),
-            tokenType,
-            quantity
-        );
+        balance[tokenType][gameID][toID] += quantity;
+        balance[tokenType][gameID][fromID] -= quantity;
+        emit Transfer(gameID, fromID, toID, _msgSender(), tokenType, quantity);
     }
 }
