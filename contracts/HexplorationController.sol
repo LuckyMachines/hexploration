@@ -4,6 +4,12 @@ pragma solidity >=0.7.0 <0.9.0;
 import "@luckymachines/game-core/contracts/src/v0.0/GameController.sol";
 import "./HexplorationBoard.sol";
 import "./HexplorationZone.sol";
+// Game Tokens
+import "./tokens/DayNight.sol";
+import "./tokens/Disaster.sol";
+import "./tokens/Enemy.sol";
+import "./tokens/Item.sol";
+import "./tokens/PlayerStatus.sol";
 
 contract HexplorationController is GameController {
     // functions are meant to be called directly by players by default
@@ -11,11 +17,34 @@ contract HexplorationController is GameController {
     // execute the game aspects not directly controlled by players
     bytes32 public constant KEEPER_ROLE = keccak256("KEEPER_ROLE");
 
+    DayNight internal DAY_NIGHT_TOKEN;
+    Disaster internal DISASTER_TOKEN;
+    Enemy internal ENEMY_TOKEN;
+    Item internal ITEM_TOKEN;
+    PlayerStatus internal PLAYER_STATUS_TOKEN;
+
     // TODO:
     // Connect to Chainlink VRF for random seeds when needed
     // submit move + space choice
     // use / swap item
 
+    /*
+    Controller can access all game tokens with the following methods:
+
+    function mint(
+        string memory tokenType,
+        uint256 gameID,
+        uint256 quantity
+    )
+
+    function transfer(
+        string memory tokenType,
+        uint256 gameID,
+        uint256 fromPlayerID,
+        uint256 toPlayerID,
+        uint256 quantity
+    )
+*/
     modifier onlyAdminKeeper() {
         require(
             hasRole(DEFAULT_ADMIN_ROLE, _msgSender()) ||
@@ -26,6 +55,21 @@ contract HexplorationController is GameController {
     }
 
     constructor(address adminAddress) GameController(adminAddress) {}
+
+    // Admin Functions
+    function setTokenAddresses(
+        address dayNightAddress,
+        address disasterAddress,
+        address enemyAddress,
+        address itemAddress,
+        address playerStatusAddress
+    ) public onlyRole(DEFAULT_ADMIN_ROLE) {
+        DAY_NIGHT_TOKEN = DayNight(dayNightAddress);
+        DISASTER_TOKEN = Disaster(disasterAddress);
+        ENEMY_TOKEN = Enemy(enemyAddress);
+        ITEM_TOKEN = Item(itemAddress);
+        PLAYER_STATUS_TOKEN = PlayerStatus(playerStatusAddress);
+    }
 
     function addKeeper(address keeperAddress)
         public
@@ -53,6 +97,28 @@ contract HexplorationController is GameController {
         }
         // set game to initialized
         board.setGameState(2, gameID);
+
+        // mint game tokens (maybe mint on demand instead...)
+        // minting full game set here
+        DAY_NIGHT_TOKEN.mint("Day", gameID, 1);
+        DAY_NIGHT_TOKEN.mint("Night", gameID, 1);
+        DISASTER_TOKEN.mint("Earthquake", gameID, 1000);
+        DISASTER_TOKEN.mint("Volcano", gameID, 1000);
+        ENEMY_TOKEN.mint("Pirate", gameID, 1000);
+        ENEMY_TOKEN.mint("Pirate Ship", gameID, 1000);
+        ENEMY_TOKEN.mint("Deathbot", gameID, 1000);
+        ENEMY_TOKEN.mint("Guardian", gameID, 1000);
+        ENEMY_TOKEN.mint("Sandworm", gameID, 1000);
+        ENEMY_TOKEN.mint("Dragon", gameID, 1000);
+        ITEM_TOKEN.mint("Small Ammo", gameID, 1000);
+        ITEM_TOKEN.mint("Large Ammo", gameID, 1000);
+        ITEM_TOKEN.mint("Batteries", gameID, 1000);
+        ITEM_TOKEN.mint("Shield", gameID, 1000);
+        ITEM_TOKEN.mint("Portal", gameID, 1000);
+        ITEM_TOKEN.mint("On", gameID, 1000);
+        ITEM_TOKEN.mint("Off", gameID, 1000);
+        PLAYER_STATUS_TOKEN.mint("Stunned", gameID, 1000);
+        PLAYER_STATUS_TOKEN.mint("Burned", gameID, 1000);
     }
 
     //Player Interactions
