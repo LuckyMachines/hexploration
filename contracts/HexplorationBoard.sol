@@ -28,9 +28,9 @@ contract HexplorationBoard is HexGrid {
 
     // VERIFIED CONTROLLER functions
     // We can assume these have been pre-verified
-    function setCharacterCard(address _characterCardAddress){
+    function setCharacterCard(address _characterCardAddress) {
         characterCardAddress = _characterCardAddress;
-    };
+    }
 
     function registerPlayer(address playerAddress, uint256 gameID)
         public
