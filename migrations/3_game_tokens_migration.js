@@ -7,7 +7,7 @@ const Controller = artifacts.require("HexplorationController");
 
 module.exports = async (deployer, network, [defaultAccount]) => {
   const hexplorationControllerAddress = network.startsWith("ganache")
-    ? "0x51040309cb73510d622FeB012132d7F5F9bBb45B"
+    ? "0x80a9F7Dc8D7b31FeC08e8ED328AD63d6b48a2606"
     : "0x0000000000000000000000000000000000000000";
   console.log("Controller address set to:", hexplorationControllerAddress);
   console.log("Deploying Day Night Tokens");

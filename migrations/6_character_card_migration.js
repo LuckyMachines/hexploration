@@ -3,7 +3,7 @@ const ItemToken = artifacts.require("Item");
 
 module.exports = async (deployer, network, [defaultAccount]) => {
   const VERIFIED_CONTROLLER_ADDRESS =
-    "0x51040309cb73510d622FeB012132d7F5F9bBb45B";
+    "0x80a9F7Dc8D7b31FeC08e8ED328AD63d6b48a2606";
   try {
     await deployer.deploy(CharacterCard, ItemToken.address);
     // set verified controller...

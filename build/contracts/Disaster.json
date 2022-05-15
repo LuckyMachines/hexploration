@@ -141,7 +141,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [],
@@ -154,7 +155,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -196,7 +198,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -215,7 +218,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -239,7 +243,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -258,7 +263,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -300,7 +306,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -378,7 +385,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -397,7 +405,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -11809,12 +11818,13 @@
         }
       },
       "links": {},
-      "address": "0x066D6cad4d8462Da2280DFD3AFbd6492Dd121d53",
-      "transactionHash": "0xde36090706bdf75cc373bb90468771ac1cb21897cfe8f0208c1445f87493b06c"
+      "address": "0xa3620e9c799CA6330C1576a446a4Cd2aB8b2F5E7",
+      "transactionHash": "0xea7459f9187a5e869d43d38baec9797b61f42a3de1efc3b0da5f80a5c5d9c738"
     }
   },
   "schemaVersion": "3.4.4",
-  "updatedAt": "2022-05-15T20:38:14.485Z",
+  "updatedAt": "2022-05-15T20:46:54.025Z",
+  "networkType": "ethereum",
   "devdoc": {
     "kind": "dev",
     "methods": {
