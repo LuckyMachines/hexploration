@@ -64,7 +64,7 @@ contract CharacterCard is AccessControlEnumerable {
     }
 
     function setLeftHandItem(
-        string itemTokenType,
+        string memory itemTokenType,
         uint256 gameID,
         address playerAddress
     ) external onlyRole(VERIFIED_CONTROLLER_ROLE) {
@@ -72,7 +72,7 @@ contract CharacterCard is AccessControlEnumerable {
     }
 
     function setRightHandItem(
-        string itemTokenType,
+        string memory itemTokenType,
         uint256 gameID,
         address playerAddress
     ) external onlyRole(VERIFIED_CONTROLLER_ROLE) {
