@@ -19,6 +19,7 @@ contract CharacterCard is AccessControlEnumerable {
     constructor(address itemTokenAddress) {
         _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
         itemToken = itemTokenAddress;
+        // TODO: set default stats here
     }
 
     function addVerifiedController(address controllerAddress)
