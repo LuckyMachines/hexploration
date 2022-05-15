@@ -30,7 +30,7 @@ contract CharacterCard is AccessControlEnumerable {
     }
 
     function setStats(
-        uint16[] memory stats,
+        uint16[3] memory stats,
         uint256 gameID,
         address playerAddress
     ) external onlyRole(VERIFIED_CONTROLLER_ROLE) {

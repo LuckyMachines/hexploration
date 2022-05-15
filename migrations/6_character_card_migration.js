@@ -1,9 +1,11 @@
 const CharacterCard = artifacts.require("CharacterCard");
 const ItemToken = artifacts.require("Item");
+const GameBoard = artifacts.require("HexplorationBoard");
 
 module.exports = async (deployer, network, [defaultAccount]) => {
+  const GAME_BOARD_ADDRESS = "";
   const VERIFIED_CONTROLLER_ADDRESS =
-    "0x80a9F7Dc8D7b31FeC08e8ED328AD63d6b48a2606";
+    "0x9a2cE5A8F4F85238CcE3D799a5aAE18A71915326";
   try {
     await deployer.deploy(CharacterCard, ItemToken.address);
     // set verified controller...
@@ -12,6 +14,10 @@ module.exports = async (deployer, network, [defaultAccount]) => {
     console.log("Adding verified controller:", VERIFIED_CONTROLLER_ADDRESS);
     await cc.addVerifiedController(VERIFIED_CONTROLLER_ADDRESS);
     console.log("Controller added");
+    console.log("Adding card to game board...");
+    let hexBoard = await GameBoard.at(GAME_BOARD_ADDRESS);
+    await hexBoard.setCharacterCard(CharacterCard.address);
+    console.log("Character card set.");
   } catch (err) {
     console.error(err);
   }

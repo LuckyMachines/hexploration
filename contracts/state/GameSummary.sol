@@ -4,6 +4,10 @@ pragma solidity >=0.8.0;
 import "../HexplorationBoard.sol";
 import "../HexplorationZone.sol";
 import "@luckymachines/game-core/contracts/src/v0.0/PlayerRegistry.sol";
+// Game Wallets
+import "./BoardWallet.sol";
+import "./PlayerWallet.sol";
+import "./ZoneWallet.sol";
 
 library GameSummary {
     // enemies

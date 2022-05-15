@@ -8,8 +8,8 @@ contract HexplorationBoard is HexGrid {
     // This role is a hybrid controller, assumes on chain verification of moves before submission
 
     uint256 private _randomness;
-
     HexplorationZone internal HEX_ZONE;
+    address public characterCardAddress;
     // game ID => zone alias returns bool
     mapping(uint256 => mapping(string => bool)) public zoneEnabled;
 
@@ -28,6 +28,9 @@ contract HexplorationBoard is HexGrid {
 
     // VERIFIED CONTROLLER functions
     // We can assume these have been pre-verified
+    function setCharacterCard(address _characterCardAddress){
+        characterCardAddress = _characterCardAddress;
+    };
 
     function registerPlayer(address playerAddress, uint256 gameID)
         public

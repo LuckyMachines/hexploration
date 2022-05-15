@@ -4,6 +4,7 @@ pragma solidity >=0.7.0 <0.9.0;
 import "@luckymachines/game-core/contracts/src/v0.0/GameController.sol";
 import "./HexplorationBoard.sol";
 import "./HexplorationZone.sol";
+import "./state/CharacterCard.sol";
 // Game Tokens
 import "./tokens/DayNight.sol";
 import "./tokens/Disaster.sol";
@@ -127,6 +128,11 @@ contract HexplorationController is GameController {
     function registerForGame(uint256 gameID, address boardAddress) public {
         HexplorationBoard board = HexplorationBoard(boardAddress);
         board.registerPlayer(msg.sender, gameID);
+        CharacterCard(board.characterCardAddress()).setStats(
+            [4, 4, 4],
+            gameID,
+            msg.sender
+        );
     }
 
     function moveThroughPath(
