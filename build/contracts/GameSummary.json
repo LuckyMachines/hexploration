@@ -28,7 +28,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -52,7 +53,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -76,7 +78,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -105,7 +108,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     }
   ],
   "metadata": "{\"compiler\":{\"version\":\"0.8.11+commit.d7f03943\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"gameBoardAddress\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"gameID\",\"type\":\"uint256\"}],\"name\":\"activeZones\",\"outputs\":[{\"internalType\":\"string[]\",\"name\":\"zones\",\"type\":\"string[]\"},{\"internalType\":\"uint16[]\",\"name\":\"tiles\",\"type\":\"uint16[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"gameBoardAddress\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"gameID\",\"type\":\"uint256\"}],\"name\":\"allPlayerLocations\",\"outputs\":[{\"internalType\":\"uint256[]\",\"name\":\"\",\"type\":\"uint256[]\"},{\"internalType\":\"string[]\",\"name\":\"\",\"type\":\"string[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"gameBoardAddress\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"gameID\",\"type\":\"uint256\"}],\"name\":\"currentLocation\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"gameBoardAddress\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"gameID\",\"type\":\"uint256\"}],\"name\":\"landingSite\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"project:/contracts/state/GameSummary.sol\":\"GameSummary\"},\"evmVersion\":\"byzantium\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"@luckymachines/game-core/contracts/src/v0.0/GameBoard.sol\":{\"keccak256\":\"0x35a59106a91bbe8a147a431f8521b539b8a4933c672e25bd78bb82e00a18bd15\",\"license\":\"GPL-3.0\",\"urls\":[\"bzz-raw://e90bdebf94a4a44ba16bf52679d65943778f8ce0a3103b284048d7d7db5ff36a\",\"dweb:/ipfs/QmX5gwXUY4D9ZA4QHWc6HnbusfG7EEbWBu9XCzjfCEE2vd\"]},\"@luckymachines/game-core/contracts/src/v0.0/GameRegistry.sol\":{\"keccak256\":\"0x2bd499054848a39a96433c891ee6597fce3689440098b9269ad6b46b86d48e20\",\"license\":\"GPL-3.0\",\"urls\":[\"bzz-raw://a05f60620d97ec8789a9a6cc37f96898493c7054ec2e1452d1f34fbbd112b421\",\"dweb:/ipfs/QmUrYXya6yNCUvfcT9vtVZKVMEXUCcxG6p2efGhkmc1Tc6\"]},\"@luckymachines/game-core/contracts/src/v0.0/PlayZone.sol\":{\"keccak256\":\"0x7786d7e12b6cd3b052da019d4c46c848be66900d874618d7439e02e46670134b\",\"license\":\"GPL-3.0\",\"urls\":[\"bzz-raw://4143eda3dd55ff2470ef3ddfd4417b962cc1cf838123bc10c930cd99e97e00f1\",\"dweb:/ipfs/QmQyWNaW1aRCb4yFNajBAXWWiBDdVVvXopfRy8EwBQzsFh\"]},\"@luckymachines/game-core/contracts/src/v0.0/PlayerRegistry.sol\":{\"keccak256\":\"0xa0ca261a275644baa762c22be2e45d964d35bbd1f89eb7550ddeacfb432e1a13\",\"license\":\"GPL-3.0\",\"urls\":[\"bzz-raw://719d8c91beb8a362b34c6728b474dd7f581df3e1e48ce38ce95a22996954ccf2\",\"dweb:/ipfs/QmXcSArd5uERyseezEsrPyea3JBeLxMU5rkLUauhJeth39\"]},\"@luckymachines/game-core/contracts/src/v0.0/Ruleset.sol\":{\"keccak256\":\"0xd5a30bc5ddf81734ad21eb517f549dbeb87d3964ae63e759fefb989cff4652bf\",\"license\":\"GPL-3.0\",\"urls\":[\"bzz-raw://453f77eb20f60115500b467151afe59a3ff56d38cb37a690889e00d2ed4834c5\",\"dweb:/ipfs/QmaEgbatdBXKw6wFWt8ELQ56RHAEaLf9og6waAE26CKzxS\"]},\"@luckymachines/game-core/contracts/src/v0.0/custom_boards/HexGrid.sol\":{\"keccak256\":\"0x09558ef2e1c1c051ca62ece34400f17c6c1d7fdb52e16a35352c6bacf38b270f\",\"license\":\"GPL-3.0\",\"urls\":[\"bzz-raw://141d7b27149690fa9bc0a0c98b9b818c556ff795b630a03b6f2ed1a0788dbdc2\",\"dweb:/ipfs/QmeEHTgeVd43Xgo6byZ4h2JaN4cHCcp1Nbn8LtapLHuUKd\"]},\"@luckymachines/game-core/contracts/src/v0.0/libraries/XYCoords.sol\":{\"keccak256\":\"0x53200aac4ab7e14ba890267b533064a4118e46f6e573db89b423d79adb80da9e\",\"license\":\"GPL-3.0\",\"urls\":[\"bzz-raw://c5a3dbab253765d66be6035ad42559fbed50fe55826b89a30f591a1024bd739b\",\"dweb:/ipfs/QmaLCrAb32hr24UaEphjF3AsKMBy7mCDf2pN2P8Vm4HQpy\"]},\"@openzeppelin/contracts/access/AccessControl.sol\":{\"keccak256\":\"0xb4d87ee2ead4bd192b41c128f287d4b7f24b9e0cd740cc9b476881c461286007\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://861c3abaa2b388a0228469080470d2254e8e91fd09aa0abda8b9ef3babf03ee5\",\"dweb:/ipfs/QmZFg88WPesuMo6GMtf3fi9NHQ5tENYLDZsFQSWgoq13TN\"]},\"@openzeppelin/contracts/access/AccessControlEnumerable.sol\":{\"keccak256\":\"0x13f5e15f2a0650c0b6aaee2ef19e89eaf4870d6e79662d572a393334c1397247\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://7ee05f28f549a5d6515e152580716b87636ed4bfab9812499a6e3803df88288b\",\"dweb:/ipfs/QmeEnhdwY1t5Y3YU5a4ffzgXuToydH2PNdNxV9W7dEPRQJ\"]},\"@openzeppelin/contracts/access/IAccessControl.sol\":{\"keccak256\":\"0x59ce320a585d7e1f163cd70390a0ef2ff9cec832e2aa544293a00692465a7a57\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://bb2c137c343ef0c4c7ce7b18c1d108afdc9d315a04e48307288d2d05adcbde3a\",\"dweb:/ipfs/QmUxhrAQM3MM3FF5j7AtcXLXguWCJBHJ14BRdVtuoQc8Fh\"]},\"@openzeppelin/contracts/access/IAccessControlEnumerable.sol\":{\"keccak256\":\"0xba4459ab871dfa300f5212c6c30178b63898c03533a1ede28436f11546626676\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://3dcc7b09bfa6e18aab262ca372f4a9b1fc82e294b430706a4e1378cf58e6a276\",\"dweb:/ipfs/QmT8oSAcesdctR15HMLhr2a1HRpXymxdjTfdtfTYJcj2N2\"]},\"@openzeppelin/contracts/utils/Context.sol\":{\"keccak256\":\"0xe2e337e6dde9ef6b680e07338c493ebea1b5fd09b43424112868e9cc1706bca7\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://6df0ddf21ce9f58271bdfaa85cde98b200ef242a05a3f85c2bc10a8294800a92\",\"dweb:/ipfs/QmRK2Y5Yc6BK7tGKkgsgn3aJEQGi5aakeSPZvS65PV8Xp3\"]},\"@openzeppelin/contracts/utils/Counters.sol\":{\"keccak256\":\"0xf0018c2440fbe238dd3a8732fa8e17a0f9dce84d31451dc8a32f6d62b349c9f1\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://59e1c62884d55b70f3ae5432b44bb3166ad71ae3acd19c57ab6ddc3c87c325ee\",\"dweb:/ipfs/QmezuXg5GK5oeA4F91EZhozBFekhq5TD966bHPH18cCqhu\"]},\"@openzeppelin/contracts/utils/Strings.sol\":{\"keccak256\":\"0x32c202bd28995dd20c4347b7c6467a6d3241c74c8ad3edcbb610cd9205916c45\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://8179c356adb19e70d6b31a1eedc8c5c7f0c00e669e2540f4099e3844c6074d30\",\"dweb:/ipfs/QmWFbivarEobbqhS1go64ootVuHfVohBseerYy9FTEd1W2\"]},\"@openzeppelin/contracts/utils/introspection/ERC165.sol\":{\"keccak256\":\"0xd10975de010d89fd1c78dc5e8a9a7e7f496198085c151648f20cba166b32582b\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://fb0048dee081f6fffa5f74afc3fb328483c2a30504e94a0ddd2a5114d731ec4d\",\"dweb:/ipfs/QmZptt1nmYoA5SgjwnSgWqgUSDgm4q52Yos3xhnMv3MV43\"]},\"@openzeppelin/contracts/utils/introspection/IERC165.sol\":{\"keccak256\":\"0x447a5f3ddc18419d41ff92b3773fb86471b1db25773e07f877f548918a185bf1\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://be161e54f24e5c6fae81a12db1a8ae87bc5ae1b0ddc805d82a1440a68455088f\",\"dweb:/ipfs/QmP7C3CHdY9urF4dEMb9wmsp1wMxHF6nhA2yQE5SKiPAdy\"]},\"@openzeppelin/contracts/utils/structs/EnumerableSet.sol\":{\"keccak256\":\"0xacac2065b3ed1facff1163435890d4a6bcdc474e857e8e2c91ae5fb50418f723\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://acd44ec097dd623f40870ca848c31deb02dca032ec9c56bd2e52ee103d35ce6d\",\"dweb:/ipfs/Qme3CuA45xCft72RjE6s4bmhffpe2NHvHULH9fh5oPbzBv\"]},\"project:/contracts/HexplorationBoard.sol\":{\"keccak256\":\"0x51034016290f700b28d7f354d40b19a8276e2f3492cae0a0bb451cea55b3920d\",\"license\":\"GPL-3.0\",\"urls\":[\"bzz-raw://a0bd3d78ca0f3e558b29627c460f06d3dd7c42181ef4606130946520bdef68cc\",\"dweb:/ipfs/QmPRLKSAEHCB68Ehe5MprtcaEyXS8LpoDXJJSpVWnN4BVx\"]},\"project:/contracts/HexplorationZone.sol\":{\"keccak256\":\"0x43756734e33e49e707087f8d16c40a4167ccb926040656f9bb2f320ad6520086\",\"license\":\"GPL-3.0\",\"urls\":[\"bzz-raw://6673b7db78e9cad540611e7f628e24b1e00977b0f968378913ddf5dbad41e21f\",\"dweb:/ipfs/QmVEeYrSoyjpD1sLcAoxTXZG369FvYnUcHM9CMXGhd45Vg\"]},\"project:/contracts/state/GameSummary.sol\":{\"keccak256\":\"0x5df90c841c6677cfd79dd3b5cfbc515eda4569c4de484ee580f92378cf1f92f9\",\"license\":\"GPL-3.0\",\"urls\":[\"bzz-raw://f33da8b64da706be9f3670408e6c236b49944fe2515bc518d8c19f6f7e107be7\",\"dweb:/ipfs/QmYJHuTjdBBCGJwSjzVk622ADeXRyFhsxfhFv526s8BiBS\"]}},\"version\":1}",
@@ -14236,12 +14240,13 @@
     "5777": {
       "events": {},
       "links": {},
-      "address": "0xDAc2aa1Fa23B89f1745A02f20C58B3A0791563C4",
-      "transactionHash": "0xe557eebd4f08c47febb680e99021b04c506aa659d06566b51ba1c34b3a646868"
+      "address": "0x7a1efD08EeefB088B86aF3A8baa6F4c53aFAF3e1",
+      "transactionHash": "0xa4a9a5198d7d859fa5aa7814e1dc31551823320c2bd3c6736681dcb62d48fca6"
     }
   },
   "schemaVersion": "3.4.4",
-  "updatedAt": "2022-05-15T04:28:41.501Z",
+  "updatedAt": "2022-05-15T18:27:06.223Z",
+  "networkType": "ethereum",
   "devdoc": {
     "kind": "dev",
     "methods": {},

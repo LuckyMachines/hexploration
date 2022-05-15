@@ -6,7 +6,7 @@ const PlayerStatusTokens = artifacts.require("PlayerStatus");
 
 module.exports = async (deployer, network, [defaultAccount]) => {
   const HexplorationControllerAddress = network.startsWith("ganache")
-    ? "0xea0dBC769730a299A2350ec54A8c29E5E6e5C8B5"
+    ? "0x8137A825fC2e6Dd9E09e900698f866c185Be988A"
     : "0x0000000000000000000000000000000000000000";
   console.log("Controller address set to:", HexplorationControllerAddress);
   console.log("Deploying Day Night Tokens");

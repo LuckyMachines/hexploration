@@ -32,13 +32,6 @@ module.exports = async (deployer, network, [defaultAccount]) => {
     console.error(err);
   }
 
-  console.log("Deploying Character Card");
-  try {
-    await deployer.deploy(CharacterCard);
-  } catch (err) {
-    console.error(err);
-  }
-
   console.log("Setting token types on wallets...\n");
   const boardWallet = await BoardWallet.deployed();
   const zoneWallet = await ZoneWallet.deployed();
