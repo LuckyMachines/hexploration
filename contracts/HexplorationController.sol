@@ -126,8 +126,7 @@ contract HexplorationController is GameController {
     //Player Interactions
     function registerForGame(uint256 gameID, address boardAddress) public {
         HexplorationBoard board = HexplorationBoard(boardAddress);
-        PlayerRegistry pr = PlayerRegistry(board.prAddress());
-        pr.registerPlayer(msg.sender, gameID);
+        board.registerPlayer(msg.sender, gameID);
     }
 
     function moveThroughPath(
