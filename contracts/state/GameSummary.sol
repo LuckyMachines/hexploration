@@ -8,6 +8,16 @@ import "@luckymachines/game-core/contracts/src/v0.0/PlayerRegistry.sol";
 library GameSummary {
     // enemies
     // tokens
+    function boardSize(address gameBoardAddress)
+        public
+        view
+        returns (uint256 rows, uint256 columns)
+    {
+        HexplorationBoard board = HexplorationBoard(gameBoardAddress);
+        rows = board.gridHeight();
+        columns = board.gridWidth();
+    }
+
     function activeZones(address gameBoardAddress, uint256 gameID)
         public
         view
