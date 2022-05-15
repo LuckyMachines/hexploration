@@ -9,9 +9,9 @@ contract CharacterCard is AccessControlEnumerable {
 
     address public itemToken;
     // game id => player address
-    mapping(uint256 => mapping(address => uint16)) movement;
-    mapping(uint256 => mapping(address => uint16)) agility;
-    mapping(uint256 => mapping(address => uint16)) dexterity;
+    mapping(uint256 => mapping(address => uint8)) movement;
+    mapping(uint256 => mapping(address => uint8)) agility;
+    mapping(uint256 => mapping(address => uint8)) dexterity;
     //// the following assign a token type, player must still hold balance to use item
     mapping(uint256 => mapping(address => string)) leftHandItem;
     mapping(uint256 => mapping(address => string)) rightHandItem;
@@ -30,7 +30,7 @@ contract CharacterCard is AccessControlEnumerable {
     }
 
     function setStats(
-        uint16[3] memory stats,
+        uint8[3] memory stats,
         uint256 gameID,
         address playerAddress
     ) external onlyRole(VERIFIED_CONTROLLER_ROLE) {
@@ -41,7 +41,7 @@ contract CharacterCard is AccessControlEnumerable {
     }
 
     function setMovement(
-        uint16 movementValue,
+        uint8 movementValue,
         uint256 gameID,
         address playerAddress
     ) external onlyRole(VERIFIED_CONTROLLER_ROLE) {
@@ -49,7 +49,7 @@ contract CharacterCard is AccessControlEnumerable {
     }
 
     function setAgility(
-        uint16 agilityValue,
+        uint8 agilityValue,
         uint256 gameID,
         address playerAddress
     ) external onlyRole(VERIFIED_CONTROLLER_ROLE) {
@@ -57,7 +57,7 @@ contract CharacterCard is AccessControlEnumerable {
     }
 
     function setDexterity(
-        uint16 dexterityValue,
+        uint8 dexterityValue,
         uint256 gameID,
         address playerAddress
     ) external onlyRole(VERIFIED_CONTROLLER_ROLE) {
