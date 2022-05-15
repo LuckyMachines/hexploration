@@ -9,12 +9,12 @@ contract CharacterCard is AccessControlEnumerable {
 
     address public itemToken;
     // game id => player address
-    mapping(uint256 => mapping(address => uint8)) movement;
-    mapping(uint256 => mapping(address => uint8)) agility;
-    mapping(uint256 => mapping(address => uint8)) dexterity;
+    mapping(uint256 => mapping(address => uint8)) public movement;
+    mapping(uint256 => mapping(address => uint8)) public agility;
+    mapping(uint256 => mapping(address => uint8)) public dexterity;
     //// the following assign a token type, player must still hold balance to use item
-    mapping(uint256 => mapping(address => string)) leftHandItem;
-    mapping(uint256 => mapping(address => string)) rightHandItem;
+    mapping(uint256 => mapping(address => string)) public leftHandItem;
+    mapping(uint256 => mapping(address => string)) public rightHandItem;
 
     constructor(address itemTokenAddress) {
         _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());

@@ -4,6 +4,7 @@ pragma solidity >=0.8.0;
 import "../HexplorationBoard.sol";
 import "../HexplorationZone.sol";
 import "@luckymachines/game-core/contracts/src/v0.0/PlayerRegistry.sol";
+import "./CharacterCard.sol";
 // Game Wallets
 import "./BoardWallet.sol";
 import "./PlayerWallet.sol";
@@ -87,5 +88,17 @@ library GameSummary {
             playerZones[i] = board.currentPlayZone(gameID, i + 1);
         }
         return (playerIDs, playerZones);
+    }
+
+    function currentPlayerStats(address gameBoardAddress, uint256 gameID)
+        public
+        view
+        returns (uint8[3] memory stats)
+    {
+        HexplorationBoard board = HexplorationBoard(gameBoardAddress);
+        CharacterCard cc = CharacterCard(board.characterCardAddress());
+        stats[0] = cc.movement(gameID, msg.sender);
+        stats[1] = cc.agility(gameID, msg.sender);
+        stats[2] = cc.dexterity(gameID, msg.sender);
     }
 }
