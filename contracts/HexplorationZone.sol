@@ -11,6 +11,7 @@ contract HexplorationZone is PlayZone {
         Desert,
         Mountain,
         LandingSite,
+        RelicMystery,
         Relic1,
         Relic2,
         Relic3,
