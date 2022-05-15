@@ -92,6 +92,7 @@ contract HexplorationBoard is HexGrid {
     }
 
     // pass path and what tiles should be
+    // pass current zone as first argument
     function moveThroughPath(
         string[] memory zonePath,
         address playerAddress,
