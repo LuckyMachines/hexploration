@@ -30,7 +30,7 @@ contract HexplorationBoard is HexGrid {
     // We can assume these have been pre-verified
     function setCharacterCard(address _characterCardAddress)
         public
-        onlyRole(VERIFIED_CONTROLLER_ROLE)
+        onlyRole(DEFAULT_ADMIN_ROLE)
     {
         characterCardAddress = _characterCardAddress;
     }

@@ -5,9 +5,9 @@ const RelicToken = artifacts.require("Relic");
 const GameBoard = artifacts.require("HexplorationBoard");
 
 module.exports = async (deployer, network, [defaultAccount]) => {
-  const GAME_BOARD_ADDRESS = "";
+  const GAME_BOARD_ADDRESS = "0x45c287260071E9DC2FC5cFbE90596706dCfFdaeD";
   const VERIFIED_CONTROLLER_ADDRESS =
-    "0x9a2cE5A8F4F85238CcE3D799a5aAE18A71915326";
+    "0xaA600a99724a219738D94e97E28B5790926f7677";
   try {
     await deployer.deploy(
       CharacterCard,

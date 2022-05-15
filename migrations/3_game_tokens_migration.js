@@ -9,7 +9,7 @@ const Controller = artifacts.require("HexplorationController");
 
 module.exports = async (deployer, network, [defaultAccount]) => {
   const HEXPLORATION_CONTROLLER_ADDRESS = network.startsWith("ganache")
-    ? "0x9a2cE5A8F4F85238CcE3D799a5aAE18A71915326"
+    ? "0xaA600a99724a219738D94e97E28B5790926f7677"
     : "0x0000000000000000000000000000000000000000";
   console.log("Controller address set to:", HEXPLORATION_CONTROLLER_ADDRESS);
   console.log("Deploying Day Night Tokens");
