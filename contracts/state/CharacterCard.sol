@@ -8,6 +8,8 @@ contract CharacterCard is AccessControlEnumerable {
         keccak256("VERIFIED_CONTROLLER_ROLE");
 
     address public itemToken;
+    address public artifactToken;
+    address public relicToken;
     // game id => player address
     mapping(uint256 => mapping(address => uint8)) public movement;
     mapping(uint256 => mapping(address => uint8)) public agility;
@@ -15,11 +17,19 @@ contract CharacterCard is AccessControlEnumerable {
     //// the following assign a token type, player must still hold balance to use item
     mapping(uint256 => mapping(address => string)) public leftHandItem;
     mapping(uint256 => mapping(address => string)) public rightHandItem;
+    mapping(uint256 => mapping(address => string)) public artifact;
+    mapping(uint256 => mapping(address => string)) public status;
+    mapping(uint256 => mapping(address => string)) public relic;
 
-    constructor(address itemTokenAddress) {
+    constructor(
+        address itemTokenAddress,
+        address artifactTokenAddress,
+        address relicTokenAddress
+    ) {
         _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
         itemToken = itemTokenAddress;
-        // TODO: set default stats here
+        artifactToken = artifactTokenAddress;
+        relicToken = relicTokenAddress;
     }
 
     function addVerifiedController(address controllerAddress)
@@ -73,6 +83,30 @@ contract CharacterCard is AccessControlEnumerable {
     }
 
     function setRightHandItem(
+        string memory itemTokenType,
+        uint256 gameID,
+        address playerAddress
+    ) external onlyRole(VERIFIED_CONTROLLER_ROLE) {
+        rightHandItem[gameID][playerAddress] = itemTokenType;
+    }
+
+    function setArtifact(
+        string memory itemTokenType,
+        uint256 gameID,
+        address playerAddress
+    ) external onlyRole(VERIFIED_CONTROLLER_ROLE) {
+        rightHandItem[gameID][playerAddress] = itemTokenType;
+    }
+
+    function setStatus(
+        string memory itemTokenType,
+        uint256 gameID,
+        address playerAddress
+    ) external onlyRole(VERIFIED_CONTROLLER_ROLE) {
+        rightHandItem[gameID][playerAddress] = itemTokenType;
+    }
+
+    function setRelic(
         string memory itemTokenType,
         uint256 gameID,
         address playerAddress

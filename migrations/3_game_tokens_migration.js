@@ -3,6 +3,8 @@ const DisasterTokens = artifacts.require("Disaster");
 const EnemyTokens = artifacts.require("Enemy");
 const ItemTokens = artifacts.require("Item");
 const PlayerStatusTokens = artifacts.require("PlayerStatus");
+const ArtifactTokens = artifacts.require("Artifact");
+const RelicTokens = artifacts.require("Relic");
 const Controller = artifacts.require("HexplorationController");
 
 module.exports = async (deployer, network, [defaultAccount]) => {
@@ -45,6 +47,20 @@ module.exports = async (deployer, network, [defaultAccount]) => {
     console.error(err);
   }
 
+  console.log("Deploying Artifact Tokens");
+  try {
+    await deployer.deploy(ArtifactTokens, HEXPLORATION_CONTROLLER_ADDRESS);
+  } catch (err) {
+    console.error(err);
+  }
+
+  console.log("Deploying Relic Tokens");
+  try {
+    await deployer.deploy(RelicTokens, HEXPLORATION_CONTROLLER_ADDRESS);
+  } catch (err) {
+    console.error(err);
+  }
+
   console.log("Adding tokens to controller");
   try {
     let hexController = await Controller.at(HEXPLORATION_CONTROLLER_ADDRESS);
@@ -53,7 +69,9 @@ module.exports = async (deployer, network, [defaultAccount]) => {
       DisasterTokens.address,
       EnemyTokens.address,
       ItemTokens.address,
-      PlayerStatusTokens.address
+      PlayerStatusTokens.address,
+      ArtifactTokens.address,
+      RelicTokens.address
     );
     console.log("tokens added to contoller:", HEXPLORATION_CONTROLLER_ADDRESS);
   } catch (err) {
@@ -66,6 +84,7 @@ module.exports = async (deployer, network, [defaultAccount]) => {
   GANACHE_DISASTER_TOKEN: "${DisasterTokens.address}",
   GANACHE_ENEMY_TOKEN: "${EnemyTokens.address}",
   GANACHE_ITEM_TOKEN: "${ItemTokens.address}",
-  GANACHE_PLAYER_STATUS_TOKEN: "${PlayerStatusTokens.address}"`);
+  GANACHE_PLAYER_STATUS_TOKEN: "${PlayerStatusTokens.address}",
+  GANACHE_ARTIFACT_TOKEN: "${ArtifactTokens.address}"`);
   }
 };

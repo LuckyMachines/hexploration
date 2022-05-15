@@ -1,5 +1,7 @@
 const CharacterCard = artifacts.require("CharacterCard");
 const ItemToken = artifacts.require("Item");
+const ArtifactToken = artifacts.require("Artifact");
+const RelicToken = artifacts.require("Relic");
 const GameBoard = artifacts.require("HexplorationBoard");
 
 module.exports = async (deployer, network, [defaultAccount]) => {
@@ -7,7 +9,12 @@ module.exports = async (deployer, network, [defaultAccount]) => {
   const VERIFIED_CONTROLLER_ADDRESS =
     "0x9a2cE5A8F4F85238CcE3D799a5aAE18A71915326";
   try {
-    await deployer.deploy(CharacterCard, ItemToken.address);
+    await deployer.deploy(
+      CharacterCard,
+      ItemToken.address,
+      ArtifactToken.address,
+      RelicToken.address
+    );
     // set verified controller...
     const cc = await CharacterCard.deployed();
     console.log("Character card deployed to:", CharacterCard.address);

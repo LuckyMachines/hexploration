@@ -11,6 +11,8 @@ import "./tokens/Disaster.sol";
 import "./tokens/Enemy.sol";
 import "./tokens/Item.sol";
 import "./tokens/PlayerStatus.sol";
+import "./tokens/Artifact.sol";
+import "./tokens/Relic.sol";
 
 contract HexplorationController is GameController {
     // functions are meant to be called directly by players by default
@@ -23,6 +25,8 @@ contract HexplorationController is GameController {
     Enemy internal ENEMY_TOKEN;
     Item internal ITEM_TOKEN;
     PlayerStatus internal PLAYER_STATUS_TOKEN;
+    Artifact internal ARTIFACT_TOKEN;
+    Relic internal RELIC_TOKEN;
 
     // TODO:
     // Connect to Chainlink VRF for random seeds when needed
@@ -63,13 +67,17 @@ contract HexplorationController is GameController {
         address disasterAddress,
         address enemyAddress,
         address itemAddress,
-        address playerStatusAddress
+        address playerStatusAddress,
+        address artifactAddress,
+        address relicAddress
     ) public onlyRole(DEFAULT_ADMIN_ROLE) {
         DAY_NIGHT_TOKEN = DayNight(dayNightAddress);
         DISASTER_TOKEN = Disaster(disasterAddress);
         ENEMY_TOKEN = Enemy(enemyAddress);
         ITEM_TOKEN = Item(itemAddress);
         PLAYER_STATUS_TOKEN = PlayerStatus(playerStatusAddress);
+        ARTIFACT_TOKEN = Artifact(artifactAddress);
+        RELIC_TOKEN = Relic(relicAddress);
     }
 
     function addKeeper(address keeperAddress)
@@ -118,8 +126,12 @@ contract HexplorationController is GameController {
         ITEM_TOKEN.mint("Portal", gameID, 1000);
         ITEM_TOKEN.mint("On", gameID, 1000);
         ITEM_TOKEN.mint("Off", gameID, 1000);
+        // TODO: mint rest of item tokens...
         PLAYER_STATUS_TOKEN.mint("Stunned", gameID, 1000);
         PLAYER_STATUS_TOKEN.mint("Burned", gameID, 1000);
+        ARTIFACT_TOKEN.mint("Engraved Tabled", gameID, 1000);
+        ARTIFACT_TOKEN.mint("Sigil Gem", gameID, 1000);
+        ARTIFACT_TOKEN.mint("Ancient Tome", gameID, 1000);
         // Transfer day token to board
         DAY_NIGHT_TOKEN.transfer("Day", gameID, 0, 1, 1);
     }

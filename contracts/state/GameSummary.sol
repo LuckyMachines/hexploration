@@ -6,9 +6,7 @@ import "../HexplorationZone.sol";
 import "@luckymachines/game-core/contracts/src/v0.0/PlayerRegistry.sol";
 import "./CharacterCard.sol";
 // Game Wallets
-import "./BoardWallet.sol";
-import "./PlayerWallet.sol";
-import "./ZoneWallet.sol";
+import "./GameWallet.sol";
 
 library GameSummary {
     // enemies
@@ -93,12 +91,30 @@ library GameSummary {
     function currentPlayerStats(address gameBoardAddress, uint256 gameID)
         public
         view
-        returns (uint8[3] memory stats)
+        returns (
+            uint8 movement,
+            uint8 agility,
+            uint8 dexterity,
+            string memory leftHandItem,
+            string memory rightHandItem,
+            string memory artifact,
+            string memory status,
+            string memory relic,
+            bool shield,
+            bool campsite
+        )
     {
         HexplorationBoard board = HexplorationBoard(gameBoardAddress);
         CharacterCard cc = CharacterCard(board.characterCardAddress());
-        stats[0] = cc.movement(gameID, msg.sender);
-        stats[1] = cc.agility(gameID, msg.sender);
-        stats[2] = cc.dexterity(gameID, msg.sender);
+        movement = cc.movement(gameID, msg.sender);
+        agility = cc.agility(gameID, msg.sender);
+        dexterity = cc.dexterity(gameID, msg.sender);
+        leftHandItem = cc.leftHandItem(gameID, msg.sender);
+        rightHandItem = cc.rightHandItem(gameID, msg.sender);
+        artifact = "";
+        status = "";
+        relic = "";
+        shield = false;
+        campsite = false;
     }
 }
