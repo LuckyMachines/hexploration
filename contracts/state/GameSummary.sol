@@ -5,8 +5,7 @@ import "../HexplorationBoard.sol";
 import "../HexplorationZone.sol";
 import "@luckymachines/game-core/contracts/src/v0.0/PlayerRegistry.sol";
 import "./CharacterCard.sol";
-// Game Tokens
-import "../tokens/GameToken.sol";
+import "../tokens/TokenInventory.sol";
 
 library GameSummary {
     // enemies
@@ -36,8 +35,11 @@ library GameSummary {
         view
         returns (string memory phase)
     {
-        // get balance of day token
-        // we have to pull the token address from somewhere
+        HexplorationBoard board = HexplorationBoard(gameBoardAddress);
+        TokenInventory tokens = TokenInventory(board.tokenInventory());
+
+        uint256 dayBalance = tokens.DAY_NIGHT_TOKEN().balance("Day", gameID, 1);
+        phase = dayBalance > 0 ? "Day" : "Night";
     }
 
     function activeZones(address gameBoardAddress, uint256 gameID)

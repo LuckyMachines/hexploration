@@ -9,16 +9,16 @@ import "@openzeppelin/contracts/access/AccessControlEnumerable.sol";
 contract GameToken is AccessControlEnumerable {
     event Transfer(
         uint256 indexed gameID,
-        uint256 indexed fromPlayerID,
-        uint256 indexed toPlayerID,
+        uint256 indexed fromID,
+        uint256 indexed toID,
         address controller,
         string tokenType,
         uint256 value
     );
 
     bytes32 public constant CONTROLLER_ROLE = keccak256("CONTROLLER_ROLE");
-    // tokenType => game ID => playerID =>
-    // (playerID 0 is bank)
+    // tokenType => game ID => id =>
+    // (0 is bank, player ID or 1 is active wallet)
     mapping(string => mapping(uint256 => mapping(uint256 => uint256)))
         public balance;
     mapping(string => bool) internal tokenTypeSet;
