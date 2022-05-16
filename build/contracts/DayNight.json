@@ -141,7 +141,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [],
@@ -154,7 +155,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -196,7 +198,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -215,7 +218,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -239,7 +243,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -258,7 +263,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -300,7 +306,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -378,7 +385,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -397,7 +405,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -11776,13 +11785,13 @@
             {
               "indexed": true,
               "internalType": "uint256",
-              "name": "fromPlayerID",
+              "name": "fromID",
               "type": "uint256"
             },
             {
               "indexed": true,
               "internalType": "uint256",
-              "name": "toPlayerID",
+              "name": "toID",
               "type": "uint256"
             },
             {
@@ -11809,12 +11818,13 @@
         }
       },
       "links": {},
-      "address": "0x0433B0429aE186D608fdDAAC702A098550602970",
-      "transactionHash": "0x5cfdb35b726a992f5bb665615ce7f6a6d89bb84095dadc651749c243b3e86a35"
+      "address": "0x9D5C4C822B5A4d7c84191c9e2Fd61e4eda99C641",
+      "transactionHash": "0x53a2ca9215987497765b426a65e072651986d786afeeaab05e00bec4ea7331d7"
     }
   },
   "schemaVersion": "3.4.4",
-  "updatedAt": "2022-05-16T03:13:09.063Z",
+  "updatedAt": "2022-05-16T03:30:33.724Z",
+  "networkType": "ethereum",
   "devdoc": {
     "kind": "dev",
     "methods": {
