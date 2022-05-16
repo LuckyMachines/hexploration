@@ -5,28 +5,13 @@ import "@luckymachines/game-core/contracts/src/v0.0/GameController.sol";
 import "./HexplorationBoard.sol";
 import "./HexplorationZone.sol";
 import "./state/CharacterCard.sol";
-// Game Tokens
-import "./tokens/DayNight.sol";
-import "./tokens/Disaster.sol";
-import "./tokens/Enemy.sol";
-import "./tokens/Item.sol";
-import "./tokens/PlayerStatus.sol";
-import "./tokens/Artifact.sol";
-import "./tokens/Relic.sol";
+import "./tokens/TokenInventory.sol";
 
 contract HexplorationController is GameController {
     // functions are meant to be called directly by players by default
     // we are adding the ability of a Controller Admin or Keeper to
     // execute the game aspects not directly controlled by players
     bytes32 public constant KEEPER_ROLE = keccak256("KEEPER_ROLE");
-
-    DayNight internal DAY_NIGHT_TOKEN;
-    Disaster internal DISASTER_TOKEN;
-    Enemy internal ENEMY_TOKEN;
-    Item internal ITEM_TOKEN;
-    PlayerStatus internal PLAYER_STATUS_TOKEN;
-    Artifact internal ARTIFACT_TOKEN;
-    Relic internal RELIC_TOKEN;
 
     // TODO:
     // Connect to Chainlink VRF for random seeds when needed
@@ -62,23 +47,6 @@ contract HexplorationController is GameController {
     constructor(address adminAddress) GameController(adminAddress) {}
 
     // Admin Functions
-    function setTokenAddresses(
-        address dayNightAddress,
-        address disasterAddress,
-        address enemyAddress,
-        address itemAddress,
-        address playerStatusAddress,
-        address artifactAddress,
-        address relicAddress
-    ) public onlyRole(DEFAULT_ADMIN_ROLE) {
-        DAY_NIGHT_TOKEN = DayNight(dayNightAddress);
-        DISASTER_TOKEN = Disaster(disasterAddress);
-        ENEMY_TOKEN = Enemy(enemyAddress);
-        ITEM_TOKEN = Item(itemAddress);
-        PLAYER_STATUS_TOKEN = PlayerStatus(playerStatusAddress);
-        ARTIFACT_TOKEN = Artifact(artifactAddress);
-        RELIC_TOKEN = Relic(relicAddress);
-    }
 
     function addKeeper(address keeperAddress)
         public
@@ -107,70 +75,71 @@ contract HexplorationController is GameController {
         // set game to initialized
         board.setGameState(2, gameID);
 
+        TokenInventory ti = TokenInventory(board.tokenInventory());
         // mint game tokens (maybe mint on demand instead...)
         // minting full game set here
-        DAY_NIGHT_TOKEN.mint("Day", gameID, 1);
-        DAY_NIGHT_TOKEN.mint("Night", gameID, 1);
-        DISASTER_TOKEN.mint("Earthquake", gameID, 1000);
-        DISASTER_TOKEN.mint("Volcano", gameID, 1000);
-        ENEMY_TOKEN.mint("Pirate", gameID, 1000);
-        ENEMY_TOKEN.mint("Pirate Ship", gameID, 1000);
-        ENEMY_TOKEN.mint("Deathbot", gameID, 1000);
-        ENEMY_TOKEN.mint("Guardian", gameID, 1000);
-        ENEMY_TOKEN.mint("Sandworm", gameID, 1000);
-        ENEMY_TOKEN.mint("Dragon", gameID, 1000);
-        ITEM_TOKEN.mint("Small Ammo", gameID, 1000);
-        ITEM_TOKEN.mint("Large Ammo", gameID, 1000);
-        ITEM_TOKEN.mint("Batteries", gameID, 1000);
-        ITEM_TOKEN.mint("Shield", gameID, 1000);
-        ITEM_TOKEN.mint("Portal", gameID, 1000);
-        ITEM_TOKEN.mint("On", gameID, 1000);
-        ITEM_TOKEN.mint("Off", gameID, 1000);
-        ITEM_TOKEN.mint("Rusty Dagger", gameID, 1000);
-        ITEM_TOKEN.mint("Rusty Sword", gameID, 1000);
-        ITEM_TOKEN.mint("Rusty Pistol", gameID, 1000);
-        ITEM_TOKEN.mint("Rusty Rifle", gameID, 1000);
-        ITEM_TOKEN.mint("Shiny Dagger", gameID, 1000);
-        ITEM_TOKEN.mint("Shiny Sword", gameID, 1000);
-        ITEM_TOKEN.mint("Shiny Rifle", gameID, 1000);
-        ITEM_TOKEN.mint("Laser Dagger", gameID, 1000);
-        ITEM_TOKEN.mint("Laser Sword", gameID, 1000);
-        ITEM_TOKEN.mint("Laser Pistol", gameID, 1000);
-        ITEM_TOKEN.mint("Laser Rifle", gameID, 1000);
-        ITEM_TOKEN.mint("Glow stick", gameID, 1000);
-        ITEM_TOKEN.mint("Flashlight", gameID, 1000);
-        ITEM_TOKEN.mint("Flood light", gameID, 1000);
-        ITEM_TOKEN.mint("Nightvision Goggles", gameID, 1000);
-        ITEM_TOKEN.mint("Personal Shield", gameID, 1000);
-        ITEM_TOKEN.mint("Bubble Shield", gameID, 1000);
-        ITEM_TOKEN.mint("Frag Grenade", gameID, 1000);
-        ITEM_TOKEN.mint("Fire Grenade", gameID, 1000);
-        ITEM_TOKEN.mint("Shock Grenade", gameID, 1000);
-        ITEM_TOKEN.mint("HE Mortar", gameID, 1000);
-        ITEM_TOKEN.mint("Incendiary Mortar", gameID, 1000);
-        ITEM_TOKEN.mint("EMP Mortar", gameID, 1000);
-        ITEM_TOKEN.mint("Power Glove", gameID, 1000);
-        ITEM_TOKEN.mint("Remote Launch and Guidance System", gameID, 1000);
-        ITEM_TOKEN.mint("Teleporter Pack", gameID, 1000);
-        PLAYER_STATUS_TOKEN.mint("Stunned", gameID, 1000);
-        PLAYER_STATUS_TOKEN.mint("Burned", gameID, 1000);
-        ARTIFACT_TOKEN.mint("Engraved Tabled", gameID, 1000);
-        ARTIFACT_TOKEN.mint("Sigil Gem", gameID, 1000);
-        ARTIFACT_TOKEN.mint("Ancient Tome", gameID, 1000);
-        RELIC_TOKEN.mint("Relic 1", gameID, 1000);
-        RELIC_TOKEN.mint("Relic 2", gameID, 1000);
-        RELIC_TOKEN.mint("Relic 3", gameID, 1000);
-        RELIC_TOKEN.mint("Relic 4", gameID, 1000);
-        RELIC_TOKEN.mint("Relic 5", gameID, 1000);
+        ti.DAY_NIGHT_TOKEN().mint("Day", gameID, 1);
+        ti.DAY_NIGHT_TOKEN().mint("Night", gameID, 1);
+        ti.DISASTER_TOKEN().mint("Earthquake", gameID, 1000);
+        ti.DISASTER_TOKEN().mint("Volcano", gameID, 1000);
+        ti.ENEMY_TOKEN().mint("Pirate", gameID, 1000);
+        ti.ENEMY_TOKEN().mint("Pirate Ship", gameID, 1000);
+        ti.ENEMY_TOKEN().mint("Deathbot", gameID, 1000);
+        ti.ENEMY_TOKEN().mint("Guardian", gameID, 1000);
+        ti.ENEMY_TOKEN().mint("Sandworm", gameID, 1000);
+        ti.ENEMY_TOKEN().mint("Dragon", gameID, 1000);
+        ti.ITEM_TOKEN().mint("Small Ammo", gameID, 1000);
+        ti.ITEM_TOKEN().mint("Large Ammo", gameID, 1000);
+        ti.ITEM_TOKEN().mint("Batteries", gameID, 1000);
+        ti.ITEM_TOKEN().mint("Shield", gameID, 1000);
+        ti.ITEM_TOKEN().mint("Portal", gameID, 1000);
+        ti.ITEM_TOKEN().mint("On", gameID, 1000);
+        ti.ITEM_TOKEN().mint("Off", gameID, 1000);
+        ti.ITEM_TOKEN().mint("Rusty Dagger", gameID, 1000);
+        ti.ITEM_TOKEN().mint("Rusty Sword", gameID, 1000);
+        ti.ITEM_TOKEN().mint("Rusty Pistol", gameID, 1000);
+        ti.ITEM_TOKEN().mint("Rusty Rifle", gameID, 1000);
+        ti.ITEM_TOKEN().mint("Shiny Dagger", gameID, 1000);
+        ti.ITEM_TOKEN().mint("Shiny Sword", gameID, 1000);
+        ti.ITEM_TOKEN().mint("Shiny Rifle", gameID, 1000);
+        ti.ITEM_TOKEN().mint("Laser Dagger", gameID, 1000);
+        ti.ITEM_TOKEN().mint("Laser Sword", gameID, 1000);
+        ti.ITEM_TOKEN().mint("Laser Pistol", gameID, 1000);
+        ti.ITEM_TOKEN().mint("Laser Rifle", gameID, 1000);
+        ti.ITEM_TOKEN().mint("Glow stick", gameID, 1000);
+        ti.ITEM_TOKEN().mint("Flashlight", gameID, 1000);
+        ti.ITEM_TOKEN().mint("Flood light", gameID, 1000);
+        ti.ITEM_TOKEN().mint("Nightvision Goggles", gameID, 1000);
+        ti.ITEM_TOKEN().mint("Personal Shield", gameID, 1000);
+        ti.ITEM_TOKEN().mint("Bubble Shield", gameID, 1000);
+        ti.ITEM_TOKEN().mint("Frag Grenade", gameID, 1000);
+        ti.ITEM_TOKEN().mint("Fire Grenade", gameID, 1000);
+        ti.ITEM_TOKEN().mint("Shock Grenade", gameID, 1000);
+        ti.ITEM_TOKEN().mint("HE Mortar", gameID, 1000);
+        ti.ITEM_TOKEN().mint("Incendiary Mortar", gameID, 1000);
+        ti.ITEM_TOKEN().mint("EMP Mortar", gameID, 1000);
+        ti.ITEM_TOKEN().mint("Power Glove", gameID, 1000);
+        ti.ITEM_TOKEN().mint("Remote Launch and Guidance System", gameID, 1000);
+        ti.ITEM_TOKEN().mint("Teleporter Pack", gameID, 1000);
+        ti.PLAYER_STATUS_TOKEN().mint("Stunned", gameID, 1000);
+        ti.PLAYER_STATUS_TOKEN().mint("Burned", gameID, 1000);
+        ti.ARTIFACT_TOKEN().mint("Engraved Tabled", gameID, 1000);
+        ti.ARTIFACT_TOKEN().mint("Sigil Gem", gameID, 1000);
+        ti.ARTIFACT_TOKEN().mint("Ancient Tome", gameID, 1000);
+        ti.RELIC_TOKEN().mint("Relic 1", gameID, 1000);
+        ti.RELIC_TOKEN().mint("Relic 2", gameID, 1000);
+        ti.RELIC_TOKEN().mint("Relic 3", gameID, 1000);
+        ti.RELIC_TOKEN().mint("Relic 4", gameID, 1000);
+        ti.RELIC_TOKEN().mint("Relic 5", gameID, 1000);
         // Transfer day token to board
-        DAY_NIGHT_TOKEN.transfer("Day", gameID, 0, 1, 1);
+        ti.DAY_NIGHT_TOKEN().transfer("Day", gameID, 0, 1, 1);
     }
 
     //Player Interactions
     function registerForGame(uint256 gameID, address boardAddress) public {
         HexplorationBoard board = HexplorationBoard(boardAddress);
         board.registerPlayer(msg.sender, gameID);
-        CharacterCard(board.characterCardAddress()).setStats(
+        CharacterCard(board.characterCard()).setStats(
             [4, 4, 4],
             gameID,
             msg.sender

@@ -5,8 +5,8 @@ import "../HexplorationBoard.sol";
 import "../HexplorationZone.sol";
 import "@luckymachines/game-core/contracts/src/v0.0/PlayerRegistry.sol";
 import "./CharacterCard.sol";
-// Game Wallets
-import "./GameWallet.sol";
+// Game Tokens
+import "../tokens/GameToken.sol";
 
 library GameSummary {
     // enemies
@@ -29,6 +29,15 @@ library GameSummary {
         HexplorationBoard board = HexplorationBoard(gameBoardAddress);
         PlayerRegistry pr = PlayerRegistry(board.prAddress());
         return pr.isRegistered(gameID, playerAddress);
+    }
+
+    function currentPhase(address gameBoardAddress, uint256 gameID)
+        public
+        view
+        returns (string memory phase)
+    {
+        // get balance of day token
+        // we have to pull the token address from somewhere
     }
 
     function activeZones(address gameBoardAddress, uint256 gameID)
@@ -115,7 +124,7 @@ library GameSummary {
         )
     {
         HexplorationBoard board = HexplorationBoard(gameBoardAddress);
-        CharacterCard cc = CharacterCard(board.characterCardAddress());
+        CharacterCard cc = CharacterCard(board.characterCard());
         movement = cc.movement(gameID, msg.sender);
         agility = cc.agility(gameID, msg.sender);
         dexterity = cc.dexterity(gameID, msg.sender);

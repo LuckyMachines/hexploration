@@ -9,7 +9,8 @@ contract HexplorationBoard is HexGrid {
 
     uint256 private _randomness;
     HexplorationZone internal HEX_ZONE;
-    address public characterCardAddress;
+    address public characterCard;
+    address public tokenInventory;
     // game ID => zone alias returns bool
     mapping(uint256 => mapping(string => bool)) public zoneEnabled;
 
@@ -28,11 +29,18 @@ contract HexplorationBoard is HexGrid {
 
     // VERIFIED CONTROLLER functions
     // We can assume these have been pre-verified
-    function setCharacterCard(address _characterCardAddress)
+    function setCharacterCard(address characterCardAddress)
         public
         onlyRole(DEFAULT_ADMIN_ROLE)
     {
-        characterCardAddress = _characterCardAddress;
+        characterCard = characterCardAddress;
+    }
+
+    function setTokenInventory(address tokenInventoryAddress)
+        public
+        onlyRole(DEFAULT_ADMIN_ROLE)
+    {
+        tokenInventory = tokenInventoryAddress;
     }
 
     function registerPlayer(address playerAddress, uint256 gameID)
