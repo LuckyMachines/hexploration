@@ -6,6 +6,9 @@ import "@openzeppelin/contracts/access/AccessControlEnumerable.sol";
 contract CharacterCard is AccessControlEnumerable {
     bytes32 public constant VERIFIED_CONTROLLER_ROLE =
         keccak256("VERIFIED_CONTROLLER_ROLE");
+    uint8 constant MAX_MOVEMENT = 4;
+    uint8 constant MAX_AGILITY = 4;
+    uint8 constant MAX_DEXTERITY = 4;
 
     address public itemToken;
     address public artifactToken;
