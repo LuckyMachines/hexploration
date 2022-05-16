@@ -21,6 +21,16 @@ library GameSummary {
         columns = board.gridWidth();
     }
 
+    function isRegistered(
+        address gameBoardAddress,
+        uint256 gameID,
+        address playerAddress
+    ) public view returns (bool) {
+        HexplorationBoard board = HexplorationBoard(gameBoardAddress);
+        PlayerRegistry pr = PlayerRegistry(board.prAddress());
+        return pr.isRegistered(gameID, playerAddress);
+    }
+
     function activeZones(address gameBoardAddress, uint256 gameID)
         public
         view

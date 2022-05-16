@@ -1,3 +1,8 @@
+/// PASTE CONTROLLER AND GAME BOARD ADDRESSES HERE ///
+const GAME_BOARD_ADDRESS = "0x5Bed65c1536bde30f386b62A48bEf149695D2Fba";
+const VERIFIED_CONTROLLER_ADDRESS =
+  "0x5DA03Ba933368288FbD9CD4F8F69aC5Ec726Ebd9";
+
 const CharacterCard = artifacts.require("CharacterCard");
 const ItemToken = artifacts.require("Item");
 const ArtifactToken = artifacts.require("Artifact");
@@ -5,9 +10,6 @@ const RelicToken = artifacts.require("Relic");
 const GameBoard = artifacts.require("HexplorationBoard");
 
 module.exports = async (deployer, network, [defaultAccount]) => {
-  const GAME_BOARD_ADDRESS = "0x45c287260071E9DC2FC5cFbE90596706dCfFdaeD";
-  const VERIFIED_CONTROLLER_ADDRESS =
-    "0xaA600a99724a219738D94e97E28B5790926f7677";
   try {
     await deployer.deploy(
       CharacterCard,

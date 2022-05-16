@@ -126,12 +126,42 @@ contract HexplorationController is GameController {
         ITEM_TOKEN.mint("Portal", gameID, 1000);
         ITEM_TOKEN.mint("On", gameID, 1000);
         ITEM_TOKEN.mint("Off", gameID, 1000);
-        // TODO: mint rest of item tokens...
+        ITEM_TOKEN.mint("Rusty Dagger", gameID, 1000);
+        ITEM_TOKEN.mint("Rusty Sword", gameID, 1000);
+        ITEM_TOKEN.mint("Rusty Pistol", gameID, 1000);
+        ITEM_TOKEN.mint("Rusty Rifle", gameID, 1000);
+        ITEM_TOKEN.mint("Shiny Dagger", gameID, 1000);
+        ITEM_TOKEN.mint("Shiny Sword", gameID, 1000);
+        ITEM_TOKEN.mint("Shiny Rifle", gameID, 1000);
+        ITEM_TOKEN.mint("Laser Dagger", gameID, 1000);
+        ITEM_TOKEN.mint("Laser Sword", gameID, 1000);
+        ITEM_TOKEN.mint("Laser Pistol", gameID, 1000);
+        ITEM_TOKEN.mint("Laser Rifle", gameID, 1000);
+        ITEM_TOKEN.mint("Glow stick", gameID, 1000);
+        ITEM_TOKEN.mint("Flashlight", gameID, 1000);
+        ITEM_TOKEN.mint("Flood light", gameID, 1000);
+        ITEM_TOKEN.mint("Nightvision Goggles", gameID, 1000);
+        ITEM_TOKEN.mint("Personal Shield", gameID, 1000);
+        ITEM_TOKEN.mint("Bubble Shield", gameID, 1000);
+        ITEM_TOKEN.mint("Frag Grenade", gameID, 1000);
+        ITEM_TOKEN.mint("Fire Grenade", gameID, 1000);
+        ITEM_TOKEN.mint("Shock Grenade", gameID, 1000);
+        ITEM_TOKEN.mint("HE Mortar", gameID, 1000);
+        ITEM_TOKEN.mint("Incendiary Mortar", gameID, 1000);
+        ITEM_TOKEN.mint("EMP Mortar", gameID, 1000);
+        ITEM_TOKEN.mint("Power Glove", gameID, 1000);
+        ITEM_TOKEN.mint("Remote Launch and Guidance System", gameID, 1000);
+        ITEM_TOKEN.mint("Teleporter Pack", gameID, 1000);
         PLAYER_STATUS_TOKEN.mint("Stunned", gameID, 1000);
         PLAYER_STATUS_TOKEN.mint("Burned", gameID, 1000);
         ARTIFACT_TOKEN.mint("Engraved Tabled", gameID, 1000);
         ARTIFACT_TOKEN.mint("Sigil Gem", gameID, 1000);
         ARTIFACT_TOKEN.mint("Ancient Tome", gameID, 1000);
+        RELIC_TOKEN.mint("Relic 1", gameID, 1000);
+        RELIC_TOKEN.mint("Relic 2", gameID, 1000);
+        RELIC_TOKEN.mint("Relic 3", gameID, 1000);
+        RELIC_TOKEN.mint("Relic 4", gameID, 1000);
+        RELIC_TOKEN.mint("Relic 5", gameID, 1000);
         // Transfer day token to board
         DAY_NIGHT_TOKEN.transfer("Day", gameID, 0, 1, 1);
     }
