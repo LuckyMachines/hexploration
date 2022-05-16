@@ -9868,10 +9868,10 @@
         4769
       ],
       "GameToken": [
-        7576
+        7692
       ],
       "GameWallet": [
-        7160
+        7276
       ],
       "IAccessControl": [
         3810
@@ -9886,15 +9886,15 @@
         4134
       ],
       "ZoneWallet": [
-        7184
+        7300
       ]
     },
-    "id": 7185,
+    "id": 7301,
     "license": "GPL-3.0",
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 7174,
+        "id": 7290,
         "literals": [
           "solidity",
           ">=",
@@ -9910,11 +9910,11 @@
       {
         "absolutePath": "project:/contracts/state/GameWallet.sol",
         "file": "./GameWallet.sol",
-        "id": 7175,
+        "id": 7291,
         "nameLocation": "-1:-1:-1",
         "nodeType": "ImportDirective",
-        "scope": 7185,
-        "sourceUnit": 7161,
+        "scope": 7301,
+        "sourceUnit": 7277,
         "src": "69:26:26",
         "symbolAliases": [],
         "unitAlias": ""
@@ -9924,13 +9924,13 @@
         "baseContracts": [
           {
             "baseName": {
-              "id": 7176,
+              "id": 7292,
               "name": "GameWallet",
               "nodeType": "IdentifierPath",
-              "referencedDeclaration": 7160,
+              "referencedDeclaration": 7276,
               "src": "120:10:26"
             },
-            "id": 7177,
+            "id": 7293,
             "nodeType": "InheritanceSpecifier",
             "src": "120:10:26"
           }
@@ -9939,10 +9939,10 @@
         "contractDependencies": [],
         "contractKind": "contract",
         "fullyImplemented": true,
-        "id": 7184,
+        "id": 7300,
         "linearizedBaseContracts": [
-          7184,
-          7160,
+          7300,
+          7276,
           3737,
           3612,
           4158,
@@ -9957,24 +9957,24 @@
         "nodes": [
           {
             "body": {
-              "id": 7182,
+              "id": 7298,
               "nodeType": "Block",
               "src": "164:2:26",
               "statements": []
             },
-            "id": 7183,
+            "id": 7299,
             "implemented": true,
             "kind": "constructor",
             "modifiers": [
               {
                 "arguments": [],
-                "id": 7180,
+                "id": 7296,
                 "kind": "baseConstructorSpecifier",
                 "modifierName": {
-                  "id": 7179,
+                  "id": 7295,
                   "name": "GameWallet",
                   "nodeType": "IdentifierPath",
-                  "referencedDeclaration": 7160,
+                  "referencedDeclaration": 7276,
                   "src": "151:10:26"
                 },
                 "nodeType": "ModifierInvocation",
@@ -9985,25 +9985,25 @@
             "nameLocation": "-1:-1:-1",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 7178,
+              "id": 7294,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "148:2:26"
             },
             "returnParameters": {
-              "id": 7181,
+              "id": 7297,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "164:0:26"
             },
-            "scope": 7184,
+            "scope": 7300,
             "src": "137:29:26",
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "public"
           }
         ],
-        "scope": 7185,
+        "scope": 7301,
         "src": "97:71:26",
         "usedErrors": []
       }
@@ -10029,10 +10029,10 @@
         4769
       ],
       "GameToken": [
-        7576
+        7692
       ],
       "GameWallet": [
-        7160
+        7276
       ],
       "IAccessControl": [
         3810
@@ -10047,15 +10047,15 @@
         4134
       ],
       "ZoneWallet": [
-        7184
+        7300
       ]
     },
-    "id": 7185,
+    "id": 7301,
     "license": "GPL-3.0",
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 7174,
+        "id": 7290,
         "literals": [
           "solidity",
           ">=",
@@ -10071,11 +10071,11 @@
       {
         "absolutePath": "project:/contracts/state/GameWallet.sol",
         "file": "./GameWallet.sol",
-        "id": 7175,
+        "id": 7291,
         "nameLocation": "-1:-1:-1",
         "nodeType": "ImportDirective",
-        "scope": 7185,
-        "sourceUnit": 7161,
+        "scope": 7301,
+        "sourceUnit": 7277,
         "src": "69:26:26",
         "symbolAliases": [],
         "unitAlias": ""
@@ -10085,13 +10085,13 @@
         "baseContracts": [
           {
             "baseName": {
-              "id": 7176,
+              "id": 7292,
               "name": "GameWallet",
               "nodeType": "IdentifierPath",
-              "referencedDeclaration": 7160,
+              "referencedDeclaration": 7276,
               "src": "120:10:26"
             },
-            "id": 7177,
+            "id": 7293,
             "nodeType": "InheritanceSpecifier",
             "src": "120:10:26"
           }
@@ -10100,10 +10100,10 @@
         "contractDependencies": [],
         "contractKind": "contract",
         "fullyImplemented": true,
-        "id": 7184,
+        "id": 7300,
         "linearizedBaseContracts": [
-          7184,
-          7160,
+          7300,
+          7276,
           3737,
           3612,
           4158,
@@ -10118,24 +10118,24 @@
         "nodes": [
           {
             "body": {
-              "id": 7182,
+              "id": 7298,
               "nodeType": "Block",
               "src": "164:2:26",
               "statements": []
             },
-            "id": 7183,
+            "id": 7299,
             "implemented": true,
             "kind": "constructor",
             "modifiers": [
               {
                 "arguments": [],
-                "id": 7180,
+                "id": 7296,
                 "kind": "baseConstructorSpecifier",
                 "modifierName": {
-                  "id": 7179,
+                  "id": 7295,
                   "name": "GameWallet",
                   "nodeType": "IdentifierPath",
-                  "referencedDeclaration": 7160,
+                  "referencedDeclaration": 7276,
                   "src": "151:10:26"
                 },
                 "nodeType": "ModifierInvocation",
@@ -10146,25 +10146,25 @@
             "nameLocation": "-1:-1:-1",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 7178,
+              "id": 7294,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "148:2:26"
             },
             "returnParameters": {
-              "id": 7181,
+              "id": 7297,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "164:0:26"
             },
-            "scope": 7184,
+            "scope": 7300,
             "src": "137:29:26",
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "public"
           }
         ],
-        "scope": 7185,
+        "scope": 7301,
         "src": "97:71:26",
         "usedErrors": []
       }
@@ -10260,7 +10260,7 @@
     }
   },
   "schemaVersion": "3.4.4",
-  "updatedAt": "2022-05-16T02:35:07.344Z",
+  "updatedAt": "2022-05-16T03:13:09.056Z",
   "devdoc": {
     "kind": "dev",
     "methods": {

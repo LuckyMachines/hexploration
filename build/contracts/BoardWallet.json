@@ -9871,10 +9871,10 @@
         4769
       ],
       "GameToken": [
-        7576
+        7692
       ],
       "GameWallet": [
-        7160
+        7276
       ],
       "IAccessControl": [
         3810
@@ -9914,7 +9914,7 @@
         "nameLocation": "-1:-1:-1",
         "nodeType": "ImportDirective",
         "scope": 6163,
-        "sourceUnit": 7161,
+        "sourceUnit": 7277,
         "src": "69:26:21",
         "symbolAliases": [],
         "unitAlias": ""
@@ -9927,7 +9927,7 @@
               "id": 6154,
               "name": "GameWallet",
               "nodeType": "IdentifierPath",
-              "referencedDeclaration": 7160,
+              "referencedDeclaration": 7276,
               "src": "121:10:21"
             },
             "id": 6155,
@@ -9942,7 +9942,7 @@
         "id": 6162,
         "linearizedBaseContracts": [
           6162,
-          7160,
+          7276,
           3737,
           3612,
           4158,
@@ -9974,7 +9974,7 @@
                   "id": 6157,
                   "name": "GameWallet",
                   "nodeType": "IdentifierPath",
-                  "referencedDeclaration": 7160,
+                  "referencedDeclaration": 7276,
                   "src": "152:10:21"
                 },
                 "nodeType": "ModifierInvocation",
@@ -10032,10 +10032,10 @@
         4769
       ],
       "GameToken": [
-        7576
+        7692
       ],
       "GameWallet": [
-        7160
+        7276
       ],
       "IAccessControl": [
         3810
@@ -10075,7 +10075,7 @@
         "nameLocation": "-1:-1:-1",
         "nodeType": "ImportDirective",
         "scope": 6163,
-        "sourceUnit": 7161,
+        "sourceUnit": 7277,
         "src": "69:26:21",
         "symbolAliases": [],
         "unitAlias": ""
@@ -10088,7 +10088,7 @@
               "id": 6154,
               "name": "GameWallet",
               "nodeType": "IdentifierPath",
-              "referencedDeclaration": 7160,
+              "referencedDeclaration": 7276,
               "src": "121:10:21"
             },
             "id": 6155,
@@ -10103,7 +10103,7 @@
         "id": 6162,
         "linearizedBaseContracts": [
           6162,
-          7160,
+          7276,
           3737,
           3612,
           4158,
@@ -10135,7 +10135,7 @@
                   "id": 6157,
                   "name": "GameWallet",
                   "nodeType": "IdentifierPath",
-                  "referencedDeclaration": 7160,
+                  "referencedDeclaration": 7276,
                   "src": "152:10:21"
                 },
                 "nodeType": "ModifierInvocation",
@@ -10260,7 +10260,7 @@
     }
   },
   "schemaVersion": "3.4.4",
-  "updatedAt": "2022-05-16T02:35:07.323Z",
+  "updatedAt": "2022-05-16T03:13:09.031Z",
   "devdoc": {
     "kind": "dev",
     "methods": {

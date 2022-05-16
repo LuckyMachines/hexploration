@@ -109,15 +109,94 @@ library GameSummary {
         return (playerIDs, playerZones);
     }
 
+    function inventoryItemExists(
+        string memory tokenType,
+        address inventoryAddress,
+        uint256 gameID,
+        uint256 holderID
+    ) internal view returns (bool) {
+        return
+            TokenInventory(inventoryAddress).ITEM_TOKEN().balance(
+                tokenType,
+                gameID,
+                holderID
+            ) > 0;
+    }
+
+    function inventoryArtifactExists(
+        string memory tokenType,
+        address inventoryAddress,
+        uint256 gameID,
+        uint256 holderID
+    ) internal view returns (bool) {
+        return
+            TokenInventory(inventoryAddress).ARTIFACT_TOKEN().balance(
+                tokenType,
+                gameID,
+                holderID
+            ) > 0;
+    }
+
+    function inventoryStatusExists(
+        string memory tokenType,
+        address inventoryAddress,
+        uint256 gameID,
+        uint256 holderID
+    ) internal view returns (bool) {
+        return
+            TokenInventory(inventoryAddress).PLAYER_STATUS_TOKEN().balance(
+                tokenType,
+                gameID,
+                holderID
+            ) > 0;
+    }
+
     function currentPlayerStats(address gameBoardAddress, uint256 gameID)
         public
         view
         returns (
             uint8 movement,
             uint8 agility,
-            uint8 dexterity,
-            string memory leftHandItem,
-            string memory rightHandItem,
+            uint8 dexterity
+        )
+    {
+        HexplorationBoard board = HexplorationBoard(gameBoardAddress);
+        CharacterCard cc = CharacterCard(board.characterCard());
+        movement = cc.movement(gameID, msg.sender);
+        agility = cc.agility(gameID, msg.sender);
+        dexterity = cc.dexterity(gameID, msg.sender);
+    }
+
+    function currentHandInventory(address gameBoardAddress, uint256 gameID)
+        public
+        view
+        returns (string memory leftHandItem, string memory rightHandItem)
+    {
+        HexplorationBoard board = HexplorationBoard(gameBoardAddress);
+        CharacterCard cc = CharacterCard(board.characterCard());
+        leftHandItem = inventoryItemExists(
+            cc.leftHandItem(gameID, msg.sender),
+            board.tokenInventory(),
+            gameID,
+            PlayerRegistry(board.prAddress()).playerID(gameID, msg.sender)
+        )
+            ? cc.leftHandItem(gameID, msg.sender)
+            : "";
+
+        rightHandItem = inventoryItemExists(
+            cc.rightHandItem(gameID, msg.sender),
+            board.tokenInventory(),
+            gameID,
+            PlayerRegistry(board.prAddress()).playerID(gameID, msg.sender)
+        )
+            ? cc.rightHandItem(gameID, msg.sender)
+            : "";
+    }
+
+    function activeInventory(address gameBoardAddress, uint256 gameID)
+        public
+        view
+        returns (
             string memory artifact,
             string memory status,
             string memory relic,
@@ -127,15 +206,49 @@ library GameSummary {
     {
         HexplorationBoard board = HexplorationBoard(gameBoardAddress);
         CharacterCard cc = CharacterCard(board.characterCard());
-        movement = cc.movement(gameID, msg.sender);
-        agility = cc.agility(gameID, msg.sender);
-        dexterity = cc.dexterity(gameID, msg.sender);
-        leftHandItem = cc.leftHandItem(gameID, msg.sender);
-        rightHandItem = cc.rightHandItem(gameID, msg.sender);
-        artifact = "";
-        status = "";
-        relic = "";
-        shield = false;
-        campsite = false;
+        artifact = inventoryArtifactExists(
+            cc.artifact(gameID, msg.sender),
+            board.tokenInventory(),
+            gameID,
+            PlayerRegistry(board.prAddress()).playerID(gameID, msg.sender)
+        )
+            ? cc.artifact(gameID, msg.sender)
+            : "";
+
+        status = inventoryStatusExists(
+            cc.status(gameID, msg.sender),
+            board.tokenInventory(),
+            gameID,
+            PlayerRegistry(board.prAddress()).playerID(gameID, msg.sender)
+        )
+            ? cc.status(gameID, msg.sender)
+            : "";
+
+        relic = inventoryItemExists(
+            cc.relic(gameID, msg.sender),
+            board.tokenInventory(),
+            gameID,
+            PlayerRegistry(board.prAddress()).playerID(gameID, msg.sender)
+        )
+            ? cc.relic(gameID, msg.sender)
+            : "";
+
+        shield = inventoryItemExists(
+            "Shield",
+            board.tokenInventory(),
+            gameID,
+            PlayerRegistry(board.prAddress()).playerID(gameID, msg.sender)
+        )
+            ? true
+            : false;
+
+        campsite = inventoryItemExists(
+            "Campsite",
+            board.tokenInventory(),
+            gameID,
+            PlayerRegistry(board.prAddress()).playerID(gameID, msg.sender)
+        )
+            ? true
+            : false;
     }
 }

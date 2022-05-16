@@ -121,6 +121,7 @@ contract HexplorationController is GameController {
         ti.ITEM_TOKEN().mint("Power Glove", gameID, 1000);
         ti.ITEM_TOKEN().mint("Remote Launch and Guidance System", gameID, 1000);
         ti.ITEM_TOKEN().mint("Teleporter Pack", gameID, 1000);
+        ti.ITEM_TOKEN().mint("Campsite", gameID, 1000);
         ti.PLAYER_STATUS_TOKEN().mint("Stunned", gameID, 1000);
         ti.PLAYER_STATUS_TOKEN().mint("Burned", gameID, 1000);
         ti.ARTIFACT_TOKEN().mint("Engraved Tabled", gameID, 1000);
