@@ -1,26 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0
 /* Notes:
-// add controller as verified controller, and add address of queue to board on deployment
-// Closes during processing. No moves can be submitted until processing is complete.
-// Store moves to be processed at end of phase
-// Clears out at end of every phase, shouldn't be too backed up
-// Moves cannot be submitted to queue between phases;
-// keeper will store processed moves, empty queue, and set status if ready.
-
-// How are moves stored?
-// PlayerID, action choice (move, dig, rest, etc.), options[], equipLH, equipRH
-// uint256 queueIndex = 0; // increase with each phase processed so we don't have to clean the queue
-// if all players have submitted, let queue into next phase
-
-// players can have 1 move stored at a time.
-// once a move is submitted, that's it for that phase.
-
-// Phase flow:
-// start, submission, processing,      play through,     submission,      processing,        play through,    submission,      processing
-// Land, first moves, play out moves,                   review outcomes   play out moves,
-//                    Start next phase                  submit moves      Start next phase
-//                                     If phase == day:                                      If phase == day:
-//                                     Run Events etc                                        Run events etc
+//add address of queue to board on deployment
+// ????? uint256 queueIndex = 0; // increase with each phase processed so we don't have to clean the queue
 */
 pragma solidity >=0.7.0 <0.9.0;
 
@@ -29,13 +10,14 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 
 contract HexplorationQueue is AccessControlEnumerable {
     using Counters for Counters.Counter;
-    Counters.Counter internal _queueID;
+    Counters.Counter internal QUEUE_ID;
 
     enum ProcessingPhase {
         Start,
         Submission,
         Processing,
         PlayThrough,
+        Processed,
         Closed
     }
     enum Action {
@@ -52,13 +34,21 @@ contract HexplorationQueue is AccessControlEnumerable {
         keccak256("VERIFIED_CONTROLLER_ROLE");
     bytes32 public constant GAMEPLAY_ROLE = keccak256("GAMEPLAY_ROLE");
 
+    // Array of Queue IDs to be processed.
+    uint256[] public processingQueue;
+
     // mappings from queue index
-    mapping(uint256 => uint16) public currentQueuePosition; // increases with each player in queue, then back to 0
+
+    // do we need these 2?
+    mapping(uint256 => uint16) public currentQueuePosition; // ?? increases with each player in queue, then back to 0
+    mapping(uint256 => uint16) public playThroughPosition; // ?? in case we need to batch this too... hopefully not.
+
+    mapping(uint256 => bool) public inProcessingQueue; // game queue is in processing queue
     mapping(uint256 => ProcessingPhase) public currentPhase; // processingPhase
-    mapping(uint256 => uint16) public playThroughPosition; // in case we need to batch this too... hopefully not.
-    mapping(uint256 => uint256) public queueID; // mapping from game ID to it's queue
+    mapping(uint256 => uint256) public queueID; // mapping from game ID to it's queue, updates to 0 when finished
     mapping(uint256 => uint256) public game; // mapping from queue ID to it's game ID
     mapping(uint256 => uint256[]) public players; // all players with moves to process
+    mapping(uint256 => uint16) public totalPlayers; // total # of players who will be submitting
 
     // mappings from queue index => player id
     mapping(uint256 => mapping(uint256 => Action)) public submissionAction;
@@ -70,9 +60,10 @@ contract HexplorationQueue is AccessControlEnumerable {
 
     ///////  VRF can kick off processing phase
 
-    constructor() {
+    constructor(address gameplayAddress) {
         _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
-        _queueID.increment(); // start at 1
+        _setupRole(GAMEPLAY_ROLE, gameplayAddress);
+        QUEUE_ID.increment(); // start at 1
     }
 
     // Can set multiple VCs, one for manual pushing, one for keeper
@@ -83,32 +74,106 @@ contract HexplorationQueue is AccessControlEnumerable {
         grantRole(VERIFIED_CONTROLLER_ROLE, controllerAddress);
     }
 
+    // pass total # players making submissions
+    // total can be less than actual totalPlayers in game
+    function requestGameQueue(uint256 gameID, uint16 _totalPlayers)
+        external
+        onlyRole(VERIFIED_CONTROLLER_ROLE)
+        returns (uint256)
+    {
+        return _requestGameQueue(gameID, _totalPlayers);
+    }
+
+    // Sent from controller
     function sumbitActionForPlayer(
         Action action,
         string[] memory options,
         uint256 playerID,
-        uint256 gameID,
         string memory leftHand,
-        string memory righHand
+        string memory rightHand,
+        uint256 _queueID
     ) public onlyRole(VERIFIED_CONTROLLER_ROLE) {
-        // if (move[queueIndex][playerID] == 0){
-        //    submit moves
+        require(
+            currentPhase[_queueID] == ProcessingPhase.Submission,
+            "Not submission phase"
+        );
+        if (
+            submissionAction[_queueID][playerID] == Action.Idle &&
+            submissionOptions[_queueID][playerID].length == 0
+        ) {
+            submissionAction[_queueID][playerID] = action;
+            submissionOptions[_queueID][playerID] = options;
+            submissionLeftHand[_queueID][playerID] = leftHand;
+            submissionRightHand[_queueID][playerID] = rightHand;
+
+            players[_queueID].push(playerID);
+
+            // automatically add to queue if last player to submit move
+            if (players[_queueID].length >= totalPlayers[_queueID]) {
+                _processAllActions(_queueID);
+            }
+        }
     }
 
-    // These functions only kick off processing, processing will happen in separate contract
-    // This queue should be updateable by game processor
-
-    function beginProcessing() public onlyRole(VERIFIED_CONTROLLER_ROLE) {
-        // get queue ID
-        // set processingPhase of queue to "processing"
+    // Will get processed once keeper is available
+    // and previous game queues have been processed
+    function requestProcessActions(uint256 _queueID)
+        public
+        onlyRole(VERIFIED_CONTROLLER_ROLE)
+    {
+        _processAllActions(_queueID);
     }
 
-    function continueProcessing() public onlyRole(VERIFIED_CONTROLLER_ROLE) {
-        // continueProcessing//
-        // figure out most expensive move and only do as many as can be safely completed
-        // in one transaction
-        // start at currentQueuePosition
-        // after each move is processed currentQueuePosition++
-        // on after final batch, switch day / night and call playThrough()
+    // Gameplay interactions
+    function setPhase(ProcessingPhase phase, uint256 _queueID)
+        external
+        onlyRole(GAMEPLAY_ROLE)
+    {
+        currentPhase[_queueID] = phase;
+    }
+
+    function setRandomNumber(uint256 randomNumber, uint256 _queueID)
+        external
+        onlyRole(GAMEPLAY_ROLE)
+    {
+        randomness[_queueID] = randomNumber;
+    }
+
+    function requestNewQueueID(uint256 _queueID)
+        external
+        onlyRole(GAMEPLAY_ROLE)
+    {
+        uint256 g = game[_queueID];
+        uint16 tp = totalPlayers[_queueID];
+        queueID[g] = _requestGameQueue(g, tp);
+    }
+
+    function setProcessingComplete(uint256 _queueID)
+        external
+        onlyRole(GAMEPLAY_ROLE)
+    {
+        uint256 g = game[_queueID];
+        currentPhase[_queueID] = ProcessingPhase.Processed;
+        queueID[g] = 0;
+    }
+
+    // Internal
+    function _processAllActions(uint256 _queueID) internal {
+        if (!inProcessingQueue[_queueID]) {
+            processingQueue.push(_queueID);
+            inProcessingQueue[_queueID] = true;
+        }
+    }
+
+    function _requestGameQueue(uint256 gameID, uint16 _totalPlayers)
+        internal
+        returns (uint256)
+    {
+        require(queueID[gameID] == 0, "queue already set");
+        uint256 newQueueID = QUEUE_ID.current();
+        queueID[gameID] = newQueueID;
+        totalPlayers[gameID] = _totalPlayers;
+        QUEUE_ID.increment();
+        return newQueueID;
     }
 }
