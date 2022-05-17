@@ -30,6 +30,20 @@ library GameSummary {
         return pr.isRegistered(gameID, playerAddress);
     }
 
+    function getPlayerID(
+        address gameBoardAddress,
+        uint256 gameID,
+        address playerAddress
+    ) public view returns (uint256 playerID) {
+        HexplorationBoard board = HexplorationBoard(gameBoardAddress);
+        PlayerRegistry pr = PlayerRegistry(board.prAddress());
+        playerID = pr.playerID(gameID, playerAddress);
+    }
+
+    function getAvailableGameIDs() public view returns (uint256[] memory) {
+        // TODO: return available game IDs
+    }
+
     function currentPhase(address gameBoardAddress, uint256 gameID)
         public
         view
@@ -250,5 +264,61 @@ library GameSummary {
         )
             ? true
             : false;
+    }
+
+    function inactiveInventory(address gameBoardAddress, uint256 gameID)
+        public
+        view
+        returns (string[] memory itemTypes, uint256[] memory itemBalances)
+    {
+        HexplorationBoard board = HexplorationBoard(gameBoardAddress);
+        PlayerRegistry pr = PlayerRegistry(board.prAddress());
+        TokenInventory ti = TokenInventory(board.tokenInventory());
+        itemBalances = new uint256[](35);
+        itemTypes = new string[](35);
+        itemTypes[0] = "Small Ammo";
+        itemTypes[1] = "Large Ammo";
+        itemTypes[2] = "Batteries";
+        itemTypes[3] = "Shield";
+        itemTypes[4] = "Portal";
+        itemTypes[5] = "On";
+        itemTypes[6] = "Off";
+        itemTypes[7] = "Rusty Dagger";
+        itemTypes[8] = "Rusty Sword";
+        itemTypes[9] = "Rusty Pistol";
+        itemTypes[10] = "Rusty Rifle";
+        itemTypes[11] = "Shiny Dagger";
+        itemTypes[12] = "Shiny Sword";
+        itemTypes[13] = "Shiny Pistol";
+        itemTypes[14] = "Shiny Rifle";
+        itemTypes[15] = "Laser Dagger";
+        itemTypes[16] = "Laser Sword";
+        itemTypes[17] = "Laser Pistol";
+        itemTypes[18] = "Laser Rifle";
+        itemTypes[19] = "Glow stick";
+        itemTypes[20] = "Flashlight";
+        itemTypes[21] = "Flood light";
+        itemTypes[22] = "Nightvision Goggles";
+        itemTypes[23] = "Personal Shield";
+        itemTypes[24] = "Bubble Shield";
+        itemTypes[25] = "Frag Grenade";
+        itemTypes[26] = "Fire Grenade";
+        itemTypes[27] = "Shock Grenade";
+        itemTypes[28] = "HE Mortar";
+        itemTypes[29] = "Incendiary Mortar";
+        itemTypes[30] = "EMP Mortar";
+        itemTypes[31] = "Power Glove";
+        itemTypes[32] = "Remote Launch and Guidance System";
+        itemTypes[33] = "Teleporter Pack";
+        itemTypes[34] = "Campsite";
+        uint256 playerID = pr.playerID(gameID, msg.sender);
+        if (ti.holdsToken(playerID, TokenInventory.Token.Item, gameID)) {
+            Item itemToken = ti.ITEM_TOKEN();
+            string[] memory types = itemToken.getTokenTypes();
+            for (uint256 i = 0; i < itemBalances.length; i++) {
+                itemTypes[i] = types[i];
+                itemBalances[i] = itemToken.balance(types[i], gameID, playerID);
+            }
+        }
     }
 }

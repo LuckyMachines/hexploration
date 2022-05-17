@@ -36,8 +36,9 @@ contract GameToken is AccessControlEnumerable {
     {
         for (uint256 i = 0; i < _tokenTypes.length; i++) {
             string memory tokenType = _tokenTypes[i];
+            string[] storage tTypes = tokenTypes;
             if (!tokenTypeSet[tokenType]) {
-                tokenTypes.push(tokenType);
+                tTypes.push(tokenType);
                 tokenTypeSet[tokenType] = true;
             }
         }
@@ -67,5 +68,9 @@ contract GameToken is AccessControlEnumerable {
         balance[tokenType][gameID][toID] += quantity;
         balance[tokenType][gameID][fromID] -= quantity;
         emit Transfer(gameID, fromID, toID, _msgSender(), tokenType, quantity);
+    }
+
+    function getTokenTypes() public view returns (string[] memory) {
+        return tokenTypes;
     }
 }

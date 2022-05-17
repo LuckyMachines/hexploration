@@ -6,7 +6,7 @@ import "./GameToken.sol";
 contract Artifact is GameToken {
     constructor(address controllerAddress) GameToken(controllerAddress) {
         string[] memory tokenTypes = new string[](6);
-        tokenTypes[0] = "Engraved Tabled";
+        tokenTypes[0] = "Engraved Tablet";
         tokenTypes[1] = "Sigil Gem";
         tokenTypes[2] = "Ancient Tome";
         addTokenTypes(tokenTypes);

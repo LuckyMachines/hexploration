@@ -4,6 +4,16 @@ pragma solidity >=0.7.0 <0.9.0;
 import "@openzeppelin/contracts/access/AccessControlEnumerable.sol";
 
 contract CharacterCard is AccessControlEnumerable {
+    enum Action {
+        Idle,
+        Move,
+        SetupCamp,
+        BreakDownCamp,
+        Dig,
+        Rest,
+        Help
+    }
+
     bytes32 public constant VERIFIED_CONTROLLER_ROLE =
         keccak256("VERIFIED_CONTROLLER_ROLE");
     uint8 constant MAX_MOVEMENT = 4;
@@ -17,6 +27,7 @@ contract CharacterCard is AccessControlEnumerable {
     mapping(uint256 => mapping(address => uint8)) public movement;
     mapping(uint256 => mapping(address => uint8)) public agility;
     mapping(uint256 => mapping(address => uint8)) public dexterity;
+    mapping(uint256 => mapping(address => Action)) public action; // set to enumerated list
     //// the following assign a token type, player must still hold balance to use item
     mapping(uint256 => mapping(address => string)) public leftHandItem;
     mapping(uint256 => mapping(address => string)) public rightHandItem;
@@ -115,5 +126,13 @@ contract CharacterCard is AccessControlEnumerable {
         address playerAddress
     ) external onlyRole(VERIFIED_CONTROLLER_ROLE) {
         rightHandItem[gameID][playerAddress] = itemTokenType;
+    }
+
+    function setAction(
+        Action _action,
+        uint256 gameID,
+        address playerAddress
+    ) external onlyRole(VERIFIED_CONTROLLER_ROLE) {
+        action[gameID][playerAddress] = _action;
     }
 }

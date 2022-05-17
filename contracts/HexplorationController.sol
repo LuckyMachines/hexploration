@@ -4,6 +4,7 @@ pragma solidity >=0.7.0 <0.9.0;
 import "@luckymachines/game-core/contracts/src/v0.0/GameController.sol";
 import "./HexplorationBoard.sol";
 import "./HexplorationZone.sol";
+//import "./HexplorationQueue.sol";
 import "./state/CharacterCard.sol";
 import "./tokens/TokenInventory.sol";
 
@@ -124,7 +125,7 @@ contract HexplorationController is GameController {
         ti.ITEM_TOKEN().mint("Campsite", gameID, 1000);
         ti.PLAYER_STATUS_TOKEN().mint("Stunned", gameID, 1000);
         ti.PLAYER_STATUS_TOKEN().mint("Burned", gameID, 1000);
-        ti.ARTIFACT_TOKEN().mint("Engraved Tabled", gameID, 1000);
+        ti.ARTIFACT_TOKEN().mint("Engraved Tablet", gameID, 1000);
         ti.ARTIFACT_TOKEN().mint("Sigil Gem", gameID, 1000);
         ti.ARTIFACT_TOKEN().mint("Ancient Tome", gameID, 1000);
         ti.RELIC_TOKEN().mint("Relic 1", gameID, 1000);
@@ -145,6 +146,16 @@ contract HexplorationController is GameController {
             gameID,
             msg.sender
         );
+        // send campsite token to player
+    }
+
+    function submitAction(
+        uint256 gameID,
+        uint8 actionIndex,
+        uint256 playerID,
+        string[] memory options
+    ) public {
+        // TODO: sumbit to queue
     }
 
     function moveThroughPath(
@@ -181,8 +192,7 @@ contract HexplorationController is GameController {
         uint256 gameID,
         address boardAddress
     ) public {
-        // TODO: decide if this is done by a leader or automatically
-        // game will begin and registration locked after this...
+        // TODO: must be player 2 or on single player, p1
         HexplorationBoard board = HexplorationBoard(boardAddress);
         PlayerRegistry pr = PlayerRegistry(board.prAddress());
         require(pr.isRegistered(gameID, msg.sender), "player not registered");
