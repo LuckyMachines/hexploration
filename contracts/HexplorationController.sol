@@ -4,7 +4,7 @@ pragma solidity >=0.7.0 <0.9.0;
 import "@luckymachines/game-core/contracts/src/v0.0/GameController.sol";
 import "./HexplorationBoard.sol";
 import "./HexplorationZone.sol";
-//import "./HexplorationQueue.sol";
+import "./HexplorationQueue.sol";
 import "./state/CharacterCard.sol";
 import "./tokens/TokenInventory.sol";
 

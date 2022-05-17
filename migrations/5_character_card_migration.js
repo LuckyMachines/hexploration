@@ -1,7 +1,6 @@
-/// PASTE CONTROLLER AND GAME BOARD ADDRESSES HERE ///
-const GAME_BOARD_ADDRESS = "0xD39f59F2DA21AFF9F09bE7DaF3A6dE73F02dE577";
-const VERIFIED_CONTROLLER_ADDRESS =
-  "0x7B28C147432312041e43C546a2b20b32Ae80d14F";
+const addresses = require("./addresses.js");
+const GAME_BOARD_ADDRESS = addresses.GANACHE_HEXPLORATION_BOARD;
+const VERIFIED_CONTROLLER_ADDRESS = addresses.GANACHE_HEXPLORATION_CONTROLLER;
 
 const CharacterCard = artifacts.require("CharacterCard");
 const ItemToken = artifacts.require("Item");

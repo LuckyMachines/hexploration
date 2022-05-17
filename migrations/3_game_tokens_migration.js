@@ -1,8 +1,4 @@
-/// PASTE CONTROLLER ADDRESSES HERE ///
-const GANACHE_HEXPLORATION_CONTROLLER_ADDRESS =
-  "0x7B28C147432312041e43C546a2b20b32Ae80d14F";
-const GANACHE_HEXPLORATION_BOARD_ADDRESS =
-  "0xD39f59F2DA21AFF9F09bE7DaF3A6dE73F02dE577";
+const addresses = require("./addresses.js");
 
 const DayNightTokens = artifacts.require("DayNight");
 const DisasterTokens = artifacts.require("Disaster");
@@ -17,10 +13,10 @@ const Controller = artifacts.require("HexplorationController");
 
 module.exports = async (deployer, network, [defaultAccount]) => {
   const HEXPLORATION_CONTROLLER_ADDRESS = network.startsWith("ganache")
-    ? GANACHE_HEXPLORATION_CONTROLLER_ADDRESS
+    ? addresses.GANACHE_HEXPLORATION_CONTROLLER
     : "0x0000000000000000000000000000000000000000";
   const HEXPLORATION_BOARD_ADDRESS = network.startsWith("ganache")
-    ? GANACHE_HEXPLORATION_BOARD_ADDRESS
+    ? addresses.GANACHE_HEXPLORATION_BOARD
     : "0x0000000000000000000000000000000000000000";
   console.log("Controller address set to:", HEXPLORATION_CONTROLLER_ADDRESS);
   console.log("Deploying Day Night Tokens");
