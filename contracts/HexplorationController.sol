@@ -139,6 +139,17 @@ contract HexplorationController is GameController {
         }
         // set game to initialized
         board.setGameState(2, gameID);
+
+        HexplorationQueue q = HexplorationQueue(board.gameplayQueue());
+
+        uint256 qID = q.queueID(gameID);
+        if (qID == 0) {
+            qID = q.requestGameQueue(
+                gameID,
+                uint16(pr.totalRegistrations(gameID))
+            );
+        }
+        q.startGame(qID);
     }
 
     //Player Interactions

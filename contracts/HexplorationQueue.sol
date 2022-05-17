@@ -85,6 +85,14 @@ contract HexplorationQueue is AccessControlEnumerable {
     }
 
     // Sent from controller
+
+    function startGame(uint256 _queueID)
+        public
+        onlyRole(VERIFIED_CONTROLLER_ROLE)
+    {
+        currentPhase[_queueID] = ProcessingPhase.Submission;
+    }
+
     function sumbitActionForPlayer(
         uint256 playerID,
         Action action,
