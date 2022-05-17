@@ -320,5 +320,11 @@ library GameSummary {
                 itemBalances[i] = itemToken.balance(types[i], gameID, playerID);
             }
         }
+        uint256 campsiteBalance = ti.ITEM_TOKEN().balance(
+            "Campsite",
+            gameID,
+            playerID
+        );
+        itemBalances[34] = campsiteBalance;
     }
 }

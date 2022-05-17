@@ -69,12 +69,6 @@ contract HexplorationController is GameController {
         board.lockRegistration(gameID);
         uint256 totalRegistrations = pr.totalRegistrations(gameID);
         string memory startZone = board.initialPlayZone(gameID);
-        for (uint256 i = 0; i < totalRegistrations; i++) {
-            address playerAddress = pr.playerAddress(gameID, i + 1);
-            board.enterPlayer(playerAddress, gameID, startZone);
-        }
-        // set game to initialized
-        board.setGameState(2, gameID);
 
         TokenInventory ti = TokenInventory(board.tokenInventory());
         // mint game tokens (maybe mint on demand instead...)
@@ -135,6 +129,16 @@ contract HexplorationController is GameController {
         ti.RELIC_TOKEN().mint("Relic 5", gameID, 1000);
         // Transfer day token to board
         ti.DAY_NIGHT_TOKEN().transfer("Day", gameID, 0, 1, 1);
+
+        for (uint256 i = 0; i < totalRegistrations; i++) {
+            uint256 playerID = i + 1;
+            address playerAddress = pr.playerAddress(gameID, playerID);
+            board.enterPlayer(playerAddress, gameID, startZone);
+            // Transfer campsite tokens to players
+            ti.ITEM_TOKEN().transfer("Campsite", gameID, 0, playerID, 1);
+        }
+        // set game to initialized
+        board.setGameState(2, gameID);
     }
 
     //Player Interactions
@@ -146,7 +150,6 @@ contract HexplorationController is GameController {
             gameID,
             msg.sender
         );
-        // send campsite token to player
     }
 
     function submitAction(

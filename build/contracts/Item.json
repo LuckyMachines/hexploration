@@ -11278,7 +11278,7 @@
         4769
       ],
       "GameToken": [
-        7929
+        8185
       ],
       "IAccessControl": [
         3810
@@ -11290,18 +11290,18 @@
         4170
       ],
       "Item": [
-        8169
+        8425
       ],
       "Strings": [
         4134
       ]
     },
-    "id": 8170,
+    "id": 8426,
     "license": "GPL-3.0",
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 7931,
+        "id": 8187,
         "literals": [
           "solidity",
           ">=",
@@ -11317,11 +11317,11 @@
       {
         "absolutePath": "project:/contracts/tokens/GameToken.sol",
         "file": "./GameToken.sol",
-        "id": 7932,
+        "id": 8188,
         "nameLocation": "-1:-1:-1",
         "nodeType": "ImportDirective",
-        "scope": 8170,
-        "sourceUnit": 7930,
+        "scope": 8426,
+        "sourceUnit": 8186,
         "src": "69:25:29",
         "symbolAliases": [],
         "unitAlias": ""
@@ -11331,13 +11331,13 @@
         "baseContracts": [
           {
             "baseName": {
-              "id": 7933,
+              "id": 8189,
               "name": "GameToken",
               "nodeType": "IdentifierPath",
-              "referencedDeclaration": 7929,
+              "referencedDeclaration": 8185,
               "src": "113:9:29"
             },
-            "id": 7934,
+            "id": 8190,
             "nodeType": "InheritanceSpecifier",
             "src": "113:9:29"
           }
@@ -11346,10 +11346,10 @@
         "contractDependencies": [],
         "contractKind": "contract",
         "fullyImplemented": true,
-        "id": 8169,
+        "id": 8425,
         "linearizedBaseContracts": [
-          8169,
-          7929,
+          8425,
+          8185,
           3737,
           3612,
           4158,
@@ -11364,23 +11364,23 @@
         "nodes": [
           {
             "body": {
-              "id": 8167,
+              "id": 8423,
               "nodeType": "Block",
               "src": "197:1504:29",
               "statements": [
                 {
                   "assignments": [
-                    7946
+                    8202
                   ],
                   "declarations": [
                     {
                       "constant": false,
-                      "id": 7946,
+                      "id": 8202,
                       "mutability": "mutable",
                       "name": "tokenTypes",
                       "nameLocation": "223:10:29",
                       "nodeType": "VariableDeclaration",
-                      "scope": 8167,
+                      "scope": 8423,
                       "src": "207:26:29",
                       "stateVariable": false,
                       "storageLocation": "memory",
@@ -11390,7 +11390,7 @@
                       },
                       "typeName": {
                         "baseType": {
-                          "id": 7944,
+                          "id": 8200,
                           "name": "string",
                           "nodeType": "ElementaryTypeName",
                           "src": "207:6:29",
@@ -11399,7 +11399,7 @@
                             "typeString": "string"
                           }
                         },
-                        "id": 7945,
+                        "id": 8201,
                         "nodeType": "ArrayTypeName",
                         "src": "207:8:29",
                         "typeDescriptions": {
@@ -11410,12 +11410,12 @@
                       "visibility": "internal"
                     }
                   ],
-                  "id": 7952,
+                  "id": 8208,
                   "initialValue": {
                     "arguments": [
                       {
                         "hexValue": "3335",
-                        "id": 7950,
+                        "id": 8206,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -11437,7 +11437,7 @@
                           "typeString": "int_const 35"
                         }
                       ],
-                      "id": 7949,
+                      "id": 8205,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -11450,7 +11450,7 @@
                       },
                       "typeName": {
                         "baseType": {
-                          "id": 7947,
+                          "id": 8203,
                           "name": "string",
                           "nodeType": "ElementaryTypeName",
                           "src": "240:6:29",
@@ -11459,7 +11459,7 @@
                             "typeString": "string"
                           }
                         },
-                        "id": 7948,
+                        "id": 8204,
                         "nodeType": "ArrayTypeName",
                         "src": "240:8:29",
                         "typeDescriptions": {
@@ -11468,7 +11468,7 @@
                         }
                       }
                     },
-                    "id": 7951,
+                    "id": 8207,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": true,
@@ -11488,28 +11488,28 @@
                 },
                 {
                   "expression": {
-                    "id": 7957,
+                    "id": 8213,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "baseExpression": {
-                        "id": 7953,
+                        "id": 8209,
                         "name": "tokenTypes",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 7946,
+                        "referencedDeclaration": 8202,
                         "src": "262:10:29",
                         "typeDescriptions": {
                           "typeIdentifier": "t_array$_t_string_memory_ptr_$dyn_memory_ptr",
                           "typeString": "string memory[] memory"
                         }
                       },
-                      "id": 7955,
+                      "id": 8211,
                       "indexExpression": {
                         "hexValue": "30",
-                        "id": 7954,
+                        "id": 8210,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -11538,7 +11538,7 @@
                     "operator": "=",
                     "rightHandSide": {
                       "hexValue": "536d616c6c20416d6d6f",
-                      "id": 7956,
+                      "id": 8212,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -11558,34 +11558,34 @@
                       "typeString": "string memory"
                     }
                   },
-                  "id": 7958,
+                  "id": 8214,
                   "nodeType": "ExpressionStatement",
                   "src": "262:28:29"
                 },
                 {
                   "expression": {
-                    "id": 7963,
+                    "id": 8219,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "baseExpression": {
-                        "id": 7959,
+                        "id": 8215,
                         "name": "tokenTypes",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 7946,
+                        "referencedDeclaration": 8202,
                         "src": "300:10:29",
                         "typeDescriptions": {
                           "typeIdentifier": "t_array$_t_string_memory_ptr_$dyn_memory_ptr",
                           "typeString": "string memory[] memory"
                         }
                       },
-                      "id": 7961,
+                      "id": 8217,
                       "indexExpression": {
                         "hexValue": "31",
-                        "id": 7960,
+                        "id": 8216,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -11614,7 +11614,7 @@
                     "operator": "=",
                     "rightHandSide": {
                       "hexValue": "4c6172676520416d6d6f",
-                      "id": 7962,
+                      "id": 8218,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -11634,34 +11634,34 @@
                       "typeString": "string memory"
                     }
                   },
-                  "id": 7964,
+                  "id": 8220,
                   "nodeType": "ExpressionStatement",
                   "src": "300:28:29"
                 },
                 {
                   "expression": {
-                    "id": 7969,
+                    "id": 8225,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "baseExpression": {
-                        "id": 7965,
+                        "id": 8221,
                         "name": "tokenTypes",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 7946,
+                        "referencedDeclaration": 8202,
                         "src": "338:10:29",
                         "typeDescriptions": {
                           "typeIdentifier": "t_array$_t_string_memory_ptr_$dyn_memory_ptr",
                           "typeString": "string memory[] memory"
                         }
                       },
-                      "id": 7967,
+                      "id": 8223,
                       "indexExpression": {
                         "hexValue": "32",
-                        "id": 7966,
+                        "id": 8222,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -11690,7 +11690,7 @@
                     "operator": "=",
                     "rightHandSide": {
                       "hexValue": "426174746572696573",
-                      "id": 7968,
+                      "id": 8224,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -11710,34 +11710,34 @@
                       "typeString": "string memory"
                     }
                   },
-                  "id": 7970,
+                  "id": 8226,
                   "nodeType": "ExpressionStatement",
                   "src": "338:27:29"
                 },
                 {
                   "expression": {
-                    "id": 7975,
+                    "id": 8231,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "baseExpression": {
-                        "id": 7971,
+                        "id": 8227,
                         "name": "tokenTypes",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 7946,
+                        "referencedDeclaration": 8202,
                         "src": "375:10:29",
                         "typeDescriptions": {
                           "typeIdentifier": "t_array$_t_string_memory_ptr_$dyn_memory_ptr",
                           "typeString": "string memory[] memory"
                         }
                       },
-                      "id": 7973,
+                      "id": 8229,
                       "indexExpression": {
                         "hexValue": "33",
-                        "id": 7972,
+                        "id": 8228,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -11766,7 +11766,7 @@
                     "operator": "=",
                     "rightHandSide": {
                       "hexValue": "536869656c64",
-                      "id": 7974,
+                      "id": 8230,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -11786,34 +11786,34 @@
                       "typeString": "string memory"
                     }
                   },
-                  "id": 7976,
+                  "id": 8232,
                   "nodeType": "ExpressionStatement",
                   "src": "375:24:29"
                 },
                 {
                   "expression": {
-                    "id": 7981,
+                    "id": 8237,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "baseExpression": {
-                        "id": 7977,
+                        "id": 8233,
                         "name": "tokenTypes",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 7946,
+                        "referencedDeclaration": 8202,
                         "src": "409:10:29",
                         "typeDescriptions": {
                           "typeIdentifier": "t_array$_t_string_memory_ptr_$dyn_memory_ptr",
                           "typeString": "string memory[] memory"
                         }
                       },
-                      "id": 7979,
+                      "id": 8235,
                       "indexExpression": {
                         "hexValue": "34",
-                        "id": 7978,
+                        "id": 8234,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -11842,7 +11842,7 @@
                     "operator": "=",
                     "rightHandSide": {
                       "hexValue": "506f7274616c",
-                      "id": 7980,
+                      "id": 8236,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -11862,34 +11862,34 @@
                       "typeString": "string memory"
                     }
                   },
-                  "id": 7982,
+                  "id": 8238,
                   "nodeType": "ExpressionStatement",
                   "src": "409:24:29"
                 },
                 {
                   "expression": {
-                    "id": 7987,
+                    "id": 8243,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "baseExpression": {
-                        "id": 7983,
+                        "id": 8239,
                         "name": "tokenTypes",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 7946,
+                        "referencedDeclaration": 8202,
                         "src": "443:10:29",
                         "typeDescriptions": {
                           "typeIdentifier": "t_array$_t_string_memory_ptr_$dyn_memory_ptr",
                           "typeString": "string memory[] memory"
                         }
                       },
-                      "id": 7985,
+                      "id": 8241,
                       "indexExpression": {
                         "hexValue": "35",
-                        "id": 7984,
+                        "id": 8240,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -11918,7 +11918,7 @@
                     "operator": "=",
                     "rightHandSide": {
                       "hexValue": "4f6e",
-                      "id": 7986,
+                      "id": 8242,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -11938,34 +11938,34 @@
                       "typeString": "string memory"
                     }
                   },
-                  "id": 7988,
+                  "id": 8244,
                   "nodeType": "ExpressionStatement",
                   "src": "443:20:29"
                 },
                 {
                   "expression": {
-                    "id": 7993,
+                    "id": 8249,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "baseExpression": {
-                        "id": 7989,
+                        "id": 8245,
                         "name": "tokenTypes",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 7946,
+                        "referencedDeclaration": 8202,
                         "src": "473:10:29",
                         "typeDescriptions": {
                           "typeIdentifier": "t_array$_t_string_memory_ptr_$dyn_memory_ptr",
                           "typeString": "string memory[] memory"
                         }
                       },
-                      "id": 7991,
+                      "id": 8247,
                       "indexExpression": {
                         "hexValue": "36",
-                        "id": 7990,
+                        "id": 8246,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -11994,7 +11994,7 @@
                     "operator": "=",
                     "rightHandSide": {
                       "hexValue": "4f6666",
-                      "id": 7992,
+                      "id": 8248,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -12014,34 +12014,34 @@
                       "typeString": "string memory"
                     }
                   },
-                  "id": 7994,
+                  "id": 8250,
                   "nodeType": "ExpressionStatement",
                   "src": "473:21:29"
                 },
                 {
                   "expression": {
-                    "id": 7999,
+                    "id": 8255,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "baseExpression": {
-                        "id": 7995,
+                        "id": 8251,
                         "name": "tokenTypes",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 7946,
+                        "referencedDeclaration": 8202,
                         "src": "504:10:29",
                         "typeDescriptions": {
                           "typeIdentifier": "t_array$_t_string_memory_ptr_$dyn_memory_ptr",
                           "typeString": "string memory[] memory"
                         }
                       },
-                      "id": 7997,
+                      "id": 8253,
                       "indexExpression": {
                         "hexValue": "37",
-                        "id": 7996,
+                        "id": 8252,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -12070,7 +12070,7 @@
                     "operator": "=",
                     "rightHandSide": {
                       "hexValue": "527573747920446167676572",
-                      "id": 7998,
+                      "id": 8254,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -12090,34 +12090,34 @@
                       "typeString": "string memory"
                     }
                   },
-                  "id": 8000,
+                  "id": 8256,
                   "nodeType": "ExpressionStatement",
                   "src": "504:30:29"
                 },
                 {
                   "expression": {
-                    "id": 8005,
+                    "id": 8261,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "baseExpression": {
-                        "id": 8001,
+                        "id": 8257,
                         "name": "tokenTypes",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 7946,
+                        "referencedDeclaration": 8202,
                         "src": "544:10:29",
                         "typeDescriptions": {
                           "typeIdentifier": "t_array$_t_string_memory_ptr_$dyn_memory_ptr",
                           "typeString": "string memory[] memory"
                         }
                       },
-                      "id": 8003,
+                      "id": 8259,
                       "indexExpression": {
                         "hexValue": "38",
-                        "id": 8002,
+                        "id": 8258,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -12146,7 +12146,7 @@
                     "operator": "=",
                     "rightHandSide": {
                       "hexValue": "52757374792053776f7264",
-                      "id": 8004,
+                      "id": 8260,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -12166,34 +12166,34 @@
                       "typeString": "string memory"
                     }
                   },
-                  "id": 8006,
+                  "id": 8262,
                   "nodeType": "ExpressionStatement",
                   "src": "544:29:29"
                 },
                 {
                   "expression": {
-                    "id": 8011,
+                    "id": 8267,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "baseExpression": {
-                        "id": 8007,
+                        "id": 8263,
                         "name": "tokenTypes",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 7946,
+                        "referencedDeclaration": 8202,
                         "src": "583:10:29",
                         "typeDescriptions": {
                           "typeIdentifier": "t_array$_t_string_memory_ptr_$dyn_memory_ptr",
                           "typeString": "string memory[] memory"
                         }
                       },
-                      "id": 8009,
+                      "id": 8265,
                       "indexExpression": {
                         "hexValue": "39",
-                        "id": 8008,
+                        "id": 8264,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -12222,7 +12222,7 @@
                     "operator": "=",
                     "rightHandSide": {
                       "hexValue": "527573747920506973746f6c",
-                      "id": 8010,
+                      "id": 8266,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -12242,34 +12242,34 @@
                       "typeString": "string memory"
                     }
                   },
-                  "id": 8012,
+                  "id": 8268,
                   "nodeType": "ExpressionStatement",
                   "src": "583:30:29"
                 },
                 {
                   "expression": {
-                    "id": 8017,
+                    "id": 8273,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "baseExpression": {
-                        "id": 8013,
+                        "id": 8269,
                         "name": "tokenTypes",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 7946,
+                        "referencedDeclaration": 8202,
                         "src": "623:10:29",
                         "typeDescriptions": {
                           "typeIdentifier": "t_array$_t_string_memory_ptr_$dyn_memory_ptr",
                           "typeString": "string memory[] memory"
                         }
                       },
-                      "id": 8015,
+                      "id": 8271,
                       "indexExpression": {
                         "hexValue": "3130",
-                        "id": 8014,
+                        "id": 8270,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -12298,7 +12298,7 @@
                     "operator": "=",
                     "rightHandSide": {
                       "hexValue": "5275737479205269666c65",
-                      "id": 8016,
+                      "id": 8272,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -12318,34 +12318,34 @@
                       "typeString": "string memory"
                     }
                   },
-                  "id": 8018,
+                  "id": 8274,
                   "nodeType": "ExpressionStatement",
                   "src": "623:30:29"
                 },
                 {
                   "expression": {
-                    "id": 8023,
+                    "id": 8279,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "baseExpression": {
-                        "id": 8019,
+                        "id": 8275,
                         "name": "tokenTypes",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 7946,
+                        "referencedDeclaration": 8202,
                         "src": "663:10:29",
                         "typeDescriptions": {
                           "typeIdentifier": "t_array$_t_string_memory_ptr_$dyn_memory_ptr",
                           "typeString": "string memory[] memory"
                         }
                       },
-                      "id": 8021,
+                      "id": 8277,
                       "indexExpression": {
                         "hexValue": "3131",
-                        "id": 8020,
+                        "id": 8276,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -12374,7 +12374,7 @@
                     "operator": "=",
                     "rightHandSide": {
                       "hexValue": "5368696e7920446167676572",
-                      "id": 8022,
+                      "id": 8278,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -12394,34 +12394,34 @@
                       "typeString": "string memory"
                     }
                   },
-                  "id": 8024,
+                  "id": 8280,
                   "nodeType": "ExpressionStatement",
                   "src": "663:31:29"
                 },
                 {
                   "expression": {
-                    "id": 8029,
+                    "id": 8285,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "baseExpression": {
-                        "id": 8025,
+                        "id": 8281,
                         "name": "tokenTypes",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 7946,
+                        "referencedDeclaration": 8202,
                         "src": "704:10:29",
                         "typeDescriptions": {
                           "typeIdentifier": "t_array$_t_string_memory_ptr_$dyn_memory_ptr",
                           "typeString": "string memory[] memory"
                         }
                       },
-                      "id": 8027,
+                      "id": 8283,
                       "indexExpression": {
                         "hexValue": "3132",
-                        "id": 8026,
+                        "id": 8282,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -12450,7 +12450,7 @@
                     "operator": "=",
                     "rightHandSide": {
                       "hexValue": "5368696e792053776f7264",
-                      "id": 8028,
+                      "id": 8284,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -12470,34 +12470,34 @@
                       "typeString": "string memory"
                     }
                   },
-                  "id": 8030,
+                  "id": 8286,
                   "nodeType": "ExpressionStatement",
                   "src": "704:30:29"
                 },
                 {
                   "expression": {
-                    "id": 8035,
+                    "id": 8291,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "baseExpression": {
-                        "id": 8031,
+                        "id": 8287,
                         "name": "tokenTypes",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 7946,
+                        "referencedDeclaration": 8202,
                         "src": "744:10:29",
                         "typeDescriptions": {
                           "typeIdentifier": "t_array$_t_string_memory_ptr_$dyn_memory_ptr",
                           "typeString": "string memory[] memory"
                         }
                       },
-                      "id": 8033,
+                      "id": 8289,
                       "indexExpression": {
                         "hexValue": "3133",
-                        "id": 8032,
+                        "id": 8288,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -12526,7 +12526,7 @@
                     "operator": "=",
                     "rightHandSide": {
                       "hexValue": "5368696e7920506973746f6c",
-                      "id": 8034,
+                      "id": 8290,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -12546,34 +12546,34 @@
                       "typeString": "string memory"
                     }
                   },
-                  "id": 8036,
+                  "id": 8292,
                   "nodeType": "ExpressionStatement",
                   "src": "744:31:29"
                 },
                 {
                   "expression": {
-                    "id": 8041,
+                    "id": 8297,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "baseExpression": {
-                        "id": 8037,
+                        "id": 8293,
                         "name": "tokenTypes",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 7946,
+                        "referencedDeclaration": 8202,
                         "src": "785:10:29",
                         "typeDescriptions": {
                           "typeIdentifier": "t_array$_t_string_memory_ptr_$dyn_memory_ptr",
                           "typeString": "string memory[] memory"
                         }
                       },
-                      "id": 8039,
+                      "id": 8295,
                       "indexExpression": {
                         "hexValue": "3134",
-                        "id": 8038,
+                        "id": 8294,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -12602,7 +12602,7 @@
                     "operator": "=",
                     "rightHandSide": {
                       "hexValue": "5368696e79205269666c65",
-                      "id": 8040,
+                      "id": 8296,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -12622,34 +12622,34 @@
                       "typeString": "string memory"
                     }
                   },
-                  "id": 8042,
+                  "id": 8298,
                   "nodeType": "ExpressionStatement",
                   "src": "785:30:29"
                 },
                 {
                   "expression": {
-                    "id": 8047,
+                    "id": 8303,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "baseExpression": {
-                        "id": 8043,
+                        "id": 8299,
                         "name": "tokenTypes",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 7946,
+                        "referencedDeclaration": 8202,
                         "src": "825:10:29",
                         "typeDescriptions": {
                           "typeIdentifier": "t_array$_t_string_memory_ptr_$dyn_memory_ptr",
                           "typeString": "string memory[] memory"
                         }
                       },
-                      "id": 8045,
+                      "id": 8301,
                       "indexExpression": {
                         "hexValue": "3135",
-                        "id": 8044,
+                        "id": 8300,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -12678,7 +12678,7 @@
                     "operator": "=",
                     "rightHandSide": {
                       "hexValue": "4c6173657220446167676572",
-                      "id": 8046,
+                      "id": 8302,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -12698,34 +12698,34 @@
                       "typeString": "string memory"
                     }
                   },
-                  "id": 8048,
+                  "id": 8304,
                   "nodeType": "ExpressionStatement",
                   "src": "825:31:29"
                 },
                 {
                   "expression": {
-                    "id": 8053,
+                    "id": 8309,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "baseExpression": {
-                        "id": 8049,
+                        "id": 8305,
                         "name": "tokenTypes",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 7946,
+                        "referencedDeclaration": 8202,
                         "src": "866:10:29",
                         "typeDescriptions": {
                           "typeIdentifier": "t_array$_t_string_memory_ptr_$dyn_memory_ptr",
                           "typeString": "string memory[] memory"
                         }
                       },
-                      "id": 8051,
+                      "id": 8307,
                       "indexExpression": {
                         "hexValue": "3136",
-                        "id": 8050,
+                        "id": 8306,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -12754,7 +12754,7 @@
                     "operator": "=",
                     "rightHandSide": {
                       "hexValue": "4c617365722053776f7264",
-                      "id": 8052,
+                      "id": 8308,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -12774,34 +12774,34 @@
                       "typeString": "string memory"
                     }
                   },
-                  "id": 8054,
+                  "id": 8310,
                   "nodeType": "ExpressionStatement",
                   "src": "866:30:29"
                 },
                 {
                   "expression": {
-                    "id": 8059,
+                    "id": 8315,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "baseExpression": {
-                        "id": 8055,
+                        "id": 8311,
                         "name": "tokenTypes",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 7946,
+                        "referencedDeclaration": 8202,
                         "src": "906:10:29",
                         "typeDescriptions": {
                           "typeIdentifier": "t_array$_t_string_memory_ptr_$dyn_memory_ptr",
                           "typeString": "string memory[] memory"
                         }
                       },
-                      "id": 8057,
+                      "id": 8313,
                       "indexExpression": {
                         "hexValue": "3137",
-                        "id": 8056,
+                        "id": 8312,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -12830,7 +12830,7 @@
                     "operator": "=",
                     "rightHandSide": {
                       "hexValue": "4c6173657220506973746f6c",
-                      "id": 8058,
+                      "id": 8314,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -12850,34 +12850,34 @@
                       "typeString": "string memory"
                     }
                   },
-                  "id": 8060,
+                  "id": 8316,
                   "nodeType": "ExpressionStatement",
                   "src": "906:31:29"
                 },
                 {
                   "expression": {
-                    "id": 8065,
+                    "id": 8321,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "baseExpression": {
-                        "id": 8061,
+                        "id": 8317,
                         "name": "tokenTypes",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 7946,
+                        "referencedDeclaration": 8202,
                         "src": "947:10:29",
                         "typeDescriptions": {
                           "typeIdentifier": "t_array$_t_string_memory_ptr_$dyn_memory_ptr",
                           "typeString": "string memory[] memory"
                         }
                       },
-                      "id": 8063,
+                      "id": 8319,
                       "indexExpression": {
                         "hexValue": "3138",
-                        "id": 8062,
+                        "id": 8318,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -12906,7 +12906,7 @@
                     "operator": "=",
                     "rightHandSide": {
                       "hexValue": "4c61736572205269666c65",
-                      "id": 8064,
+                      "id": 8320,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -12926,34 +12926,34 @@
                       "typeString": "string memory"
                     }
                   },
-                  "id": 8066,
+                  "id": 8322,
                   "nodeType": "ExpressionStatement",
                   "src": "947:30:29"
                 },
                 {
                   "expression": {
-                    "id": 8071,
+                    "id": 8327,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "baseExpression": {
-                        "id": 8067,
+                        "id": 8323,
                         "name": "tokenTypes",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 7946,
+                        "referencedDeclaration": 8202,
                         "src": "987:10:29",
                         "typeDescriptions": {
                           "typeIdentifier": "t_array$_t_string_memory_ptr_$dyn_memory_ptr",
                           "typeString": "string memory[] memory"
                         }
                       },
-                      "id": 8069,
+                      "id": 8325,
                       "indexExpression": {
                         "hexValue": "3139",
-                        "id": 8068,
+                        "id": 8324,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -12982,7 +12982,7 @@
                     "operator": "=",
                     "rightHandSide": {
                       "hexValue": "476c6f7720737469636b",
-                      "id": 8070,
+                      "id": 8326,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -13002,34 +13002,34 @@
                       "typeString": "string memory"
                     }
                   },
-                  "id": 8072,
+                  "id": 8328,
                   "nodeType": "ExpressionStatement",
                   "src": "987:29:29"
                 },
                 {
                   "expression": {
-                    "id": 8077,
+                    "id": 8333,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "baseExpression": {
-                        "id": 8073,
+                        "id": 8329,
                         "name": "tokenTypes",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 7946,
+                        "referencedDeclaration": 8202,
                         "src": "1026:10:29",
                         "typeDescriptions": {
                           "typeIdentifier": "t_array$_t_string_memory_ptr_$dyn_memory_ptr",
                           "typeString": "string memory[] memory"
                         }
                       },
-                      "id": 8075,
+                      "id": 8331,
                       "indexExpression": {
                         "hexValue": "3230",
-                        "id": 8074,
+                        "id": 8330,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -13058,7 +13058,7 @@
                     "operator": "=",
                     "rightHandSide": {
                       "hexValue": "466c6173686c69676874",
-                      "id": 8076,
+                      "id": 8332,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -13078,34 +13078,34 @@
                       "typeString": "string memory"
                     }
                   },
-                  "id": 8078,
+                  "id": 8334,
                   "nodeType": "ExpressionStatement",
                   "src": "1026:29:29"
                 },
                 {
                   "expression": {
-                    "id": 8083,
+                    "id": 8339,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "baseExpression": {
-                        "id": 8079,
+                        "id": 8335,
                         "name": "tokenTypes",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 7946,
+                        "referencedDeclaration": 8202,
                         "src": "1065:10:29",
                         "typeDescriptions": {
                           "typeIdentifier": "t_array$_t_string_memory_ptr_$dyn_memory_ptr",
                           "typeString": "string memory[] memory"
                         }
                       },
-                      "id": 8081,
+                      "id": 8337,
                       "indexExpression": {
                         "hexValue": "3231",
-                        "id": 8080,
+                        "id": 8336,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -13134,7 +13134,7 @@
                     "operator": "=",
                     "rightHandSide": {
                       "hexValue": "466c6f6f64206c69676874",
-                      "id": 8082,
+                      "id": 8338,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -13154,34 +13154,34 @@
                       "typeString": "string memory"
                     }
                   },
-                  "id": 8084,
+                  "id": 8340,
                   "nodeType": "ExpressionStatement",
                   "src": "1065:30:29"
                 },
                 {
                   "expression": {
-                    "id": 8089,
+                    "id": 8345,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "baseExpression": {
-                        "id": 8085,
+                        "id": 8341,
                         "name": "tokenTypes",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 7946,
+                        "referencedDeclaration": 8202,
                         "src": "1105:10:29",
                         "typeDescriptions": {
                           "typeIdentifier": "t_array$_t_string_memory_ptr_$dyn_memory_ptr",
                           "typeString": "string memory[] memory"
                         }
                       },
-                      "id": 8087,
+                      "id": 8343,
                       "indexExpression": {
                         "hexValue": "3232",
-                        "id": 8086,
+                        "id": 8342,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -13210,7 +13210,7 @@
                     "operator": "=",
                     "rightHandSide": {
                       "hexValue": "4e69676874766973696f6e20476f67676c6573",
-                      "id": 8088,
+                      "id": 8344,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -13230,34 +13230,34 @@
                       "typeString": "string memory"
                     }
                   },
-                  "id": 8090,
+                  "id": 8346,
                   "nodeType": "ExpressionStatement",
                   "src": "1105:38:29"
                 },
                 {
                   "expression": {
-                    "id": 8095,
+                    "id": 8351,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "baseExpression": {
-                        "id": 8091,
+                        "id": 8347,
                         "name": "tokenTypes",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 7946,
+                        "referencedDeclaration": 8202,
                         "src": "1153:10:29",
                         "typeDescriptions": {
                           "typeIdentifier": "t_array$_t_string_memory_ptr_$dyn_memory_ptr",
                           "typeString": "string memory[] memory"
                         }
                       },
-                      "id": 8093,
+                      "id": 8349,
                       "indexExpression": {
                         "hexValue": "3233",
-                        "id": 8092,
+                        "id": 8348,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -13286,7 +13286,7 @@
                     "operator": "=",
                     "rightHandSide": {
                       "hexValue": "506572736f6e616c20536869656c64",
-                      "id": 8094,
+                      "id": 8350,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -13306,34 +13306,34 @@
                       "typeString": "string memory"
                     }
                   },
-                  "id": 8096,
+                  "id": 8352,
                   "nodeType": "ExpressionStatement",
                   "src": "1153:34:29"
                 },
                 {
                   "expression": {
-                    "id": 8101,
+                    "id": 8357,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "baseExpression": {
-                        "id": 8097,
+                        "id": 8353,
                         "name": "tokenTypes",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 7946,
+                        "referencedDeclaration": 8202,
                         "src": "1197:10:29",
                         "typeDescriptions": {
                           "typeIdentifier": "t_array$_t_string_memory_ptr_$dyn_memory_ptr",
                           "typeString": "string memory[] memory"
                         }
                       },
-                      "id": 8099,
+                      "id": 8355,
                       "indexExpression": {
                         "hexValue": "3234",
-                        "id": 8098,
+                        "id": 8354,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -13362,7 +13362,7 @@
                     "operator": "=",
                     "rightHandSide": {
                       "hexValue": "427562626c6520536869656c64",
-                      "id": 8100,
+                      "id": 8356,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -13382,34 +13382,34 @@
                       "typeString": "string memory"
                     }
                   },
-                  "id": 8102,
+                  "id": 8358,
                   "nodeType": "ExpressionStatement",
                   "src": "1197:32:29"
                 },
                 {
                   "expression": {
-                    "id": 8107,
+                    "id": 8363,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "baseExpression": {
-                        "id": 8103,
+                        "id": 8359,
                         "name": "tokenTypes",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 7946,
+                        "referencedDeclaration": 8202,
                         "src": "1239:10:29",
                         "typeDescriptions": {
                           "typeIdentifier": "t_array$_t_string_memory_ptr_$dyn_memory_ptr",
                           "typeString": "string memory[] memory"
                         }
                       },
-                      "id": 8105,
+                      "id": 8361,
                       "indexExpression": {
                         "hexValue": "3235",
-                        "id": 8104,
+                        "id": 8360,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -13438,7 +13438,7 @@
                     "operator": "=",
                     "rightHandSide": {
                       "hexValue": "46726167204772656e616465",
-                      "id": 8106,
+                      "id": 8362,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -13458,34 +13458,34 @@
                       "typeString": "string memory"
                     }
                   },
-                  "id": 8108,
+                  "id": 8364,
                   "nodeType": "ExpressionStatement",
                   "src": "1239:31:29"
                 },
                 {
                   "expression": {
-                    "id": 8113,
+                    "id": 8369,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "baseExpression": {
-                        "id": 8109,
+                        "id": 8365,
                         "name": "tokenTypes",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 7946,
+                        "referencedDeclaration": 8202,
                         "src": "1280:10:29",
                         "typeDescriptions": {
                           "typeIdentifier": "t_array$_t_string_memory_ptr_$dyn_memory_ptr",
                           "typeString": "string memory[] memory"
                         }
                       },
-                      "id": 8111,
+                      "id": 8367,
                       "indexExpression": {
                         "hexValue": "3236",
-                        "id": 8110,
+                        "id": 8366,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -13514,7 +13514,7 @@
                     "operator": "=",
                     "rightHandSide": {
                       "hexValue": "46697265204772656e616465",
-                      "id": 8112,
+                      "id": 8368,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -13534,34 +13534,34 @@
                       "typeString": "string memory"
                     }
                   },
-                  "id": 8114,
+                  "id": 8370,
                   "nodeType": "ExpressionStatement",
                   "src": "1280:31:29"
                 },
                 {
                   "expression": {
-                    "id": 8119,
+                    "id": 8375,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "baseExpression": {
-                        "id": 8115,
+                        "id": 8371,
                         "name": "tokenTypes",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 7946,
+                        "referencedDeclaration": 8202,
                         "src": "1321:10:29",
                         "typeDescriptions": {
                           "typeIdentifier": "t_array$_t_string_memory_ptr_$dyn_memory_ptr",
                           "typeString": "string memory[] memory"
                         }
                       },
-                      "id": 8117,
+                      "id": 8373,
                       "indexExpression": {
                         "hexValue": "3237",
-                        "id": 8116,
+                        "id": 8372,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -13590,7 +13590,7 @@
                     "operator": "=",
                     "rightHandSide": {
                       "hexValue": "53686f636b204772656e616465",
-                      "id": 8118,
+                      "id": 8374,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -13610,34 +13610,34 @@
                       "typeString": "string memory"
                     }
                   },
-                  "id": 8120,
+                  "id": 8376,
                   "nodeType": "ExpressionStatement",
                   "src": "1321:32:29"
                 },
                 {
                   "expression": {
-                    "id": 8125,
+                    "id": 8381,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "baseExpression": {
-                        "id": 8121,
+                        "id": 8377,
                         "name": "tokenTypes",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 7946,
+                        "referencedDeclaration": 8202,
                         "src": "1363:10:29",
                         "typeDescriptions": {
                           "typeIdentifier": "t_array$_t_string_memory_ptr_$dyn_memory_ptr",
                           "typeString": "string memory[] memory"
                         }
                       },
-                      "id": 8123,
+                      "id": 8379,
                       "indexExpression": {
                         "hexValue": "3238",
-                        "id": 8122,
+                        "id": 8378,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -13666,7 +13666,7 @@
                     "operator": "=",
                     "rightHandSide": {
                       "hexValue": "4845204d6f72746172",
-                      "id": 8124,
+                      "id": 8380,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -13686,34 +13686,34 @@
                       "typeString": "string memory"
                     }
                   },
-                  "id": 8126,
+                  "id": 8382,
                   "nodeType": "ExpressionStatement",
                   "src": "1363:28:29"
                 },
                 {
                   "expression": {
-                    "id": 8131,
+                    "id": 8387,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "baseExpression": {
-                        "id": 8127,
+                        "id": 8383,
                         "name": "tokenTypes",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 7946,
+                        "referencedDeclaration": 8202,
                         "src": "1401:10:29",
                         "typeDescriptions": {
                           "typeIdentifier": "t_array$_t_string_memory_ptr_$dyn_memory_ptr",
                           "typeString": "string memory[] memory"
                         }
                       },
-                      "id": 8129,
+                      "id": 8385,
                       "indexExpression": {
                         "hexValue": "3239",
-                        "id": 8128,
+                        "id": 8384,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -13742,7 +13742,7 @@
                     "operator": "=",
                     "rightHandSide": {
                       "hexValue": "496e63656e6469617279204d6f72746172",
-                      "id": 8130,
+                      "id": 8386,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -13762,34 +13762,34 @@
                       "typeString": "string memory"
                     }
                   },
-                  "id": 8132,
+                  "id": 8388,
                   "nodeType": "ExpressionStatement",
                   "src": "1401:36:29"
                 },
                 {
                   "expression": {
-                    "id": 8137,
+                    "id": 8393,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "baseExpression": {
-                        "id": 8133,
+                        "id": 8389,
                         "name": "tokenTypes",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 7946,
+                        "referencedDeclaration": 8202,
                         "src": "1447:10:29",
                         "typeDescriptions": {
                           "typeIdentifier": "t_array$_t_string_memory_ptr_$dyn_memory_ptr",
                           "typeString": "string memory[] memory"
                         }
                       },
-                      "id": 8135,
+                      "id": 8391,
                       "indexExpression": {
                         "hexValue": "3330",
-                        "id": 8134,
+                        "id": 8390,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -13818,7 +13818,7 @@
                     "operator": "=",
                     "rightHandSide": {
                       "hexValue": "454d50204d6f72746172",
-                      "id": 8136,
+                      "id": 8392,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -13838,34 +13838,34 @@
                       "typeString": "string memory"
                     }
                   },
-                  "id": 8138,
+                  "id": 8394,
                   "nodeType": "ExpressionStatement",
                   "src": "1447:29:29"
                 },
                 {
                   "expression": {
-                    "id": 8143,
+                    "id": 8399,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "baseExpression": {
-                        "id": 8139,
+                        "id": 8395,
                         "name": "tokenTypes",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 7946,
+                        "referencedDeclaration": 8202,
                         "src": "1486:10:29",
                         "typeDescriptions": {
                           "typeIdentifier": "t_array$_t_string_memory_ptr_$dyn_memory_ptr",
                           "typeString": "string memory[] memory"
                         }
                       },
-                      "id": 8141,
+                      "id": 8397,
                       "indexExpression": {
                         "hexValue": "3331",
-                        "id": 8140,
+                        "id": 8396,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -13894,7 +13894,7 @@
                     "operator": "=",
                     "rightHandSide": {
                       "hexValue": "506f77657220476c6f7665",
-                      "id": 8142,
+                      "id": 8398,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -13914,34 +13914,34 @@
                       "typeString": "string memory"
                     }
                   },
-                  "id": 8144,
+                  "id": 8400,
                   "nodeType": "ExpressionStatement",
                   "src": "1486:30:29"
                 },
                 {
                   "expression": {
-                    "id": 8149,
+                    "id": 8405,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "baseExpression": {
-                        "id": 8145,
+                        "id": 8401,
                         "name": "tokenTypes",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 7946,
+                        "referencedDeclaration": 8202,
                         "src": "1526:10:29",
                         "typeDescriptions": {
                           "typeIdentifier": "t_array$_t_string_memory_ptr_$dyn_memory_ptr",
                           "typeString": "string memory[] memory"
                         }
                       },
-                      "id": 8147,
+                      "id": 8403,
                       "indexExpression": {
                         "hexValue": "3332",
-                        "id": 8146,
+                        "id": 8402,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -13970,7 +13970,7 @@
                     "operator": "=",
                     "rightHandSide": {
                       "hexValue": "52656d6f7465204c61756e636820616e642047756964616e63652053797374656d",
-                      "id": 8148,
+                      "id": 8404,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -13990,34 +13990,34 @@
                       "typeString": "string memory"
                     }
                   },
-                  "id": 8150,
+                  "id": 8406,
                   "nodeType": "ExpressionStatement",
                   "src": "1526:52:29"
                 },
                 {
                   "expression": {
-                    "id": 8155,
+                    "id": 8411,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "baseExpression": {
-                        "id": 8151,
+                        "id": 8407,
                         "name": "tokenTypes",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 7946,
+                        "referencedDeclaration": 8202,
                         "src": "1588:10:29",
                         "typeDescriptions": {
                           "typeIdentifier": "t_array$_t_string_memory_ptr_$dyn_memory_ptr",
                           "typeString": "string memory[] memory"
                         }
                       },
-                      "id": 8153,
+                      "id": 8409,
                       "indexExpression": {
                         "hexValue": "3333",
-                        "id": 8152,
+                        "id": 8408,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -14046,7 +14046,7 @@
                     "operator": "=",
                     "rightHandSide": {
                       "hexValue": "54656c65706f72746572205061636b",
-                      "id": 8154,
+                      "id": 8410,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -14066,34 +14066,34 @@
                       "typeString": "string memory"
                     }
                   },
-                  "id": 8156,
+                  "id": 8412,
                   "nodeType": "ExpressionStatement",
                   "src": "1588:34:29"
                 },
                 {
                   "expression": {
-                    "id": 8161,
+                    "id": 8417,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "baseExpression": {
-                        "id": 8157,
+                        "id": 8413,
                         "name": "tokenTypes",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 7946,
+                        "referencedDeclaration": 8202,
                         "src": "1632:10:29",
                         "typeDescriptions": {
                           "typeIdentifier": "t_array$_t_string_memory_ptr_$dyn_memory_ptr",
                           "typeString": "string memory[] memory"
                         }
                       },
-                      "id": 8159,
+                      "id": 8415,
                       "indexExpression": {
                         "hexValue": "3334",
-                        "id": 8158,
+                        "id": 8414,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -14122,7 +14122,7 @@
                     "operator": "=",
                     "rightHandSide": {
                       "hexValue": "43616d7073697465",
-                      "id": 8160,
+                      "id": 8416,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -14142,7 +14142,7 @@
                       "typeString": "string memory"
                     }
                   },
-                  "id": 8162,
+                  "id": 8418,
                   "nodeType": "ExpressionStatement",
                   "src": "1632:27:29"
                 },
@@ -14150,11 +14150,11 @@
                   "expression": {
                     "arguments": [
                       {
-                        "id": 8164,
+                        "id": 8420,
                         "name": "tokenTypes",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 7946,
+                        "referencedDeclaration": 8202,
                         "src": "1683:10:29",
                         "typeDescriptions": {
                           "typeIdentifier": "t_array$_t_string_memory_ptr_$dyn_memory_ptr",
@@ -14169,18 +14169,18 @@
                           "typeString": "string memory[] memory"
                         }
                       ],
-                      "id": 8163,
+                      "id": 8419,
                       "name": "addTokenTypes",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 7829,
+                      "referencedDeclaration": 8085,
                       "src": "1669:13:29",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_internal_nonpayable$_t_array$_t_string_memory_ptr_$dyn_memory_ptr_$returns$__$",
                         "typeString": "function (string memory[] memory)"
                       }
                     },
-                    "id": 8165,
+                    "id": 8421,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -14195,24 +14195,24 @@
                       "typeString": "tuple()"
                     }
                   },
-                  "id": 8166,
+                  "id": 8422,
                   "nodeType": "ExpressionStatement",
                   "src": "1669:25:29"
                 }
               ]
             },
-            "id": 8168,
+            "id": 8424,
             "implemented": true,
             "kind": "constructor",
             "modifiers": [
               {
                 "arguments": [
                   {
-                    "id": 7939,
+                    "id": 8195,
                     "name": "controllerAddress",
                     "nodeType": "Identifier",
                     "overloadedDeclarations": [],
-                    "referencedDeclaration": 7936,
+                    "referencedDeclaration": 8192,
                     "src": "178:17:29",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -14220,13 +14220,13 @@
                     }
                   }
                 ],
-                "id": 7940,
+                "id": 8196,
                 "kind": "baseConstructorSpecifier",
                 "modifierName": {
-                  "id": 7938,
+                  "id": 8194,
                   "name": "GameToken",
                   "nodeType": "IdentifierPath",
-                  "referencedDeclaration": 7929,
+                  "referencedDeclaration": 8185,
                   "src": "168:9:29"
                 },
                 "nodeType": "ModifierInvocation",
@@ -14237,17 +14237,17 @@
             "nameLocation": "-1:-1:-1",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 7937,
+              "id": 8193,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 7936,
+                  "id": 8192,
                   "mutability": "mutable",
                   "name": "controllerAddress",
                   "nameLocation": "149:17:29",
                   "nodeType": "VariableDeclaration",
-                  "scope": 8168,
+                  "scope": 8424,
                   "src": "141:25:29",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -14256,7 +14256,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 7935,
+                    "id": 8191,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "141:7:29",
@@ -14272,19 +14272,19 @@
               "src": "140:27:29"
             },
             "returnParameters": {
-              "id": 7941,
+              "id": 8197,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "197:0:29"
             },
-            "scope": 8169,
+            "scope": 8425,
             "src": "129:1572:29",
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "public"
           }
         ],
-        "scope": 8170,
+        "scope": 8426,
         "src": "96:1607:29",
         "usedErrors": []
       }
@@ -14310,7 +14310,7 @@
         4769
       ],
       "GameToken": [
-        7929
+        8185
       ],
       "IAccessControl": [
         3810
@@ -14322,18 +14322,18 @@
         4170
       ],
       "Item": [
-        8169
+        8425
       ],
       "Strings": [
         4134
       ]
     },
-    "id": 8170,
+    "id": 8426,
     "license": "GPL-3.0",
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 7931,
+        "id": 8187,
         "literals": [
           "solidity",
           ">=",
@@ -14349,11 +14349,11 @@
       {
         "absolutePath": "project:/contracts/tokens/GameToken.sol",
         "file": "./GameToken.sol",
-        "id": 7932,
+        "id": 8188,
         "nameLocation": "-1:-1:-1",
         "nodeType": "ImportDirective",
-        "scope": 8170,
-        "sourceUnit": 7930,
+        "scope": 8426,
+        "sourceUnit": 8186,
         "src": "69:25:29",
         "symbolAliases": [],
         "unitAlias": ""
@@ -14363,13 +14363,13 @@
         "baseContracts": [
           {
             "baseName": {
-              "id": 7933,
+              "id": 8189,
               "name": "GameToken",
               "nodeType": "IdentifierPath",
-              "referencedDeclaration": 7929,
+              "referencedDeclaration": 8185,
               "src": "113:9:29"
             },
-            "id": 7934,
+            "id": 8190,
             "nodeType": "InheritanceSpecifier",
             "src": "113:9:29"
           }
@@ -14378,10 +14378,10 @@
         "contractDependencies": [],
         "contractKind": "contract",
         "fullyImplemented": true,
-        "id": 8169,
+        "id": 8425,
         "linearizedBaseContracts": [
-          8169,
-          7929,
+          8425,
+          8185,
           3737,
           3612,
           4158,
@@ -14396,23 +14396,23 @@
         "nodes": [
           {
             "body": {
-              "id": 8167,
+              "id": 8423,
               "nodeType": "Block",
               "src": "197:1504:29",
               "statements": [
                 {
                   "assignments": [
-                    7946
+                    8202
                   ],
                   "declarations": [
                     {
                       "constant": false,
-                      "id": 7946,
+                      "id": 8202,
                       "mutability": "mutable",
                       "name": "tokenTypes",
                       "nameLocation": "223:10:29",
                       "nodeType": "VariableDeclaration",
-                      "scope": 8167,
+                      "scope": 8423,
                       "src": "207:26:29",
                       "stateVariable": false,
                       "storageLocation": "memory",
@@ -14422,7 +14422,7 @@
                       },
                       "typeName": {
                         "baseType": {
-                          "id": 7944,
+                          "id": 8200,
                           "name": "string",
                           "nodeType": "ElementaryTypeName",
                           "src": "207:6:29",
@@ -14431,7 +14431,7 @@
                             "typeString": "string"
                           }
                         },
-                        "id": 7945,
+                        "id": 8201,
                         "nodeType": "ArrayTypeName",
                         "src": "207:8:29",
                         "typeDescriptions": {
@@ -14442,12 +14442,12 @@
                       "visibility": "internal"
                     }
                   ],
-                  "id": 7952,
+                  "id": 8208,
                   "initialValue": {
                     "arguments": [
                       {
                         "hexValue": "3335",
-                        "id": 7950,
+                        "id": 8206,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -14469,7 +14469,7 @@
                           "typeString": "int_const 35"
                         }
                       ],
-                      "id": 7949,
+                      "id": 8205,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -14482,7 +14482,7 @@
                       },
                       "typeName": {
                         "baseType": {
-                          "id": 7947,
+                          "id": 8203,
                           "name": "string",
                           "nodeType": "ElementaryTypeName",
                           "src": "240:6:29",
@@ -14491,7 +14491,7 @@
                             "typeString": "string"
                           }
                         },
-                        "id": 7948,
+                        "id": 8204,
                         "nodeType": "ArrayTypeName",
                         "src": "240:8:29",
                         "typeDescriptions": {
@@ -14500,7 +14500,7 @@
                         }
                       }
                     },
-                    "id": 7951,
+                    "id": 8207,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": true,
@@ -14520,28 +14520,28 @@
                 },
                 {
                   "expression": {
-                    "id": 7957,
+                    "id": 8213,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "baseExpression": {
-                        "id": 7953,
+                        "id": 8209,
                         "name": "tokenTypes",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 7946,
+                        "referencedDeclaration": 8202,
                         "src": "262:10:29",
                         "typeDescriptions": {
                           "typeIdentifier": "t_array$_t_string_memory_ptr_$dyn_memory_ptr",
                           "typeString": "string memory[] memory"
                         }
                       },
-                      "id": 7955,
+                      "id": 8211,
                       "indexExpression": {
                         "hexValue": "30",
-                        "id": 7954,
+                        "id": 8210,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -14570,7 +14570,7 @@
                     "operator": "=",
                     "rightHandSide": {
                       "hexValue": "536d616c6c20416d6d6f",
-                      "id": 7956,
+                      "id": 8212,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -14590,34 +14590,34 @@
                       "typeString": "string memory"
                     }
                   },
-                  "id": 7958,
+                  "id": 8214,
                   "nodeType": "ExpressionStatement",
                   "src": "262:28:29"
                 },
                 {
                   "expression": {
-                    "id": 7963,
+                    "id": 8219,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "baseExpression": {
-                        "id": 7959,
+                        "id": 8215,
                         "name": "tokenTypes",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 7946,
+                        "referencedDeclaration": 8202,
                         "src": "300:10:29",
                         "typeDescriptions": {
                           "typeIdentifier": "t_array$_t_string_memory_ptr_$dyn_memory_ptr",
                           "typeString": "string memory[] memory"
                         }
                       },
-                      "id": 7961,
+                      "id": 8217,
                       "indexExpression": {
                         "hexValue": "31",
-                        "id": 7960,
+                        "id": 8216,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -14646,7 +14646,7 @@
                     "operator": "=",
                     "rightHandSide": {
                       "hexValue": "4c6172676520416d6d6f",
-                      "id": 7962,
+                      "id": 8218,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -14666,34 +14666,34 @@
                       "typeString": "string memory"
                     }
                   },
-                  "id": 7964,
+                  "id": 8220,
                   "nodeType": "ExpressionStatement",
                   "src": "300:28:29"
                 },
                 {
                   "expression": {
-                    "id": 7969,
+                    "id": 8225,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "baseExpression": {
-                        "id": 7965,
+                        "id": 8221,
                         "name": "tokenTypes",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 7946,
+                        "referencedDeclaration": 8202,
                         "src": "338:10:29",
                         "typeDescriptions": {
                           "typeIdentifier": "t_array$_t_string_memory_ptr_$dyn_memory_ptr",
                           "typeString": "string memory[] memory"
                         }
                       },
-                      "id": 7967,
+                      "id": 8223,
                       "indexExpression": {
                         "hexValue": "32",
-                        "id": 7966,
+                        "id": 8222,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -14722,7 +14722,7 @@
                     "operator": "=",
                     "rightHandSide": {
                       "hexValue": "426174746572696573",
-                      "id": 7968,
+                      "id": 8224,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -14742,34 +14742,34 @@
                       "typeString": "string memory"
                     }
                   },
-                  "id": 7970,
+                  "id": 8226,
                   "nodeType": "ExpressionStatement",
                   "src": "338:27:29"
                 },
                 {
                   "expression": {
-                    "id": 7975,
+                    "id": 8231,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "baseExpression": {
-                        "id": 7971,
+                        "id": 8227,
                         "name": "tokenTypes",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 7946,
+                        "referencedDeclaration": 8202,
                         "src": "375:10:29",
                         "typeDescriptions": {
                           "typeIdentifier": "t_array$_t_string_memory_ptr_$dyn_memory_ptr",
                           "typeString": "string memory[] memory"
                         }
                       },
-                      "id": 7973,
+                      "id": 8229,
                       "indexExpression": {
                         "hexValue": "33",
-                        "id": 7972,
+                        "id": 8228,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -14798,7 +14798,7 @@
                     "operator": "=",
                     "rightHandSide": {
                       "hexValue": "536869656c64",
-                      "id": 7974,
+                      "id": 8230,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -14818,34 +14818,34 @@
                       "typeString": "string memory"
                     }
                   },
-                  "id": 7976,
+                  "id": 8232,
                   "nodeType": "ExpressionStatement",
                   "src": "375:24:29"
                 },
                 {
                   "expression": {
-                    "id": 7981,
+                    "id": 8237,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "baseExpression": {
-                        "id": 7977,
+                        "id": 8233,
                         "name": "tokenTypes",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 7946,
+                        "referencedDeclaration": 8202,
                         "src": "409:10:29",
                         "typeDescriptions": {
                           "typeIdentifier": "t_array$_t_string_memory_ptr_$dyn_memory_ptr",
                           "typeString": "string memory[] memory"
                         }
                       },
-                      "id": 7979,
+                      "id": 8235,
                       "indexExpression": {
                         "hexValue": "34",
-                        "id": 7978,
+                        "id": 8234,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -14874,7 +14874,7 @@
                     "operator": "=",
                     "rightHandSide": {
                       "hexValue": "506f7274616c",
-                      "id": 7980,
+                      "id": 8236,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -14894,34 +14894,34 @@
                       "typeString": "string memory"
                     }
                   },
-                  "id": 7982,
+                  "id": 8238,
                   "nodeType": "ExpressionStatement",
                   "src": "409:24:29"
                 },
                 {
                   "expression": {
-                    "id": 7987,
+                    "id": 8243,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "baseExpression": {
-                        "id": 7983,
+                        "id": 8239,
                         "name": "tokenTypes",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 7946,
+                        "referencedDeclaration": 8202,
                         "src": "443:10:29",
                         "typeDescriptions": {
                           "typeIdentifier": "t_array$_t_string_memory_ptr_$dyn_memory_ptr",
                           "typeString": "string memory[] memory"
                         }
                       },
-                      "id": 7985,
+                      "id": 8241,
                       "indexExpression": {
                         "hexValue": "35",
-                        "id": 7984,
+                        "id": 8240,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -14950,7 +14950,7 @@
                     "operator": "=",
                     "rightHandSide": {
                       "hexValue": "4f6e",
-                      "id": 7986,
+                      "id": 8242,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -14970,34 +14970,34 @@
                       "typeString": "string memory"
                     }
                   },
-                  "id": 7988,
+                  "id": 8244,
                   "nodeType": "ExpressionStatement",
                   "src": "443:20:29"
                 },
                 {
                   "expression": {
-                    "id": 7993,
+                    "id": 8249,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "baseExpression": {
-                        "id": 7989,
+                        "id": 8245,
                         "name": "tokenTypes",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 7946,
+                        "referencedDeclaration": 8202,
                         "src": "473:10:29",
                         "typeDescriptions": {
                           "typeIdentifier": "t_array$_t_string_memory_ptr_$dyn_memory_ptr",
                           "typeString": "string memory[] memory"
                         }
                       },
-                      "id": 7991,
+                      "id": 8247,
                       "indexExpression": {
                         "hexValue": "36",
-                        "id": 7990,
+                        "id": 8246,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -15026,7 +15026,7 @@
                     "operator": "=",
                     "rightHandSide": {
                       "hexValue": "4f6666",
-                      "id": 7992,
+                      "id": 8248,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -15046,34 +15046,34 @@
                       "typeString": "string memory"
                     }
                   },
-                  "id": 7994,
+                  "id": 8250,
                   "nodeType": "ExpressionStatement",
                   "src": "473:21:29"
                 },
                 {
                   "expression": {
-                    "id": 7999,
+                    "id": 8255,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "baseExpression": {
-                        "id": 7995,
+                        "id": 8251,
                         "name": "tokenTypes",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 7946,
+                        "referencedDeclaration": 8202,
                         "src": "504:10:29",
                         "typeDescriptions": {
                           "typeIdentifier": "t_array$_t_string_memory_ptr_$dyn_memory_ptr",
                           "typeString": "string memory[] memory"
                         }
                       },
-                      "id": 7997,
+                      "id": 8253,
                       "indexExpression": {
                         "hexValue": "37",
-                        "id": 7996,
+                        "id": 8252,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -15102,7 +15102,7 @@
                     "operator": "=",
                     "rightHandSide": {
                       "hexValue": "527573747920446167676572",
-                      "id": 7998,
+                      "id": 8254,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -15122,34 +15122,34 @@
                       "typeString": "string memory"
                     }
                   },
-                  "id": 8000,
+                  "id": 8256,
                   "nodeType": "ExpressionStatement",
                   "src": "504:30:29"
                 },
                 {
                   "expression": {
-                    "id": 8005,
+                    "id": 8261,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "baseExpression": {
-                        "id": 8001,
+                        "id": 8257,
                         "name": "tokenTypes",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 7946,
+                        "referencedDeclaration": 8202,
                         "src": "544:10:29",
                         "typeDescriptions": {
                           "typeIdentifier": "t_array$_t_string_memory_ptr_$dyn_memory_ptr",
                           "typeString": "string memory[] memory"
                         }
                       },
-                      "id": 8003,
+                      "id": 8259,
                       "indexExpression": {
                         "hexValue": "38",
-                        "id": 8002,
+                        "id": 8258,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -15178,7 +15178,7 @@
                     "operator": "=",
                     "rightHandSide": {
                       "hexValue": "52757374792053776f7264",
-                      "id": 8004,
+                      "id": 8260,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -15198,34 +15198,34 @@
                       "typeString": "string memory"
                     }
                   },
-                  "id": 8006,
+                  "id": 8262,
                   "nodeType": "ExpressionStatement",
                   "src": "544:29:29"
                 },
                 {
                   "expression": {
-                    "id": 8011,
+                    "id": 8267,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "baseExpression": {
-                        "id": 8007,
+                        "id": 8263,
                         "name": "tokenTypes",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 7946,
+                        "referencedDeclaration": 8202,
                         "src": "583:10:29",
                         "typeDescriptions": {
                           "typeIdentifier": "t_array$_t_string_memory_ptr_$dyn_memory_ptr",
                           "typeString": "string memory[] memory"
                         }
                       },
-                      "id": 8009,
+                      "id": 8265,
                       "indexExpression": {
                         "hexValue": "39",
-                        "id": 8008,
+                        "id": 8264,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -15254,7 +15254,7 @@
                     "operator": "=",
                     "rightHandSide": {
                       "hexValue": "527573747920506973746f6c",
-                      "id": 8010,
+                      "id": 8266,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -15274,34 +15274,34 @@
                       "typeString": "string memory"
                     }
                   },
-                  "id": 8012,
+                  "id": 8268,
                   "nodeType": "ExpressionStatement",
                   "src": "583:30:29"
                 },
                 {
                   "expression": {
-                    "id": 8017,
+                    "id": 8273,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "baseExpression": {
-                        "id": 8013,
+                        "id": 8269,
                         "name": "tokenTypes",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 7946,
+                        "referencedDeclaration": 8202,
                         "src": "623:10:29",
                         "typeDescriptions": {
                           "typeIdentifier": "t_array$_t_string_memory_ptr_$dyn_memory_ptr",
                           "typeString": "string memory[] memory"
                         }
                       },
-                      "id": 8015,
+                      "id": 8271,
                       "indexExpression": {
                         "hexValue": "3130",
-                        "id": 8014,
+                        "id": 8270,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -15330,7 +15330,7 @@
                     "operator": "=",
                     "rightHandSide": {
                       "hexValue": "5275737479205269666c65",
-                      "id": 8016,
+                      "id": 8272,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -15350,34 +15350,34 @@
                       "typeString": "string memory"
                     }
                   },
-                  "id": 8018,
+                  "id": 8274,
                   "nodeType": "ExpressionStatement",
                   "src": "623:30:29"
                 },
                 {
                   "expression": {
-                    "id": 8023,
+                    "id": 8279,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "baseExpression": {
-                        "id": 8019,
+                        "id": 8275,
                         "name": "tokenTypes",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 7946,
+                        "referencedDeclaration": 8202,
                         "src": "663:10:29",
                         "typeDescriptions": {
                           "typeIdentifier": "t_array$_t_string_memory_ptr_$dyn_memory_ptr",
                           "typeString": "string memory[] memory"
                         }
                       },
-                      "id": 8021,
+                      "id": 8277,
                       "indexExpression": {
                         "hexValue": "3131",
-                        "id": 8020,
+                        "id": 8276,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -15406,7 +15406,7 @@
                     "operator": "=",
                     "rightHandSide": {
                       "hexValue": "5368696e7920446167676572",
-                      "id": 8022,
+                      "id": 8278,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -15426,34 +15426,34 @@
                       "typeString": "string memory"
                     }
                   },
-                  "id": 8024,
+                  "id": 8280,
                   "nodeType": "ExpressionStatement",
                   "src": "663:31:29"
                 },
                 {
                   "expression": {
-                    "id": 8029,
+                    "id": 8285,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "baseExpression": {
-                        "id": 8025,
+                        "id": 8281,
                         "name": "tokenTypes",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 7946,
+                        "referencedDeclaration": 8202,
                         "src": "704:10:29",
                         "typeDescriptions": {
                           "typeIdentifier": "t_array$_t_string_memory_ptr_$dyn_memory_ptr",
                           "typeString": "string memory[] memory"
                         }
                       },
-                      "id": 8027,
+                      "id": 8283,
                       "indexExpression": {
                         "hexValue": "3132",
-                        "id": 8026,
+                        "id": 8282,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -15482,7 +15482,7 @@
                     "operator": "=",
                     "rightHandSide": {
                       "hexValue": "5368696e792053776f7264",
-                      "id": 8028,
+                      "id": 8284,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -15502,34 +15502,34 @@
                       "typeString": "string memory"
                     }
                   },
-                  "id": 8030,
+                  "id": 8286,
                   "nodeType": "ExpressionStatement",
                   "src": "704:30:29"
                 },
                 {
                   "expression": {
-                    "id": 8035,
+                    "id": 8291,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "baseExpression": {
-                        "id": 8031,
+                        "id": 8287,
                         "name": "tokenTypes",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 7946,
+                        "referencedDeclaration": 8202,
                         "src": "744:10:29",
                         "typeDescriptions": {
                           "typeIdentifier": "t_array$_t_string_memory_ptr_$dyn_memory_ptr",
                           "typeString": "string memory[] memory"
                         }
                       },
-                      "id": 8033,
+                      "id": 8289,
                       "indexExpression": {
                         "hexValue": "3133",
-                        "id": 8032,
+                        "id": 8288,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -15558,7 +15558,7 @@
                     "operator": "=",
                     "rightHandSide": {
                       "hexValue": "5368696e7920506973746f6c",
-                      "id": 8034,
+                      "id": 8290,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -15578,34 +15578,34 @@
                       "typeString": "string memory"
                     }
                   },
-                  "id": 8036,
+                  "id": 8292,
                   "nodeType": "ExpressionStatement",
                   "src": "744:31:29"
                 },
                 {
                   "expression": {
-                    "id": 8041,
+                    "id": 8297,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "baseExpression": {
-                        "id": 8037,
+                        "id": 8293,
                         "name": "tokenTypes",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 7946,
+                        "referencedDeclaration": 8202,
                         "src": "785:10:29",
                         "typeDescriptions": {
                           "typeIdentifier": "t_array$_t_string_memory_ptr_$dyn_memory_ptr",
                           "typeString": "string memory[] memory"
                         }
                       },
-                      "id": 8039,
+                      "id": 8295,
                       "indexExpression": {
                         "hexValue": "3134",
-                        "id": 8038,
+                        "id": 8294,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -15634,7 +15634,7 @@
                     "operator": "=",
                     "rightHandSide": {
                       "hexValue": "5368696e79205269666c65",
-                      "id": 8040,
+                      "id": 8296,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -15654,34 +15654,34 @@
                       "typeString": "string memory"
                     }
                   },
-                  "id": 8042,
+                  "id": 8298,
                   "nodeType": "ExpressionStatement",
                   "src": "785:30:29"
                 },
                 {
                   "expression": {
-                    "id": 8047,
+                    "id": 8303,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "baseExpression": {
-                        "id": 8043,
+                        "id": 8299,
                         "name": "tokenTypes",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 7946,
+                        "referencedDeclaration": 8202,
                         "src": "825:10:29",
                         "typeDescriptions": {
                           "typeIdentifier": "t_array$_t_string_memory_ptr_$dyn_memory_ptr",
                           "typeString": "string memory[] memory"
                         }
                       },
-                      "id": 8045,
+                      "id": 8301,
                       "indexExpression": {
                         "hexValue": "3135",
-                        "id": 8044,
+                        "id": 8300,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -15710,7 +15710,7 @@
                     "operator": "=",
                     "rightHandSide": {
                       "hexValue": "4c6173657220446167676572",
-                      "id": 8046,
+                      "id": 8302,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -15730,34 +15730,34 @@
                       "typeString": "string memory"
                     }
                   },
-                  "id": 8048,
+                  "id": 8304,
                   "nodeType": "ExpressionStatement",
                   "src": "825:31:29"
                 },
                 {
                   "expression": {
-                    "id": 8053,
+                    "id": 8309,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "baseExpression": {
-                        "id": 8049,
+                        "id": 8305,
                         "name": "tokenTypes",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 7946,
+                        "referencedDeclaration": 8202,
                         "src": "866:10:29",
                         "typeDescriptions": {
                           "typeIdentifier": "t_array$_t_string_memory_ptr_$dyn_memory_ptr",
                           "typeString": "string memory[] memory"
                         }
                       },
-                      "id": 8051,
+                      "id": 8307,
                       "indexExpression": {
                         "hexValue": "3136",
-                        "id": 8050,
+                        "id": 8306,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -15786,7 +15786,7 @@
                     "operator": "=",
                     "rightHandSide": {
                       "hexValue": "4c617365722053776f7264",
-                      "id": 8052,
+                      "id": 8308,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -15806,34 +15806,34 @@
                       "typeString": "string memory"
                     }
                   },
-                  "id": 8054,
+                  "id": 8310,
                   "nodeType": "ExpressionStatement",
                   "src": "866:30:29"
                 },
                 {
                   "expression": {
-                    "id": 8059,
+                    "id": 8315,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "baseExpression": {
-                        "id": 8055,
+                        "id": 8311,
                         "name": "tokenTypes",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 7946,
+                        "referencedDeclaration": 8202,
                         "src": "906:10:29",
                         "typeDescriptions": {
                           "typeIdentifier": "t_array$_t_string_memory_ptr_$dyn_memory_ptr",
                           "typeString": "string memory[] memory"
                         }
                       },
-                      "id": 8057,
+                      "id": 8313,
                       "indexExpression": {
                         "hexValue": "3137",
-                        "id": 8056,
+                        "id": 8312,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -15862,7 +15862,7 @@
                     "operator": "=",
                     "rightHandSide": {
                       "hexValue": "4c6173657220506973746f6c",
-                      "id": 8058,
+                      "id": 8314,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -15882,34 +15882,34 @@
                       "typeString": "string memory"
                     }
                   },
-                  "id": 8060,
+                  "id": 8316,
                   "nodeType": "ExpressionStatement",
                   "src": "906:31:29"
                 },
                 {
                   "expression": {
-                    "id": 8065,
+                    "id": 8321,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "baseExpression": {
-                        "id": 8061,
+                        "id": 8317,
                         "name": "tokenTypes",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 7946,
+                        "referencedDeclaration": 8202,
                         "src": "947:10:29",
                         "typeDescriptions": {
                           "typeIdentifier": "t_array$_t_string_memory_ptr_$dyn_memory_ptr",
                           "typeString": "string memory[] memory"
                         }
                       },
-                      "id": 8063,
+                      "id": 8319,
                       "indexExpression": {
                         "hexValue": "3138",
-                        "id": 8062,
+                        "id": 8318,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -15938,7 +15938,7 @@
                     "operator": "=",
                     "rightHandSide": {
                       "hexValue": "4c61736572205269666c65",
-                      "id": 8064,
+                      "id": 8320,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -15958,34 +15958,34 @@
                       "typeString": "string memory"
                     }
                   },
-                  "id": 8066,
+                  "id": 8322,
                   "nodeType": "ExpressionStatement",
                   "src": "947:30:29"
                 },
                 {
                   "expression": {
-                    "id": 8071,
+                    "id": 8327,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "baseExpression": {
-                        "id": 8067,
+                        "id": 8323,
                         "name": "tokenTypes",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 7946,
+                        "referencedDeclaration": 8202,
                         "src": "987:10:29",
                         "typeDescriptions": {
                           "typeIdentifier": "t_array$_t_string_memory_ptr_$dyn_memory_ptr",
                           "typeString": "string memory[] memory"
                         }
                       },
-                      "id": 8069,
+                      "id": 8325,
                       "indexExpression": {
                         "hexValue": "3139",
-                        "id": 8068,
+                        "id": 8324,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -16014,7 +16014,7 @@
                     "operator": "=",
                     "rightHandSide": {
                       "hexValue": "476c6f7720737469636b",
-                      "id": 8070,
+                      "id": 8326,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -16034,34 +16034,34 @@
                       "typeString": "string memory"
                     }
                   },
-                  "id": 8072,
+                  "id": 8328,
                   "nodeType": "ExpressionStatement",
                   "src": "987:29:29"
                 },
                 {
                   "expression": {
-                    "id": 8077,
+                    "id": 8333,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "baseExpression": {
-                        "id": 8073,
+                        "id": 8329,
                         "name": "tokenTypes",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 7946,
+                        "referencedDeclaration": 8202,
                         "src": "1026:10:29",
                         "typeDescriptions": {
                           "typeIdentifier": "t_array$_t_string_memory_ptr_$dyn_memory_ptr",
                           "typeString": "string memory[] memory"
                         }
                       },
-                      "id": 8075,
+                      "id": 8331,
                       "indexExpression": {
                         "hexValue": "3230",
-                        "id": 8074,
+                        "id": 8330,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -16090,7 +16090,7 @@
                     "operator": "=",
                     "rightHandSide": {
                       "hexValue": "466c6173686c69676874",
-                      "id": 8076,
+                      "id": 8332,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -16110,34 +16110,34 @@
                       "typeString": "string memory"
                     }
                   },
-                  "id": 8078,
+                  "id": 8334,
                   "nodeType": "ExpressionStatement",
                   "src": "1026:29:29"
                 },
                 {
                   "expression": {
-                    "id": 8083,
+                    "id": 8339,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "baseExpression": {
-                        "id": 8079,
+                        "id": 8335,
                         "name": "tokenTypes",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 7946,
+                        "referencedDeclaration": 8202,
                         "src": "1065:10:29",
                         "typeDescriptions": {
                           "typeIdentifier": "t_array$_t_string_memory_ptr_$dyn_memory_ptr",
                           "typeString": "string memory[] memory"
                         }
                       },
-                      "id": 8081,
+                      "id": 8337,
                       "indexExpression": {
                         "hexValue": "3231",
-                        "id": 8080,
+                        "id": 8336,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -16166,7 +16166,7 @@
                     "operator": "=",
                     "rightHandSide": {
                       "hexValue": "466c6f6f64206c69676874",
-                      "id": 8082,
+                      "id": 8338,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -16186,34 +16186,34 @@
                       "typeString": "string memory"
                     }
                   },
-                  "id": 8084,
+                  "id": 8340,
                   "nodeType": "ExpressionStatement",
                   "src": "1065:30:29"
                 },
                 {
                   "expression": {
-                    "id": 8089,
+                    "id": 8345,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "baseExpression": {
-                        "id": 8085,
+                        "id": 8341,
                         "name": "tokenTypes",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 7946,
+                        "referencedDeclaration": 8202,
                         "src": "1105:10:29",
                         "typeDescriptions": {
                           "typeIdentifier": "t_array$_t_string_memory_ptr_$dyn_memory_ptr",
                           "typeString": "string memory[] memory"
                         }
                       },
-                      "id": 8087,
+                      "id": 8343,
                       "indexExpression": {
                         "hexValue": "3232",
-                        "id": 8086,
+                        "id": 8342,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -16242,7 +16242,7 @@
                     "operator": "=",
                     "rightHandSide": {
                       "hexValue": "4e69676874766973696f6e20476f67676c6573",
-                      "id": 8088,
+                      "id": 8344,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -16262,34 +16262,34 @@
                       "typeString": "string memory"
                     }
                   },
-                  "id": 8090,
+                  "id": 8346,
                   "nodeType": "ExpressionStatement",
                   "src": "1105:38:29"
                 },
                 {
                   "expression": {
-                    "id": 8095,
+                    "id": 8351,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "baseExpression": {
-                        "id": 8091,
+                        "id": 8347,
                         "name": "tokenTypes",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 7946,
+                        "referencedDeclaration": 8202,
                         "src": "1153:10:29",
                         "typeDescriptions": {
                           "typeIdentifier": "t_array$_t_string_memory_ptr_$dyn_memory_ptr",
                           "typeString": "string memory[] memory"
                         }
                       },
-                      "id": 8093,
+                      "id": 8349,
                       "indexExpression": {
                         "hexValue": "3233",
-                        "id": 8092,
+                        "id": 8348,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -16318,7 +16318,7 @@
                     "operator": "=",
                     "rightHandSide": {
                       "hexValue": "506572736f6e616c20536869656c64",
-                      "id": 8094,
+                      "id": 8350,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -16338,34 +16338,34 @@
                       "typeString": "string memory"
                     }
                   },
-                  "id": 8096,
+                  "id": 8352,
                   "nodeType": "ExpressionStatement",
                   "src": "1153:34:29"
                 },
                 {
                   "expression": {
-                    "id": 8101,
+                    "id": 8357,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "baseExpression": {
-                        "id": 8097,
+                        "id": 8353,
                         "name": "tokenTypes",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 7946,
+                        "referencedDeclaration": 8202,
                         "src": "1197:10:29",
                         "typeDescriptions": {
                           "typeIdentifier": "t_array$_t_string_memory_ptr_$dyn_memory_ptr",
                           "typeString": "string memory[] memory"
                         }
                       },
-                      "id": 8099,
+                      "id": 8355,
                       "indexExpression": {
                         "hexValue": "3234",
-                        "id": 8098,
+                        "id": 8354,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -16394,7 +16394,7 @@
                     "operator": "=",
                     "rightHandSide": {
                       "hexValue": "427562626c6520536869656c64",
-                      "id": 8100,
+                      "id": 8356,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -16414,34 +16414,34 @@
                       "typeString": "string memory"
                     }
                   },
-                  "id": 8102,
+                  "id": 8358,
                   "nodeType": "ExpressionStatement",
                   "src": "1197:32:29"
                 },
                 {
                   "expression": {
-                    "id": 8107,
+                    "id": 8363,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "baseExpression": {
-                        "id": 8103,
+                        "id": 8359,
                         "name": "tokenTypes",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 7946,
+                        "referencedDeclaration": 8202,
                         "src": "1239:10:29",
                         "typeDescriptions": {
                           "typeIdentifier": "t_array$_t_string_memory_ptr_$dyn_memory_ptr",
                           "typeString": "string memory[] memory"
                         }
                       },
-                      "id": 8105,
+                      "id": 8361,
                       "indexExpression": {
                         "hexValue": "3235",
-                        "id": 8104,
+                        "id": 8360,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -16470,7 +16470,7 @@
                     "operator": "=",
                     "rightHandSide": {
                       "hexValue": "46726167204772656e616465",
-                      "id": 8106,
+                      "id": 8362,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -16490,34 +16490,34 @@
                       "typeString": "string memory"
                     }
                   },
-                  "id": 8108,
+                  "id": 8364,
                   "nodeType": "ExpressionStatement",
                   "src": "1239:31:29"
                 },
                 {
                   "expression": {
-                    "id": 8113,
+                    "id": 8369,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "baseExpression": {
-                        "id": 8109,
+                        "id": 8365,
                         "name": "tokenTypes",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 7946,
+                        "referencedDeclaration": 8202,
                         "src": "1280:10:29",
                         "typeDescriptions": {
                           "typeIdentifier": "t_array$_t_string_memory_ptr_$dyn_memory_ptr",
                           "typeString": "string memory[] memory"
                         }
                       },
-                      "id": 8111,
+                      "id": 8367,
                       "indexExpression": {
                         "hexValue": "3236",
-                        "id": 8110,
+                        "id": 8366,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -16546,7 +16546,7 @@
                     "operator": "=",
                     "rightHandSide": {
                       "hexValue": "46697265204772656e616465",
-                      "id": 8112,
+                      "id": 8368,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -16566,34 +16566,34 @@
                       "typeString": "string memory"
                     }
                   },
-                  "id": 8114,
+                  "id": 8370,
                   "nodeType": "ExpressionStatement",
                   "src": "1280:31:29"
                 },
                 {
                   "expression": {
-                    "id": 8119,
+                    "id": 8375,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "baseExpression": {
-                        "id": 8115,
+                        "id": 8371,
                         "name": "tokenTypes",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 7946,
+                        "referencedDeclaration": 8202,
                         "src": "1321:10:29",
                         "typeDescriptions": {
                           "typeIdentifier": "t_array$_t_string_memory_ptr_$dyn_memory_ptr",
                           "typeString": "string memory[] memory"
                         }
                       },
-                      "id": 8117,
+                      "id": 8373,
                       "indexExpression": {
                         "hexValue": "3237",
-                        "id": 8116,
+                        "id": 8372,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -16622,7 +16622,7 @@
                     "operator": "=",
                     "rightHandSide": {
                       "hexValue": "53686f636b204772656e616465",
-                      "id": 8118,
+                      "id": 8374,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -16642,34 +16642,34 @@
                       "typeString": "string memory"
                     }
                   },
-                  "id": 8120,
+                  "id": 8376,
                   "nodeType": "ExpressionStatement",
                   "src": "1321:32:29"
                 },
                 {
                   "expression": {
-                    "id": 8125,
+                    "id": 8381,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "baseExpression": {
-                        "id": 8121,
+                        "id": 8377,
                         "name": "tokenTypes",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 7946,
+                        "referencedDeclaration": 8202,
                         "src": "1363:10:29",
                         "typeDescriptions": {
                           "typeIdentifier": "t_array$_t_string_memory_ptr_$dyn_memory_ptr",
                           "typeString": "string memory[] memory"
                         }
                       },
-                      "id": 8123,
+                      "id": 8379,
                       "indexExpression": {
                         "hexValue": "3238",
-                        "id": 8122,
+                        "id": 8378,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -16698,7 +16698,7 @@
                     "operator": "=",
                     "rightHandSide": {
                       "hexValue": "4845204d6f72746172",
-                      "id": 8124,
+                      "id": 8380,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -16718,34 +16718,34 @@
                       "typeString": "string memory"
                     }
                   },
-                  "id": 8126,
+                  "id": 8382,
                   "nodeType": "ExpressionStatement",
                   "src": "1363:28:29"
                 },
                 {
                   "expression": {
-                    "id": 8131,
+                    "id": 8387,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "baseExpression": {
-                        "id": 8127,
+                        "id": 8383,
                         "name": "tokenTypes",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 7946,
+                        "referencedDeclaration": 8202,
                         "src": "1401:10:29",
                         "typeDescriptions": {
                           "typeIdentifier": "t_array$_t_string_memory_ptr_$dyn_memory_ptr",
                           "typeString": "string memory[] memory"
                         }
                       },
-                      "id": 8129,
+                      "id": 8385,
                       "indexExpression": {
                         "hexValue": "3239",
-                        "id": 8128,
+                        "id": 8384,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -16774,7 +16774,7 @@
                     "operator": "=",
                     "rightHandSide": {
                       "hexValue": "496e63656e6469617279204d6f72746172",
-                      "id": 8130,
+                      "id": 8386,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -16794,34 +16794,34 @@
                       "typeString": "string memory"
                     }
                   },
-                  "id": 8132,
+                  "id": 8388,
                   "nodeType": "ExpressionStatement",
                   "src": "1401:36:29"
                 },
                 {
                   "expression": {
-                    "id": 8137,
+                    "id": 8393,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "baseExpression": {
-                        "id": 8133,
+                        "id": 8389,
                         "name": "tokenTypes",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 7946,
+                        "referencedDeclaration": 8202,
                         "src": "1447:10:29",
                         "typeDescriptions": {
                           "typeIdentifier": "t_array$_t_string_memory_ptr_$dyn_memory_ptr",
                           "typeString": "string memory[] memory"
                         }
                       },
-                      "id": 8135,
+                      "id": 8391,
                       "indexExpression": {
                         "hexValue": "3330",
-                        "id": 8134,
+                        "id": 8390,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -16850,7 +16850,7 @@
                     "operator": "=",
                     "rightHandSide": {
                       "hexValue": "454d50204d6f72746172",
-                      "id": 8136,
+                      "id": 8392,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -16870,34 +16870,34 @@
                       "typeString": "string memory"
                     }
                   },
-                  "id": 8138,
+                  "id": 8394,
                   "nodeType": "ExpressionStatement",
                   "src": "1447:29:29"
                 },
                 {
                   "expression": {
-                    "id": 8143,
+                    "id": 8399,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "baseExpression": {
-                        "id": 8139,
+                        "id": 8395,
                         "name": "tokenTypes",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 7946,
+                        "referencedDeclaration": 8202,
                         "src": "1486:10:29",
                         "typeDescriptions": {
                           "typeIdentifier": "t_array$_t_string_memory_ptr_$dyn_memory_ptr",
                           "typeString": "string memory[] memory"
                         }
                       },
-                      "id": 8141,
+                      "id": 8397,
                       "indexExpression": {
                         "hexValue": "3331",
-                        "id": 8140,
+                        "id": 8396,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -16926,7 +16926,7 @@
                     "operator": "=",
                     "rightHandSide": {
                       "hexValue": "506f77657220476c6f7665",
-                      "id": 8142,
+                      "id": 8398,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -16946,34 +16946,34 @@
                       "typeString": "string memory"
                     }
                   },
-                  "id": 8144,
+                  "id": 8400,
                   "nodeType": "ExpressionStatement",
                   "src": "1486:30:29"
                 },
                 {
                   "expression": {
-                    "id": 8149,
+                    "id": 8405,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "baseExpression": {
-                        "id": 8145,
+                        "id": 8401,
                         "name": "tokenTypes",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 7946,
+                        "referencedDeclaration": 8202,
                         "src": "1526:10:29",
                         "typeDescriptions": {
                           "typeIdentifier": "t_array$_t_string_memory_ptr_$dyn_memory_ptr",
                           "typeString": "string memory[] memory"
                         }
                       },
-                      "id": 8147,
+                      "id": 8403,
                       "indexExpression": {
                         "hexValue": "3332",
-                        "id": 8146,
+                        "id": 8402,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -17002,7 +17002,7 @@
                     "operator": "=",
                     "rightHandSide": {
                       "hexValue": "52656d6f7465204c61756e636820616e642047756964616e63652053797374656d",
-                      "id": 8148,
+                      "id": 8404,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -17022,34 +17022,34 @@
                       "typeString": "string memory"
                     }
                   },
-                  "id": 8150,
+                  "id": 8406,
                   "nodeType": "ExpressionStatement",
                   "src": "1526:52:29"
                 },
                 {
                   "expression": {
-                    "id": 8155,
+                    "id": 8411,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "baseExpression": {
-                        "id": 8151,
+                        "id": 8407,
                         "name": "tokenTypes",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 7946,
+                        "referencedDeclaration": 8202,
                         "src": "1588:10:29",
                         "typeDescriptions": {
                           "typeIdentifier": "t_array$_t_string_memory_ptr_$dyn_memory_ptr",
                           "typeString": "string memory[] memory"
                         }
                       },
-                      "id": 8153,
+                      "id": 8409,
                       "indexExpression": {
                         "hexValue": "3333",
-                        "id": 8152,
+                        "id": 8408,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -17078,7 +17078,7 @@
                     "operator": "=",
                     "rightHandSide": {
                       "hexValue": "54656c65706f72746572205061636b",
-                      "id": 8154,
+                      "id": 8410,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -17098,34 +17098,34 @@
                       "typeString": "string memory"
                     }
                   },
-                  "id": 8156,
+                  "id": 8412,
                   "nodeType": "ExpressionStatement",
                   "src": "1588:34:29"
                 },
                 {
                   "expression": {
-                    "id": 8161,
+                    "id": 8417,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "baseExpression": {
-                        "id": 8157,
+                        "id": 8413,
                         "name": "tokenTypes",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 7946,
+                        "referencedDeclaration": 8202,
                         "src": "1632:10:29",
                         "typeDescriptions": {
                           "typeIdentifier": "t_array$_t_string_memory_ptr_$dyn_memory_ptr",
                           "typeString": "string memory[] memory"
                         }
                       },
-                      "id": 8159,
+                      "id": 8415,
                       "indexExpression": {
                         "hexValue": "3334",
-                        "id": 8158,
+                        "id": 8414,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -17154,7 +17154,7 @@
                     "operator": "=",
                     "rightHandSide": {
                       "hexValue": "43616d7073697465",
-                      "id": 8160,
+                      "id": 8416,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -17174,7 +17174,7 @@
                       "typeString": "string memory"
                     }
                   },
-                  "id": 8162,
+                  "id": 8418,
                   "nodeType": "ExpressionStatement",
                   "src": "1632:27:29"
                 },
@@ -17182,11 +17182,11 @@
                   "expression": {
                     "arguments": [
                       {
-                        "id": 8164,
+                        "id": 8420,
                         "name": "tokenTypes",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 7946,
+                        "referencedDeclaration": 8202,
                         "src": "1683:10:29",
                         "typeDescriptions": {
                           "typeIdentifier": "t_array$_t_string_memory_ptr_$dyn_memory_ptr",
@@ -17201,18 +17201,18 @@
                           "typeString": "string memory[] memory"
                         }
                       ],
-                      "id": 8163,
+                      "id": 8419,
                       "name": "addTokenTypes",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 7829,
+                      "referencedDeclaration": 8085,
                       "src": "1669:13:29",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_internal_nonpayable$_t_array$_t_string_memory_ptr_$dyn_memory_ptr_$returns$__$",
                         "typeString": "function (string memory[] memory)"
                       }
                     },
-                    "id": 8165,
+                    "id": 8421,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -17227,24 +17227,24 @@
                       "typeString": "tuple()"
                     }
                   },
-                  "id": 8166,
+                  "id": 8422,
                   "nodeType": "ExpressionStatement",
                   "src": "1669:25:29"
                 }
               ]
             },
-            "id": 8168,
+            "id": 8424,
             "implemented": true,
             "kind": "constructor",
             "modifiers": [
               {
                 "arguments": [
                   {
-                    "id": 7939,
+                    "id": 8195,
                     "name": "controllerAddress",
                     "nodeType": "Identifier",
                     "overloadedDeclarations": [],
-                    "referencedDeclaration": 7936,
+                    "referencedDeclaration": 8192,
                     "src": "178:17:29",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -17252,13 +17252,13 @@
                     }
                   }
                 ],
-                "id": 7940,
+                "id": 8196,
                 "kind": "baseConstructorSpecifier",
                 "modifierName": {
-                  "id": 7938,
+                  "id": 8194,
                   "name": "GameToken",
                   "nodeType": "IdentifierPath",
-                  "referencedDeclaration": 7929,
+                  "referencedDeclaration": 8185,
                   "src": "168:9:29"
                 },
                 "nodeType": "ModifierInvocation",
@@ -17269,17 +17269,17 @@
             "nameLocation": "-1:-1:-1",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 7937,
+              "id": 8193,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 7936,
+                  "id": 8192,
                   "mutability": "mutable",
                   "name": "controllerAddress",
                   "nameLocation": "149:17:29",
                   "nodeType": "VariableDeclaration",
-                  "scope": 8168,
+                  "scope": 8424,
                   "src": "141:25:29",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -17288,7 +17288,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 7935,
+                    "id": 8191,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "141:7:29",
@@ -17304,19 +17304,19 @@
               "src": "140:27:29"
             },
             "returnParameters": {
-              "id": 7941,
+              "id": 8197,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "197:0:29"
             },
-            "scope": 8169,
+            "scope": 8425,
             "src": "129:1572:29",
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "public"
           }
         ],
-        "scope": 8170,
+        "scope": 8426,
         "src": "96:1607:29",
         "usedErrors": []
       }
@@ -17450,12 +17450,12 @@
         }
       },
       "links": {},
-      "address": "0xd3c6a133bDb77407943316b96c9785f44d123596",
-      "transactionHash": "0x7cdd9d3137c5ecb3dc089b43311918945c31e4e9c81449e8e853c3fe66a15cb5"
+      "address": "0x4Ad60474b6e852F0e6Da953528F26A6A560e198D",
+      "transactionHash": "0xad50ffd8c8a85a15f854f5e4eaac5d35e92f590117756e415d4aba40e8a91727"
     }
   },
   "schemaVersion": "3.4.4",
-  "updatedAt": "2022-05-17T04:27:35.768Z",
+  "updatedAt": "2022-05-17T04:56:11.470Z",
   "networkType": "ethereum",
   "devdoc": {
     "kind": "dev",

@@ -11278,7 +11278,7 @@
         4769
       ],
       "GameToken": [
-        7929
+        8185
       ],
       "IAccessControl": [
         3810
@@ -11290,18 +11290,18 @@
         4170
       ],
       "Relic": [
-        8271
+        8527
       ],
       "Strings": [
         4134
       ]
     },
-    "id": 8272,
+    "id": 8528,
     "license": "GPL-3.0",
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 8213,
+        "id": 8469,
         "literals": [
           "solidity",
           ">=",
@@ -11317,11 +11317,11 @@
       {
         "absolutePath": "project:/contracts/tokens/GameToken.sol",
         "file": "./GameToken.sol",
-        "id": 8214,
+        "id": 8470,
         "nameLocation": "-1:-1:-1",
         "nodeType": "ImportDirective",
-        "scope": 8272,
-        "sourceUnit": 7930,
+        "scope": 8528,
+        "sourceUnit": 8186,
         "src": "69:25:31",
         "symbolAliases": [],
         "unitAlias": ""
@@ -11331,13 +11331,13 @@
         "baseContracts": [
           {
             "baseName": {
-              "id": 8215,
+              "id": 8471,
               "name": "GameToken",
               "nodeType": "IdentifierPath",
-              "referencedDeclaration": 7929,
+              "referencedDeclaration": 8185,
               "src": "114:9:31"
             },
-            "id": 8216,
+            "id": 8472,
             "nodeType": "InheritanceSpecifier",
             "src": "114:9:31"
           }
@@ -11346,10 +11346,10 @@
         "contractDependencies": [],
         "contractKind": "contract",
         "fullyImplemented": true,
-        "id": 8271,
+        "id": 8527,
         "linearizedBaseContracts": [
-          8271,
-          7929,
+          8527,
+          8185,
           3737,
           3612,
           4158,
@@ -11364,23 +11364,23 @@
         "nodes": [
           {
             "body": {
-              "id": 8269,
+              "id": 8525,
               "nodeType": "Block",
               "src": "198:271:31",
               "statements": [
                 {
                   "assignments": [
-                    8228
+                    8484
                   ],
                   "declarations": [
                     {
                       "constant": false,
-                      "id": 8228,
+                      "id": 8484,
                       "mutability": "mutable",
                       "name": "tokenTypes",
                       "nameLocation": "224:10:31",
                       "nodeType": "VariableDeclaration",
-                      "scope": 8269,
+                      "scope": 8525,
                       "src": "208:26:31",
                       "stateVariable": false,
                       "storageLocation": "memory",
@@ -11390,7 +11390,7 @@
                       },
                       "typeName": {
                         "baseType": {
-                          "id": 8226,
+                          "id": 8482,
                           "name": "string",
                           "nodeType": "ElementaryTypeName",
                           "src": "208:6:31",
@@ -11399,7 +11399,7 @@
                             "typeString": "string"
                           }
                         },
-                        "id": 8227,
+                        "id": 8483,
                         "nodeType": "ArrayTypeName",
                         "src": "208:8:31",
                         "typeDescriptions": {
@@ -11410,12 +11410,12 @@
                       "visibility": "internal"
                     }
                   ],
-                  "id": 8234,
+                  "id": 8490,
                   "initialValue": {
                     "arguments": [
                       {
                         "hexValue": "36",
-                        "id": 8232,
+                        "id": 8488,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -11437,7 +11437,7 @@
                           "typeString": "int_const 6"
                         }
                       ],
-                      "id": 8231,
+                      "id": 8487,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -11450,7 +11450,7 @@
                       },
                       "typeName": {
                         "baseType": {
-                          "id": 8229,
+                          "id": 8485,
                           "name": "string",
                           "nodeType": "ElementaryTypeName",
                           "src": "241:6:31",
@@ -11459,7 +11459,7 @@
                             "typeString": "string"
                           }
                         },
-                        "id": 8230,
+                        "id": 8486,
                         "nodeType": "ArrayTypeName",
                         "src": "241:8:31",
                         "typeDescriptions": {
@@ -11468,7 +11468,7 @@
                         }
                       }
                     },
-                    "id": 8233,
+                    "id": 8489,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": true,
@@ -11488,28 +11488,28 @@
                 },
                 {
                   "expression": {
-                    "id": 8239,
+                    "id": 8495,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "baseExpression": {
-                        "id": 8235,
+                        "id": 8491,
                         "name": "tokenTypes",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 8228,
+                        "referencedDeclaration": 8484,
                         "src": "262:10:31",
                         "typeDescriptions": {
                           "typeIdentifier": "t_array$_t_string_memory_ptr_$dyn_memory_ptr",
                           "typeString": "string memory[] memory"
                         }
                       },
-                      "id": 8237,
+                      "id": 8493,
                       "indexExpression": {
                         "hexValue": "30",
-                        "id": 8236,
+                        "id": 8492,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -11538,7 +11538,7 @@
                     "operator": "=",
                     "rightHandSide": {
                       "hexValue": "52656c69632031",
-                      "id": 8238,
+                      "id": 8494,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -11558,34 +11558,34 @@
                       "typeString": "string memory"
                     }
                   },
-                  "id": 8240,
+                  "id": 8496,
                   "nodeType": "ExpressionStatement",
                   "src": "262:25:31"
                 },
                 {
                   "expression": {
-                    "id": 8245,
+                    "id": 8501,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "baseExpression": {
-                        "id": 8241,
+                        "id": 8497,
                         "name": "tokenTypes",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 8228,
+                        "referencedDeclaration": 8484,
                         "src": "297:10:31",
                         "typeDescriptions": {
                           "typeIdentifier": "t_array$_t_string_memory_ptr_$dyn_memory_ptr",
                           "typeString": "string memory[] memory"
                         }
                       },
-                      "id": 8243,
+                      "id": 8499,
                       "indexExpression": {
                         "hexValue": "31",
-                        "id": 8242,
+                        "id": 8498,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -11614,7 +11614,7 @@
                     "operator": "=",
                     "rightHandSide": {
                       "hexValue": "52656c69632032",
-                      "id": 8244,
+                      "id": 8500,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -11634,34 +11634,34 @@
                       "typeString": "string memory"
                     }
                   },
-                  "id": 8246,
+                  "id": 8502,
                   "nodeType": "ExpressionStatement",
                   "src": "297:25:31"
                 },
                 {
                   "expression": {
-                    "id": 8251,
+                    "id": 8507,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "baseExpression": {
-                        "id": 8247,
+                        "id": 8503,
                         "name": "tokenTypes",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 8228,
+                        "referencedDeclaration": 8484,
                         "src": "332:10:31",
                         "typeDescriptions": {
                           "typeIdentifier": "t_array$_t_string_memory_ptr_$dyn_memory_ptr",
                           "typeString": "string memory[] memory"
                         }
                       },
-                      "id": 8249,
+                      "id": 8505,
                       "indexExpression": {
                         "hexValue": "32",
-                        "id": 8248,
+                        "id": 8504,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -11690,7 +11690,7 @@
                     "operator": "=",
                     "rightHandSide": {
                       "hexValue": "52656c69632033",
-                      "id": 8250,
+                      "id": 8506,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -11710,34 +11710,34 @@
                       "typeString": "string memory"
                     }
                   },
-                  "id": 8252,
+                  "id": 8508,
                   "nodeType": "ExpressionStatement",
                   "src": "332:25:31"
                 },
                 {
                   "expression": {
-                    "id": 8257,
+                    "id": 8513,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "baseExpression": {
-                        "id": 8253,
+                        "id": 8509,
                         "name": "tokenTypes",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 8228,
+                        "referencedDeclaration": 8484,
                         "src": "367:10:31",
                         "typeDescriptions": {
                           "typeIdentifier": "t_array$_t_string_memory_ptr_$dyn_memory_ptr",
                           "typeString": "string memory[] memory"
                         }
                       },
-                      "id": 8255,
+                      "id": 8511,
                       "indexExpression": {
                         "hexValue": "33",
-                        "id": 8254,
+                        "id": 8510,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -11766,7 +11766,7 @@
                     "operator": "=",
                     "rightHandSide": {
                       "hexValue": "52656c69632034",
-                      "id": 8256,
+                      "id": 8512,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -11786,34 +11786,34 @@
                       "typeString": "string memory"
                     }
                   },
-                  "id": 8258,
+                  "id": 8514,
                   "nodeType": "ExpressionStatement",
                   "src": "367:25:31"
                 },
                 {
                   "expression": {
-                    "id": 8263,
+                    "id": 8519,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "baseExpression": {
-                        "id": 8259,
+                        "id": 8515,
                         "name": "tokenTypes",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 8228,
+                        "referencedDeclaration": 8484,
                         "src": "402:10:31",
                         "typeDescriptions": {
                           "typeIdentifier": "t_array$_t_string_memory_ptr_$dyn_memory_ptr",
                           "typeString": "string memory[] memory"
                         }
                       },
-                      "id": 8261,
+                      "id": 8517,
                       "indexExpression": {
                         "hexValue": "34",
-                        "id": 8260,
+                        "id": 8516,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -11842,7 +11842,7 @@
                     "operator": "=",
                     "rightHandSide": {
                       "hexValue": "52656c69632035",
-                      "id": 8262,
+                      "id": 8518,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -11862,7 +11862,7 @@
                       "typeString": "string memory"
                     }
                   },
-                  "id": 8264,
+                  "id": 8520,
                   "nodeType": "ExpressionStatement",
                   "src": "402:25:31"
                 },
@@ -11870,11 +11870,11 @@
                   "expression": {
                     "arguments": [
                       {
-                        "id": 8266,
+                        "id": 8522,
                         "name": "tokenTypes",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 8228,
+                        "referencedDeclaration": 8484,
                         "src": "451:10:31",
                         "typeDescriptions": {
                           "typeIdentifier": "t_array$_t_string_memory_ptr_$dyn_memory_ptr",
@@ -11889,18 +11889,18 @@
                           "typeString": "string memory[] memory"
                         }
                       ],
-                      "id": 8265,
+                      "id": 8521,
                       "name": "addTokenTypes",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 7829,
+                      "referencedDeclaration": 8085,
                       "src": "437:13:31",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_internal_nonpayable$_t_array$_t_string_memory_ptr_$dyn_memory_ptr_$returns$__$",
                         "typeString": "function (string memory[] memory)"
                       }
                     },
-                    "id": 8267,
+                    "id": 8523,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -11915,24 +11915,24 @@
                       "typeString": "tuple()"
                     }
                   },
-                  "id": 8268,
+                  "id": 8524,
                   "nodeType": "ExpressionStatement",
                   "src": "437:25:31"
                 }
               ]
             },
-            "id": 8270,
+            "id": 8526,
             "implemented": true,
             "kind": "constructor",
             "modifiers": [
               {
                 "arguments": [
                   {
-                    "id": 8221,
+                    "id": 8477,
                     "name": "controllerAddress",
                     "nodeType": "Identifier",
                     "overloadedDeclarations": [],
-                    "referencedDeclaration": 8218,
+                    "referencedDeclaration": 8474,
                     "src": "179:17:31",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -11940,13 +11940,13 @@
                     }
                   }
                 ],
-                "id": 8222,
+                "id": 8478,
                 "kind": "baseConstructorSpecifier",
                 "modifierName": {
-                  "id": 8220,
+                  "id": 8476,
                   "name": "GameToken",
                   "nodeType": "IdentifierPath",
-                  "referencedDeclaration": 7929,
+                  "referencedDeclaration": 8185,
                   "src": "169:9:31"
                 },
                 "nodeType": "ModifierInvocation",
@@ -11957,17 +11957,17 @@
             "nameLocation": "-1:-1:-1",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 8219,
+              "id": 8475,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 8218,
+                  "id": 8474,
                   "mutability": "mutable",
                   "name": "controllerAddress",
                   "nameLocation": "150:17:31",
                   "nodeType": "VariableDeclaration",
-                  "scope": 8270,
+                  "scope": 8526,
                   "src": "142:25:31",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -11976,7 +11976,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 8217,
+                    "id": 8473,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "142:7:31",
@@ -11992,19 +11992,19 @@
               "src": "141:27:31"
             },
             "returnParameters": {
-              "id": 8223,
+              "id": 8479,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "198:0:31"
             },
-            "scope": 8271,
+            "scope": 8527,
             "src": "130:339:31",
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "public"
           }
         ],
-        "scope": 8272,
+        "scope": 8528,
         "src": "96:375:31",
         "usedErrors": []
       }
@@ -12030,7 +12030,7 @@
         4769
       ],
       "GameToken": [
-        7929
+        8185
       ],
       "IAccessControl": [
         3810
@@ -12042,18 +12042,18 @@
         4170
       ],
       "Relic": [
-        8271
+        8527
       ],
       "Strings": [
         4134
       ]
     },
-    "id": 8272,
+    "id": 8528,
     "license": "GPL-3.0",
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 8213,
+        "id": 8469,
         "literals": [
           "solidity",
           ">=",
@@ -12069,11 +12069,11 @@
       {
         "absolutePath": "project:/contracts/tokens/GameToken.sol",
         "file": "./GameToken.sol",
-        "id": 8214,
+        "id": 8470,
         "nameLocation": "-1:-1:-1",
         "nodeType": "ImportDirective",
-        "scope": 8272,
-        "sourceUnit": 7930,
+        "scope": 8528,
+        "sourceUnit": 8186,
         "src": "69:25:31",
         "symbolAliases": [],
         "unitAlias": ""
@@ -12083,13 +12083,13 @@
         "baseContracts": [
           {
             "baseName": {
-              "id": 8215,
+              "id": 8471,
               "name": "GameToken",
               "nodeType": "IdentifierPath",
-              "referencedDeclaration": 7929,
+              "referencedDeclaration": 8185,
               "src": "114:9:31"
             },
-            "id": 8216,
+            "id": 8472,
             "nodeType": "InheritanceSpecifier",
             "src": "114:9:31"
           }
@@ -12098,10 +12098,10 @@
         "contractDependencies": [],
         "contractKind": "contract",
         "fullyImplemented": true,
-        "id": 8271,
+        "id": 8527,
         "linearizedBaseContracts": [
-          8271,
-          7929,
+          8527,
+          8185,
           3737,
           3612,
           4158,
@@ -12116,23 +12116,23 @@
         "nodes": [
           {
             "body": {
-              "id": 8269,
+              "id": 8525,
               "nodeType": "Block",
               "src": "198:271:31",
               "statements": [
                 {
                   "assignments": [
-                    8228
+                    8484
                   ],
                   "declarations": [
                     {
                       "constant": false,
-                      "id": 8228,
+                      "id": 8484,
                       "mutability": "mutable",
                       "name": "tokenTypes",
                       "nameLocation": "224:10:31",
                       "nodeType": "VariableDeclaration",
-                      "scope": 8269,
+                      "scope": 8525,
                       "src": "208:26:31",
                       "stateVariable": false,
                       "storageLocation": "memory",
@@ -12142,7 +12142,7 @@
                       },
                       "typeName": {
                         "baseType": {
-                          "id": 8226,
+                          "id": 8482,
                           "name": "string",
                           "nodeType": "ElementaryTypeName",
                           "src": "208:6:31",
@@ -12151,7 +12151,7 @@
                             "typeString": "string"
                           }
                         },
-                        "id": 8227,
+                        "id": 8483,
                         "nodeType": "ArrayTypeName",
                         "src": "208:8:31",
                         "typeDescriptions": {
@@ -12162,12 +12162,12 @@
                       "visibility": "internal"
                     }
                   ],
-                  "id": 8234,
+                  "id": 8490,
                   "initialValue": {
                     "arguments": [
                       {
                         "hexValue": "36",
-                        "id": 8232,
+                        "id": 8488,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -12189,7 +12189,7 @@
                           "typeString": "int_const 6"
                         }
                       ],
-                      "id": 8231,
+                      "id": 8487,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -12202,7 +12202,7 @@
                       },
                       "typeName": {
                         "baseType": {
-                          "id": 8229,
+                          "id": 8485,
                           "name": "string",
                           "nodeType": "ElementaryTypeName",
                           "src": "241:6:31",
@@ -12211,7 +12211,7 @@
                             "typeString": "string"
                           }
                         },
-                        "id": 8230,
+                        "id": 8486,
                         "nodeType": "ArrayTypeName",
                         "src": "241:8:31",
                         "typeDescriptions": {
@@ -12220,7 +12220,7 @@
                         }
                       }
                     },
-                    "id": 8233,
+                    "id": 8489,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": true,
@@ -12240,28 +12240,28 @@
                 },
                 {
                   "expression": {
-                    "id": 8239,
+                    "id": 8495,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "baseExpression": {
-                        "id": 8235,
+                        "id": 8491,
                         "name": "tokenTypes",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 8228,
+                        "referencedDeclaration": 8484,
                         "src": "262:10:31",
                         "typeDescriptions": {
                           "typeIdentifier": "t_array$_t_string_memory_ptr_$dyn_memory_ptr",
                           "typeString": "string memory[] memory"
                         }
                       },
-                      "id": 8237,
+                      "id": 8493,
                       "indexExpression": {
                         "hexValue": "30",
-                        "id": 8236,
+                        "id": 8492,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -12290,7 +12290,7 @@
                     "operator": "=",
                     "rightHandSide": {
                       "hexValue": "52656c69632031",
-                      "id": 8238,
+                      "id": 8494,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -12310,34 +12310,34 @@
                       "typeString": "string memory"
                     }
                   },
-                  "id": 8240,
+                  "id": 8496,
                   "nodeType": "ExpressionStatement",
                   "src": "262:25:31"
                 },
                 {
                   "expression": {
-                    "id": 8245,
+                    "id": 8501,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "baseExpression": {
-                        "id": 8241,
+                        "id": 8497,
                         "name": "tokenTypes",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 8228,
+                        "referencedDeclaration": 8484,
                         "src": "297:10:31",
                         "typeDescriptions": {
                           "typeIdentifier": "t_array$_t_string_memory_ptr_$dyn_memory_ptr",
                           "typeString": "string memory[] memory"
                         }
                       },
-                      "id": 8243,
+                      "id": 8499,
                       "indexExpression": {
                         "hexValue": "31",
-                        "id": 8242,
+                        "id": 8498,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -12366,7 +12366,7 @@
                     "operator": "=",
                     "rightHandSide": {
                       "hexValue": "52656c69632032",
-                      "id": 8244,
+                      "id": 8500,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -12386,34 +12386,34 @@
                       "typeString": "string memory"
                     }
                   },
-                  "id": 8246,
+                  "id": 8502,
                   "nodeType": "ExpressionStatement",
                   "src": "297:25:31"
                 },
                 {
                   "expression": {
-                    "id": 8251,
+                    "id": 8507,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "baseExpression": {
-                        "id": 8247,
+                        "id": 8503,
                         "name": "tokenTypes",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 8228,
+                        "referencedDeclaration": 8484,
                         "src": "332:10:31",
                         "typeDescriptions": {
                           "typeIdentifier": "t_array$_t_string_memory_ptr_$dyn_memory_ptr",
                           "typeString": "string memory[] memory"
                         }
                       },
-                      "id": 8249,
+                      "id": 8505,
                       "indexExpression": {
                         "hexValue": "32",
-                        "id": 8248,
+                        "id": 8504,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -12442,7 +12442,7 @@
                     "operator": "=",
                     "rightHandSide": {
                       "hexValue": "52656c69632033",
-                      "id": 8250,
+                      "id": 8506,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -12462,34 +12462,34 @@
                       "typeString": "string memory"
                     }
                   },
-                  "id": 8252,
+                  "id": 8508,
                   "nodeType": "ExpressionStatement",
                   "src": "332:25:31"
                 },
                 {
                   "expression": {
-                    "id": 8257,
+                    "id": 8513,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "baseExpression": {
-                        "id": 8253,
+                        "id": 8509,
                         "name": "tokenTypes",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 8228,
+                        "referencedDeclaration": 8484,
                         "src": "367:10:31",
                         "typeDescriptions": {
                           "typeIdentifier": "t_array$_t_string_memory_ptr_$dyn_memory_ptr",
                           "typeString": "string memory[] memory"
                         }
                       },
-                      "id": 8255,
+                      "id": 8511,
                       "indexExpression": {
                         "hexValue": "33",
-                        "id": 8254,
+                        "id": 8510,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -12518,7 +12518,7 @@
                     "operator": "=",
                     "rightHandSide": {
                       "hexValue": "52656c69632034",
-                      "id": 8256,
+                      "id": 8512,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -12538,34 +12538,34 @@
                       "typeString": "string memory"
                     }
                   },
-                  "id": 8258,
+                  "id": 8514,
                   "nodeType": "ExpressionStatement",
                   "src": "367:25:31"
                 },
                 {
                   "expression": {
-                    "id": 8263,
+                    "id": 8519,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "baseExpression": {
-                        "id": 8259,
+                        "id": 8515,
                         "name": "tokenTypes",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 8228,
+                        "referencedDeclaration": 8484,
                         "src": "402:10:31",
                         "typeDescriptions": {
                           "typeIdentifier": "t_array$_t_string_memory_ptr_$dyn_memory_ptr",
                           "typeString": "string memory[] memory"
                         }
                       },
-                      "id": 8261,
+                      "id": 8517,
                       "indexExpression": {
                         "hexValue": "34",
-                        "id": 8260,
+                        "id": 8516,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -12594,7 +12594,7 @@
                     "operator": "=",
                     "rightHandSide": {
                       "hexValue": "52656c69632035",
-                      "id": 8262,
+                      "id": 8518,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -12614,7 +12614,7 @@
                       "typeString": "string memory"
                     }
                   },
-                  "id": 8264,
+                  "id": 8520,
                   "nodeType": "ExpressionStatement",
                   "src": "402:25:31"
                 },
@@ -12622,11 +12622,11 @@
                   "expression": {
                     "arguments": [
                       {
-                        "id": 8266,
+                        "id": 8522,
                         "name": "tokenTypes",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 8228,
+                        "referencedDeclaration": 8484,
                         "src": "451:10:31",
                         "typeDescriptions": {
                           "typeIdentifier": "t_array$_t_string_memory_ptr_$dyn_memory_ptr",
@@ -12641,18 +12641,18 @@
                           "typeString": "string memory[] memory"
                         }
                       ],
-                      "id": 8265,
+                      "id": 8521,
                       "name": "addTokenTypes",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 7829,
+                      "referencedDeclaration": 8085,
                       "src": "437:13:31",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_internal_nonpayable$_t_array$_t_string_memory_ptr_$dyn_memory_ptr_$returns$__$",
                         "typeString": "function (string memory[] memory)"
                       }
                     },
-                    "id": 8267,
+                    "id": 8523,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -12667,24 +12667,24 @@
                       "typeString": "tuple()"
                     }
                   },
-                  "id": 8268,
+                  "id": 8524,
                   "nodeType": "ExpressionStatement",
                   "src": "437:25:31"
                 }
               ]
             },
-            "id": 8270,
+            "id": 8526,
             "implemented": true,
             "kind": "constructor",
             "modifiers": [
               {
                 "arguments": [
                   {
-                    "id": 8221,
+                    "id": 8477,
                     "name": "controllerAddress",
                     "nodeType": "Identifier",
                     "overloadedDeclarations": [],
-                    "referencedDeclaration": 8218,
+                    "referencedDeclaration": 8474,
                     "src": "179:17:31",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -12692,13 +12692,13 @@
                     }
                   }
                 ],
-                "id": 8222,
+                "id": 8478,
                 "kind": "baseConstructorSpecifier",
                 "modifierName": {
-                  "id": 8220,
+                  "id": 8476,
                   "name": "GameToken",
                   "nodeType": "IdentifierPath",
-                  "referencedDeclaration": 7929,
+                  "referencedDeclaration": 8185,
                   "src": "169:9:31"
                 },
                 "nodeType": "ModifierInvocation",
@@ -12709,17 +12709,17 @@
             "nameLocation": "-1:-1:-1",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 8219,
+              "id": 8475,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 8218,
+                  "id": 8474,
                   "mutability": "mutable",
                   "name": "controllerAddress",
                   "nameLocation": "150:17:31",
                   "nodeType": "VariableDeclaration",
-                  "scope": 8270,
+                  "scope": 8526,
                   "src": "142:25:31",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -12728,7 +12728,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 8217,
+                    "id": 8473,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "142:7:31",
@@ -12744,19 +12744,19 @@
               "src": "141:27:31"
             },
             "returnParameters": {
-              "id": 8223,
+              "id": 8479,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "198:0:31"
             },
-            "scope": 8271,
+            "scope": 8527,
             "src": "130:339:31",
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "public"
           }
         ],
-        "scope": 8272,
+        "scope": 8528,
         "src": "96:375:31",
         "usedErrors": []
       }
@@ -12890,12 +12890,12 @@
         }
       },
       "links": {},
-      "address": "0x1E6452f7f740D99Cf0D7BA8eE5E1c0CBA0c6753c",
-      "transactionHash": "0xc3462fcee89e8e5b3439fe50e55d5959f9f2fec37f0f69fca1e904d620be6178"
+      "address": "0xFa49CbADC9452288d3a84dB49A43aA4217076E84",
+      "transactionHash": "0xbcab59caf2dae0c5c2d2f3661a823e3541c24922bf45c27ce4f6418e65bd7c09"
     }
   },
   "schemaVersion": "3.4.4",
-  "updatedAt": "2022-05-17T04:27:35.780Z",
+  "updatedAt": "2022-05-17T04:56:11.480Z",
   "networkType": "ethereum",
   "devdoc": {
     "kind": "dev",
