@@ -153,8 +153,8 @@ contract HexplorationController is GameController {
     }
 
     function submitAction(
-        uint8 actionIndex,
         uint256 playerID,
+        uint8 actionIndex,
         string[] memory options,
         string memory leftHand,
         string memory rightHand,
