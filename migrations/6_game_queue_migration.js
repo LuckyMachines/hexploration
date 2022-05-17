@@ -8,18 +8,34 @@ const addresses = require("./addresses.js");
 module.exports = async (deployer, network, [defaultAccount]) => {
   console.log("Board address:", addresses.GANACHE_HEXPLORATION_BOARD);
   try {
-    await deployer.deploy(Queue);
     await deployer.deploy(Gameplay);
+    await deployer.deploy(Queue, Gameplay.address);
+
+    console.log("Adding queue to gameplay...");
+    const gp = await Gameplay.deployed();
+    await gp.setQueue(Queue.address);
+    console.log("queue added");
+
     // set verified controller...
-    // const cc = await CharacterCard.deployed();
-    // console.log("Character card deployed to:", CharacterCard.address);
-    // console.log("Adding verified controller:", VERIFIED_CONTROLLER_ADDRESS);
-    // await cc.addVerifiedController(VERIFIED_CONTROLLER_ADDRESS);
-    // console.log("Controller added");
-    // console.log("Adding card to game board...");
-    // let hexBoard = await GameBoard.at(GAME_BOARD_ADDRESS);
+    const queue = await Queue.deployed();
+    console.log(
+      "Adding controller to HexplorationQueue:",
+      addresses.GANACHE_HEXPLORATION_CONTROLLER
+    );
+    await queue.addVerifiedController(
+      addresses.GANACHE_HEXPLORATION_CONTROLLER
+    );
+    console.log("Controller added");
+
+    console.log("Adding queue to game board...");
+    let hexBoard = await GameBoard.at(addresses.GANACHE_HEXPLORATION_BOARD);
     // await hexBoard.setCharacterCard(CharacterCard.address);
     // console.log("Character card set.");
+
+    console.log(
+      `GANACHE_HEXPLORATION_QUEUE: "${Queue.address}",
+GANACHE_HEXPLORATION_GAMEPLAY: "${Gameplay.address}"`
+    );
   } catch (err) {
     console.error(err);
   }

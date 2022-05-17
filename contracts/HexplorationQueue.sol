@@ -86,9 +86,9 @@ contract HexplorationQueue is AccessControlEnumerable {
 
     // Sent from controller
     function sumbitActionForPlayer(
+        uint256 playerID,
         Action action,
         string[] memory options,
-        uint256 playerID,
         string memory leftHand,
         string memory rightHand,
         uint256 _queueID
@@ -122,6 +122,22 @@ contract HexplorationQueue is AccessControlEnumerable {
         onlyRole(VERIFIED_CONTROLLER_ROLE)
     {
         _processAllActions(_queueID);
+    }
+
+    function getAllPlayers(uint256 _queueID)
+        public
+        view
+        returns (uint256[] memory)
+    {
+        return players[_queueID];
+    }
+
+    function getSubmissionOptions(uint256 _queueID, uint256 _playerID)
+        public
+        view
+        returns (string[] memory)
+    {
+        return submissionOptions[_queueID][_playerID];
     }
 
     // Gameplay interactions

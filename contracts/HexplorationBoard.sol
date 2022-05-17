@@ -11,6 +11,7 @@ contract HexplorationBoard is HexGrid {
     HexplorationZone internal HEX_ZONE;
     address public characterCard;
     address public tokenInventory;
+    address public gameplayQueue;
     // game ID => zone alias returns bool
     mapping(uint256 => mapping(string => bool)) public zoneEnabled;
 
@@ -41,6 +42,13 @@ contract HexplorationBoard is HexGrid {
         onlyRole(DEFAULT_ADMIN_ROLE)
     {
         tokenInventory = tokenInventoryAddress;
+    }
+
+    function setGameplayQueue(address gameplayQueueAddress)
+        public
+        onlyRole(DEFAULT_ADMIN_ROLE)
+    {
+        gameplayQueue = gameplayQueueAddress;
     }
 
     function registerPlayer(address playerAddress, uint256 gameID)

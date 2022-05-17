@@ -153,12 +153,34 @@ contract HexplorationController is GameController {
     }
 
     function submitAction(
-        uint256 gameID,
         uint8 actionIndex,
         uint256 playerID,
-        string[] memory options
+        string[] memory options,
+        string memory leftHand,
+        string memory rightHand,
+        uint256 gameID,
+        address boardAddress
     ) public {
-        // TODO: sumbit to queue
+        HexplorationBoard board = HexplorationBoard(boardAddress);
+        HexplorationQueue q = HexplorationQueue(board.gameplayQueue());
+        PlayerRegistry pr = PlayerRegistry(board.prAddress());
+
+        uint256 qID = q.queueID(gameID);
+        if (qID == 0) {
+            qID = q.requestGameQueue(
+                gameID,
+                uint16(pr.totalRegistrations(gameID))
+            );
+        }
+
+        q.sumbitActionForPlayer(
+            playerID,
+            HexplorationQueue.Action(actionIndex),
+            options,
+            leftHand,
+            rightHand,
+            qID
+        );
     }
 
     function moveThroughPath(
