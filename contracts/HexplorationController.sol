@@ -175,7 +175,10 @@ contract HexplorationController is GameController {
         HexplorationBoard board = HexplorationBoard(boardAddress);
         HexplorationQueue q = HexplorationQueue(board.gameplayQueue());
         PlayerRegistry pr = PlayerRegistry(board.prAddress());
-
+        require(
+            pr.playerAddress(gameID, playerID) == msg.sender,
+            "PlayerID is not sender"
+        );
         uint256 qID = q.queueID(gameID);
         if (qID == 0) {
             qID = q.requestGameQueue(

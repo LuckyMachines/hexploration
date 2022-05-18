@@ -6,6 +6,7 @@ import "../HexplorationZone.sol";
 import "@luckymachines/game-core/contracts/src/v0.0/PlayerRegistry.sol";
 import "./CharacterCard.sol";
 import "../tokens/TokenInventory.sol";
+import "../HexplorationQueue.sol";
 
 library GameSummary {
     // enemies
@@ -42,6 +43,16 @@ library GameSummary {
 
     function getAvailableGameIDs() public view returns (uint256[] memory) {
         // TODO: return available game IDs
+    }
+
+    function currentGameplayQueue(address gameBoardAddress, uint256 gameID)
+        public
+        view
+        returns (uint256)
+    {
+        HexplorationBoard board = HexplorationBoard(gameBoardAddress);
+        HexplorationQueue q = HexplorationQueue(board.gameplayQueue());
+        return q.queueID(gameID);
     }
 
     function currentPhase(address gameBoardAddress, uint256 gameID)

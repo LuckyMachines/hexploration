@@ -29,8 +29,8 @@ module.exports = async (deployer, network, [defaultAccount]) => {
 
     console.log("Adding queue to game board...");
     let hexBoard = await GameBoard.at(addresses.GANACHE_HEXPLORATION_BOARD);
-    // await hexBoard.setCharacterCard(CharacterCard.address);
-    // console.log("Character card set.");
+    await hexBoard.setGameplayQueue(Queue.address);
+    console.log("Gameplay queue set.");
 
     console.log(
       `GANACHE_HEXPLORATION_QUEUE: "${Queue.address}",

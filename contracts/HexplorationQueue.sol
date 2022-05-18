@@ -37,15 +37,16 @@ contract HexplorationQueue is AccessControlEnumerable {
     // Array of Queue IDs to be processed.
     uint256[] public processingQueue;
 
-    // mappings from queue index
-
     // do we need these 2?
     mapping(uint256 => uint16) public currentQueuePosition; // ?? increases with each player in queue, then back to 0
     mapping(uint256 => uint16) public playThroughPosition; // ?? in case we need to batch this too... hopefully not.
 
+    // mapping from game ID
+    mapping(uint256 => uint256) public queueID; // mapping from game ID to it's queue, updates to 0 when finished
+
+    // mappings from queue index
     mapping(uint256 => bool) public inProcessingQueue; // game queue is in processing queue
     mapping(uint256 => ProcessingPhase) public currentPhase; // processingPhase
-    mapping(uint256 => uint256) public queueID; // mapping from game ID to it's queue, updates to 0 when finished
     mapping(uint256 => uint256) public game; // mapping from queue ID to it's game ID
     mapping(uint256 => uint256[]) public players; // all players with moves to process
     mapping(uint256 => uint16) public totalPlayers; // total # of players who will be submitting
@@ -55,6 +56,7 @@ contract HexplorationQueue is AccessControlEnumerable {
     mapping(uint256 => mapping(uint256 => string[])) public submissionOptions;
     mapping(uint256 => mapping(uint256 => string)) public submissionLeftHand;
     mapping(uint256 => mapping(uint256 => string)) public submissionRightHand;
+    mapping(uint256 => mapping(uint256 => bool)) public playerSubmitted;
 
     mapping(uint256 => uint256) randomness; // randomness delivered here at start of each phase processing
 
@@ -105,17 +107,14 @@ contract HexplorationQueue is AccessControlEnumerable {
             currentPhase[_queueID] == ProcessingPhase.Submission,
             "Not submission phase"
         );
-        if (
-            submissionAction[_queueID][playerID] == Action.Idle &&
-            submissionOptions[_queueID][playerID].length == 0
-        ) {
+        if (!playerSubmitted[_queueID][playerID]) {
             submissionAction[_queueID][playerID] = action;
             submissionOptions[_queueID][playerID] = options;
             submissionLeftHand[_queueID][playerID] = leftHand;
             submissionRightHand[_queueID][playerID] = rightHand;
 
             players[_queueID].push(playerID);
-
+            playerSubmitted[_queueID][playerID] = true;
             // automatically add to queue if last player to submit move
             if (players[_queueID].length >= totalPlayers[_queueID]) {
                 _processAllActions(_queueID);
@@ -193,6 +192,12 @@ contract HexplorationQueue is AccessControlEnumerable {
         internal
         returns (uint256)
     {
+        /*
+    mapping(uint256 => uint256) public queueID; // mapping from game ID to it's queue, updates to 0 when finished
+    mapping(uint256 => uint256) public game; // mapping from queue ID to it's game ID
+    mapping(uint256 => uint256[]) public players; // all players with moves to process
+    mapping(uint256 => uint16) public totalPlayers;
+        */
         require(queueID[gameID] == 0, "queue already set");
         uint256 newQueueID = QUEUE_ID.current();
         queueID[gameID] = newQueueID;
