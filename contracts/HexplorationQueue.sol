@@ -49,7 +49,7 @@ contract HexplorationQueue is AccessControlEnumerable {
     mapping(uint256 => ProcessingPhase) public currentPhase; // processingPhase
     mapping(uint256 => uint256) public game; // mapping from queue ID to it's game ID
     mapping(uint256 => uint256[]) public players; // all players with moves to process
-    mapping(uint256 => uint16) public totalPlayers; // total # of players who will be submitting
+    mapping(uint256 => uint256) public totalPlayers; // total # of players who will be submitting
 
     // mappings from queue index => player id
     mapping(uint256 => mapping(uint256 => Action)) public submissionAction;
@@ -78,7 +78,7 @@ contract HexplorationQueue is AccessControlEnumerable {
 
     // pass total # players making submissions
     // total can be less than actual totalPlayers in game
-    function requestGameQueue(uint256 gameID, uint16 _totalPlayers)
+    function requestGameQueue(uint256 gameID, uint256 _totalPlayers)
         external
         onlyRole(VERIFIED_CONTROLLER_ROLE)
         returns (uint256)
@@ -97,7 +97,7 @@ contract HexplorationQueue is AccessControlEnumerable {
 
     function sumbitActionForPlayer(
         uint256 playerID,
-        Action action,
+        uint8 action,
         string[] memory options,
         string memory leftHand,
         string memory rightHand,
@@ -108,7 +108,7 @@ contract HexplorationQueue is AccessControlEnumerable {
             "Not submission phase"
         );
         if (!playerSubmitted[_queueID][playerID]) {
-            submissionAction[_queueID][playerID] = action;
+            submissionAction[_queueID][playerID] = Action(action);
             submissionOptions[_queueID][playerID] = options;
             submissionLeftHand[_queueID][playerID] = leftHand;
             submissionRightHand[_queueID][playerID] = rightHand;
@@ -167,7 +167,7 @@ contract HexplorationQueue is AccessControlEnumerable {
         onlyRole(GAMEPLAY_ROLE)
     {
         uint256 g = game[_queueID];
-        uint16 tp = totalPlayers[_queueID];
+        uint256 tp = totalPlayers[_queueID];
         queueID[g] = _requestGameQueue(g, tp);
     }
 
@@ -188,7 +188,7 @@ contract HexplorationQueue is AccessControlEnumerable {
         }
     }
 
-    function _requestGameQueue(uint256 gameID, uint16 _totalPlayers)
+    function _requestGameQueue(uint256 gameID, uint256 _totalPlayers)
         internal
         returns (uint256)
     {

@@ -181,15 +181,12 @@ contract HexplorationController is GameController {
         );
         uint256 qID = q.queueID(gameID);
         if (qID == 0) {
-            qID = q.requestGameQueue(
-                gameID,
-                uint16(pr.totalRegistrations(gameID))
-            );
+            qID = q.requestGameQueue(gameID, pr.totalRegistrations(gameID));
         }
 
         q.sumbitActionForPlayer(
             playerID,
-            HexplorationQueue.Action(actionIndex),
+            actionIndex,
             options,
             leftHand,
             rightHand,
