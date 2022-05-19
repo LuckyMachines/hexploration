@@ -183,7 +183,7 @@ contract HexplorationController is GameController {
         if (qID == 0) {
             qID = q.requestGameQueue(gameID, pr.totalRegistrations(gameID));
         }
-
+        require(qID != 0, "unable to set qID in controller");
         q.sumbitActionForPlayer(
             playerID,
             actionIndex,

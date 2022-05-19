@@ -200,8 +200,9 @@ contract HexplorationQueue is AccessControlEnumerable {
         */
         require(queueID[gameID] == 0, "queue already set");
         uint256 newQueueID = QUEUE_ID.current();
+        game[newQueueID] = gameID;
         queueID[gameID] = newQueueID;
-        totalPlayers[gameID] = _totalPlayers;
+        totalPlayers[newQueueID] = _totalPlayers;
         QUEUE_ID.increment();
         return newQueueID;
     }
