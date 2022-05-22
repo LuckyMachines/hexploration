@@ -171,20 +171,34 @@ contract HexplorationQueue is AccessControlEnumerable {
         queueID[g] = _requestGameQueue(g, tp);
     }
 
-    function setProcessingComplete(uint256 _queueID)
-        external
-        onlyRole(GAMEPLAY_ROLE)
-    {
+    function finishProcessing(
+        uint256 _queueID,
+        uint256[] memory intUpdates,
+        string[] memory stringUpdates
+    ) public onlyRole(GAMEPLAY_ROLE) {
+        // TODO:
+        //  post updates to contracts...
+        _setProcessingComplete(_queueID);
+    }
+
+    function _setProcessingComplete(uint256 _queueID) internal {
         uint256 g = game[_queueID];
         currentPhase[_queueID] = ProcessingPhase.Processed;
         queueID[g] = 0;
+        // TODO:
+        //  assign new queue index for next processing phase (based on current queue)
     }
 
     // Internal
     function _processAllActions(uint256 _queueID) internal {
-        if (!inProcessingQueue[_queueID]) {
+        // Can only add unique unprocessed game queues into processing queue
+        if (
+            !inProcessingQueue[_queueID] &&
+            currentPhase[_queueID] == ProcessingPhase.Submission
+        ) {
             processingQueue.push(_queueID);
             inProcessingQueue[_queueID] = true;
+            currentPhase[_queueID] = ProcessingPhase.Processing;
         }
     }
 
