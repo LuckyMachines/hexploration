@@ -5,7 +5,7 @@
 const GameStateUpdate = artifacts.require("HexplorationStateUpdate");
 const Queue = artifacts.require("HexplorationQueue");
 const GameBoard = artifacts.require("HexplorationBoard");
-const GameController = artifacts.require("HexplorationGameController");
+const GameController = artifacts.require("HexplorationController");
 const addresses = require("./addresses.js");
 
 module.exports = async (deployer, network, [defaultAccount]) => {
