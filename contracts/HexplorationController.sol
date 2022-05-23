@@ -166,34 +166,39 @@ contract HexplorationController is GameController {
         q.startGame(qID);
     }
 
-    function moveThroughPath(
-        string[] memory zonePath,
-        uint256 gameID,
-        address boardAddress
-    ) public onlyAdminVC {
-        // TODO:
-        // verify move is valid
-        // pick tiles from deck
-        HexplorationBoard board = HexplorationBoard(boardAddress);
-        PlayerRegistry pr = PlayerRegistry(board.prAddress());
-        require(pr.isRegistered(gameID, msg.sender), "player not registered");
+    // function moveThroughPath(
+    //     string[] memory zonePath,
+    //     uint256 gameID,
+    //     uint256 playerID,
+    //     address boardAddress
+    // ) public onlyAdminVC {
+    //     // TODO:
+    //     // verify move is valid
+    //     // pick tiles from deck
+    //     HexplorationBoard board = HexplorationBoard(boardAddress);
+    //     PlayerRegistry pr = PlayerRegistry(board.prAddress());
+    //     address playerAddress = pr.playerAddress(gameID, playerID);
+    //     require(
+    //         pr.isRegistered(gameID, playerAddress),
+    //         "player not registered"
+    //     );
 
-        HexplorationZone.Tile[] memory tiles = new HexplorationZone.Tile[](
-            zonePath.length
-        );
-        for (uint256 i = 0; i < zonePath.length; i++) {
-            tiles[i] = i == 0 ? HexplorationZone.Tile.Jungle : i == 1
-                ? HexplorationZone.Tile.Plains
-                : HexplorationZone.Tile.Mountain;
-        }
+    //     HexplorationZone.Tile[] memory tiles = new HexplorationZone.Tile[](
+    //         zonePath.length
+    //     );
+    //     for (uint256 i = 0; i < zonePath.length; i++) {
+    //         tiles[i] = i == 0 ? HexplorationZone.Tile.Jungle : i == 1
+    //             ? HexplorationZone.Tile.Plains
+    //             : HexplorationZone.Tile.Mountain;
+    //     }
 
-        HexplorationBoard(boardAddress).moveThroughPath(
-            zonePath,
-            msg.sender,
-            gameID,
-            tiles
-        );
-    }
+    //     HexplorationBoard(boardAddress).moveThroughPath(
+    //         zonePath,
+    //         playerID,
+    //         gameID,
+    //         tiles
+    //     );
+    // }
 
     //Player Interactions
     function registerForGame(uint256 gameID, address boardAddress) public {

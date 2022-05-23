@@ -61,24 +61,54 @@ contract HexplorationStateUpdate is AccessControlEnumerable {
     ) public onlyRole(VERIFIED_CONTROLLER_ROLE) {
         // go through values and post everything, transfer all the tokens, and pray
         // use gamestate update contract to post everything
-
-        //test moving a player...
-        string[] memory movementPath = new string[](4);
-        movementPath[0] = "0,0";
-        movementPath[0] = "0,1";
-        movementPath[0] = "0,2";
-        movementPath[0] = "0,3";
-        moveThroughPath(
-            movementPath,
-            gameID,
-            0xeF0524118944F9F2f46f708e731F097d8eF0B329
-        );
+        updatePlayerPositions(intUpdates, stringUpdates, gameID);
+        updatePlayerStats(intUpdates, stringUpdates, gameID);
+        updatePlayerHands(intUpdates, stringUpdates, gameID);
+        transferPlayerItems(intUpdates, stringUpdates, gameID);
+        transferZoneItems(intUpdates, stringUpdates, gameID);
     }
+
+    function updatePlayerPositions(
+        uint256[] memory intUpdates,
+        string[] memory stringUpdates,
+        uint256 gameID
+    ) internal {
+        //test moving a player...
+        string[] memory movementPath = new string[](3);
+        movementPath[0] = "0,1";
+        movementPath[1] = "0,2";
+        movementPath[2] = "0,3";
+        moveThroughPath(movementPath, gameID, 1);
+    }
+
+    function updatePlayerStats(
+        uint256[] memory intUpdates,
+        string[] memory stringUpdates,
+        uint256 gameID
+    ) internal {}
+
+    function updatePlayerHands(
+        uint256[] memory intUpdates,
+        string[] memory stringUpdates,
+        uint256 gameID
+    ) internal {}
+
+    function transferPlayerItems(
+        uint256[] memory intUpdates,
+        string[] memory stringUpdates,
+        uint256 gameID
+    ) internal {}
+
+    function transferZoneItems(
+        uint256[] memory intUpdates,
+        string[] memory stringUpdates,
+        uint256 gameID
+    ) internal {}
 
     function moveThroughPath(
         string[] memory zonePath,
         uint256 gameID,
-        address playerAddress
+        uint256 playerID
     ) public onlyRole(VERIFIED_CONTROLLER_ROLE) {
         //TODO: pick tiles from deck
 
@@ -91,6 +121,6 @@ contract HexplorationStateUpdate is AccessControlEnumerable {
                 : HexplorationZone.Tile.Mountain;
         }
 
-        GAME_BOARD.moveThroughPath(zonePath, playerAddress, gameID, tiles);
+        GAME_BOARD.moveThroughPath(zonePath, playerID, gameID, tiles);
     }
 }

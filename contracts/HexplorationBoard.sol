@@ -124,11 +124,13 @@ contract HexplorationBoard is HexGrid {
     // pass current zone as first argument
     function moveThroughPath(
         string[] memory zonePath,
-        address playerAddress,
+        uint256 playerID,
         uint256 gameID,
         HexplorationZone.Tile[] memory tiles
     ) external onlyRole(VERIFIED_CONTROLLER_ROLE) {
-        HEX_ZONE.exitPlayer(playerAddress, gameID, zonePath[0]);
+        string memory currentZone = currentPlayZone[gameID][playerID];
+        address playerAddress = PLAYER_REGISTRY.playerAddress(gameID, playerID);
+        HEX_ZONE.exitPlayer(playerAddress, gameID, currentZone);
         HEX_ZONE.enterPlayer(
             playerAddress,
             gameID,
