@@ -3,6 +3,7 @@
 const Queue = artifacts.require("HexplorationQueue");
 const Gameplay = artifacts.require("HexplorationGameplay");
 const GameBoard = artifacts.require("HexplorationBoard");
+const GameController = artifacts.require("HexplorationController");
 const addresses = require("./addresses.js");
 
 module.exports = async (deployer, network, [defaultAccount]) => {
@@ -32,6 +33,13 @@ module.exports = async (deployer, network, [defaultAccount]) => {
     await hexBoard.setGameplayQueue(Queue.address);
     console.log("Gameplay queue set.");
 
+    // set the queue as the controller's controller
+    console.log("Adding queue as verified controller of controller...");
+    let hexController = await GameController.at(
+      addresses.GANACHE_HEXPLORATION_CONTROLLER
+    );
+    await hexController.addVerifiedController(Queue.address);
+    console.log("queue set as controller's controller.\r");
     console.log(
       `GANACHE_HEXPLORATION_QUEUE: "${Queue.address}",
 GANACHE_HEXPLORATION_GAMEPLAY: "${Gameplay.address}"`

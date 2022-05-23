@@ -12,7 +12,8 @@ contract HexplorationController is GameController {
     // functions are meant to be called directly by players by default
     // we are adding the ability of a Controller Admin or Keeper to
     // execute the game aspects not directly controlled by players
-    bytes32 public constant KEEPER_ROLE = keccak256("KEEPER_ROLE");
+    bytes32 public constant VERIFIED_CONTROLLER_ROLE =
+        keccak256("VERIFIED_CONTROLLER_ROLE");
 
     // TODO:
     // Connect to Chainlink VRF for random seeds when needed
@@ -36,10 +37,10 @@ contract HexplorationController is GameController {
         uint256 quantity
     )
 */
-    modifier onlyAdminKeeper() {
+    modifier onlyAdminVC() {
         require(
             hasRole(DEFAULT_ADMIN_ROLE, _msgSender()) ||
-                hasRole(KEEPER_ROLE, _msgSender()),
+                hasRole(VERIFIED_CONTROLLER_ROLE, _msgSender()),
             "Admin or Keeper role required"
         );
         _;
@@ -49,19 +50,22 @@ contract HexplorationController is GameController {
 
     // Admin Functions
 
-    function addKeeper(address keeperAddress)
+    function addVerifiedController(address vcAddress)
         public
         onlyRole(DEFAULT_ADMIN_ROLE)
     {
-        grantRole(KEEPER_ROLE, keeperAddress);
+        grantRole(VERIFIED_CONTROLLER_ROLE, vcAddress);
     }
 
     // Admin or Keeper Interactions
-    function runBoardUpdate(address boardAddress) public {
+    function runBoardUpdate(address boardAddress) public onlyAdminVC {
         HexplorationBoard(boardAddress).runUpdate();
     }
 
-    function startGame(uint256 gameID, address boardAddress) public {
+    function startGame(uint256 gameID, address boardAddress)
+        public
+        onlyAdminVC
+    {
         HexplorationBoard board = HexplorationBoard(boardAddress);
         require(board.gameState(gameID) == 0, "game already started");
 
@@ -152,6 +156,35 @@ contract HexplorationController is GameController {
         q.startGame(qID);
     }
 
+    function moveThroughPath(
+        string[] memory zonePath,
+        uint256 gameID,
+        address boardAddress
+    ) public onlyAdminVC {
+        // TODO:
+        // verify move is valid
+        // pick tiles from deck
+        HexplorationBoard board = HexplorationBoard(boardAddress);
+        PlayerRegistry pr = PlayerRegistry(board.prAddress());
+        require(pr.isRegistered(gameID, msg.sender), "player not registered");
+
+        HexplorationZone.Tile[] memory tiles = new HexplorationZone.Tile[](
+            zonePath.length
+        );
+        for (uint256 i = 0; i < zonePath.length; i++) {
+            tiles[i] = i == 0 ? HexplorationZone.Tile.Jungle : i == 1
+                ? HexplorationZone.Tile.Plains
+                : HexplorationZone.Tile.Mountain;
+        }
+
+        HexplorationBoard(boardAddress).moveThroughPath(
+            zonePath,
+            msg.sender,
+            gameID,
+            tiles
+        );
+    }
+
     //Player Interactions
     function registerForGame(uint256 gameID, address boardAddress) public {
         HexplorationBoard board = HexplorationBoard(boardAddress);
@@ -191,35 +224,6 @@ contract HexplorationController is GameController {
             leftHand,
             rightHand,
             qID
-        );
-    }
-
-    function moveThroughPath(
-        string[] memory zonePath,
-        uint256 gameID,
-        address boardAddress
-    ) public {
-        // TODO:
-        // verify move is valid
-        // pick tiles from deck
-        HexplorationBoard board = HexplorationBoard(boardAddress);
-        PlayerRegistry pr = PlayerRegistry(board.prAddress());
-        require(pr.isRegistered(gameID, msg.sender), "player not registered");
-
-        HexplorationZone.Tile[] memory tiles = new HexplorationZone.Tile[](
-            zonePath.length
-        );
-        for (uint256 i = 0; i < zonePath.length; i++) {
-            tiles[i] = i == 0 ? HexplorationZone.Tile.Jungle : i == 1
-                ? HexplorationZone.Tile.Plains
-                : HexplorationZone.Tile.Mountain;
-        }
-
-        HexplorationBoard(boardAddress).moveThroughPath(
-            zonePath,
-            msg.sender,
-            gameID,
-            tiles
         );
     }
 
