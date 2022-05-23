@@ -5,6 +5,7 @@ import "@luckymachines/game-core/contracts/src/v0.0/GameController.sol";
 import "./HexplorationBoard.sol";
 import "./HexplorationZone.sol";
 import "./HexplorationQueue.sol";
+import "./HexplorationStateUpdate.sol";
 import "./state/CharacterCard.sol";
 import "./tokens/TokenInventory.sol";
 
@@ -14,6 +15,8 @@ contract HexplorationController is GameController {
     // execute the game aspects not directly controlled by players
     bytes32 public constant VERIFIED_CONTROLLER_ROLE =
         keccak256("VERIFIED_CONTROLLER_ROLE");
+
+    HexplorationStateUpdate GAME_STATE;
 
     // TODO:
     // Connect to Chainlink VRF for random seeds when needed
@@ -49,6 +52,13 @@ contract HexplorationController is GameController {
     constructor(address adminAddress) GameController(adminAddress) {}
 
     // Admin Functions
+
+    function setGameStateUpdate(address gsuAddress)
+        public
+        onlyRole(DEFAULT_ADMIN_ROLE)
+    {
+        GAME_STATE = HexplorationStateUpdate(gsuAddress);
+    }
 
     function addVerifiedController(address vcAddress)
         public

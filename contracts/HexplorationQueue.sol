@@ -9,6 +9,8 @@ contract HexplorationQueue is AccessControlEnumerable {
     using Counters for Counters.Counter;
     Counters.Counter internal QUEUE_ID;
 
+    HexplorationStateUpdate GAME_STATE;
+
     enum ProcessingPhase {
         Start,
         Submission,
@@ -63,6 +65,13 @@ contract HexplorationQueue is AccessControlEnumerable {
         _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
         _setupRole(GAMEPLAY_ROLE, gameplayAddress);
         QUEUE_ID.increment(); // start at 1
+    }
+
+    function setGameStateUpdate(address gsuAddress)
+        public
+        onlyRole(DEFAULT_ADMIN_ROLE)
+    {
+        GAME_STATE = HexplorationStateUpdate(gsuAddress);
     }
 
     // Can set multiple VCs, one for manual pushing, one for keeper
