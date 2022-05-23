@@ -97,14 +97,20 @@ contract HexplorationGameplay is AccessControlEnumerable {
         returns (uint256[] memory intValues, string[] memory stringValues)
     {
         HexplorationQueue.ProcessingPhase phase = QUEUE.currentPhase(queueID);
-
-        if (phase == HexplorationQueue.ProcessingPhase.Processing) {
-            (intValues, stringValues) = processPlayerActions(queueID);
-        } else if (phase == HexplorationQueue.ProcessingPhase.PlayThrough) {
-            (intValues, stringValues) = playThrough(queueID);
+        if (QUEUE.randomness(queueID) != 0) {
+            if (phase == HexplorationQueue.ProcessingPhase.Processing) {
+                (intValues, stringValues) = processPlayerActions(queueID);
+            } else if (phase == HexplorationQueue.ProcessingPhase.PlayThrough) {
+                (intValues, stringValues) = playThrough(queueID);
+            } else {
+                intValues = new uint256[](0);
+                stringValues = new string[](0);
+            }
         } else {
+            // randomness not set for queue yet
             intValues = new uint256[](0);
-            stringValues = new string[](0);
+            stringValues = new string[](1);
+            stringValues[0] = "awaiting randomness";
         }
 
         // maybe we don't call this, since it needs to update state...
@@ -128,7 +134,7 @@ contract HexplorationGameplay is AccessControlEnumerable {
         view
         returns (uint256[] memory, string[] memory)
     {
-        // Initial thoughts...
+        // Initial thoughts for scaling...
         // figure out most expensive move and only do as many as can be safely completed
         // in one transaction
         // start at currentQueuePosition
@@ -137,24 +143,79 @@ contract HexplorationGameplay is AccessControlEnumerable {
         // set QUEUE.setPhase(HexplorationQueue.ProcessingPhase.PlayThrough, queueID);
 
         // TODO: get real values
-        uint256 totalPlayerPositionUpdates = 1;
-        uint256 totalPlayerStatUpdates = 1;
-        uint256 totalPlayerEquips = 1;
-        uint256 totalPlayerTfers = 1;
-        uint256 totalZoneTfers = 1;
+        uint256 totalPlayerPositionUpdates = 0;
+        uint256 totalPlayerStatUpdates = 0;
+        uint256 totalPlayerEquips = 0;
+        uint256 totalPlayerTfers = 0;
+        uint256 totalZoneTfers = 0;
+
+        /*
+        For each player we can check:
+        // mappings from queue index => player id
+        mapping(uint256 => mapping(uint256 => Action)) public submissionAction;
+        mapping(uint256 => mapping(uint256 => string[])) public submissionOptions;
+        mapping(uint256 => mapping(uint256 => string)) public submissionLeftHand;
+        mapping(uint256 => mapping(uint256 => string)) public submissionRightHand;
+        mapping(uint256 => mapping(uint256 => bool)) public playerSubmitted;
+        */
+        uint256[] memory playersInQueue = QUEUE.getAllPlayers(queueID);
+        for (uint256 i = 0; i < playersInQueue.length; i++) {
+            uint256 playerID = playersInQueue[i];
+            HexplorationQueue.Action action = QUEUE.submissionAction(
+                queueID,
+                playerID
+            );
+            /*
+            Idle,
+            Move,
+            SetupCamp,
+            BreakDownCamp,
+            Dig,
+            Rest,
+            Help
+            */
+            if (action == HexplorationQueue.Action.Move) {
+                totalPlayerPositionUpdates++;
+            }
+            if (bytes(QUEUE.submissionLeftHand(queueID, playerID)).length > 0) {
+                totalPlayerEquips++;
+            }
+            if (
+                bytes(QUEUE.submissionRightHand(queueID, playerID)).length > 0
+            ) {
+                totalPlayerEquips++;
+            }
+            if (
+                action == HexplorationQueue.Action.SetupCamp ||
+                action == HexplorationQueue.Action.BreakDownCamp
+            ) {
+                // either will have tfer between player and board + zone and board
+                totalPlayerTfers++;
+                totalZoneTfers++;
+            }
+        }
+
+        // Next:
+        // If dig:
+        // pull treasure card or ambush
+        // receive inventory / artifact or go to battle
+        // update totals after Dig, Rest, Help
 
         uint256 intReturnLength = 5 +
             (totalPlayerPositionUpdates * 2) +
             (totalPlayerStatUpdates * 4) +
-            totalPlayerEquips +
+            (totalPlayerEquips * 2) +
             (totalPlayerTfers * 3) +
             (totalZoneTfers * 3);
 
+        // TODO: get updated stats after movement
+
         uint256[] memory intReturn = new uint256[](intReturnLength);
-        intReturn[0] = 1;
-        intReturn[1] = 2;
-        intReturn[2] = 3;
-        intReturn[3] = 4;
+        intReturn[0] = totalPlayerPositionUpdates;
+        intReturn[1] = totalPlayerStatUpdates;
+        intReturn[2] = totalPlayerEquips;
+        intReturn[3] = totalPlayerTfers;
+        intReturn[4] = totalZoneTfers;
 
         // TODO: update to actual max value
         uint256 maxMovementPerPlayer = 7; // should be set to max movement + 1 (if 6 max set to 7)

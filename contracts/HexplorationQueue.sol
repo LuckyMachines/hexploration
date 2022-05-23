@@ -47,6 +47,7 @@ contract HexplorationQueue is AccessControlEnumerable {
     mapping(uint256 => uint256) public game; // mapping from queue ID to it's game ID
     mapping(uint256 => uint256[]) public players; // all players with moves to process
     mapping(uint256 => uint256) public totalPlayers; // total # of players who will be submitting
+    mapping(uint256 => uint256) public randomness; // randomness delivered here at start of each phase processing
 
     // mappings from queue index => player id
     mapping(uint256 => mapping(uint256 => Action)) public submissionAction;
@@ -55,7 +56,8 @@ contract HexplorationQueue is AccessControlEnumerable {
     mapping(uint256 => mapping(uint256 => string)) public submissionRightHand;
     mapping(uint256 => mapping(uint256 => bool)) public playerSubmitted;
 
-    mapping(uint256 => uint256) randomness; // randomness delivered here at start of each phase processing
+    // From request ID => queue ID
+    mapping(uint256 => uint256) internal randomnessRequestQueueID; // ID set before randomness delivered
 
     ///////  VRF can kick off processing phase
 
@@ -200,7 +202,34 @@ contract HexplorationQueue is AccessControlEnumerable {
             processingQueue.push(_queueID);
             inProcessingQueue[_queueID] = true;
             currentPhase[_queueID] = ProcessingPhase.Processing;
+            // request random number for phase
+            requestRandomWords(_queueID);
         }
+    }
+
+    function requestRandomWords(uint256 _queueID) internal {
+        // randomnessRequestID[_queueID] = COORDINATOR.requestRandomWords(
+        //   keyHash,
+        //   s_subscriptionId,
+        //   requestConfirmations,
+        //   callbackGasLimit,
+        //   numWords
+        // );
+
+        //set faux id + randomness
+        uint256 reqID = _queueID;
+        randomnessRequestQueueID[reqID] = _queueID;
+        uint256 random = uint256(keccak256(abi.encode(block.timestamp, reqID)));
+        uint256[] memory randomWords = new uint256[](1);
+        randomWords[0] = random;
+        fulfillRandomWords(reqID, randomWords);
+    }
+
+    function fulfillRandomWords(uint256 requestID, uint256[] memory randomWords)
+        internal
+    {
+        uint256 qID = randomnessRequestQueueID[requestID];
+        randomness[qID] = randomWords[0];
     }
 
     function _requestGameQueue(uint256 gameID, uint256 _totalPlayers)
