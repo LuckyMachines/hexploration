@@ -80,13 +80,13 @@ contract HexplorationGameplay is AccessControlEnumerable {
         bool gameComplete = false;
         uint256 gameID = QUEUE.game(queueID);
         if (phase == HexplorationQueue.ProcessingPhase.Processing) {
-            GAME_STATE.postUpdates(intUpdates, stringUpdates);
+            GAME_STATE.postUpdates(intUpdates, stringUpdates, gameID);
             QUEUE.setPhase(
                 HexplorationQueue.ProcessingPhase.PlayThrough,
                 queueID
             );
         } else if (phase == HexplorationQueue.ProcessingPhase.PlayThrough) {
-            GAME_STATE.postUpdates(intUpdates, stringUpdates);
+            GAME_STATE.postUpdates(intUpdates, stringUpdates, gameID);
             QUEUE.finishProcessing(queueID, gameComplete);
         }
     }
