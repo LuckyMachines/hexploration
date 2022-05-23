@@ -28,8 +28,8 @@ module.exports = async (deployer, network, [defaultAccount]) => {
       addresses.GANACHE_HEXPLORATION_CONTROLLER
     );
 
-    console.log("Adding game queue as VC of game state update...");
-    await hexStateUpdate.addVerifiedController(Queue.address);
+    console.log("Adding gameplay as VC of game state update...");
+    await hexStateUpdate.addVerifiedController(Gameplay.address);
 
     console.log("Adding game state update as VC of game board...");
     await hexBoard.addVerifiedController(GameStateUpdate.address);
