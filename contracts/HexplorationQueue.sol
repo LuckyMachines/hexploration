@@ -9,8 +9,6 @@ contract HexplorationQueue is AccessControlEnumerable {
     using Counters for Counters.Counter;
     Counters.Counter internal QUEUE_ID;
 
-    HexplorationStateUpdate GAME_STATE;
-
     enum ProcessingPhase {
         Start,
         Submission,
@@ -65,13 +63,6 @@ contract HexplorationQueue is AccessControlEnumerable {
         _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
         _setupRole(GAMEPLAY_ROLE, gameplayAddress);
         QUEUE_ID.increment(); // start at 1
-    }
-
-    function setGameStateUpdate(address gsuAddress)
-        public
-        onlyRole(DEFAULT_ADMIN_ROLE)
-    {
-        GAME_STATE = HexplorationStateUpdate(gsuAddress);
     }
 
     // Can set multiple VCs, one for manual pushing, one for keeper
@@ -175,14 +166,6 @@ contract HexplorationQueue is AccessControlEnumerable {
         uint256 g = game[_queueID];
         uint256 tp = totalPlayers[_queueID];
         queueID[g] = _requestGameQueue(g, tp);
-    }
-
-    function postUpdates(
-        uint256[] memory intUpdates,
-        string[] memory stringUpdates
-    ) public onlyRole(GAMEPLAY_ROLE) {
-        // go through values and post everything, transfer all the tokens, and pray
-        // use gamestate update contract to post everything
     }
 
     function finishProcessing(uint256 _queueID, bool gameComplete)

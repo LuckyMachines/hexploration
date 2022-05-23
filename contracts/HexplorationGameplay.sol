@@ -2,6 +2,7 @@
 pragma solidity >=0.7.0 <0.9.0;
 
 import "./HexplorationQueue.sol";
+import "./HexplorationStateUpdate.sol";
 import "./state/GameSummary.sol";
 import "@openzeppelin/contracts/access/AccessControlEnumerable.sol";
 
@@ -10,6 +11,7 @@ contract HexplorationGameplay is AccessControlEnumerable {
         keccak256("VERIFIED_CONTROLLER_ROLE");
 
     HexplorationQueue QUEUE;
+    HexplorationStateUpdate GAME_STATE;
 
     constructor() {
         _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
@@ -28,6 +30,13 @@ contract HexplorationGameplay is AccessControlEnumerable {
     {
         QUEUE = HexplorationQueue(queueContract);
         _setupRole(VERIFIED_CONTROLLER_ROLE, queueContract);
+    }
+
+    function setGameStateUpdate(address gsuAddress)
+        public
+        onlyRole(DEFAULT_ADMIN_ROLE)
+    {
+        GAME_STATE = HexplorationStateUpdate(gsuAddress);
     }
 
     // Keeper functions...
@@ -69,15 +78,15 @@ contract HexplorationGameplay is AccessControlEnumerable {
 
         // TODO: set this to true when game is finished
         bool gameComplete = false;
-
+        uint256 gameID = QUEUE.game(queueID);
         if (phase == HexplorationQueue.ProcessingPhase.Processing) {
-            QUEUE.postUpdates(intUpdates, stringUpdates);
+            GAME_STATE.postUpdates(intUpdates, stringUpdates);
             QUEUE.setPhase(
                 HexplorationQueue.ProcessingPhase.PlayThrough,
                 queueID
             );
         } else if (phase == HexplorationQueue.ProcessingPhase.PlayThrough) {
-            QUEUE.postUpdates(intUpdates, stringUpdates);
+            GAME_STATE.postUpdates(intUpdates, stringUpdates);
             QUEUE.finishProcessing(queueID, gameComplete);
         }
     }
