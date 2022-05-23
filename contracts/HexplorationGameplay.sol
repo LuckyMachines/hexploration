@@ -382,8 +382,10 @@ contract HexplorationGameplay is AccessControlEnumerable {
                     queueID,
                     playersInQueue[i]
                 );
-                for (uint256 j = 0; j < options.length; j++) {
-                    stringReturn[currentArrayPosition] = options[j];
+                for (uint256 j = 0; j < maxMovementPerPlayer; j++) {
+                    stringReturn[currentArrayPosition] = j < options.length
+                        ? options[j]
+                        : "";
                     currentArrayPosition++;
                 }
             }

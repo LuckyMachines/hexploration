@@ -72,13 +72,17 @@ contract HexplorationController is GameController {
         HexplorationBoard(boardAddress).runUpdate();
     }
 
-    function startGame(uint256 gameID, address boardAddress) internal {
+    function startGame(uint256 gameID, address boardAddress) public {
         HexplorationBoard board = HexplorationBoard(boardAddress);
         require(board.gameState(gameID) == 0, "game already started");
 
         PlayerRegistry pr = PlayerRegistry(board.prAddress());
+
+        // Any registered player can start game once landing site has been set
+        require(pr.isRegistered(gameID, msg.sender), "player not registered");
         board.lockRegistration(gameID);
         uint256 totalRegistrations = pr.totalRegistrations(gameID);
+
         string memory startZone = board.initialPlayZone(gameID);
 
         TokenInventory ti = TokenInventory(board.tokenInventory());
@@ -259,7 +263,7 @@ contract HexplorationController is GameController {
         // set landing site at space on board
         board.setInitialPlayZone(zoneChoice, gameID);
 
-        startGame(gameID, boardAddress);
+        //startGame(gameID, boardAddress);
     }
 
     // TODO: limit this to authorized game starters
@@ -277,4 +281,7 @@ contract HexplorationController is GameController {
     {
         return GameRegistry(gameRegistryAddress).latestGame(boardAddress);
     }
+
+    // TODO: remove before launch
+    function getTestInventory(uint256 gameID, address boardAddress) public {}
 }

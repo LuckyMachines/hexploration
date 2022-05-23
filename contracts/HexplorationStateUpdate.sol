@@ -73,18 +73,13 @@ contract HexplorationStateUpdate is AccessControlEnumerable {
         string[] memory stringUpdates,
         uint256 gameID
     ) internal {
-        // total positions = intUpdates[0]
-        //test moving a player...
-        // string[] memory movementPath = new string[](3);
-        // movementPath[0] = "1,4";
-        // movementPath[1] = "2,4";
-        // movementPath[2] = "3,5";
-        // moveThroughPath(movementPath, gameID, 1);
+        // TODO: set actual number here
+        uint256 maxMovementPerPlayer = 7;
         for (uint256 i = 0; i < intUpdates[0]; i++) {
-            uint256 spacesToMove = intUpdates[(i * 2) + 6];
+            uint256 spacesToMove = intUpdates[(i * 2) + maxMovementPerPlayer];
             string[] memory path = new string[](spacesToMove);
             for (uint256 j = 0; j < spacesToMove; j++) {
-                path[j] = stringUpdates[(i * 6) + 1 + j];
+                path[j] = stringUpdates[(i * maxMovementPerPlayer) + 1 + j];
             }
             moveThroughPath(path, gameID, intUpdates[(i * 2) + 5]);
         }
