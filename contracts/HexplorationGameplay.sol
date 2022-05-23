@@ -12,9 +12,11 @@ contract HexplorationGameplay is AccessControlEnumerable {
 
     HexplorationQueue QUEUE;
     HexplorationStateUpdate GAME_STATE;
+    address gameSummaryAddress;
 
-    constructor() {
+    constructor(address _gameSummaryAddress) {
         _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
+        gameSummaryAddress = _gameSummaryAddress;
     }
 
     function addVerifiedController(address vcAddress)
@@ -134,14 +136,6 @@ contract HexplorationGameplay is AccessControlEnumerable {
         view
         returns (uint256[] memory, string[] memory)
     {
-        // Initial thoughts for scaling...
-        // figure out most expensive move and only do as many as can be safely completed
-        // in one transaction
-        // start at currentQueuePosition
-        // after each move is processed currentQueuePosition++
-        // on after final batch, switch day / night and
-        // set QUEUE.setPhase(HexplorationQueue.ProcessingPhase.PlayThrough, queueID);
-
         // TODO: get real values
         uint256 totalPlayerPositionUpdates = 0;
         uint256 totalPlayerStatUpdates = 0;
@@ -149,15 +143,6 @@ contract HexplorationGameplay is AccessControlEnumerable {
         uint256 totalPlayerTfers = 0;
         uint256 totalZoneTfers = 0;
 
-        /*
-        For each player we can check:
-        // mappings from queue index => player id
-        mapping(uint256 => mapping(uint256 => Action)) public submissionAction;
-        mapping(uint256 => mapping(uint256 => string[])) public submissionOptions;
-        mapping(uint256 => mapping(uint256 => string)) public submissionLeftHand;
-        mapping(uint256 => mapping(uint256 => string)) public submissionRightHand;
-        mapping(uint256 => mapping(uint256 => bool)) public playerSubmitted;
-        */
         uint256[] memory playersInQueue = QUEUE.getAllPlayers(queueID);
         for (uint256 i = 0; i < playersInQueue.length; i++) {
             uint256 playerID = playersInQueue[i];
@@ -201,34 +186,24 @@ contract HexplorationGameplay is AccessControlEnumerable {
         // receive inventory / artifact or go to battle
         // update totals after Dig, Rest, Help
 
-        uint256 intReturnLength = 5 +
-            (totalPlayerPositionUpdates * 2) +
-            (totalPlayerStatUpdates * 4) +
-            (totalPlayerEquips * 2) +
-            (totalPlayerTfers * 3) +
-            (totalZoneTfers * 3);
-
         // TODO: get updated stats after movement
 
-        uint256[] memory intReturn = new uint256[](intReturnLength);
-        intReturn[0] = totalPlayerPositionUpdates;
-        intReturn[1] = totalPlayerStatUpdates;
-        intReturn[2] = totalPlayerEquips;
-        intReturn[3] = totalPlayerTfers;
-        intReturn[4] = totalZoneTfers;
+        uint256[] memory intReturn = processedIntArray(
+            totalPlayerPositionUpdates,
+            totalPlayerStatUpdates,
+            totalPlayerEquips,
+            totalPlayerTfers,
+            totalZoneTfers,
+            queueID
+        );
 
-        // TODO: update to actual max value
-        uint256 maxMovementPerPlayer = 7; // should be set to max movement + 1 (if 6 max set to 7)
-        uint256 stringReturnLength = 1 +
-            (totalPlayerPositionUpdates * maxMovementPerPlayer) +
-            totalPlayerEquips +
-            totalPlayerTfers +
-            (totalZoneTfers * 2);
-
-        string[] memory stringReturn = new string[](stringReturnLength);
-        stringReturn[0] = "something";
-        stringReturn[1] = "to";
-        stringReturn[2] = "post";
+        string[] memory stringReturn = processedStringArray(
+            totalPlayerPositionUpdates,
+            totalPlayerEquips,
+            totalPlayerTfers,
+            totalZoneTfers,
+            queueID
+        );
 
         return (intReturn, stringReturn);
     }
@@ -279,6 +254,123 @@ contract HexplorationGameplay is AccessControlEnumerable {
         // play enemy stuff here
         //}
     }
+
+    function processedIntArray(
+        uint256 totalPlayerPositionUpdates,
+        uint256 totalPlayerStatUpdates,
+        uint256 totalPlayerEquips,
+        uint256 totalPlayerTfers,
+        uint256 totalZoneTfers,
+        uint256 queueID
+    ) internal view returns (uint256[] memory) {
+        uint256 intReturnLength = 5 +
+            (totalPlayerPositionUpdates * 2) +
+            (totalPlayerStatUpdates * 4) +
+            (totalPlayerEquips * 2) +
+            (totalPlayerTfers * 3) +
+            (totalZoneTfers * 3);
+
+        uint256[] memory intReturn = new uint256[](intReturnLength);
+        intReturn[0] = totalPlayerPositionUpdates;
+        intReturn[1] = totalPlayerStatUpdates;
+        intReturn[2] = totalPlayerEquips;
+        intReturn[3] = totalPlayerTfers;
+        intReturn[4] = totalZoneTfers;
+
+        uint256[] memory playersInQueue = QUEUE.getAllPlayers(queueID);
+
+        uint256 currentArrayPosition = 5;
+
+        // Movement
+        for (uint256 i = 0; i < playersInQueue.length; i++) {
+            if (
+                QUEUE.submissionAction(queueID, playersInQueue[i]) ==
+                HexplorationQueue.Action.Move
+            ) {
+                // adding player id, # spaces to move
+                intReturn[currentArrayPosition] = playersInQueue[i];
+                intReturn[currentArrayPosition + 1] = QUEUE
+                    .getSubmissionOptions(queueID, playersInQueue[i])
+                    .length;
+                currentArrayPosition += 2;
+            }
+        }
+
+        // LH equip
+        for (uint256 i = 0; i < playersInQueue.length; i++) {
+            if (
+                bytes(QUEUE.submissionLeftHand(queueID, playersInQueue[i]))
+                    .length > 0
+            ) {}
+        }
+
+        // RH equip
+        for (uint256 i = 0; i < playersInQueue.length; i++) {
+            if (
+                bytes(QUEUE.submissionRightHand(queueID, playersInQueue[i]))
+                    .length > 0
+            ) {}
+        }
+
+        // Camp actions
+        for (uint256 i = 0; i < playersInQueue.length; i++) {
+            if (
+                QUEUE.submissionAction(queueID, playersInQueue[i]) ==
+                HexplorationQueue.Action.SetupCamp ||
+                QUEUE.submissionAction(queueID, playersInQueue[i]) ==
+                HexplorationQueue.Action.BreakDownCamp
+            ) {}
+        }
+
+        // Dig
+        for (uint256 i = 0; i < playersInQueue.length; i++) {
+            if (
+                QUEUE.submissionAction(queueID, playersInQueue[i]) ==
+                HexplorationQueue.Action.Dig
+            ) {}
+        }
+
+        //Rest
+        for (uint256 i = 0; i < playersInQueue.length; i++) {
+            if (
+                QUEUE.submissionAction(queueID, playersInQueue[i]) ==
+                HexplorationQueue.Action.Rest
+            ) {}
+        }
+
+        // Help
+        for (uint256 i = 0; i < playersInQueue.length; i++) {
+            if (
+                QUEUE.submissionAction(queueID, playersInQueue[i]) ==
+                HexplorationQueue.Action.Help
+            ) {}
+        }
+
+        return intReturn;
+    }
+
+    function processedStringArray(
+        uint256 totalPlayerPositionUpdates,
+        uint256 totalPlayerEquips,
+        uint256 totalPlayerTfers,
+        uint256 totalZoneTfers,
+        uint256 queueID
+    ) internal view returns (string[] memory) {
+        // TODO: update to actual max value
+        uint256 maxMovementPerPlayer = 7;
+        uint256 stringReturnLength = 1 +
+            (totalPlayerPositionUpdates * maxMovementPerPlayer) +
+            totalPlayerEquips +
+            totalPlayerTfers +
+            (totalZoneTfers * 2);
+
+        string[] memory stringReturn = new string[](stringReturnLength);
+        // TODO: update to actual game phase...
+        stringReturn[0] = "Day";
+
+        // set movement zones
+        return stringReturn;
+    }
 }
 
 // What is processing?
@@ -287,3 +379,11 @@ contract HexplorationGameplay is AccessControlEnumerable {
 // keeper will post list of final moves to contract,
 //// *shouldn't be able to fail if it got this far
 // moves that failed pre-check will be returned as another list that will get logged in an event
+
+// Initial thoughts for scaling...
+// figure out most expensive move and only do as many as can be safely completed
+// in one transaction
+// start at currentQueuePosition
+// after each move is processed currentQueuePosition++
+// on after final batch, switch day / night and
+// set QUEUE.setPhase(HexplorationQueue.ProcessingPhase.PlayThrough, queueID);
