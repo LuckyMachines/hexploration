@@ -368,6 +368,76 @@ contract HexplorationGameplay is AccessControlEnumerable {
         // TODO: update to actual game phase...
         stringReturn[0] = "Day";
 
+        uint256[] memory playersInQueue = QUEUE.getAllPlayers(queueID);
+
+        uint256 currentArrayPosition = 1;
+
+        // Movement
+        for (uint256 i = 0; i < playersInQueue.length; i++) {
+            if (
+                QUEUE.submissionAction(queueID, playersInQueue[i]) ==
+                HexplorationQueue.Action.Move
+            ) {
+                string[] memory options = QUEUE.getSubmissionOptions(
+                    queueID,
+                    playersInQueue[i]
+                );
+                for (uint256 j = 0; j < options.length; j++) {
+                    stringReturn[currentArrayPosition] = options[j];
+                    currentArrayPosition++;
+                }
+            }
+        }
+
+        // LH equip
+        for (uint256 i = 0; i < playersInQueue.length; i++) {
+            if (
+                bytes(QUEUE.submissionLeftHand(queueID, playersInQueue[i]))
+                    .length > 0
+            ) {}
+        }
+
+        // RH equip
+        for (uint256 i = 0; i < playersInQueue.length; i++) {
+            if (
+                bytes(QUEUE.submissionRightHand(queueID, playersInQueue[i]))
+                    .length > 0
+            ) {}
+        }
+
+        // Camp actions
+        for (uint256 i = 0; i < playersInQueue.length; i++) {
+            if (
+                QUEUE.submissionAction(queueID, playersInQueue[i]) ==
+                HexplorationQueue.Action.SetupCamp ||
+                QUEUE.submissionAction(queueID, playersInQueue[i]) ==
+                HexplorationQueue.Action.BreakDownCamp
+            ) {}
+        }
+
+        // Dig
+        for (uint256 i = 0; i < playersInQueue.length; i++) {
+            if (
+                QUEUE.submissionAction(queueID, playersInQueue[i]) ==
+                HexplorationQueue.Action.Dig
+            ) {}
+        }
+
+        //Rest
+        for (uint256 i = 0; i < playersInQueue.length; i++) {
+            if (
+                QUEUE.submissionAction(queueID, playersInQueue[i]) ==
+                HexplorationQueue.Action.Rest
+            ) {}
+        }
+
+        // Help
+        for (uint256 i = 0; i < playersInQueue.length; i++) {
+            if (
+                QUEUE.submissionAction(queueID, playersInQueue[i]) ==
+                HexplorationQueue.Action.Help
+            ) {}
+        }
         // set movement zones
         return stringReturn;
     }
