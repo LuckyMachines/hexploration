@@ -12,7 +12,10 @@ const addresses = require("./addresses.js");
 module.exports = async (deployer, network, [defaultAccount]) => {
   //console.log("Board address:", addresses.GANACHE_HEXPLORATION_BOARD);
   try {
-    await deployer.deploy(GameStateUpdate);
+    await deployer.deploy(
+      GameStateUpdate,
+      addresses.GANACHE_HEXPLORATION_BOARD
+    );
     const hexBoard = await GameBoard.at(addresses.GANACHE_HEXPLORATION_BOARD);
     const hexStateUpdate = await GameStateUpdate.deployed();
     //const hexQueue = await Queue.deployed();

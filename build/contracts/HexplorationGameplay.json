@@ -92,7 +92,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [],
@@ -105,7 +106,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -124,7 +126,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -148,7 +151,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -167,7 +171,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -209,7 +214,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -264,7 +270,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -332,7 +339,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -24843,12 +24851,13 @@
         }
       },
       "links": {},
-      "address": "0x0B3766D5Ef287BD67FB995D1c89F51584aea02dc",
-      "transactionHash": "0x5b53b20eee89acd6bb973b8867b30fb7787168a16cf5ae5074e0e4647cd2fea1"
+      "address": "0xA75Bb649686DB390924DB4e1265978EB965fc062",
+      "transactionHash": "0xad33a24a48204ecdc280af97dccd74c1f173e08e577c48acd3eb38df820bb499"
     }
   },
   "schemaVersion": "3.4.4",
-  "updatedAt": "2022-05-23T16:05:10.961Z",
+  "updatedAt": "2022-05-23T16:06:08.085Z",
+  "networkType": "ethereum",
   "devdoc": {
     "kind": "dev",
     "methods": {
