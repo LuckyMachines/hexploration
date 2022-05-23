@@ -80,6 +80,14 @@ contract HexplorationStateUpdate is AccessControlEnumerable {
         // movementPath[1] = "2,4";
         // movementPath[2] = "3,5";
         // moveThroughPath(movementPath, gameID, 1);
+        for (uint256 i = 0; i < intUpdates[0]; i++) {
+            uint256 spacesToMove = intUpdates[(i * 2) + 6];
+            string[] memory path = new string[](spacesToMove);
+            for (uint256 j = 0; j < spacesToMove; j++) {
+                path[j] = stringUpdates[(i * 6) + 1 + j];
+            }
+            moveThroughPath(path, gameID, intUpdates[(i * 2) + 5]);
+        }
     }
 
     function updatePlayerStats(

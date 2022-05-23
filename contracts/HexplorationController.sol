@@ -72,10 +72,7 @@ contract HexplorationController is GameController {
         HexplorationBoard(boardAddress).runUpdate();
     }
 
-    function startGame(uint256 gameID, address boardAddress)
-        public
-        onlyAdminVC
-    {
+    function startGame(uint256 gameID, address boardAddress) internal {
         HexplorationBoard board = HexplorationBoard(boardAddress);
         require(board.gameState(gameID) == 0, "game already started");
 
@@ -247,14 +244,22 @@ contract HexplorationController is GameController {
         uint256 gameID,
         address boardAddress
     ) public {
-        // TODO: must be player 2 or on single player, p1
+        // game rule: player 2 chooses on multiplayer game
         HexplorationBoard board = HexplorationBoard(boardAddress);
         PlayerRegistry pr = PlayerRegistry(board.prAddress());
         require(pr.isRegistered(gameID, msg.sender), "player not registered");
 
+        if (pr.totalRegistrations(gameID) > 1) {
+            require(
+                pr.playerID(gameID, msg.sender) == 2,
+                "P2 chooses landing site"
+            );
+        }
         board.enableZone(zoneChoice, HexplorationZone.Tile.LandingSite, gameID);
         // set landing site at space on board
         board.setInitialPlayZone(zoneChoice, gameID);
+
+        startGame(gameID, boardAddress);
     }
 
     // TODO: limit this to authorized game starters
