@@ -1,12 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0
-/* Notes:
-//add address of queue to board on deployment
-// ????? uint256 queueIndex = 0; // increase with each phase processed so we don't have to clean the queue
-*/
 pragma solidity >=0.7.0 <0.9.0;
 
 import "@openzeppelin/contracts/access/AccessControlEnumerable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
+import "./HexplorationStateUpdate.sol";
 
 contract HexplorationQueue is AccessControlEnumerable {
     using Counters for Counters.Counter;
@@ -176,6 +173,7 @@ contract HexplorationQueue is AccessControlEnumerable {
         string[] memory stringUpdates
     ) public onlyRole(GAMEPLAY_ROLE) {
         // go through values and post everything, transfer all the tokens, and pray
+        // use gamestate update contract to post everything
     }
 
     function finishProcessing(uint256 _queueID, bool gameComplete)

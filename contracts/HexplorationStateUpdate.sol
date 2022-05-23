@@ -55,9 +55,7 @@ contract HexplorationStateUpdate is AccessControlEnumerable {
         uint256 gameID,
         address boardAddress
     ) public onlyAdminVC {
-        // TODO:
-        // verify move is valid
-        // pick tiles from deck
+        //TODO: pick tiles from deck
         HexplorationBoard board = HexplorationBoard(boardAddress);
         PlayerRegistry pr = PlayerRegistry(board.prAddress());
         require(pr.isRegistered(gameID, msg.sender), "player not registered");
