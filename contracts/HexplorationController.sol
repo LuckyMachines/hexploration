@@ -31,8 +31,8 @@ contract HexplorationController is GameController {
     function transfer(
         string memory tokenType,
         uint256 gameID,
-        uint256 fromPlayerID,
-        uint256 toPlayerID,
+        uint256 fromID,
+        uint256 toID,
         uint256 quantity
     )
 */

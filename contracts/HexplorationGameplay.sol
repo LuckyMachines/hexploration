@@ -15,6 +15,13 @@ contract HexplorationGameplay is AccessControlEnumerable {
         _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
     }
 
+    function addVerifiedController(address vcAddress)
+        public
+        onlyRole(DEFAULT_ADMIN_ROLE)
+    {
+        grantRole(VERIFIED_CONTROLLER_ROLE, vcAddress);
+    }
+
     function setQueue(address queueContract)
         public
         onlyRole(DEFAULT_ADMIN_ROLE)
@@ -25,6 +32,8 @@ contract HexplorationGameplay is AccessControlEnumerable {
 
     // Keeper functions...
     // returns if should be processing and processed moves to post if so
+    // this will be run twice for each phase, once for player actions,
+    // once for playing out world scenarios
     function shouldContinueProcessing(uint256 queueID)
         public
         view
@@ -34,21 +43,20 @@ contract HexplorationGameplay is AccessControlEnumerable {
             string[] memory
         )
     {
-        // since we are returning all moves in one tranasaction, we should always be
-        // starting at this phase. Once larger moves are implemented, processing OR
-        // play through phase will be ok
         bool shouldContinue = QUEUE.currentPhase(queueID) ==
-            HexplorationQueue.ProcessingPhase.Processing;
-        string[] memory movesToPost;
+            HexplorationQueue.ProcessingPhase.Processing ||
+            QUEUE.currentPhase(queueID) ==
+            HexplorationQueue.ProcessingPhase.PlayThrough;
+        string[] memory stringsToPost;
         uint256[] memory valuesToPost;
         if (shouldContinue) {
-            (valuesToPost, movesToPost) = process(queueID);
+            (valuesToPost, stringsToPost) = process(queueID);
         } else {
             valuesToPost = new uint256[](0);
-            movesToPost = new string[](0);
+            stringsToPost = new string[](0);
         }
 
-        return (shouldContinue, valuesToPost, movesToPost);
+        return (shouldContinue, valuesToPost, stringsToPost);
     }
 
     // posts data returned from shouldContinueProcessing()...
@@ -57,28 +65,38 @@ contract HexplorationGameplay is AccessControlEnumerable {
         uint256[] memory intUpdates,
         string[] memory stringUpdates
     ) public onlyRole(VERIFIED_CONTROLLER_ROLE) {
-        QUEUE.finishProcessing(queueID, intUpdates, stringUpdates);
+        HexplorationQueue.ProcessingPhase phase = QUEUE.currentPhase(queueID);
+
+        // TODO: set this to true when game is finished
+        bool gameComplete = false;
+
+        if (phase == HexplorationQueue.ProcessingPhase.Processing) {
+            QUEUE.postUpdates(intUpdates, stringUpdates);
+            QUEUE.setPhase(
+                HexplorationQueue.ProcessingPhase.PlayThrough,
+                queueID
+            );
+        } else if (phase == HexplorationQueue.ProcessingPhase.PlayThrough) {
+            QUEUE.postUpdates(intUpdates, stringUpdates);
+            QUEUE.finishProcessing(queueID, gameComplete);
+        }
     }
 
     function process(uint256 queueID)
         internal
         view
-        returns (uint256[] memory, string[] memory)
+        returns (uint256[] memory intValues, string[] memory stringValues)
     {
-        processPlayerActions(queueID);
-        playThrough(queueID);
+        HexplorationQueue.ProcessingPhase phase = QUEUE.currentPhase(queueID);
 
-        uint256[] memory sampleIntReturn = new uint256[](4);
-        sampleIntReturn[0] = 1;
-        sampleIntReturn[1] = 2;
-        sampleIntReturn[2] = 3;
-        sampleIntReturn[3] = 4;
-
-        string[] memory sampleStringReturn = new string[](3);
-        sampleStringReturn[0] = "something";
-        sampleStringReturn[1] = "to";
-        sampleStringReturn[2] = "post";
-        return (sampleIntReturn, sampleStringReturn);
+        if (phase == HexplorationQueue.ProcessingPhase.Processing) {
+            (intValues, stringValues) = processPlayerActions(queueID);
+        } else if (phase == HexplorationQueue.ProcessingPhase.PlayThrough) {
+            (intValues, stringValues) = playThrough(queueID);
+        } else {
+            intValues = new uint256[](0);
+            stringValues = new string[](0);
+        }
 
         // maybe we don't call this, since it needs to update state...
         // update this when we pass the results from the shouldProcess
@@ -96,16 +114,93 @@ contract HexplorationGameplay is AccessControlEnumerable {
         // }
     }
 
-    function processPlayerActions(uint256 queueID) internal view {
+    function processPlayerActions(uint256 queueID)
+        internal
+        view
+        returns (uint256[] memory, string[] memory)
+    {
+        // Initial thoughts...
         // figure out most expensive move and only do as many as can be safely completed
         // in one transaction
         // start at currentQueuePosition
         // after each move is processed currentQueuePosition++
         // on after final batch, switch day / night and
         // set QUEUE.setPhase(HexplorationQueue.ProcessingPhase.PlayThrough, queueID);
+
+        // TODO: get real values
+        uint256 totalPlayerPositionUpdates = 1;
+        uint256 totalPlayerStatUpdates = 1;
+        uint256 totalPlayerEquips = 1;
+        uint256 totalPlayerTfers = 1;
+        uint256 totalZoneTfers = 1;
+
+        uint256 intReturnLength = 5 +
+            (totalPlayerPositionUpdates * 2) +
+            (totalPlayerStatUpdates * 4) +
+            totalPlayerEquips +
+            (totalPlayerTfers * 3) +
+            (totalZoneTfers * 3);
+
+        uint256[] memory intReturn = new uint256[](intReturnLength);
+        intReturn[0] = 1;
+        intReturn[1] = 2;
+        intReturn[2] = 3;
+        intReturn[3] = 4;
+
+        // TODO: update to actual max value
+        uint256 maxMovementPerPlayer = 7; // should be set to max movement + 1 (if 6 max set to 7)
+        uint256 stringReturnLength = 1 +
+            (totalPlayerPositionUpdates * maxMovementPerPlayer) +
+            totalPlayerEquips +
+            totalPlayerTfers +
+            (totalZoneTfers * 2);
+
+        string[] memory stringReturn = new string[](stringReturnLength);
+        stringReturn[0] = "something";
+        stringReturn[1] = "to";
+        stringReturn[2] = "post";
+
+        return (intReturn, stringReturn);
     }
 
-    function playThrough(uint256 queueID) internal view {
+    function playThrough(uint256 queueID)
+        internal
+        view
+        returns (uint256[] memory, string[] memory)
+    {
+        // TODO: get real values
+        uint256 totalPlayerPositionUpdates = 1;
+        uint256 totalPlayerStatUpdates = 1;
+        uint256 totalPlayerEquips = 1;
+        uint256 totalPlayerTfers = 1;
+        uint256 totalZoneTfers = 1;
+
+        uint256 intReturnLength = 5 +
+            (totalPlayerPositionUpdates * 2) +
+            (totalPlayerStatUpdates * 4) +
+            totalPlayerEquips +
+            (totalPlayerTfers * 3) +
+            (totalZoneTfers * 3);
+
+        uint256[] memory intReturn = new uint256[](intReturnLength);
+        intReturn[0] = 5;
+        intReturn[1] = 6;
+        intReturn[2] = 7;
+        intReturn[3] = 8;
+
+        // TODO: update to actual max value
+        uint256 maxMovementPerPlayer = 7; // should be set to max movement + 1 (if 6 max set to 7)
+        uint256 stringReturnLength = 1 +
+            (totalPlayerPositionUpdates * maxMovementPerPlayer) +
+            totalPlayerEquips +
+            totalPlayerTfers +
+            (totalZoneTfers * 2);
+
+        string[] memory stringReturn = new string[](stringReturnLength);
+        stringReturn[0] = "playing";
+        stringReturn[1] = "through";
+        stringReturn[2] = "game";
+        return (intReturn, stringReturn);
         // if day phase (){
         // Play through events
         // daily events
