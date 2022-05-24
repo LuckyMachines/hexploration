@@ -9,6 +9,7 @@ pragma solidity >=0.7.0 <0.9.0;
 
 import "@luckymachines/game-core/contracts/src/v0.0/GameController.sol";
 import "./HexplorationBoard.sol";
+import "./decks/CardDeck.sol";
 
 contract HexplorationStateUpdate is AccessControlEnumerable {
     bytes32 public constant VERIFIED_CONTROLLER_ROLE =
@@ -40,6 +41,8 @@ contract HexplorationStateUpdate is AccessControlEnumerable {
         _;
     }
 
+    // set other addresses going to need here
+    // decks, tokens?
     constructor(address gameBoardAddress) {
         _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
         GAME_BOARD = HexplorationBoard(gameBoardAddress);

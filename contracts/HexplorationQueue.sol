@@ -56,6 +56,9 @@ contract HexplorationQueue is AccessControlEnumerable {
     mapping(uint256 => mapping(uint256 => string)) public submissionRightHand;
     mapping(uint256 => mapping(uint256 => bool)) public playerSubmitted;
 
+    // current action, so we know what to process during play through phase
+    mapping(uint256 => mapping(uint256 => Action)) public activeAction; // defaults to idle
+
     // From request ID => queue ID
     mapping(uint256 => uint256) internal randomnessRequestQueueID; // ID set before randomness delivered
 

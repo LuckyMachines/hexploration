@@ -14,6 +14,15 @@ contract HexplorationGameplay is AccessControlEnumerable {
     HexplorationStateUpdate GAME_STATE;
     address gameSummaryAddress;
 
+    struct DataSummary {
+        uint256 playerPositionUpdates;
+        uint256 playerEquips;
+        uint256 zoneTransfers;
+        uint256 activeActions;
+        uint256 playerTransfers;
+        uint256 playerStatUpdates;
+    }
+
     constructor(address _gameSummaryAddress) {
         _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
         gameSummaryAddress = _gameSummaryAddress;
@@ -136,12 +145,7 @@ contract HexplorationGameplay is AccessControlEnumerable {
         view
         returns (uint256[] memory, string[] memory)
     {
-        // TODO: get real values
-        uint256 totalPlayerPositionUpdates = 0;
-        uint256 totalPlayerStatUpdates = 0;
-        uint256 totalPlayerEquips = 0;
-        uint256 totalPlayerTfers = 0;
-        uint256 totalZoneTfers = 0;
+        DataSummary memory data = DataSummary(0, 0, 0, 0, 0, 0);
 
         uint256[] memory playersInQueue = QUEUE.getAllPlayers(queueID);
         for (uint256 i = 0; i < playersInQueue.length; i++) {
@@ -160,50 +164,43 @@ contract HexplorationGameplay is AccessControlEnumerable {
             Help
             */
             if (action == HexplorationQueue.Action.Move) {
-                totalPlayerPositionUpdates++;
+                data.playerPositionUpdates += 1;
             }
             if (bytes(QUEUE.submissionLeftHand(queueID, playerID)).length > 0) {
-                totalPlayerEquips++;
+                data.playerEquips += 1;
             }
             if (
                 bytes(QUEUE.submissionRightHand(queueID, playerID)).length > 0
             ) {
-                totalPlayerEquips++;
+                data.playerEquips += 1;
             }
             if (
                 action == HexplorationQueue.Action.SetupCamp ||
                 action == HexplorationQueue.Action.BreakDownCamp
             ) {
-                // either will have tfer between player and board + zone and board
-                totalPlayerTfers++;
-                totalZoneTfers++;
+                data.zoneTransfers += 1;
+            }
+
+            if (
+                action == HexplorationQueue.Action.Dig ||
+                action == HexplorationQueue.Action.Rest ||
+                action == HexplorationQueue.Action.Help
+            ) {
+                data.activeActions += 1;
             }
         }
 
-        // Next:
+        // Next: ( do this in play through phase / post )
         // If dig:
         // pull treasure card or ambush
+
         // receive inventory / artifact or go to battle
+
         // update totals after Dig, Rest, Help
 
-        // TODO: get updated stats after movement
+        uint256[] memory intReturn = processedIntArray(data, queueID);
 
-        uint256[] memory intReturn = processedIntArray(
-            totalPlayerPositionUpdates,
-            totalPlayerStatUpdates,
-            totalPlayerEquips,
-            totalPlayerTfers,
-            totalZoneTfers,
-            queueID
-        );
-
-        string[] memory stringReturn = processedStringArray(
-            totalPlayerPositionUpdates,
-            totalPlayerEquips,
-            totalPlayerTfers,
-            totalZoneTfers,
-            queueID
-        );
+        string[] memory stringReturn = processedStringArray(data, queueID);
 
         return (intReturn, stringReturn);
     }
@@ -213,6 +210,7 @@ contract HexplorationGameplay is AccessControlEnumerable {
         view
         returns (uint256[] memory, string[] memory)
     {
+        /*
         // TODO: get real values
         uint256 totalPlayerPositionUpdates = 1;
         uint256 totalPlayerStatUpdates = 1;
@@ -246,6 +244,7 @@ contract HexplorationGameplay is AccessControlEnumerable {
         stringReturn[1] = "through";
         stringReturn[2] = "game";
         return (intReturn, stringReturn);
+        */
         // if day phase (){
         // Play through events
         // daily events
@@ -255,27 +254,25 @@ contract HexplorationGameplay is AccessControlEnumerable {
         //}
     }
 
-    function processedIntArray(
-        uint256 totalPlayerPositionUpdates,
-        uint256 totalPlayerStatUpdates,
-        uint256 totalPlayerEquips,
-        uint256 totalPlayerTfers,
-        uint256 totalZoneTfers,
-        uint256 queueID
-    ) internal view returns (uint256[] memory) {
+    function processedIntArray(DataSummary memory dataSummary, uint256 queueID)
+        internal
+        view
+        returns (uint256[] memory)
+    {
         uint256 intReturnLength = 5 +
-            (totalPlayerPositionUpdates * 2) +
-            (totalPlayerStatUpdates * 4) +
-            (totalPlayerEquips * 2) +
-            (totalPlayerTfers * 3) +
-            (totalZoneTfers * 3);
+            (dataSummary.playerPositionUpdates * 2) +
+            (dataSummary.playerStatUpdates * 4) +
+            (dataSummary.playerEquips * 2) +
+            (dataSummary.playerTransfers * 3) +
+            (dataSummary.zoneTransfers * 3) +
+            dataSummary.activeActions;
 
         uint256[] memory intReturn = new uint256[](intReturnLength);
-        intReturn[0] = totalPlayerPositionUpdates;
-        intReturn[1] = totalPlayerStatUpdates;
-        intReturn[2] = totalPlayerEquips;
-        intReturn[3] = totalPlayerTfers;
-        intReturn[4] = totalZoneTfers;
+        intReturn[0] = dataSummary.playerPositionUpdates;
+        intReturn[1] = dataSummary.playerStatUpdates;
+        intReturn[2] = dataSummary.playerEquips;
+        intReturn[3] = dataSummary.playerTransfers;
+        intReturn[4] = dataSummary.zoneTransfers;
 
         uint256[] memory playersInQueue = QUEUE.getAllPlayers(queueID);
 
@@ -287,7 +284,7 @@ contract HexplorationGameplay is AccessControlEnumerable {
                 QUEUE.submissionAction(queueID, playersInQueue[i]) ==
                 HexplorationQueue.Action.Move
             ) {
-                // adding player id, # spaces to move
+                // return [player id, # spaces to move]
                 intReturn[currentArrayPosition] = playersInQueue[i];
                 intReturn[currentArrayPosition + 1] = QUEUE
                     .getSubmissionOptions(queueID, playersInQueue[i])
@@ -301,7 +298,12 @@ contract HexplorationGameplay is AccessControlEnumerable {
             if (
                 bytes(QUEUE.submissionLeftHand(queueID, playersInQueue[i]))
                     .length > 0
-            ) {}
+            ) {
+                // return [player id, r/l hand (0/1)]
+                intReturn[currentArrayPosition] = playersInQueue[i];
+                intReturn[currentArrayPosition + 1] = 0;
+                currentArrayPosition += 2;
+            }
         }
 
         // RH equip
@@ -309,60 +311,80 @@ contract HexplorationGameplay is AccessControlEnumerable {
             if (
                 bytes(QUEUE.submissionRightHand(queueID, playersInQueue[i]))
                     .length > 0
-            ) {}
+            ) {
+                // return [player id, r/l hand (0/1)]
+                intReturn[currentArrayPosition] = playersInQueue[i];
+                intReturn[currentArrayPosition + 1] = 1;
+                currentArrayPosition += 2;
+            }
         }
 
         // Camp actions
         for (uint256 i = 0; i < playersInQueue.length; i++) {
             if (
                 QUEUE.submissionAction(queueID, playersInQueue[i]) ==
-                HexplorationQueue.Action.SetupCamp ||
+                HexplorationQueue.Action.SetupCamp
+            ) {
+                // setup camp
+                // transfer from player to zone
+                // return [to ID, from ID, quantity]
+                // Transfer 1 campsite from player to current zone
+
+                intReturn[currentArrayPosition] = 10000000000; //10000000000 represents current play zone of player
+                intReturn[currentArrayPosition + 1] = playersInQueue[i];
+                intReturn[currentArrayPosition + 2] = 1;
+                currentArrayPosition += 3;
+            }
+        }
+
+        for (uint256 i = 0; i < playersInQueue.length; i++) {
+            if (
                 QUEUE.submissionAction(queueID, playersInQueue[i]) ==
                 HexplorationQueue.Action.BreakDownCamp
-            ) {}
+            ) {
+                // break down camp
+                // transfer from zone to player
+                intReturn[currentArrayPosition] = playersInQueue[i];
+                intReturn[currentArrayPosition + 1] = 10000000000;
+                intReturn[currentArrayPosition + 2] = 1;
+                currentArrayPosition += 3;
+            }
         }
 
-        // Dig
         for (uint256 i = 0; i < playersInQueue.length; i++) {
             if (
                 QUEUE.submissionAction(queueID, playersInQueue[i]) ==
-                HexplorationQueue.Action.Dig
-            ) {}
-        }
-
-        //Rest
-        for (uint256 i = 0; i < playersInQueue.length; i++) {
-            if (
+                HexplorationQueue.Action.Dig ||
                 QUEUE.submissionAction(queueID, playersInQueue[i]) ==
-                HexplorationQueue.Action.Rest
-            ) {}
-        }
-
-        // Help
-        for (uint256 i = 0; i < playersInQueue.length; i++) {
-            if (
+                HexplorationQueue.Action.Rest ||
                 QUEUE.submissionAction(queueID, playersInQueue[i]) ==
                 HexplorationQueue.Action.Help
-            ) {}
+            ) {
+                intReturn[currentArrayPosition] = playersInQueue[i];
+                currentArrayPosition++;
+            }
         }
+
+        // following are updated on play through phase only
+        // no inventory transfers or stat adjustments from player action phase
+
+        // only need to store current action as digging, resting, and play out during play phase
 
         return intReturn;
     }
 
     function processedStringArray(
-        uint256 totalPlayerPositionUpdates,
-        uint256 totalPlayerEquips,
-        uint256 totalPlayerTfers,
-        uint256 totalZoneTfers,
+        DataSummary memory dataSummary,
         uint256 queueID
     ) internal view returns (string[] memory) {
         // TODO: update to actual max value
         uint256 maxMovementPerPlayer = 7;
         uint256 stringReturnLength = 1 +
-            (totalPlayerPositionUpdates * maxMovementPerPlayer) +
-            totalPlayerEquips +
-            totalPlayerTfers +
-            (totalZoneTfers * 2);
+            (dataSummary.playerPositionUpdates * maxMovementPerPlayer) +
+            dataSummary.playerEquips +
+            dataSummary.playerTransfers +
+            (dataSummary.zoneTransfers * 2) +
+            (dataSummary.activeActions * 2);
 
         string[] memory stringReturn = new string[](stringReturnLength);
         // TODO: update to actual game phase...
@@ -396,7 +418,13 @@ contract HexplorationGameplay is AccessControlEnumerable {
             if (
                 bytes(QUEUE.submissionLeftHand(queueID, playersInQueue[i]))
                     .length > 0
-            ) {}
+            ) {
+                stringReturn[currentArrayPosition] = QUEUE.submissionLeftHand(
+                    queueID,
+                    playersInQueue[i]
+                );
+                currentArrayPosition++;
+            }
         }
 
         // RH equip
@@ -404,7 +432,13 @@ contract HexplorationGameplay is AccessControlEnumerable {
             if (
                 bytes(QUEUE.submissionRightHand(queueID, playersInQueue[i]))
                     .length > 0
-            ) {}
+            ) {
+                stringReturn[currentArrayPosition] = QUEUE.submissionRightHand(
+                    queueID,
+                    playersInQueue[i]
+                );
+                currentArrayPosition++;
+            }
         }
 
         // Camp actions
@@ -414,7 +448,10 @@ contract HexplorationGameplay is AccessControlEnumerable {
                 HexplorationQueue.Action.SetupCamp ||
                 QUEUE.submissionAction(queueID, playersInQueue[i]) ==
                 HexplorationQueue.Action.BreakDownCamp
-            ) {}
+            ) {
+                stringReturn[currentArrayPosition] = "Campsite";
+                currentArrayPosition++;
+            }
         }
 
         // Dig
@@ -422,7 +459,11 @@ contract HexplorationGameplay is AccessControlEnumerable {
             if (
                 QUEUE.submissionAction(queueID, playersInQueue[i]) ==
                 HexplorationQueue.Action.Dig
-            ) {}
+            ) {
+                stringReturn[currentArrayPosition] = "Dig";
+                stringReturn[currentArrayPosition + 1] = "";
+                currentArrayPosition += 2;
+            }
         }
 
         //Rest
@@ -430,7 +471,12 @@ contract HexplorationGameplay is AccessControlEnumerable {
             if (
                 QUEUE.submissionAction(queueID, playersInQueue[i]) ==
                 HexplorationQueue.Action.Rest
-            ) {}
+            ) {
+                stringReturn[currentArrayPosition] = "Rest";
+                stringReturn[currentArrayPosition + 1] = QUEUE
+                    .submissionOptions(queueID, playersInQueue[i], 0);
+                currentArrayPosition += 2;
+            }
         }
 
         // Help
@@ -438,11 +484,41 @@ contract HexplorationGameplay is AccessControlEnumerable {
             if (
                 QUEUE.submissionAction(queueID, playersInQueue[i]) ==
                 HexplorationQueue.Action.Help
-            ) {}
+            ) {
+                stringReturn[currentArrayPosition] = "Help";
+                stringReturn[currentArrayPosition + 1] = QUEUE
+                    .submissionOptions(queueID, playersInQueue[i], 0);
+                currentArrayPosition += 2;
+            }
         }
         // set movement zones
         return stringReturn;
     }
+
+    function drawCard(
+        string memory cardType,
+        uint256 queueID,
+        uint256 playerID
+    )
+        internal
+        view
+        returns (
+            int256 speedAdjust,
+            int256 agilityAdjust,
+            int256 dexterityAdjust,
+            string memory itemTypeLoss,
+            string memory itemTypeGain,
+            string[] memory movementPath
+        )
+    {
+        // get randomness from queue
+    }
+
+    function rollDice(
+        uint256 queueID,
+        uint256[] memory diceValues,
+        uint256 diceQty
+    ) internal view returns (uint256[] memory) {}
 }
 
 // What is processing?

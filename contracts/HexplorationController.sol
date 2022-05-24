@@ -19,6 +19,7 @@ contract HexplorationController is GameController {
     HexplorationStateUpdate GAME_STATE;
 
     // TODO:
+    //
     // Connect to Chainlink VRF for random seeds when needed
     // submit move + space choice
     // use / swap item
@@ -68,9 +69,6 @@ contract HexplorationController is GameController {
     }
 
     // Admin or Keeper Interactions
-    function runBoardUpdate(address boardAddress) public onlyAdminVC {
-        HexplorationBoard(boardAddress).runUpdate();
-    }
 
     function startGame(uint256 gameID, address boardAddress) public {
         HexplorationBoard board = HexplorationBoard(boardAddress);
@@ -121,16 +119,17 @@ contract HexplorationController is GameController {
         ti.ITEM_TOKEN().mint("Flood light", gameID, 1000);
         ti.ITEM_TOKEN().mint("Nightvision Goggles", gameID, 1000);
         ti.ITEM_TOKEN().mint("Personal Shield", gameID, 1000);
-        ti.ITEM_TOKEN().mint("Bubble Shield", gameID, 1000);
-        ti.ITEM_TOKEN().mint("Frag Grenade", gameID, 1000);
-        ti.ITEM_TOKEN().mint("Fire Grenade", gameID, 1000);
-        ti.ITEM_TOKEN().mint("Shock Grenade", gameID, 1000);
-        ti.ITEM_TOKEN().mint("HE Mortar", gameID, 1000);
-        ti.ITEM_TOKEN().mint("Incendiary Mortar", gameID, 1000);
-        ti.ITEM_TOKEN().mint("EMP Mortar", gameID, 1000);
-        ti.ITEM_TOKEN().mint("Power Glove", gameID, 1000);
-        ti.ITEM_TOKEN().mint("Remote Launch and Guidance System", gameID, 1000);
-        ti.ITEM_TOKEN().mint("Teleporter Pack", gameID, 1000);
+        // add these back, just removing to cut down size for testing
+        // ti.ITEM_TOKEN().mint("Bubble Shield", gameID, 1000);
+        // ti.ITEM_TOKEN().mint("Frag Grenade", gameID, 1000);
+        // ti.ITEM_TOKEN().mint("Fire Grenade", gameID, 1000);
+        // ti.ITEM_TOKEN().mint("Shock Grenade", gameID, 1000);
+        // ti.ITEM_TOKEN().mint("HE Mortar", gameID, 1000);
+        // ti.ITEM_TOKEN().mint("Incendiary Mortar", gameID, 1000);
+        // ti.ITEM_TOKEN().mint("EMP Mortar", gameID, 1000);
+        // ti.ITEM_TOKEN().mint("Power Glove", gameID, 1000);
+        // ti.ITEM_TOKEN().mint("Remote Launch and Guidance System", gameID, 1000);
+        // ti.ITEM_TOKEN().mint("Teleporter Pack", gameID, 1000);
         ti.ITEM_TOKEN().mint("Campsite", gameID, 1000);
         ti.PLAYER_STATUS_TOKEN().mint("Stunned", gameID, 1000);
         ti.PLAYER_STATUS_TOKEN().mint("Burned", gameID, 1000);
@@ -166,40 +165,6 @@ contract HexplorationController is GameController {
         }
         q.startGame(qID);
     }
-
-    // function moveThroughPath(
-    //     string[] memory zonePath,
-    //     uint256 gameID,
-    //     uint256 playerID,
-    //     address boardAddress
-    // ) public onlyAdminVC {
-    //     // TODO:
-    //     // verify move is valid
-    //     // pick tiles from deck
-    //     HexplorationBoard board = HexplorationBoard(boardAddress);
-    //     PlayerRegistry pr = PlayerRegistry(board.prAddress());
-    //     address playerAddress = pr.playerAddress(gameID, playerID);
-    //     require(
-    //         pr.isRegistered(gameID, playerAddress),
-    //         "player not registered"
-    //     );
-
-    //     HexplorationZone.Tile[] memory tiles = new HexplorationZone.Tile[](
-    //         zonePath.length
-    //     );
-    //     for (uint256 i = 0; i < zonePath.length; i++) {
-    //         tiles[i] = i == 0 ? HexplorationZone.Tile.Jungle : i == 1
-    //             ? HexplorationZone.Tile.Plains
-    //             : HexplorationZone.Tile.Mountain;
-    //     }
-
-    //     HexplorationBoard(boardAddress).moveThroughPath(
-    //         zonePath,
-    //         playerID,
-    //         gameID,
-    //         tiles
-    //     );
-    // }
 
     //Player Interactions
     function registerForGame(uint256 gameID, address boardAddress) public {
@@ -283,5 +248,33 @@ contract HexplorationController is GameController {
     }
 
     // TODO: remove before launch
-    function getTestInventory(uint256 gameID, address boardAddress) public {}
+    function getTestInventory(uint256 gameID, address boardAddress) public {
+        // send some equippable items
+        HexplorationBoard board = HexplorationBoard(boardAddress);
+        TokenInventory ti = TokenInventory(board.tokenInventory());
+        PlayerRegistry pr = PlayerRegistry(board.prAddress());
+        ti.ITEM_TOKEN().transfer(
+            "Shiny Rifle",
+            gameID,
+            0,
+            pr.playerID(gameID, msg.sender),
+            1
+        );
+
+        ti.ITEM_TOKEN().transfer(
+            "Glow stick",
+            gameID,
+            0,
+            pr.playerID(gameID, msg.sender),
+            1
+        );
+
+        ti.ITEM_TOKEN().transfer(
+            "Laser Dagger",
+            gameID,
+            0,
+            pr.playerID(gameID, msg.sender),
+            1
+        );
+    }
 }
