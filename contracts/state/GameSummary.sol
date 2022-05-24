@@ -187,9 +187,11 @@ library GameSummary {
     {
         HexplorationBoard board = HexplorationBoard(gameBoardAddress);
         CharacterCard cc = CharacterCard(board.characterCard());
-        movement = cc.movement(gameID, msg.sender);
-        agility = cc.agility(gameID, msg.sender);
-        dexterity = cc.dexterity(gameID, msg.sender);
+        PlayerRegistry pr = PlayerRegistry(board.prAddress());
+        uint256 playerID = pr.playerID(gameID, msg.sender);
+        movement = cc.movement(gameID, playerID);
+        agility = cc.agility(gameID, playerID);
+        dexterity = cc.dexterity(gameID, playerID);
     }
 
     function currentHandInventory(address gameBoardAddress, uint256 gameID)
@@ -199,22 +201,24 @@ library GameSummary {
     {
         HexplorationBoard board = HexplorationBoard(gameBoardAddress);
         CharacterCard cc = CharacterCard(board.characterCard());
+        PlayerRegistry pr = PlayerRegistry(board.prAddress());
+        uint256 playerID = pr.playerID(gameID, msg.sender);
         leftHandItem = inventoryItemExists(
-            cc.leftHandItem(gameID, msg.sender),
+            cc.leftHandItem(gameID, playerID),
             board.tokenInventory(),
             gameID,
             PlayerRegistry(board.prAddress()).playerID(gameID, msg.sender)
         )
-            ? cc.leftHandItem(gameID, msg.sender)
+            ? cc.leftHandItem(gameID, playerID)
             : "";
 
         rightHandItem = inventoryItemExists(
-            cc.rightHandItem(gameID, msg.sender),
+            cc.rightHandItem(gameID, playerID),
             board.tokenInventory(),
             gameID,
             PlayerRegistry(board.prAddress()).playerID(gameID, msg.sender)
         )
-            ? cc.rightHandItem(gameID, msg.sender)
+            ? cc.rightHandItem(gameID, playerID)
             : "";
     }
 
@@ -231,38 +235,40 @@ library GameSummary {
     {
         HexplorationBoard board = HexplorationBoard(gameBoardAddress);
         CharacterCard cc = CharacterCard(board.characterCard());
+        PlayerRegistry pr = PlayerRegistry(board.prAddress());
+        uint256 playerID = pr.playerID(gameID, msg.sender);
         artifact = inventoryArtifactExists(
-            cc.artifact(gameID, msg.sender),
+            cc.artifact(gameID, playerID),
             board.tokenInventory(),
             gameID,
-            PlayerRegistry(board.prAddress()).playerID(gameID, msg.sender)
+            playerID
         )
-            ? cc.artifact(gameID, msg.sender)
+            ? cc.artifact(gameID, playerID)
             : "";
 
         status = inventoryStatusExists(
-            cc.status(gameID, msg.sender),
+            cc.status(gameID, playerID),
             board.tokenInventory(),
             gameID,
-            PlayerRegistry(board.prAddress()).playerID(gameID, msg.sender)
+            playerID
         )
-            ? cc.status(gameID, msg.sender)
+            ? cc.status(gameID, playerID)
             : "";
 
         relic = inventoryItemExists(
-            cc.relic(gameID, msg.sender),
+            cc.relic(gameID, playerID),
             board.tokenInventory(),
             gameID,
-            PlayerRegistry(board.prAddress()).playerID(gameID, msg.sender)
+            playerID
         )
-            ? cc.relic(gameID, msg.sender)
+            ? cc.relic(gameID, playerID)
             : "";
 
         shield = inventoryItemExists(
             "Shield",
             board.tokenInventory(),
             gameID,
-            PlayerRegistry(board.prAddress()).playerID(gameID, msg.sender)
+            playerID
         )
             ? true
             : false;
@@ -271,7 +277,7 @@ library GameSummary {
             "Campsite",
             board.tokenInventory(),
             gameID,
-            PlayerRegistry(board.prAddress()).playerID(gameID, msg.sender)
+            playerID
         )
             ? true
             : false;
@@ -338,4 +344,10 @@ library GameSummary {
         // );
         // itemBalances[34] = campsiteBalance;
     }
+
+    function activeAction(address gameBoardAddress, uint256 gameID)
+        public
+        view
+        returns (string memory action)
+    {}
 }

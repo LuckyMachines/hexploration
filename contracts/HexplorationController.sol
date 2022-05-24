@@ -170,10 +170,11 @@ contract HexplorationController is GameController {
     function registerForGame(uint256 gameID, address boardAddress) public {
         HexplorationBoard board = HexplorationBoard(boardAddress);
         board.registerPlayer(msg.sender, gameID);
+        // TODO: set to official values
         CharacterCard(board.characterCard()).setStats(
             [4, 4, 4],
             gameID,
-            msg.sender
+            PlayerRegistry(board.prAddress()).playerID(gameID, msg.sender)
         );
     }
 
@@ -247,34 +248,34 @@ contract HexplorationController is GameController {
         return GameRegistry(gameRegistryAddress).latestGame(boardAddress);
     }
 
-    // TODO: remove before launch
-    function getTestInventory(uint256 gameID, address boardAddress) public {
-        // send some equippable items
-        HexplorationBoard board = HexplorationBoard(boardAddress);
-        TokenInventory ti = TokenInventory(board.tokenInventory());
-        PlayerRegistry pr = PlayerRegistry(board.prAddress());
-        ti.ITEM_TOKEN().transfer(
-            "Shiny Rifle",
-            gameID,
-            0,
-            pr.playerID(gameID, msg.sender),
-            1
-        );
+    // // TODO: remove before launch
+    // function getTestInventory(uint256 gameID, address boardAddress) public {
+    //     // send some equippable items
+    //     HexplorationBoard board = HexplorationBoard(boardAddress);
+    //     TokenInventory ti = TokenInventory(board.tokenInventory());
+    //     PlayerRegistry pr = PlayerRegistry(board.prAddress());
+    //     ti.ITEM_TOKEN().transfer(
+    //         "Shiny Rifle",
+    //         gameID,
+    //         0,
+    //         pr.playerID(gameID, msg.sender),
+    //         1
+    //     );
 
-        ti.ITEM_TOKEN().transfer(
-            "Glow stick",
-            gameID,
-            0,
-            pr.playerID(gameID, msg.sender),
-            1
-        );
+    //     ti.ITEM_TOKEN().transfer(
+    //         "Glow stick",
+    //         gameID,
+    //         0,
+    //         pr.playerID(gameID, msg.sender),
+    //         1
+    //     );
 
-        ti.ITEM_TOKEN().transfer(
-            "Laser Dagger",
-            gameID,
-            0,
-            pr.playerID(gameID, msg.sender),
-            1
-        );
-    }
+    //     ti.ITEM_TOKEN().transfer(
+    //         "Laser Dagger",
+    //         gameID,
+    //         0,
+    //         pr.playerID(gameID, msg.sender),
+    //         1
+    //     );
+    // }
 }

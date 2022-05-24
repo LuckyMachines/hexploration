@@ -23,17 +23,17 @@ contract CharacterCard is AccessControlEnumerable {
     address public itemToken;
     address public artifactToken;
     address public relicToken;
-    // game id => player address
-    mapping(uint256 => mapping(address => uint8)) public movement;
-    mapping(uint256 => mapping(address => uint8)) public agility;
-    mapping(uint256 => mapping(address => uint8)) public dexterity;
-    mapping(uint256 => mapping(address => Action)) public action; // set to enumerated list
+    // game id => player ID
+    mapping(uint256 => mapping(uint256 => uint8)) public movement;
+    mapping(uint256 => mapping(uint256 => uint8)) public agility;
+    mapping(uint256 => mapping(uint256 => uint8)) public dexterity;
+    mapping(uint256 => mapping(uint256 => Action)) public action; // set to enumerated list
     //// the following assign a token type, player must still hold balance to use item
-    mapping(uint256 => mapping(address => string)) public leftHandItem;
-    mapping(uint256 => mapping(address => string)) public rightHandItem;
-    mapping(uint256 => mapping(address => string)) public artifact;
-    mapping(uint256 => mapping(address => string)) public status;
-    mapping(uint256 => mapping(address => string)) public relic;
+    mapping(uint256 => mapping(uint256 => string)) public leftHandItem;
+    mapping(uint256 => mapping(uint256 => string)) public rightHandItem;
+    mapping(uint256 => mapping(uint256 => string)) public artifact;
+    mapping(uint256 => mapping(uint256 => string)) public status;
+    mapping(uint256 => mapping(uint256 => string)) public relic;
 
     constructor(
         address itemTokenAddress,
@@ -56,83 +56,83 @@ contract CharacterCard is AccessControlEnumerable {
     function setStats(
         uint8[3] memory stats,
         uint256 gameID,
-        address playerAddress
+        uint256 playerID
     ) external onlyRole(VERIFIED_CONTROLLER_ROLE) {
         // set all stats at once [movement, agility, dexterity]
-        movement[gameID][playerAddress] = stats[0];
-        agility[gameID][playerAddress] = stats[1];
-        dexterity[gameID][playerAddress] = stats[2];
+        movement[gameID][playerID] = stats[0];
+        agility[gameID][playerID] = stats[1];
+        dexterity[gameID][playerID] = stats[2];
     }
 
     function setMovement(
         uint8 movementValue,
         uint256 gameID,
-        address playerAddress
+        uint256 playerID
     ) external onlyRole(VERIFIED_CONTROLLER_ROLE) {
-        movement[gameID][playerAddress] = movementValue;
+        movement[gameID][playerID] = movementValue;
     }
 
     function setAgility(
         uint8 agilityValue,
         uint256 gameID,
-        address playerAddress
+        uint256 playerID
     ) external onlyRole(VERIFIED_CONTROLLER_ROLE) {
-        agility[gameID][playerAddress] = agilityValue;
+        agility[gameID][playerID] = agilityValue;
     }
 
     function setDexterity(
         uint8 dexterityValue,
         uint256 gameID,
-        address playerAddress
+        uint256 playerID
     ) external onlyRole(VERIFIED_CONTROLLER_ROLE) {
-        dexterity[gameID][playerAddress] = dexterityValue;
+        dexterity[gameID][playerID] = dexterityValue;
     }
 
     function setLeftHandItem(
         string memory itemTokenType,
         uint256 gameID,
-        address playerAddress
+        uint256 playerID
     ) external onlyRole(VERIFIED_CONTROLLER_ROLE) {
-        leftHandItem[gameID][playerAddress] = itemTokenType;
+        leftHandItem[gameID][playerID] = itemTokenType;
     }
 
     function setRightHandItem(
         string memory itemTokenType,
         uint256 gameID,
-        address playerAddress
+        uint256 playerID
     ) external onlyRole(VERIFIED_CONTROLLER_ROLE) {
-        rightHandItem[gameID][playerAddress] = itemTokenType;
+        rightHandItem[gameID][playerID] = itemTokenType;
     }
 
     function setArtifact(
         string memory itemTokenType,
         uint256 gameID,
-        address playerAddress
+        uint256 playerID
     ) external onlyRole(VERIFIED_CONTROLLER_ROLE) {
-        rightHandItem[gameID][playerAddress] = itemTokenType;
+        rightHandItem[gameID][playerID] = itemTokenType;
     }
 
     function setStatus(
         string memory itemTokenType,
         uint256 gameID,
-        address playerAddress
+        uint256 playerID
     ) external onlyRole(VERIFIED_CONTROLLER_ROLE) {
-        rightHandItem[gameID][playerAddress] = itemTokenType;
+        rightHandItem[gameID][playerID] = itemTokenType;
     }
 
     function setRelic(
         string memory itemTokenType,
         uint256 gameID,
-        address playerAddress
+        uint256 playerID
     ) external onlyRole(VERIFIED_CONTROLLER_ROLE) {
-        rightHandItem[gameID][playerAddress] = itemTokenType;
+        rightHandItem[gameID][playerID] = itemTokenType;
     }
 
     function setAction(
         Action _action,
         uint256 gameID,
-        address playerAddress
+        uint256 playerID
     ) external onlyRole(VERIFIED_CONTROLLER_ROLE) {
-        action[gameID][playerAddress] = _action;
+        action[gameID][playerID] = _action;
     }
 }

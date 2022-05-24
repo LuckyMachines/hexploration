@@ -184,7 +184,9 @@ contract HexplorationGameplay is AccessControlEnumerable {
             if (
                 action == HexplorationQueue.Action.Dig ||
                 action == HexplorationQueue.Action.Rest ||
-                action == HexplorationQueue.Action.Help
+                action == HexplorationQueue.Action.Help ||
+                action == HexplorationQueue.Action.SetupCamp ||
+                action == HexplorationQueue.Action.BreakDownCamp
             ) {
                 data.activeActions += 1;
             }
@@ -259,7 +261,7 @@ contract HexplorationGameplay is AccessControlEnumerable {
         view
         returns (uint256[] memory)
     {
-        uint256 intReturnLength = 5 +
+        uint256 intReturnLength = 6 +
             (dataSummary.playerPositionUpdates * 2) +
             (dataSummary.playerStatUpdates * 4) +
             (dataSummary.playerEquips * 2) +
@@ -273,10 +275,11 @@ contract HexplorationGameplay is AccessControlEnumerable {
         intReturn[2] = dataSummary.playerEquips;
         intReturn[3] = dataSummary.playerTransfers;
         intReturn[4] = dataSummary.zoneTransfers;
+        intReturn[5] = dataSummary.activeActions;
 
         uint256[] memory playersInQueue = QUEUE.getAllPlayers(queueID);
 
-        uint256 currentArrayPosition = 5;
+        uint256 currentArrayPosition = 6;
 
         // Movement
         for (uint256 i = 0; i < playersInQueue.length; i++) {
@@ -451,6 +454,24 @@ contract HexplorationGameplay is AccessControlEnumerable {
             ) {
                 stringReturn[currentArrayPosition] = "Campsite";
                 currentArrayPosition++;
+            }
+        }
+
+        for (uint256 i = 0; i < playersInQueue.length; i++) {
+            if (
+                QUEUE.submissionAction(queueID, playersInQueue[i]) ==
+                HexplorationQueue.Action.SetupCamp
+            ) {
+                stringReturn[currentArrayPosition] = "Setup camp";
+                stringReturn[currentArrayPosition + 1] = "";
+                currentArrayPosition += 2;
+            } else if (
+                QUEUE.submissionAction(queueID, playersInQueue[i]) ==
+                HexplorationQueue.Action.BreakDownCamp
+            ) {
+                stringReturn[currentArrayPosition] = "Break down camp";
+                stringReturn[currentArrayPosition + 1] = "";
+                currentArrayPosition += 2;
             }
         }
 

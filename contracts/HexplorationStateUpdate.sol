@@ -10,6 +10,7 @@ pragma solidity >=0.7.0 <0.9.0;
 import "@luckymachines/game-core/contracts/src/v0.0/GameController.sol";
 import "./HexplorationBoard.sol";
 import "./decks/CardDeck.sol";
+import "./state/CharacterCard.sol";
 
 contract HexplorationStateUpdate is AccessControlEnumerable {
     bytes32 public constant VERIFIED_CONTROLLER_ROLE =
@@ -32,6 +33,7 @@ contract HexplorationStateUpdate is AccessControlEnumerable {
     )
 */
     HexplorationBoard internal GAME_BOARD;
+    CharacterCard internal CHARACTER_CARD;
     modifier onlyAdminVC() {
         require(
             hasRole(DEFAULT_ADMIN_ROLE, _msgSender()) ||
@@ -43,9 +45,10 @@ contract HexplorationStateUpdate is AccessControlEnumerable {
 
     // set other addresses going to need here
     // decks, tokens?
-    constructor(address gameBoardAddress) {
+    constructor(address gameBoardAddress, address characterCardAddress) {
         _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
         GAME_BOARD = HexplorationBoard(gameBoardAddress);
+        CHARACTER_CARD = CharacterCard(characterCardAddress);
     }
 
     // Admin Functions
@@ -84,7 +87,7 @@ contract HexplorationStateUpdate is AccessControlEnumerable {
             for (uint256 j = 0; j < spacesToMove; j++) {
                 path[j] = stringUpdates[(i * maxMovementPerPlayer) + 1 + j];
             }
-            moveThroughPath(path, gameID, intUpdates[(i * 2) + 5]);
+            moveThroughPath(path, gameID, intUpdates[(i * 2) + 6]);
         }
     }
 
@@ -98,7 +101,31 @@ contract HexplorationStateUpdate is AccessControlEnumerable {
         uint256[] memory intUpdates,
         string[] memory stringUpdates,
         uint256 gameID
-    ) internal {}
+    ) internal {
+        // TODO: update to real number
+        uint256 maxMovement = 7;
+        uint256 currentIntIndex = 6 + (2 * intUpdates[0]);
+        uint256 currentStringIndex = 1 + (maxMovement * intUpdates[0]);
+        for (uint256 i = 0; i < intUpdates[2]; i++) {
+            uint256 playerID = intUpdates[currentIntIndex];
+            bool leftHand = intUpdates[currentIntIndex + 1] == 0;
+            if (leftHand) {
+                CHARACTER_CARD.setLeftHandItem(
+                    stringUpdates[currentStringIndex],
+                    gameID,
+                    playerID
+                );
+            } else {
+                CHARACTER_CARD.setRightHandItem(
+                    stringUpdates[currentStringIndex],
+                    gameID,
+                    playerID
+                );
+            }
+            currentIntIndex++;
+            currentStringIndex++;
+        }
+    }
 
     function transferPlayerItems(
         uint256[] memory intUpdates,

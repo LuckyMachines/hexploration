@@ -7,6 +7,7 @@ const Queue = artifacts.require("HexplorationQueue");
 const GameBoard = artifacts.require("HexplorationBoard");
 const GameController = artifacts.require("HexplorationController");
 const Gameplay = artifacts.require("HexplorationGameplay");
+const CharacterCard = artifacts.require("CharacterCard");
 const addresses = require("./addresses.js");
 
 module.exports = async (deployer, network, [defaultAccount]) => {
@@ -14,7 +15,8 @@ module.exports = async (deployer, network, [defaultAccount]) => {
   try {
     await deployer.deploy(
       GameStateUpdate,
-      addresses.GANACHE_HEXPLORATION_BOARD
+      addresses.GANACHE_HEXPLORATION_BOARD,
+      CharacterCard.address
     );
     const hexBoard = await GameBoard.at(addresses.GANACHE_HEXPLORATION_BOARD);
     const hexStateUpdate = await GameStateUpdate.deployed();
@@ -23,6 +25,7 @@ module.exports = async (deployer, network, [defaultAccount]) => {
     const hexController = await GameController.at(
       addresses.GANACHE_HEXPLORATION_CONTROLLER
     );
+    const cc = await CharacterCard.deployed();
     console.log("Adding game controller as VC of game state update...");
     await hexStateUpdate.addVerifiedController(
       addresses.GANACHE_HEXPLORATION_CONTROLLER
@@ -33,6 +36,9 @@ module.exports = async (deployer, network, [defaultAccount]) => {
 
     console.log("Adding game state update as VC of game board...");
     await hexBoard.addVerifiedController(GameStateUpdate.address);
+
+    console.log("Adding game state update as VC of character card...");
+    await cc.addVerifiedController(GameStateUpdate.address);
 
     console.log("Adding game state update address to controller...");
     await hexController.setGameStateUpdate(GameStateUpdate.address);
