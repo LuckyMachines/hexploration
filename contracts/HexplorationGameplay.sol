@@ -6,8 +6,12 @@ import "./HexplorationStateUpdate.sol";
 import "./state/GameSummary.sol";
 import "./HexplorationBoard.sol";
 import "@openzeppelin/contracts/access/AccessControlEnumerable.sol";
+import "@chainlink/contracts/src/v0.8/KeeperCompatible.sol";
 
-contract HexplorationGameplay is AccessControlEnumerable {
+contract HexplorationGameplay is
+    AccessControlEnumerable,
+    KeeperCompatibleInterface
+{
     bytes32 public constant VERIFIED_CONTROLLER_ROLE =
         keccak256("VERIFIED_CONTROLLER_ROLE");
 
@@ -17,7 +21,7 @@ contract HexplorationGameplay is AccessControlEnumerable {
     address gameSummaryAddress;
 
     // Mapping from QueueID to updates needed to run
-    mapping(uint256 => PlayUpdates) public updates;
+    //mapping(uint256 => bool) public readyForKeeper;
     mapping(uint256 => bool) public updatesComplete;
 
     struct DataSummary {
@@ -31,6 +35,7 @@ contract HexplorationGameplay is AccessControlEnumerable {
 
     struct PlayUpdates {
         uint256[] playerPositionIDs;
+        uint256[] spacesToMove;
         uint256[] playerEquipIDs;
         uint256[] playerEquipHands;
         uint256[] zoneTransfersTo;
@@ -43,7 +48,7 @@ contract HexplorationGameplay is AccessControlEnumerable {
         uint256[3][] playerStatUpdates;
         uint256[] playerActiveActionIDs;
         string gamePhase;
-        string[][] playerMovementOptions;
+        string[7][] playerMovementOptions; // TODO: set this to max # of spaces possible
         string[] playerEquips;
         string[] zoneTransferItemTypes;
         string[] playerTransferItemTypes;
@@ -79,96 +84,141 @@ contract HexplorationGameplay is AccessControlEnumerable {
         GAME_STATE = HexplorationStateUpdate(gsuAddress);
     }
 
-    // Keeper functions...
-    // returns if should be processing and processed moves to post if so
-    // this will be run twice for each phase, once for player actions,
-    // once for playing out world scenarios
-    function shouldContinueProcessing(uint256 queueID)
+    // Test keeper functions
+    function needsUpkeep()
         public
         view
-        returns (
-            bool,
-            uint256[] memory,
-            string[] memory
-        )
+        returns (bool upkeepNeeded, bytes memory performData)
     {
-        bool shouldContinue = QUEUE.currentPhase(queueID) ==
-            HexplorationQueue.ProcessingPhase.Processing ||
-            QUEUE.currentPhase(queueID) ==
-            HexplorationQueue.ProcessingPhase.PlayThrough;
-        string[] memory stringsToPost;
-        uint256[] memory valuesToPost;
-        if (shouldContinue) {
-            (valuesToPost, stringsToPost) = process(queueID);
-        } else {
-            valuesToPost = new uint256[](0);
-            stringsToPost = new string[](0);
-        }
-
-        return (shouldContinue, valuesToPost, stringsToPost);
-    }
-
-    // posts data returned from shouldContinueProcessing()...
-    function postProcessedGameState(
-        uint256 queueID,
-        uint256[] memory intUpdates,
-        string[] memory stringUpdates
-    ) public onlyRole(VERIFIED_CONTROLLER_ROLE) {
-        HexplorationQueue.ProcessingPhase phase = QUEUE.currentPhase(queueID);
-
-        // TODO: set this to true when game is finished
-        bool gameComplete = false;
-        uint256 gameID = QUEUE.game(queueID);
-        if (phase == HexplorationQueue.ProcessingPhase.Processing) {
-            GAME_STATE.postUpdates(intUpdates, stringUpdates, gameID);
-            QUEUE.setPhase(
-                HexplorationQueue.ProcessingPhase.PlayThrough,
-                queueID
-            );
-        } else if (phase == HexplorationQueue.ProcessingPhase.PlayThrough) {
-            GAME_STATE.postUpdates(intUpdates, stringUpdates, gameID);
-            QUEUE.finishProcessing(queueID, gameComplete);
-        }
-    }
-
-    function process(uint256 queueID)
-        internal
-        view
-        returns (uint256[] memory intValues, string[] memory stringValues)
-    {
-        HexplorationQueue.ProcessingPhase phase = QUEUE.currentPhase(queueID);
-        if (QUEUE.randomness(queueID) != 0) {
-            if (phase == HexplorationQueue.ProcessingPhase.Processing) {
-                (intValues, stringValues) = processPlayerActions(queueID);
-            } else if (phase == HexplorationQueue.ProcessingPhase.PlayThrough) {
-                (intValues, stringValues) = playThrough(queueID);
-            } else {
-                intValues = new uint256[](0);
-                stringValues = new string[](0);
+        upkeepNeeded = false;
+        uint256 queueIDToUpdate = 0;
+        uint256[] memory pq = QUEUE.getProcessingQueue();
+        for (uint256 i = 0; i < pq.length; i++) {
+            if (pq[i] != 0 && QUEUE.randomness(queueIDToUpdate) > 0) {
+                queueIDToUpdate = pq[i];
+                upkeepNeeded = true;
+                break;
             }
-        } else {
-            // randomness not set for queue yet
-            intValues = new uint256[](0);
-            stringValues = new string[](1);
-            stringValues[0] = "awaiting randomness";
         }
-
-        // Update TODO: expand for processing larger turns...
-        // something like
-        // if (currentPhase == HexplorationQueue.ProcessingPhase.Processing) {
-        //     // processPlayerActions()
-        // } else if (
-        //     currentPhase == HexplorationQueue.ProcessingPhase.PlayThrough
-        // ) {
-        //     // playThrough()
-        //     // finishProcessing()
-        // }
+        HexplorationQueue.ProcessingPhase phase = QUEUE.currentPhase(
+            queueIDToUpdate
+        );
+        // 2 = processing, 3 = play through, 4 = processed
+        if (phase == HexplorationQueue.ProcessingPhase.Processing) {
+            performData = getUpdateInfo(queueIDToUpdate, 2);
+        } else if (phase == HexplorationQueue.ProcessingPhase.PlayThrough) {
+            performData = getUpdateInfo(queueIDToUpdate, 3);
+        } else {
+            performData = getUpdateInfo(queueIDToUpdate, 4);
+        }
     }
 
-    function processPlayerActions(uint256 queueID)
+    function doUpkeep(bytes calldata performData)
+        public
+        onlyRole(DEFAULT_ADMIN_ROLE)
+    {
+        DataSummary memory summary;
+        uint256 queueID;
+        uint256 processingPhase;
+        (
+            queueID,
+            processingPhase,
+            summary.playerPositionUpdates,
+            summary.playerStatUpdates,
+            summary.playerEquips,
+            summary.zoneTransfers,
+            summary.playerTransfers,
+            summary.activeActions
+        ) = abi.decode(
+            performData,
+            (
+                uint256,
+                uint256,
+                uint256,
+                uint256,
+                uint256,
+                uint256,
+                uint256,
+                uint256
+            )
+        );
+        if (processingPhase == 2) {
+            processPlayerActions(queueID, summary);
+        } else if (processingPhase == 3) {
+            processPlayThrough(queueID, summary);
+        }
+    }
+
+    // Keeper functions
+    function performUpkeep(bytes calldata performData) external override {
+        DataSummary memory summary;
+        uint256 queueID;
+        uint256 processingPhase;
+        (
+            queueID,
+            processingPhase,
+            summary.playerPositionUpdates,
+            summary.playerStatUpdates,
+            summary.playerEquips,
+            summary.zoneTransfers,
+            summary.playerTransfers,
+            summary.activeActions
+        ) = abi.decode(
+            performData,
+            (
+                uint256,
+                uint256,
+                uint256,
+                uint256,
+                uint256,
+                uint256,
+                uint256,
+                uint256
+            )
+        );
+        if (processingPhase == 2) {
+            processPlayerActions(queueID, summary);
+        } else if (processingPhase == 3) {
+            processPlayThrough(queueID, summary);
+        }
+    }
+
+    function checkUpkeep(
+        bytes calldata /* checkData */
+    )
+        external
+        view
+        override
+        returns (bool upkeepNeeded, bytes memory performData)
+    {
+        // check for list of queues that need updates...
+        upkeepNeeded = false;
+        uint256 queueIDToUpdate = 0;
+        uint256[] memory pq = QUEUE.getProcessingQueue();
+        for (uint256 i = 0; i < pq.length; i++) {
+            if (pq[i] != 0 && QUEUE.randomness(queueIDToUpdate) > 0) {
+                queueIDToUpdate = pq[i];
+                upkeepNeeded = true;
+                break;
+            }
+        }
+        HexplorationQueue.ProcessingPhase phase = QUEUE.currentPhase(
+            queueIDToUpdate
+        );
+        // 2 = processing, 3 = play through, 4 = processed
+        if (phase == HexplorationQueue.ProcessingPhase.Processing) {
+            performData = getUpdateInfo(queueIDToUpdate, 2);
+        } else if (phase == HexplorationQueue.ProcessingPhase.PlayThrough) {
+            performData = getUpdateInfo(queueIDToUpdate, 3);
+        } else {
+            performData = getUpdateInfo(queueIDToUpdate, 4);
+        }
+    }
+
+    function getUpdateInfo(uint256 queueID, uint256 processingPhase)
         internal
         view
-        returns (uint256[] memory, string[] memory)
+        returns (bytes memory)
     {
         DataSummary memory data = DataSummary(0, 0, 0, 0, 0, 0);
         uint256[] memory playersInQueue = QUEUE.getAllPlayers(queueID);
@@ -178,15 +228,6 @@ contract HexplorationGameplay is AccessControlEnumerable {
                 queueID,
                 playerID
             );
-            /*
-            Idle,
-            Move,
-            SetupCamp,
-            BreakDownCamp,
-            Dig,
-            Rest,
-            Help
-            */
             if (action == HexplorationQueue.Action.Move) {
                 data.playerPositionUpdates += 1;
             }
@@ -215,29 +256,243 @@ contract HexplorationGameplay is AccessControlEnumerable {
                 data.activeActions += 1;
             }
         }
-
-        // Next: ( do this in play through phase / post )
-        // If dig:
-        // pull treasure card or ambush
-
-        // receive inventory / artifact or go to battle
-
-        // update totals after Dig, Rest, Help
-
-        uint256[] memory intReturn = processedIntArray(data, queueID);
-
-        string[] memory stringReturn = processedStringArray(data, queueID);
-
-        return (intReturn, stringReturn);
+        return (
+            abi.encode(
+                queueID,
+                processingPhase,
+                data.playerPositionUpdates,
+                data.playerStatUpdates,
+                data.playerEquips,
+                data.zoneTransfers,
+                data.playerTransfers,
+                data.activeActions
+            )
+        );
     }
 
-    function playThrough(uint256 queueID)
-        internal
-        view
-        returns (uint256[] memory, string[] memory)
-    {
-        DataSummary memory data = DataSummary(0, 0, 0, 0, 0, 0);
+    function playUpdatesForPlayerActionPhase(
+        uint256 queueID,
+        DataSummary memory summary
+    ) internal view returns (PlayUpdates memory) {
         PlayUpdates memory playUpdates;
+
+        uint256[] memory playersInQueue = QUEUE.getAllPlayers(queueID);
+        uint256 position;
+        uint256 maxMovementPerPlayer = 7;
+        // Movement
+        playUpdates.playerPositionIDs = new uint256[](
+            summary.playerPositionUpdates
+        );
+        playUpdates.spacesToMove = new uint256[](summary.playerPositionUpdates);
+        playUpdates.playerMovementOptions = new string[7][](
+            summary.playerPositionUpdates
+        );
+        position = 0;
+        for (uint256 i = 0; i < playersInQueue.length; i++) {
+            if (
+                QUEUE.submissionAction(queueID, playersInQueue[i]) ==
+                HexplorationQueue.Action.Move
+            ) {
+                // return [player id, # spaces to move]
+
+                playUpdates.playerPositionIDs[position] = playersInQueue[i];
+                playUpdates.spacesToMove[position] = QUEUE
+                    .getSubmissionOptions(queueID, playersInQueue[i])
+                    .length;
+                string[] memory options = QUEUE.getSubmissionOptions(
+                    queueID,
+                    playersInQueue[i]
+                );
+                for (uint256 j = 0; j < maxMovementPerPlayer; j++) {
+                    playUpdates.playerMovementOptions[position][j] = j <
+                        options.length
+                        ? options[j]
+                        : "";
+                }
+                position++;
+            }
+        }
+
+        // LH equip
+        playUpdates.playerEquipIDs = new uint256[](summary.playerEquips);
+        playUpdates.playerEquipHands = new uint256[](summary.playerEquips);
+        playUpdates.playerEquips = new string[](summary.playerEquips);
+        position = 0;
+        for (uint256 i = 0; i < playersInQueue.length; i++) {
+            if (
+                bytes(QUEUE.submissionLeftHand(queueID, playersInQueue[i]))
+                    .length > 0
+            ) {
+                // return [player id, r/l hand (0/1)]
+
+                playUpdates.playerEquipIDs[position] = playersInQueue[i];
+                playUpdates.playerEquipHands[position] = 0;
+                playUpdates.playerEquips[position] = QUEUE.submissionLeftHand(
+                    queueID,
+                    playersInQueue[i]
+                );
+                position++;
+            }
+        }
+
+        // RH equip
+        for (uint256 i = 0; i < playersInQueue.length; i++) {
+            if (
+                bytes(QUEUE.submissionRightHand(queueID, playersInQueue[i]))
+                    .length > 0
+            ) {
+                // return [player id, r/l hand (0/1)]
+
+                playUpdates.playerEquipIDs[position] = playersInQueue[i];
+                playUpdates.playerEquipHands[position] = 1;
+                playUpdates.playerEquips[position] = QUEUE.submissionRightHand(
+                    queueID,
+                    playersInQueue[i]
+                );
+                position++;
+            }
+        }
+
+        // Camp actions
+        playUpdates.zoneTransfersTo = new uint256[](summary.zoneTransfers);
+        playUpdates.zoneTransfersFrom = new uint256[](summary.zoneTransfers);
+        playUpdates.zoneTransferQtys = new uint256[](summary.zoneTransfers);
+        playUpdates.zoneTransferItemTypes = new string[](summary.zoneTransfers);
+        position = 0;
+        for (uint256 i = 0; i < playersInQueue.length; i++) {
+            if (
+                QUEUE.submissionAction(queueID, playersInQueue[i]) ==
+                HexplorationQueue.Action.SetupCamp
+            ) {
+                // setup camp
+                // transfer from player to zone
+                // return [to ID, from ID, quantity]
+                // Transfer 1 campsite from player to current zone
+
+                playUpdates.zoneTransfersTo[position] = 10000000000; //10000000000 represents current play zone of player
+                playUpdates.zoneTransfersFrom[position] = playersInQueue[i];
+                playUpdates.zoneTransferQtys[position] = 1;
+                playUpdates.zoneTransferItemTypes[position] = "Campsite";
+                position++;
+            }
+        }
+
+        for (uint256 i = 0; i < playersInQueue.length; i++) {
+            if (
+                QUEUE.submissionAction(queueID, playersInQueue[i]) ==
+                HexplorationQueue.Action.BreakDownCamp
+            ) {
+                // break down camp
+                // transfer from zone to player
+                playUpdates.zoneTransfersTo[position] = playersInQueue[i];
+                playUpdates.zoneTransfersFrom[position] = 10000000000;
+                playUpdates.zoneTransferQtys[position] = 1;
+                playUpdates.zoneTransferItemTypes[position] = "Campsite";
+                position++;
+            }
+        }
+
+        playUpdates.playerActiveActionIDs = new uint256[](
+            summary.activeActions
+        );
+        playUpdates.activeActions = new string[](summary.activeActions);
+        playUpdates.activeActionOptions = new string[](summary.activeActions);
+        position = 0;
+        for (uint256 i = 0; i < playersInQueue.length; i++) {
+            if (
+                QUEUE.submissionAction(queueID, playersInQueue[i]) ==
+                HexplorationQueue.Action.SetupCamp
+            ) {
+                playUpdates.activeActions[position] = "Setup camp";
+                playUpdates.activeActionOptions[position] = "";
+                playUpdates.playerActiveActionIDs[position] = playersInQueue[i];
+                position++;
+            } else if (
+                QUEUE.submissionAction(queueID, playersInQueue[i]) ==
+                HexplorationQueue.Action.BreakDownCamp
+            ) {
+                playUpdates.activeActions[position] = "Break down camp";
+                playUpdates.activeActionOptions[position] = "";
+                position++;
+            } else if (
+                QUEUE.submissionAction(queueID, playersInQueue[i]) ==
+                HexplorationQueue.Action.Dig
+            ) {
+                playUpdates.activeActions[position] = "Dig";
+                playUpdates.activeActionOptions[position] = "";
+                position++;
+            } else if (
+                QUEUE.submissionAction(queueID, playersInQueue[i]) ==
+                HexplorationQueue.Action.Rest
+            ) {
+                playUpdates.activeActions[position] = "Rest";
+                playUpdates.activeActionOptions[position] = QUEUE
+                    .submissionOptions(queueID, playersInQueue[i], 0);
+                position++;
+            } else if (
+                QUEUE.submissionAction(queueID, playersInQueue[i]) ==
+                HexplorationQueue.Action.Help
+            ) {
+                playUpdates.activeActions[position] = "Help";
+                playUpdates.activeActionOptions[position] = QUEUE
+                    .submissionOptions(queueID, playersInQueue[i], 0);
+                position++;
+            }
+        }
+
+        // only need to store current action as digging, resting, and play out during play phase
+
+        return playUpdates;
+    }
+
+    // will be called from VRF after randomness is set...
+    function processPlayerActions(uint256 queueID, DataSummary memory summary)
+        internal
+    {
+        uint256 gameID = QUEUE.game(queueID);
+        // TODO: save update struct with all the actions from queue (what was originally the ints array)
+        PlayUpdates memory playUpdates = playUpdatesForPlayerActionPhase(
+            queueID,
+            summary
+        );
+        GAME_STATE.postUpdates(playUpdates, gameID);
+        QUEUE.setPhase(HexplorationQueue.ProcessingPhase.PlayThrough, queueID);
+    }
+
+    // Called by keeper
+    function processPlayThrough(uint256 queueID, DataSummary memory summary)
+        internal
+    {
+        HexplorationQueue.ProcessingPhase phase = QUEUE.currentPhase(queueID);
+
+        if (QUEUE.randomness(queueID) != 0) {
+            if (phase == HexplorationQueue.ProcessingPhase.PlayThrough) {
+                uint256 gameID = QUEUE.game(queueID);
+                PlayUpdates memory playUpdates = playUpdatesForPlayThroughPhase(
+                    queueID,
+                    summary
+                );
+                // TODO: set this to true when game is finished
+                bool gameComplete = false;
+                GAME_STATE.postUpdates(playUpdates, gameID);
+                QUEUE.finishProcessing(queueID, gameComplete);
+            }
+        }
+    }
+
+    function playUpdatesForPlayThroughPhase(
+        uint256 queueID,
+        DataSummary memory summary
+    ) internal view returns (PlayUpdates memory) {
+        PlayUpdates memory playUpdates;
+        /*
+        // TODO: update to actual game phase at appropriate time...
+        HexplorationQueue.ProcessingPhase phase = QUEUE.currentPhase(queueID);
+
+        // TODO: set this to true when game is finished
+        bool gameComplete = false;
+
+        uint256 gameID = QUEUE.game(queueID);
         //uint256 gameID = QUEUE.game(queueID);
         // uint256 totalPlayers = PlayerRegistry(GAME_BOARD.prAddress())
         //     .totalRegistrations(QUEUE.game(queueID));
@@ -323,260 +578,11 @@ contract HexplorationGameplay is AccessControlEnumerable {
                 // if ODD - Choose Ambush Card + calculate results + save to data
             }
         }
-
-        uint256[] memory intReturn = processedIntArrayFrom(data, playUpdates);
-        string[] memory stringReturn = processedStringArrayFrom(
-            data,
-            playUpdates
-        );
-
-        return (intReturn, stringReturn);
-
-        // if day phase (){
-        // Play through events
-        // daily events
-        //}
-        // if (end game) {
-        // play enemy stuff here
-        //}
+        */
+        return playUpdates;
     }
 
-    function processedIntArrayFrom(
-        DataSummary memory dataSummary,
-        PlayUpdates memory playUpdates
-    ) internal pure returns (uint256[] memory) {
-        uint256 intReturnLength = 6 +
-            (dataSummary.playerPositionUpdates * 2) +
-            (dataSummary.playerStatUpdates * 4) +
-            (dataSummary.playerEquips * 2) +
-            (dataSummary.playerTransfers * 3) +
-            (dataSummary.zoneTransfers * 3) +
-            dataSummary.activeActions;
-        uint256[] memory returnArray = new uint256[](intReturnLength);
-        return returnArray;
-    }
-
-    // TODO:
-    // Store PlayUpdates
-    // when random number is fulfilled from VRF
-    // Then get Int parsing data from bytes sent with keeper
-    function processedStringArrayFrom(
-        DataSummary memory dataSummary,
-        PlayUpdates memory playUpdates
-    ) internal pure returns (string[] memory) {
-        // TODO: update to actual max value
-        uint256 maxMovementPerPlayer = 7;
-        uint256 stringReturnLength = 1 +
-            (dataSummary.playerPositionUpdates * maxMovementPerPlayer) +
-            dataSummary.playerEquips +
-            dataSummary.playerTransfers +
-            (dataSummary.zoneTransfers * 2) +
-            (dataSummary.activeActions * 2);
-        string[] memory returnArray = new string[](stringReturnLength);
-        returnArray[0] = playUpdates.gamePhase;
-        return returnArray;
-    }
-
-    function processedIntArray(DataSummary memory dataSummary, uint256 queueID)
-        internal
-        view
-        returns (uint256[] memory)
-    {
-        uint256 intReturnLength = 6 +
-            (dataSummary.playerPositionUpdates * 2) +
-            (dataSummary.playerStatUpdates * 4) +
-            (dataSummary.playerEquips * 2) +
-            (dataSummary.playerTransfers * 3) +
-            (dataSummary.zoneTransfers * 3) +
-            dataSummary.activeActions;
-
-        uint256[] memory intReturn = new uint256[](intReturnLength);
-        intReturn[0] = dataSummary.playerPositionUpdates;
-        intReturn[1] = dataSummary.playerStatUpdates;
-        intReturn[2] = dataSummary.playerEquips;
-        intReturn[3] = dataSummary.playerTransfers;
-        intReturn[4] = dataSummary.zoneTransfers;
-        intReturn[5] = dataSummary.activeActions;
-
-        uint256[] memory playersInQueue = QUEUE.getAllPlayers(queueID);
-
-        uint256 currentArrayPosition = 6;
-
-        // Movement
-        for (uint256 i = 0; i < playersInQueue.length; i++) {
-            if (
-                QUEUE.submissionAction(queueID, playersInQueue[i]) ==
-                HexplorationQueue.Action.Move
-            ) {
-                // return [player id, # spaces to move]
-                intReturn[currentArrayPosition] = playersInQueue[i];
-                intReturn[currentArrayPosition + 1] = QUEUE
-                    .getSubmissionOptions(queueID, playersInQueue[i])
-                    .length;
-                currentArrayPosition += 2;
-            }
-        }
-
-        // LH equip
-        for (uint256 i = 0; i < playersInQueue.length; i++) {
-            if (
-                bytes(QUEUE.submissionLeftHand(queueID, playersInQueue[i]))
-                    .length > 0
-            ) {
-                // return [player id, r/l hand (0/1)]
-                intReturn[currentArrayPosition] = playersInQueue[i];
-                intReturn[currentArrayPosition + 1] = 0;
-                currentArrayPosition += 2;
-            }
-        }
-
-        // RH equip
-        for (uint256 i = 0; i < playersInQueue.length; i++) {
-            if (
-                bytes(QUEUE.submissionRightHand(queueID, playersInQueue[i]))
-                    .length > 0
-            ) {
-                // return [player id, r/l hand (0/1)]
-                intReturn[currentArrayPosition] = playersInQueue[i];
-                intReturn[currentArrayPosition + 1] = 1;
-                currentArrayPosition += 2;
-            }
-        }
-
-        // Camp actions
-        for (uint256 i = 0; i < playersInQueue.length; i++) {
-            if (
-                QUEUE.submissionAction(queueID, playersInQueue[i]) ==
-                HexplorationQueue.Action.SetupCamp
-            ) {
-                // setup camp
-                // transfer from player to zone
-                // return [to ID, from ID, quantity]
-                // Transfer 1 campsite from player to current zone
-
-                intReturn[currentArrayPosition] = 10000000000; //10000000000 represents current play zone of player
-                intReturn[currentArrayPosition + 1] = playersInQueue[i];
-                intReturn[currentArrayPosition + 2] = 1;
-                currentArrayPosition += 3;
-            }
-        }
-
-        for (uint256 i = 0; i < playersInQueue.length; i++) {
-            if (
-                QUEUE.submissionAction(queueID, playersInQueue[i]) ==
-                HexplorationQueue.Action.BreakDownCamp
-            ) {
-                // break down camp
-                // transfer from zone to player
-                intReturn[currentArrayPosition] = playersInQueue[i];
-                intReturn[currentArrayPosition + 1] = 10000000000;
-                intReturn[currentArrayPosition + 2] = 1;
-                currentArrayPosition += 3;
-            }
-        }
-
-        for (uint256 i = 0; i < playersInQueue.length; i++) {
-            if (
-                QUEUE.submissionAction(queueID, playersInQueue[i]) ==
-                HexplorationQueue.Action.Dig ||
-                QUEUE.submissionAction(queueID, playersInQueue[i]) ==
-                HexplorationQueue.Action.Rest ||
-                QUEUE.submissionAction(queueID, playersInQueue[i]) ==
-                HexplorationQueue.Action.Help
-            ) {
-                intReturn[currentArrayPosition] = playersInQueue[i];
-                currentArrayPosition++;
-            }
-        }
-
-        // following are updated on play through phase only
-        // no inventory transfers or stat adjustments from player action phase
-
-        // only need to store current action as digging, resting, and play out during play phase
-
-        return intReturn;
-    }
-
-    function processedStringArray(
-        DataSummary memory dataSummary,
-        uint256 queueID
-    ) internal view returns (string[] memory) {
-        // TODO: update to actual max value
-        uint256 maxMovementPerPlayer = 7;
-        uint256 stringReturnLength = 1 +
-            (dataSummary.playerPositionUpdates * maxMovementPerPlayer) +
-            dataSummary.playerEquips +
-            dataSummary.playerTransfers +
-            (dataSummary.zoneTransfers * 2) +
-            (dataSummary.activeActions * 2);
-
-        string[] memory stringReturn = new string[](stringReturnLength);
-        // TODO: update to actual game phase...
-        stringReturn[0] = "Day";
-
-        uint256[] memory playersInQueue = QUEUE.getAllPlayers(queueID);
-
-        uint256 currentArrayPosition = 1;
-
-        // Movement
-        for (uint256 i = 0; i < playersInQueue.length; i++) {
-            if (
-                QUEUE.submissionAction(queueID, playersInQueue[i]) ==
-                HexplorationQueue.Action.Move
-            ) {
-                string[] memory options = QUEUE.getSubmissionOptions(
-                    queueID,
-                    playersInQueue[i]
-                );
-                for (uint256 j = 0; j < maxMovementPerPlayer; j++) {
-                    stringReturn[currentArrayPosition] = j < options.length
-                        ? options[j]
-                        : "";
-                    currentArrayPosition++;
-                }
-            }
-        }
-
-        // LH equip
-        for (uint256 i = 0; i < playersInQueue.length; i++) {
-            if (
-                bytes(QUEUE.submissionLeftHand(queueID, playersInQueue[i]))
-                    .length > 0
-            ) {
-                stringReturn[currentArrayPosition] = QUEUE.submissionLeftHand(
-                    queueID,
-                    playersInQueue[i]
-                );
-                currentArrayPosition++;
-            }
-        }
-
-        // RH equip
-        for (uint256 i = 0; i < playersInQueue.length; i++) {
-            if (
-                bytes(QUEUE.submissionRightHand(queueID, playersInQueue[i]))
-                    .length > 0
-            ) {
-                stringReturn[currentArrayPosition] = QUEUE.submissionRightHand(
-                    queueID,
-                    playersInQueue[i]
-                );
-                currentArrayPosition++;
-            }
-        }
-
-        // Camp actions
-        for (uint256 i = 0; i < playersInQueue.length; i++) {
-            if (
-                QUEUE.submissionAction(queueID, playersInQueue[i]) ==
-                HexplorationQueue.Action.SetupCamp ||
-                QUEUE.submissionAction(queueID, playersInQueue[i]) ==
-                HexplorationQueue.Action.BreakDownCamp
-            ) {
-                stringReturn[currentArrayPosition] = "Campsite";
-                currentArrayPosition++;
-            }
-        }
+    /*
 
         for (uint256 i = 0; i < playersInQueue.length; i++) {
             if (
@@ -592,6 +598,29 @@ contract HexplorationGameplay is AccessControlEnumerable {
             ) {
                 stringReturn[currentArrayPosition] = "Break down camp";
                 stringReturn[currentArrayPosition + 1] = "";
+                currentArrayPosition += 2;
+            } else if (
+                QUEUE.submissionAction(queueID, playersInQueue[i]) ==
+                HexplorationQueue.Action.Dig
+            ) {
+                stringReturn[currentArrayPosition] = "Dig";
+                stringReturn[currentArrayPosition + 1] = "";
+                currentArrayPosition += 2;
+            } else if (
+                QUEUE.submissionAction(queueID, playersInQueue[i]) ==
+                HexplorationQueue.Action.Rest
+            ) {
+                stringReturn[currentArrayPosition] = "Rest";
+                stringReturn[currentArrayPosition + 1] = QUEUE
+                    .submissionOptions(queueID, playersInQueue[i], 0);
+                currentArrayPosition += 2;
+            } else if (
+                QUEUE.submissionAction(queueID, playersInQueue[i]) ==
+                HexplorationQueue.Action.Help
+            ) {
+                stringReturn[currentArrayPosition] = "Help";
+                stringReturn[currentArrayPosition + 1] = QUEUE
+                    .submissionOptions(queueID, playersInQueue[i], 0);
                 currentArrayPosition += 2;
             }
         }
@@ -635,8 +664,7 @@ contract HexplorationGameplay is AccessControlEnumerable {
         }
         // set movement zones
         return stringReturn;
-    }
-
+*/
     function dig(uint256 queueID, uint256 playerID)
         public
         view

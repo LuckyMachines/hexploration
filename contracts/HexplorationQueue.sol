@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity >=0.7.0 <0.9.0;
 
+//TODO:
+// setup timer keeper for when all players don't sumbit moves
+
 import "@openzeppelin/contracts/access/AccessControlEnumerable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "./HexplorationStateUpdate.sol";
@@ -149,6 +152,10 @@ contract HexplorationQueue is AccessControlEnumerable {
         return submissionOptions[_queueID][_playerID];
     }
 
+    function getProcessingQueue() public view returns (uint256[] memory) {
+        return processingQueue;
+    }
+
     // Gameplay interactions
     function setPhase(ProcessingPhase phase, uint256 _queueID)
         external
@@ -186,6 +193,13 @@ contract HexplorationQueue is AccessControlEnumerable {
         uint256 g = game[_queueID];
         currentPhase[_queueID] = ProcessingPhase.Processed;
         queueID[g] = 0;
+        inProcessingQueue[_queueID] = false;
+        for (uint256 i = 0; i < processingQueue.length; i++) {
+            if (processingQueue[i] == _queueID) {
+                processingQueue[i] = 0;
+                break;
+            }
+        }
         if (!gameComplete) {
             // get new queue ID for next set of player actions
             uint256 tp = totalPlayers[_queueID];
@@ -233,6 +247,8 @@ contract HexplorationQueue is AccessControlEnumerable {
     {
         uint256 qID = randomnessRequestQueueID[requestID];
         randomness[qID] = randomWords[0];
+        // TODO:
+        // Call gameplay.processPlayerActions(uint256 queueID)
     }
 
     function _requestGameQueue(uint256 gameID, uint256 _totalPlayers)
