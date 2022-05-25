@@ -4,6 +4,7 @@ pragma solidity >=0.7.0 <0.9.0;
 import "./HexplorationQueue.sol";
 import "./HexplorationStateUpdate.sol";
 import "./state/GameSummary.sol";
+import "./HexplorationBoard.sol";
 import "@openzeppelin/contracts/access/AccessControlEnumerable.sol";
 
 contract HexplorationGameplay is AccessControlEnumerable {
@@ -12,6 +13,7 @@ contract HexplorationGameplay is AccessControlEnumerable {
 
     HexplorationQueue QUEUE;
     HexplorationStateUpdate GAME_STATE;
+    HexplorationBoard GAME_BOARD;
     address gameSummaryAddress;
 
     struct DataSummary {
@@ -23,8 +25,31 @@ contract HexplorationGameplay is AccessControlEnumerable {
         uint256 playerStatUpdates;
     }
 
-    constructor(address _gameSummaryAddress) {
+    struct PlayUpdates {
+        uint256[] playerPositionIDs;
+        uint256[] playerEquipIDs;
+        uint256[] playerEquipHands;
+        uint256[] zoneTransfersTo;
+        uint256[] zoneTransfersFrom;
+        uint256[] zoneTransferQtys;
+        uint256[] playerTransfersTo;
+        uint256[] playerTransfersFrom;
+        uint256[] playerTransferQtys;
+        uint256[] playerStatUpdateIDs;
+        uint256[3][] playerStatUpdates;
+        uint256[] playerActiveActionIDs;
+        string gamePhase;
+        string[][] playerMovementOptions;
+        string[] playerEquips;
+        string[] zoneTransferItemTypes;
+        string[] playerTransferItemTypes;
+        string[] activeActions;
+        string[] activeActionOptions;
+    }
+
+    constructor(address _gameSummaryAddress, address gameBoardAddress) {
         _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
+        GAME_BOARD = HexplorationBoard(gameBoardAddress);
         gameSummaryAddress = _gameSummaryAddress;
     }
 
@@ -146,7 +171,6 @@ contract HexplorationGameplay is AccessControlEnumerable {
         returns (uint256[] memory, string[] memory)
     {
         DataSummary memory data = DataSummary(0, 0, 0, 0, 0, 0);
-
         uint256[] memory playersInQueue = QUEUE.getAllPlayers(queueID);
         for (uint256 i = 0; i < playersInQueue.length; i++) {
             uint256 playerID = playersInQueue[i];
@@ -212,41 +236,43 @@ contract HexplorationGameplay is AccessControlEnumerable {
         view
         returns (uint256[] memory, string[] memory)
     {
-        /*
-        // TODO: get real values
-        uint256 totalPlayerPositionUpdates = 1;
-        uint256 totalPlayerStatUpdates = 1;
-        uint256 totalPlayerEquips = 1;
-        uint256 totalPlayerTfers = 1;
-        uint256 totalZoneTfers = 1;
+        DataSummary memory data = DataSummary(0, 0, 0, 0, 0, 0);
+        PlayUpdates memory playUpdates;
+        uint256 gameID = QUEUE.game(queueID);
+        uint256 totalPlayers = PlayerRegistry(GAME_BOARD.prAddress())
+            .totalRegistrations(gameID);
+        CharacterCard cc = CharacterCard(GAME_BOARD.characterCard());
+        // check current phase (day / night)
+        string memory currentPhase = "Day";
 
-        uint256 intReturnLength = 5 +
-            (totalPlayerPositionUpdates * 2) +
-            (totalPlayerStatUpdates * 4) +
-            totalPlayerEquips +
-            (totalPlayerTfers * 3) +
-            (totalZoneTfers * 3);
+        for (uint256 i = 0; i < totalPlayers; i++) {
+            uint256 playerID = i + 1;
 
-        uint256[] memory intReturn = new uint256[](intReturnLength);
-        intReturn[0] = 5;
-        intReturn[1] = 6;
-        intReturn[2] = 7;
-        intReturn[3] = 8;
+            // to get current player stats...
+            // cc.movement(gameID, playerID) => returns uint8
+            // cc.agility(gameID, playerID) => returns uint8
+            // cc.dexterity(gameID, playerID) => returns uint8
 
-        // TODO: update to actual max value
-        uint256 maxMovementPerPlayer = 7; // should be set to max movement + 1 (if 6 max set to 7)
-        uint256 stringReturnLength = 1 +
-            (totalPlayerPositionUpdates * maxMovementPerPlayer) +
-            totalPlayerEquips +
-            totalPlayerTfers +
-            (totalZoneTfers * 2);
+            // get results of active action (dig, rest, help)
 
-        string[] memory stringReturn = new string[](stringReturnLength);
-        stringReturn[0] = "playing";
-        stringReturn[1] = "through";
-        stringReturn[2] = "game";
+            // if Day, choose an Event or Ambush Card
+
+            // calculate results of card & set values
+        }
+
+        // update Phase (Day / Night);
+        playUpdates.gamePhase = stringsMatch(currentPhase, "Day")
+            ? "Night"
+            : "Day";
+
+        uint256[] memory intReturn = processedIntArrayFrom(data, playUpdates);
+        string[] memory stringReturn = processedStringArrayFrom(
+            data,
+            playUpdates
+        );
+
         return (intReturn, stringReturn);
-        */
+
         // if day phase (){
         // Play through events
         // daily events
@@ -254,6 +280,38 @@ contract HexplorationGameplay is AccessControlEnumerable {
         // if (end game) {
         // play enemy stuff here
         //}
+    }
+
+    function processedIntArrayFrom(
+        DataSummary memory dataSummary,
+        PlayUpdates memory playUpdates
+    ) internal pure returns (uint256[] memory) {
+        uint256 intReturnLength = 6 +
+            (dataSummary.playerPositionUpdates * 2) +
+            (dataSummary.playerStatUpdates * 4) +
+            (dataSummary.playerEquips * 2) +
+            (dataSummary.playerTransfers * 3) +
+            (dataSummary.zoneTransfers * 3) +
+            dataSummary.activeActions;
+        uint256[] memory returnArray = new uint256[](intReturnLength);
+        return returnArray;
+    }
+
+    function processedStringArrayFrom(
+        DataSummary memory dataSummary,
+        PlayUpdates memory playUpdates
+    ) internal pure returns (string[] memory) {
+        // TODO: update to actual max value
+        uint256 maxMovementPerPlayer = 7;
+        uint256 stringReturnLength = 1 +
+            (dataSummary.playerPositionUpdates * maxMovementPerPlayer) +
+            dataSummary.playerEquips +
+            dataSummary.playerTransfers +
+            (dataSummary.zoneTransfers * 2) +
+            (dataSummary.activeActions * 2);
+        string[] memory returnArray = new string[](stringReturnLength);
+        returnArray[0] = playUpdates.gamePhase;
+        return returnArray;
     }
 
     function processedIntArray(DataSummary memory dataSummary, uint256 queueID)
@@ -540,6 +598,15 @@ contract HexplorationGameplay is AccessControlEnumerable {
         uint256[] memory diceValues,
         uint256 diceQty
     ) internal view returns (uint256[] memory) {}
+
+    function stringsMatch(string memory s1, string memory s2)
+        internal
+        pure
+        returns (bool)
+    {
+        return
+            keccak256(abi.encodePacked(s1)) == keccak256(abi.encodePacked(s2));
+    }
 }
 
 // What is processing?

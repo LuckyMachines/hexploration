@@ -10,7 +10,11 @@ const addresses = require("./addresses.js");
 module.exports = async (deployer, network, [defaultAccount]) => {
   console.log("Board address:", addresses.GANACHE_HEXPLORATION_BOARD);
   try {
-    await deployer.deploy(Gameplay, GameSummary.address);
+    await deployer.deploy(
+      Gameplay,
+      GameSummary.address,
+      addresses.GANACHE_HEXPLORATION_BOARD
+    );
     await deployer.deploy(Queue, Gameplay.address);
 
     console.log("Adding queue to gameplay...");
