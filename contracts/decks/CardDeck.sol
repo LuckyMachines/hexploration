@@ -16,6 +16,14 @@ contract CardDeck is AccessControlEnumerable {
     // mappings from card name
     mapping(string => string) public description;
     mapping(string => uint16) public quantity;
+    mapping(string => int8) public movementAdjust;
+    mapping(string => int8) public agilityAdjust;
+    mapping(string => int8) public dexterityAdjust;
+    mapping(string => string) public itemGain;
+    mapping(string => string) public itemLoss;
+    mapping(string => string) public handLoss;
+    mapping(string => int256) public movementX;
+    mapping(string => int256) public movementY;
 
     constructor() {
         _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
@@ -49,10 +57,31 @@ contract CardDeck is AccessControlEnumerable {
         public
         view
         virtual
-        returns (string memory)
+        returns (
+            string memory,
+            int8,
+            int8,
+            int8,
+            string memory,
+            string memory,
+            string memory,
+            int256,
+            int256
+        )
     {
         uint256 cardIndex = randomWord % _cards.length;
-        return _cards[cardIndex];
+        string memory card = _cards[cardIndex];
+        return (
+            card,
+            movementAdjust[card],
+            agilityAdjust[card],
+            dexterityAdjust[card],
+            itemLoss[card],
+            itemGain[card],
+            handLoss[card],
+            movementX[card],
+            movementY[card]
+        );
     }
 
     function getDeck() public view returns (string[] memory) {

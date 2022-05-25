@@ -16,6 +16,10 @@ contract HexplorationGameplay is AccessControlEnumerable {
     HexplorationBoard GAME_BOARD;
     address gameSummaryAddress;
 
+    // Mapping from QueueID to updates needed to run
+    mapping(uint256 => PlayUpdates) public updates;
+    mapping(uint256 => bool) public updatesComplete;
+
     struct DataSummary {
         uint256 playerPositionUpdates;
         uint256 playerEquips;
@@ -149,10 +153,6 @@ contract HexplorationGameplay is AccessControlEnumerable {
             stringValues[0] = "awaiting randomness";
         }
 
-        // maybe we don't call this, since it needs to update state...
-        // update this when we pass the results from the shouldProcess
-        //finishProcessing(queueID);
-
         // Update TODO: expand for processing larger turns...
         // something like
         // if (currentPhase == HexplorationQueue.ProcessingPhase.Processing) {
@@ -238,32 +238,91 @@ contract HexplorationGameplay is AccessControlEnumerable {
     {
         DataSummary memory data = DataSummary(0, 0, 0, 0, 0, 0);
         PlayUpdates memory playUpdates;
-        uint256 gameID = QUEUE.game(queueID);
-        uint256 totalPlayers = PlayerRegistry(GAME_BOARD.prAddress())
-            .totalRegistrations(gameID);
+        //uint256 gameID = QUEUE.game(queueID);
+        // uint256 totalPlayers = PlayerRegistry(GAME_BOARD.prAddress())
+        //     .totalRegistrations(QUEUE.game(queueID));
         CharacterCard cc = CharacterCard(GAME_BOARD.characterCard());
+
+        // setup endgame
+
+        //TODO:
         // check current phase (day / night)
         string memory currentPhase = "Day";
-
-        for (uint256 i = 0; i < totalPlayers; i++) {
+        bool isDay = stringsMatch(currentPhase, "Day");
+        bool setupEndGame = false;
+        for (
+            uint256 i = 0;
+            i <
+            PlayerRegistry(GAME_BOARD.prAddress()).totalRegistrations(
+                QUEUE.game(queueID)
+            );
+            i++
+        ) {
             uint256 playerID = i + 1;
+            uint256 activeAction = uint256(
+                QUEUE.activeAction(queueID, playerID)
+            );
+            if (activeAction == 4) {
+                // dig
+                if (stringsMatch(dig(queueID, playerID), "Treasure")) {
+                    // dug treasure! pick treasure card
+                    // if final artifact is found, setupEndGame = true;
+                } else {
+                    // dug ambush...
+                    // play out consequences
+                }
+            } else if (activeAction == 5) {
+                // rest
+                string memory restChoice = QUEUE.submissionOptions(
+                    queueID,
+                    playerID,
+                    0
+                );
+                if (stringsMatch(restChoice, "Movement")) {
+                    // add 1 to movement
+                } else if (stringsMatch(restChoice, "Agility")) {
+                    // add 1 to agility
+                } else if (stringsMatch(restChoice, "Dexterity")) {
+                    // add 1 to dexterity
+                }
+            } else if (activeAction == 6) {
+                //help
+                // set player ID to help (options) as string choice
+            }
 
             // to get current player stats...
             // cc.movement(gameID, playerID) => returns uint8
             // cc.agility(gameID, playerID) => returns uint8
             // cc.dexterity(gameID, playerID) => returns uint8
 
-            // get results of active action (dig, rest, help)
-
-            // if Day, choose an Event or Ambush Card
-
-            // calculate results of card & set values
+            //to subtract from player stats...
+            //subToZero(uint256(playerStat), reductionAmount);
+            // can submit numbers higher than max here, but won't actually get set to those
+            // will get set to max if max exceeded
         }
 
+        if (setupEndGame) {
+            // setup end game...
+        }
         // update Phase (Day / Night);
-        playUpdates.gamePhase = stringsMatch(currentPhase, "Day")
-            ? "Night"
-            : "Day";
+        playUpdates.gamePhase = isDay ? "Night" : "Day";
+
+        if (isDay) {
+            for (
+                uint256 i = 0;
+                i <
+                PlayerRegistry(GAME_BOARD.prAddress()).totalRegistrations(
+                    QUEUE.game(queueID)
+                );
+                i++
+            ) {
+                uint256 playerID = i + 1;
+                // if Day,
+                // roll D6
+                // if EVEN - Choose Event Card + calculate results + save to data
+                // if ODD - Choose Ambush Card + calculate results + save to data
+            }
+        }
 
         uint256[] memory intReturn = processedIntArrayFrom(data, playUpdates);
         string[] memory stringReturn = processedStringArrayFrom(
@@ -297,6 +356,10 @@ contract HexplorationGameplay is AccessControlEnumerable {
         return returnArray;
     }
 
+    // TODO:
+    // Store PlayUpdates
+    // when random number is fulfilled from VRF
+    // Then get Int parsing data from bytes sent with keeper
     function processedStringArrayFrom(
         DataSummary memory dataSummary,
         PlayUpdates memory playUpdates
@@ -574,6 +637,18 @@ contract HexplorationGameplay is AccessControlEnumerable {
         return stringReturn;
     }
 
+    function dig(uint256 queueID, uint256 playerID)
+        public
+        view
+        returns (string memory cardType)
+    {
+        // if digging available...
+        // roll dice (d6) for each player on space not resting
+        // if sum of rolls is greater than 5 during night win treasure
+        // if sum of rolls is greater than 4 during day win treasure
+        // return "Treasure" or "Ambush"
+    }
+
     function drawCard(
         string memory cardType,
         uint256 queueID,
@@ -582,23 +657,41 @@ contract HexplorationGameplay is AccessControlEnumerable {
         internal
         view
         returns (
-            int256 speedAdjust,
-            int256 agilityAdjust,
-            int256 dexterityAdjust,
+            string memory card,
+            int8 movementAdjust,
+            int8 agilityAdjust,
+            int8 dexterityAdjust,
             string memory itemTypeLoss,
             string memory itemTypeGain,
-            string[] memory movementPath
+            string memory handLoss,
+            int256 movementX,
+            int256 movementY
         )
     {
-        // get randomness from queue
+        // get randomness from queue  QUEUE.randomness(queueID)
+        // outputs should match up with what's returned from deck draw
+        if (stringsMatch(cardType, "Treasure")) {
+            // draw from treasure deck
+        } else if (stringsMatch(cardType, "Ambush")) {
+            // draw from ambush deck
+        } else if (stringsMatch(cardType, "Event")) {
+            // draw from event deck
+        }
     }
 
     function rollDice(
         uint256 queueID,
         uint256[] memory diceValues,
         uint256 diceQty
-    ) internal view returns (uint256[] memory) {}
+    ) internal view returns (uint256) {
+        uint256 rollTotal = 0;
+        // roll dice quantity amount of times
+        // each roll, select a number between 0 - diceValues.length - 1
+        // add up value at diceValues[rollResult]
+        return rollTotal;
+    }
 
+    // Utilities
     function stringsMatch(string memory s1, string memory s2)
         internal
         pure
@@ -606,6 +699,19 @@ contract HexplorationGameplay is AccessControlEnumerable {
     {
         return
             keccak256(abi.encodePacked(s1)) == keccak256(abi.encodePacked(s2));
+    }
+
+    // returns a - b or 0 if negative;
+    function subToZero(uint256 a, uint256 b)
+        internal
+        pure
+        returns (uint256 difference)
+    {
+        difference = a > b ? a - b : 0;
+    }
+
+    function absoluteValue(int256 x) internal pure returns (uint256 absX) {
+        absX = x >= 0 ? uint256(x) : uint256(-x);
     }
 }
 

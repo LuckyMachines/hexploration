@@ -8,12 +8,13 @@ contract LandDeck is CardDeck {
     string public constant card1 = "Jungle";
     string public constant card2 = "Mountain";
     string public constant card3 = "Desert";
-    string public constant card4 = "Landing Site";
+
+    //string public constant card4 = "Landing Site";
 
     constructor() CardDeck() {
-        string[] memory cards = new string[](5);
-        string[] memory descriptions = new string[](5);
-        uint16[] memory quantities = new uint16[](5);
+        string[] memory cards = new string[](4);
+        string[] memory descriptions = new string[](4);
+        uint16[] memory quantities = new uint16[](4);
 
         cards[0] = card0;
         descriptions[0] = "";
@@ -31,9 +32,9 @@ contract LandDeck is CardDeck {
         descriptions[3] = "";
         quantities[3] = 1;
 
-        cards[4] = card4;
-        descriptions[4] = "";
-        quantities[4] = 1;
+        // cards[4] = card4;
+        // descriptions[4] = "";
+        // quantities[4] = 1;
 
         addCards(cards, descriptions, quantities);
     }
