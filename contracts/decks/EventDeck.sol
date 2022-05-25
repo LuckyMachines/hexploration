@@ -25,6 +25,7 @@ contract EventDeck is CardDeck {
             0
         ] = "You discover a friendly group of locals. They challenge you to a dance off.";
         quantities[0] = 1;
+        rollTypeRequired[cards[0]] = 1;
         rollThresholds[cards[0]] = [0, 3, 6];
         outcomeDescription[cards[0]] = [
             "You are not impressive",
@@ -44,13 +45,25 @@ contract EventDeck is CardDeck {
         cards[2] = "Local Martial Contest";
         descriptions[2] = "A friendly local warrior challenges you to spar.";
         quantities[2] = 1;
+        rollTypeRequired[cards[2]] = 2;
+        rollThresholds[cards[2]] = [0, 3, 5];
+        outcomeDescription[cards[2]] = [
+            "The warrior beats you easily",
+            "A fair test of combat",
+            "You defeat the warrior easily"
+        ];
+        dexterityAdjust[cards[2]][0] = -1;
+        dexterityAdjust[cards[2]][2] = 1;
 
         cards[3] = "Downed Freighter";
         descriptions[
             3
         ] = "You discover a downed freighter and search for supplies.";
         quantities[3] = 1;
-
+        rollTypeRequired[cards[3]] = 2;
+        rollThresholds[cards[3]] = [0, 0, 3];
+        outcomeDescription[cards[3]][2] = "You find some medical supplies";
+        movementAdjust[cards[3]][2] = 1;
         // cards[4] = "Downed Scout Ship";
         // descriptions[
         //     4
