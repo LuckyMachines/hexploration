@@ -11,19 +11,22 @@ contract CardDeck is AccessControlEnumerable {
     // not used by default, provided if going to make custom deck with limited access
     bytes32 public constant CONTROLLER_ROLE = keccak256("CONTROLLER_ROLE");
 
-    string[] _cards;
+    string[] private _cards;
 
     // mappings from card name
+    // should all store same size array of values, even if empty
     mapping(string => string) public description;
     mapping(string => uint16) public quantity;
-    mapping(string => int8) public movementAdjust;
-    mapping(string => int8) public agilityAdjust;
-    mapping(string => int8) public dexterityAdjust;
-    mapping(string => string) public itemGain;
-    mapping(string => string) public itemLoss;
-    mapping(string => string) public handLoss;
-    mapping(string => int256) public movementX;
-    mapping(string => int256) public movementY;
+    mapping(string => int8[3]) public movementAdjust;
+    mapping(string => int8[3]) public agilityAdjust;
+    mapping(string => int8[3]) public dexterityAdjust;
+    mapping(string => string[3]) public itemGain;
+    mapping(string => string[3]) public itemLoss;
+    mapping(string => string[3]) public handLoss;
+    mapping(string => int256[3]) public movementX;
+    mapping(string => int256[3]) public movementY;
+    mapping(string => uint256[3]) public rollThresholds; // [0, 3, 4] what to roll to receive matching index of mapping
+    mapping(string => string[3]) public outcomeDescription;
 
     constructor() {
         _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
@@ -53,7 +56,7 @@ contract CardDeck is AccessControlEnumerable {
     // this function does not provide randomness,
     // passing the same random word will yield the same draw.
     // randomness should come from controller
-    function drawCard(uint256 randomWord)
+    function drawCard(uint256 randomWord, uint256 rollValue)
         public
         view
         virtual
@@ -71,16 +74,30 @@ contract CardDeck is AccessControlEnumerable {
     {
         uint256 cardIndex = randomWord % _cards.length;
         string memory card = _cards[cardIndex];
+        // TODO:
+        // find index of roll ()
+        uint256 rollIndex = 0;
+        uint256[3] memory thresholds = rollThresholds[card];
+        for (uint256 i = thresholds.length - 1; i >= 0; i--) {
+            if (rollValue >= thresholds[i]) {
+                rollIndex = i;
+                break;
+            }
+            if (i == 0) {
+                break;
+            }
+        }
+        // match index with all attributes
         return (
             card,
-            movementAdjust[card],
-            agilityAdjust[card],
-            dexterityAdjust[card],
-            itemLoss[card],
-            itemGain[card],
-            handLoss[card],
-            movementX[card],
-            movementY[card]
+            movementAdjust[card][rollIndex],
+            agilityAdjust[card][rollIndex],
+            dexterityAdjust[card][rollIndex],
+            itemLoss[card][rollIndex],
+            itemGain[card][rollIndex],
+            handLoss[card][rollIndex],
+            movementX[card][rollIndex],
+            movementY[card][rollIndex]
         );
     }
 

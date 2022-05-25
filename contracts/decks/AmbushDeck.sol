@@ -9,29 +9,57 @@ contract AmbushDeck is CardDeck {
         string[] memory descriptions = new string[](4);
         uint16[] memory quantities = new uint16[](4);
 
+        /*
+    mapping(string => int8) public movementAdjust;
+    mapping(string => int8) public agilityAdjust;
+    mapping(string => int8) public dexterityAdjust;
+    mapping(string => string) public itemGain;
+    mapping(string => string) public itemLoss;
+    mapping(string => string) public handLoss;
+    mapping(string => int256) public movementX;
+    mapping(string => int256) public movementY;
+        */
+
+        // TODO:
+        // set movement x + movement y for "escape" outcomes
         cards[0] = "Angry Locals";
         descriptions[
             0
         ] = "While exploring you scare away a herd of beasts. The hunters that have been tracking them for days is not happy about this. They attack you.";
         quantities[0] = 1;
+        rollThresholds[cards[0]] = [0, 3, 5];
+        outcomeDescription[cards[0]] = ["Defeated", "Escape", "Victory"];
+        movementAdjust[cards[0]][0] = -1;
+        agilityAdjust[cards[0]][0] = -2;
 
         cards[1] = "Shrieking Beasts";
         descriptions[
             1
         ] = "With a chorus of piercing shrieks, beasts decend upon you. They attack you.";
         quantities[1] = 1;
+        rollThresholds[cards[1]] = [0, 3, 5];
+        outcomeDescription[cards[1]] = ["Defeated", "Escape", "Victory"];
+        dexterityAdjust[cards[1]][0] = -2;
+        agilityAdjust[cards[1]][0] = -1;
 
         cards[2] = "Winged Beasts";
         descriptions[
             2
         ] = "Flying creatures soar above you. They dive out of the sky and attack you.";
         quantities[2] = 1;
+        rollThresholds[cards[2]] = [0, 4, 6];
+        outcomeDescription[cards[2]] = ["Defeated", "Escape", "Victory"];
+        dexterityAdjust[cards[2]][0] = -2;
+        movementAdjust[cards[2]][0] = -1;
 
         cards[3] = "Shadow Creatures";
         descriptions[
             3
         ] = "Shadows move and materialize. This combat is treated as if it is night. If it is already night, increase night penalty by 1.";
         quantities[3] = 1;
+        rollThresholds[cards[3]] = [0, 3, 5];
+        outcomeDescription[cards[1]] = ["Defeated", "Escape", "Victory"];
+        movementAdjust[cards[1]][0] = -3;
 
         // cards[4] = "Ancient Guardian";
         // descriptions[
