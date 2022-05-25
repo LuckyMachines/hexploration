@@ -58,8 +58,8 @@ contract AmbushDeck is CardDeck {
         ] = "Shadows move and materialize. This combat is treated as if it is night. If it is already night, increase night penalty by 1.";
         quantities[3] = 1;
         rollThresholds[cards[3]] = [0, 3, 5];
-        outcomeDescription[cards[1]] = ["Defeated", "Escape", "Victory"];
-        movementAdjust[cards[1]][0] = -3;
+        outcomeDescription[cards[3]] = ["Defeated", "Escape", "Victory"];
+        movementAdjust[cards[3]][0] = -3;
 
         // cards[4] = "Ancient Guardian";
         // descriptions[
