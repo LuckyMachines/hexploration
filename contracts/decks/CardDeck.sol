@@ -27,6 +27,7 @@ contract CardDeck is AccessControlEnumerable {
     mapping(string => int256[3]) public movementY;
     mapping(string => uint256[3]) public rollThresholds; // [0, 3, 4] what to roll to receive matching index of mapping
     mapping(string => string[3]) public outcomeDescription;
+    mapping(string => uint256) public rollTypeRequired; // 0 = movement, 1 = agility, 2 = dexterity
 
     constructor() {
         _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
@@ -56,7 +57,9 @@ contract CardDeck is AccessControlEnumerable {
     // this function does not provide randomness,
     // passing the same random word will yield the same draw.
     // randomness should come from controller
-    function drawCard(uint256 randomWord, uint256 rollValue)
+
+    // pass along movement, agility, dexterity rolls - will use whatever is appropriate
+    function drawCard(uint256 randomWord, uint256[3] memory rollValues)
         public
         view
         virtual
@@ -77,6 +80,8 @@ contract CardDeck is AccessControlEnumerable {
         // TODO:
         // find index of roll ()
         uint256 rollIndex = 0;
+        uint256 rollType = rollTypeRequired[card];
+        uint256 rollValue = rollValues[rollType];
         uint256[3] memory thresholds = rollThresholds[card];
         for (uint256 i = thresholds.length - 1; i >= 0; i--) {
             if (rollValue >= thresholds[i]) {

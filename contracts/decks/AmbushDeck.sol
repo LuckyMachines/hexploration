@@ -9,17 +9,6 @@ contract AmbushDeck is CardDeck {
         string[] memory descriptions = new string[](4);
         uint16[] memory quantities = new uint16[](4);
 
-        /*
-    mapping(string => int8) public movementAdjust;
-    mapping(string => int8) public agilityAdjust;
-    mapping(string => int8) public dexterityAdjust;
-    mapping(string => string) public itemGain;
-    mapping(string => string) public itemLoss;
-    mapping(string => string) public handLoss;
-    mapping(string => int256) public movementX;
-    mapping(string => int256) public movementY;
-        */
-
         // TODO:
         // set movement x + movement y for "escape" outcomes
         cards[0] = "Angry Locals";

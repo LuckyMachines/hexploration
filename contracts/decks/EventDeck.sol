@@ -9,17 +9,37 @@ contract EventDeck is CardDeck {
         string[] memory descriptions = new string[](4);
         uint16[] memory quantities = new uint16[](4);
 
+        /*
+    mapping(string => int8) public movementAdjust;
+    mapping(string => int8) public agilityAdjust;
+    mapping(string => int8) public dexterityAdjust;
+    mapping(string => string) public itemGain;
+    mapping(string => string) public itemLoss;
+    mapping(string => string) public handLoss;
+    mapping(string => int256) public movementX;
+    mapping(string => int256) public movementY;
+        */
+
         cards[0] = "Dance Off With Locals";
         descriptions[
             0
         ] = "You discover a friendly group of locals. They challenge you to a dance off.";
         quantities[0] = 1;
+        rollThresholds[cards[0]] = [0, 3, 6];
+        outcomeDescription[cards[0]] = [
+            "You are not impressive",
+            "Nice moves!",
+            "You're amazing!"
+        ];
+        agilityAdjust[cards[0]][2] = 1;
 
         cards[1] = "Local Map Makers";
         descriptions[
             1
         ] = "A friendly group of locals gives you a map of the area.";
         quantities[1] = 1;
+        // set description as last element since we loop in reverse
+        outcomeDescription[cards[1]][2] = "Reveal tile";
 
         cards[2] = "Local Martial Contest";
         descriptions[2] = "A friendly local warrior challenges you to spar.";
