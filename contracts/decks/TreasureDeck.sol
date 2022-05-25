@@ -5,53 +5,90 @@ import "./CardDeck.sol";
 
 contract TreasureDeck is CardDeck {
     constructor() CardDeck() {
-        string[] memory cards = new string[](4);
-        string[] memory descriptions = new string[](4);
-        uint16[] memory quantities = new uint16[](4);
+        string[] memory cards = new string[](10);
+        string[] memory descriptions = new string[](10);
+        uint16[] memory quantities = new uint16[](10);
 
         cards[0] = "Rusty Dagger";
         descriptions[0] = "A short, pitted, unassuming blade. ";
         quantities[0] = 1;
+        itemGain[cards[0]][2] = cards[0];
 
-        cards[1] = "Rusty Sword";
-        descriptions[1] = "A long, pitted, battered blade.";
+        cards[1] = "Rusty Pistol";
+        descriptions[1] = "Small caliber, rusted firearm.";
         quantities[1] = 1;
+        itemGain[cards[1]][2] = cards[1];
 
-        cards[2] = "Rusty Pistol";
-        descriptions[2] = "Small caliber, rusted firearm.";
+        cards[2] = "Shiny Dagger";
+        descriptions[2] = "A short blade in great condition.";
         quantities[2] = 1;
+        itemGain[cards[2]][2] = cards[2];
 
-        cards[3] = "Rusty Rifle";
-        descriptions[3] = "Large caliber, rusted firearm.";
+        cards[3] = "Shiny Pistol";
+        descriptions[3] = "Small caliber firearm in great condition.";
         quantities[3] = 1;
+        itemGain[cards[3]][2] = cards[3];
 
-        // cards[4] = "Shiny Dagger";
-        // descriptions[4] = "A short blade in great condition.";
-        // quantities[4] = 1;
+        cards[4] = "Laser Dagger";
+        descriptions[4] = "A small blade made of pure light.";
+        quantities[4] = 1;
+        itemGain[cards[4]][2] = cards[4];
+
+        cards[5] = "Laser Pistol";
+        descriptions[5] = "Small caliber firearm that shoot bolts of light.";
+        quantities[5] = 1;
+        itemGain[cards[5]][2] = cards[5];
+
+        cards[6] = "Power Glove";
+        descriptions[
+            6
+        ] = "Powerful gauntlet that gives you incredible strength at the cost of dexterity.";
+        quantities[6] = 1;
+        itemGain[cards[6]][2] = cards[6];
+
+        cards[7] = "Engraved Tablet";
+        descriptions[
+            7
+        ] = "Artifact - The engravings on this tablet seem to document the Great Misfortune. Who authored this tablet? Perhaps the Scientists will be able to figure it out.";
+        quantities[7] = 1;
+        itemGain[cards[7]][2] = cards[7];
+        outcomeDescription[cards[7]][2] = "Artifact";
+
+        cards[8] = "Sigil Gem";
+        descriptions[
+            8
+        ] = "Artifact - This gem has markings that indicate it may have been used for some powerful ritual. The Scientists will need to study it and see what power lies within.";
+        quantities[8] = 1;
+        itemGain[cards[8]][2] = cards[8];
+        outcomeDescription[cards[7]][2] = "Artifact";
+
+        cards[9] = "Ancient Tome";
+        descriptions[
+            9
+        ] = "Artifact - This book contains several incantations in a language you cannot understand. If the Scientists can decipher it we may yet learn it's purpose.";
+        quantities[9] = 1;
+        itemGain[cards[9]][2] = cards[9];
+        outcomeDescription[cards[9]][2] = "Artifact";
+
+        // cards[1] = "Rusty Sword";
+        // descriptions[1] = "A long, pitted, battered blade.";
+        // quantities[1] = 1;
+
+        // cards[3] = "Rusty Rifle";
+        // descriptions[3] = "Large caliber, rusted firearm.";
+        // quantities[3] = 1;
 
         // cards[5] = "Shiny Sword";
         // descriptions[5] = "A long blade in great condition.";
         // quantities[5] = 1;
 
-        // cards[6] = "Shiny Pistol";
-        // descriptions[6] = "Small caliber firearm in great condition.";
-        // quantities[6] = 1;
-
         // cards[7] = "Shiny Rifle";
         // descriptions[7] = "Large caliber firearm in great condition.";
         // quantities[7] = 1;
 
-        // cards[8] = "Laser Dagger";
-        // descriptions[8] = "A small blade made of pure light.";
-        // quantities[8] = 1;
-
         // cards[9] = "Laser Sword";
         // descriptions[9] = "A long blade made of pure light.";
         // quantities[9] = 1;
-
-        // cards[10] = "Laser Pistol";
-        // descriptions[10] = "Small caliber firearm that shoot bolts of light.";
-        // quantities[10] = 1;
 
         // cards[11] = "Laser Rifle";
         // descriptions[11] = "Large caliber firearm that shoot bolts of light.";
@@ -107,12 +144,6 @@ contract TreasureDeck is CardDeck {
         // descriptions[23] = "Portable EMP launcher.";
         // quantities[23] = 1;
 
-        // cards[24] = "Power Glove";
-        // descriptions[
-        //     24
-        // ] = "Powerful gauntlet that gives you incredible strength at the cost of dexterity.";
-        // quantities[24] = 1;
-
         // cards[25] = "Remote Launch and Guidance System";
         // descriptions[
         //     25
@@ -124,24 +155,6 @@ contract TreasureDeck is CardDeck {
         //     26
         // ] = "Grants the ability to teleport all players on a tile to any other tile.";
         // quantities[26] = 1;
-
-        // cards[27] = "Engraved Tablet";
-        // descriptions[
-        //     27
-        // ] = "Artifact - The engravings on this tablet seem to document the Great Misfortune. Who authored this tablet? Perhaps the Scientists will be able to figure it out.";
-        // quantities[27] = 1;
-
-        // cards[28] = "Sigil Gem";
-        // descriptions[
-        //     28
-        // ] = "Artifact - This gem has markings that indicate it may have been used for some powerful ritual. The Scientists will need to study it and see what power lies within.";
-        // quantities[28] = 1;
-
-        // cards[29] = "Ancient Tome";
-        // descriptions[
-        //     29
-        // ] = "Artifact - This book contains several incantations in a language you cannot understand. If the Scientists can decipher it we may yet learn it's purpose.";
-        // quantities[29] = 1;
 
         addCards(cards, descriptions, quantities);
     }
