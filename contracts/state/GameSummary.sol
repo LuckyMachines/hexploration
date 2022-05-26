@@ -365,12 +365,6 @@ library GameSummary {
     // TODO:
     // Functions to complete
 
-    function activeAction(address gameBoardAddress, uint256 gameID)
-        public
-        view
-        returns (string memory action)
-    {}
-
     function lastDayPhaseEvents(address gameBoardAddress, uint256 gameID)
         public
         returns (
@@ -436,5 +430,34 @@ library GameSummary {
                 index
             ) >
             0;
+    }
+
+    function activeAction(address gameBoardAddress, uint256 gameID)
+        public
+        view
+        returns (string memory action)
+    {
+        HexplorationBoard board = HexplorationBoard(gameBoardAddress);
+        CharacterCard cc = CharacterCard(board.characterCard());
+        uint256 playerID = PlayerRegistry(board.prAddress()).playerID(
+            gameID,
+            msg.sender
+        );
+        CharacterCard.Action a = cc.action(gameID, playerID);
+
+        action = "Idle";
+        if (a == CharacterCard.Action.Move) {
+            action = "Move";
+        } else if (a == CharacterCard.Action.SetupCamp) {
+            action = "Setup camp";
+        } else if (a == CharacterCard.Action.BreakDownCamp) {
+            action = "Break down camp";
+        } else if (a == CharacterCard.Action.Dig) {
+            action = "Dig";
+        } else if (a == CharacterCard.Action.Rest) {
+            action = "Rest";
+        } else if (a == CharacterCard.Action.Help) {
+            action = "Help";
+        }
     }
 }

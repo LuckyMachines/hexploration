@@ -34,6 +34,13 @@ contract CharacterCard is AccessControlEnumerable {
     mapping(uint256 => mapping(uint256 => string)) public artifact;
     mapping(uint256 => mapping(uint256 => string)) public status;
     mapping(uint256 => mapping(uint256 => string)) public relic;
+    // results of current action
+    mapping(uint256 => mapping(uint256 => string)) public activeActionCardType;
+    mapping(uint256 => mapping(uint256 => string)) public activeActionCardDrawn;
+    mapping(uint256 => mapping(uint256 => string))
+        public activeActionCardResult;
+    mapping(uint256 => mapping(uint256 => string[3]))
+        public activeActionCardInventoryChanges;
 
     constructor(
         address itemTokenAddress,
