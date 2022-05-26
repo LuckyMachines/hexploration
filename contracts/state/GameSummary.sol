@@ -343,14 +343,27 @@ library GameSummary {
             ) > 0;
     }
 
+    function zoneIndex(address gameBoardAddress, string memory zoneAlias)
+        internal
+        view
+        returns (uint256 index)
+    {
+        index = 1111111111111;
+        HexplorationBoard board = HexplorationBoard(gameBoardAddress);
+        string[] memory allZones = board.getZoneAliases();
+        for (uint256 i = 0; i < allZones.length; i++) {
+            if (
+                keccak256(abi.encodePacked(zoneAlias)) ==
+                keccak256(abi.encodePacked(allZones[i]))
+            ) {
+                index = i;
+                break;
+            }
+        }
+    }
+
     // TODO:
     // Functions to complete
-
-    function isAtCampsite(address gameBoardAddress, uint256 gameID)
-        public
-        view
-        returns (bool)
-    {}
 
     function activeAction(address gameBoardAddress, uint256 gameID)
         public
@@ -399,5 +412,29 @@ library GameSummary {
         // GameRegistry(gameRegistryAddress)
         return
             HexplorationBoard(gameBoardAddress).openGames(gameRegistryAddress);
+    }
+
+    function isAtCampsite(address gameBoardAddress, uint256 gameID)
+        public
+        view
+        returns (bool atCampsite)
+    {
+        HexplorationBoard board = HexplorationBoard(gameBoardAddress);
+        PlayerRegistry pr = PlayerRegistry(board.prAddress());
+        string memory currentZone = board.currentPlayZone(
+            gameID,
+            pr.playerID(gameID, msg.sender)
+        );
+        uint256 index = zoneIndex(gameBoardAddress, currentZone);
+        // zone balance...
+        //mapping(string => mapping(uint256 => mapping(uint256 => uint256)))
+
+        atCampsite =
+            TokenInventory(board.tokenInventory()).ITEM_TOKEN().zoneBalance(
+                "Campsite",
+                gameID,
+                index
+            ) >
+            0;
     }
 }
