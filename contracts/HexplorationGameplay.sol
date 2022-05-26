@@ -7,6 +7,7 @@ import "./state/GameSummary.sol";
 import "./HexplorationBoard.sol";
 import "@openzeppelin/contracts/access/AccessControlEnumerable.sol";
 import "@chainlink/contracts/src/v0.8/KeeperCompatible.sol";
+import "./decks/CardDeck.sol";
 
 contract HexplorationGameplay is
     AccessControlEnumerable,
@@ -19,6 +20,9 @@ contract HexplorationGameplay is
     HexplorationStateUpdate GAME_STATE;
     HexplorationBoard GAME_BOARD;
     address gameSummaryAddress;
+    CardDeck EVENT_DECK;
+    CardDeck TREASURE_DECK;
+    CardDeck AMBUSH_DECK;
 
     // Mapping from QueueID to updates needed to run
     //mapping(uint256 => bool) public readyForKeeper;
@@ -45,7 +49,7 @@ contract HexplorationGameplay is
         uint256[] playerTransfersFrom;
         uint256[] playerTransferQtys;
         uint256[] playerStatUpdateIDs;
-        uint256[3][] playerStatUpdates;
+        int256[3][] playerStatUpdates; // amount to adjust, not final value
         uint256[] playerActiveActionIDs;
         string gamePhase;
         string[7][] playerMovementOptions; // TODO: set this to max # of spaces possible
@@ -55,14 +59,23 @@ contract HexplorationGameplay is
         string[] activeActions;
         string[] activeActionOptions;
         uint256[] activeActionResults; // 0 = None, 1 = Event, 2 = Ambush, 3 = Treasure
-        string[] activeActionResultCards; // Card for Event / ambush / treasure
+        string[2][] activeActionResultCards; // Card for Event / ambush / treasure , outcome e.g. ["Dance with locals", "You're amazing!"]
         uint256 randomness;
     }
 
-    constructor(address _gameSummaryAddress, address gameBoardAddress) {
+    constructor(
+        address _gameSummaryAddress,
+        address gameBoardAddress,
+        address eventDeck,
+        address treasureDeck,
+        address ambushDeck
+    ) {
         _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
         GAME_BOARD = HexplorationBoard(gameBoardAddress);
         gameSummaryAddress = _gameSummaryAddress;
+        EVENT_DECK = CardDeck(eventDeck);
+        TREASURE_DECK = CardDeck(treasureDeck);
+        AMBUSH_DECK = CardDeck(ambushDeck);
     }
 
     function addVerifiedController(address vcAddress)
@@ -262,6 +275,13 @@ contract HexplorationGameplay is
             ) {
                 data.activeActions += 1;
             }
+
+            if (
+                action == HexplorationQueue.Action.Dig ||
+                action == HexplorationQueue.Action.Rest
+            ) {
+                data.playerStatUpdates += 1;
+            }
         }
         return (
             abi.encode(
@@ -439,8 +459,11 @@ contract HexplorationGameplay is
         playUpdates.activeActions = new string[](summary.activeActions);
         playUpdates.activeActionOptions = new string[](summary.activeActions);
         playUpdates.activeActionResults = new uint256[](summary.activeActions);
-        playUpdates.activeActionResultCards = new string[](
+        playUpdates.activeActionResultCards = new string[2][](
             summary.activeActions
+        );
+        playUpdates.playerStatUpdates = new int256[3][](
+            summary.playerStatUpdates
         );
         position = 0;
         // Draw cards for dig this phase
@@ -466,13 +489,14 @@ contract HexplorationGameplay is
             ) {
                 playUpdates.activeActions[position] = "Dig";
                 playUpdates.activeActionOptions[position] = "";
-                (
-                    playUpdates.activeActionResults[position],
-                    playUpdates.activeActionResultCards[position]
-                ) = dig(queueID, playersInQueue[i]);
-                // TODO: set results of dig here
-                // Treasure / Ambush
-                // treasure / ambush card
+                playUpdates.activeActionResults[position] = dig(
+                    queueID,
+                    playersInQueue[i]
+                );
+                // TODO: apply effects of dig card
+                //playUpdates.activeActionResultCards[position] = card name
+                //playUpdates.playerStatUpdates = [x,x,x] // ints
+                // add to play updates
                 position++;
             } else if (
                 QUEUE.submissionAction(queueID, playersInQueue[i]) ==
@@ -604,7 +628,165 @@ contract HexplorationGameplay is
         return playUpdates;
     }
 
-    /*
+    function dig(uint256 queueID, uint256 playerID)
+        public
+        view
+        returns (uint256 resultType)
+    {
+        // if digging available...
+        // roll dice (d6) for each player on space not resting
+        // if sum of rolls is greater than 5 during night win treasure
+        // if sum of rolls is greater than 4 during day win treasure
+        // return "Treasure" or "Ambush"
+        // Result types: 0 = None, 1 = Event, 2 = Ambush, 3 = Treasure
+    }
+
+    function drawCard(
+        uint256 cardType,
+        uint256 queueID,
+        uint256 playerID
+    )
+        internal
+        view
+        returns (
+            string memory card,
+            int8[3] memory stats,
+            string memory itemTypeLoss,
+            string memory itemTypeGain,
+            string memory handLoss,
+            string memory outcome
+        )
+    {
+        // get randomness from queue  QUEUE.randomness(queueID)
+        // outputs should match up with what's returned from deck draw
+        uint8[3] memory playerStats = QUEUE.getStatsAtSubmission(
+            queueID,
+            playerID
+        );
+        uint256[3] memory rolls;
+        rolls[0] = attributeRoll(
+            playerStats[0],
+            queueID,
+            playerID * playerStats[0] * 10000
+        );
+        rolls[1] = attributeRoll(
+            playerStats[1],
+            queueID,
+            playerID * playerStats[1] * 10000
+        );
+        rolls[2] = attributeRoll(
+            playerStats[2],
+            queueID,
+            playerID * playerStats[2] * 10000
+        );
+        if (cardType == 1) {
+            // draw from event deck
+            (
+                card,
+                stats[0],
+                stats[1],
+                stats[2],
+                itemTypeLoss,
+                itemTypeGain,
+                handLoss,
+                outcome
+            ) = EVENT_DECK.drawCard(QUEUE.randomness(queueID), rolls);
+        } else if (cardType == 2) {
+            // draw from ambush deck
+            (
+                card,
+                stats[0],
+                stats[1],
+                stats[2],
+                itemTypeLoss,
+                itemTypeGain,
+                handLoss,
+                outcome
+            ) = AMBUSH_DECK.drawCard(QUEUE.randomness(queueID), rolls);
+        } else {
+            // draw from treasure deck
+            (
+                card,
+                stats[0],
+                stats[1],
+                stats[2],
+                itemTypeLoss,
+                itemTypeGain,
+                handLoss,
+                outcome
+            ) = TREASURE_DECK.drawCard(QUEUE.randomness(queueID), rolls);
+        }
+    }
+
+    function attributeRoll(
+        uint256 numDice,
+        uint256 queueID,
+        uint256 rollSeed
+    ) public view returns (uint256 rollTotal) {
+        uint8[] memory die = new uint8[](3);
+        die[0] = 0;
+        die[1] = 1;
+        die[2] = 2;
+        rollTotal = rollDice(queueID, die, numDice, rollSeed);
+    }
+
+    function d6Roll(
+        uint256 numDice,
+        uint256 queueID,
+        uint256 rollSeed
+    ) public view returns (uint256 rollTotal) {
+        uint8[] memory die = new uint8[](6);
+        die[0] = 1;
+        die[1] = 2;
+        die[2] = 3;
+        die[3] = 4;
+        die[4] = 5;
+        die[5] = 6;
+        rollTotal = rollDice(queueID, die, numDice, rollSeed);
+    }
+
+    function rollDice(
+        uint256 queueID,
+        uint8[] memory diceValues,
+        uint256 diceQty,
+        uint256 rollSeed
+    ) internal view returns (uint256 rollTotal) {
+        rollTotal = 0;
+        uint256 randomness = QUEUE.randomness(queueID);
+        for (uint256 i = 0; i < diceQty; i++) {
+            rollTotal += diceValues[
+                uint256(
+                    keccak256(abi.encode(randomness, i * rollTotal, rollSeed))
+                ) % diceValues.length
+            ];
+        }
+    }
+
+    // Utilities
+    function stringsMatch(string memory s1, string memory s2)
+        internal
+        pure
+        returns (bool)
+    {
+        return
+            keccak256(abi.encodePacked(s1)) == keccak256(abi.encodePacked(s2));
+    }
+
+    // returns a - b or 0 if negative;
+    function subToZero(uint256 a, uint256 b)
+        internal
+        pure
+        returns (uint256 difference)
+    {
+        difference = a > b ? a - b : 0;
+    }
+
+    function absoluteValue(int256 x) internal pure returns (uint256 absX) {
+        absX = x >= 0 ? uint256(x) : uint256(-x);
+    }
+}
+
+/*
 
         for (uint256 i = 0; i < playersInQueue.length; i++) {
             if (
@@ -687,116 +869,6 @@ contract HexplorationGameplay is
         // set movement zones
         return stringReturn;
 */
-    function dig(uint256 queueID, uint256 playerID)
-        public
-        view
-        returns (uint256 resultType, string memory selectedCard)
-    {
-        // if digging available...
-        // roll dice (d6) for each player on space not resting
-        // if sum of rolls is greater than 5 during night win treasure
-        // if sum of rolls is greater than 4 during day win treasure
-        // return "Treasure" or "Ambush"
-        // Result types: 0 = None, 1 = Event, 2 = Ambush, 3 = Treasure
-    }
-
-    function drawCard(
-        string memory cardType,
-        uint256 queueID,
-        uint256 playerID
-    )
-        internal
-        view
-        returns (
-            string memory card,
-            uint256[3] memory stats,
-            string memory itemTypeLoss,
-            string memory itemTypeGain,
-            string memory handLoss,
-            int256 movementX,
-            int256 movementY,
-            string memory outcome
-        )
-    {
-        // get randomness from queue  QUEUE.randomness(queueID)
-        // outputs should match up with what's returned from deck draw
-        if (stringsMatch(cardType, "Treasure")) {
-            // draw from treasure deck
-        } else if (stringsMatch(cardType, "Ambush")) {
-            // draw from ambush deck
-        } else if (stringsMatch(cardType, "Event")) {
-            // draw from event deck
-        }
-    }
-
-    function attributeRoll(
-        uint256 numDice,
-        uint256 queueID,
-        uint256 rollSeed
-    ) public view returns (uint256 rollTotal, uint256[] memory allDice) {
-        uint8[] memory die = new uint8[](3);
-        die[0] = 0;
-        die[1] = 1;
-        die[2] = 2;
-        (rollTotal, allDice) = rollDice(queueID, die, numDice, rollSeed);
-    }
-
-    function d6Roll(
-        uint256 numDice,
-        uint256 queueID,
-        uint256 rollSeed
-    ) public view returns (uint256 rollTotal, uint256[] memory allDice) {
-        uint8[] memory die = new uint8[](6);
-        die[0] = 1;
-        die[1] = 2;
-        die[2] = 3;
-        die[3] = 4;
-        die[4] = 5;
-        die[5] = 6;
-        (rollTotal, allDice) = rollDice(queueID, die, numDice, rollSeed);
-    }
-
-    function rollDice(
-        uint256 queueID,
-        uint8[] memory diceValues,
-        uint256 diceQty,
-        uint256 rollSeed
-    ) internal view returns (uint256 rollTotal, uint256[] memory allDice) {
-        rollTotal = 0;
-        allDice = new uint256[](diceQty);
-        uint256 randomness = QUEUE.randomness(queueID);
-        for (uint256 i = 0; i < diceQty; i++) {
-            allDice[i] = diceValues[
-                uint256(keccak256(abi.encode(randomness, i, rollSeed))) %
-                    diceValues.length
-            ];
-            rollTotal += allDice[i];
-        }
-    }
-
-    // Utilities
-    function stringsMatch(string memory s1, string memory s2)
-        internal
-        pure
-        returns (bool)
-    {
-        return
-            keccak256(abi.encodePacked(s1)) == keccak256(abi.encodePacked(s2));
-    }
-
-    // returns a - b or 0 if negative;
-    function subToZero(uint256 a, uint256 b)
-        internal
-        pure
-        returns (uint256 difference)
-    {
-        difference = a > b ? a - b : 0;
-    }
-
-    function absoluteValue(int256 x) internal pure returns (uint256 absX) {
-        absX = x >= 0 ? uint256(x) : uint256(-x);
-    }
-}
 
 // What is processing?
 // take all moves from batch, verify are valid moves, and

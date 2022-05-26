@@ -4,7 +4,11 @@ const Queue = artifacts.require("HexplorationQueue");
 const Gameplay = artifacts.require("HexplorationGameplay");
 const GameBoard = artifacts.require("HexplorationBoard");
 const GameController = artifacts.require("HexplorationController");
+const CharacterCard = artifacts.require("CharacterCard");
 const GameSummary = artifacts.require("GameSummary");
+const EventDeck = artifacts.require("EventDeck");
+const AmbushDeck = artifacts.require("AmbushDeck");
+const TreasureDeck = artifacts.require("TreasureDeck");
 const addresses = require("./addresses.js");
 
 module.exports = async (deployer, network, [defaultAccount]) => {
@@ -13,9 +17,13 @@ module.exports = async (deployer, network, [defaultAccount]) => {
     await deployer.deploy(
       Gameplay,
       GameSummary.address,
-      addresses.GANACHE_HEXPLORATION_BOARD
+      addresses.GANACHE_HEXPLORATION_BOARD,
+      EventDeck.address,
+      TreasureDeck.address,
+      AmbushDeck.address
     );
-    await deployer.deploy(Queue, Gameplay.address);
+
+    await deployer.deploy(Queue, Gameplay.address, CharacterCard.address);
 
     console.log("Adding queue to gameplay...");
     const gp = await Gameplay.deployed();

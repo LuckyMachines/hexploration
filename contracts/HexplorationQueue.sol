@@ -11,6 +11,7 @@ import "./HexplorationStateUpdate.sol";
 contract HexplorationQueue is AccessControlEnumerable {
     using Counters for Counters.Counter;
     Counters.Counter internal QUEUE_ID;
+    CharacterCard internal CHARACTER_CARD;
 
     enum ProcessingPhase {
         Start,
@@ -58,6 +59,8 @@ contract HexplorationQueue is AccessControlEnumerable {
     mapping(uint256 => mapping(uint256 => string)) public submissionLeftHand;
     mapping(uint256 => mapping(uint256 => string)) public submissionRightHand;
     mapping(uint256 => mapping(uint256 => bool)) public playerSubmitted;
+    mapping(uint256 => mapping(uint256 => uint8[3]))
+        public playerStatsAtSubmission;
 
     // current action, so we know what to process during play through phase
     mapping(uint256 => mapping(uint256 => Action)) public activeAction; // defaults to idle
@@ -67,10 +70,11 @@ contract HexplorationQueue is AccessControlEnumerable {
 
     ///////  VRF can kick off processing phase
 
-    constructor(address gameplayAddress) {
+    constructor(address gameplayAddress, address characterCard) {
         _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
         _setupRole(GAMEPLAY_ROLE, gameplayAddress);
         QUEUE_ID.increment(); // start at 1
+        CHARACTER_CARD = CharacterCard(characterCard);
     }
 
     // Can set multiple VCs, one for manual pushing, one for keeper
@@ -124,6 +128,8 @@ contract HexplorationQueue is AccessControlEnumerable {
             if (players[_queueID].length >= totalPlayers[_queueID]) {
                 _processAllActions(_queueID);
             }
+            playerStatsAtSubmission[_queueID][playerID] = CHARACTER_CARD
+                .getStats(game[_queueID], playerID);
         }
     }
 
@@ -150,6 +156,14 @@ contract HexplorationQueue is AccessControlEnumerable {
         returns (string[] memory)
     {
         return submissionOptions[_queueID][_playerID];
+    }
+
+    function getStatsAtSubmission(uint256 _queueID, uint256 _playerID)
+        public
+        view
+        returns (uint8[3] memory)
+    {
+        return playerStatsAtSubmission[_queueID][_playerID];
     }
 
     function getProcessingQueue() public view returns (uint256[] memory) {

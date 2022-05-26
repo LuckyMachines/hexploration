@@ -53,6 +53,16 @@ contract CharacterCard is AccessControlEnumerable {
         grantRole(VERIFIED_CONTROLLER_ROLE, controllerAddress);
     }
 
+    function getStats(uint256 gameID, uint256 playerID)
+        public
+        view
+        returns (uint8[3] memory stats)
+    {
+        stats[0] = movement[gameID][playerID];
+        stats[1] = agility[gameID][playerID];
+        stats[2] = dexterity[gameID][playerID];
+    }
+
     function setStats(
         uint8[3] memory stats,
         uint256 gameID,

@@ -220,7 +220,7 @@ contract HexplorationController is GameController {
                 }
                 //currentPlayZone[gameID][playerID]
             }
-            newOptions = new string[](activePlayersOnSpace + 1); // array length = players on space
+            newOptions = new string[](activePlayersOnSpace + 1); // array length = players on space + 1
             newOptions[0] = phase;
         } else {
             newOptions = options;

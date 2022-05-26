@@ -71,8 +71,7 @@ contract CardDeck is AccessControlEnumerable {
             string memory,
             string memory,
             string memory,
-            int256,
-            int256
+            string memory
         )
     {
         uint256 cardIndex = randomWord % _cards.length;
@@ -101,8 +100,7 @@ contract CardDeck is AccessControlEnumerable {
             itemLoss[card][rollIndex],
             itemGain[card][rollIndex],
             handLoss[card][rollIndex],
-            movementX[card][rollIndex],
-            movementY[card][rollIndex]
+            outcomeDescription[card][rollIndex]
         );
     }
 
