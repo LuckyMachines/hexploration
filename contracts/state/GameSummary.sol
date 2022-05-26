@@ -9,8 +9,7 @@ import "../tokens/TokenInventory.sol";
 import "../HexplorationQueue.sol";
 
 library GameSummary {
-    // enemies
-    // tokens
+    // Function called by frontent for game info
     function boardSize(address gameBoardAddress)
         public
         view
@@ -39,10 +38,6 @@ library GameSummary {
         HexplorationBoard board = HexplorationBoard(gameBoardAddress);
         PlayerRegistry pr = PlayerRegistry(board.prAddress());
         playerID = pr.playerID(gameID, playerAddress);
-    }
-
-    function getAvailableGameIDs() public view returns (uint256[] memory) {
-        // TODO: return available game IDs
     }
 
     function currentGameplayQueue(address gameBoardAddress, uint256 gameID)
@@ -107,15 +102,7 @@ library GameSummary {
         return HexplorationBoard(gameBoardAddress).initialPlayZone(gameID);
     }
 
-    function currentLocation(address gameBoardAddress, uint256 gameID)
-        public
-        view
-        returns (string memory)
-    {
-        HexplorationBoard board = HexplorationBoard(gameBoardAddress);
-        PlayerRegistry pr = PlayerRegistry(board.prAddress());
-        return board.currentPlayZone(gameID, pr.playerID(gameID, msg.sender));
-    }
+    // Functions called directly by players
 
     function allPlayerLocations(address gameBoardAddress, uint256 gameID)
         public
@@ -134,46 +121,14 @@ library GameSummary {
         return (playerIDs, playerZones);
     }
 
-    function inventoryItemExists(
-        string memory tokenType,
-        address inventoryAddress,
-        uint256 gameID,
-        uint256 holderID
-    ) internal view returns (bool) {
-        return
-            TokenInventory(inventoryAddress).ITEM_TOKEN().balance(
-                tokenType,
-                gameID,
-                holderID
-            ) > 0;
-    }
-
-    function inventoryArtifactExists(
-        string memory tokenType,
-        address inventoryAddress,
-        uint256 gameID,
-        uint256 holderID
-    ) internal view returns (bool) {
-        return
-            TokenInventory(inventoryAddress).ARTIFACT_TOKEN().balance(
-                tokenType,
-                gameID,
-                holderID
-            ) > 0;
-    }
-
-    function inventoryStatusExists(
-        string memory tokenType,
-        address inventoryAddress,
-        uint256 gameID,
-        uint256 holderID
-    ) internal view returns (bool) {
-        return
-            TokenInventory(inventoryAddress).PLAYER_STATUS_TOKEN().balance(
-                tokenType,
-                gameID,
-                holderID
-            ) > 0;
+    function currentLocation(address gameBoardAddress, uint256 gameID)
+        public
+        view
+        returns (string memory)
+    {
+        HexplorationBoard board = HexplorationBoard(gameBoardAddress);
+        PlayerRegistry pr = PlayerRegistry(board.prAddress());
+        return board.currentPlayZone(gameID, pr.playerID(gameID, msg.sender));
     }
 
     function currentPlayerStats(address gameBoardAddress, uint256 gameID)
@@ -345,8 +300,58 @@ library GameSummary {
         // itemBalances[34] = campsiteBalance;
     }
 
+    // Internal Stuff
+    function inventoryItemExists(
+        string memory tokenType,
+        address inventoryAddress,
+        uint256 gameID,
+        uint256 holderID
+    ) internal view returns (bool) {
+        return
+            TokenInventory(inventoryAddress).ITEM_TOKEN().balance(
+                tokenType,
+                gameID,
+                holderID
+            ) > 0;
+    }
+
+    function inventoryArtifactExists(
+        string memory tokenType,
+        address inventoryAddress,
+        uint256 gameID,
+        uint256 holderID
+    ) internal view returns (bool) {
+        return
+            TokenInventory(inventoryAddress).ARTIFACT_TOKEN().balance(
+                tokenType,
+                gameID,
+                holderID
+            ) > 0;
+    }
+
+    function inventoryStatusExists(
+        string memory tokenType,
+        address inventoryAddress,
+        uint256 gameID,
+        uint256 holderID
+    ) internal view returns (bool) {
+        return
+            TokenInventory(inventoryAddress).PLAYER_STATUS_TOKEN().balance(
+                tokenType,
+                gameID,
+                holderID
+            ) > 0;
+    }
+
     // TODO:
     // Functions to complete
+
+    function isAtCampsite(address gameBoardAddress, uint256 gameID)
+        public
+        view
+        returns (bool)
+    {}
+
     function activeAction(address gameBoardAddress, uint256 gameID)
         public
         view
@@ -367,5 +372,9 @@ library GameSummary {
         // dayTimeActionEffect
         // activeActionEffect
         // currentActiveAction
+    }
+
+    function getAvailableGameIDs() public view returns (uint256[] memory) {
+        // TODO: return available game IDs
     }
 }
