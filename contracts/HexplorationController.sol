@@ -203,6 +203,11 @@ contract HexplorationController is GameController {
         string memory cz = board.currentPlayZone(gameID, playerID);
         string[] memory newOptions;
         if (actionIndex == 4) {
+            string memory phase = TokenInventory(board.tokenInventory())
+                .DAY_NIGHT_TOKEN()
+                .balance("Day", gameID, 1) > 0
+                ? "Day"
+                : "Night";
             // dig action, set options to # players on board
             uint256 activePlayersOnSpace = 0;
             for (uint256 i = 0; i < totalRegistrations; i++) {
@@ -215,7 +220,8 @@ contract HexplorationController is GameController {
                 }
                 //currentPlayZone[gameID][playerID]
             }
-            newOptions = new string[](activePlayersOnSpace); // array length = players on space
+            newOptions = new string[](activePlayersOnSpace + 1); // array length = players on space
+            newOptions[0] = phase;
         } else {
             newOptions = options;
         }

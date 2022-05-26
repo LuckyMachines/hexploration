@@ -466,6 +466,10 @@ contract HexplorationGameplay is
             ) {
                 playUpdates.activeActions[position] = "Dig";
                 playUpdates.activeActionOptions[position] = "";
+                (
+                    playUpdates.activeActionResults[position],
+                    playUpdates.activeActionResultCards[position]
+                ) = dig(queueID, playersInQueue[i]);
                 // TODO: set results of dig here
                 // Treasure / Ambush
                 // treasure / ambush card
@@ -686,13 +690,14 @@ contract HexplorationGameplay is
     function dig(uint256 queueID, uint256 playerID)
         public
         view
-        returns (string memory cardType, string memory selectedCard)
+        returns (uint256 resultType, string memory selectedCard)
     {
         // if digging available...
         // roll dice (d6) for each player on space not resting
         // if sum of rolls is greater than 5 during night win treasure
         // if sum of rolls is greater than 4 during day win treasure
         // return "Treasure" or "Ambush"
+        // Result types: 0 = None, 1 = Event, 2 = Ambush, 3 = Treasure
     }
 
     function drawCard(
