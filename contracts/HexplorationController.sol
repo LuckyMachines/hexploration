@@ -194,15 +194,35 @@ contract HexplorationController is GameController {
             pr.playerAddress(gameID, playerID) == msg.sender,
             "PlayerID is not sender"
         );
+        uint256 totalRegistrations = pr.totalRegistrations(gameID);
         uint256 qID = q.queueID(gameID);
         if (qID == 0) {
-            qID = q.requestGameQueue(gameID, pr.totalRegistrations(gameID));
+            qID = q.requestGameQueue(gameID, totalRegistrations);
         }
         require(qID != 0, "unable to set qID in controller");
+        string memory cz = board.currentPlayZone(gameID, playerID);
+        string[] memory newOptions;
+        if (actionIndex == 4) {
+            // dig action, set options to # players on board
+            uint256 activePlayersOnSpace = 0;
+            for (uint256 i = 0; i < totalRegistrations; i++) {
+                if (
+                    keccak256(
+                        abi.encodePacked(board.currentPlayZone(gameID, i + 1))
+                    ) == keccak256(abi.encodePacked(cz))
+                ) {
+                    activePlayersOnSpace++;
+                }
+                //currentPlayZone[gameID][playerID]
+            }
+            newOptions = new string[](activePlayersOnSpace); // array length = players on space
+        } else {
+            newOptions = options;
+        }
         q.sumbitActionForPlayer(
             playerID,
             actionIndex,
-            options,
+            newOptions,
             leftHand,
             rightHand,
             qID
@@ -249,33 +269,33 @@ contract HexplorationController is GameController {
     }
 
     // TODO: remove before launch
-    function getTestInventory(uint256 gameID, address boardAddress) public {
-        // send some equippable items
-        HexplorationBoard board = HexplorationBoard(boardAddress);
-        TokenInventory ti = TokenInventory(board.tokenInventory());
-        PlayerRegistry pr = PlayerRegistry(board.prAddress());
-        ti.ITEM_TOKEN().transfer(
-            "Shiny Rifle",
-            gameID,
-            0,
-            pr.playerID(gameID, msg.sender),
-            1
-        );
+    // function getTestInventory(uint256 gameID, address boardAddress) public {
+    //     // send some equippable items
+    //     HexplorationBoard board = HexplorationBoard(boardAddress);
+    //     TokenInventory ti = TokenInventory(board.tokenInventory());
+    //     PlayerRegistry pr = PlayerRegistry(board.prAddress());
+    //     ti.ITEM_TOKEN().transfer(
+    //         "Shiny Rifle",
+    //         gameID,
+    //         0,
+    //         pr.playerID(gameID, msg.sender),
+    //         1
+    //     );
 
-        ti.ITEM_TOKEN().transfer(
-            "Glow stick",
-            gameID,
-            0,
-            pr.playerID(gameID, msg.sender),
-            1
-        );
+    //     ti.ITEM_TOKEN().transfer(
+    //         "Glow stick",
+    //         gameID,
+    //         0,
+    //         pr.playerID(gameID, msg.sender),
+    //         1
+    //     );
 
-        ti.ITEM_TOKEN().transfer(
-            "Laser Dagger",
-            gameID,
-            0,
-            pr.playerID(gameID, msg.sender),
-            1
-        );
-    }
+    //     ti.ITEM_TOKEN().transfer(
+    //         "Laser Dagger",
+    //         gameID,
+    //         0,
+    //         pr.playerID(gameID, msg.sender),
+    //         1
+    //     );
+    // }
 }
