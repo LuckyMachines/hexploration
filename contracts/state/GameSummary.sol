@@ -358,22 +358,39 @@ library GameSummary {
         returns (string memory action)
     {}
 
+    function lastDayPhaseEvents(address gameBoardAddress, uint256 gameID)
+        public
+        returns (
+            uint256[] memory playerIDs,
+            string[] memory activeActionCardTypes,
+            string[] memory activeActionCardsDrawn,
+            string[] memory currentActiveActions,
+            string[] memory activeActionCardResults,
+            string[3][] memory activeActionCardInventoryChanges
+        )
+    {}
+
     function lastPlayerActions(address gameBoardAddress, uint256 gameID)
         public
         returns (
             uint256[] memory playerIDs,
-            string[] memory dayTimeActionEffect,
-            string[] memory activeActionEffect,
-            string[] memory currentActiveAction
+            string[] memory activeActionCardTypes,
+            string[] memory activeActionCardsDrawn,
+            string[] memory currentActiveActions,
+            string[] memory activeActionCardResults,
+            string[3][] memory activeActionCardInventoryChanges
         )
     {
         // returns
         // playerIDs
-        // dayTimeActionEffect
-        // activeActionEffect
-        // currentActiveAction
+        // activeActionCardType - // "Event","Ambush","Treasure"
+        // activationActionCardsDrawn = card title of card drawn
+        // currentActveActions - action doing that led to card draw
+        // activeActionCardResults - outcomes of cards
+        // activeActionCardInventoryChangs - item loss, item gain, hand loss (left/right)
     }
 
+    // SHINY NEW FUNCTIONS!!!
     function getAvailableGameIDs(
         address gameBoardAddress,
         address gameRegistryAddress
