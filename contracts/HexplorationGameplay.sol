@@ -54,6 +54,9 @@ contract HexplorationGameplay is
         string[] playerTransferItemTypes;
         string[] activeActions;
         string[] activeActionOptions;
+        uint256[] activeActionResults; // 0 = None, 1 = Event, 2 = Ambush, 3 = Treasure
+        string[] activeActionResultCards; // Card for Event / ambush / treasure
+        uint256 randomness;
     }
 
     constructor(address _gameSummaryAddress, address gameBoardAddress) {
@@ -94,12 +97,16 @@ contract HexplorationGameplay is
         uint256 queueIDToUpdate = 0;
         uint256[] memory pq = QUEUE.getProcessingQueue();
         for (uint256 i = 0; i < pq.length; i++) {
-            if (pq[i] != 0 && QUEUE.randomness(queueIDToUpdate) > 0) {
+            if (pq[i] != 0) {
                 queueIDToUpdate = pq[i];
                 upkeepNeeded = true;
                 break;
             }
         }
+        if (QUEUE.randomness(queueIDToUpdate) == 0) {
+            upkeepNeeded = false;
+        }
+
         HexplorationQueue.ProcessingPhase phase = QUEUE.currentPhase(
             queueIDToUpdate
         );
@@ -270,6 +277,40 @@ contract HexplorationGameplay is
         );
     }
 
+    // Called by keeper
+    function processPlayerActions(uint256 queueID, DataSummary memory summary)
+        internal
+    {
+        uint256 gameID = QUEUE.game(queueID);
+        // TODO: save update struct with all the actions from queue (what was originally the ints array)
+        PlayUpdates memory playUpdates = playUpdatesForPlayerActionPhase(
+            queueID,
+            summary
+        );
+        GAME_STATE.postUpdates(playUpdates, gameID);
+        QUEUE.setPhase(HexplorationQueue.ProcessingPhase.PlayThrough, queueID);
+    }
+
+    function processPlayThrough(uint256 queueID, DataSummary memory summary)
+        internal
+    {
+        HexplorationQueue.ProcessingPhase phase = QUEUE.currentPhase(queueID);
+
+        if (QUEUE.randomness(queueID) != 0) {
+            if (phase == HexplorationQueue.ProcessingPhase.PlayThrough) {
+                uint256 gameID = QUEUE.game(queueID);
+                PlayUpdates memory playUpdates = playUpdatesForPlayThroughPhase(
+                    queueID,
+                    summary
+                );
+                // TODO: set this to true when game is finished
+                bool gameComplete = false;
+                GAME_STATE.postUpdates(playUpdates, gameID);
+                QUEUE.finishProcessing(queueID, gameComplete);
+            }
+        }
+    }
+
     function playUpdatesForPlayerActionPhase(
         uint256 queueID,
         DataSummary memory summary
@@ -397,7 +438,12 @@ contract HexplorationGameplay is
         );
         playUpdates.activeActions = new string[](summary.activeActions);
         playUpdates.activeActionOptions = new string[](summary.activeActions);
+        playUpdates.activeActionResults = new uint256[](summary.activeActions);
+        playUpdates.activeActionResultCards = new string[](
+            summary.activeActions
+        );
         position = 0;
+        // Draw cards for dig this phase
         for (uint256 i = 0; i < playersInQueue.length; i++) {
             if (
                 QUEUE.submissionAction(queueID, playersInQueue[i]) ==
@@ -420,6 +466,9 @@ contract HexplorationGameplay is
             ) {
                 playUpdates.activeActions[position] = "Dig";
                 playUpdates.activeActionOptions[position] = "";
+                // TODO: set results of dig here
+                // Treasure / Ambush
+                // treasure / ambush card
                 position++;
             } else if (
                 QUEUE.submissionAction(queueID, playersInQueue[i]) ==
@@ -428,56 +477,25 @@ contract HexplorationGameplay is
                 playUpdates.activeActions[position] = "Rest";
                 playUpdates.activeActionOptions[position] = QUEUE
                     .submissionOptions(queueID, playersInQueue[i], 0);
+                // TODO:
+                // apply effects of rest here
                 position++;
             } else if (
                 QUEUE.submissionAction(queueID, playersInQueue[i]) ==
                 HexplorationQueue.Action.Help
             ) {
+                // TODO: use this...
                 playUpdates.activeActions[position] = "Help";
                 playUpdates.activeActionOptions[position] = QUEUE
                     .submissionOptions(queueID, playersInQueue[i], 0);
                 position++;
             }
         }
+        playUpdates.randomness = QUEUE.randomness(queueID);
 
         // only need to store current action as digging, resting, and play out during play phase
 
         return playUpdates;
-    }
-
-    // will be called from VRF after randomness is set...
-    function processPlayerActions(uint256 queueID, DataSummary memory summary)
-        internal
-    {
-        uint256 gameID = QUEUE.game(queueID);
-        // TODO: save update struct with all the actions from queue (what was originally the ints array)
-        PlayUpdates memory playUpdates = playUpdatesForPlayerActionPhase(
-            queueID,
-            summary
-        );
-        GAME_STATE.postUpdates(playUpdates, gameID);
-        QUEUE.setPhase(HexplorationQueue.ProcessingPhase.PlayThrough, queueID);
-    }
-
-    // Called by keeper
-    function processPlayThrough(uint256 queueID, DataSummary memory summary)
-        internal
-    {
-        HexplorationQueue.ProcessingPhase phase = QUEUE.currentPhase(queueID);
-
-        if (QUEUE.randomness(queueID) != 0) {
-            if (phase == HexplorationQueue.ProcessingPhase.PlayThrough) {
-                uint256 gameID = QUEUE.game(queueID);
-                PlayUpdates memory playUpdates = playUpdatesForPlayThroughPhase(
-                    queueID,
-                    summary
-                );
-                // TODO: set this to true when game is finished
-                bool gameComplete = false;
-                GAME_STATE.postUpdates(playUpdates, gameID);
-                QUEUE.finishProcessing(queueID, gameComplete);
-            }
-        }
     }
 
     function playUpdatesForPlayThroughPhase(
@@ -668,7 +686,7 @@ contract HexplorationGameplay is
     function dig(uint256 queueID, uint256 playerID)
         public
         view
-        returns (string memory cardType)
+        returns (string memory cardType, string memory selectedCard)
     {
         // if digging available...
         // roll dice (d6) for each player on space not resting
@@ -686,14 +704,13 @@ contract HexplorationGameplay is
         view
         returns (
             string memory card,
-            int8 movementAdjust,
-            int8 agilityAdjust,
-            int8 dexterityAdjust,
+            uint256[3] memory stats,
             string memory itemTypeLoss,
             string memory itemTypeGain,
             string memory handLoss,
             int256 movementX,
-            int256 movementY
+            int256 movementY,
+            string memory outcome
         )
     {
         // get randomness from queue  QUEUE.randomness(queueID)
@@ -707,16 +724,49 @@ contract HexplorationGameplay is
         }
     }
 
+    function attributeRoll(
+        uint256 numDice,
+        uint256 queueID,
+        uint256 rollSeed
+    ) public view returns (uint256 rollTotal, uint256[] memory allDice) {
+        uint8[] memory die = new uint8[](3);
+        die[0] = 0;
+        die[1] = 1;
+        die[2] = 2;
+        (rollTotal, allDice) = rollDice(queueID, die, numDice, rollSeed);
+    }
+
+    function d6Roll(
+        uint256 numDice,
+        uint256 queueID,
+        uint256 rollSeed
+    ) public view returns (uint256 rollTotal, uint256[] memory allDice) {
+        uint8[] memory die = new uint8[](6);
+        die[0] = 1;
+        die[1] = 2;
+        die[2] = 3;
+        die[3] = 4;
+        die[4] = 5;
+        die[5] = 6;
+        (rollTotal, allDice) = rollDice(queueID, die, numDice, rollSeed);
+    }
+
     function rollDice(
         uint256 queueID,
-        uint256[] memory diceValues,
-        uint256 diceQty
-    ) internal view returns (uint256) {
-        uint256 rollTotal = 0;
-        // roll dice quantity amount of times
-        // each roll, select a number between 0 - diceValues.length - 1
-        // add up value at diceValues[rollResult]
-        return rollTotal;
+        uint8[] memory diceValues,
+        uint256 diceQty,
+        uint256 rollSeed
+    ) internal view returns (uint256 rollTotal, uint256[] memory allDice) {
+        rollTotal = 0;
+        allDice = new uint256[](diceQty);
+        uint256 randomness = QUEUE.randomness(queueID);
+        for (uint256 i = 0; i < diceQty; i++) {
+            allDice[i] = diceValues[
+                uint256(keccak256(abi.encode(randomness, i, rollSeed))) %
+                    diceValues.length
+            ];
+            rollTotal += allDice[i];
+        }
     }
 
     // Utilities

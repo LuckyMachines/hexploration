@@ -46,7 +46,8 @@ module.exports = {
         evmVersion: "byzantium"
       }
     }
-  }
+  },
+  plugins: ["truffle-contract-size"]
 
   // Truffle DB is currently disabled by default; to enable it, change enabled:
   // false to enabled: true. The default storage location can also be

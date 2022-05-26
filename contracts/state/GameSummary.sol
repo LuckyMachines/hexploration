@@ -345,9 +345,27 @@ library GameSummary {
         // itemBalances[34] = campsiteBalance;
     }
 
+    // TODO:
+    // Functions to complete
     function activeAction(address gameBoardAddress, uint256 gameID)
         public
         view
         returns (string memory action)
     {}
+
+    function lastPlayerActions(address gameBoardAddress, uint256 gameID)
+        public
+        returns (
+            uint256[] memory playerIDs,
+            string[] memory dayTimeActionEffect,
+            string[] memory activeActionEffect,
+            string[] memory currentActiveAction
+        )
+    {
+        // returns
+        // playerIDs
+        // dayTimeActionEffect
+        // activeActionEffect
+        // currentActiveAction
+    }
 }

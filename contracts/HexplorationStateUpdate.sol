@@ -74,23 +74,49 @@ contract HexplorationStateUpdate is AccessControlEnumerable {
         transferZoneItems(updates, gameID);
     }
 
+    /*
+
+    struct PlayUpdates {
+        uint256[] playerPositionIDs;
+        uint256[] spacesToMove;
+        uint256[] playerEquipIDs;
+        uint256[] playerEquipHands;
+        uint256[] zoneTransfersTo;
+        uint256[] zoneTransfersFrom;
+        uint256[] zoneTransferQtys;
+        uint256[] playerTransfersTo;
+        uint256[] playerTransfersFrom;
+        uint256[] playerTransferQtys;
+        uint256[] playerStatUpdateIDs;
+        uint256[3][] playerStatUpdates;
+        uint256[] playerActiveActionIDs;
+        string gamePhase;
+        string[7][] playerMovementOptions; // TODO: set this to max # of spaces possible
+        string[] playerEquips;
+        string[] zoneTransferItemTypes;
+        string[] playerTransferItemTypes;
+        string[] activeActions;
+        string[] activeActionOptions;
+    }
+    */
+
     function updatePlayerPositions(
         HexplorationGameplay.PlayUpdates memory updates,
         uint256 gameID
     ) internal {
-        // TODO: set actual number here
-        uint256 maxMovementPerPlayer = 7;
-        /*
-        Update for use with PlayUpdates instead of array
-        for (uint256 i = 0; i < intUpdates[0]; i++) {
-            uint256 spacesToMove = intUpdates[(i * 2) + maxMovementPerPlayer];
+        for (uint256 i = 0; i < updates.playerPositionIDs.length; i++) {
+            uint256 spacesToMove = updates.spacesToMove[i];
             string[] memory path = new string[](spacesToMove);
             for (uint256 j = 0; j < spacesToMove; j++) {
-                path[j] = stringUpdates[(i * maxMovementPerPlayer) + 1 + j];
+                path[j] = updates.playerMovementOptions[i][j];
             }
-            moveThroughPath(path, gameID, intUpdates[(i * 2) + 6]);
+            moveThroughPath(
+                path,
+                gameID,
+                updates.playerPositionIDs[i],
+                updates.randomness
+            );
         }
-        */
     }
 
     function updatePlayerStats(
@@ -102,31 +128,22 @@ contract HexplorationStateUpdate is AccessControlEnumerable {
         HexplorationGameplay.PlayUpdates memory updates,
         uint256 gameID
     ) internal {
-        // TODO: update to real number
-        uint256 maxMovement = 7;
-        /* update for PlayUpdates
-        uint256 currentIntIndex = 6 + (2 * intUpdates[0]);
-        uint256 currentStringIndex = 1 + (maxMovement * intUpdates[0]);
-        for (uint256 i = 0; i < intUpdates[2]; i++) {
-            uint256 playerID = intUpdates[currentIntIndex];
-            bool leftHand = intUpdates[currentIntIndex + 1] == 0;
+        for (uint256 i = 0; i < updates.playerEquipIDs.length; i++) {
+            bool leftHand = updates.playerEquipHands[i] == 0;
             if (leftHand) {
                 CHARACTER_CARD.setLeftHandItem(
-                    stringUpdates[currentStringIndex],
+                    updates.playerEquips[i],
                     gameID,
-                    playerID
+                    updates.playerEquipIDs[i]
                 );
             } else {
                 CHARACTER_CARD.setRightHandItem(
-                    stringUpdates[currentStringIndex],
+                    updates.playerEquips[i],
                     gameID,
-                    playerID
+                    updates.playerEquipIDs[i]
                 );
             }
-            currentIntIndex++;
-            currentStringIndex++;
         }
-        */
     }
 
     function transferPlayerItems(
@@ -142,13 +159,18 @@ contract HexplorationStateUpdate is AccessControlEnumerable {
     function moveThroughPath(
         string[] memory zonePath,
         uint256 gameID,
-        uint256 playerID
+        uint256 playerID,
+        uint256 randomness
     ) public onlyRole(VERIFIED_CONTROLLER_ROLE) {
         //TODO: pick tiles from deck
 
         HexplorationZone.Tile[] memory tiles = new HexplorationZone.Tile[](
             zonePath.length
         );
+        uint256[] memory randomNumbers = new uint256[](zonePath.length);
+        randomNumbers[0] = randomness;
+        // TODO: expand to more random numbers for length of zone
+        // use this when drawing from tile deck
         for (uint256 i = 0; i < zonePath.length; i++) {
             tiles[i] = i == 0 ? HexplorationZone.Tile.Jungle : i == 1
                 ? HexplorationZone.Tile.Plains
