@@ -49,7 +49,7 @@ contract HexplorationGameplay is
         uint256[] playerTransfersFrom;
         uint256[] playerTransferQtys;
         uint256[] playerStatUpdateIDs;
-        int256[3][] playerStatUpdates; // amount to adjust, not final value
+        int8[3][] playerStatUpdates; // amount to adjust, not final value
         uint256[] playerActiveActionIDs;
         string gamePhase;
         string[7][] playerMovementOptions; // TODO: set this to max # of spaces possible
@@ -59,7 +59,8 @@ contract HexplorationGameplay is
         string[] activeActions;
         string[] activeActionOptions;
         uint256[] activeActionResults; // 0 = None, 1 = Event, 2 = Ambush, 3 = Treasure
-        string[2][] activeActionResultCards; // Card for Event / ambush / treasure , outcome e.g. ["Dance with locals", "You're amazing!"]
+        string[2][] activeActionResultCard; // Card for Event / ambush / treasure , outcome e.g. ["Dance with locals", "You're amazing!"]
+        string[3][] activeActionInventoryChange; // [item loss, item gain, hand loss]
         uint256 randomness;
     }
 
@@ -339,7 +340,7 @@ contract HexplorationGameplay is
 
         uint256[] memory playersInQueue = QUEUE.getAllPlayers(queueID);
         uint256 position;
-        uint256 maxMovementPerPlayer = 7;
+        // uint256 maxMovementPerPlayer = 7;
         // Movement
         playUpdates.playerPositionIDs = new uint256[](
             summary.playerPositionUpdates
@@ -364,7 +365,7 @@ contract HexplorationGameplay is
                     queueID,
                     playersInQueue[i]
                 );
-                for (uint256 j = 0; j < maxMovementPerPlayer; j++) {
+                for (uint256 j = 0; j < 7; j++) {
                     playUpdates.playerMovementOptions[position][j] = j <
                         options.length
                         ? options[j]
@@ -459,13 +460,28 @@ contract HexplorationGameplay is
         playUpdates.activeActions = new string[](summary.activeActions);
         playUpdates.activeActionOptions = new string[](summary.activeActions);
         playUpdates.activeActionResults = new uint256[](summary.activeActions);
-        playUpdates.activeActionResultCards = new string[2][](
+        playUpdates.activeActionResultCard = new string[2][](
             summary.activeActions
         );
-        playUpdates.playerStatUpdates = new int256[3][](
+        playUpdates.activeActionInventoryChange = new string[3][](
+            summary.activeActions
+        );
+
+        playUpdates.playerStatUpdates = new int8[3][](
             summary.playerStatUpdates
         );
+        playUpdates.playerTransfersTo = new uint256[](summary.playerTransfers);
+        playUpdates.playerTransfersFrom = new uint256[](
+            summary.playerTransfers
+        );
+        playUpdates.playerTransferQtys = new uint256[](summary.playerTransfers);
+        playUpdates.playerTransferItemTypes = new string[](
+            summary.playerTransfers
+        );
+
         position = 0;
+        // increase with each one added...
+        uint256 playerStatPosition = 0;
         // Draw cards for dig this phase
         for (uint256 i = 0; i < playersInQueue.length; i++) {
             if (
@@ -493,10 +509,20 @@ contract HexplorationGameplay is
                     queueID,
                     playersInQueue[i]
                 );
-                // TODO: apply effects of dig card
-                //playUpdates.activeActionResultCards[position] = card name
-                //playUpdates.playerStatUpdates = [x,x,x] // ints
-                // add to play updates
+                (
+                    playUpdates.activeActionResultCard[position][0],
+                    playUpdates.playerStatUpdates[playerStatPosition],
+                    playUpdates.activeActionInventoryChange[position][0],
+                    playUpdates.activeActionInventoryChange[position][1],
+                    playUpdates.activeActionInventoryChange[position][2],
+                    playUpdates.activeActionResultCard[position][1]
+                ) = drawCard(
+                    playUpdates.activeActionResults[position],
+                    queueID,
+                    playersInQueue[i]
+                );
+
+                playerStatPosition++;
                 position++;
             } else if (
                 QUEUE.submissionAction(queueID, playersInQueue[i]) ==
@@ -505,8 +531,12 @@ contract HexplorationGameplay is
                 playUpdates.activeActions[position] = "Rest";
                 playUpdates.activeActionOptions[position] = QUEUE
                     .submissionOptions(queueID, playersInQueue[i], 0);
-                // TODO:
-                // apply effects of rest here
+
+                playUpdates.playerStatUpdates[playerStatPosition] = rest(
+                    queueID,
+                    playersInQueue[i]
+                );
+                playerStatPosition++;
                 position++;
             } else if (
                 QUEUE.submissionAction(queueID, playersInQueue[i]) ==
@@ -633,12 +663,69 @@ contract HexplorationGameplay is
         view
         returns (uint256 resultType)
     {
-        // if digging available...
+        // if digging available... (should be pre-checked)
         // roll dice (d6) for each player on space not resting
+
+        uint256 playersOnSpace = QUEUE
+            .getSubmissionOptions(queueID, playerID)
+            .length - 1;
+        string memory phase = QUEUE.getSubmissionOptions(queueID, playerID)[0];
+        uint256 rollOutcome = d6Roll(
+            playersOnSpace,
+            queueID,
+            playerID * block.timestamp
+        );
+        uint256 rollRequired = stringsMatch(phase, "Day") ? 4 : 5;
+        resultType = rollOutcome < rollRequired ? 2 : 3;
+
         // if sum of rolls is greater than 5 during night win treasure
         // if sum of rolls is greater than 4 during day win treasure
         // return "Treasure" or "Ambush"
         // Result types: 0 = None, 1 = Event, 2 = Ambush, 3 = Treasure
+    }
+
+    function playerRolls(uint256 queueID, uint256 playerID)
+        internal
+        view
+        returns (uint256[3] memory rolls)
+    {
+        uint8[3] memory playerStats = QUEUE.getStatsAtSubmission(
+            queueID,
+            playerID
+        );
+        rolls[0] = attributeRoll(
+            playerStats[0],
+            queueID,
+            playerID * block.timestamp
+        );
+        rolls[1] = attributeRoll(
+            playerStats[1],
+            queueID,
+            playerID * block.timestamp
+        );
+        rolls[2] = attributeRoll(
+            playerStats[2],
+            queueID,
+            playerID * block.timestamp
+        );
+    }
+
+    function rest(uint256 queueID, uint256 playerID)
+        internal
+        view
+        returns (int8[3] memory stats)
+    {
+        string memory statToRest = QUEUE.getSubmissionOptions(
+            queueID,
+            playerID
+        )[0];
+        if (stringsMatch(statToRest, "Movement")) {
+            stats[0] = 1;
+        } else if (stringsMatch(statToRest, "Agility")) {
+            stats[1] = 1;
+        } else if (stringsMatch(statToRest, "Dexterity")) {
+            stats[2] = 1;
+        }
     }
 
     function drawCard(
@@ -659,26 +746,7 @@ contract HexplorationGameplay is
     {
         // get randomness from queue  QUEUE.randomness(queueID)
         // outputs should match up with what's returned from deck draw
-        uint8[3] memory playerStats = QUEUE.getStatsAtSubmission(
-            queueID,
-            playerID
-        );
-        uint256[3] memory rolls;
-        rolls[0] = attributeRoll(
-            playerStats[0],
-            queueID,
-            playerID * playerStats[0] * 10000
-        );
-        rolls[1] = attributeRoll(
-            playerStats[1],
-            queueID,
-            playerID * playerStats[1] * 10000
-        );
-        rolls[2] = attributeRoll(
-            playerStats[2],
-            queueID,
-            playerID * playerStats[2] * 10000
-        );
+
         if (cardType == 1) {
             // draw from event deck
             (
@@ -690,7 +758,10 @@ contract HexplorationGameplay is
                 itemTypeGain,
                 handLoss,
                 outcome
-            ) = EVENT_DECK.drawCard(QUEUE.randomness(queueID), rolls);
+            ) = EVENT_DECK.drawCard(
+                QUEUE.randomness(queueID),
+                playerRolls(queueID, playerID)
+            );
         } else if (cardType == 2) {
             // draw from ambush deck
             (
@@ -702,7 +773,10 @@ contract HexplorationGameplay is
                 itemTypeGain,
                 handLoss,
                 outcome
-            ) = AMBUSH_DECK.drawCard(QUEUE.randomness(queueID), rolls);
+            ) = AMBUSH_DECK.drawCard(
+                QUEUE.randomness(queueID),
+                playerRolls(queueID, playerID)
+            );
         } else {
             // draw from treasure deck
             (
@@ -714,7 +788,10 @@ contract HexplorationGameplay is
                 itemTypeGain,
                 handLoss,
                 outcome
-            ) = TREASURE_DECK.drawCard(QUEUE.randomness(queueID), rolls);
+            ) = TREASURE_DECK.drawCard(
+                QUEUE.randomness(queueID),
+                playerRolls(queueID, playerID)
+            );
         }
     }
 

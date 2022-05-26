@@ -13,6 +13,18 @@ contract HexplorationQueue is AccessControlEnumerable {
     Counters.Counter internal QUEUE_ID;
     CharacterCard internal CHARACTER_CARD;
 
+    event ProcessingPhaseChange(
+        uint256 indexed gameID,
+        uint256 timeStamp,
+        ProcessingPhase newPhase
+    );
+
+    event GamePhaseChange(
+        uint256 indexed gameID,
+        uint256 timeStamp,
+        string newPhase
+    );
+
     enum ProcessingPhase {
         Start,
         Submission,
@@ -176,6 +188,7 @@ contract HexplorationQueue is AccessControlEnumerable {
         onlyRole(GAMEPLAY_ROLE)
     {
         currentPhase[_queueID] = phase;
+        emit ProcessingPhaseChange(game[_queueID], block.timestamp, phase);
     }
 
     function setRandomNumber(uint256 randomNumber, uint256 _queueID)
