@@ -10,21 +10,22 @@ module.exports = {
       provider: () => {
         return new HDWalletProvider({
           privateKeys: [private_key_ganache],
-          providerOrUrl: "http://127.0.0.1:7545"
+          providerOrUrl: "http://127.0.0.1:7545",
         });
       },
       port: 7545,
-      network_id: "*"
+      network_id: "*",
+      networkCheckTimeout: 1000000,
     },
     mumbai: {
       provider: () => {
         return new HDWalletProvider({
           privateKeys: [private_key_test],
-          providerOrUrl: mumbai_url
+          providerOrUrl: mumbai_url,
         });
       },
-      network_id: "80001"
-    }
+      network_id: "80001",
+    },
   },
 
   // Set default mocha options here, use special reporters etc.
@@ -41,13 +42,13 @@ module.exports = {
         // See the solidity docs for advice about optimization and evmVersion
         optimizer: {
           enabled: true,
-          runs: 100
+          runs: 100,
         },
-        evmVersion: "byzantium"
-      }
-    }
+        evmVersion: "byzantium",
+      },
+    },
   },
-  plugins: ["truffle-contract-size"]
+  plugins: ["truffle-contract-size"],
 
   // Truffle DB is currently disabled by default; to enable it, change enabled:
   // false to enabled: true. The default storage location can also be

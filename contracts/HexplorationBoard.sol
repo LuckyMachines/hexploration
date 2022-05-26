@@ -140,4 +140,39 @@ contract HexplorationBoard is HexGrid {
             enableZone(zonePath[i], tiles[i], gameID);
         }
     }
+
+    function openGames(address gameRegistryAddress)
+        public
+        view
+        returns (uint256[] memory)
+    {
+        uint256[] memory allGames = GameRegistry(gameRegistryAddress)
+            .allGames();
+        uint256 openGamesCount = 0;
+        for (uint256 i = 0; i < allGames.length; i++) {
+            uint256 gameID = allGames[i];
+
+            if (
+                PLAYER_REGISTRY.totalRegistrations(gameID) <
+                PLAYER_REGISTRY.registrationLimit(gameID) &&
+                !PLAYER_REGISTRY.registrationLocked(gameID)
+            ) {
+                openGamesCount++;
+            }
+        }
+        uint256 position = 0;
+        uint256[] memory availableGames = new uint256[](openGamesCount);
+        for (uint256 i = 0; i < allGames.length; i++) {
+            uint256 gameID = allGames[i];
+            if (
+                PLAYER_REGISTRY.totalRegistrations(gameID) <
+                PLAYER_REGISTRY.registrationLimit(gameID) &&
+                !PLAYER_REGISTRY.registrationLocked(gameID)
+            ) {
+                availableGames[position] = allGames[i];
+                position++;
+            }
+        }
+        return availableGames;
+    }
 }

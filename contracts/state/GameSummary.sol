@@ -374,7 +374,13 @@ library GameSummary {
         // currentActiveAction
     }
 
-    function getAvailableGameIDs() public view returns (uint256[] memory) {
+    function getAvailableGameIDs(
+        address gameBoardAddress,
+        address gameRegistryAddress
+    ) public view returns (uint256[] memory) {
         // TODO: return available game IDs
+        // GameRegistry(gameRegistryAddress)
+        return
+            HexplorationBoard(gameBoardAddress).openGames(gameRegistryAddress);
     }
 }
