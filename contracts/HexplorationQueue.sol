@@ -30,12 +30,6 @@ contract HexplorationQueue is AccessControlEnumerable, VRFConsumerBaseV2 {
         ProcessingPhase newPhase
     );
 
-    event GamePhaseChange(
-        uint256 indexed gameID,
-        uint256 timeStamp,
-        string newPhase
-    );
-
     enum ProcessingPhase {
         Start,
         Submission,

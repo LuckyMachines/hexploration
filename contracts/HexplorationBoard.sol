@@ -164,8 +164,7 @@ contract HexplorationBoard is HexGrid {
         for (uint256 i = 0; i < allGames.length; i++) {
             uint256 gameID = allGames[i];
             if (
-                PLAYER_REGISTRY.totalRegistrations(gameID) <
-                PLAYER_REGISTRY.registrationLimit(gameID) &&
+                PLAYER_REGISTRY.totalRegistrations(gameID) < 5 &&
                 !PLAYER_REGISTRY.registrationLocked(gameID)
             ) {
                 availableGames[position] = allGames[i];
