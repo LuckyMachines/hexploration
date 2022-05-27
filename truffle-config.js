@@ -3,6 +3,7 @@ require("dotenv").config();
 const private_key_test = process.env.PRIVATE_KEY_TEST;
 const private_key_ganache = process.env.PRIVATE_KEY_GANACHE;
 const mumbai_url = process.env.RPC_URL_MUMBAI;
+const binance_test_url = process.env.RPC_URL_BINANCE_TEST;
 
 module.exports = {
   networks: {
@@ -25,6 +26,15 @@ module.exports = {
         });
       },
       network_id: "80001",
+    },
+    binance_test: {
+      provider: () => {
+        return new HDWalletProvider({
+          privateKeys: [private_key_test],
+          providerOrUrl: binance_test_url,
+        });
+      },
+      network_id: "97",
     },
   },
 
