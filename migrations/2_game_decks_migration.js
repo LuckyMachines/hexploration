@@ -36,8 +36,8 @@ module.exports = async (deployer, network, [defaultAccount]) => {
 
   if (network.startsWith("ganache"))
     console.log(`
-  _AMBUSH_DECK: "${AmbushDeck.address}",
-  _EVENT_DECK: "${EventDeck.address}",
-  _LAND_DECK: "${LandDeck.address}",
-  _TREASURE_DECK: "${TreasureDeck.address}"`);
+  GANACHE_AMBUSH_DECK: "${AmbushDeck.address}",
+  GANACHE_EVENT_DECK: "${EventDeck.address}",
+  GANACHE_LAND_DECK: "${LandDeck.address}",
+  GANACHE_TREASURE_DECK: "${TreasureDeck.address}"`);
 };

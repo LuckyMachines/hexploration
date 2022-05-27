@@ -20,8 +20,22 @@ const addresses = require("./addresses.js");
 
 module.exports = async (deployer, network, [defaultAccount]) => {
   //TODO: set for all chains
-  const BOARD_ADDRESS = addresses.GANACHE_HEXPLORATION_BOARD;
-  const CONTROLLER_ADDRESS = addresses.GANACHE_HEXPLORATION_CONTROLLER;
+  let BOARD_ADDRESS;
+  let CONTROLLER_ADDRESS;
+
+  if (network.startsWith("ganache")) {
+    CONTROLLER_ADDRESS = addresses.GANACHE_HEXPLORATION_CONTROLLER;
+    BOARD_ADDRESS = addresses.GANACHE_HEXPLORATION_BOARD;
+  } else if (network.startsWith("binance_test")) {
+    CONTROLLER_ADDRESS = addresses.BINANCE_TEST_HEXPLORATION_CONTROLLER;
+    BOARD_ADDRESS = addresses.BINANCE_TEST_HEXPLORATION_BOARD;
+  } else if (network.startsWith("mumbai")) {
+    CONTROLLER_ADDRESS = addresses.MUMBAI_HEXPLORATION_CONTROLLER;
+    BOARD_ADDRESS = addresses.MUMBAI_HEXPLORATION_BOARD;
+  } else {
+    BOARD_ADDRESS = "0x0000000000000000000000000000000000000000";
+    CONTROLLER_ADDRESS = "0x0000000000000000000000000000000000000000";
+  }
   //console.log("Board address:", BOARD_ADDRESS);
   try {
     await deployer.deploy(
