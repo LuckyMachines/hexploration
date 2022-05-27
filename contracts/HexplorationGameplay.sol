@@ -60,7 +60,7 @@ contract HexplorationGameplay is
         string[] activeActionOptions;
         uint256[] activeActionResults; // 0 = None, 1 = Event, 2 = Ambush, 3 = Treasure
         string[2][] activeActionResultCard; // Card for Event / ambush / treasure , outcome e.g. ["Dance with locals", "You're amazing!"]
-        string[3][] activeActionInventoryChange; // [item loss, item gain, hand loss]
+        string[3][] activeActionInventoryChanges; // [item loss, item gain, hand loss]
         uint256 randomness;
     }
 
@@ -463,7 +463,7 @@ contract HexplorationGameplay is
         playUpdates.activeActionResultCard = new string[2][](
             summary.activeActions
         );
-        playUpdates.activeActionInventoryChange = new string[3][](
+        playUpdates.activeActionInventoryChanges = new string[3][](
             summary.activeActions
         );
 
@@ -512,9 +512,9 @@ contract HexplorationGameplay is
                 (
                     playUpdates.activeActionResultCard[position][0],
                     playUpdates.playerStatUpdates[playerStatPosition],
-                    playUpdates.activeActionInventoryChange[position][0],
-                    playUpdates.activeActionInventoryChange[position][1],
-                    playUpdates.activeActionInventoryChange[position][2],
+                    playUpdates.activeActionInventoryChanges[position][0],
+                    playUpdates.activeActionInventoryChanges[position][1],
+                    playUpdates.activeActionInventoryChanges[position][2],
                     playUpdates.activeActionResultCard[position][1]
                 ) = drawCard(
                     playUpdates.activeActionResults[position],

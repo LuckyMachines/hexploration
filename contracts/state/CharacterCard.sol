@@ -158,4 +158,20 @@ contract CharacterCard is AccessControlEnumerable {
     ) external onlyRole(VERIFIED_CONTROLLER_ROLE) {
         action[gameID][playerID] = _action;
     }
+
+    function setActionResults(
+        string memory actionCardType,
+        string memory actionCardDrawn,
+        string memory actionCardResult,
+        string[3] memory actionCardInventoryChanges,
+        uint256 gameID,
+        uint256 playerID
+    ) external onlyRole(VERIFIED_CONTROLLER_ROLE) {
+        activeActionCardType[gameID][playerID] = actionCardType;
+        activeActionCardDrawn[gameID][playerID] = actionCardDrawn;
+        activeActionCardResult[gameID][playerID] = actionCardResult;
+        activeActionCardInventoryChanges[gameID][
+            playerID
+        ] = actionCardInventoryChanges;
+    }
 }

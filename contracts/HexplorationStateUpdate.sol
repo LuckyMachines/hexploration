@@ -67,16 +67,15 @@ contract HexplorationStateUpdate is AccessControlEnumerable {
     ) public onlyRole(VERIFIED_CONTROLLER_ROLE) {
         // go through values and post everything, transfer all the tokens, and pray
         // use gamestate update contract to post everything
-        updatePlayerPositions(updates, gameID); //Done
-        updatePlayerStats(updates, gameID); // Done
-        updatePlayerHands(updates, gameID); // Done
-        transferPlayerItems(updates, gameID); // Done
-        transferZoneItems(updates, gameID); // Done
-        applyActivityEffects(updates, gameID); // Todo
+        updatePlayerPositions(updates, gameID);
+        updatePlayerStats(updates, gameID);
+        updatePlayerHands(updates, gameID);
+        transferPlayerItems(updates, gameID);
+        transferZoneItems(updates, gameID);
+        applyActivityEffects(updates, gameID);
     }
 
     /*
-
     struct PlayUpdates {
         uint256[] playerPositionIDs;
         uint256[] spacesToMove;
@@ -183,12 +182,27 @@ contract HexplorationStateUpdate is AccessControlEnumerable {
         HexplorationGameplay.PlayUpdates memory updates,
         uint256 gameID
     ) internal {
-        // If dig, set card outcomes on character card
-        // if day phase event or environment, store somewhere common for gamesummary...
-        // stats effects of card will already b applied
-        // could b zone tfrs
-        // could be player tfrs
-        // could lose hand item
+        for (uint256 i = 0; i < updates.activeActions.length; i++) {
+            uint256 cardTypeID = updates.activeActionResults[i];
+            string memory cardType;
+            if (cardTypeID == 1) {
+                cardType = "Event";
+            } else if (cardTypeID == 2) {
+                cardType = "Ambush";
+            } else if (cardTypeID == 3) {
+                cardType = "Treasure";
+            } else {
+                cardType = "None";
+            }
+            CHARACTER_CARD.setActionResults(
+                cardType,
+                updates.activeActionResultCard[i][0],
+                updates.activeActionResultCard[i][1],
+                updates.activeActionInventoryChanges[i],
+                gameID,
+                updates.playerActiveActionIDs[i]
+            );
+        }
     }
 
     function transferPlayerItems(
