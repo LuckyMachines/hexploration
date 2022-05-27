@@ -16,7 +16,7 @@ module.exports = {
       },
       port: 7545,
       network_id: "*",
-      networkCheckTimeout: 1000000,
+      networkCheckTimeout: 2000000,
     },
     mumbai: {
       provider: () => {
