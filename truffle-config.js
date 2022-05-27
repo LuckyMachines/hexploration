@@ -26,6 +26,9 @@ module.exports = {
         });
       },
       network_id: "80001",
+      maxPriorityFeePerGas: "2999999991",
+      maxFeePerGas: "3000000000",
+      networkCheckTimeout: 2000000,
     },
     binance_test: {
       provider: () => {
@@ -35,6 +38,7 @@ module.exports = {
         });
       },
       network_id: "97",
+      networkCheckTimeout: 2000000,
     },
   },
 

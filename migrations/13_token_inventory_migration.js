@@ -31,56 +31,6 @@ module.exports = async (deployer, network, [defaultAccount]) => {
       "0x0000000000000000000000000000000000000000";
   }
 
-  console.log("Controller address set to:", HEXPLORATION_CONTROLLER_ADDRESS);
-  console.log("Deploying Day Night Tokens");
-  try {
-    await deployer.deploy(DayNightTokens, HEXPLORATION_CONTROLLER_ADDRESS);
-  } catch (err) {
-    console.error(err);
-  }
-
-  console.log("Deploying Disaster Tokens");
-  try {
-    await deployer.deploy(DisasterTokens, HEXPLORATION_CONTROLLER_ADDRESS);
-  } catch (err) {
-    console.error(err);
-  }
-
-  console.log("Deploying Enemy Tokens");
-  try {
-    await deployer.deploy(EnemyTokens, HEXPLORATION_CONTROLLER_ADDRESS);
-  } catch (err) {
-    console.error(err);
-  }
-
-  console.log("Deploying Item Tokens");
-  try {
-    await deployer.deploy(ItemTokens, HEXPLORATION_CONTROLLER_ADDRESS);
-  } catch (err) {
-    console.error(err);
-  }
-
-  console.log("Deploying Player Status Tokens");
-  try {
-    await deployer.deploy(PlayerStatusTokens, HEXPLORATION_CONTROLLER_ADDRESS);
-  } catch (err) {
-    console.error(err);
-  }
-
-  console.log("Deploying Artifact Tokens");
-  try {
-    await deployer.deploy(ArtifactTokens, HEXPLORATION_CONTROLLER_ADDRESS);
-  } catch (err) {
-    console.error(err);
-  }
-
-  console.log("Deploying Relic Tokens");
-  try {
-    await deployer.deploy(RelicTokens, HEXPLORATION_CONTROLLER_ADDRESS);
-  } catch (err) {
-    console.error(err);
-  }
-
   console.log("Deploying Token Inventory");
   try {
     await deployer.deploy(TokenInventory);
@@ -110,24 +60,6 @@ module.exports = async (deployer, network, [defaultAccount]) => {
   } catch (err) {
     console.log(err.message);
   }
-
-  // TODO: add to board instead
-  // console.log("Adding tokens to controller");
-  // try {
-  //   let hexController = await Controller.at(HEXPLORATION_CONTROLLER_ADDRESS);
-  //   await hexController.setTokenAddresses(
-  //     DayNightTokens.address,
-  //     DisasterTokens.address,
-  //     EnemyTokens.address,
-  //     ItemTokens.address,
-  //     PlayerStatusTokens.address,
-  //     ArtifactTokens.address,
-  //     RelicTokens.address
-  //   );
-  //   console.log("tokens added to contoller:", HEXPLORATION_CONTROLLER_ADDRESS);
-  // } catch (err) {
-  //   console.log(err.message);
-  // }
 
   if (network.startsWith("ganache")) {
     console.log(`

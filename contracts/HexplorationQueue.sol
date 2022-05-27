@@ -264,24 +264,26 @@ contract HexplorationQueue is AccessControlEnumerable, VRFConsumerBaseV2 {
     }
 
     function requestRandomWords(uint256 _queueID) internal {
-        /*
         uint256 reqID = COORDINATOR.requestRandomWords(
-          keyHash,
-          s_subscriptionId,
-          requestConfirmations,
-          callbackGasLimit,
-          numWords
+            keyHash,
+            s_subscriptionId,
+            requestConfirmations,
+            callbackGasLimit,
+            numWords
         );
-        */
+
+        randomnessRequestQueueID[reqID] = _queueID;
 
         // Manual testing below, comment out uncomment VRF code above to enable chainlink vrf for production
         //set faux id + randomness
+        /*
         uint256 reqID = _queueID;
         randomnessRequestQueueID[reqID] = _queueID;
         uint256 random = uint256(keccak256(abi.encode(block.timestamp, reqID)));
         uint256[] memory randomWords = new uint256[](1);
         randomWords[0] = random;
         fulfillRandomWords(reqID, randomWords);
+        */
     }
 
     function fulfillRandomWords(uint256 requestID, uint256[] memory randomWords)
@@ -290,20 +292,12 @@ contract HexplorationQueue is AccessControlEnumerable, VRFConsumerBaseV2 {
     {
         uint256 qID = randomnessRequestQueueID[requestID];
         randomness[qID] = randomWords[0];
-        // TODO:
-        // Call gameplay.processPlayerActions(uint256 queueID)
     }
 
     function _requestGameQueue(uint256 gameID, uint256 _totalPlayers)
         internal
         returns (uint256)
     {
-        /*
-    mapping(uint256 => uint256) public queueID; // mapping from game ID to it's queue, updates to 0 when finished
-    mapping(uint256 => uint256) public game; // mapping from queue ID to it's game ID
-    mapping(uint256 => uint256[]) public players; // all players with moves to process
-    mapping(uint256 => uint16) public totalPlayers;
-        */
         require(queueID[gameID] == 0, "queue already set");
         uint256 newQueueID = QUEUE_ID.current();
         game[newQueueID] = gameID;

@@ -38,17 +38,13 @@ module.exports = async (deployer, network, [defaultAccount]) => {
   }
   //console.log("Board address:", BOARD_ADDRESS);
   try {
-    await deployer.deploy(
-      GameStateUpdate,
-      BOARD_ADDRESS,
-      CharacterCard.address
-    );
     const hexBoard = await GameBoard.at(BOARD_ADDRESS);
     const hexStateUpdate = await GameStateUpdate.deployed();
     //const hexQueue = await Queue.deployed();
     const hexGameplay = await Gameplay.deployed();
     const hexController = await GameController.at(CONTROLLER_ADDRESS);
     const cc = await CharacterCard.deployed();
+    /*
     console.log("Adding game controller as VC of game state update...");
     await hexStateUpdate.addVerifiedController(CONTROLLER_ADDRESS);
 
@@ -57,7 +53,7 @@ module.exports = async (deployer, network, [defaultAccount]) => {
 
     console.log("Adding game state update as VC of game board...");
     await hexBoard.addVerifiedController(GameStateUpdate.address);
-
+    
     console.log("Adding game state update as VC of character card...");
     await cc.addVerifiedController(GameStateUpdate.address);
 
@@ -66,27 +62,33 @@ module.exports = async (deployer, network, [defaultAccount]) => {
 
     console.log("Adding game state update address to gameplay...");
     await hexGameplay.setGameStateUpdate(GameStateUpdate.address);
+    */
 
     console.log("Setting gsu as controller for all tokens...");
+    /*
+    console.log("Adding artifact");
     const artifactTokens = await Artifact.deployed();
     await artifactTokens.addController(GameStateUpdate.address);
+    console.log("Adding ");
     const dayNightTokens = await DayNight.deployed();
     await dayNightTokens.addController(GameStateUpdate.address);
+    console.log("Adding ");
     const disasterTokens = await Disaster.deployed();
-    await disasterTokens.addController(GameStateUpdate.address);
+    await disasterTokens.addController(GameStateUpdate.address);*/
+    console.log("Adding enemy");
     const enemyTokens = await Enemy.deployed();
     await enemyTokens.addController(GameStateUpdate.address);
+    console.log("Adding item");
     const itemTokens = await Item.deployed();
     await itemTokens.addController(GameStateUpdate.address);
+    console.log("Adding player status");
     const playerStatusTokens = await PlayerStatus.deployed();
     await playerStatusTokens.addController(GameStateUpdate.address);
+    console.log("Adding relic");
     const relicTokens = await Relic.deployed();
     await relicTokens.addController(GameStateUpdate.address);
 
-    console.log(
-      "Hexploration game state update deployed to:",
-      GameStateUpdate.address
-    );
+    console.log("Hexploration connections set.");
   } catch (err) {
     console.error(err);
   }
