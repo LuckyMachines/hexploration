@@ -76,9 +76,15 @@ contract CharacterCard is AccessControlEnumerable {
         uint256 playerID
     ) external onlyRole(VERIFIED_CONTROLLER_ROLE) {
         // set all stats at once [movement, agility, dexterity]
-        movement[gameID][playerID] = stats[0];
-        agility[gameID][playerID] = stats[1];
-        dexterity[gameID][playerID] = stats[2];
+        movement[gameID][playerID] = stats[0] > MAX_MOVEMENT
+            ? MAX_MOVEMENT
+            : stats[0];
+        agility[gameID][playerID] = stats[1] > MAX_AGILITY
+            ? MAX_AGILITY
+            : stats[1];
+        dexterity[gameID][playerID] = stats[2] > MAX_DEXTERITY
+            ? MAX_DEXTERITY
+            : stats[2];
     }
 
     function setMovement(

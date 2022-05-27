@@ -67,11 +67,12 @@ contract HexplorationStateUpdate is AccessControlEnumerable {
     ) public onlyRole(VERIFIED_CONTROLLER_ROLE) {
         // go through values and post everything, transfer all the tokens, and pray
         // use gamestate update contract to post everything
-        updatePlayerPositions(updates, gameID);
-        updatePlayerStats(updates, gameID);
-        updatePlayerHands(updates, gameID);
-        transferPlayerItems(updates, gameID);
-        transferZoneItems(updates, gameID);
+        updatePlayerPositions(updates, gameID); //Done
+        updatePlayerStats(updates, gameID); // Doing
+        updatePlayerHands(updates, gameID); // Todo
+        transferPlayerItems(updates, gameID); // Todo
+        transferZoneItems(updates, gameID); // Todo
+        applyActivityEffects(updates, gameID); // Todo
     }
 
     /*
@@ -88,7 +89,7 @@ contract HexplorationStateUpdate is AccessControlEnumerable {
         uint256[] playerTransfersFrom;
         uint256[] playerTransferQtys;
         uint256[] playerStatUpdateIDs;
-        uint256[3][] playerStatUpdates;
+        int8[3][] playerStatUpdates; // amount to adjust, not final value
         uint256[] playerActiveActionIDs;
         string gamePhase;
         string[7][] playerMovementOptions; // TODO: set this to max # of spaces possible
@@ -97,6 +98,10 @@ contract HexplorationStateUpdate is AccessControlEnumerable {
         string[] playerTransferItemTypes;
         string[] activeActions;
         string[] activeActionOptions;
+        uint256[] activeActionResults; // 0 = None, 1 = Event, 2 = Ambush, 3 = Treasure
+        string[2][] activeActionResultCard; // Card for Event / ambush / treasure , outcome e.g. ["Dance with locals", "You're amazing!"]
+        string[3][] activeActionInventoryChange; // [item loss, item gain, hand loss]
+        uint256 randomness;
     }
     */
 
@@ -122,7 +127,35 @@ contract HexplorationStateUpdate is AccessControlEnumerable {
     function updatePlayerStats(
         HexplorationGameplay.PlayUpdates memory updates,
         uint256 gameID
-    ) internal {}
+    ) internal {
+        for (uint256 i = 0; i < updates.playerStatUpdateIDs.length; i++) {
+            uint256 playerID = updates.playerStatUpdateIDs[i];
+            uint8[3] memory currentStats = CHARACTER_CARD.getStats(
+                gameID,
+                playerID
+            );
+            uint8[3] memory stats;
+            stats[0] = updates.playerStatUpdates[i][0] < 0
+                ? subToZero(
+                    currentStats[0],
+                    absoluteValue(updates.playerStatUpdates[i][0])
+                )
+                : currentStats[0] + uint8(updates.playerStatUpdates[i][0]);
+            stats[1] = updates.playerStatUpdates[i][1] < 0
+                ? subToZero(
+                    currentStats[1],
+                    absoluteValue(updates.playerStatUpdates[i][1])
+                )
+                : currentStats[1] + uint8(updates.playerStatUpdates[i][1]);
+            stats[2] = updates.playerStatUpdates[i][2] < 0
+                ? subToZero(
+                    currentStats[2],
+                    absoluteValue(updates.playerStatUpdates[i][2])
+                )
+                : currentStats[2] + uint8(updates.playerStatUpdates[i][2]);
+            CHARACTER_CARD.setStats(stats, gameID, playerID);
+        }
+    }
 
     function updatePlayerHands(
         HexplorationGameplay.PlayUpdates memory updates,
@@ -144,6 +177,14 @@ contract HexplorationStateUpdate is AccessControlEnumerable {
                 );
             }
         }
+    }
+
+    function applyActivityEffects(
+        HexplorationGameplay.PlayUpdates memory updates,
+        uint256 gameID
+    ) internal {
+        // If dig, set card outcomes on character card
+        // if day phase event or environment, store somewhere common for gamesummary...
     }
 
     function transferPlayerItems(
@@ -178,5 +219,19 @@ contract HexplorationStateUpdate is AccessControlEnumerable {
         }
 
         GAME_BOARD.moveThroughPath(zonePath, playerID, gameID, tiles);
+    }
+
+    // Utility
+    // returns a - b or 0 if negative;
+    function subToZero(uint8 a, uint8 b)
+        internal
+        pure
+        returns (uint8 difference)
+    {
+        difference = a > b ? a - b : 0;
+    }
+
+    function absoluteValue(int8 x) internal pure returns (uint8 absX) {
+        absX = x >= 0 ? uint8(x) : uint8(-x);
     }
 }

@@ -402,8 +402,6 @@ library GameSummary {
         address gameBoardAddress,
         address gameRegistryAddress
     ) public view returns (uint256[] memory) {
-        // TODO: return available game IDs
-        // GameRegistry(gameRegistryAddress)
         return
             HexplorationBoard(gameBoardAddress).openGames(gameRegistryAddress);
     }

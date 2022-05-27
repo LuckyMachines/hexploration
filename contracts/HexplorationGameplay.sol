@@ -848,19 +848,6 @@ contract HexplorationGameplay is
         return
             keccak256(abi.encodePacked(s1)) == keccak256(abi.encodePacked(s2));
     }
-
-    // returns a - b or 0 if negative;
-    function subToZero(uint256 a, uint256 b)
-        internal
-        pure
-        returns (uint256 difference)
-    {
-        difference = a > b ? a - b : 0;
-    }
-
-    function absoluteValue(int256 x) internal pure returns (uint256 absX) {
-        absX = x >= 0 ? uint256(x) : uint256(-x);
-    }
 }
 
 /*
