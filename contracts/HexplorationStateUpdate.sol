@@ -68,10 +68,10 @@ contract HexplorationStateUpdate is AccessControlEnumerable {
         // go through values and post everything, transfer all the tokens, and pray
         // use gamestate update contract to post everything
         updatePlayerPositions(updates, gameID); //Done
-        updatePlayerStats(updates, gameID); // Doing
-        updatePlayerHands(updates, gameID); // Todo
-        transferPlayerItems(updates, gameID); // Todo
-        transferZoneItems(updates, gameID); // Todo
+        updatePlayerStats(updates, gameID); // Done
+        updatePlayerHands(updates, gameID); // Done
+        transferPlayerItems(updates, gameID); // Done
+        transferZoneItems(updates, gameID); // Done
         applyActivityEffects(updates, gameID); // Todo
     }
 
@@ -185,17 +185,84 @@ contract HexplorationStateUpdate is AccessControlEnumerable {
     ) internal {
         // If dig, set card outcomes on character card
         // if day phase event or environment, store somewhere common for gamesummary...
+        // stats effects of card will already b applied
+        // could b zone tfrs
+        // could be player tfrs
+        // could lose hand item
     }
 
     function transferPlayerItems(
         HexplorationGameplay.PlayUpdates memory updates,
         uint256 gameID
-    ) internal {}
+    ) internal {
+        TokenInventory ti = TokenInventory(GAME_BOARD.tokenInventory());
+        for (uint256 i = 0; i < updates.playerTransfersTo.length; i++) {
+            ti.ITEM_TOKEN().transfer(
+                updates.playerTransferItemTypes[i],
+                gameID,
+                updates.playerTransfersFrom[i],
+                updates.playerTransfersTo[i],
+                updates.playerTransferQtys[i]
+            );
+        }
+    }
 
     function transferZoneItems(
         HexplorationGameplay.PlayUpdates memory updates,
         uint256 gameID
-    ) internal {}
+    ) internal {
+        // these are all current zone to player or player to current zone
+        // we don't cover the zone to zone or player to other zone transfer cases yet
+        TokenInventory ti = TokenInventory(GAME_BOARD.tokenInventory());
+        for (uint256 i = 0; i < updates.zoneTransfersTo.length; i++) {
+            // If to == current zone, from = playerID
+            // if from == current zone, to = playerID
+            uint256 toID = updates.zoneTransfersTo[i] == 10000000000
+                ? currentZoneIndex(gameID, updates.zoneTransfersFrom[i])
+                : updates.zoneTransfersTo[i];
+            uint256 fromID = updates.zoneTransfersFrom[i] == 10000000000
+                ? currentZoneIndex(gameID, updates.zoneTransfersTo[i])
+                : updates.zoneTransfersFrom[i];
+            uint256 tferQty = updates.zoneTransferQtys[i];
+            string memory tferItem = updates.zoneTransferItemTypes[i];
+            if (updates.zoneTransfersTo[i] == 10000000000) {
+                ti.ITEM_TOKEN().transferToZone(
+                    tferItem,
+                    gameID,
+                    fromID,
+                    toID,
+                    tferQty
+                );
+            } else if (updates.zoneTransfersFrom[i] == 10000000000) {
+                ti.ITEM_TOKEN().transferFromZone(
+                    tferItem,
+                    gameID,
+                    fromID,
+                    toID,
+                    tferQty
+                );
+            }
+        }
+    }
+
+    function currentZoneIndex(uint256 gameID, uint256 playerID)
+        internal
+        view
+        returns (uint256 index)
+    {
+        string memory zoneAlias = GAME_BOARD.currentPlayZone(gameID, playerID);
+        string[] memory allZones = GAME_BOARD.getZoneAliases();
+        index = 1111111111111;
+        for (uint256 i = 0; i < allZones.length; i++) {
+            if (
+                keccak256(abi.encodePacked(zoneAlias)) ==
+                keccak256(abi.encodePacked(allZones[i]))
+            ) {
+                index = i;
+                break;
+            }
+        }
+    }
 
     function moveThroughPath(
         string[] memory zonePath,
