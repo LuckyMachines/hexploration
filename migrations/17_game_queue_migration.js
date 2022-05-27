@@ -52,8 +52,8 @@ module.exports = async (deployer, network, [defaultAccount]) => {
       Queue,
       Gameplay.address,
       CharacterCard.address,
-      VRF_COORDINATOR_ADDRESS,
       VRF_SUBSCRIPTION_ID,
+      VRF_COORDINATOR_ADDRESS,
       VRF_KEY_HASH
     );
 

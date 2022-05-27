@@ -18,9 +18,14 @@ contract HexplorationQueue is AccessControlEnumerable, VRFConsumerBaseV2 {
     // VRF
     VRFCoordinatorV2Interface COORDINATOR;
     uint64 s_subscriptionId;
-    address vrfCoordinator;
-    bytes32 keyHash;
-    uint32 callbackGasLimit = 5000000;
+    // address vrfCoordinator = 0x6A2AAd07396B36Fe02a22b33cf443582f682c82f; // binance testnet
+    // bytes32 keyHash =
+    //     0xd4bb89654db74673a187bd804519e65e3f71a52bc55f11da7601a13dcf505314; // binance testnet
+    //address vrfCoordinator = 0x7a1BaC17Ccc5b313516C5E16fb24f7659aA5ebed; // mumbai
+    //bytes32 keyHash =
+    //    0x4b09e658ed251bcafeebbc69400383d49f344ace09b9576fe248bb02c003fe9f; // mumbai
+    bytes32 s_keyHash;
+    uint32 callbackGasLimit = 100000;
     uint16 requestConfirmations = 3;
     uint32 numWords = 1;
 
@@ -88,17 +93,17 @@ contract HexplorationQueue is AccessControlEnumerable, VRFConsumerBaseV2 {
     constructor(
         address gameplayAddress,
         address characterCard,
+        uint64 _vrfSubscriptionID,
         address _vrfCoordinator,
-        uint64 _subscriptionId,
         bytes32 _keyHash
     ) VRFConsumerBaseV2(_vrfCoordinator) {
         _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
         _setupRole(GAMEPLAY_ROLE, gameplayAddress);
         QUEUE_ID.increment(); // start at 1
         CHARACTER_CARD = CharacterCard(characterCard);
+        s_subscriptionId = _vrfSubscriptionID;
+        s_keyHash = _keyHash;
         COORDINATOR = VRFCoordinatorV2Interface(_vrfCoordinator);
-        s_subscriptionId = _subscriptionId;
-        keyHash = _keyHash;
     }
 
     // Can set multiple VCs, one for manual pushing, one for keeper
@@ -265,7 +270,7 @@ contract HexplorationQueue is AccessControlEnumerable, VRFConsumerBaseV2 {
 
     function requestRandomWords(uint256 _queueID) internal {
         uint256 reqID = COORDINATOR.requestRandomWords(
-            keyHash,
+            s_keyHash,
             s_subscriptionId,
             requestConfirmations,
             callbackGasLimit,
@@ -274,16 +279,15 @@ contract HexplorationQueue is AccessControlEnumerable, VRFConsumerBaseV2 {
 
         randomnessRequestQueueID[reqID] = _queueID;
 
-        // Manual testing below, comment out uncomment VRF code above to enable chainlink vrf for production
+        // testing below, comment out uncomment VRF code above to enable chainlink vrf for production
         //set faux id + randomness
-        /*
-        uint256 reqID = _queueID;
-        randomnessRequestQueueID[reqID] = _queueID;
-        uint256 random = uint256(keccak256(abi.encode(block.timestamp, reqID)));
-        uint256[] memory randomWords = new uint256[](1);
-        randomWords[0] = random;
-        fulfillRandomWords(reqID, randomWords);
-        */
+
+        // uint256 reqID = _queueID;
+        // randomnessRequestQueueID[reqID] = _queueID;
+        // uint256 random = uint256(keccak256(abi.encode(block.timestamp, reqID)));
+        // uint256[] memory randomWords = new uint256[](1);
+        // randomWords[0] = random;
+        // fulfillRandomWords(reqID, randomWords);
     }
 
     function fulfillRandomWords(uint256 requestID, uint256[] memory randomWords)
