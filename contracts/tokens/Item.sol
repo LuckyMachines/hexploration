@@ -5,7 +5,7 @@ import "./GameToken.sol";
 
 contract Item is GameToken {
     constructor(address controllerAddress) GameToken(controllerAddress) {
-        string[] memory tokenTypes = new string[](35);
+        string[] memory tokenTypes = new string[](38);
         tokenTypes[0] = "Small Ammo";
         tokenTypes[1] = "Large Ammo";
         tokenTypes[2] = "Batteries";
@@ -41,6 +41,9 @@ contract Item is GameToken {
         tokenTypes[32] = "Remote Launch and Guidance System";
         tokenTypes[33] = "Teleporter Pack";
         tokenTypes[34] = "Campsite";
+        tokenTypes[35] = "Engraved Tablet";
+        tokenTypes[36] = "Sigil Gem";
+        tokenTypes[37] = "Ancient Tome";
         addTokenTypes(tokenTypes);
     }
 }

@@ -18,29 +18,6 @@ contract HexplorationController is GameController {
 
     HexplorationStateUpdate GAME_STATE;
 
-    // TODO:
-    //
-    // Connect to Chainlink VRF for random seeds when needed
-    // submit move + space choice
-    // use / swap item
-
-    /*
-    Controller can access all game tokens with the following methods:
-
-    function mint(
-        string memory tokenType,
-        uint256 gameID,
-        uint256 quantity
-    )
-
-    function transfer(
-        string memory tokenType,
-        uint256 gameID,
-        uint256 fromID,
-        uint256 toID,
-        uint256 quantity
-    )
-*/
     modifier onlyAdminVC() {
         require(
             hasRole(DEFAULT_ADMIN_ROLE, _msgSender()) ||
@@ -104,38 +81,46 @@ contract HexplorationController is GameController {
         ti.ITEM_TOKEN().mint("On", gameID, 1000);
         ti.ITEM_TOKEN().mint("Off", gameID, 1000);
         ti.ITEM_TOKEN().mint("Rusty Dagger", gameID, 1000);
-        ti.ITEM_TOKEN().mint("Rusty Sword", gameID, 1000);
         ti.ITEM_TOKEN().mint("Rusty Pistol", gameID, 1000);
-        ti.ITEM_TOKEN().mint("Rusty Rifle", gameID, 1000);
         ti.ITEM_TOKEN().mint("Shiny Dagger", gameID, 1000);
+        ti.ITEM_TOKEN().mint("Shiny Pistol", gameID, 1000);
+        ti.ITEM_TOKEN().mint("Laser Dagger", gameID, 1000);
+        ti.ITEM_TOKEN().mint("Laser Pistol", gameID, 1000);
+        ti.ITEM_TOKEN().mint("Power Glove", gameID, 1000);
+        ti.ITEM_TOKEN().mint("Engraved Tablet", gameID, 1000);
+        ti.ITEM_TOKEN().mint("Sigil Gem", gameID, 1000);
+        ti.ITEM_TOKEN().mint("Ancient Tome", gameID, 1000);
+        ti.ITEM_TOKEN().mint("Campsite", gameID, 1000);
+        /*
+        ti.ITEM_TOKEN().mint("Rusty Sword", gameID, 1000);
+        ti.ITEM_TOKEN().mint("Rusty Rifle", gameID, 1000);
         ti.ITEM_TOKEN().mint("Shiny Sword", gameID, 1000);
         ti.ITEM_TOKEN().mint("Shiny Rifle", gameID, 1000);
-        ti.ITEM_TOKEN().mint("Laser Dagger", gameID, 1000);
         ti.ITEM_TOKEN().mint("Laser Sword", gameID, 1000);
-        ti.ITEM_TOKEN().mint("Laser Pistol", gameID, 1000);
         ti.ITEM_TOKEN().mint("Laser Rifle", gameID, 1000);
         ti.ITEM_TOKEN().mint("Glow stick", gameID, 1000);
         ti.ITEM_TOKEN().mint("Flashlight", gameID, 1000);
         ti.ITEM_TOKEN().mint("Flood light", gameID, 1000);
         ti.ITEM_TOKEN().mint("Nightvision Goggles", gameID, 1000);
         ti.ITEM_TOKEN().mint("Personal Shield", gameID, 1000);
-        // add these back, just removing to cut down size for testing
-        // ti.ITEM_TOKEN().mint("Bubble Shield", gameID, 1000);
-        // ti.ITEM_TOKEN().mint("Frag Grenade", gameID, 1000);
-        // ti.ITEM_TOKEN().mint("Fire Grenade", gameID, 1000);
-        // ti.ITEM_TOKEN().mint("Shock Grenade", gameID, 1000);
-        // ti.ITEM_TOKEN().mint("HE Mortar", gameID, 1000);
-        // ti.ITEM_TOKEN().mint("Incendiary Mortar", gameID, 1000);
-        // ti.ITEM_TOKEN().mint("EMP Mortar", gameID, 1000);
-        // ti.ITEM_TOKEN().mint("Power Glove", gameID, 1000);
-        // ti.ITEM_TOKEN().mint("Remote Launch and Guidance System", gameID, 1000);
-        // ti.ITEM_TOKEN().mint("Teleporter Pack", gameID, 1000);
-        ti.ITEM_TOKEN().mint("Campsite", gameID, 1000);
+        ti.ITEM_TOKEN().mint("Bubble Shield", gameID, 1000);
+        ti.ITEM_TOKEN().mint("Frag Grenade", gameID, 1000);
+        ti.ITEM_TOKEN().mint("Fire Grenade", gameID, 1000);
+        ti.ITEM_TOKEN().mint("Shock Grenade", gameID, 1000);
+        ti.ITEM_TOKEN().mint("HE Mortar", gameID, 1000);
+        ti.ITEM_TOKEN().mint("Incendiary Mortar", gameID, 1000);
+        ti.ITEM_TOKEN().mint("EMP Mortar", gameID, 1000);
+        ti.ITEM_TOKEN().mint("Remote Launch and Guidance System", gameID, 1000);
+        ti.ITEM_TOKEN().mint("Teleporter Pack", gameID, 1000);
+        */
         ti.PLAYER_STATUS_TOKEN().mint("Stunned", gameID, 1000);
         ti.PLAYER_STATUS_TOKEN().mint("Burned", gameID, 1000);
+
+        // Duplicate tokens, probably deprecating these?
         ti.ARTIFACT_TOKEN().mint("Engraved Tablet", gameID, 1000);
         ti.ARTIFACT_TOKEN().mint("Sigil Gem", gameID, 1000);
         ti.ARTIFACT_TOKEN().mint("Ancient Tome", gameID, 1000);
+
         ti.RELIC_TOKEN().mint("Relic 1", gameID, 1000);
         ti.RELIC_TOKEN().mint("Relic 2", gameID, 1000);
         ti.RELIC_TOKEN().mint("Relic 3", gameID, 1000);
