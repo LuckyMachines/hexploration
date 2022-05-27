@@ -1,6 +1,4 @@
 const addresses = require("./addresses.js");
-const GAME_BOARD_ADDRESS = addresses.GANACHE_HEXPLORATION_BOARD;
-const VERIFIED_CONTROLLER_ADDRESS = addresses.GANACHE_HEXPLORATION_CONTROLLER;
 
 const CharacterCard = artifacts.require("CharacterCard");
 const ItemToken = artifacts.require("Item");
@@ -9,6 +7,9 @@ const RelicToken = artifacts.require("Relic");
 const GameBoard = artifacts.require("HexplorationBoard");
 
 module.exports = async (deployer, network, [defaultAccount]) => {
+  //TODO: Update for all networks
+  const GAME_BOARD_ADDRESS = addresses.GANACHE_HEXPLORATION_BOARD;
+  const VERIFIED_CONTROLLER_ADDRESS = addresses.GANACHE_HEXPLORATION_CONTROLLER;
   try {
     await deployer.deploy(
       CharacterCard,

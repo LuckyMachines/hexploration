@@ -6,12 +6,23 @@ pragma solidity >=0.7.0 <0.9.0;
 
 import "@openzeppelin/contracts/access/AccessControlEnumerable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
+import "@chainlink/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol";
+import "@chainlink/contracts/src/v0.8/VRFConsumerBaseV2.sol";
 import "./HexplorationStateUpdate.sol";
 
-contract HexplorationQueue is AccessControlEnumerable {
+contract HexplorationQueue is AccessControlEnumerable, VRFConsumerBaseV2 {
     using Counters for Counters.Counter;
     Counters.Counter internal QUEUE_ID;
     CharacterCard internal CHARACTER_CARD;
+
+    // VRF
+    VRFCoordinatorV2Interface COORDINATOR;
+    uint64 s_subscriptionId;
+    address vrfCoordinator;
+    bytes32 keyHash;
+    uint32 callbackGasLimit = 5000000;
+    uint16 requestConfirmations = 3;
+    uint32 numWords = 1;
 
     event ProcessingPhaseChange(
         uint256 indexed gameID,
@@ -80,13 +91,20 @@ contract HexplorationQueue is AccessControlEnumerable {
     // From request ID => queue ID
     mapping(uint256 => uint256) internal randomnessRequestQueueID; // ID set before randomness delivered
 
-    ///////  VRF can kick off processing phase
-
-    constructor(address gameplayAddress, address characterCard) {
+    constructor(
+        address gameplayAddress,
+        address characterCard,
+        address _vrfCoordinator,
+        uint64 _subscriptionId,
+        bytes32 _keyHash
+    ) VRFConsumerBaseV2(_vrfCoordinator) {
         _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
         _setupRole(GAMEPLAY_ROLE, gameplayAddress);
         QUEUE_ID.increment(); // start at 1
         CHARACTER_CARD = CharacterCard(characterCard);
+        COORDINATOR = VRFCoordinatorV2Interface(_vrfCoordinator);
+        s_subscriptionId = _subscriptionId;
+        keyHash = _keyHash;
     }
 
     // Can set multiple VCs, one for manual pushing, one for keeper
@@ -252,14 +270,17 @@ contract HexplorationQueue is AccessControlEnumerable {
     }
 
     function requestRandomWords(uint256 _queueID) internal {
-        // randomnessRequestID[_queueID] = COORDINATOR.requestRandomWords(
-        //   keyHash,
-        //   s_subscriptionId,
-        //   requestConfirmations,
-        //   callbackGasLimit,
-        //   numWords
-        // );
+        /*
+        uint256 reqID = COORDINATOR.requestRandomWords(
+          keyHash,
+          s_subscriptionId,
+          requestConfirmations,
+          callbackGasLimit,
+          numWords
+        );
+        */
 
+        // Manual testing below, comment out uncomment VRF code above to enable chainlink vrf for production
         //set faux id + randomness
         uint256 reqID = _queueID;
         randomnessRequestQueueID[reqID] = _queueID;
@@ -271,6 +292,7 @@ contract HexplorationQueue is AccessControlEnumerable {
 
     function fulfillRandomWords(uint256 requestID, uint256[] memory randomWords)
         internal
+        override
     {
         uint256 qID = randomnessRequestQueueID[requestID];
         randomness[qID] = randomWords[0];

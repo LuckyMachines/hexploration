@@ -12,12 +12,14 @@ const GameBoard = artifacts.require("HexplorationBoard");
 const Controller = artifacts.require("HexplorationController");
 
 module.exports = async (deployer, network, [defaultAccount]) => {
+  //TODO: update for all chains
   const HEXPLORATION_CONTROLLER_ADDRESS = network.startsWith("ganache")
     ? addresses.GANACHE_HEXPLORATION_CONTROLLER
     : "0x0000000000000000000000000000000000000000";
   const HEXPLORATION_BOARD_ADDRESS = network.startsWith("ganache")
     ? addresses.GANACHE_HEXPLORATION_BOARD
     : "0x0000000000000000000000000000000000000000";
+
   console.log("Controller address set to:", HEXPLORATION_CONTROLLER_ADDRESS);
   console.log("Deploying Day Night Tokens");
   try {
@@ -118,11 +120,11 @@ module.exports = async (deployer, network, [defaultAccount]) => {
 
   if (network.startsWith("ganache")) {
     console.log(`
-  GANACHE_DAY_NIGHT_TOKEN: "${DayNightTokens.address}",
-  GANACHE_DISASTER_TOKEN: "${DisasterTokens.address}",
-  GANACHE_ENEMY_TOKEN: "${EnemyTokens.address}",
-  GANACHE_ITEM_TOKEN: "${ItemTokens.address}",
-  GANACHE_PLAYER_STATUS_TOKEN: "${PlayerStatusTokens.address}",
-  GANACHE_ARTIFACT_TOKEN: "${ArtifactTokens.address}"`);
+  _DAY_NIGHT_TOKEN: "${DayNightTokens.address}",
+  _DISASTER_TOKEN: "${DisasterTokens.address}",
+  _ENEMY_TOKEN: "${EnemyTokens.address}",
+  _ITEM_TOKEN: "${ItemTokens.address}",
+  _PLAYER_STATUS_TOKEN: "${PlayerStatusTokens.address}",
+  _ARTIFACT_TOKEN: "${ArtifactTokens.address}"`);
   }
 };
