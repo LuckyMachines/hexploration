@@ -33,6 +33,13 @@ contract HexplorationStateUpdate is AccessControlEnumerable {
         uint256 quantity
     )
 */
+
+    event GamePhaseChange(
+        uint256 indexed gameID,
+        uint256 timeStamp,
+        string newPhase
+    );
+
     HexplorationBoard internal GAME_BOARD;
     CharacterCard internal CHARACTER_CARD;
     modifier onlyAdminVC() {
@@ -73,6 +80,7 @@ contract HexplorationStateUpdate is AccessControlEnumerable {
         transferPlayerItems(updates, gameID);
         transferZoneItems(updates, gameID);
         applyActivityEffects(updates, gameID);
+        updatePlayPhase(updates, gameID);
     }
 
     /*
@@ -300,6 +308,28 @@ contract HexplorationStateUpdate is AccessControlEnumerable {
         }
 
         GAME_BOARD.moveThroughPath(zonePath, playerID, gameID, tiles);
+    }
+
+    function updatePlayPhase(
+        HexplorationGameplay.PlayUpdates memory updates,
+        uint256 gameID
+    ) internal {
+        if (bytes(updates.gamePhase).length > 0) {
+            emit GamePhaseChange(gameID, block.timestamp, updates.gamePhase);
+            TokenInventory ti = TokenInventory(GAME_BOARD.tokenInventory());
+            if (
+                keccak256(abi.encodePacked(updates.gamePhase)) ==
+                keccak256(abi.encodePacked("Day"))
+            ) {
+                // set to day
+                ti.DAY_NIGHT_TOKEN().transfer("Day", gameID, 0, 1, 1);
+                ti.DAY_NIGHT_TOKEN().transfer("Night", gameID, 1, 0, 1);
+            } else {
+                // set to night
+                ti.DAY_NIGHT_TOKEN().transfer("Day", gameID, 1, 0, 1);
+                ti.DAY_NIGHT_TOKEN().transfer("Night", gameID, 0, 1, 1);
+            }
+        }
     }
 
     // Utility

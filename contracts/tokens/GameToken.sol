@@ -61,6 +61,13 @@ contract GameToken is AccessControlEnumerable {
         _setupRole(CONTROLLER_ROLE, controllerAddress);
     }
 
+    function addController(address controllerAddress)
+        public
+        onlyRole(DEFAULT_ADMIN_ROLE)
+    {
+        grantRole(CONTROLLER_ROLE, controllerAddress);
+    }
+
     function addTokenTypes(string[] memory _tokenTypes)
         public
         onlyRole(DEFAULT_ADMIN_ROLE)

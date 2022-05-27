@@ -8,6 +8,14 @@ const GameBoard = artifacts.require("HexplorationBoard");
 const GameController = artifacts.require("HexplorationController");
 const Gameplay = artifacts.require("HexplorationGameplay");
 const CharacterCard = artifacts.require("CharacterCard");
+// Tokens
+const Artifact = artifacts.require("Artifact");
+const DayNight = artifacts.require("DayNight");
+const Disaster = artifacts.require("Disaster");
+const Enemy = artifacts.require("Enemy");
+const Item = artifacts.require("Item");
+const PlayerStatus = artifacts.require("PlayerStatus");
+const Relic = artifacts.require("Relic");
 const addresses = require("./addresses.js");
 
 module.exports = async (deployer, network, [defaultAccount]) => {
@@ -44,6 +52,22 @@ module.exports = async (deployer, network, [defaultAccount]) => {
 
     console.log("Adding game state update address to gameplay...");
     await hexGameplay.setGameStateUpdate(GameStateUpdate.address);
+
+    console.log("Setting gsu as controller for all tokens...");
+    const artifactTokens = await Artifact.deployed();
+    await artifactTokens.addController(GameStateUpdate.address);
+    const dayNightTokens = await DayNight.deployed();
+    await dayNightTokens.addController(GameStateUpdate.address);
+    const disasterTokens = await Disaster.deployed();
+    await disasterTokens.addController(GameStateUpdate.address);
+    const enemyTokens = await Enemy.deployed();
+    await enemyTokens.addController(GameStateUpdate.address);
+    const itemTokens = await Item.deployed();
+    await itemTokens.addController(GameStateUpdate.address);
+    const playerStatusTokens = await PlayerStatus.deployed();
+    await playerStatusTokens.addController(GameStateUpdate.address);
+    const relicTokens = await Relic.deployed();
+    await relicTokens.addController(GameStateUpdate.address);
 
     console.log(
       "Hexploration game state update deployed to:",

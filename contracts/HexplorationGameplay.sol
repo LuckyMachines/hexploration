@@ -561,10 +561,18 @@ contract HexplorationGameplay is
         DataSummary memory summary
     ) internal view returns (PlayUpdates memory) {
         PlayUpdates memory playUpdates;
-        /*
-        // TODO: update to actual game phase at appropriate time...
-        HexplorationQueue.ProcessingPhase phase = QUEUE.currentPhase(queueID);
+        // uint256[] memory playersInQueue = QUEUE.getAllPlayers(queueID);
+        // uint256 position;
 
+        TokenInventory tokens = TokenInventory(GAME_BOARD.tokenInventory());
+        uint256 dayBalance = tokens.DAY_NIGHT_TOKEN().balance(
+            "Day",
+            QUEUE.game(queueID),
+            1
+        );
+        playUpdates.gamePhase = dayBalance > 0 ? "Night" : "Day";
+
+        /*
         // TODO: set this to true when game is finished
         bool gameComplete = false;
 
