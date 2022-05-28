@@ -11,35 +11,35 @@ module.exports = {
       provider: () => {
         return new HDWalletProvider({
           privateKeys: [private_key_ganache],
-          providerOrUrl: "http://127.0.0.1:7545",
+          providerOrUrl: "http://127.0.0.1:7545"
         });
       },
       port: 7545,
       network_id: "*",
-      networkCheckTimeout: 2000000,
+      networkCheckTimeout: 2000000
     },
     mumbai: {
       provider: () => {
         return new HDWalletProvider({
           privateKeys: [private_key_test],
-          providerOrUrl: mumbai_url,
+          providerOrUrl: mumbai_url
         });
       },
       network_id: "80001",
       maxPriorityFeePerGas: "2999999991",
       maxFeePerGas: "3000000000",
-      networkCheckTimeout: 2000000,
+      networkCheckTimeout: 2000000
     },
     binance_test: {
       provider: () => {
         return new HDWalletProvider({
           privateKeys: [private_key_test],
-          providerOrUrl: binance_test_url,
+          providerOrUrl: binance_test_url
         });
       },
       network_id: "97",
-      networkCheckTimeout: 2000000,
-    },
+      networkCheckTimeout: 2000000
+    }
   },
 
   // Set default mocha options here, use special reporters etc.
@@ -56,32 +56,16 @@ module.exports = {
         // See the solidity docs for advice about optimization and evmVersion
         optimizer: {
           enabled: true,
-          runs: 100,
+          runs: 100
         },
-        evmVersion: "byzantium",
-      },
-    },
+        evmVersion: "byzantium"
+      }
+    }
   },
-  plugins: ["truffle-contract-size"],
+  plugins: ["truffle-contract-size", "truffle-plugin-verify"],
 
-  // Truffle DB is currently disabled by default; to enable it, change enabled:
-  // false to enabled: true. The default storage location can also be
-  // overridden by specifying the adapter settings, as shown in the commented code below.
-  //
-  // NOTE: It is not possible to migrate your contracts to truffle DB and you should
-  // make a backup of your artifacts to a safe location before enabling this feature.
-  //
-  // After you backed up your artifacts you can utilize db by running migrate as follows:
-  // $ truffle migrate --reset --compile-all
-  //
-  // db: {
-  // enabled: false,
-  // host: "127.0.0.1",
-  // adapter: {
-  //   name: "sqlite",
-  //   settings: {
-  //     directory: ".db"
-  //   }
-  // }
-  // }
+  api_keys: {
+    etherscan: process.env.ETHERSCAN_API_KEY,
+    polygonscan: process.env.POLYGONSCAN_API_KEY
+  }
 };

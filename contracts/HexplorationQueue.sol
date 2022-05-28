@@ -18,12 +18,6 @@ contract HexplorationQueue is AccessControlEnumerable, VRFConsumerBaseV2 {
     // VRF
     VRFCoordinatorV2Interface COORDINATOR;
     uint64 s_subscriptionId;
-    // address vrfCoordinator = 0x6A2AAd07396B36Fe02a22b33cf443582f682c82f; // binance testnet
-    // bytes32 keyHash =
-    //     0xd4bb89654db74673a187bd804519e65e3f71a52bc55f11da7601a13dcf505314; // binance testnet
-    //address vrfCoordinator = 0x7a1BaC17Ccc5b313516C5E16fb24f7659aA5ebed; // mumbai
-    //bytes32 keyHash =
-    //    0x4b09e658ed251bcafeebbc69400383d49f344ace09b9576fe248bb02c003fe9f; // mumbai
     bytes32 s_keyHash;
     uint32 callbackGasLimit = 100000;
     uint16 requestConfirmations = 3;
@@ -280,7 +274,6 @@ contract HexplorationQueue is AccessControlEnumerable, VRFConsumerBaseV2 {
         randomnessRequestQueueID[reqID] = _queueID;
 
         // testing below, comment out uncomment VRF code above to enable chainlink vrf for production
-        //set faux id + randomness
 
         // uint256 reqID = _queueID;
         // randomnessRequestQueueID[reqID] = _queueID;

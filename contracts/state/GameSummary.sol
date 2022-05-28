@@ -102,8 +102,6 @@ library GameSummary {
         return HexplorationBoard(gameBoardAddress).initialPlayZone(gameID);
     }
 
-    // Functions called directly by players
-
     function allPlayerLocations(address gameBoardAddress, uint256 gameID)
         public
         view
@@ -121,6 +119,7 @@ library GameSummary {
         return (playerIDs, playerZones);
     }
 
+    // Functions called directly by players
     function currentLocation(address gameBoardAddress, uint256 gameID)
         public
         view

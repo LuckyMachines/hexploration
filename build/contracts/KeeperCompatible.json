@@ -64,7 +64,7 @@
         38
       ],
       "KeeperCompatibleInterface": [
-        57
+        115
       ]
     },
     "id": 39,
@@ -101,7 +101,7 @@
         "nameLocation": "-1:-1:-1",
         "nodeType": "ImportDirective",
         "scope": 39,
-        "sourceUnit": 58,
+        "sourceUnit": 116,
         "src": "84:52:1",
         "symbolAliases": [],
         "unitAlias": ""
@@ -126,7 +126,7 @@
               "id": 36,
               "name": "KeeperCompatibleInterface",
               "nodeType": "IdentifierPath",
-              "referencedDeclaration": 57,
+              "referencedDeclaration": 115,
               "src": "188:25:1"
             },
             "id": 37,
@@ -141,7 +141,7 @@
         "id": 38,
         "linearizedBaseContracts": [
           38,
-          57,
+          115,
           29
         ],
         "name": "KeeperCompatible",
@@ -167,7 +167,7 @@
         38
       ],
       "KeeperCompatibleInterface": [
-        57
+        115
       ]
     },
     "id": 39,
@@ -204,7 +204,7 @@
         "nameLocation": "-1:-1:-1",
         "nodeType": "ImportDirective",
         "scope": 39,
-        "sourceUnit": 58,
+        "sourceUnit": 116,
         "src": "84:52:1",
         "symbolAliases": [],
         "unitAlias": ""
@@ -229,7 +229,7 @@
               "id": 36,
               "name": "KeeperCompatibleInterface",
               "nodeType": "IdentifierPath",
-              "referencedDeclaration": 57,
+              "referencedDeclaration": 115,
               "src": "188:25:1"
             },
             "id": 37,
@@ -244,7 +244,7 @@
         "id": 38,
         "linearizedBaseContracts": [
           38,
-          57,
+          115,
           29
         ],
         "name": "KeeperCompatible",
@@ -265,8 +265,8 @@
     "version": "0.8.11+commit.d7f03943.Emscripten.clang"
   },
   "networks": {},
-  "schemaVersion": "3.4.2",
-  "updatedAt": "2022-05-26T21:13:33.115Z",
+  "schemaVersion": "3.4.4",
+  "updatedAt": "2022-05-27T21:02:42.942Z",
   "devdoc": {
     "kind": "dev",
     "methods": {

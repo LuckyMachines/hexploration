@@ -44,7 +44,7 @@ module.exports = async (deployer, network, [defaultAccount]) => {
     const hexGameplay = await Gameplay.deployed();
     const hexController = await GameController.at(CONTROLLER_ADDRESS);
     const cc = await CharacterCard.deployed();
-    /*
+
     console.log("Adding game controller as VC of game state update...");
     await hexStateUpdate.addVerifiedController(CONTROLLER_ADDRESS);
 
@@ -53,7 +53,7 @@ module.exports = async (deployer, network, [defaultAccount]) => {
 
     console.log("Adding game state update as VC of game board...");
     await hexBoard.addVerifiedController(GameStateUpdate.address);
-    
+
     console.log("Adding game state update as VC of character card...");
     await cc.addVerifiedController(GameStateUpdate.address);
 
@@ -62,10 +62,9 @@ module.exports = async (deployer, network, [defaultAccount]) => {
 
     console.log("Adding game state update address to gameplay...");
     await hexGameplay.setGameStateUpdate(GameStateUpdate.address);
-    */
 
     console.log("Setting gsu as controller for all tokens...");
-    /*
+
     console.log("Adding artifact");
     const artifactTokens = await Artifact.deployed();
     await artifactTokens.addController(GameStateUpdate.address);
@@ -74,7 +73,7 @@ module.exports = async (deployer, network, [defaultAccount]) => {
     await dayNightTokens.addController(GameStateUpdate.address);
     console.log("Adding ");
     const disasterTokens = await Disaster.deployed();
-    await disasterTokens.addController(GameStateUpdate.address);*/
+    await disasterTokens.addController(GameStateUpdate.address);
     console.log("Adding enemy");
     const enemyTokens = await Enemy.deployed();
     await enemyTokens.addController(GameStateUpdate.address);
