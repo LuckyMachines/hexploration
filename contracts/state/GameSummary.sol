@@ -395,6 +395,12 @@ library GameSummary {
         PlayerRegistry pr = PlayerRegistry(board.prAddress());
         uint256 totalRegistrations = pr.totalRegistrations(gameID);
         playerIDs = new uint256[](totalRegistrations);
+        activeActionCardTypes = new string[](totalRegistrations);
+        activeActionCardsDrawn = new string[](totalRegistrations);
+        currentActiveActions = new uint8[](totalRegistrations);
+        activeActionCardResults = new string[](totalRegistrations);
+        activeActionCardInventoryChanges = new string[3][](totalRegistrations);
+
         for (uint256 i = 0; i < totalRegistrations; i++) {
             uint256 pID = i + 1;
             playerIDs[i] = pID;
@@ -402,11 +408,10 @@ library GameSummary {
             activeActionCardsDrawn[i] = cc.activeActionCardDrawn(gameID, pID);
             currentActiveActions[i] = uint8(cc.action(gameID, pID));
             activeActionCardResults[i] = cc.activeActionCardResult(gameID, pID);
-            activeActionCardInventoryChanges[i] = [
-                cc.activeActionCardInventoryChanges(gameID, pID, 0),
-                cc.activeActionCardInventoryChanges(gameID, pID, 1),
-                cc.activeActionCardInventoryChanges(gameID, pID, 2)
-            ];
+            activeActionCardInventoryChanges[i] = cc.getInventoryChanges(
+                gameID,
+                pID
+            );
         }
         // returns
         // playerIDs

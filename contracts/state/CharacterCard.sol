@@ -70,6 +70,14 @@ contract CharacterCard is AccessControlEnumerable {
         stats[2] = dexterity[gameID][playerID];
     }
 
+    function getInventoryChanges(uint256 gameID, uint256 playerID)
+        public
+        view
+        returns (string[3] memory)
+    {
+        return activeActionCardInventoryChanges[gameID][playerID];
+    }
+
     function setStats(
         uint8[3] memory stats,
         uint256 gameID,
