@@ -263,24 +263,24 @@ contract HexplorationQueue is AccessControlEnumerable, VRFConsumerBaseV2 {
     }
 
     function requestRandomWords(uint256 _queueID) internal {
-        uint256 reqID = COORDINATOR.requestRandomWords(
-            s_keyHash,
-            s_subscriptionId,
-            requestConfirmations,
-            callbackGasLimit,
-            numWords
-        );
+        // uint256 reqID = COORDINATOR.requestRandomWords(
+        //     s_keyHash,
+        //     s_subscriptionId,
+        //     requestConfirmations,
+        //     callbackGasLimit,
+        //     numWords
+        // );
 
-        randomnessRequestQueueID[reqID] = _queueID;
-
-        // testing below, comment out uncomment VRF code above to enable chainlink vrf for production
-
-        // uint256 reqID = _queueID;
         // randomnessRequestQueueID[reqID] = _queueID;
-        // uint256 random = uint256(keccak256(abi.encode(block.timestamp, reqID)));
-        // uint256[] memory randomWords = new uint256[](1);
-        // randomWords[0] = random;
-        // fulfillRandomWords(reqID, randomWords);
+
+        // testing below, uncomment VRF code above to enable chainlink vrf for production
+        // & comment testing code out
+        uint256 reqID = _queueID;
+        randomnessRequestQueueID[reqID] = _queueID;
+        uint256 random = uint256(keccak256(abi.encode(block.timestamp, reqID)));
+        uint256[] memory randomWords = new uint256[](1);
+        randomWords[0] = random;
+        fulfillRandomWords(reqID, randomWords);
     }
 
     function fulfillRandomWords(uint256 requestID, uint256[] memory randomWords)

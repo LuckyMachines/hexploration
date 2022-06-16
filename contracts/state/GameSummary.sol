@@ -376,17 +376,38 @@ library GameSummary {
         )
     {}
 
+    // SHINY NEW FUNCTIONS!!!
+
     function lastPlayerActions(address gameBoardAddress, uint256 gameID)
         public
+        view
         returns (
             uint256[] memory playerIDs,
             string[] memory activeActionCardTypes,
             string[] memory activeActionCardsDrawn,
-            string[] memory currentActiveActions,
+            uint8[] memory currentActiveActions,
             string[] memory activeActionCardResults,
             string[3][] memory activeActionCardInventoryChanges
         )
     {
+        HexplorationBoard board = HexplorationBoard(gameBoardAddress);
+        CharacterCard cc = CharacterCard(board.characterCard());
+        PlayerRegistry pr = PlayerRegistry(board.prAddress());
+        uint256 totalRegistrations = pr.totalRegistrations(gameID);
+        playerIDs = new uint256[](totalRegistrations);
+        for (uint256 i = 0; i < totalRegistrations; i++) {
+            uint256 pID = i + 1;
+            playerIDs[i] = pID;
+            activeActionCardTypes[i] = cc.activeActionCardType(gameID, pID);
+            activeActionCardsDrawn[i] = cc.activeActionCardDrawn(gameID, pID);
+            currentActiveActions[i] = uint8(cc.action(gameID, pID));
+            activeActionCardResults[i] = cc.activeActionCardResult(gameID, pID);
+            activeActionCardInventoryChanges[i] = [
+                cc.activeActionCardInventoryChanges(gameID, pID, 0),
+                cc.activeActionCardInventoryChanges(gameID, pID, 1),
+                cc.activeActionCardInventoryChanges(gameID, pID, 2)
+            ];
+        }
         // returns
         // playerIDs
         // activeActionCardType - // "Event","Ambush","Treasure"
@@ -396,7 +417,6 @@ library GameSummary {
         // activeActionCardInventoryChangs - item loss, item gain, hand loss (left/right)
     }
 
-    // SHINY NEW FUNCTIONS!!!
     function getAvailableGameIDs(
         address gameBoardAddress,
         address gameRegistryAddress
