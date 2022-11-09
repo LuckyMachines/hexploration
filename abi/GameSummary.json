@@ -1,0 +1,747 @@
+[
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "gameBoardAddress",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "gameID",
+                "type": "uint256"
+            }
+        ],
+        "name": "activeAction",
+        "outputs": [
+            {
+                "internalType": "string",
+                "name": "action",
+                "type": "string"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "gameBoardAddress",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "gameID",
+                "type": "uint256"
+            }
+        ],
+        "name": "activeInventory",
+        "outputs": [
+            {
+                "internalType": "string",
+                "name": "artifact",
+                "type": "string"
+            },
+            {
+                "internalType": "string",
+                "name": "status",
+                "type": "string"
+            },
+            {
+                "internalType": "string",
+                "name": "relic",
+                "type": "string"
+            },
+            {
+                "internalType": "bool",
+                "name": "shield",
+                "type": "bool"
+            },
+            {
+                "internalType": "bool",
+                "name": "campsite",
+                "type": "bool"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "gameBoardAddress",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "gameID",
+                "type": "uint256"
+            }
+        ],
+        "name": "activeZones",
+        "outputs": [
+            {
+                "internalType": "string[]",
+                "name": "zones",
+                "type": "string[]"
+            },
+            {
+                "internalType": "uint16[]",
+                "name": "tiles",
+                "type": "uint16[]"
+            },
+            {
+                "internalType": "bool[]",
+                "name": "campsites",
+                "type": "bool[]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "gameBoardAddress",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "gameID",
+                "type": "uint256"
+            }
+        ],
+        "name": "allPlayerLocations",
+        "outputs": [
+            {
+                "internalType": "uint256[]",
+                "name": "playerIDs",
+                "type": "uint256[]"
+            },
+            {
+                "internalType": "string[]",
+                "name": "playerZones",
+                "type": "string[]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "gameBoardAddress",
+                "type": "address"
+            }
+        ],
+        "name": "boardSize",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "rows",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "columns",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "gameBoardAddress",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "gameID",
+                "type": "uint256"
+            },
+            {
+                "internalType": "string",
+                "name": "_zoneAlias",
+                "type": "string"
+            }
+        ],
+        "name": "canDigAtZone",
+        "outputs": [
+            {
+                "internalType": "bool",
+                "name": "diggingAllowed",
+                "type": "bool"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "gameBoardAddress",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "gameID",
+                "type": "uint256"
+            }
+        ],
+        "name": "currentGameplayQueue",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "queueID",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "gameBoardAddress",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "gameID",
+                "type": "uint256"
+            }
+        ],
+        "name": "currentHandInventory",
+        "outputs": [
+            {
+                "internalType": "string",
+                "name": "leftHandItem",
+                "type": "string"
+            },
+            {
+                "internalType": "string",
+                "name": "rightHandItem",
+                "type": "string"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "gameBoardAddress",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "gameID",
+                "type": "uint256"
+            }
+        ],
+        "name": "currentLocation",
+        "outputs": [
+            {
+                "internalType": "string",
+                "name": "location",
+                "type": "string"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "gameBoardAddress",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "gameID",
+                "type": "uint256"
+            }
+        ],
+        "name": "currentPhase",
+        "outputs": [
+            {
+                "internalType": "string",
+                "name": "phase",
+                "type": "string"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "gameBoardAddress",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "gameID",
+                "type": "uint256"
+            }
+        ],
+        "name": "currentPlayerStats",
+        "outputs": [
+            {
+                "internalType": "uint8",
+                "name": "movement",
+                "type": "uint8"
+            },
+            {
+                "internalType": "uint8",
+                "name": "agility",
+                "type": "uint8"
+            },
+            {
+                "internalType": "uint8",
+                "name": "dexterity",
+                "type": "uint8"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "gameBoardAddress",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "gameID",
+                "type": "uint256"
+            }
+        ],
+        "name": "gameStarted",
+        "outputs": [
+            {
+                "internalType": "bool",
+                "name": "gameHasStarted",
+                "type": "bool"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "gameBoardAddress",
+                "type": "address"
+            },
+            {
+                "internalType": "address",
+                "name": "gameRegistryAddress",
+                "type": "address"
+            }
+        ],
+        "name": "getAvailableGames",
+        "outputs": [
+            {
+                "internalType": "uint256[]",
+                "name": "gameIDs",
+                "type": "uint256[]"
+            },
+            {
+                "internalType": "uint256[]",
+                "name": "maxPlayers",
+                "type": "uint256[]"
+            },
+            {
+                "internalType": "uint256[]",
+                "name": "currentRegistrations",
+                "type": "uint256[]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "gameBoardAddress",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "gameID",
+                "type": "uint256"
+            },
+            {
+                "internalType": "address",
+                "name": "playerAddress",
+                "type": "address"
+            }
+        ],
+        "name": "getPlayerID",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "playerID",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "gameBoardAddress",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "gameID",
+                "type": "uint256"
+            }
+        ],
+        "name": "inactiveInventory",
+        "outputs": [
+            {
+                "internalType": "string[]",
+                "name": "itemTypes",
+                "type": "string[]"
+            },
+            {
+                "internalType": "uint256[]",
+                "name": "itemBalances",
+                "type": "uint256[]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "gameBoardAddress",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "gameID",
+                "type": "uint256"
+            },
+            {
+                "internalType": "address",
+                "name": "playerAddress",
+                "type": "address"
+            }
+        ],
+        "name": "isActive",
+        "outputs": [
+            {
+                "internalType": "bool",
+                "name": "playerIsActive",
+                "type": "bool"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "gameBoardAddress",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "gameID",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "playerID",
+                "type": "uint256"
+            }
+        ],
+        "name": "isActive",
+        "outputs": [
+            {
+                "internalType": "bool",
+                "name": "playerIsActive",
+                "type": "bool"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "gameBoardAddress",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "gameID",
+                "type": "uint256"
+            }
+        ],
+        "name": "isAtCampsite",
+        "outputs": [
+            {
+                "internalType": "bool",
+                "name": "atCampsite",
+                "type": "bool"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "gameBoardAddress",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "gameID",
+                "type": "uint256"
+            },
+            {
+                "internalType": "address",
+                "name": "playerAddress",
+                "type": "address"
+            }
+        ],
+        "name": "isRegistered",
+        "outputs": [
+            {
+                "internalType": "bool",
+                "name": "playerIsRegistered",
+                "type": "bool"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "gameBoardAddress",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "gameID",
+                "type": "uint256"
+            }
+        ],
+        "name": "landingSite",
+        "outputs": [
+            {
+                "internalType": "string",
+                "name": "zoneAlias",
+                "type": "string"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "gameBoardAddress",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "gameID",
+                "type": "uint256"
+            }
+        ],
+        "name": "lastDayPhaseEvents",
+        "outputs": [
+            {
+                "internalType": "uint256[]",
+                "name": "playerIDs",
+                "type": "uint256[]"
+            },
+            {
+                "internalType": "string[]",
+                "name": "cardTypes",
+                "type": "string[]"
+            },
+            {
+                "internalType": "string[]",
+                "name": "cardsDrawn",
+                "type": "string[]"
+            },
+            {
+                "internalType": "string[]",
+                "name": "cardResults",
+                "type": "string[]"
+            },
+            {
+                "internalType": "string[3][]",
+                "name": "inventoryChanges",
+                "type": "string[3][]"
+            },
+            {
+                "internalType": "int8[3][]",
+                "name": "statUpdates",
+                "type": "int8[3][]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "gameBoardAddress",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "gameID",
+                "type": "uint256"
+            }
+        ],
+        "name": "lastPlayerActions",
+        "outputs": [
+            {
+                "internalType": "uint256[]",
+                "name": "playerIDs",
+                "type": "uint256[]"
+            },
+            {
+                "internalType": "string[]",
+                "name": "activeActionCardTypes",
+                "type": "string[]"
+            },
+            {
+                "internalType": "string[]",
+                "name": "activeActionCardsDrawn",
+                "type": "string[]"
+            },
+            {
+                "internalType": "uint8[]",
+                "name": "currentActiveActions",
+                "type": "uint8[]"
+            },
+            {
+                "internalType": "string[]",
+                "name": "activeActionCardResults",
+                "type": "string[]"
+            },
+            {
+                "internalType": "string[3][]",
+                "name": "activeActionCardInventoryChanges",
+                "type": "string[3][]"
+            },
+            {
+                "internalType": "int8[3][]",
+                "name": "activeActionStatUpdates",
+                "type": "int8[3][]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "gameBoardAddress",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "gameID",
+                "type": "uint256"
+            }
+        ],
+        "name": "playerRecoveredArtifacts",
+        "outputs": [
+            {
+                "internalType": "string[]",
+                "name": "artifacts",
+                "type": "string[]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "gameBoardAddress",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "gameID",
+                "type": "uint256"
+            }
+        ],
+        "name": "recoveredArtifacts",
+        "outputs": [
+            {
+                "internalType": "string[]",
+                "name": "artifacts",
+                "type": "string[]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "gameBoardAddress",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "gameID",
+                "type": "uint256"
+            }
+        ],
+        "name": "totalPlayers",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "numPlayers",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    }
+]
