@@ -7,26 +7,22 @@
     "test": "test"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "import-all": "node local/import-all.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/StudioMaxIO/hexploration.git"
+    "url": "git+https://github.com/LuckyMachines/hexploration.git"
   },
   "author": "Max Meier",
   "license": "GPL-3.0-or-later",
   "bugs": {
-    "url": "https://github.com/StudioMaxIO/hexploration/issues"
+    "url": "https://github.com/LuckyMachines/hexploration/issues"
   },
-  "homepage": "https://github.com/StudioMaxIO/hexploration#readme",
+  "homepage": "https://github.com/LuckyMachines/hexploration#readme",
   "dependencies": {
-    "@chainlink/contracts": "^0.4.0",
-    "@luckymachines/game-core": "0.0.11",
-    "@openzeppelin/contracts": "^4.6.0",
-    "@truffle/hdwallet-provider": "^2.0.8",
-    "dotenv": "^16.0.1",
-    "truffle-contract-size": "^2.0.1",
-    "truffle-plugin-verify": "^0.5.25",
-    "web3": "^1.7.3"
+    "@chainlink/contracts": "^0.4.1",
+    "@luckymachines/game-core": "^0.0.16",
+    "@openzeppelin/contracts": "^4.7.3"
   }
 }
