@@ -187,14 +187,16 @@ contract HexplorationQueue is AccessControlEnumerable, VRFConsumerBaseV2 {
 
             players[_queueID].push(playerID);
             playerSubmitted[_queueID][playerID] = true;
+
+            playerStatsAtSubmission[_queueID][playerID] = CHARACTER_CARD
+                .getStats(game[_queueID], playerID);
+
             // automatically add to queue if last player to submit move
             if (players[_queueID].length >= totalPlayers[_queueID]) {
                 // set to opposite of current phase since this check will be done during next phase
                 isDayPhase[_queueID] = !_isDayPhase;
                 _processAllActions(_queueID);
             }
-            playerStatsAtSubmission[_queueID][playerID] = CHARACTER_CARD
-                .getStats(game[_queueID], playerID);
 
             GAME_EVENTS.emitActionSubmit(
                 game[_queueID],
@@ -332,24 +334,24 @@ contract HexplorationQueue is AccessControlEnumerable, VRFConsumerBaseV2 {
     function requestRandomWords(uint256 _queueID) internal {
         setRandomNeeds(_queueID);
 
-        // uint256 reqID = COORDINATOR.requestRandomWords(
-        //     s_keyHash,
-        //     s_subscriptionId,
-        //     requestConfirmations,
-        //     callbackGasLimit,
-        //     totalRandomWords[_queueID]
-        // );
+        uint256 reqID = COORDINATOR.requestRandomWords(
+            s_keyHash,
+            s_subscriptionId,
+            requestConfirmations,
+            callbackGasLimit,
+            uint32(totalRandomWords[_queueID])
+        );
 
-        // randomnessRequestQueueID[reqID] = _queueID;
+        randomnessRequestQueueID[reqID] = _queueID;
 
         // testing below, uncomment VRF code above to enable chainlink vrf for production
         // & comment testing code out
-        uint256 reqID = _queueID;
-        randomnessRequestQueueID[reqID] = _queueID;
-        uint256 random = uint256(keccak256(abi.encode(block.timestamp, reqID)));
-        uint256[] memory randomWords = new uint256[](1);
-        randomWords[0] = random;
-        fulfillRandomWords(reqID, randomWords);
+        // uint256 reqID = _queueID;
+        // randomnessRequestQueueID[reqID] = _queueID;
+        // uint256 random = uint256(keccak256(abi.encode(block.timestamp, reqID)));
+        // uint256[] memory randomWords = new uint256[](1);
+        // randomWords[0] = random;
+        // fulfillRandomWords(reqID, randomWords);
     }
 
     function fulfillRandomWords(uint256 requestID, uint256[] memory randomWords)
