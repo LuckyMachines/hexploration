@@ -434,24 +434,6 @@
         "type": "function"
     },
     {
-        "inputs": [],
-        "name": "getTestRandomness",
-        "outputs": [
-            {
-                "internalType": "bool",
-                "name": "usingTestRandomness",
-                "type": "bool"
-            },
-            {
-                "internalType": "uint256[]",
-                "name": "testRandomness",
-                "type": "uint256[]"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
         "inputs": [
             {
                 "internalType": "bytes32",
@@ -914,14 +896,9 @@
                 "internalType": "bool",
                 "name": "useTestRandomness",
                 "type": "bool"
-            },
-            {
-                "internalType": "uint256[]",
-                "name": "testRandomness",
-                "type": "uint256[]"
             }
         ],
-        "name": "setTestRandomness",
+        "name": "setTestMode",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
@@ -1100,6 +1077,24 @@
             }
         ],
         "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "requestID",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256[]",
+                "name": "randomWords",
+                "type": "uint256[]"
+            }
+        ],
+        "name": "testFulfillRandomWords",
+        "outputs": [],
+        "stateMutability": "nonpayable",
         "type": "function"
     },
     {

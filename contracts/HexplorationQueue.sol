@@ -21,9 +21,8 @@ contract HexplorationQueue is AccessControlEnumerable, VRFConsumerBaseV2 {
     VRFCoordinatorV2Interface COORDINATOR;
     uint64 s_subscriptionId;
     bytes32 s_keyHash;
-    uint32 callbackGasLimit = 100000;
+    uint32 callbackGasLimit = 2500000;
     uint16 requestConfirmations = 3;
-    uint32 numWords = 1;
 
     enum ProcessingPhase {
         Start,
@@ -50,7 +49,7 @@ contract HexplorationQueue is AccessControlEnumerable, VRFConsumerBaseV2 {
     //////////////////////////////////////////////
     // For testing only. Do not use in production
     bool _testMode;
-    uint256[] _testRandomness;
+    // uint256[] _testRandomness;
     //////////////////////////////////////////////
 
     // Array of Queue IDs to be processed.
@@ -126,14 +125,14 @@ contract HexplorationQueue is AccessControlEnumerable, VRFConsumerBaseV2 {
     }
 
     // Used to check if contract is in testing mode
-    function getTestRandomness()
-        public
-        view
-        returns (bool usingTestRandomness, uint256[] memory testRandomness)
-    {
-        usingTestRandomness = _testMode;
-        testRandomness = _testRandomness;
-    }
+    // function getTestRandomness()
+    //     public
+    //     view
+    //     returns (bool usingTestRandomness, uint256[] memory testRandomness)
+    // {
+    //     usingTestRandomness = _testMode;
+    //     testRandomness = _testRandomness;
+    // }
 
     function isInTestMode() public view returns (bool testMode) {
         testMode = _testMode;
@@ -333,25 +332,27 @@ contract HexplorationQueue is AccessControlEnumerable, VRFConsumerBaseV2 {
 
     function requestRandomWords(uint256 _queueID) internal {
         setRandomNeeds(_queueID);
+        if (_testMode) {
+            uint256 reqID = _queueID;
+            randomnessRequestQueueID[reqID] = _queueID;
+            uint256 random = uint256(
+                keccak256(abi.encode(block.timestamp, reqID))
+            );
+            uint256[] memory randomWords = new uint256[](1);
+            randomWords[0] = random;
+            // set reqID to queue id
+            // need to call testFulfillRandomWords with queue ID to simulate VRF callback
+        } else {
+            uint256 reqID = COORDINATOR.requestRandomWords(
+                s_keyHash,
+                s_subscriptionId,
+                requestConfirmations,
+                callbackGasLimit,
+                uint32(totalRandomWords[_queueID])
+            );
 
-        uint256 reqID = COORDINATOR.requestRandomWords(
-            s_keyHash,
-            s_subscriptionId,
-            requestConfirmations,
-            callbackGasLimit,
-            uint32(totalRandomWords[_queueID])
-        );
-
-        randomnessRequestQueueID[reqID] = _queueID;
-
-        // testing below, uncomment VRF code above to enable chainlink vrf for production
-        // & comment testing code out
-        // uint256 reqID = _queueID;
-        // randomnessRequestQueueID[reqID] = _queueID;
-        // uint256 random = uint256(keccak256(abi.encode(block.timestamp, reqID)));
-        // uint256[] memory randomWords = new uint256[](1);
-        // randomWords[0] = random;
-        // fulfillRandomWords(reqID, randomWords);
+            randomnessRequestQueueID[reqID] = _queueID;
+        }
     }
 
     function fulfillRandomWords(uint256 requestID, uint256[] memory randomWords)
@@ -359,11 +360,19 @@ contract HexplorationQueue is AccessControlEnumerable, VRFConsumerBaseV2 {
         override
     {
         uint256 qID = randomnessRequestQueueID[requestID];
-        if (_testMode) {
-            processRandomWords(qID, _testRandomness);
-        } else {
-            processRandomWords(qID, randomWords);
-        }
+        // if (_testMode) {
+        //     processRandomWords(qID, _testRandomness);
+        // } else {
+        processRandomWords(qID, randomWords);
+        // }
+    }
+
+    function testFulfillRandomWords(
+        uint256 requestID,
+        uint256[] memory randomWords
+    ) public onlyRole(DEFAULT_ADMIN_ROLE) {
+        require(_testMode, "Queue not in test mode");
+        fulfillRandomWords(requestID, randomWords);
     }
 
     function setRandomNeeds(uint256 _queueID) internal {
@@ -452,11 +461,10 @@ contract HexplorationQueue is AccessControlEnumerable, VRFConsumerBaseV2 {
     }
 
     // Admin functions
-    function setTestRandomness(
-        bool useTestRandomness,
-        uint256[] memory testRandomness
-    ) public onlyRole(DEFAULT_ADMIN_ROLE) {
+    function setTestMode(bool useTestRandomness)
+        public
+        onlyRole(DEFAULT_ADMIN_ROLE)
+    {
         _testMode = useTestRandomness;
-        _testRandomness = testRandomness;
     }
 }
