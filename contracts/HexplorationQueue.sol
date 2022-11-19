@@ -61,6 +61,7 @@ contract HexplorationQueue is AccessControlEnumerable, VRFConsumerBaseV2 {
 
     // mapping from game ID
     mapping(uint256 => uint256) public queueID; // mapping from game ID to it's queue, updates to 0 when finished
+    mapping(uint256 => uint256[]) public queueIDs; // all queue IDs for a game
 
     // Idle player tracking
     // mapping from gameID => playerID
@@ -136,6 +137,14 @@ contract HexplorationQueue is AccessControlEnumerable, VRFConsumerBaseV2 {
 
     function isInTestMode() public view returns (bool testMode) {
         testMode = _testMode;
+    }
+
+    function getQueueIDs(uint256 gameID)
+        public
+        view
+        returns (uint256[] memory)
+    {
+        return queueIDs[gameID];
     }
 
     function getRandomness(uint256 _queueID)
@@ -271,16 +280,19 @@ contract HexplorationQueue is AccessControlEnumerable, VRFConsumerBaseV2 {
         queueID[g] = _requestGameQueue(g, tp);
     }
 
-    function finishProcessing(uint256 _queueID, bool gameComplete)
-        public
-        onlyRole(GAMEPLAY_ROLE)
-    {
-        _setProcessingComplete(_queueID, gameComplete);
+    function finishProcessing(
+        uint256 _queueID,
+        bool gameComplete,
+        uint256 _totalPlayers
+    ) public onlyRole(GAMEPLAY_ROLE) {
+        _setProcessingComplete(_queueID, gameComplete, _totalPlayers);
     }
 
-    function _setProcessingComplete(uint256 _queueID, bool gameComplete)
-        internal
-    {
+    function _setProcessingComplete(
+        uint256 _queueID,
+        bool gameComplete,
+        uint256 _totalPlayers
+    ) internal {
         uint256 g = game[_queueID];
         currentPhase[_queueID] = ProcessingPhase.Processed;
         queueID[g] = 0;
@@ -293,8 +305,8 @@ contract HexplorationQueue is AccessControlEnumerable, VRFConsumerBaseV2 {
         }
         if (!gameComplete) {
             // get new queue ID for next set of player actions
-            uint256 tp = totalPlayers[_queueID];
-            uint256 newQueueID = _requestGameQueue(g, tp);
+            // TODO: set total players to actual value here...
+            uint256 newQueueID = _requestGameQueue(g, _totalPlayers);
             queueID[g] = newQueueID;
             currentPhase[newQueueID] = ProcessingPhase.Submission;
         }
@@ -335,11 +347,6 @@ contract HexplorationQueue is AccessControlEnumerable, VRFConsumerBaseV2 {
         if (_testMode) {
             uint256 reqID = _queueID;
             randomnessRequestQueueID[reqID] = _queueID;
-            uint256 random = uint256(
-                keccak256(abi.encode(block.timestamp, reqID))
-            );
-            uint256[] memory randomWords = new uint256[](1);
-            randomWords[0] = random;
             // set reqID to queue id
             // need to call testFulfillRandomWords with queue ID to simulate VRF callback
         } else {
@@ -455,6 +462,7 @@ contract HexplorationQueue is AccessControlEnumerable, VRFConsumerBaseV2 {
         uint256 newQueueID = QUEUE_ID.current();
         game[newQueueID] = gameID;
         queueID[gameID] = newQueueID;
+        queueIDs[gameID].push(newQueueID);
         totalPlayers[newQueueID] = _totalPlayers;
         QUEUE_ID.increment();
         return newQueueID;

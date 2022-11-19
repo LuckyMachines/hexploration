@@ -98,6 +98,16 @@ contract GameSummary is GameWallets {
             !board.artifactFound(gameID, _zoneAlias);
     }
 
+    function currentDay(address gameBoardAddress, uint256 gameID)
+        public
+        view
+        returns (uint256 day)
+    {
+        HexplorationBoard board = HexplorationBoard(gameBoardAddress);
+        HexplorationQueue q = HexplorationQueue(board.gameplayQueue());
+        day = (q.getQueueIDs(gameID).length + 1) / 2;
+    }
+
     function currentGameplayQueue(address gameBoardAddress, uint256 gameID)
         public
         view
@@ -388,7 +398,9 @@ contract GameSummary is GameWallets {
             string memory status,
             string memory relic,
             bool shield,
-            bool campsite
+            bool campsite,
+            string memory leftHandItem,
+            string memory rightHandItem
         )
     {
         HexplorationBoard board = HexplorationBoard(gameBoardAddress);
@@ -439,7 +451,63 @@ contract GameSummary is GameWallets {
         )
             ? true
             : false;
+
+        (leftHandItem, rightHandItem) = currentHandInventory(
+            gameBoardAddress,
+            gameID
+        );
     }
+
+    // function availableMovement(address gameBoardAddress, uint256 gameID)
+    //     public
+    //     view
+    //     returns (uint8 movement)
+    // {
+    //     HexplorationBoard board = HexplorationBoard(gameBoardAddress);
+    //     HexplorationZone hexZone = HexplorationZone(board.hexZoneAddress());
+    //     CharacterCard cc = CharacterCard(board.characterCard());
+    //     PlayerRegistry pr = PlayerRegistry(board.prAddress());
+    //     uint256 playerID = pr.playerID(gameID, tx.origin);
+    //     movement = cc.movement(gameID, playerID);
+
+    //     HexplorationZone.Tile currentTile = hexZone.tile(
+    //         gameID,
+    //         currentLocation(gameBoardAddress, gameID)
+    //     );
+    //     if (stringsMatch(currentPhase(gameBoardAddress, gameID), "Day")) {
+    //         /*
+    //         Daytime
+    //         Plains: No change
+    //         Jungle: -1 Speed
+    //         Mountain: -1 Speed
+    //         Desert: -2 Speed
+    //         */
+    //         if (currentTile == HexplorationZone.Tile.Jungle) {
+    //             movement = movement > 0 ? movement - 1 : 0;
+    //         } else if (currentTile == HexplorationZone.Tile.Mountain) {
+    //             movement = movement > 0 ? movement - 1 : 0;
+    //         } else if (currentTile == HexplorationZone.Tile.Desert) {
+    //             movement = movement > 1 ? movement - 2 : 0;
+    //         }
+    //     } else {
+    //         /*
+    //         Night time
+    //         Plains: -1 Speed
+    //         Jungle: -2 Speed,
+    //         Mountain: -2 Speed,
+    //         Desert: -1 Speed
+    //         */
+    //         if (currentTile == HexplorationZone.Tile.Plains) {
+    //             movement = movement > 0 ? movement - 1 : 0;
+    //         } else if (currentTile == HexplorationZone.Tile.Jungle) {
+    //             movement = movement > 1 ? movement - 2 : 0;
+    //         } else if (currentTile == HexplorationZone.Tile.Mountain) {
+    //             movement = movement > 1 ? movement - 2 : 0;
+    //         } else if (currentTile == HexplorationZone.Tile.Desert) {
+    //             movement = movement > 0 ? movement - 1 : 0;
+    //         }
+    //     }
+    // }
 
     function currentHandInventory(address gameBoardAddress, uint256 gameID)
         public
@@ -508,43 +576,45 @@ contract GameSummary is GameWallets {
         HexplorationBoard board = HexplorationBoard(gameBoardAddress);
         PlayerRegistry pr = PlayerRegistry(board.prAddress());
         TokenInventory ti = TokenInventory(board.tokenInventory());
-        itemBalances = new uint256[](20);
-        itemTypes = new string[](20);
+        itemBalances = new uint256[](15);
+        itemTypes = new string[](15);
+        // Campsite, Artfacts, Relics, Shield never inactive.
+        // 1 shield should always be active...
         itemTypes[0] = "Small Ammo";
         itemTypes[1] = "Large Ammo";
         itemTypes[2] = "Batteries";
-        itemTypes[3] = "Shield";
-        itemTypes[4] = "Portal";
-        itemTypes[5] = "On";
-        itemTypes[6] = "Off";
-        itemTypes[7] = "Rusty Dagger";
-        itemTypes[8] = "Rusty Pistol";
-        itemTypes[9] = "Shiny Dagger";
-        itemTypes[10] = "Shiny Pistol";
-        itemTypes[11] = "Shiny Rifle";
-        itemTypes[12] = "Laser Dagger";
-        itemTypes[13] = "Laser Sword";
-        itemTypes[14] = "Laser Pistol";
-        itemTypes[15] = "Power Glove";
-        itemTypes[16] = "Engraved Tablet";
-        itemTypes[17] = "Sigil Gem";
-        itemTypes[18] = "Ancient Tome";
-        itemTypes[19] = "Campsite";
+        itemTypes[3] = "Portal";
+        itemTypes[4] = "On";
+        itemTypes[5] = "Off";
+        itemTypes[6] = "Rusty Dagger";
+        itemTypes[7] = "Rusty Pistol";
+        itemTypes[8] = "Shiny Dagger";
+        itemTypes[9] = "Shiny Pistol";
+        itemTypes[10] = "Shiny Rifle";
+        itemTypes[11] = "Laser Dagger";
+        itemTypes[12] = "Laser Sword";
+        itemTypes[13] = "Laser Pistol";
+        itemTypes[14] = "Power Glove";
         uint256 playerID = pr.playerID(gameID, tx.origin);
+        string memory lhItem;
+        string memory rhItem;
+        (lhItem, rhItem) = currentHandInventory(gameBoardAddress, gameID);
         if (ti.holdsToken(playerID, TokenInventory.Token.Item, gameID)) {
             GameToken itemToken = ti.ITEM_TOKEN();
-            string[] memory types = itemToken.getTokenTypes();
+            //string[] memory types = itemToken.getTokenTypes();
             for (uint256 i = 0; i < itemBalances.length; i++) {
-                itemTypes[i] = types[i];
-                itemBalances[i] = itemToken.balance(types[i], gameID, playerID);
+                //itemTypes[i] = types[i];
+                // TODO: don't include if matches LH, RH
+                string memory item = itemTypes[i];
+                itemBalances[i] = (!stringsMatch(item, lhItem) &&
+                    !stringsMatch(item, rhItem))
+                    ? (stringsMatch(item, "Shield") &&
+                        itemToken.balance(item, gameID, playerID) > 1)
+                        ? itemToken.balance(item, gameID, playerID) - 1
+                        : itemToken.balance(item, gameID, playerID)
+                    : 0;
             }
         }
-        // uint256 campsiteBalance = ti.ITEM_TOKEN().balance(
-        //     "Campsite",
-        //     gameID,
-        //     playerID
-        // );
-        // itemBalances[34] = campsiteBalance;
     }
 
     function isAtCampsite(address gameBoardAddress, uint256 gameID)
@@ -571,6 +641,7 @@ contract GameSummary is GameWallets {
             0;
     }
 
+    /*
     function playerRecoveredArtifacts(address gameBoardAddress, uint256 gameID)
         public
         view
@@ -583,7 +654,7 @@ contract GameSummary is GameWallets {
             pr.playerID(gameID, tx.origin)
         );
     }
-
+*/
     // Internal Stuff
     // Item exists in player inventory
     function inventoryItemExists(
@@ -647,5 +718,14 @@ contract GameSummary is GameWallets {
                 break;
             }
         }
+    }
+
+    function stringsMatch(string memory s1, string memory s2)
+        internal
+        pure
+        returns (bool)
+    {
+        return
+            keccak256(abi.encodePacked(s1)) == keccak256(abi.encodePacked(s2));
     }
 }

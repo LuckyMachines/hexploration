@@ -10,6 +10,7 @@ import "@chainlink/contracts/src/v0.8/KeeperCompatible.sol";
 import "./RollDraw.sol";
 import "./HexplorationGameplayUpdates.sol";
 import "./GameWallets.sol";
+import "./CharacterCard.sol";
 
 contract HexplorationGameplay is
     AccessControlEnumerable,
@@ -353,7 +354,25 @@ contract HexplorationGameplay is
                 //     );
                 // TODO: set this to true when game is finished
                 bool gameComplete = false;
-                QUEUE.finishProcessing(queueID, gameComplete);
+
+                PlayerRegistry pr = PlayerRegistry(GAME_BOARD.prAddress());
+                uint256 totalRegistrations = pr.totalRegistrations(gameID);
+                uint256 inactivePlayers = 0;
+                CharacterCard cc = CharacterCard(GAME_BOARD.characterCard());
+                for (uint256 i = 0; i < totalRegistrations; i++) {
+                    if (
+                        !pr.isActive(gameID, i + 1) ||
+                        cc.playerIsDead(gameID, i + 1)
+                    ) {
+                        inactivePlayers++;
+                    }
+                }
+
+                QUEUE.finishProcessing(
+                    queueID,
+                    gameComplete,
+                    totalRegistrations - inactivePlayers
+                );
             }
         }
     }

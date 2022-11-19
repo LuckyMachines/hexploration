@@ -62,6 +62,16 @@
                 "internalType": "bool",
                 "name": "campsite",
                 "type": "bool"
+            },
+            {
+                "internalType": "string",
+                "name": "leftHandItem",
+                "type": "string"
+            },
+            {
+                "internalType": "string",
+                "name": "rightHandItem",
+                "type": "string"
             }
         ],
         "stateMutability": "view",
@@ -178,6 +188,30 @@
                 "internalType": "bool",
                 "name": "diggingAllowed",
                 "type": "bool"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "gameBoardAddress",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "gameID",
+                "type": "uint256"
+            }
+        ],
+        "name": "currentDay",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "day",
+                "type": "uint256"
             }
         ],
         "stateMutability": "view",
@@ -667,30 +701,6 @@
                 "internalType": "int8[3][]",
                 "name": "activeActionStatUpdates",
                 "type": "int8[3][]"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "gameBoardAddress",
-                "type": "address"
-            },
-            {
-                "internalType": "uint256",
-                "name": "gameID",
-                "type": "uint256"
-            }
-        ],
-        "name": "playerRecoveredArtifacts",
-        "outputs": [
-            {
-                "internalType": "string[]",
-                "name": "artifacts",
-                "type": "string[]"
             }
         ],
         "stateMutability": "view",

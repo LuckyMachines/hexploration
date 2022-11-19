@@ -114,7 +114,8 @@ contract HexplorationController is GameController, GameWallets {
         );
         uint256 qID = q.queueID(gameID);
         if (qID == 0) {
-            qID = q.requestGameQueue(gameID, pr.totalRegistrations(gameID));
+            uint256 totalRegistrations = pr.totalRegistrations(gameID);
+            qID = q.requestGameQueue(gameID, totalRegistrations);
         }
         require(qID != 0, "unable to set qID in controller");
         string memory cz = board.currentPlayZone(gameID, playerID);
@@ -305,9 +306,11 @@ contract HexplorationController is GameController, GameWallets {
                             "Campsite",
                             gameID,
                             zoneIndex(gameBoard.getZoneAliases(), currentSpace)
-                        ) == 0
+                        ) ==
+                    0 ||
+                    bytes(options[0]).length == 0
                 ) {
-                    // campsite is not on board space
+                    // campsite is not on board space || options is not ""
                     isValid = false;
                 }
             } else if (actionIndex == 6) {

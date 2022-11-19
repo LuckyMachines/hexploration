@@ -246,6 +246,11 @@
                 "internalType": "bool",
                 "name": "gameComplete",
                 "type": "bool"
+            },
+            {
+                "internalType": "uint256",
+                "name": "_totalPlayers",
+                "type": "uint256"
             }
         ],
         "name": "finishProcessing",
@@ -294,6 +299,25 @@
     {
         "inputs": [],
         "name": "getProcessingQueue",
+        "outputs": [
+            {
+                "internalType": "uint256[]",
+                "name": "",
+                "type": "uint256[]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "gameID",
+                "type": "uint256"
+            }
+        ],
+        "name": "getQueueIDs",
         "outputs": [
             {
                 "internalType": "uint256[]",
@@ -674,6 +698,30 @@
             }
         ],
         "name": "queueID",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "name": "queueIDs",
         "outputs": [
             {
                 "internalType": "uint256",
