@@ -198,6 +198,13 @@
         "type": "function"
     },
     {
+        "inputs": [],
+        "name": "cleanQueue",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
         "inputs": [
             {
                 "internalType": "uint256",
@@ -230,6 +237,48 @@
                 "internalType": "uint16",
                 "name": "",
                 "type": "uint16"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "_queueID",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "_totalPlayers",
+                "type": "uint256"
+            },
+            {
+                "internalType": "bool",
+                "name": "_reset",
+                "type": "bool"
+            }
+        ],
+        "name": "failProcessing",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "name": "failedQueue",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
             }
         ],
         "stateMutability": "view",
@@ -286,6 +335,19 @@
             }
         ],
         "name": "getAllPlayers",
+        "outputs": [
+            {
+                "internalType": "uint256[]",
+                "name": "",
+                "type": "uint256[]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "getFailedQueue",
         "outputs": [
             {
                 "internalType": "uint256[]",

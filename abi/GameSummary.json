@@ -1,77 +1,92 @@
 [
     {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "gameBoardAddress",
-                "type": "address"
-            },
-            {
-                "internalType": "uint256",
-                "name": "gameID",
-                "type": "uint256"
-            }
-        ],
-        "name": "activeAction",
-        "outputs": [
-            {
-                "internalType": "string",
-                "name": "action",
-                "type": "string"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
+        "inputs": [],
+        "stateMutability": "nonpayable",
+        "type": "constructor"
     },
     {
+        "anonymous": false,
         "inputs": [
             {
+                "indexed": true,
+                "internalType": "bytes32",
+                "name": "role",
+                "type": "bytes32"
+            },
+            {
+                "indexed": true,
+                "internalType": "bytes32",
+                "name": "previousAdminRole",
+                "type": "bytes32"
+            },
+            {
+                "indexed": true,
+                "internalType": "bytes32",
+                "name": "newAdminRole",
+                "type": "bytes32"
+            }
+        ],
+        "name": "RoleAdminChanged",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "internalType": "bytes32",
+                "name": "role",
+                "type": "bytes32"
+            },
+            {
+                "indexed": true,
                 "internalType": "address",
-                "name": "gameBoardAddress",
+                "name": "account",
                 "type": "address"
             },
             {
-                "internalType": "uint256",
-                "name": "gameID",
-                "type": "uint256"
+                "indexed": true,
+                "internalType": "address",
+                "name": "sender",
+                "type": "address"
             }
         ],
-        "name": "activeInventory",
+        "name": "RoleGranted",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "internalType": "bytes32",
+                "name": "role",
+                "type": "bytes32"
+            },
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "account",
+                "type": "address"
+            },
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "sender",
+                "type": "address"
+            }
+        ],
+        "name": "RoleRevoked",
+        "type": "event"
+    },
+    {
+        "inputs": [],
+        "name": "DEFAULT_ADMIN_ROLE",
         "outputs": [
             {
-                "internalType": "string",
-                "name": "artifact",
-                "type": "string"
-            },
-            {
-                "internalType": "string",
-                "name": "status",
-                "type": "string"
-            },
-            {
-                "internalType": "string",
-                "name": "relic",
-                "type": "string"
-            },
-            {
-                "internalType": "bool",
-                "name": "shield",
-                "type": "bool"
-            },
-            {
-                "internalType": "bool",
-                "name": "campsite",
-                "type": "bool"
-            },
-            {
-                "internalType": "string",
-                "name": "leftHandItem",
-                "type": "string"
-            },
-            {
-                "internalType": "string",
-                "name": "rightHandItem",
-                "type": "string"
+                "internalType": "bytes32",
+                "name": "",
+                "type": "bytes32"
             }
         ],
         "stateMutability": "view",
@@ -106,6 +121,99 @@
                 "internalType": "bool[]",
                 "name": "campsites",
                 "type": "bool[]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "gameBoardAddress",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "gameID",
+                "type": "uint256"
+            }
+        ],
+        "name": "allPlayerActiveInventories",
+        "outputs": [
+            {
+                "internalType": "uint256[]",
+                "name": "playerIDs",
+                "type": "uint256[]"
+            },
+            {
+                "internalType": "string[]",
+                "name": "artifacts",
+                "type": "string[]"
+            },
+            {
+                "internalType": "string[]",
+                "name": "statuses",
+                "type": "string[]"
+            },
+            {
+                "internalType": "string[]",
+                "name": "relics",
+                "type": "string[]"
+            },
+            {
+                "internalType": "bool[]",
+                "name": "shields",
+                "type": "bool[]"
+            },
+            {
+                "internalType": "bool[]",
+                "name": "campsites",
+                "type": "bool[]"
+            },
+            {
+                "internalType": "string[]",
+                "name": "leftHandItems",
+                "type": "string[]"
+            },
+            {
+                "internalType": "string[]",
+                "name": "rightHandItems",
+                "type": "string[]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "gameBoardAddress",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "gameID",
+                "type": "uint256"
+            }
+        ],
+        "name": "allPlayerInactiveInventories",
+        "outputs": [
+            {
+                "internalType": "uint256[]",
+                "name": "playerIDs",
+                "type": "uint256[]"
+            },
+            {
+                "internalType": "string[][]",
+                "name": "itemTypes",
+                "type": "string[][]"
+            },
+            {
+                "internalType": "uint256[][]",
+                "name": "itemBalances",
+                "type": "uint256[][]"
             }
         ],
         "stateMutability": "view",
@@ -254,99 +362,12 @@
                 "type": "uint256"
             }
         ],
-        "name": "currentHandInventory",
-        "outputs": [
-            {
-                "internalType": "string",
-                "name": "leftHandItem",
-                "type": "string"
-            },
-            {
-                "internalType": "string",
-                "name": "rightHandItem",
-                "type": "string"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "gameBoardAddress",
-                "type": "address"
-            },
-            {
-                "internalType": "uint256",
-                "name": "gameID",
-                "type": "uint256"
-            }
-        ],
-        "name": "currentLocation",
-        "outputs": [
-            {
-                "internalType": "string",
-                "name": "location",
-                "type": "string"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "gameBoardAddress",
-                "type": "address"
-            },
-            {
-                "internalType": "uint256",
-                "name": "gameID",
-                "type": "uint256"
-            }
-        ],
         "name": "currentPhase",
         "outputs": [
             {
                 "internalType": "string",
                 "name": "phase",
                 "type": "string"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "gameBoardAddress",
-                "type": "address"
-            },
-            {
-                "internalType": "uint256",
-                "name": "gameID",
-                "type": "uint256"
-            }
-        ],
-        "name": "currentPlayerStats",
-        "outputs": [
-            {
-                "internalType": "uint8",
-                "name": "movement",
-                "type": "uint8"
-            },
-            {
-                "internalType": "uint8",
-                "name": "agility",
-                "type": "uint8"
-            },
-            {
-                "internalType": "uint8",
-                "name": "dexterity",
-                "type": "uint8"
             }
         ],
         "stateMutability": "view",
@@ -413,26 +434,59 @@
     {
         "inputs": [
             {
-                "internalType": "address",
-                "name": "gameBoardAddress",
-                "type": "address"
+                "internalType": "bytes32",
+                "name": "role",
+                "type": "bytes32"
+            }
+        ],
+        "name": "getRoleAdmin",
+        "outputs": [
+            {
+                "internalType": "bytes32",
+                "name": "",
+                "type": "bytes32"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "bytes32",
+                "name": "role",
+                "type": "bytes32"
             },
             {
                 "internalType": "uint256",
-                "name": "gameID",
+                "name": "index",
                 "type": "uint256"
-            },
+            }
+        ],
+        "name": "getRoleMember",
+        "outputs": [
             {
                 "internalType": "address",
-                "name": "playerAddress",
+                "name": "",
                 "type": "address"
             }
         ],
-        "name": "getPlayerID",
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "bytes32",
+                "name": "role",
+                "type": "bytes32"
+            }
+        ],
+        "name": "getRoleMemberCount",
         "outputs": [
             {
                 "internalType": "uint256",
-                "name": "playerID",
+                "name": "",
                 "type": "uint256"
             }
         ],
@@ -442,137 +496,39 @@
     {
         "inputs": [
             {
+                "internalType": "bytes32",
+                "name": "role",
+                "type": "bytes32"
+            },
+            {
                 "internalType": "address",
-                "name": "gameBoardAddress",
+                "name": "account",
                 "type": "address"
-            },
-            {
-                "internalType": "uint256",
-                "name": "gameID",
-                "type": "uint256"
             }
         ],
-        "name": "inactiveInventory",
-        "outputs": [
-            {
-                "internalType": "string[]",
-                "name": "itemTypes",
-                "type": "string[]"
-            },
-            {
-                "internalType": "uint256[]",
-                "name": "itemBalances",
-                "type": "uint256[]"
-            }
-        ],
-        "stateMutability": "view",
+        "name": "grantRole",
+        "outputs": [],
+        "stateMutability": "nonpayable",
         "type": "function"
     },
     {
         "inputs": [
             {
-                "internalType": "address",
-                "name": "gameBoardAddress",
-                "type": "address"
-            },
-            {
-                "internalType": "uint256",
-                "name": "gameID",
-                "type": "uint256"
+                "internalType": "bytes32",
+                "name": "role",
+                "type": "bytes32"
             },
             {
                 "internalType": "address",
-                "name": "playerAddress",
+                "name": "account",
                 "type": "address"
             }
         ],
-        "name": "isActive",
+        "name": "hasRole",
         "outputs": [
             {
                 "internalType": "bool",
-                "name": "playerIsActive",
-                "type": "bool"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "gameBoardAddress",
-                "type": "address"
-            },
-            {
-                "internalType": "uint256",
-                "name": "gameID",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint256",
-                "name": "playerID",
-                "type": "uint256"
-            }
-        ],
-        "name": "isActive",
-        "outputs": [
-            {
-                "internalType": "bool",
-                "name": "playerIsActive",
-                "type": "bool"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "gameBoardAddress",
-                "type": "address"
-            },
-            {
-                "internalType": "uint256",
-                "name": "gameID",
-                "type": "uint256"
-            }
-        ],
-        "name": "isAtCampsite",
-        "outputs": [
-            {
-                "internalType": "bool",
-                "name": "atCampsite",
-                "type": "bool"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "gameBoardAddress",
-                "type": "address"
-            },
-            {
-                "internalType": "uint256",
-                "name": "gameID",
-                "type": "uint256"
-            },
-            {
-                "internalType": "address",
-                "name": "playerAddress",
-                "type": "address"
-            }
-        ],
-        "name": "isRegistered",
-        "outputs": [
-            {
-                "internalType": "bool",
-                "name": "playerIsRegistered",
+                "name": "",
                 "type": "bool"
             }
         ],
@@ -725,6 +681,74 @@
                 "internalType": "string[]",
                 "name": "artifacts",
                 "type": "string[]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "bytes32",
+                "name": "role",
+                "type": "bytes32"
+            },
+            {
+                "internalType": "address",
+                "name": "account",
+                "type": "address"
+            }
+        ],
+        "name": "renounceRole",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "bytes32",
+                "name": "role",
+                "type": "bytes32"
+            },
+            {
+                "internalType": "address",
+                "name": "account",
+                "type": "address"
+            }
+        ],
+        "name": "revokeRole",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "playerSummaryAddress",
+                "type": "address"
+            }
+        ],
+        "name": "setPlayerSummary",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "bytes4",
+                "name": "interfaceId",
+                "type": "bytes4"
+            }
+        ],
+        "name": "supportsInterface",
+        "outputs": [
+            {
+                "internalType": "bool",
+                "name": "",
+                "type": "bool"
             }
         ],
         "stateMutability": "view",

@@ -8,8 +8,16 @@ import "./CharacterCard.sol";
 import "./TokenInventory.sol";
 import "./HexplorationQueue.sol";
 import "./GameWallets.sol";
+import "./Utilities.sol";
+import "./PlayerSummary.sol";
 
-contract GameSummary is GameWallets {
+contract GameSummary is GameWallets, Utilities, AccessControlEnumerable {
+    PlayerSummary PLAYER_SUMMARY;
+
+    constructor() {
+        _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
+    }
+
     // Public Game Summary Functions
     function activeZones(address gameBoardAddress, uint256 gameID)
         public
@@ -52,6 +60,96 @@ contract GameSummary is GameWallets {
                     0;
                 activeZoneCount++;
             }
+        }
+    }
+
+    // NEW FUNCTION
+
+    function allPlayerActiveInventories(
+        address gameBoardAddress,
+        uint256 gameID
+    )
+        public
+        view
+        returns (
+            uint256[] memory playerIDs,
+            string[] memory artifacts,
+            string[] memory statuses,
+            string[] memory relics,
+            bool[] memory shields,
+            bool[] memory campsites,
+            string[] memory leftHandItems,
+            string[] memory rightHandItems
+        )
+    {
+        HexplorationBoard board = HexplorationBoard(gameBoardAddress);
+        // uint256 totalRegistrations = pr.totalRegistrations(gameID);
+        playerIDs = new uint256[](
+            PlayerRegistry(board.prAddress()).totalRegistrations(gameID)
+        );
+        artifacts = new string[](
+            PlayerRegistry(board.prAddress()).totalRegistrations(gameID)
+        );
+        statuses = new string[](
+            PlayerRegistry(board.prAddress()).totalRegistrations(gameID)
+        );
+        relics = new string[](
+            PlayerRegistry(board.prAddress()).totalRegistrations(gameID)
+        );
+        shields = new bool[](
+            PlayerRegistry(board.prAddress()).totalRegistrations(gameID)
+        );
+        campsites = new bool[](
+            PlayerRegistry(board.prAddress()).totalRegistrations(gameID)
+        );
+        leftHandItems = new string[](
+            PlayerRegistry(board.prAddress()).totalRegistrations(gameID)
+        );
+        rightHandItems = new string[](
+            PlayerRegistry(board.prAddress()).totalRegistrations(gameID)
+        );
+
+        for (
+            uint256 i = 0;
+            i < PlayerRegistry(board.prAddress()).totalRegistrations(gameID);
+            i++
+        ) {
+            playerIDs[i] = i + 1;
+            (
+                artifacts[i],
+                statuses[i],
+                relics[i],
+                shields[i],
+                campsites[i],
+                leftHandItems[i],
+                rightHandItems[i]
+            ) = PLAYER_SUMMARY.activeInventory(gameBoardAddress, gameID, i + 1);
+        }
+    }
+
+    function allPlayerInactiveInventories(
+        address gameBoardAddress,
+        uint256 gameID
+    )
+        public
+        view
+        returns (
+            uint256[] memory playerIDs,
+            string[][] memory itemTypes,
+            uint256[][] memory itemBalances
+        )
+    {
+        HexplorationBoard board = HexplorationBoard(gameBoardAddress);
+        PlayerRegistry pr = PlayerRegistry(board.prAddress());
+        uint256 totalRegistrations = pr.totalRegistrations(gameID);
+        playerIDs = new uint256[](totalRegistrations);
+        for (uint256 i = 0; i < totalRegistrations; i++) {
+            playerIDs[i] = i + 1;
+            (itemTypes[i], itemBalances[i]) = PLAYER_SUMMARY.inactiveInventory(
+                gameBoardAddress,
+                gameID,
+                i + 1
+            );
         }
     }
 
@@ -316,391 +414,7 @@ contract GameSummary is GameWallets {
         numPlayers = pr.totalRegistrations(gameID);
     }
 
-    // Public Player Summary Functions
-    function getPlayerID(
-        address gameBoardAddress,
-        uint256 gameID,
-        address playerAddress
-    ) public view returns (uint256 playerID) {
-        HexplorationBoard board = HexplorationBoard(gameBoardAddress);
-        PlayerRegistry pr = PlayerRegistry(board.prAddress());
-        playerID = pr.playerID(gameID, playerAddress);
-    }
-
-    function isActive(
-        address gameBoardAddress,
-        uint256 gameID,
-        address playerAddress
-    ) public view returns (bool playerIsActive) {
-        HexplorationBoard board = HexplorationBoard(gameBoardAddress);
-        PlayerRegistry pr = PlayerRegistry(board.prAddress());
-        uint256 playerID = pr.playerID(gameID, playerAddress);
-        playerIsActive = pr.isActive(gameID, playerID);
-    }
-
-    function isActive(
-        address gameBoardAddress,
-        uint256 gameID,
-        uint256 playerID
-    ) public view returns (bool playerIsActive) {
-        HexplorationBoard board = HexplorationBoard(gameBoardAddress);
-        PlayerRegistry pr = PlayerRegistry(board.prAddress());
-        playerIsActive = pr.isActive(gameID, playerID);
-    }
-
-    function isRegistered(
-        address gameBoardAddress,
-        uint256 gameID,
-        address playerAddress
-    ) public view returns (bool playerIsRegistered) {
-        HexplorationBoard board = HexplorationBoard(gameBoardAddress);
-        PlayerRegistry pr = PlayerRegistry(board.prAddress());
-        playerIsRegistered = pr.isRegistered(gameID, playerAddress);
-    }
-
-    // See if player is active in current game. Players will remain registered even when inactive.
-
-    // Player Summary Functions called directly by players
-    function activeAction(address gameBoardAddress, uint256 gameID)
-        public
-        view
-        returns (string memory action)
-    {
-        HexplorationBoard board = HexplorationBoard(gameBoardAddress);
-        CharacterCard cc = CharacterCard(board.characterCard());
-        uint256 playerID = PlayerRegistry(board.prAddress()).playerID(
-            gameID,
-            tx.origin
-        );
-        CharacterCard.Action a = cc.action(gameID, playerID);
-
-        action = "Idle";
-        if (a == CharacterCard.Action.Move) {
-            action = "Move";
-        } else if (a == CharacterCard.Action.SetupCamp) {
-            action = "Setup camp";
-        } else if (a == CharacterCard.Action.BreakDownCamp) {
-            action = "Break down camp";
-        } else if (a == CharacterCard.Action.Dig) {
-            action = "Dig";
-        } else if (a == CharacterCard.Action.Rest) {
-            action = "Rest";
-        } else if (a == CharacterCard.Action.Help) {
-            action = "Help";
-        }
-    }
-
-    function activeInventory(address gameBoardAddress, uint256 gameID)
-        public
-        view
-        returns (
-            string memory artifact,
-            string memory status,
-            string memory relic,
-            bool shield,
-            bool campsite,
-            string memory leftHandItem,
-            string memory rightHandItem
-        )
-    {
-        HexplorationBoard board = HexplorationBoard(gameBoardAddress);
-        CharacterCard cc = CharacterCard(board.characterCard());
-        PlayerRegistry pr = PlayerRegistry(board.prAddress());
-        uint256 playerID = pr.playerID(gameID, tx.origin);
-        artifact = inventoryArtifactExists(
-            cc.artifact(gameID, playerID),
-            board.tokenInventory(),
-            gameID,
-            playerID
-        )
-            ? cc.artifact(gameID, playerID)
-            : "";
-
-        status = inventoryStatusExists(
-            cc.status(gameID, playerID),
-            board.tokenInventory(),
-            gameID,
-            playerID
-        )
-            ? cc.status(gameID, playerID)
-            : "";
-
-        relic = inventoryItemExists(
-            cc.relic(gameID, playerID),
-            board.tokenInventory(),
-            gameID,
-            playerID
-        )
-            ? cc.relic(gameID, playerID)
-            : "";
-
-        shield = inventoryItemExists(
-            "Shield",
-            board.tokenInventory(),
-            gameID,
-            playerID
-        )
-            ? true
-            : false;
-
-        campsite = inventoryItemExists(
-            "Campsite",
-            board.tokenInventory(),
-            gameID,
-            playerID
-        )
-            ? true
-            : false;
-
-        (leftHandItem, rightHandItem) = currentHandInventory(
-            gameBoardAddress,
-            gameID
-        );
-    }
-
-    // function availableMovement(address gameBoardAddress, uint256 gameID)
-    //     public
-    //     view
-    //     returns (uint8 movement)
-    // {
-    //     HexplorationBoard board = HexplorationBoard(gameBoardAddress);
-    //     HexplorationZone hexZone = HexplorationZone(board.hexZoneAddress());
-    //     CharacterCard cc = CharacterCard(board.characterCard());
-    //     PlayerRegistry pr = PlayerRegistry(board.prAddress());
-    //     uint256 playerID = pr.playerID(gameID, tx.origin);
-    //     movement = cc.movement(gameID, playerID);
-
-    //     HexplorationZone.Tile currentTile = hexZone.tile(
-    //         gameID,
-    //         currentLocation(gameBoardAddress, gameID)
-    //     );
-    //     if (stringsMatch(currentPhase(gameBoardAddress, gameID), "Day")) {
-    //         /*
-    //         Daytime
-    //         Plains: No change
-    //         Jungle: -1 Speed
-    //         Mountain: -1 Speed
-    //         Desert: -2 Speed
-    //         */
-    //         if (currentTile == HexplorationZone.Tile.Jungle) {
-    //             movement = movement > 0 ? movement - 1 : 0;
-    //         } else if (currentTile == HexplorationZone.Tile.Mountain) {
-    //             movement = movement > 0 ? movement - 1 : 0;
-    //         } else if (currentTile == HexplorationZone.Tile.Desert) {
-    //             movement = movement > 1 ? movement - 2 : 0;
-    //         }
-    //     } else {
-    //         /*
-    //         Night time
-    //         Plains: -1 Speed
-    //         Jungle: -2 Speed,
-    //         Mountain: -2 Speed,
-    //         Desert: -1 Speed
-    //         */
-    //         if (currentTile == HexplorationZone.Tile.Plains) {
-    //             movement = movement > 0 ? movement - 1 : 0;
-    //         } else if (currentTile == HexplorationZone.Tile.Jungle) {
-    //             movement = movement > 1 ? movement - 2 : 0;
-    //         } else if (currentTile == HexplorationZone.Tile.Mountain) {
-    //             movement = movement > 1 ? movement - 2 : 0;
-    //         } else if (currentTile == HexplorationZone.Tile.Desert) {
-    //             movement = movement > 0 ? movement - 1 : 0;
-    //         }
-    //     }
-    // }
-
-    function currentHandInventory(address gameBoardAddress, uint256 gameID)
-        public
-        view
-        returns (string memory leftHandItem, string memory rightHandItem)
-    {
-        HexplorationBoard board = HexplorationBoard(gameBoardAddress);
-        CharacterCard cc = CharacterCard(board.characterCard());
-        PlayerRegistry pr = PlayerRegistry(board.prAddress());
-        uint256 playerID = pr.playerID(gameID, tx.origin);
-        leftHandItem = inventoryItemExists(
-            cc.leftHandItem(gameID, playerID),
-            board.tokenInventory(),
-            gameID,
-            PlayerRegistry(board.prAddress()).playerID(gameID, tx.origin)
-        )
-            ? cc.leftHandItem(gameID, playerID)
-            : "";
-
-        rightHandItem = inventoryItemExists(
-            cc.rightHandItem(gameID, playerID),
-            board.tokenInventory(),
-            gameID,
-            PlayerRegistry(board.prAddress()).playerID(gameID, tx.origin)
-        )
-            ? cc.rightHandItem(gameID, playerID)
-            : "";
-    }
-
-    function currentLocation(address gameBoardAddress, uint256 gameID)
-        public
-        view
-        returns (string memory location)
-    {
-        HexplorationBoard board = HexplorationBoard(gameBoardAddress);
-        PlayerRegistry pr = PlayerRegistry(board.prAddress());
-        location = board.currentPlayZone(
-            gameID,
-            pr.playerID(gameID, tx.origin)
-        );
-    }
-
-    function currentPlayerStats(address gameBoardAddress, uint256 gameID)
-        public
-        view
-        returns (
-            uint8 movement,
-            uint8 agility,
-            uint8 dexterity
-        )
-    {
-        HexplorationBoard board = HexplorationBoard(gameBoardAddress);
-        CharacterCard cc = CharacterCard(board.characterCard());
-        PlayerRegistry pr = PlayerRegistry(board.prAddress());
-        uint256 playerID = pr.playerID(gameID, tx.origin);
-        movement = cc.movement(gameID, playerID);
-        agility = cc.agility(gameID, playerID);
-        dexterity = cc.dexterity(gameID, playerID);
-    }
-
-    function inactiveInventory(address gameBoardAddress, uint256 gameID)
-        public
-        view
-        returns (string[] memory itemTypes, uint256[] memory itemBalances)
-    {
-        HexplorationBoard board = HexplorationBoard(gameBoardAddress);
-        PlayerRegistry pr = PlayerRegistry(board.prAddress());
-        TokenInventory ti = TokenInventory(board.tokenInventory());
-        itemBalances = new uint256[](15);
-        itemTypes = new string[](15);
-        // Campsite, Artfacts, Relics, Shield never inactive.
-        // 1 shield should always be active...
-        itemTypes[0] = "Small Ammo";
-        itemTypes[1] = "Large Ammo";
-        itemTypes[2] = "Batteries";
-        itemTypes[3] = "Portal";
-        itemTypes[4] = "On";
-        itemTypes[5] = "Off";
-        itemTypes[6] = "Rusty Dagger";
-        itemTypes[7] = "Rusty Pistol";
-        itemTypes[8] = "Shiny Dagger";
-        itemTypes[9] = "Shiny Pistol";
-        itemTypes[10] = "Shiny Rifle";
-        itemTypes[11] = "Laser Dagger";
-        itemTypes[12] = "Laser Sword";
-        itemTypes[13] = "Laser Pistol";
-        itemTypes[14] = "Power Glove";
-        uint256 playerID = pr.playerID(gameID, tx.origin);
-        string memory lhItem;
-        string memory rhItem;
-        (lhItem, rhItem) = currentHandInventory(gameBoardAddress, gameID);
-        if (ti.holdsToken(playerID, TokenInventory.Token.Item, gameID)) {
-            GameToken itemToken = ti.ITEM_TOKEN();
-            //string[] memory types = itemToken.getTokenTypes();
-            for (uint256 i = 0; i < itemBalances.length; i++) {
-                //itemTypes[i] = types[i];
-                // TODO: don't include if matches LH, RH
-                string memory item = itemTypes[i];
-                itemBalances[i] = (!stringsMatch(item, lhItem) &&
-                    !stringsMatch(item, rhItem))
-                    ? (stringsMatch(item, "Shield") &&
-                        itemToken.balance(item, gameID, playerID) > 1)
-                        ? itemToken.balance(item, gameID, playerID) - 1
-                        : itemToken.balance(item, gameID, playerID)
-                    : 0;
-            }
-        }
-    }
-
-    function isAtCampsite(address gameBoardAddress, uint256 gameID)
-        public
-        view
-        returns (bool atCampsite)
-    {
-        HexplorationBoard board = HexplorationBoard(gameBoardAddress);
-        PlayerRegistry pr = PlayerRegistry(board.prAddress());
-        string memory currentZone = board.currentPlayZone(
-            gameID,
-            pr.playerID(gameID, tx.origin)
-        );
-        uint256 index = zoneIndex(gameBoardAddress, currentZone);
-        // zone balance...
-        //mapping(string => mapping(uint256 => mapping(uint256 => uint256)))
-
-        atCampsite =
-            TokenInventory(board.tokenInventory()).ITEM_TOKEN().zoneBalance(
-                "Campsite",
-                gameID,
-                index
-            ) >
-            0;
-    }
-
-    /*
-    function playerRecoveredArtifacts(address gameBoardAddress, uint256 gameID)
-        public
-        view
-        returns (string[] memory artifacts)
-    {
-        HexplorationBoard board = HexplorationBoard(gameBoardAddress);
-        PlayerRegistry pr = PlayerRegistry(board.prAddress());
-        artifacts = board.getArtifactsRetrieved(
-            gameID,
-            pr.playerID(gameID, tx.origin)
-        );
-    }
-*/
     // Internal Stuff
-    // Item exists in player inventory
-    function inventoryItemExists(
-        string memory tokenType,
-        address inventoryAddress,
-        uint256 gameID,
-        uint256 holderID
-    ) internal view returns (bool) {
-        return
-            TokenInventory(inventoryAddress).ITEM_TOKEN().balance(
-                tokenType,
-                gameID,
-                holderID
-            ) > 0;
-    }
-
-    // Artifact exists in player inventory
-    function inventoryArtifactExists(
-        string memory tokenType,
-        address inventoryAddress,
-        uint256 gameID,
-        uint256 holderID
-    ) internal view returns (bool) {
-        return
-            TokenInventory(inventoryAddress).ITEM_TOKEN().balance(
-                tokenType,
-                gameID,
-                holderID
-            ) > 0;
-    }
-
-    // Status token exists in player inventory
-    function inventoryStatusExists(
-        string memory tokenType,
-        address inventoryAddress,
-        uint256 gameID,
-        uint256 holderID
-    ) internal view returns (bool) {
-        return
-            TokenInventory(inventoryAddress).PLAYER_STATUS_TOKEN().balance(
-                tokenType,
-                gameID,
-                holderID
-            ) > 0;
-    }
-
     function zoneIndex(address gameBoardAddress, string memory zoneAlias)
         internal
         view
@@ -720,12 +434,11 @@ contract GameSummary is GameWallets {
         }
     }
 
-    function stringsMatch(string memory s1, string memory s2)
-        internal
-        pure
-        returns (bool)
+    // Admin functions
+    function setPlayerSummary(address playerSummaryAddress)
+        public
+        onlyRole(DEFAULT_ADMIN_ROLE)
     {
-        return
-            keccak256(abi.encodePacked(s1)) == keccak256(abi.encodePacked(s2));
+        PLAYER_SUMMARY = PlayerSummary(playerSummaryAddress);
     }
 }

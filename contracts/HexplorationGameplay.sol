@@ -133,6 +133,7 @@ contract HexplorationGameplay is
     }
 
     function performUpkeep(bytes calldata performData) external override {
+        // TODO: restrict to registry or admin
         DataSummary memory summary;
         uint256 queueID;
         uint256 processingPhase;
@@ -168,9 +169,29 @@ contract HexplorationGameplay is
             );
         }
         if (processingPhase == 2) {
-            processPlayerActions(queueID, summary);
+            (bool success, ) = address(this).call(
+                abi.encodeWithSignature(
+                    "processPlayerActions(uint256,(uint256,uint256,uint256,uint256,uint256,uint256))",
+                    queueID,
+                    summary
+                )
+            );
+            if (!success) {
+                // Can reset queue since nothing has been processed this turn
+                QUEUE.failProcessing(queueID, activePlayers(queueID), true);
+            }
         } else if (processingPhase == 3) {
-            processPlayThrough(queueID, summary);
+            (bool success, ) = address(this).call(
+                abi.encodeWithSignature(
+                    "processPlayThrough(uint256,(uint256,uint256,uint256,uint256,uint256,uint256))",
+                    queueID,
+                    summary
+                )
+            );
+            if (!success) {
+                // Cannot reset queue since player actions already processed
+                QUEUE.failProcessing(queueID, activePlayers(queueID), false);
+            }
         }
     }
 
@@ -280,8 +301,9 @@ contract HexplorationGameplay is
     }
 
     function processPlayerActions(uint256 queueID, DataSummary memory summary)
-        internal
+        public
     {
+        require(_msgSender() == address(this), "internal function");
         uint256 gameID = QUEUE.game(queueID);
         // TODO: save update struct with all the actions from queue (what was originally the ints array)
         PlayUpdates memory playUpdates = HexplorationGameplayUpdates
@@ -314,8 +336,9 @@ contract HexplorationGameplay is
     }
 
     function processPlayThrough(uint256 queueID, DataSummary memory summary)
-        internal
+        public
     {
+        require(_msgSender() == address(this), "internal function");
         HexplorationQueue.ProcessingPhase phase = QUEUE.currentPhase(queueID);
 
         if (QUEUE.randomness(queueID, 12) != 0) {
@@ -355,29 +378,29 @@ contract HexplorationGameplay is
                 // TODO: set this to true when game is finished
                 bool gameComplete = false;
 
-                PlayerRegistry pr = PlayerRegistry(GAME_BOARD.prAddress());
-                uint256 totalRegistrations = pr.totalRegistrations(gameID);
-                uint256 inactivePlayers = 0;
-                CharacterCard cc = CharacterCard(GAME_BOARD.characterCard());
-                for (uint256 i = 0; i < totalRegistrations; i++) {
-                    if (
-                        !pr.isActive(gameID, i + 1) ||
-                        cc.playerIsDead(gameID, i + 1)
-                    ) {
-                        inactivePlayers++;
-                    }
-                }
-
                 QUEUE.finishProcessing(
                     queueID,
                     gameComplete,
-                    totalRegistrations - inactivePlayers
+                    activePlayers(queueID)
                 );
             }
         }
     }
 
     // Internal
+    function activePlayers(uint256 queueID) internal view returns (uint256) {
+        uint256 gameID = QUEUE.game(queueID);
+        PlayerRegistry pr = PlayerRegistry(GAME_BOARD.prAddress());
+        uint256 totalRegistrations = pr.totalRegistrations(gameID);
+        uint256 inactivePlayers = 0;
+        CharacterCard cc = CharacterCard(GAME_BOARD.characterCard());
+        for (uint256 i = 0; i < totalRegistrations; i++) {
+            if (!pr.isActive(gameID, i + 1) || cc.playerIsDead(gameID, i + 1)) {
+                inactivePlayers++;
+            }
+        }
+        return (totalRegistrations - inactivePlayers);
+    }
 
     // Pass play zones in order P1, P2, P3, P4
     function resolveCampSetupDisputes(

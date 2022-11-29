@@ -30,7 +30,8 @@ contract HexplorationQueue is AccessControlEnumerable, VRFConsumerBaseV2 {
         Processing,
         PlayThrough,
         Processed,
-        Closed
+        Closed,
+        Failed
     }
     enum Action {
         Idle,
@@ -54,6 +55,9 @@ contract HexplorationQueue is AccessControlEnumerable, VRFConsumerBaseV2 {
 
     // Array of Queue IDs to be processed.
     uint256[] public processingQueue;
+
+    // Array of Queue IDs unable to be processed with upkeep
+    uint256[] public failedQueue;
 
     // do we need these 2?
     mapping(uint256 => uint16) public currentQueuePosition; // ?? increases with each player in queue, then back to 0
@@ -134,6 +138,10 @@ contract HexplorationQueue is AccessControlEnumerable, VRFConsumerBaseV2 {
     //     usingTestRandomness = _testMode;
     //     testRandomness = _testRandomness;
     // }
+
+    function cleanQueue() public {
+        // TODO: remove 0s from processing queue
+    }
 
     function isInTestMode() public view returns (bool testMode) {
         testMode = _testMode;
@@ -252,6 +260,10 @@ contract HexplorationQueue is AccessControlEnumerable, VRFConsumerBaseV2 {
         return processingQueue;
     }
 
+    function getFailedQueue() public view returns (uint256[] memory) {
+        return failedQueue;
+    }
+
     // Gameplay interactions
     function setPhase(ProcessingPhase phase, uint256 _queueID)
         external
@@ -280,6 +292,14 @@ contract HexplorationQueue is AccessControlEnumerable, VRFConsumerBaseV2 {
         queueID[g] = _requestGameQueue(g, tp);
     }
 
+    function failProcessing(
+        uint256 _queueID,
+        uint256 _totalPlayers,
+        bool _reset
+    ) public onlyRole(GAMEPLAY_ROLE) {
+        _setProcessingFailed(_queueID, _totalPlayers, _reset);
+    }
+
     function finishProcessing(
         uint256 _queueID,
         bool gameComplete,
@@ -306,6 +326,29 @@ contract HexplorationQueue is AccessControlEnumerable, VRFConsumerBaseV2 {
         if (!gameComplete) {
             // get new queue ID for next set of player actions
             // TODO: set total players to actual value here...
+            uint256 newQueueID = _requestGameQueue(g, _totalPlayers);
+            queueID[g] = newQueueID;
+            currentPhase[newQueueID] = ProcessingPhase.Submission;
+        }
+    }
+
+    function _setProcessingFailed(
+        uint256 _queueID,
+        uint256 _totalPlayers,
+        bool _reset
+    ) internal {
+        uint256 g = game[_queueID];
+        currentPhase[_queueID] = ProcessingPhase.Failed;
+        queueID[g] = 0;
+        inProcessingQueue[_queueID] = false;
+        for (uint256 i = 0; i < processingQueue.length; i++) {
+            if (processingQueue[i] == _queueID) {
+                processingQueue[i] = 0;
+                break;
+            }
+        }
+        // TODO: how to get new queue ID to allow game to continue playing (rolled back to previous state if already processed player actions)?
+        if (_reset) {
             uint256 newQueueID = _requestGameQueue(g, _totalPlayers);
             queueID[g] = newQueueID;
             currentPhase[newQueueID] = ProcessingPhase.Submission;
