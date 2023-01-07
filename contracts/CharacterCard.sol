@@ -21,7 +21,6 @@ contract CharacterCard is AccessControlEnumerable {
     uint8 public constant MAX_DEXTERITY = 4;
 
     address public itemToken;
-    address public artifactToken;
     address public relicToken;
     // game id => player ID
     mapping(uint256 => mapping(uint256 => uint8)) public movement;
@@ -55,14 +54,9 @@ contract CharacterCard is AccessControlEnumerable {
     mapping(uint256 => mapping(uint256 => int8[3]))
         public dayPhaseActionStatUpdates;
 
-    constructor(
-        address itemTokenAddress,
-        address artifactTokenAddress,
-        address relicTokenAddress
-    ) {
+    constructor(address itemTokenAddress, address relicTokenAddress) {
         _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
         itemToken = itemTokenAddress;
-        artifactToken = artifactTokenAddress;
         relicToken = relicTokenAddress;
     }
 

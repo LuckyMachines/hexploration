@@ -14,6 +14,17 @@ import "./PlayerSummary.sol";
 contract GameSummary is GameWallets, Utilities, AccessControlEnumerable {
     PlayerSummary PLAYER_SUMMARY;
 
+    struct EventSummary {
+        uint256 playerID;
+        string cardType;
+        string cardDrawn;
+        uint8 currentAction;
+        string cardResult;
+        string[3] inventoryChanges;
+        int8[3] statUpdates;
+        string[] movementPath;
+    }
+
     constructor() {
         _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
     }
@@ -62,8 +73,6 @@ contract GameSummary is GameWallets, Utilities, AccessControlEnumerable {
             }
         }
     }
-
-    // NEW FUNCTION
 
     function allPlayerActiveInventories(
         address gameBoardAddress,
@@ -301,53 +310,84 @@ contract GameSummary is GameWallets, Utilities, AccessControlEnumerable {
         }
     }
 
+    // function lastPlayerActions(address gameBoardAddress, uint256 gameID)
+    //     public
+    //     view
+    //     returns (
+    //         uint256[] memory playerIDs,
+    //         string[] memory activeActionCardTypes,
+    //         string[] memory activeActionCardsDrawn,
+    //         uint8[] memory currentActiveActions,
+    //         string[] memory activeActionCardResults,
+    //         string[3][] memory activeActionCardInventoryChanges,
+    //         int8[3][] memory activeActionStatUpdates
+    //     )
+    // {
+    //     HexplorationBoard board = HexplorationBoard(gameBoardAddress);
+    //     CharacterCard cc = CharacterCard(board.characterCard());
+    //     PlayerRegistry pr = PlayerRegistry(board.prAddress());
+    //     uint256 totalRegistrations = pr.totalRegistrations(gameID);
+    //     playerIDs = new uint256[](totalRegistrations);
+    //     activeActionCardTypes = new string[](totalRegistrations);
+    //     activeActionCardsDrawn = new string[](totalRegistrations);
+    //     currentActiveActions = new uint8[](totalRegistrations);
+    //     activeActionCardResults = new string[](totalRegistrations);
+    //     activeActionCardInventoryChanges = new string[3][](totalRegistrations);
+    //     activeActionStatUpdates = new int8[3][](totalRegistrations);
+
+    //     // TODO: skip inactive players, will return 0 / default empty values
+    //     for (uint256 i = 0; i < totalRegistrations; i++) {
+    //         uint256 pID = i + 1;
+    //         playerIDs[i] = pID;
+    //         activeActionCardTypes[i] = cc.activeActionCardType(gameID, pID);
+    //         activeActionCardsDrawn[i] = cc.activeActionCardDrawn(gameID, pID);
+    //         currentActiveActions[i] = uint8(cc.action(gameID, pID));
+    //         activeActionCardResults[i] = cc.activeActionCardResult(gameID, pID);
+    //         activeActionCardInventoryChanges[i] = cc.getInventoryChanges(
+    //             gameID,
+    //             pID
+    //         );
+    //         activeActionStatUpdates[i] = cc.getStatUpdates(gameID, pID);
+    //     }
+    //     // returns
+    //     // playerIDs
+    //     // activeActionCardType - // "Event","Ambush","Treasure"
+    //     // activationActionCardsDrawn = card title of card drawn
+    //     // currentActveActions - action doing that led to card draw
+    //     // activeActionCardResults - outcomes of cards
+    //     // activeActionCardInventoryChangs - item loss, item gain, hand loss (left/right)
+    //     // activeActionStatUpdates - [movement adjust, agility adjust, dexterity adjust] (will only effect up to max and down to 0)
+    // }
+
     function lastPlayerActions(address gameBoardAddress, uint256 gameID)
         public
         view
-        returns (
-            uint256[] memory playerIDs,
-            string[] memory activeActionCardTypes,
-            string[] memory activeActionCardsDrawn,
-            uint8[] memory currentActiveActions,
-            string[] memory activeActionCardResults,
-            string[3][] memory activeActionCardInventoryChanges,
-            int8[3][] memory activeActionStatUpdates
-        )
+        returns (EventSummary[] memory playerActions)
     {
         HexplorationBoard board = HexplorationBoard(gameBoardAddress);
         CharacterCard cc = CharacterCard(board.characterCard());
         PlayerRegistry pr = PlayerRegistry(board.prAddress());
         uint256 totalRegistrations = pr.totalRegistrations(gameID);
-        playerIDs = new uint256[](totalRegistrations);
-        activeActionCardTypes = new string[](totalRegistrations);
-        activeActionCardsDrawn = new string[](totalRegistrations);
-        currentActiveActions = new uint8[](totalRegistrations);
-        activeActionCardResults = new string[](totalRegistrations);
-        activeActionCardInventoryChanges = new string[3][](totalRegistrations);
-        activeActionStatUpdates = new int8[3][](totalRegistrations);
+
+        playerActions = new EventSummary[](totalRegistrations);
 
         // TODO: skip inactive players, will return 0 / default empty values
-        for (uint256 i = 0; i < totalRegistrations; i++) {
+        for (uint256 i = 0; i < playerActions.length; i++) {
             uint256 pID = i + 1;
-            playerIDs[i] = pID;
-            activeActionCardTypes[i] = cc.activeActionCardType(gameID, pID);
-            activeActionCardsDrawn[i] = cc.activeActionCardDrawn(gameID, pID);
-            currentActiveActions[i] = uint8(cc.action(gameID, pID));
-            activeActionCardResults[i] = cc.activeActionCardResult(gameID, pID);
-            activeActionCardInventoryChanges[i] = cc.getInventoryChanges(
+            playerActions[i].playerID = pID;
+            playerActions[i].cardType = cc.activeActionCardType(gameID, pID);
+            playerActions[i].cardDrawn = cc.activeActionCardDrawn(gameID, pID);
+            playerActions[i].currentAction = uint8(cc.action(gameID, pID));
+            playerActions[i].cardResult = cc.activeActionCardResult(
                 gameID,
                 pID
             );
-            activeActionStatUpdates[i] = cc.getStatUpdates(gameID, pID);
+            playerActions[i].inventoryChanges = cc.getInventoryChanges(
+                gameID,
+                pID
+            );
+            playerActions[i].statUpdates = cc.getStatUpdates(gameID, pID);
         }
-        // returns
-        // playerIDs
-        // activeActionCardType - // "Event","Ambush","Treasure"
-        // activationActionCardsDrawn = card title of card drawn
-        // currentActveActions - action doing that led to card draw
-        // activeActionCardResults - outcomes of cards
-        // activeActionCardInventoryChangs - item loss, item gain, hand loss (left/right)
-        // activeActionStatUpdates - [movement adjust, agility adjust, dexterity adjust] (will only effect up to max and down to 0)
     }
 
     // Returns artifacts recovered and stored on the ship

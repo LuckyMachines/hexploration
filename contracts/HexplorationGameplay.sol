@@ -15,7 +15,8 @@ import "./CharacterCard.sol";
 contract HexplorationGameplay is
     AccessControlEnumerable,
     KeeperCompatibleInterface,
-    GameWallets
+    GameWallets,
+    RandomIndices
 {
     bytes32 public constant VERIFIED_CONTROLLER_ROLE =
         keccak256("VERIFIED_CONTROLLER_ROLE");
@@ -66,7 +67,7 @@ contract HexplorationGameplay is
         uint256[] activeActionResults; // 0 = None, 1 = Event, 2 = Ambush, 3 = Treasure
         string[2][] activeActionResultCard; // Card for Event / ambush / treasure , outcome e.g. ["Dance with locals", "You're amazing!"]
         string[3][] activeActionInventoryChanges; // [item loss, item gain, hand loss]
-        uint256[41] randomness;
+        uint256[] randomness;
         bool setupEndgame;
     }
 
@@ -159,7 +160,10 @@ contract HexplorationGameplay is
                 uint256
             )
         );
-        require(QUEUE.randomness(queueID, 12) != 0, "Randomness not delivered");
+        require(
+            QUEUE.getRandomness(queueID).length > 0,
+            "Randomness not delivered"
+        );
         for (uint256 i = 0; i < QUEUE.getAllPlayers(queueID).length; i++) {
             uint256 playerID = i + 1;
             ROLL_DRAW.setRandomnessForPlayer(
@@ -215,8 +219,7 @@ contract HexplorationGameplay is
             }
         }
         // Checks for randomness returned.
-        // randomness[12] will have randomness delivered every turn
-        if (QUEUE.randomness(queueIDToUpdate, 12) == 0) {
+        if (QUEUE.getRandomness(queueIDToUpdate).length == 0) {
             upkeepNeeded = false;
         }
 
@@ -285,6 +288,10 @@ contract HexplorationGameplay is
             ) {
                 data.playerStatUpdates += 1;
             }
+
+            if (action == HexplorationQueue.Action.Help) {
+                data.playerStatUpdates += 2;
+            }
         }
         return (
             abi.encode(
@@ -341,7 +348,7 @@ contract HexplorationGameplay is
         require(_msgSender() == address(this), "internal function");
         HexplorationQueue.ProcessingPhase phase = QUEUE.currentPhase(queueID);
 
-        if (QUEUE.randomness(queueID, 12) != 0) {
+        if (QUEUE.getRandomness(queueID).length > 0) {
             if (phase == HexplorationQueue.ProcessingPhase.PlayThrough) {
                 uint256 gameID = QUEUE.game(queueID);
                 PlayUpdates memory playUpdates = HexplorationGameplayUpdates
@@ -408,10 +415,16 @@ contract HexplorationGameplay is
         uint256 gameID,
         string[4] memory currentPlayZones
     ) internal view returns (PlayUpdates memory) {
-        uint256 randomness = QUEUE.randomness(
-            QUEUE.queueID(gameID),
-            uint256(RandomIndices.RandomIndex.TieDispute)
-        );
+        uint256 randomness = QUEUE.isInTestMode()
+            ? QUEUE.randomness(
+                QUEUE.queueID(gameID),
+                uint256(RandomIndex.TieDispute)
+            )
+            : expandNumber(
+                QUEUE.randomness(QUEUE.queueID(gameID), 0),
+                RandomIndex.TieDispute
+            );
+
         // campsite disputes hardcoded for max 2 disputes
         // with 4 players, no more than 2 disputes will ever occur (1-3 or 2-2 splits)
         string[2] memory campsiteSetupDisputes; //[map space, map space]
@@ -539,10 +552,15 @@ contract HexplorationGameplay is
         uint256 gameID,
         string[4] memory currentPlayZones
     ) internal view returns (PlayUpdates memory) {
-        uint256 randomness = QUEUE.randomness(
-            QUEUE.queueID(gameID),
-            uint256(RandomIndices.RandomIndex.TieDispute)
-        );
+        uint256 randomness = QUEUE.isInTestMode()
+            ? QUEUE.randomness(
+                QUEUE.queueID(gameID),
+                uint256(RandomIndex.TieDispute)
+            )
+            : expandNumber(
+                QUEUE.randomness(QUEUE.queueID(gameID), 0),
+                RandomIndex.TieDispute
+            );
         // campsite disputes hardcoded for max 2 disputes
         // with 4 players, no more than 2 disputes will ever occur (1-3 or 2-2 splits)
         string[2] memory campsiteBreakDownDisputes; //[zone, zone]
@@ -675,10 +693,15 @@ contract HexplorationGameplay is
         uint256 gameID,
         string[4] memory currentPlayZones
     ) internal view returns (PlayUpdates memory) {
-        uint256 randomness = QUEUE.randomness(
-            QUEUE.queueID(gameID),
-            uint256(RandomIndices.RandomIndex.TieDispute)
-        );
+        uint256 randomness = QUEUE.isInTestMode()
+            ? QUEUE.randomness(
+                QUEUE.queueID(gameID),
+                uint256(RandomIndex.TieDispute)
+            )
+            : expandNumber(
+                QUEUE.randomness(QUEUE.queueID(gameID), 0),
+                RandomIndex.TieDispute
+            );
         // campsite disputes hardcoded for max 2 disputes
         // with 4 players, no more than 2 disputes will ever occur (1-3 or 2-2 splits)
         string[2] memory digDisputes; //[map space, map space]

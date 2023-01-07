@@ -624,39 +624,51 @@
         "name": "lastPlayerActions",
         "outputs": [
             {
-                "internalType": "uint256[]",
-                "name": "playerIDs",
-                "type": "uint256[]"
-            },
-            {
-                "internalType": "string[]",
-                "name": "activeActionCardTypes",
-                "type": "string[]"
-            },
-            {
-                "internalType": "string[]",
-                "name": "activeActionCardsDrawn",
-                "type": "string[]"
-            },
-            {
-                "internalType": "uint8[]",
-                "name": "currentActiveActions",
-                "type": "uint8[]"
-            },
-            {
-                "internalType": "string[]",
-                "name": "activeActionCardResults",
-                "type": "string[]"
-            },
-            {
-                "internalType": "string[3][]",
-                "name": "activeActionCardInventoryChanges",
-                "type": "string[3][]"
-            },
-            {
-                "internalType": "int8[3][]",
-                "name": "activeActionStatUpdates",
-                "type": "int8[3][]"
+                "components": [
+                    {
+                        "internalType": "uint256",
+                        "name": "playerID",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "cardType",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "cardDrawn",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "uint8",
+                        "name": "currentAction",
+                        "type": "uint8"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "cardResult",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "string[3]",
+                        "name": "inventoryChanges",
+                        "type": "string[3]"
+                    },
+                    {
+                        "internalType": "int8[3]",
+                        "name": "statUpdates",
+                        "type": "int8[3]"
+                    },
+                    {
+                        "internalType": "string[]",
+                        "name": "movementPath",
+                        "type": "string[]"
+                    }
+                ],
+                "internalType": "struct GameSummary.EventSummary[]",
+                "name": "playerActions",
+                "type": "tuple[]"
             }
         ],
         "stateMutability": "view",

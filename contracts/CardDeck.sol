@@ -27,7 +27,7 @@ contract CardDeck is AccessControlEnumerable {
     mapping(string => int256[3]) public movementY;
     mapping(string => uint256[3]) public rollThresholds; // [0, 3, 4] what to roll to receive matching index of mapping
     mapping(string => string[3]) public outcomeDescription;
-    mapping(string => uint256) public rollTypeRequired; // 0 = movement, 1 = agility, 2 = dexterity
+    mapping(string => uint256) public rollTypeRequired; // 0 = movement, 1 = agility, 2 = dexterity, 3 = none
 
     constructor() {
         _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());

@@ -187,58 +187,107 @@ contract HexplorationStateUpdate is
             }
             uint256 playerID = updates.playerPositionIDs[i];
             uint256[] memory revealRandomness = new uint256[](4);
+            bool inTestMode = updates.randomness.length > 1;
             if (playerID == 1) {
-                revealRandomness[0] = updates.randomness[
-                    uint256(RandomIndex.P1TileReveal1)
-                ];
-                revealRandomness[1] = updates.randomness[
-                    uint256(RandomIndex.P1TileReveal2)
-                ];
-                revealRandomness[2] = updates.randomness[
-                    uint256(RandomIndex.P1TileReveal3)
-                ];
-                revealRandomness[3] = updates.randomness[
-                    uint256(RandomIndex.P1TileReveal4)
-                ];
+                revealRandomness[0] = inTestMode
+                    ? updates.randomness[uint256(RandomIndex.P1TileReveal1)]
+                    : expandNumber(
+                        updates.randomness[0],
+                        RandomIndex.P1TileReveal1
+                    );
+                revealRandomness[1] = inTestMode
+                    ? updates.randomness[uint256(RandomIndex.P1TileReveal2)]
+                    : expandNumber(
+                        updates.randomness[0],
+                        RandomIndex.P1TileReveal2
+                    );
+                revealRandomness[2] = inTestMode
+                    ? updates.randomness[uint256(RandomIndex.P1TileReveal3)]
+                    : expandNumber(
+                        updates.randomness[0],
+                        RandomIndex.P1TileReveal3
+                    );
+                revealRandomness[3] = inTestMode
+                    ? updates.randomness[uint256(RandomIndex.P1TileReveal4)]
+                    : expandNumber(
+                        updates.randomness[0],
+                        RandomIndex.P1TileReveal4
+                    );
             } else if (playerID == 2) {
-                revealRandomness[0] = updates.randomness[
-                    uint256(RandomIndex.P2TileReveal1)
-                ];
-                revealRandomness[1] = updates.randomness[
-                    uint256(RandomIndex.P2TileReveal2)
-                ];
-                revealRandomness[2] = updates.randomness[
-                    uint256(RandomIndex.P2TileReveal3)
-                ];
-                revealRandomness[3] = updates.randomness[
-                    uint256(RandomIndex.P2TileReveal4)
-                ];
+                revealRandomness[0] = inTestMode
+                    ? updates.randomness[uint256(RandomIndex.P2TileReveal1)]
+                    : expandNumber(
+                        updates.randomness[0],
+                        RandomIndex.P2TileReveal1
+                    );
+                revealRandomness[1] = inTestMode
+                    ? updates.randomness[uint256(RandomIndex.P2TileReveal2)]
+                    : expandNumber(
+                        updates.randomness[0],
+                        RandomIndex.P2TileReveal2
+                    );
+                revealRandomness[2] = inTestMode
+                    ? updates.randomness[uint256(RandomIndex.P2TileReveal3)]
+                    : expandNumber(
+                        updates.randomness[0],
+                        RandomIndex.P2TileReveal3
+                    );
+                revealRandomness[3] = inTestMode
+                    ? updates.randomness[uint256(RandomIndex.P2TileReveal4)]
+                    : expandNumber(
+                        updates.randomness[0],
+                        RandomIndex.P2TileReveal4
+                    );
             } else if (playerID == 3) {
-                revealRandomness[0] = updates.randomness[
-                    uint256(RandomIndex.P3TileReveal1)
-                ];
-                revealRandomness[1] = updates.randomness[
-                    uint256(RandomIndex.P1TileReveal2)
-                ];
-                revealRandomness[2] = updates.randomness[
-                    uint256(RandomIndex.P1TileReveal3)
-                ];
-                revealRandomness[3] = updates.randomness[
-                    uint256(RandomIndex.P3TileReveal4)
-                ];
+                revealRandomness[0] = inTestMode
+                    ? updates.randomness[uint256(RandomIndex.P3TileReveal1)]
+                    : expandNumber(
+                        updates.randomness[0],
+                        RandomIndex.P3TileReveal1
+                    );
+                revealRandomness[1] = inTestMode
+                    ? updates.randomness[uint256(RandomIndex.P3TileReveal2)]
+                    : expandNumber(
+                        updates.randomness[0],
+                        RandomIndex.P3TileReveal2
+                    );
+                revealRandomness[2] = inTestMode
+                    ? updates.randomness[uint256(RandomIndex.P3TileReveal3)]
+                    : expandNumber(
+                        updates.randomness[0],
+                        RandomIndex.P3TileReveal3
+                    );
+                revealRandomness[3] = inTestMode
+                    ? updates.randomness[uint256(RandomIndex.P3TileReveal4)]
+                    : expandNumber(
+                        updates.randomness[0],
+                        RandomIndex.P3TileReveal4
+                    );
             } else if (playerID == 4) {
-                revealRandomness[0] = updates.randomness[
-                    uint256(RandomIndex.P4TileReveal1)
-                ];
-                revealRandomness[1] = updates.randomness[
-                    uint256(RandomIndex.P4TileReveal2)
-                ];
-                revealRandomness[2] = updates.randomness[
-                    uint256(RandomIndex.P4TileReveal3)
-                ];
-                revealRandomness[3] = updates.randomness[
-                    uint256(RandomIndex.P4TileReveal4)
-                ];
+                revealRandomness[0] = inTestMode
+                    ? updates.randomness[uint256(RandomIndex.P4TileReveal1)]
+                    : expandNumber(
+                        updates.randomness[0],
+                        RandomIndex.P4TileReveal1
+                    );
+                revealRandomness[1] = inTestMode
+                    ? updates.randomness[uint256(RandomIndex.P4TileReveal2)]
+                    : expandNumber(
+                        updates.randomness[0],
+                        RandomIndex.P4TileReveal2
+                    );
+                revealRandomness[2] = inTestMode
+                    ? updates.randomness[uint256(RandomIndex.P4TileReveal3)]
+                    : expandNumber(
+                        updates.randomness[0],
+                        RandomIndex.P4TileReveal3
+                    );
+                revealRandomness[3] = inTestMode
+                    ? updates.randomness[uint256(RandomIndex.P4TileReveal4)]
+                    : expandNumber(
+                        updates.randomness[0],
+                        RandomIndex.P4TileReveal4
+                    );
             }
 
             moveThroughPath(path, gameID, playerID, revealRandomness);

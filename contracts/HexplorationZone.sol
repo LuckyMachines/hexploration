@@ -26,14 +26,14 @@ contract HexplorationZone is PlayZone {
     constructor(
         address _rulesetAddress,
         address _gameRegistryAddress,
-        address adminAddress,
-        address factoryAddress
+        address _adminAddress,
+        address _factoryAddress
     )
         PlayZone(
             _rulesetAddress,
             _gameRegistryAddress,
-            adminAddress,
-            factoryAddress
+            _adminAddress,
+            _factoryAddress
         )
     {}
 

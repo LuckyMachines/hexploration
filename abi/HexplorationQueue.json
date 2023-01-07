@@ -401,9 +401,9 @@
         "name": "getRandomness",
         "outputs": [
             {
-                "internalType": "uint256[41]",
+                "internalType": "uint256[]",
                 "name": "",
-                "type": "uint256[41]"
+                "type": "uint256[]"
             }
         ],
         "stateMutability": "view",
@@ -807,30 +807,6 @@
                 "type": "uint256"
             }
         ],
-        "name": "randomNeeds",
-        "outputs": [
-            {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
         "name": "randomness",
         "outputs": [
             {
@@ -1216,25 +1192,6 @@
             }
         ],
         "name": "totalPlayers",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "name": "totalRandomWords",
         "outputs": [
             {
                 "internalType": "uint256",

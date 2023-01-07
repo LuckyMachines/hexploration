@@ -79,9 +79,9 @@ contract HexplorationQueue is AccessControlEnumerable, VRFConsumerBaseV2 {
     mapping(uint256 => uint256) public game; // mapping from queue ID to its game ID
     mapping(uint256 => uint256[]) public players; // all players with moves to process
     mapping(uint256 => uint256) public totalPlayers; // total # of players who will be submitting
-    mapping(uint256 => uint256[41]) public randomness; // randomness delivered here at start of each phase processing
-    mapping(uint256 => bool[41]) public randomNeeds; // which slots requested randomness
-    mapping(uint256 => uint256) public totalRandomWords; // how many random words to request from VRF
+    mapping(uint256 => uint256[]) public randomness; // randomness delivered here at start of each phase processing
+    // (deprecated) mapping(uint256 => bool[41]) public randomNeeds; // which slots requested randomness
+    // (deprecated) mapping(uint256 => uint256) public totalRandomWords; // how many random words to request from VRF
     mapping(uint256 => bool) public isDayPhase; // if queue is running during day phase
     // mappings from queue index => player id
     mapping(uint256 => mapping(uint256 => Action)) public submissionAction;
@@ -158,7 +158,7 @@ contract HexplorationQueue is AccessControlEnumerable, VRFConsumerBaseV2 {
     function getRandomness(uint256 _queueID)
         public
         view
-        returns (uint256[41] memory)
+        returns (uint256[] memory)
     {
         return randomness[_queueID];
     }
@@ -207,13 +207,6 @@ contract HexplorationQueue is AccessControlEnumerable, VRFConsumerBaseV2 {
             playerStatsAtSubmission[_queueID][playerID] = CHARACTER_CARD
                 .getStats(game[_queueID], playerID);
 
-            // automatically add to queue if last player to submit move
-            if (players[_queueID].length >= totalPlayers[_queueID]) {
-                // set to opposite of current phase since this check will be done during next phase
-                isDayPhase[_queueID] = !_isDayPhase;
-                _processAllActions(_queueID);
-            }
-
             GAME_EVENTS.emitActionSubmit(
                 game[_queueID],
                 playerID,
@@ -222,8 +215,7 @@ contract HexplorationQueue is AccessControlEnumerable, VRFConsumerBaseV2 {
         }
     }
 
-    // Will get processed once keeper is available
-    // and previous game queues have been processed
+    // Adds queue to queue, ready for keeper to update on next pass
     function requestProcessActions(uint256 _queueID, bool _isDayPhase)
         public
         onlyRole(VERIFIED_CONTROLLER_ROLE)
@@ -358,6 +350,17 @@ contract HexplorationQueue is AccessControlEnumerable, VRFConsumerBaseV2 {
     // Internal
     function _processAllActions(uint256 _queueID) internal {
         // Can only add unique unprocessed game queues into processing queue
+
+        // If we want to require everything...
+        // require(
+        //     !inProcessingQueue[_queueID],
+        //     "Game already in processing queue"
+        // );
+        // require(
+        //     currentPhase[_queueID] == ProcessingPhase.Submission,
+        //     "Game not in submission phase, cannot move to processing phase"
+        // );
+
         if (
             !inProcessingQueue[_queueID] &&
             currentPhase[_queueID] == ProcessingPhase.Submission
@@ -386,7 +389,7 @@ contract HexplorationQueue is AccessControlEnumerable, VRFConsumerBaseV2 {
     }
 
     function requestRandomWords(uint256 _queueID) internal {
-        setRandomNeeds(_queueID);
+        // (deprecated) setRandomNeeds(_queueID);
         if (_testMode) {
             uint256 reqID = _queueID;
             randomnessRequestQueueID[reqID] = _queueID;
@@ -398,7 +401,7 @@ contract HexplorationQueue is AccessControlEnumerable, VRFConsumerBaseV2 {
                 s_subscriptionId,
                 requestConfirmations,
                 callbackGasLimit,
-                uint32(totalRandomWords[_queueID])
+                1
             );
 
             randomnessRequestQueueID[reqID] = _queueID;
@@ -410,10 +413,11 @@ contract HexplorationQueue is AccessControlEnumerable, VRFConsumerBaseV2 {
         override
     {
         uint256 qID = randomnessRequestQueueID[requestID];
+        randomness[qID] = randomWords;
         // if (_testMode) {
         //     processRandomWords(qID, _testRandomness);
         // } else {
-        processRandomWords(qID, randomWords);
+        // processRandomWords(qID, randomWords);
         // }
     }
 
@@ -425,77 +429,78 @@ contract HexplorationQueue is AccessControlEnumerable, VRFConsumerBaseV2 {
         fulfillRandomWords(requestID, randomWords);
     }
 
-    function setRandomNeeds(uint256 _queueID) internal {
-        // set bools in _randomNeeds for each test
-        uint256[] memory _players = players[_queueID];
-        bool[41] storage _randomNeeds = randomNeeds[_queueID];
-        uint256 numbersNeeded = 1;
-        for (uint256 i = 0; i < _players.length; i++) {
-            uint256 playerID = _players[i];
-            uint256 startingIndex;
+    // Not needed with new random expansion
+    // function setRandomNeeds(uint256 _queueID) internal {
+    //     // set bools in _randomNeeds for each test
+    //     uint256[] memory _players = players[_queueID];
+    //     bool[41] storage _randomNeeds = randomNeeds[_queueID];
+    //     uint256 numbersNeeded = 1;
+    //     for (uint256 i = 0; i < _players.length; i++) {
+    //         uint256 playerID = _players[i];
+    //         uint256 startingIndex;
 
-            if (submissionAction[_queueID][playerID] == Action.Dig) {
-                // is player digging?
-                ////        1       2          3        4
-                //// set [0,1,2], [3,4,5], [6,7,8], or [9,10,11]
-                startingIndex = playerID == 1 ? 0 : playerID == 2
-                    ? 3
-                    : playerID == 3
-                    ? 6
-                    : 9;
-                _randomNeeds[startingIndex] = true;
-                _randomNeeds[startingIndex + 1] = true;
-                _randomNeeds[startingIndex + 2] = true;
-                numbersNeeded += 3;
-            } else if (submissionAction[_queueID][playerID] == Action.Move) {
-                // is player moving? // limited to 4 random values for movement (might need more)
-                ////        1               2           3                   4
-                //// set [25,26,27,28], [29,30,31,32], [33,34,35,36], or [37,38,39,40]
-                startingIndex = playerID == 1 ? 25 : playerID == 2
-                    ? 29
-                    : playerID == 3
-                    ? 33
-                    : 37;
-                _randomNeeds[startingIndex] = true;
-                _randomNeeds[startingIndex + 1] = true;
-                _randomNeeds[startingIndex + 2] = true;
-                _randomNeeds[startingIndex + 3] = true;
-                numbersNeeded += 4;
-            }
+    //         if (submissionAction[_queueID][playerID] == Action.Dig) {
+    //             // is player digging?
+    //             ////        1       2          3        4
+    //             //// set [0,1,2], [3,4,5], [6,7,8], or [9,10,11]
+    //             startingIndex = playerID == 1 ? 0 : playerID == 2
+    //                 ? 3
+    //                 : playerID == 3
+    //                 ? 6
+    //                 : 9;
+    //             _randomNeeds[startingIndex] = true;
+    //             _randomNeeds[startingIndex + 1] = true;
+    //             _randomNeeds[startingIndex + 2] = true;
+    //             numbersNeeded += 3;
+    //         } else if (submissionAction[_queueID][playerID] == Action.Move) {
+    //             // is player moving? // limited to 4 random values for movement (might need more)
+    //             ////        1               2           3                   4
+    //             //// set [25,26,27,28], [29,30,31,32], [33,34,35,36], or [37,38,39,40]
+    //             startingIndex = playerID == 1 ? 25 : playerID == 2
+    //                 ? 29
+    //                 : playerID == 3
+    //                 ? 33
+    //                 : 37;
+    //             _randomNeeds[startingIndex] = true;
+    //             _randomNeeds[startingIndex + 1] = true;
+    //             _randomNeeds[startingIndex + 2] = true;
+    //             _randomNeeds[startingIndex + 3] = true;
+    //             numbersNeeded += 4;
+    //         }
 
-            if (isDayPhase[_queueID]) {
-                // is it day time?
-                ////        1           2           3               4
-                //// set [13,14,15], [16,17,18], [19,20,21], or [22,23,24]
-                startingIndex = playerID == 1 ? 13 : playerID == 2
-                    ? 16
-                    : playerID == 3
-                    ? 19
-                    : 22;
-                _randomNeeds[startingIndex] = true;
-                _randomNeeds[startingIndex + 1] = true;
-                _randomNeeds[startingIndex + 2] = true;
-                numbersNeeded += 3;
-            }
-        }
+    //         if (isDayPhase[_queueID]) {
+    //             // is it day time?
+    //             ////        1           2           3               4
+    //             //// set [13,14,15], [16,17,18], [19,20,21], or [22,23,24]
+    //             startingIndex = playerID == 1 ? 13 : playerID == 2
+    //                 ? 16
+    //                 : playerID == 3
+    //                 ? 19
+    //                 : 22;
+    //             _randomNeeds[startingIndex] = true;
+    //             _randomNeeds[startingIndex + 1] = true;
+    //             _randomNeeds[startingIndex + 2] = true;
+    //             numbersNeeded += 3;
+    //         }
+    //     }
 
-        //// set 12 (dig dispute / flag that randomness was delivered)
-        _randomNeeds[12] = true;
-        totalRandomWords[_queueID] = numbersNeeded;
-    }
+    //     //// set 12 (dig dispute / flag that randomness was delivered)
+    //     _randomNeeds[12] = true;
+    //     totalRandomWords[_queueID] = numbersNeeded;
+    // }
 
-    function processRandomWords(uint256 _queueID, uint256[] memory randomWords)
-        internal
-    {
-        bool[41] memory _randomNeeds = randomNeeds[_queueID];
-        uint256 position = 0;
-        for (uint256 i = 0; i < _randomNeeds.length; i++) {
-            if (_randomNeeds[i]) {
-                randomness[_queueID][i] = randomWords[position];
-                position++;
-            }
-        }
-    }
+    // function processRandomWords(uint256 _queueID, uint256[] memory randomWords)
+    //     internal
+    // {
+    //     bool[41] memory _randomNeeds = randomNeeds[_queueID];
+    //     uint256 position = 0;
+    //     for (uint256 i = 0; i < _randomNeeds.length; i++) {
+    //         if (_randomNeeds[i]) {
+    //             randomness[_queueID][i] = randomWords[position];
+    //             position++;
+    //         }
+    //     }
+    // }
 
     function _requestGameQueue(uint256 gameID, uint256 _totalPlayers)
         internal

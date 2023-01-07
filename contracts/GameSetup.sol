@@ -248,48 +248,16 @@ contract GameSetup is AccessControlEnumerable, VRFConsumerBaseV2, GameWallets {
         TokenInventory ti = TokenInventory(board.tokenInventory());
         // mint game tokens (maybe mint on demand instead...)
         // minting full game set here
-        ti.DAY_NIGHT_TOKEN().mint("Day", gameID, 1);
-        ti.DAY_NIGHT_TOKEN().mint("Night", gameID, 1);
-        ti.DISASTER_TOKEN().mint("Earthquake", gameID, 1000);
-        ti.DISASTER_TOKEN().mint("Volcano", gameID, 1000);
-        ti.ENEMY_TOKEN().mint("Pirate", gameID, 1000);
-        ti.ENEMY_TOKEN().mint("Pirate Ship", gameID, 1000);
-        ti.ENEMY_TOKEN().mint("Deathbot", gameID, 1000);
-        ti.ENEMY_TOKEN().mint("Guardian", gameID, 1000);
-        ti.ENEMY_TOKEN().mint("Sandworm", gameID, 1000);
-        ti.ENEMY_TOKEN().mint("Dragon", gameID, 1000);
-        ti.ITEM_TOKEN().mint("Small Ammo", gameID, 1000);
-        ti.ITEM_TOKEN().mint("Large Ammo", gameID, 1000);
-        ti.ITEM_TOKEN().mint("Batteries", gameID, 1000);
-        ti.ITEM_TOKEN().mint("Shield", gameID, 1000);
-        ti.ITEM_TOKEN().mint("Portal", gameID, 1000);
-        ti.ITEM_TOKEN().mint("On", gameID, 1000);
-        ti.ITEM_TOKEN().mint("Off", gameID, 1000);
-        ti.ITEM_TOKEN().mint("Rusty Dagger", gameID, 1000);
-        ti.ITEM_TOKEN().mint("Rusty Pistol", gameID, 1000);
-        ti.ITEM_TOKEN().mint("Shiny Dagger", gameID, 1000);
-        ti.ITEM_TOKEN().mint("Shiny Pistol", gameID, 1000);
-        ti.ITEM_TOKEN().mint("Laser Dagger", gameID, 1000);
-        ti.ITEM_TOKEN().mint("Laser Pistol", gameID, 1000);
-        ti.ITEM_TOKEN().mint("Power Glove", gameID, 1000);
-        ti.ITEM_TOKEN().mint("Engraved Tablet", gameID, 1000);
-        ti.ITEM_TOKEN().mint("Sigil Gem", gameID, 1000);
-        ti.ITEM_TOKEN().mint("Ancient Tome", gameID, 1000);
-        ti.ITEM_TOKEN().mint("Campsite", gameID, 1000);
-        ti.PLAYER_STATUS_TOKEN().mint("Stunned", gameID, 1000);
-        ti.PLAYER_STATUS_TOKEN().mint("Burned", gameID, 1000);
-
-        // Duplicate tokens, deprecating these
-        /*
-        ti.ARTIFACT_TOKEN().mint("Engraved Tablet", gameID, 1000);
-        ti.ARTIFACT_TOKEN().mint("Sigil Gem", gameID, 1000);
-        ti.ARTIFACT_TOKEN().mint("Ancient Tome", gameID, 1000);
-        */
-        ti.RELIC_TOKEN().mint("Relic 1", gameID, 1000);
-        ti.RELIC_TOKEN().mint("Relic 2", gameID, 1000);
-        ti.RELIC_TOKEN().mint("Relic 3", gameID, 1000);
-        ti.RELIC_TOKEN().mint("Relic 4", gameID, 1000);
-        ti.RELIC_TOKEN().mint("Relic 5", gameID, 1000);
+        ti.DAY_NIGHT_TOKEN().mintAllTokens(
+            gameID,
+            1,
+            GameToken.TokenState.Setting1
+        );
+        ti.DISASTER_TOKEN().mintAllTokens(gameID, 1000);
+        ti.ENEMY_TOKEN().mintAllTokens(gameID, 1000);
+        ti.ITEM_TOKEN().mintAllTokens(gameID, 1000);
+        ti.PLAYER_STATUS_TOKEN().mintAllTokens(gameID, 1000);
+        ti.RELIC_TOKEN().mintAllTokens(gameID, 1000);
 
         // Transfer day token to board
         ti.DAY_NIGHT_TOKEN().transfer(

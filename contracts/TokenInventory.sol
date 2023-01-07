@@ -35,7 +35,6 @@ contract TokenInventory is AccessControlEnumerable {
         address enemyAddress,
         address itemAddress,
         address playerStatusAddress,
-        address artifactAddress,
         address relicAddress
     ) public onlyRole(DEFAULT_ADMIN_ROLE) {
         DAY_NIGHT_TOKEN = GameToken(dayNightAddress);
@@ -43,7 +42,6 @@ contract TokenInventory is AccessControlEnumerable {
         ENEMY_TOKEN = GameToken(enemyAddress);
         ITEM_TOKEN = GameToken(itemAddress);
         PLAYER_STATUS_TOKEN = GameToken(playerStatusAddress);
-        ARTIFACT_TOKEN = GameToken(artifactAddress);
         RELIC_TOKEN = GameToken(relicAddress);
     }
 
@@ -95,14 +93,6 @@ contract TokenInventory is AccessControlEnumerable {
                     PLAYER_STATUS_TOKEN.balance(allTypes[i], gameID, holderID) >
                     0
                 ) {
-                    hasBalance = true;
-                    break;
-                }
-            }
-        } else if (token == Token.Artifact) {
-            allTypes = ARTIFACT_TOKEN.getTokenTypes();
-            for (uint256 i = 0; i < allTypes.length; i++) {
-                if (ARTIFACT_TOKEN.balance(allTypes[i], gameID, holderID) > 0) {
                     hasBalance = true;
                     break;
                 }

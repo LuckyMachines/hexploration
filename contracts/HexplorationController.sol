@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0
-pragma solidity >=0.7.0 <0.9.0;
+pragma solidity ^0.8.7;
 
 import "@luckymachines/game-core/contracts/src/v0.0/GameController.sol";
 import "./HexplorationBoard.sol";
@@ -11,8 +11,13 @@ import "./TokenInventory.sol";
 import "./GameEvents.sol";
 import "./GameSetup.sol";
 import "./GameWallets.sol";
+import "@chainlink/contracts/src/v0.8/AutomationCompatible.sol";
 
-contract HexplorationController is GameController, GameWallets {
+contract HexplorationController is
+    GameController,
+    GameWallets,
+    AutomationCompatibleInterface
+{
     // functions are meant to be called directly by players by default
     // we are adding the ability of a Controller Admin or Keeper to
     // execute the game aspects not directly controlled by players
@@ -22,6 +27,16 @@ contract HexplorationController is GameController, GameWallets {
     HexplorationStateUpdate GAME_STATE;
     GameEvents GAME_EVENTS;
     GameSetup GAME_SETUP;
+
+    uint256 public timeLimit = 10 * 60; // Defaults to 10 minutes (in seconds)
+
+    // Mapping from board address => game ID => queue ID
+    mapping(address => mapping(uint256 => mapping(uint256 => uint256)))
+        public submissionTimeStart;
+    mapping(address => mapping(uint256 => mapping(uint256 => bool))) readyForUpdate;
+
+    address[] public activeGameAddresses;
+    uint256[] public activeGames;
 
     modifier onlyAdminVC() {
         require(
@@ -64,6 +79,30 @@ contract HexplorationController is GameController, GameWallets {
         grantRole(VERIFIED_CONTROLLER_ROLE, vcAddress);
     }
 
+    function setTimeLimit(uint256 timeInSeconds)
+        public
+        onlyRole(DEFAULT_ADMIN_ROLE)
+    {
+        timeLimit = timeInSeconds;
+    }
+
+    function stopTimer(
+        uint256 gameID,
+        address boardAddress,
+        uint256 queueID
+    ) public onlyRole(DEFAULT_ADMIN_ROLE) {
+        delete submissionTimeStart[boardAddress][gameID][queueID];
+        for (uint256 i = 0; i < activeGames.length; i++) {
+            if (
+                activeGames[i] == gameID &&
+                activeGameAddresses[i] == boardAddress
+            ) {
+                delete activeGames[i];
+                delete activeGameAddresses[i];
+            }
+        }
+    }
+
     //Player Interactions
     function registerForGame(uint256 gameID, address boardAddress) public {
         HexplorationBoard board = HexplorationBoard(boardAddress);
@@ -93,17 +132,14 @@ contract HexplorationController is GameController, GameWallets {
         uint256 gameID,
         address boardAddress
     ) public {
-        require(
-            actionIsValid(
-                actionIndex,
-                options,
-                leftHand,
-                rightHand,
-                gameID,
-                boardAddress,
-                playerID
-            ),
-            "Invalid action submitted"
+        _checkAction(
+            actionIndex,
+            options,
+            leftHand,
+            rightHand,
+            gameID,
+            boardAddress,
+            playerID
         );
         HexplorationBoard board = HexplorationBoard(boardAddress);
         HexplorationQueue q = HexplorationQueue(board.gameplayQueue());
@@ -118,6 +154,13 @@ contract HexplorationController is GameController, GameWallets {
             qID = q.requestGameQueue(gameID, totalRegistrations);
         }
         require(qID != 0, "unable to set qID in controller");
+
+        if (submissionTimeStart[boardAddress][gameID][qID] == 0) {
+            submissionTimeStart[boardAddress][gameID][qID] = block.timestamp;
+            activeGames.push(gameID);
+            activeGameAddresses.push(boardAddress);
+        }
+
         string memory cz = board.currentPlayZone(gameID, playerID);
         string[] memory newOptions;
         bool isDayPhase = TokenInventory(board.tokenInventory())
@@ -127,6 +170,7 @@ contract HexplorationController is GameController, GameWallets {
             : false;
         if (actionIndex == 4) {
             // dig action, set options to # players on board
+            // TODO: find way to secure this option (don't want players arbitrarily setting)
             uint256 activePlayersOnSpace = 0;
             for (uint256 i = 0; i < pr.totalRegistrations(gameID); i++) {
                 if (
@@ -153,6 +197,10 @@ contract HexplorationController is GameController, GameWallets {
             qID,
             isDayPhase
         );
+
+        if (q.getAllPlayers(qID).length >= q.totalPlayers(qID)) {
+            readyForUpdate[boardAddress][gameID][qID] = true;
+        }
     }
 
     // TODO: limit this to authorized game starters
@@ -180,8 +228,129 @@ contract HexplorationController is GameController, GameWallets {
         return GameRegistry(gameRegistryAddress).latestGame(boardAddress);
     }
 
+    function checkUpkeep(
+        bytes calldata /* checkData */
+    )
+        external
+        view
+        override
+        returns (bool upkeepNeeded, bytes memory performData)
+    {
+        uint256 gameIndex;
+        uint256 queueID;
+        for (uint256 i = 0; i < activeGames.length; i++) {
+            if (activeGames[i] > 0) {
+                HexplorationBoard board = HexplorationBoard(
+                    activeGameAddresses[i]
+                );
+                HexplorationQueue q = HexplorationQueue(board.gameplayQueue());
+                queueID = q.queueID(activeGames[i]);
+                if (
+                    readyForUpdate[activeGameAddresses[i]][activeGames[i]][
+                        queueID
+                    ] == true
+                ) {
+                    gameIndex = i;
+                    upkeepNeeded = true;
+                    break;
+                }
+                uint256 startTime = submissionTimeStart[activeGameAddresses[i]][
+                    activeGames[i]
+                ][queueID];
+                if (startTime > 0 && block.timestamp - startTime >= timeLimit) {
+                    gameIndex = i;
+                    upkeepNeeded = true;
+                    break;
+                } else {
+                    upkeepNeeded = false;
+                }
+            }
+        }
+        performData = abi.encode(gameIndex, queueID);
+    }
+
+    function getActiveGames() public view returns (uint256[] memory games) {
+        games = activeGames;
+    }
+
+    function getActiveGameAddresses()
+        public
+        view
+        returns (address[] memory addresses)
+    {
+        addresses = activeGameAddresses;
+    }
+
+    function performUpkeep(bytes calldata performData) external override {
+        uint256 gameIndex;
+        uint256 queueID;
+        (gameIndex, queueID) = abi.decode(performData, (uint256, uint256));
+        uint256 startTime = submissionTimeStart[activeGameAddresses[gameIndex]][
+            activeGames[gameIndex]
+        ][queueID];
+        if (
+            readyForUpdate[activeGameAddresses[gameIndex]][
+                activeGames[gameIndex]
+            ][queueID] ||
+            (startTime > 0 &&
+                activeGames.length > gameIndex &&
+                activeGames[gameIndex] > 0 &&
+                block.timestamp - startTime > timeLimit)
+        ) {
+            submissionTimeout(
+                activeGames[gameIndex],
+                activeGameAddresses[gameIndex]
+            );
+            // update
+            delete activeGames[gameIndex];
+            delete activeGameAddresses[gameIndex];
+        }
+    }
+
+    function timeNow() public view returns (uint256) {
+        return block.timestamp;
+    }
+
     // internal
+
+    // Starts processing turn after timeout
+    function submissionTimeout(uint256 gameID, address boardAddress) internal {
+        HexplorationBoard board = HexplorationBoard(boardAddress);
+        HexplorationQueue q = HexplorationQueue(board.gameplayQueue());
+        uint256 qID = q.queueID(gameID);
+        bool isDayPhase = TokenInventory(board.tokenInventory())
+            .DAY_NIGHT_TOKEN()
+            .balance("Day", gameID, GAME_BOARD_WALLET_ID) > 0
+            ? true
+            : false;
+        q.requestProcessActions(qID, isDayPhase);
+    }
+
     // TODO: move these validation functions into rules
+
+    function _checkAction(
+        uint8 actionIndex,
+        string[] memory options,
+        string memory leftHand,
+        string memory rightHand,
+        uint256 gameID,
+        address gameBoardAddress,
+        uint256 playerID
+    ) internal view {
+        bool valid;
+        string memory reason;
+        (valid, reason) = actionIsValid(
+            actionIndex,
+            options,
+            leftHand,
+            rightHand,
+            gameID,
+            gameBoardAddress,
+            playerID
+        );
+        require(valid, reason);
+    }
+
     function actionIsValid(
         uint8 actionIndex,
         string[] memory options,
@@ -190,14 +359,22 @@ contract HexplorationController is GameController, GameWallets {
         uint256 gameID,
         address gameBoardAddress,
         uint256 playerID
-    ) public view returns (bool isValid) {
+    ) public view returns (bool isValid, string memory invalidError) {
         HexplorationBoard gameBoard = HexplorationBoard(gameBoardAddress);
-
+        HexplorationQueue q = HexplorationQueue(gameBoard.gameplayQueue());
+        uint256 qID = q.queueID(gameID);
         CharacterCard cc = CharacterCard(gameBoard.characterCard());
-        if (gameBoard.gameOver(gameID) || cc.playerIsDead(gameID, playerID)) {
+        if (readyForUpdate[gameBoardAddress][gameID][qID] == true) {
             isValid = false;
+            invalidError = "Cannot submit move. Queue already processing.";
+        } else if (
+            gameBoard.gameOver(gameID) || cc.playerIsDead(gameID, playerID)
+        ) {
+            isValid = false;
+            invalidError = "Invalid action submitted: Game over or player is dead";
         } else {
             isValid = true;
+            invalidError = "";
             string memory currentSpace = gameBoard.currentPlayZone(
                 gameID,
                 playerID
@@ -208,6 +385,7 @@ contract HexplorationController is GameController, GameWallets {
                 if (gameBoard.artifactFound(gameID, currentSpace)) {
                     // artifact already found at space, can't dig here
                     isValid = false;
+                    invalidError = "Invalid action submitted: Artifact found on space, can't dig.";
                 } else if (
                     bytes(
                         CharacterCard(gameBoard.characterCard()).artifact(
@@ -218,6 +396,7 @@ contract HexplorationController is GameController, GameWallets {
                 ) {
                     // player already has artifact, can't dig
                     isValid = false;
+                    invalidError = "Invalid action submitted: Player has artifact, can't dig.";
                 }
             } else if (actionIndex == 1) {
                 // moving
@@ -230,6 +409,7 @@ contract HexplorationController is GameController, GameWallets {
                     ) < (options.length)
                 ) {
                     isValid = false;
+                    invalidError = "Invalid action submitted: player movement limit exceeded.";
                 } else {
                     // TODO:
                     // ensure each movement zone has output to next movement zone
@@ -263,6 +443,7 @@ contract HexplorationController is GameController, GameWallets {
                 ) {
                     // campsite is not in player inventory
                     isValid = false;
+                    invalidError = "Invalid action submitted: Campsite not in inventory.";
                 } else if (
                     tokenInventory.ITEM_TOKEN().zoneBalance(
                         "Campsite",
@@ -272,6 +453,7 @@ contract HexplorationController is GameController, GameWallets {
                 ) {
                     // campsite is already on board space
                     isValid = false;
+                    invalidError = "Invalid action submitted: Campsite already on space.";
                 }
             } else if (actionIndex == 3) {
                 // break down camp
@@ -287,6 +469,7 @@ contract HexplorationController is GameController, GameWallets {
                 ) {
                     // campsite is already in player inventory
                     isValid = false;
+                    invalidError = "Invalid action submitted: Campsite already in inventory.";
                 } else if (
                     tokenInventory.ITEM_TOKEN().zoneBalance(
                         "Campsite",
@@ -296,6 +479,7 @@ contract HexplorationController is GameController, GameWallets {
                 ) {
                     // campsite is not on board space
                     isValid = false;
+                    invalidError = "Invalid action submitted: Campsite is not on space.";
                 }
             } else if (actionIndex == 5) {
                 // rest
@@ -312,6 +496,7 @@ contract HexplorationController is GameController, GameWallets {
                 ) {
                     // campsite is not on board space || options is not ""
                     isValid = false;
+                    invalidError = "Invalid action submitted: Campsite not on space or options are empty.";
                 }
             } else if (actionIndex == 6) {
                 // help
@@ -335,6 +520,7 @@ contract HexplorationController is GameController, GameWallets {
                 ) {
                     // players are not on same space
                     isValid = false;
+                    invalidError = "Invalid action submitted: players not on same space";
                 } else {
                     // check that player can transfer attribute (> 1)
                     // check that receiving player can increase attribute (< MAX)
@@ -347,6 +533,7 @@ contract HexplorationController is GameController, GameWallets {
                             // player doesn't have movement attribute to transfer or
                             // recipient has full movement attribute
                             isValid = false;
+                            invalidError = "Invalid action submitted: Movement attribute mismatch";
                         }
                     } else if (stringsMatch(options[1], "Agility")) {
                         if (
@@ -357,6 +544,7 @@ contract HexplorationController is GameController, GameWallets {
                             // player doesn't have agility attribute to transfer or
                             // recipient has full agility attribute
                             isValid = false;
+                            invalidError = "Invalid action submitted: Agility attribute mismatch";
                         }
                     } else if (stringsMatch(options[1], "Dexterity")) {
                         if (
@@ -367,6 +555,7 @@ contract HexplorationController is GameController, GameWallets {
                             // player doesn't have dexterity attribute to transfer or
                             // recipient has full dexterity attribute
                             isValid = false;
+                            invalidError = "Invalid action submitted: Dexterity attribute mismatch";
                         }
                     }
                 }
@@ -374,6 +563,7 @@ contract HexplorationController is GameController, GameWallets {
             if (bytes(leftHand).length > 0 && bytes(rightHand).length > 0) {
                 // cannot equip both hands in one turn
                 isValid = false;
+                invalidError = "Invalid action submitted: Can't equip both hands in one turn.";
             } else if (
                 bytes(leftHand).length > 0 && !stringsMatch(leftHand, "None")
             ) {
@@ -384,6 +574,7 @@ contract HexplorationController is GameController, GameWallets {
                 ) {
                     // item not in inventory
                     isValid = false;
+                    invalidError = "Invalid action submitted: LH equip not in inventory.";
                 }
             } else if (
                 bytes(rightHand).length > 0 && !stringsMatch(rightHand, "None")
@@ -395,6 +586,7 @@ contract HexplorationController is GameController, GameWallets {
                 ) {
                     // item not in inventory
                     isValid = false;
+                    invalidError = "Invalid action submitted: RH equip not in inventory.";
                 }
             }
         }

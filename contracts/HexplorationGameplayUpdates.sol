@@ -342,12 +342,29 @@ library HexplorationGameplayUpdates {
                     playersInQueue[i]
                 ) == HexplorationQueue.Action.Help
             ) {
-                // TODO: use this...
                 playUpdates.activeActions[position] = "Help";
                 playUpdates.activeActionOptions[position] = HexplorationQueue(
                     queueAddress
                 ).getSubmissionOptions(queueID, playersInQueue[i]);
                 playUpdates.playerActiveActionIDs[position] = playersInQueue[i];
+
+                // Update stats from help
+                // Player giving help
+                (
+                    playUpdates.playerStatUpdates[playerStatPosition],
+                    playUpdates.playerStatUpdates[playerStatPosition + 1]
+                ) = help(queueAddress, queueID, playersInQueue[i]);
+
+                playUpdates.playerStatUpdateIDs[
+                    playerStatPosition
+                ] = playersInQueue[i];
+                playUpdates.playerStatUpdateIDs[
+                    playerStatPosition + 1
+                ] = playerIDFromString(
+                    playUpdates.activeActionOptions[position][0]
+                );
+                playerStatPosition += 2;
+
                 position++;
             } else if (
                 HexplorationQueue(queueAddress).submissionAction(
@@ -700,6 +717,33 @@ library HexplorationGameplayUpdates {
         // Result types: 0 = None, 1 = Event, 2 = Ambush, 3 = Treasure
     }
 
+    function help(
+        address queueAddress,
+        uint256 queueID,
+        uint256 playerID
+    )
+        internal
+        view
+        returns (
+            int8[3] memory playerStatAdjustment,
+            int8[3] memory recipientStatAdjustment
+        )
+    {
+        // returns [playerStat adjustments, recipientAdjustments]
+        string[] memory helpOptions = HexplorationQueue(queueAddress)
+            .getSubmissionOptions(queueID, playerID);
+        if (stringsMatch(helpOptions[1], "Movement")) {
+            playerStatAdjustment[0] = -1;
+            recipientStatAdjustment[0] = 1;
+        } else if (stringsMatch(helpOptions[1], "Agility")) {
+            playerStatAdjustment[1] = -1;
+            recipientStatAdjustment[1] = 1;
+        } else if (stringsMatch(helpOptions[1], "Dexterity")) {
+            playerStatAdjustment[2] = -1;
+            recipientStatAdjustment[2] = 1;
+        }
+    }
+
     function rest(
         address queueAddress,
         uint256 queueID,
@@ -723,5 +767,23 @@ library HexplorationGameplayUpdates {
     {
         return
             keccak256(abi.encodePacked(s1)) == keccak256(abi.encodePacked(s2));
+    }
+
+    function playerIDFromString(string memory playerID)
+        internal
+        pure
+        returns (uint256)
+    {
+        if (stringsMatch(playerID, "1")) {
+            return 1;
+        } else if (stringsMatch(playerID, "2")) {
+            return 2;
+        } else if (stringsMatch(playerID, "3")) {
+            return 3;
+        } else if (stringsMatch(playerID, "4")) {
+            return 4;
+        } else {
+            return 0;
+        }
     }
 }

@@ -408,39 +408,23 @@ contract PlayerSummary is Utilities, GameWallets {
     {
         HexplorationBoard board = HexplorationBoard(gameBoardAddress);
         TokenInventory ti = TokenInventory(board.tokenInventory());
-        itemBalances = new uint256[](15);
-        itemTypes = new string[](15);
-        // Campsite, Artfacts, Relics, Shield never inactive.
-        // 1 shield should always be active...
-        itemTypes[0] = "Small Ammo";
-        itemTypes[1] = "Large Ammo";
-        itemTypes[2] = "Batteries";
-        itemTypes[3] = "Portal";
-        itemTypes[4] = "On";
-        itemTypes[5] = "Off";
-        itemTypes[6] = "Rusty Dagger";
-        itemTypes[7] = "Rusty Pistol";
-        itemTypes[8] = "Shiny Dagger";
-        itemTypes[9] = "Shiny Pistol";
-        itemTypes[10] = "Shiny Rifle";
-        itemTypes[11] = "Laser Dagger";
-        itemTypes[12] = "Laser Sword";
-        itemTypes[13] = "Laser Pistol";
-        itemTypes[14] = "Power Glove";
+
+        GameToken itemToken = ti.ITEM_TOKEN();
+        itemTypes = itemToken.getTokenTypes();
+        itemBalances = new uint256[](itemTypes.length);
+        // Campsite, Artfacts, Relics, Shield should always be active...
+        // Items set to always active may be inactive if player has multiples (1 already in active)
         string memory lhItem;
         string memory rhItem;
         (lhItem, rhItem) = currentHandInventory(gameBoardAddress, gameID);
         if (ti.holdsToken(playerID, TokenInventory.Token.Item, gameID)) {
-            GameToken itemToken = ti.ITEM_TOKEN();
-            //string[] memory types = itemToken.getTokenTypes();
-            for (uint256 i = 0; i < itemBalances.length; i++) {
-                //itemTypes[i] = types[i];
-                // TODO: don't include if matches LH, RH
+            for (uint256 i = 0; i < itemTypes.length; i++) {
                 string memory item = itemTypes[i];
                 itemBalances[i] = (!stringsMatch(item, lhItem) &&
                     !stringsMatch(item, rhItem))
-                    ? (stringsMatch(item, "Shield") &&
-                        itemToken.balance(item, gameID, playerID) > 1)
+                    ? (itemToken.allTokenState(item) ==
+                        GameToken.TokenState.Active &&
+                        itemToken.balance(item, gameID, playerID) >= 1)
                         ? itemToken.balance(item, gameID, playerID) - 1
                         : itemToken.balance(item, gameID, playerID)
                     : 0;

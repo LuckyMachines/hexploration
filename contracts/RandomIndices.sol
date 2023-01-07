@@ -45,4 +45,12 @@ abstract contract RandomIndices {
         P4TileReveal3,
         P4TileReveal4
     }
+
+    function expandNumber(uint256 number, RandomIndex index)
+        internal
+        pure
+        returns (uint256)
+    {
+        return uint256(keccak256(abi.encode(number, index)));
+    }
 }
