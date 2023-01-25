@@ -23,7 +23,7 @@
             },
             {
                 "internalType": "bytes32",
-                "name": "_keyHash",
+                "name": "_vrfKeyHash",
                 "type": "bytes32"
             }
         ],
@@ -45,6 +45,44 @@
         ],
         "name": "OnlyCoordinatorCanFulfill",
         "type": "error"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "requestId",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256[]",
+                "name": "randomWords",
+                "type": "uint256[]"
+            }
+        ],
+        "name": "RequestFulfilled",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "requestId",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint32",
+                "name": "numWords",
+                "type": "uint32"
+            }
+        ],
+        "name": "RequestSent",
+        "type": "event"
     },
     {
         "anonymous": false,
@@ -195,6 +233,25 @@
         "name": "addVerifiedController",
         "outputs": [],
         "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "name": "addresses",
+        "outputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
         "type": "function"
     },
     {
@@ -412,6 +469,30 @@
     {
         "inputs": [
             {
+                "internalType": "uint256",
+                "name": "_requestId",
+                "type": "uint256"
+            }
+        ],
+        "name": "getRequestStatus",
+        "outputs": [
+            {
+                "internalType": "bool",
+                "name": "fulfilled",
+                "type": "bool"
+            },
+            {
+                "internalType": "uint256[]",
+                "name": "randomWords",
+                "type": "uint256[]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
                 "internalType": "bytes32",
                 "name": "role",
                 "type": "bytes32"
@@ -593,6 +674,25 @@
                 "type": "uint256"
             }
         ],
+        "name": "ids",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
         "name": "inProcessingQueue",
         "outputs": [
             {
@@ -631,6 +731,19 @@
                 "internalType": "bool",
                 "name": "testMode",
                 "type": "bool"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "lastRequestId",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
             }
         ],
         "stateMutability": "view",
@@ -822,6 +935,30 @@
         "inputs": [
             {
                 "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "name": "randomnessRequests",
+        "outputs": [
+            {
+                "internalType": "bool",
+                "name": "fulfilled",
+                "type": "bool"
+            },
+            {
+                "internalType": "bool",
+                "name": "exists",
+                "type": "bool"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
                 "name": "requestId",
                 "type": "uint256"
             },
@@ -876,6 +1013,44 @@
             }
         ],
         "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "name": "requestIDHistory",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "name": "requestIDs",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
         "type": "function"
     },
     {
@@ -980,11 +1155,24 @@
         "inputs": [
             {
                 "internalType": "bool",
-                "name": "useTestRandomness",
+                "name": "enabled",
                 "type": "bool"
             }
         ],
-        "name": "setTestMode",
+        "name": "setTestingEnabled",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint64",
+                "name": "_subscriptionID",
+                "type": "uint64"
+            }
+        ],
+        "name": "setVRFSubscriptionID",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
@@ -1169,18 +1357,31 @@
         "inputs": [
             {
                 "internalType": "uint256",
-                "name": "requestID",
+                "name": "_requestID",
                 "type": "uint256"
             },
             {
                 "internalType": "uint256[]",
-                "name": "randomWords",
+                "name": "_randomWords",
                 "type": "uint256[]"
             }
         ],
         "name": "testFulfillRandomWords",
         "outputs": [],
         "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "testingEnabled",
+        "outputs": [
+            {
+                "internalType": "bool",
+                "name": "",
+                "type": "bool"
+            }
+        ],
+        "stateMutability": "view",
         "type": "function"
     },
     {

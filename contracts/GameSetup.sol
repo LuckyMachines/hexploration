@@ -6,55 +6,21 @@ import "./HexplorationQueue.sol";
 import "./CharacterCard.sol";
 import "./TokenInventory.sol";
 import "./GameEvents.sol";
-import "@chainlink/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol";
-import "@chainlink/contracts/src/v0.8/VRFConsumerBaseV2.sol";
 import "./GameWallets.sol";
+import "./RandomnessConsumer.sol";
 
-contract GameSetup is AccessControlEnumerable, VRFConsumerBaseV2, GameWallets {
-    event RequestSent(uint256 requestId, uint32 numWords);
-    event RequestFulfilled(uint256 requestId, uint256[] randomWords);
-
-    struct RequestStatus {
-        bool fulfilled; // whether the request has been successfully fulfilled
-        bool exists; // whether a requestId exists
-        uint256[] randomWords;
-    }
-    // Mappings from request ID
-    mapping(uint256 => RequestStatus) public randomnessRequests; /* requestId --> requestStatus */
-    mapping(uint256 => uint256) public gameIDs;
-    mapping(uint256 => address) public gameBoardAddresses;
-
-    // Mappings from game ID
-    mapping(uint256 => uint256) public requestIDs;
-
+contract GameSetup is RandomnessConsumer, GameWallets {
     GameEvents GAME_EVENTS;
-    VRFCoordinatorV2Interface COORDINATOR;
-
-    uint64 subscriptionId;
-
-    // past requests Id.
-    uint256[] public requestIDHistory;
-    uint256 public lastRequestId;
-
-    bytes32 keyHash;
-    uint32 callbackGasLimit = 2500000;
-    uint16 requestConfirmations = 3;
-    uint32 numWords = 2;
 
     bytes32 public constant VERIFIED_CONTROLLER_ROLE =
         keccak256("VERIFIED_CONTROLLER_ROLE");
-
-    bool public testingEnabled;
 
     constructor(
         uint64 _vrfSubscriptionID,
         address _vrfCoordinator,
         bytes32 _vrfKeyHash
-    ) VRFConsumerBaseV2(_vrfCoordinator) {
-        _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
-        COORDINATOR = VRFCoordinatorV2Interface(_vrfCoordinator);
-        subscriptionId = _vrfSubscriptionID;
-        keyHash = _vrfKeyHash;
+    ) RandomnessConsumer(_vrfSubscriptionID, _vrfCoordinator, _vrfKeyHash) {
+        _setNumWords(2); // we need 2 numbers per request
     }
 
     function addVerifiedController(address vcAddress)
@@ -69,20 +35,6 @@ contract GameSetup is AccessControlEnumerable, VRFConsumerBaseV2, GameWallets {
         onlyRole(DEFAULT_ADMIN_ROLE)
     {
         GAME_EVENTS = GameEvents(gameEventsAddress);
-    }
-
-    function setVRFSubscriptionID(uint64 _subscriptionID)
-        public
-        onlyRole(DEFAULT_ADMIN_ROLE)
-    {
-        subscriptionId = _subscriptionID;
-    }
-
-    function setTestingEnabled(bool enabled)
-        public
-        onlyRole(DEFAULT_ADMIN_ROLE)
-    {
-        testingEnabled = enabled;
     }
 
     function allPlayersRegistered(uint256 gameID, address boardAddress)
@@ -100,60 +52,11 @@ contract GameSetup is AccessControlEnumerable, VRFConsumerBaseV2, GameWallets {
         }
     }
 
-    function requestRandomWords(uint256 gameID, address boardAddress)
-        internal
-        returns (uint256 requestId)
-    {
-        // Will revert if subscription is not set and funded.
-        requestId = COORDINATOR.requestRandomWords(
-            keyHash,
-            subscriptionId,
-            requestConfirmations,
-            callbackGasLimit,
-            numWords
-        );
-        randomnessRequests[requestId] = RequestStatus({
-            randomWords: new uint256[](0),
-            exists: true,
-            fulfilled: false
-        });
-        gameIDs[requestId] = gameID;
-        gameBoardAddresses[requestId] = boardAddress;
-        requestIDs[gameID] = requestId;
-        requestIDHistory.push(requestId);
-        lastRequestId = requestId;
-        emit RequestSent(requestId, numWords);
-        return requestId;
-    }
-
-    // If testing is enabled, this will get called. It is on the tester to also call testFulfillRandomWords
-    function testRequestRandomWords(uint256 gameID, address boardAddress)
-        internal
-        returns (uint256 requestId)
-    {
-        requestId = gameID;
-        randomnessRequests[requestId] = RequestStatus({
-            randomWords: new uint256[](0),
-            exists: true,
-            fulfilled: false
-        });
-        gameIDs[requestId] = gameID;
-        gameBoardAddresses[requestId] = boardAddress;
-        requestIDs[gameID] = requestId;
-        requestIDHistory.push(requestId);
-        lastRequestId = requestId;
-        emit RequestSent(requestId, numWords);
-        return requestId;
-    }
-
     function fulfillRandomWords(
         uint256 _requestId,
         uint256[] memory _randomWords
     ) internal override {
-        require(randomnessRequests[_requestId].exists, "request not found");
-        randomnessRequests[_requestId].fulfilled = true;
-        randomnessRequests[_requestId].randomWords = _randomWords;
-        emit RequestFulfilled(_requestId, _randomWords);
+        super.fulfillRandomWords(_requestId, _randomWords);
 
         mintGameTokens(_requestId);
         chooseLandingSite(_requestId);
@@ -163,30 +66,17 @@ contract GameSetup is AccessControlEnumerable, VRFConsumerBaseV2, GameWallets {
     function testFulfillRandomWords(
         uint256 _requestId,
         uint256[] memory _randomWords
-    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
-        require(randomnessRequests[_requestId].exists, "request not found");
-        randomnessRequests[_requestId].fulfilled = true;
-        randomnessRequests[_requestId].randomWords = _randomWords;
-        emit RequestFulfilled(_requestId, _randomWords);
+    ) public override onlyRole(DEFAULT_ADMIN_ROLE) {
+        super.testFulfillRandomWords(_requestId, _randomWords);
 
         mintGameTokens(_requestId);
         chooseLandingSite(_requestId);
         startGame(_requestId);
     }
 
-    function getRequestStatus(uint256 _requestId)
-        external
-        view
-        returns (bool fulfilled, uint256[] memory randomWords)
-    {
-        require(randomnessRequests[_requestId].exists, "request not found");
-        RequestStatus memory request = randomnessRequests[_requestId];
-        return (request.fulfilled, request.randomWords);
-    }
-
     function chooseLandingSite(uint256 requestID) internal {
-        uint256 gameID = gameIDs[requestID];
-        address boardAddress = gameBoardAddresses[requestID];
+        uint256 gameID = ids[requestID];
+        address boardAddress = addresses[requestID];
         HexplorationBoard board = HexplorationBoard(boardAddress);
 
         string[] memory allZones = board.getZoneAliases();
@@ -205,8 +95,8 @@ contract GameSetup is AccessControlEnumerable, VRFConsumerBaseV2, GameWallets {
     }
 
     function startGame(uint256 requestID) internal {
-        uint256 gameID = gameIDs[requestID];
-        address boardAddress = gameBoardAddresses[requestID];
+        uint256 gameID = ids[requestID];
+        address boardAddress = addresses[requestID];
         HexplorationBoard board = HexplorationBoard(boardAddress);
         require(board.gameState(gameID) == 0, "game already started");
 
@@ -238,10 +128,8 @@ contract GameSetup is AccessControlEnumerable, VRFConsumerBaseV2, GameWallets {
     }
 
     function mintGameTokens(uint256 requestID) internal {
-        uint256 gameID = gameIDs[requestID];
-        HexplorationBoard board = HexplorationBoard(
-            gameBoardAddresses[requestID]
-        );
+        uint256 gameID = ids[requestID];
+        HexplorationBoard board = HexplorationBoard(addresses[requestID]);
         PlayerRegistry pr = PlayerRegistry(board.prAddress());
         uint256 totalRegistrations = pr.totalRegistrations(gameID);
 

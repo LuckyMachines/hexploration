@@ -11,12 +11,14 @@ import "./RollDraw.sol";
 import "./HexplorationGameplayUpdates.sol";
 import "./GameWallets.sol";
 import "./CharacterCard.sol";
+import "@luckymachines/game-core/contracts/src/v0.0/GameLoopCompatible.sol";
 
 contract HexplorationGameplay is
     AccessControlEnumerable,
     KeeperCompatibleInterface,
     GameWallets,
-    RandomIndices
+    RandomIndices,
+    GameLoopCompatible
 {
     bytes32 public constant VERIFIED_CONTROLLER_ROLE =
         keccak256("VERIFIED_CONTROLLER_ROLE");
@@ -99,6 +101,21 @@ contract HexplorationGameplay is
         GAME_STATE = HexplorationStateUpdate(gsuAddress);
     }
 
+    // Game Loop
+    // forwarding keeper functions for compatibility
+    function shouldProgressLoop()
+        external
+        view
+        override
+        returns (bool loopIsReady, bytes memory progressWithData)
+    {
+        (loopIsReady, progressWithData) = this.checkUpkeep(new bytes(0));
+    }
+
+    function progressLoop(bytes calldata progressWithData) external override {
+        performUpkeep(progressWithData);
+    }
+
     // Keeper functions
     function getSummaryForUpkeep(bytes calldata performData)
         external
@@ -133,7 +150,7 @@ contract HexplorationGameplay is
         );
     }
 
-    function performUpkeep(bytes calldata performData) external override {
+    function performUpkeep(bytes calldata performData) public override {
         // TODO: restrict to registry or admin
         DataSummary memory summary;
         uint256 queueID;
@@ -200,9 +217,9 @@ contract HexplorationGameplay is
     }
 
     function checkUpkeep(
-        bytes calldata /* checkData */
+        bytes calldata /*checkData*/
     )
-        external
+        public
         view
         override
         returns (bool upkeepNeeded, bytes memory performData)

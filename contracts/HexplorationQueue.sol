@@ -4,25 +4,26 @@ pragma solidity >=0.7.0 <0.9.0;
 //TODO:
 // setup timer keeper for when all players don't submit moves
 
-import "@openzeppelin/contracts/access/AccessControlEnumerable.sol";
+// import "@openzeppelin/contracts/access/AccessControlEnumerable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
-import "@chainlink/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol";
-import "@chainlink/contracts/src/v0.8/VRFConsumerBaseV2.sol";
+// import "@chainlink/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol";
+// import "@chainlink/contracts/src/v0.8/VRFConsumerBaseV2.sol";
+import "./RandomnessConsumer.sol";
 import "./HexplorationStateUpdate.sol";
 import "./GameEvents.sol";
 
-contract HexplorationQueue is AccessControlEnumerable, VRFConsumerBaseV2 {
+contract HexplorationQueue is RandomnessConsumer {
     using Counters for Counters.Counter;
     Counters.Counter internal QUEUE_ID;
     CharacterCard internal CHARACTER_CARD;
     GameEvents internal GAME_EVENTS;
 
     // VRF
-    VRFCoordinatorV2Interface COORDINATOR;
-    uint64 s_subscriptionId;
-    bytes32 s_keyHash;
-    uint32 callbackGasLimit = 2500000;
-    uint16 requestConfirmations = 3;
+    // VRFCoordinatorV2Interface COORDINATOR;
+    // uint64 s_subscriptionId;
+    // bytes32 s_keyHash;
+    // uint32 callbackGasLimit = 2500000;
+    // uint16 requestConfirmations = 3;
 
     enum ProcessingPhase {
         Start,
@@ -49,7 +50,7 @@ contract HexplorationQueue is AccessControlEnumerable, VRFConsumerBaseV2 {
 
     //////////////////////////////////////////////
     // For testing only. Do not use in production
-    bool _testMode;
+    // bool _testMode;
     // uint256[] _testRandomness;
     //////////////////////////////////////////////
 
@@ -95,26 +96,22 @@ contract HexplorationQueue is AccessControlEnumerable, VRFConsumerBaseV2 {
     // current action, so we know what to process during play through phase
     mapping(uint256 => mapping(uint256 => Action)) public activeAction; // defaults to idle
 
-    // From request ID => queue ID
-    mapping(uint256 => uint256) internal randomnessRequestQueueID; // ID set before randomness delivered
-
     constructor(
         address gameplayAddress,
         address characterCard,
         uint64 _vrfSubscriptionID,
         address _vrfCoordinator,
-        bytes32 _keyHash
-    ) VRFConsumerBaseV2(_vrfCoordinator) {
+        bytes32 _vrfKeyHash
+    ) RandomnessConsumer(_vrfSubscriptionID, _vrfCoordinator, _vrfKeyHash) {
         _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
         _setupRole(GAMEPLAY_ROLE, gameplayAddress);
         QUEUE_ID.increment(); // start at 1
         CHARACTER_CARD = CharacterCard(characterCard);
-        s_subscriptionId = _vrfSubscriptionID;
-        s_keyHash = _keyHash;
-        COORDINATOR = VRFCoordinatorV2Interface(_vrfCoordinator);
+        // s_subscriptionId = _vrfSubscriptionID;
+        // s_keyHash = _vrfKeyHash;
+        // COORDINATOR = VRFCoordinatorV2Interface(_vrfCoordinator);
     }
 
-    // Can set multiple VCs, one for manual pushing, one for keeper
     function addVerifiedController(address controllerAddress)
         public
         onlyRole(DEFAULT_ADMIN_ROLE)
@@ -144,7 +141,7 @@ contract HexplorationQueue is AccessControlEnumerable, VRFConsumerBaseV2 {
     }
 
     function isInTestMode() public view returns (bool testMode) {
-        testMode = _testMode;
+        testMode = testingEnabled;
     }
 
     function getQueueIDs(uint256 gameID)
@@ -268,12 +265,12 @@ contract HexplorationQueue is AccessControlEnumerable, VRFConsumerBaseV2 {
         }
     }
 
-    function setRandomNumbers(
-        uint256[41] memory randomNumbers,
-        uint256 _queueID
-    ) external onlyRole(GAMEPLAY_ROLE) {
-        randomness[_queueID] = randomNumbers;
-    }
+    // function setRandomNumbers(
+    //     uint256[41] memory randomNumbers,
+    //     uint256 _queueID
+    // ) external onlyRole(GAMEPLAY_ROLE) {
+    //     randomness[_queueID] = randomNumbers;
+    // }
 
     function requestNewQueueID(uint256 _queueID)
         external
@@ -373,7 +370,11 @@ contract HexplorationQueue is AccessControlEnumerable, VRFConsumerBaseV2 {
             _updateIdleness(_queueID);
 
             // request random number for phase
-            requestRandomWords(_queueID);
+            if (testingEnabled) {
+                testRequestRandomWords(_queueID, address(this));
+            } else {
+                requestRandomWords(_queueID, address(this));
+            }
         }
     }
 
@@ -388,119 +389,26 @@ contract HexplorationQueue is AccessControlEnumerable, VRFConsumerBaseV2 {
         }
     }
 
-    function requestRandomWords(uint256 _queueID) internal {
-        // (deprecated) setRandomNeeds(_queueID);
-        if (_testMode) {
-            uint256 reqID = _queueID;
-            randomnessRequestQueueID[reqID] = _queueID;
-            // set reqID to queue id
-            // need to call testFulfillRandomWords with queue ID to simulate VRF callback
-        } else {
-            uint256 reqID = COORDINATOR.requestRandomWords(
-                s_keyHash,
-                s_subscriptionId,
-                requestConfirmations,
-                callbackGasLimit,
-                1
-            );
-
-            randomnessRequestQueueID[reqID] = _queueID;
-        }
-    }
-
-    function fulfillRandomWords(uint256 requestID, uint256[] memory randomWords)
-        internal
-        override
-    {
-        uint256 qID = randomnessRequestQueueID[requestID];
-        randomness[qID] = randomWords;
-        // if (_testMode) {
-        //     processRandomWords(qID, _testRandomness);
-        // } else {
-        // processRandomWords(qID, randomWords);
-        // }
+    function fulfillRandomWords(
+        uint256 _requestID,
+        uint256[] memory _randomWords
+    ) internal override {
+        super.fulfillRandomWords(_requestID, _randomWords);
+        _setRandomness(_requestID);
     }
 
     function testFulfillRandomWords(
-        uint256 requestID,
-        uint256[] memory randomWords
-    ) public onlyRole(DEFAULT_ADMIN_ROLE) {
-        require(_testMode, "Queue not in test mode");
-        fulfillRandomWords(requestID, randomWords);
+        uint256 _requestID,
+        uint256[] memory _randomWords
+    ) public override onlyRole(DEFAULT_ADMIN_ROLE) {
+        super.testFulfillRandomWords(_requestID, _randomWords);
+        _setRandomness(_requestID);
     }
 
-    // Not needed with new random expansion
-    // function setRandomNeeds(uint256 _queueID) internal {
-    //     // set bools in _randomNeeds for each test
-    //     uint256[] memory _players = players[_queueID];
-    //     bool[41] storage _randomNeeds = randomNeeds[_queueID];
-    //     uint256 numbersNeeded = 1;
-    //     for (uint256 i = 0; i < _players.length; i++) {
-    //         uint256 playerID = _players[i];
-    //         uint256 startingIndex;
-
-    //         if (submissionAction[_queueID][playerID] == Action.Dig) {
-    //             // is player digging?
-    //             ////        1       2          3        4
-    //             //// set [0,1,2], [3,4,5], [6,7,8], or [9,10,11]
-    //             startingIndex = playerID == 1 ? 0 : playerID == 2
-    //                 ? 3
-    //                 : playerID == 3
-    //                 ? 6
-    //                 : 9;
-    //             _randomNeeds[startingIndex] = true;
-    //             _randomNeeds[startingIndex + 1] = true;
-    //             _randomNeeds[startingIndex + 2] = true;
-    //             numbersNeeded += 3;
-    //         } else if (submissionAction[_queueID][playerID] == Action.Move) {
-    //             // is player moving? // limited to 4 random values for movement (might need more)
-    //             ////        1               2           3                   4
-    //             //// set [25,26,27,28], [29,30,31,32], [33,34,35,36], or [37,38,39,40]
-    //             startingIndex = playerID == 1 ? 25 : playerID == 2
-    //                 ? 29
-    //                 : playerID == 3
-    //                 ? 33
-    //                 : 37;
-    //             _randomNeeds[startingIndex] = true;
-    //             _randomNeeds[startingIndex + 1] = true;
-    //             _randomNeeds[startingIndex + 2] = true;
-    //             _randomNeeds[startingIndex + 3] = true;
-    //             numbersNeeded += 4;
-    //         }
-
-    //         if (isDayPhase[_queueID]) {
-    //             // is it day time?
-    //             ////        1           2           3               4
-    //             //// set [13,14,15], [16,17,18], [19,20,21], or [22,23,24]
-    //             startingIndex = playerID == 1 ? 13 : playerID == 2
-    //                 ? 16
-    //                 : playerID == 3
-    //                 ? 19
-    //                 : 22;
-    //             _randomNeeds[startingIndex] = true;
-    //             _randomNeeds[startingIndex + 1] = true;
-    //             _randomNeeds[startingIndex + 2] = true;
-    //             numbersNeeded += 3;
-    //         }
-    //     }
-
-    //     //// set 12 (dig dispute / flag that randomness was delivered)
-    //     _randomNeeds[12] = true;
-    //     totalRandomWords[_queueID] = numbersNeeded;
-    // }
-
-    // function processRandomWords(uint256 _queueID, uint256[] memory randomWords)
-    //     internal
-    // {
-    //     bool[41] memory _randomNeeds = randomNeeds[_queueID];
-    //     uint256 position = 0;
-    //     for (uint256 i = 0; i < _randomNeeds.length; i++) {
-    //         if (_randomNeeds[i]) {
-    //             randomness[_queueID][i] = randomWords[position];
-    //             position++;
-    //         }
-    //     }
-    // }
+    function _setRandomness(uint256 requestID) internal {
+        uint256 qID = ids[requestID];
+        randomness[qID] = randomnessRequests[requestID].randomWords;
+    }
 
     function _requestGameQueue(uint256 gameID, uint256 _totalPlayers)
         internal
@@ -514,13 +422,5 @@ contract HexplorationQueue is AccessControlEnumerable, VRFConsumerBaseV2 {
         totalPlayers[newQueueID] = _totalPlayers;
         QUEUE_ID.increment();
         return newQueueID;
-    }
-
-    // Admin functions
-    function setTestMode(bool useTestRandomness)
-        public
-        onlyRole(DEFAULT_ADMIN_ROLE)
-    {
-        _testMode = useTestRandomness;
     }
 }
