@@ -56,13 +56,14 @@ contract RollDraw is AccessControlEnumerable, RandomIndices {
         (drawIndex, rollIndex) = randomIndicesForPlayer(playerID, false);
         uint256 dayPhaseDrawIndex;
         uint256 dayPhaseRollIndex;
+
         if (dayEvent) {
             (dayPhaseDrawIndex, dayPhaseRollIndex) = randomIndicesForPlayer(
                 playerID,
                 true
             );
-            _dayPhaseDrawRandomness[queueID][playerID] = QUEUE.randomness(
-                queueID,
+            _dayPhaseDrawRandomness[queueID][playerID] = expandNumber(
+                QUEUE.randomness(queueID, 0),
                 dayPhaseDrawIndex
             );
             _dayPhaseRolls[queueID][playerID] = playerRolls(
@@ -72,8 +73,8 @@ contract RollDraw is AccessControlEnumerable, RandomIndices {
             );
         }
 
-        _drawRandomness[queueID][playerID] = QUEUE.randomness(
-            queueID,
+        _drawRandomness[queueID][playerID] = expandNumber(
+            QUEUE.randomness(queueID, 0),
             drawIndex
         );
 
@@ -371,7 +372,7 @@ contract RollDraw is AccessControlEnumerable, RandomIndices {
             }
         }
         rollTotal =
-            QUEUE.randomness(queueID, randomnessIndex) %
+            expandNumber(QUEUE.randomness(queueID, 0), randomnessIndex) %
             ((maxValue * diceQty) + 1);
     }
 

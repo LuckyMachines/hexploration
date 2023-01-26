@@ -48,12 +48,6 @@ contract HexplorationQueue is RandomnessConsumer {
         keccak256("VERIFIED_CONTROLLER_ROLE");
     bytes32 public constant GAMEPLAY_ROLE = keccak256("GAMEPLAY_ROLE");
 
-    //////////////////////////////////////////////
-    // For testing only. Do not use in production
-    // bool _testMode;
-    // uint256[] _testRandomness;
-    //////////////////////////////////////////////
-
     // Array of Queue IDs to be processed.
     uint256[] public processingQueue;
 
@@ -125,16 +119,6 @@ contract HexplorationQueue is RandomnessConsumer {
     {
         GAME_EVENTS = GameEvents(gameEventsAddress);
     }
-
-    // Used to check if contract is in testing mode
-    // function getTestRandomness()
-    //     public
-    //     view
-    //     returns (bool usingTestRandomness, uint256[] memory testRandomness)
-    // {
-    //     usingTestRandomness = _testMode;
-    //     testRandomness = _testRandomness;
-    // }
 
     function cleanQueue() public {
         // TODO: remove 0s from processing queue
@@ -264,13 +248,6 @@ contract HexplorationQueue is RandomnessConsumer {
             GAME_EVENTS.emitTurnProcessingStart(game[_queueID]);
         }
     }
-
-    // function setRandomNumbers(
-    //     uint256[41] memory randomNumbers,
-    //     uint256 _queueID
-    // ) external onlyRole(GAMEPLAY_ROLE) {
-    //     randomness[_queueID] = randomNumbers;
-    // }
 
     function requestNewQueueID(uint256 _queueID)
         external

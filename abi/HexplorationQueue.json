@@ -1136,24 +1136,6 @@
     {
         "inputs": [
             {
-                "internalType": "uint256[41]",
-                "name": "randomNumbers",
-                "type": "uint256[41]"
-            },
-            {
-                "internalType": "uint256",
-                "name": "_queueID",
-                "type": "uint256"
-            }
-        ],
-        "name": "setRandomNumbers",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
                 "internalType": "bool",
                 "name": "enabled",
                 "type": "bool"
@@ -1398,6 +1380,19 @@
                 "internalType": "uint256",
                 "name": "",
                 "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "useMockVRF",
+        "outputs": [
+            {
+                "internalType": "bool",
+                "name": "",
+                "type": "bool"
             }
         ],
         "stateMutability": "view",

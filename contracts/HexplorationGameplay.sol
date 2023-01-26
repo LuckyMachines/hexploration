@@ -17,8 +17,7 @@ contract HexplorationGameplay is
     AccessControlEnumerable,
     KeeperCompatibleInterface,
     GameWallets,
-    RandomIndices,
-    GameLoopCompatible
+    RandomIndices
 {
     bytes32 public constant VERIFIED_CONTROLLER_ROLE =
         keccak256("VERIFIED_CONTROLLER_ROLE");
@@ -103,18 +102,18 @@ contract HexplorationGameplay is
 
     // Game Loop
     // forwarding keeper functions for compatibility
-    function shouldProgressLoop()
-        external
-        view
-        override
-        returns (bool loopIsReady, bytes memory progressWithData)
-    {
-        (loopIsReady, progressWithData) = this.checkUpkeep(new bytes(0));
-    }
+    // function shouldProgressLoop()
+    //     external
+    //     view
+    //     override
+    //     returns (bool loopIsReady, bytes memory progressWithData)
+    // {
+    //     (loopIsReady, progressWithData) = this.checkUpkeep(new bytes(0));
+    // }
 
-    function progressLoop(bytes calldata progressWithData) external override {
-        performUpkeep(progressWithData);
-    }
+    // function progressLoop(bytes calldata progressWithData) external override {
+    //     performUpkeep(progressWithData);
+    // }
 
     // Keeper functions
     function getSummaryForUpkeep(bytes calldata performData)
@@ -181,6 +180,7 @@ contract HexplorationGameplay is
             QUEUE.getRandomness(queueID).length > 0,
             "Randomness not delivered"
         );
+
         for (uint256 i = 0; i < QUEUE.getAllPlayers(queueID).length; i++) {
             uint256 playerID = i + 1;
             ROLL_DRAW.setRandomnessForPlayer(
@@ -189,6 +189,7 @@ contract HexplorationGameplay is
                 QUEUE.isDayPhase(queueID)
             );
         }
+
         if (processingPhase == 2) {
             (bool success, ) = address(this).call(
                 abi.encodeWithSignature(

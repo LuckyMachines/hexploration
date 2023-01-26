@@ -53,4 +53,12 @@ abstract contract RandomIndices {
     {
         return uint256(keccak256(abi.encode(number, index)));
     }
+
+    function expandNumber(uint256 number, uint256 indexAsNumber)
+        internal
+        pure
+        returns (uint256)
+    {
+        return uint256(keccak256(abi.encode(number, indexAsNumber)));
+    }
 }
