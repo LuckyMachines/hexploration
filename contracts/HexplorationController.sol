@@ -12,11 +12,13 @@ import "./GameEvents.sol";
 import "./GameSetup.sol";
 import "./GameWallets.sol";
 import "@chainlink/contracts/src/v0.8/AutomationCompatible.sol";
+import "@luckymachines/autoloop/contracts/AutoLoopCompatible.sol";
 
 contract HexplorationController is
     GameController,
     GameWallets,
-    AutomationCompatibleInterface
+    AutomationCompatibleInterface,
+    AutoLoopCompatible
 {
     // functions are meant to be called directly by players by default
     // we are adding the ability of a Controller Admin or Keeper to
@@ -69,7 +71,7 @@ contract HexplorationController is
         public
         onlyRole(DEFAULT_ADMIN_ROLE)
     {
-        GAME_SETUP = GameSetup(gameSetupAddress);
+        GAME_SETUP = GameSetup(payable(gameSetupAddress));
     }
 
     function addVerifiedController(address vcAddress)
@@ -142,7 +144,7 @@ contract HexplorationController is
             playerID
         );
         HexplorationBoard board = HexplorationBoard(boardAddress);
-        HexplorationQueue q = HexplorationQueue(board.gameplayQueue());
+        HexplorationQueue q = HexplorationQueue(payable(board.gameplayQueue()));
         PlayerRegistry pr = PlayerRegistry(board.prAddress());
         require(
             pr.playerAddress(gameID, playerID) == tx.origin,
@@ -228,6 +230,22 @@ contract HexplorationController is
         return GameRegistry(gameRegistryAddress).latestGame(boardAddress);
     }
 
+    // AutoLoop
+    // forwarding keeper functions for compatibility
+    function shouldProgressLoop()
+        external
+        view
+        override
+        returns (bool loopIsReady, bytes memory progressWithData)
+    {
+        (loopIsReady, progressWithData) = this.checkUpkeep(new bytes(0));
+    }
+
+    function progressLoop(bytes calldata progressWithData) external override {
+        this.performUpkeep(progressWithData);
+    }
+
+    // Keeper Functions
     function checkUpkeep(
         bytes calldata /* checkData */
     )
@@ -243,7 +261,9 @@ contract HexplorationController is
                 HexplorationBoard board = HexplorationBoard(
                     activeGameAddresses[i]
                 );
-                HexplorationQueue q = HexplorationQueue(board.gameplayQueue());
+                HexplorationQueue q = HexplorationQueue(
+                    payable(board.gameplayQueue())
+                );
                 queueID = q.queueID(activeGames[i]);
                 if (
                     readyForUpdate[activeGameAddresses[i]][activeGames[i]][
@@ -267,18 +287,6 @@ contract HexplorationController is
             }
         }
         performData = abi.encode(gameIndex, queueID);
-    }
-
-    function getActiveGames() public view returns (uint256[] memory games) {
-        games = activeGames;
-    }
-
-    function getActiveGameAddresses()
-        public
-        view
-        returns (address[] memory addresses)
-    {
-        addresses = activeGameAddresses;
     }
 
     function performUpkeep(bytes calldata performData) external override {
@@ -307,6 +315,18 @@ contract HexplorationController is
         }
     }
 
+    function getActiveGames() public view returns (uint256[] memory games) {
+        games = activeGames;
+    }
+
+    function getActiveGameAddresses()
+        public
+        view
+        returns (address[] memory addresses)
+    {
+        addresses = activeGameAddresses;
+    }
+
     function timeNow() public view returns (uint256) {
         return block.timestamp;
     }
@@ -316,7 +336,7 @@ contract HexplorationController is
     // Starts processing turn after timeout
     function submissionTimeout(uint256 gameID, address boardAddress) internal {
         HexplorationBoard board = HexplorationBoard(boardAddress);
-        HexplorationQueue q = HexplorationQueue(board.gameplayQueue());
+        HexplorationQueue q = HexplorationQueue(payable(board.gameplayQueue()));
         uint256 qID = q.queueID(gameID);
         bool isDayPhase = TokenInventory(board.tokenInventory())
             .DAY_NIGHT_TOKEN()
@@ -361,7 +381,9 @@ contract HexplorationController is
         uint256 playerID
     ) public view returns (bool isValid, string memory invalidError) {
         HexplorationBoard gameBoard = HexplorationBoard(gameBoardAddress);
-        HexplorationQueue q = HexplorationQueue(gameBoard.gameplayQueue());
+        HexplorationQueue q = HexplorationQueue(
+            payable(gameBoard.gameplayQueue())
+        );
         uint256 qID = q.queueID(gameID);
         CharacterCard cc = CharacterCard(gameBoard.characterCard());
         if (readyForUpdate[gameBoardAddress][gameID][qID] == true) {

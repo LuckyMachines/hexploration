@@ -211,7 +211,7 @@ contract GameSummary is GameWallets, Utilities, AccessControlEnumerable {
         returns (uint256 day)
     {
         HexplorationBoard board = HexplorationBoard(gameBoardAddress);
-        HexplorationQueue q = HexplorationQueue(board.gameplayQueue());
+        HexplorationQueue q = HexplorationQueue(payable(board.gameplayQueue()));
         day = (q.getQueueIDs(gameID).length + 1) / 2;
     }
 
@@ -221,7 +221,7 @@ contract GameSummary is GameWallets, Utilities, AccessControlEnumerable {
         returns (uint256 queueID)
     {
         HexplorationBoard board = HexplorationBoard(gameBoardAddress);
-        HexplorationQueue q = HexplorationQueue(board.gameplayQueue());
+        HexplorationQueue q = HexplorationQueue(payable(board.gameplayQueue()));
         queueID = q.queueID(gameID);
     }
 

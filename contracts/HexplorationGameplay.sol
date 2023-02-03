@@ -3,7 +3,6 @@ pragma solidity >=0.7.0 <0.9.0;
 
 import "./HexplorationQueue.sol";
 import "./HexplorationStateUpdate.sol";
-// import "./state/GameSummary.sol";
 import "./HexplorationBoard.sol";
 import "@openzeppelin/contracts/access/AccessControlEnumerable.sol";
 import "@chainlink/contracts/src/v0.8/KeeperCompatible.sol";
@@ -11,13 +10,14 @@ import "./RollDraw.sol";
 import "./HexplorationGameplayUpdates.sol";
 import "./GameWallets.sol";
 import "./CharacterCard.sol";
-import "@luckymachines/game-core/contracts/src/v0.0/GameLoopCompatible.sol";
+import "@luckymachines/autoloop/contracts/AutoLoopCompatible.sol";
 
 contract HexplorationGameplay is
     AccessControlEnumerable,
     KeeperCompatibleInterface,
     GameWallets,
-    RandomIndices
+    RandomIndices,
+    AutoLoopCompatible
 {
     bytes32 public constant VERIFIED_CONTROLLER_ROLE =
         keccak256("VERIFIED_CONTROLLER_ROLE");
@@ -89,7 +89,7 @@ contract HexplorationGameplay is
         public
         onlyRole(DEFAULT_ADMIN_ROLE)
     {
-        QUEUE = HexplorationQueue(queueContract);
+        QUEUE = HexplorationQueue(payable(queueContract));
         _setupRole(VERIFIED_CONTROLLER_ROLE, queueContract);
     }
 
@@ -100,20 +100,20 @@ contract HexplorationGameplay is
         GAME_STATE = HexplorationStateUpdate(gsuAddress);
     }
 
-    // Game Loop
+    // AutoLoop
     // forwarding keeper functions for compatibility
-    // function shouldProgressLoop()
-    //     external
-    //     view
-    //     override
-    //     returns (bool loopIsReady, bytes memory progressWithData)
-    // {
-    //     (loopIsReady, progressWithData) = this.checkUpkeep(new bytes(0));
-    // }
+    function shouldProgressLoop()
+        external
+        view
+        override
+        returns (bool loopIsReady, bytes memory progressWithData)
+    {
+        (loopIsReady, progressWithData) = this.checkUpkeep(new bytes(0));
+    }
 
-    // function progressLoop(bytes calldata progressWithData) external override {
-    //     performUpkeep(progressWithData);
-    // }
+    function progressLoop(bytes calldata progressWithData) external override {
+        performUpkeep(progressWithData);
+    }
 
     // Keeper functions
     function getSummaryForUpkeep(bytes calldata performData)

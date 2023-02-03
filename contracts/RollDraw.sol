@@ -41,7 +41,7 @@ contract RollDraw is AccessControlEnumerable, RandomIndices {
         public
         onlyRole(DEFAULT_ADMIN_ROLE)
     {
-        QUEUE = HexplorationQueue(queueAddress);
+        QUEUE = HexplorationQueue(payable(queueAddress));
     }
 
     // TODO: set access control for this, this should not be public, it changes the state

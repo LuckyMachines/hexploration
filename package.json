@@ -22,7 +22,7 @@
   "homepage": "https://github.com/LuckyMachines/hexploration#readme",
   "dependencies": {
     "@chainlink/contracts": "^0.4.1",
-    "@luckymachines/game-core": "^0.0.16",
+    "@luckymachines/game-core": "0.0.33",
     "@openzeppelin/contracts": "^4.7.3"
   }
 }

@@ -18,8 +18,18 @@ contract GameSetup is RandomnessConsumer, GameWallets {
     constructor(
         uint64 _vrfSubscriptionID,
         address _vrfCoordinator,
-        bytes32 _vrfKeyHash
-    ) RandomnessConsumer(_vrfSubscriptionID, _vrfCoordinator, _vrfKeyHash) {
+        bytes32 _vrfKeyHash,
+        address _bandProvider,
+        address _stringToUint
+    )
+        RandomnessConsumer(
+            _vrfSubscriptionID,
+            _vrfCoordinator,
+            _vrfKeyHash,
+            _bandProvider,
+            _stringToUint
+        )
+    {
         _setNumWords(2); // we need 2 numbers per request
     }
 
@@ -48,15 +58,17 @@ contract GameSetup is RandomnessConsumer, GameWallets {
         if (testingEnabled) {
             testRequestRandomWords(gameID, boardAddress);
         } else {
-            requestRandomWords(gameID, boardAddress);
+            requestRandomness(gameID, boardAddress);
         }
     }
 
-    function fulfillRandomWords(
+    function fulfillRandomness(
         uint256 _requestId,
-        uint256[] memory _randomWords
+        uint256[] memory _randomness,
+        string memory _seed,
+        uint64 _time
     ) internal override {
-        super.fulfillRandomWords(_requestId, _randomWords);
+        super.fulfillRandomness(_requestId, _randomness, _seed, _time);
 
         mintGameTokens(_requestId);
         chooseLandingSite(_requestId);
@@ -105,7 +117,7 @@ contract GameSetup is RandomnessConsumer, GameWallets {
         // set game to initialized
         board.setGameState(2, gameID);
 
-        HexplorationQueue q = HexplorationQueue(board.gameplayQueue());
+        HexplorationQueue q = HexplorationQueue(payable(board.gameplayQueue()));
 
         uint256 qID = q.queueID(gameID);
         if (qID == 0) {

@@ -434,6 +434,19 @@
     {
         "inputs": [
             {
+                "internalType": "bytes",
+                "name": "progressWithData",
+                "type": "bytes"
+            }
+        ],
+        "name": "progressLoop",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
                 "internalType": "bytes32",
                 "name": "role",
                 "type": "bytes32"
@@ -491,6 +504,24 @@
         "name": "setQueue",
         "outputs": [],
         "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "shouldProgressLoop",
+        "outputs": [
+            {
+                "internalType": "bool",
+                "name": "loopIsReady",
+                "type": "bool"
+            },
+            {
+                "internalType": "bytes",
+                "name": "progressWithData",
+                "type": "bytes"
+            }
+        ],
+        "stateMutability": "view",
         "type": "function"
     },
     {

@@ -95,8 +95,18 @@ contract HexplorationQueue is RandomnessConsumer {
         address characterCard,
         uint64 _vrfSubscriptionID,
         address _vrfCoordinator,
-        bytes32 _vrfKeyHash
-    ) RandomnessConsumer(_vrfSubscriptionID, _vrfCoordinator, _vrfKeyHash) {
+        bytes32 _vrfKeyHash,
+        address _bandProvider,
+        address _stringToUint
+    )
+        RandomnessConsumer(
+            _vrfSubscriptionID,
+            _vrfCoordinator,
+            _vrfKeyHash,
+            _bandProvider,
+            _stringToUint
+        )
+    {
         _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
         _setupRole(GAMEPLAY_ROLE, gameplayAddress);
         QUEUE_ID.increment(); // start at 1
@@ -350,7 +360,7 @@ contract HexplorationQueue is RandomnessConsumer {
             if (testingEnabled) {
                 testRequestRandomWords(_queueID, address(this));
             } else {
-                requestRandomWords(_queueID, address(this));
+                requestRandomness(_queueID, address(this));
             }
         }
     }
@@ -366,12 +376,14 @@ contract HexplorationQueue is RandomnessConsumer {
         }
     }
 
-    function fulfillRandomWords(
-        uint256 _requestID,
-        uint256[] memory _randomWords
+    function fulfillRandomness(
+        uint256 _requestId,
+        uint256[] memory _randomness,
+        string memory _seed,
+        uint64 _time
     ) internal override {
-        super.fulfillRandomWords(_requestID, _randomWords);
-        _setRandomness(_requestID);
+        super.fulfillRandomness(_requestId, _randomness, _seed, _time);
+        _setRandomness(_requestId);
     }
 
     function testFulfillRandomWords(

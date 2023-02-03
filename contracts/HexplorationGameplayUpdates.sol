@@ -40,8 +40,9 @@ library HexplorationGameplayUpdates {
         HexplorationGameplay.DataSummary memory summary
     ) public view returns (HexplorationGameplay.PlayUpdates memory) {
         HexplorationGameplay.PlayUpdates memory playUpdates;
-        uint256[] memory playersInQueue = HexplorationQueue(queueAddress)
-            .getAllPlayers(queueID);
+        uint256[] memory playersInQueue = HexplorationQueue(
+            payable(queueAddress)
+        ).getAllPlayers(queueID);
         uint256 position;
         // uint256 maxMovementPerPlayer = 7;
         // Movement
@@ -55,7 +56,7 @@ library HexplorationGameplayUpdates {
         position = 0;
         for (uint256 i = 0; i < playersInQueue.length; i++) {
             if (
-                HexplorationQueue(queueAddress).submissionAction(
+                HexplorationQueue(payable(queueAddress)).submissionAction(
                     queueID,
                     playersInQueue[i]
                 ) == HexplorationQueue.Action.Move
@@ -64,10 +65,11 @@ library HexplorationGameplayUpdates {
 
                 playUpdates.playerPositionIDs[position] = playersInQueue[i];
                 playUpdates.spacesToMove[position] = HexplorationQueue(
-                    queueAddress
+                    payable(queueAddress)
                 ).getSubmissionOptions(queueID, playersInQueue[i]).length;
-                string[] memory options = HexplorationQueue(queueAddress)
-                    .getSubmissionOptions(queueID, playersInQueue[i]);
+                string[] memory options = HexplorationQueue(
+                    payable(queueAddress)
+                ).getSubmissionOptions(queueID, playersInQueue[i]);
                 for (uint256 j = 0; j < 7; j++) {
                     playUpdates.playerMovementOptions[position][j] = j <
                         options.length
@@ -86,7 +88,7 @@ library HexplorationGameplayUpdates {
         for (uint256 i = 0; i < playersInQueue.length; i++) {
             if (
                 bytes(
-                    HexplorationQueue(queueAddress).submissionLeftHand(
+                    HexplorationQueue(payable(queueAddress)).submissionLeftHand(
                         queueID,
                         playersInQueue[i]
                     )
@@ -97,7 +99,7 @@ library HexplorationGameplayUpdates {
                 playUpdates.playerEquipIDs[position] = playersInQueue[i];
                 playUpdates.playerEquipHands[position] = 0;
                 playUpdates.playerEquips[position] = HexplorationQueue(
-                    queueAddress
+                    payable(queueAddress)
                 ).submissionLeftHand(queueID, playersInQueue[i]);
                 position++;
             }
@@ -107,10 +109,8 @@ library HexplorationGameplayUpdates {
         for (uint256 i = 0; i < playersInQueue.length; i++) {
             if (
                 bytes(
-                    HexplorationQueue(queueAddress).submissionRightHand(
-                        queueID,
-                        playersInQueue[i]
-                    )
+                    HexplorationQueue(payable(queueAddress))
+                        .submissionRightHand(queueID, playersInQueue[i])
                 ).length > 0
             ) {
                 // return [player id, r/l hand (0/1)]
@@ -118,7 +118,7 @@ library HexplorationGameplayUpdates {
                 playUpdates.playerEquipIDs[position] = playersInQueue[i];
                 playUpdates.playerEquipHands[position] = 1;
                 playUpdates.playerEquips[position] = HexplorationQueue(
-                    queueAddress
+                    payable(queueAddress)
                 ).submissionRightHand(queueID, playersInQueue[i]);
                 position++;
             }
@@ -132,7 +132,7 @@ library HexplorationGameplayUpdates {
         position = 0;
         for (uint256 i = 0; i < playersInQueue.length; i++) {
             if (
-                HexplorationQueue(queueAddress).submissionAction(
+                HexplorationQueue(payable(queueAddress)).submissionAction(
                     queueID,
                     playersInQueue[i]
                 ) == HexplorationQueue.Action.SetupCamp
@@ -152,7 +152,7 @@ library HexplorationGameplayUpdates {
 
         for (uint256 i = 0; i < playersInQueue.length; i++) {
             if (
-                HexplorationQueue(queueAddress).submissionAction(
+                HexplorationQueue(payable(queueAddress)).submissionAction(
                     queueID,
                     playersInQueue[i]
                 ) == HexplorationQueue.Action.BreakDownCamp
@@ -215,7 +215,7 @@ library HexplorationGameplayUpdates {
         */
         for (uint256 i = 0; i < playersInQueue.length; i++) {
             if (
-                HexplorationQueue(queueAddress).submissionAction(
+                HexplorationQueue(payable(queueAddress)).submissionAction(
                     queueID,
                     playersInQueue[i]
                 ) == HexplorationQueue.Action.SetupCamp
@@ -225,7 +225,7 @@ library HexplorationGameplayUpdates {
                 playUpdates.playerActiveActionIDs[position] = playersInQueue[i];
                 position++;
             } else if (
-                HexplorationQueue(queueAddress).submissionAction(
+                HexplorationQueue(payable(queueAddress)).submissionAction(
                     queueID,
                     playersInQueue[i]
                 ) == HexplorationQueue.Action.BreakDownCamp
@@ -235,7 +235,7 @@ library HexplorationGameplayUpdates {
                 playUpdates.playerActiveActionIDs[position] = playersInQueue[i];
                 position++;
             } else if (
-                HexplorationQueue(queueAddress).submissionAction(
+                HexplorationQueue(payable(queueAddress)).submissionAction(
                     queueID,
                     playersInQueue[i]
                 ) == HexplorationQueue.Action.Dig
@@ -316,14 +316,14 @@ library HexplorationGameplayUpdates {
                 playerStatPosition++;
                 position++;
             } else if (
-                HexplorationQueue(queueAddress).submissionAction(
+                HexplorationQueue(payable(queueAddress)).submissionAction(
                     queueID,
                     playersInQueue[i]
                 ) == HexplorationQueue.Action.Rest
             ) {
                 playUpdates.activeActions[position] = "Rest";
                 playUpdates.activeActionOptions[position] = HexplorationQueue(
-                    queueAddress
+                    payable(queueAddress)
                 ).getSubmissionOptions(queueID, playersInQueue[i]);
                 playUpdates.playerActiveActionIDs[position] = playersInQueue[i];
                 playUpdates.playerStatUpdates[playerStatPosition] = rest(
@@ -337,14 +337,14 @@ library HexplorationGameplayUpdates {
                 playerStatPosition++;
                 position++;
             } else if (
-                HexplorationQueue(queueAddress).submissionAction(
+                HexplorationQueue(payable(queueAddress)).submissionAction(
                     queueID,
                     playersInQueue[i]
                 ) == HexplorationQueue.Action.Help
             ) {
                 playUpdates.activeActions[position] = "Help";
                 playUpdates.activeActionOptions[position] = HexplorationQueue(
-                    queueAddress
+                    payable(queueAddress)
                 ).getSubmissionOptions(queueID, playersInQueue[i]);
                 playUpdates.playerActiveActionIDs[position] = playersInQueue[i];
 
@@ -367,22 +367,21 @@ library HexplorationGameplayUpdates {
 
                 position++;
             } else if (
-                HexplorationQueue(queueAddress).submissionAction(
+                HexplorationQueue(payable(queueAddress)).submissionAction(
                     queueID,
                     playersInQueue[i]
                 ) == HexplorationQueue.Action.Move
             ) {
                 playUpdates.activeActions[position] = "Move";
                 playUpdates.activeActionOptions[position] = HexplorationQueue(
-                    queueAddress
+                    payable(queueAddress)
                 ).getSubmissionOptions(queueID, playersInQueue[i]);
                 playUpdates.playerActiveActionIDs[position] = playersInQueue[i];
                 position++;
             }
         }
-        playUpdates.randomness = HexplorationQueue(queueAddress).getRandomness(
-            queueID
-        );
+        playUpdates.randomness = HexplorationQueue(payable(queueAddress))
+            .getRandomness(queueID);
 
         return playUpdates;
     }
@@ -398,7 +397,7 @@ library HexplorationGameplayUpdates {
         // uint256[] memory playersInQueue = QUEUE.getAllPlayers(queueID);
         // uint256 position;
 
-        uint256 gameID = HexplorationQueue(queueAddress).game(queueID);
+        uint256 gameID = HexplorationQueue(payable(queueAddress)).game(queueID);
         uint256 totalPlayers = PlayerRegistry(
             HexplorationBoard(gameBoardAddress).prAddress()
         ).totalRegistrations(gameID);
@@ -491,7 +490,7 @@ library HexplorationGameplayUpdates {
         // ) {
         //updates.activeActions
         //updates.playerActiveActionIDs
-        dayPhaseUpdates.randomness = HexplorationQueue(queueAddress)
+        dayPhaseUpdates.randomness = HexplorationQueue(payable(queueAddress))
             .getRandomness(queueID);
         dayPhaseUpdates.activeActions = new string[](totalPlayers);
         dayPhaseUpdates.playerActiveActionIDs = new uint256[](totalPlayers);
@@ -689,10 +688,10 @@ library HexplorationGameplayUpdates {
         // TODO:
         // roll dice (d6) for each player on space not resting
 
-        uint256 playersOnSpace = HexplorationQueue(queueAddress)
+        uint256 playersOnSpace = HexplorationQueue(payable(queueAddress))
             .getSubmissionOptions(queueID, playerID)
             .length - 1;
-        string memory phase = HexplorationQueue(queueAddress)
+        string memory phase = HexplorationQueue(payable(queueAddress))
             .getSubmissionOptions(queueID, playerID)[0];
         RandomIndices.RandomIndex randomIndex = playerID == 1
             ? RandomIndices.RandomIndex.P1DigPassFail
@@ -730,7 +729,7 @@ library HexplorationGameplayUpdates {
         )
     {
         // returns [playerStat adjustments, recipientAdjustments]
-        string[] memory helpOptions = HexplorationQueue(queueAddress)
+        string[] memory helpOptions = HexplorationQueue(payable(queueAddress))
             .getSubmissionOptions(queueID, playerID);
         if (stringsMatch(helpOptions[1], "Movement")) {
             playerStatAdjustment[0] = -1;
@@ -749,7 +748,7 @@ library HexplorationGameplayUpdates {
         uint256 queueID,
         uint256 playerID
     ) internal view returns (int8[3] memory stats) {
-        string memory statToRest = HexplorationQueue(queueAddress)
+        string memory statToRest = HexplorationQueue(payable(queueAddress))
             .getSubmissionOptions(queueID, playerID)[0];
         if (stringsMatch(statToRest, "Movement")) {
             stats[0] = 1;

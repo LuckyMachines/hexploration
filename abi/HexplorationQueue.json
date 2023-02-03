@@ -25,6 +25,16 @@
                 "internalType": "bytes32",
                 "name": "_vrfKeyHash",
                 "type": "bytes32"
+            },
+            {
+                "internalType": "address",
+                "name": "_bandProvider",
+                "type": "address"
+            },
+            {
+                "internalType": "address",
+                "name": "_stringToUint",
+                "type": "address"
             }
         ],
         "stateMutability": "nonpayable",
@@ -45,6 +55,19 @@
         ],
         "name": "OnlyCoordinatorCanFulfill",
         "type": "error"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "requestId",
+                "type": "uint256"
+            }
+        ],
+        "name": "BandRequestSent",
+        "type": "event"
     },
     {
         "anonymous": false,
@@ -161,6 +184,19 @@
     },
     {
         "inputs": [],
+        "name": "BAND_PROVIDER",
+        "outputs": [
+            {
+                "internalType": "contract IBandVRFProvider",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
         "name": "DEFAULT_ADMIN_ROLE",
         "outputs": [
             {
@@ -257,6 +293,29 @@
     {
         "inputs": [],
         "name": "cleanQueue",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "string",
+                "name": "seed",
+                "type": "string"
+            },
+            {
+                "internalType": "uint64",
+                "name": "time",
+                "type": "uint64"
+            },
+            {
+                "internalType": "bytes32",
+                "name": "result",
+                "type": "bytes32"
+            }
+        ],
+        "name": "consume",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
@@ -950,6 +1009,16 @@
                 "internalType": "bool",
                 "name": "exists",
                 "type": "bool"
+            },
+            {
+                "internalType": "string",
+                "name": "seed",
+                "type": "string"
+            },
+            {
+                "internalType": "uint64",
+                "name": "time",
+                "type": "uint64"
             }
         ],
         "stateMutability": "view",
@@ -1098,6 +1167,19 @@
             }
         ],
         "name": "revokeRole",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "amount",
+                "type": "uint256"
+            }
+        ],
+        "name": "setBandFee",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
@@ -1387,6 +1469,46 @@
     },
     {
         "inputs": [],
+        "name": "useBand",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "useBandVRF",
+        "outputs": [
+            {
+                "internalType": "bool",
+                "name": "",
+                "type": "bool"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "useChainlink",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "useChainlinkVRF",
+        "outputs": [
+            {
+                "internalType": "bool",
+                "name": "",
+                "type": "bool"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
         "name": "useMockVRF",
         "outputs": [
             {
@@ -1397,5 +1519,27 @@
         ],
         "stateMutability": "view",
         "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "amount",
+                "type": "uint256"
+            },
+            {
+                "internalType": "address payable",
+                "name": "to",
+                "type": "address"
+            }
+        ],
+        "name": "withdraw",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "stateMutability": "payable",
+        "type": "receive"
     }
 ]
