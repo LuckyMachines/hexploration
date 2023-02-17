@@ -254,6 +254,52 @@
                 "internalType": "address",
                 "name": "gameBoardAddress",
                 "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "gameID",
+                "type": "uint256"
+            }
+        ],
+        "name": "allPlayers",
+        "outputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "uint256",
+                        "name": "playerID",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "address",
+                        "name": "playerAddress",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "idleTurns",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "bool",
+                        "name": "isActive",
+                        "type": "bool"
+                    }
+                ],
+                "internalType": "struct GameSummary.PlayerInfo[]",
+                "name": "players",
+                "type": "tuple[]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "gameBoardAddress",
+                "type": "address"
             }
         ],
         "name": "boardSize",

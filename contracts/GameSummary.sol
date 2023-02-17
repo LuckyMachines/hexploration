@@ -25,6 +25,13 @@ contract GameSummary is GameWallets, Utilities, AccessControlEnumerable {
         string[] movementPath;
     }
 
+    struct PlayerInfo {
+        uint256 playerID;
+        address playerAddress;
+        uint256 idleTurns;
+        bool isActive;
+    }
+
     constructor() {
         _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
     }
@@ -71,6 +78,26 @@ contract GameSummary is GameWallets, Utilities, AccessControlEnumerable {
                     0;
                 activeZoneCount++;
             }
+        }
+    }
+
+    function allPlayers(address gameBoardAddress, uint256 gameID)
+        public
+        view
+        returns (PlayerInfo[] memory players)
+    {
+        HexplorationBoard board = HexplorationBoard(gameBoardAddress);
+        PlayerRegistry pr = PlayerRegistry(board.prAddress());
+        uint256 registrations = pr.totalRegistrations(gameID);
+        HexplorationQueue q = HexplorationQueue(payable(board.gameplayQueue()));
+
+        players = new PlayerInfo[](registrations);
+        for (uint256 i = 0; i < registrations; i++) {
+            uint256 playerID = i + 1;
+            players[i].playerID = playerID;
+            players[i].playerAddress = pr.playerAddress(gameID, playerID);
+            players[i].idleTurns = q.idleTurns(gameID, playerID);
+            players[i].isActive = pr.isActive(gameID, playerID);
         }
     }
 

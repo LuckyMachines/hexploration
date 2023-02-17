@@ -23,7 +23,11 @@ contract GameEvents is AccessControlEnumerable {
         uint256 timeStamp,
         string newPhase
     );
-    event GameRegistration(uint256 indexed gameID, address playerAddress);
+    event GameRegistration(
+        uint256 indexed gameID,
+        address playerAddress,
+        uint256 playerID
+    );
     event GameStart(uint256 indexed gameID, uint256 timeStamp);
     event LandingSiteSet(uint256 indexed gameID, string landingSite);
     event PlayerIdleKick(
@@ -35,6 +39,11 @@ contract GameEvents is AccessControlEnumerable {
         uint256 indexed gameID,
         uint256 timeStamp,
         uint256 newPhase
+    );
+    event TurnProcessingFail(
+        uint256 indexed gameID,
+        uint256 queueID,
+        uint256 timeStamp
     );
     event TurnProcessingStart(uint256 indexed gameID, uint256 timeStamp);
 
@@ -69,11 +78,12 @@ contract GameEvents is AccessControlEnumerable {
         emit GamePhaseChange(gameID, block.timestamp, newPhase);
     }
 
-    function emitGameRegistration(uint256 gameID, address playerAddress)
-        external
-        onlyRole(EVENT_SENDER_ROLE)
-    {
-        emit GameRegistration(gameID, playerAddress);
+    function emitGameRegistration(
+        uint256 gameID,
+        address playerAddress,
+        uint256 playerID
+    ) external onlyRole(EVENT_SENDER_ROLE) {
+        emit GameRegistration(gameID, playerAddress, playerID);
     }
 
     function emitGameStart(uint256 gameID)
@@ -102,6 +112,13 @@ contract GameEvents is AccessControlEnumerable {
         onlyRole(EVENT_SENDER_ROLE)
     {
         emit ProcessingPhaseChange(gameID, block.timestamp, newPhase);
+    }
+
+    function emitTurnProcessingFail(uint256 gameID, uint256 queueID)
+        external
+        onlyRole(EVENT_SENDER_ROLE)
+    {
+        emit TurnProcessingFail(gameID, queueID, block.timestamp);
     }
 
     function emitTurnProcessingStart(uint256 gameID)

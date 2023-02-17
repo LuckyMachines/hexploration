@@ -110,14 +110,15 @@ contract HexplorationController is
         HexplorationBoard board = HexplorationBoard(boardAddress);
         PlayerRegistry pr = PlayerRegistry(board.prAddress());
         board.registerPlayer(tx.origin, gameID);
+        uint256 playerID = pr.playerID(gameID, tx.origin);
         // TODO: set to official values
         CharacterCard(board.characterCard()).setStats(
             [4, 4, 4],
             gameID,
-            pr.playerID(gameID, tx.origin)
+            playerID
         );
         // emit player joined
-        GAME_EVENTS.emitGameRegistration(gameID, tx.origin);
+        GAME_EVENTS.emitGameRegistration(gameID, tx.origin, playerID);
 
         // If registry is full we can kick off game start...
         if (pr.totalRegistrations(gameID) == pr.registrationLimit(gameID)) {

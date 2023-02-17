@@ -51,9 +51,6 @@ contract HexplorationQueue is RandomnessConsumer {
     // Array of Queue IDs to be processed.
     uint256[] public processingQueue;
 
-    // Array of Queue IDs unable to be processed with upkeep
-    uint256[] public failedQueue;
-
     // do we need these 2?
     mapping(uint256 => uint16) public currentQueuePosition; // ?? increases with each player in queue, then back to 0
     mapping(uint256 => uint16) public playThroughPosition; // ?? in case we need to batch this too... hopefully not.
@@ -61,6 +58,7 @@ contract HexplorationQueue is RandomnessConsumer {
     // mapping from game ID
     mapping(uint256 => uint256) public queueID; // mapping from game ID to it's queue, updates to 0 when finished
     mapping(uint256 => uint256[]) public queueIDs; // all queue IDs for a game
+    mapping(uint256 => uint256[]) public failedQueue; //queue IDs unable to be processed
 
     // Idle player tracking
     // mapping from gameID => playerID
@@ -211,7 +209,8 @@ contract HexplorationQueue is RandomnessConsumer {
         public
         onlyRole(VERIFIED_CONTROLLER_ROLE)
     {
-        isDayPhase[_queueID] = !_isDayPhase;
+        // TODO: see if we're setting this right...
+        isDayPhase[_queueID] = _isDayPhase;
         _processAllActions(_queueID);
     }
 
@@ -243,8 +242,12 @@ contract HexplorationQueue is RandomnessConsumer {
         return processingQueue;
     }
 
-    function getFailedQueue() public view returns (uint256[] memory) {
-        return failedQueue;
+    function getFailedQueue(uint256 gameID)
+        public
+        view
+        returns (uint256[] memory)
+    {
+        return failedQueue[gameID];
     }
 
     // Gameplay interactions
@@ -317,12 +320,14 @@ contract HexplorationQueue is RandomnessConsumer {
         currentPhase[_queueID] = ProcessingPhase.Failed;
         queueID[g] = 0;
         inProcessingQueue[_queueID] = false;
+        failedQueue[g].push(_queueID);
         for (uint256 i = 0; i < processingQueue.length; i++) {
             if (processingQueue[i] == _queueID) {
                 processingQueue[i] = 0;
                 break;
             }
         }
+        GAME_EVENTS.emitTurnProcessingFail(g, _queueID);
         // TODO: how to get new queue ID to allow game to continue playing (rolled back to previous state if already processed player actions)?
         if (_reset) {
             uint256 newQueueID = _requestGameQueue(g, _totalPlayers);

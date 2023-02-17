@@ -94,49 +94,17 @@ contract HexplorationStateUpdate is
         transferPlayerItems(updates, gameID);
         transferZoneItems(updates, gameID);
         applyActivityEffects(updates, gameID);
+        // switch between night / day
         updatePlayPhase(updates, gameID);
 
         checkGameOver(gameID);
     }
 
-    function postUpdates(
-        HexplorationGameplay.PlayUpdates memory updates,
+    function postDayPhaseUpdates(
         HexplorationGameplay.PlayUpdates memory dayPhaseUpdates,
         uint256 gameID
     ) public onlyRole(VERIFIED_CONTROLLER_ROLE) {
-        // Only reset day phase actions here
-        // this only gets called on day phase playthroughs
-        // active actions already reset / reprocessed at this point
-        // CHARACTER_CARD.resetDayPhaseActions(
-        //     gameID,
-        //     GAME_EVENTS.totalPlayers(address(GAME_BOARD), gameID)
-        // );
-        updatePlayerPositions(updates, gameID);
-        updatePlayerStats(updates, gameID);
-        updatePlayerHands(updates, gameID);
-        transferPlayerItems(updates, gameID);
-        transferZoneItems(updates, gameID);
-        applyActivityEffects(updates, gameID);
-        updatePlayPhase(updates, gameID);
-
         if (!checkGameOver(gameID)) {
-            // Then process day phase updates
-            /*
-        // string memory card;
-        // int8[3] memory stats;
-        // string memory itemTypeLoss;
-        // string memory itemTypeGain;
-        // string memory handLoss;
-        // string memory outcome;
-        (
-            dayPhaseUpdates.activeActionResultCard[i][0],
-            dayPhaseUpdates.playerStatUpdates[i],
-            dayPhaseUpdates.activeActionInventoryChanges[i][0],
-            dayPhaseUpdates.activeActionInventoryChanges[i][1],
-            dayPhaseUpdates.activeActionInventoryChanges[i][2],
-            dayPhaseUpdates.activeActionResultCard[i][1] = draw card
-        */
-
             applyDayPhaseEffects(dayPhaseUpdates, gameID);
             updatePlayerStats(dayPhaseUpdates, gameID);
             updatePlayerHands(dayPhaseUpdates, gameID);
@@ -605,12 +573,13 @@ contract HexplorationStateUpdate is
         HexplorationGameplay.PlayUpdates memory updates,
         uint256 gameID
     ) internal {
+        // set to NEXT play phase
         if (bytes(updates.gamePhase).length > 0) {
             GAME_EVENTS.emitGamePhaseChange(gameID, updates.gamePhase);
             TokenInventory ti = TokenInventory(GAME_BOARD.tokenInventory());
             if (
                 keccak256(abi.encodePacked(updates.gamePhase)) ==
-                keccak256(abi.encodePacked("Day"))
+                keccak256(abi.encodePacked("Night"))
             ) {
                 // set to day
                 /*

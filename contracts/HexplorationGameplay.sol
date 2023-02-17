@@ -11,6 +11,7 @@ import "./HexplorationGameplayUpdates.sol";
 import "./GameWallets.sol";
 import "./CharacterCard.sol";
 import "@luckymachines/autoloop/contracts/AutoLoopCompatible.sol";
+import "./TokenInventory.sol";
 
 contract HexplorationGameplay is
     AccessControlEnumerable,
@@ -183,11 +184,23 @@ contract HexplorationGameplay is
 
         for (uint256 i = 0; i < QUEUE.getAllPlayers(queueID).length; i++) {
             uint256 playerID = i + 1;
-            ROLL_DRAW.setRandomnessForPlayer(
-                playerID,
-                queueID,
-                QUEUE.isDayPhase(queueID)
-            );
+            // ISSUE: isDayPhase is not yet set on queue... not set until next processing phase
+            // SOLUTION: check something else to see if day phase here
+            /*
+            HexplorationBoard board = HexplorationBoard(gameBoardAddress);
+        TokenInventory tokens = TokenInventory(board.tokenInventory());
+
+        uint256 dayBalance = tokens.DAY_NIGHT_TOKEN().balance(
+            "Day",
+            gameID,
+            GAME_BOARD_WALLET_ID
+        );
+        phase = dayBalance > 0 ? "Day" : "Night";
+            */
+            bool isDay = TokenInventory(GAME_BOARD.tokenInventory())
+                .DAY_NIGHT_TOKEN()
+                .balance("Day", QUEUE.game(queueID), GAME_BOARD_WALLET_ID) > 0;
+            ROLL_DRAW.setRandomnessForPlayer(playerID, queueID, isDay);
         }
 
         if (processingPhase == 2) {
@@ -255,7 +268,7 @@ contract HexplorationGameplay is
     }
 
     function getUpdateInfo(uint256 queueID, uint256 processingPhase)
-        internal
+        public
         view
         returns (bytes memory)
     {
@@ -357,26 +370,31 @@ contract HexplorationGameplay is
         );
         playUpdates = resolveDigDisputes(playUpdates, gameID, playerZones);
         GAME_STATE.postUpdates(playUpdates, gameID);
+        // player actions
+        // sets phase (token balance) to playUpdates.gamePhase
         QUEUE.setPhase(HexplorationQueue.ProcessingPhase.PlayThrough, queueID);
     }
 
     function processPlayThrough(uint256 queueID, DataSummary memory summary)
         public
     {
+        // TODO: rename this. It's currently only used for processing day phase events.
         require(_msgSender() == address(this), "internal function");
         HexplorationQueue.ProcessingPhase phase = QUEUE.currentPhase(queueID);
 
         if (QUEUE.getRandomness(queueID).length > 0) {
             if (phase == HexplorationQueue.ProcessingPhase.PlayThrough) {
                 uint256 gameID = QUEUE.game(queueID);
-                PlayUpdates memory playUpdates = HexplorationGameplayUpdates
-                    .playUpdatesForPlayThroughPhase(
-                        address(QUEUE),
-                        queueID,
-                        address(GAME_BOARD),
-                        address(ROLL_DRAW)
-                    );
-                if (stringsMatch(playUpdates.gamePhase, "Day")) {
+                // PlayUpdates memory playUpdates = HexplorationGameplayUpdates
+                //     .playUpdatesForPlayThroughPhase(
+                //         address(QUEUE),
+                //         queueID,
+                //         address(GAME_BOARD),
+                //         address(ROLL_DRAW)
+                //     );
+                if (!QUEUE.isDayPhase(queueID)) {
+                    // current live phase is opposite of what queue is set to
+                    // (we process day phase events with previous night's turn queue)
                     PlayUpdates
                         memory dayPhaseUpdates = HexplorationGameplayUpdates
                             .dayPhaseUpdatesForPlayThroughPhase(
@@ -386,13 +404,7 @@ contract HexplorationGameplay is
                                 address(GAME_BOARD),
                                 address(ROLL_DRAW)
                             );
-                    GAME_STATE.postUpdates(
-                        playUpdates,
-                        dayPhaseUpdates,
-                        gameID
-                    );
-                } else {
-                    GAME_STATE.postUpdates(playUpdates, gameID);
+                    GAME_STATE.postDayPhaseUpdates(dayPhaseUpdates, gameID);
                 }
 
                 // PlayUpdates
@@ -400,15 +412,14 @@ contract HexplorationGameplay is
                 //         queueID,
                 //         summary
                 //     );
-                // TODO: set this to true when game is finished
-                bool gameComplete = false;
-
-                QUEUE.finishProcessing(
-                    queueID,
-                    gameComplete,
-                    activePlayers(queueID)
-                );
             }
+            // TODO: set this to true when game is finished
+            bool gameComplete = false;
+            QUEUE.finishProcessing(
+                queueID,
+                gameComplete,
+                activePlayers(queueID)
+            );
         }
     }
 

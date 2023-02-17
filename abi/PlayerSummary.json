@@ -444,6 +444,35 @@
                 "type": "uint256"
             },
             {
+                "internalType": "uint256",
+                "name": "playerID",
+                "type": "uint256"
+            }
+        ],
+        "name": "getPlayerAddress",
+        "outputs": [
+            {
+                "internalType": "address",
+                "name": "playerAddress",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "gameBoardAddress",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "gameID",
+                "type": "uint256"
+            },
+            {
                 "internalType": "address",
                 "name": "playerAddress",
                 "type": "address"

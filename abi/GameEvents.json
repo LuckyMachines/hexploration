@@ -118,6 +118,12 @@
                 "internalType": "address",
                 "name": "playerAddress",
                 "type": "address"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "playerID",
+                "type": "uint256"
             }
         ],
         "name": "GameRegistration",
@@ -298,6 +304,31 @@
             {
                 "indexed": false,
                 "internalType": "uint256",
+                "name": "queueID",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "timeStamp",
+                "type": "uint256"
+            }
+        ],
+        "name": "TurnProcessingFail",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "internalType": "uint256",
+                "name": "gameID",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
                 "name": "timeStamp",
                 "type": "uint256"
             }
@@ -427,6 +458,11 @@
                 "internalType": "address",
                 "name": "playerAddress",
                 "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "playerID",
+                "type": "uint256"
             }
         ],
         "name": "emitGameRegistration",
@@ -497,6 +533,24 @@
             }
         ],
         "name": "emitProcessingPhaseChange",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "gameID",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "queueID",
+                "type": "uint256"
+            }
+        ],
+        "name": "emitTurnProcessingFail",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"

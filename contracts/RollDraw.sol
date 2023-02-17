@@ -62,10 +62,9 @@ contract RollDraw is AccessControlEnumerable, RandomIndices {
                 playerID,
                 true
             );
-            _dayPhaseDrawRandomness[queueID][playerID] = expandNumber(
-                QUEUE.randomness(queueID, 0),
-                dayPhaseDrawIndex
-            );
+            _dayPhaseDrawRandomness[queueID][playerID] = QUEUE.isInTestMode()
+                ? QUEUE.randomness(queueID, dayPhaseDrawIndex)
+                : expandNumber(QUEUE.randomness(queueID, 0), dayPhaseDrawIndex);
             _dayPhaseRolls[queueID][playerID] = playerRolls(
                 queueID,
                 playerID,
@@ -73,10 +72,9 @@ contract RollDraw is AccessControlEnumerable, RandomIndices {
             );
         }
 
-        _drawRandomness[queueID][playerID] = expandNumber(
-            QUEUE.randomness(queueID, 0),
-            drawIndex
-        );
+        _drawRandomness[queueID][playerID] = QUEUE.isInTestMode()
+            ? QUEUE.randomness(queueID, drawIndex)
+            : expandNumber(QUEUE.randomness(queueID, 0), drawIndex);
 
         _playerRolls[queueID][playerID] = playerRolls(
             queueID,
@@ -371,9 +369,11 @@ contract RollDraw is AccessControlEnumerable, RandomIndices {
                 maxValue = uint256(diceValues[i]);
             }
         }
-        rollTotal =
-            expandNumber(QUEUE.randomness(queueID, 0), randomnessIndex) %
-            ((maxValue * diceQty) + 1);
+        rollTotal = QUEUE.isInTestMode()
+            ? QUEUE.randomness(queueID, randomnessIndex) %
+                ((maxValue * diceQty) + 1)
+            : expandNumber(QUEUE.randomness(queueID, 0), randomnessIndex) %
+                ((maxValue * diceQty) + 1);
     }
 
     function playerRolls(

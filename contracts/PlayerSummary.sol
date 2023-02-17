@@ -12,6 +12,16 @@ import "./Utilities.sol";
 
 contract PlayerSummary is Utilities, GameWallets {
     // Public Player Summary Functions
+    function getPlayerAddress(
+        address gameBoardAddress,
+        uint256 gameID,
+        uint256 playerID
+    ) public view returns (address playerAddress) {
+        HexplorationBoard board = HexplorationBoard(gameBoardAddress);
+        PlayerRegistry pr = PlayerRegistry(board.prAddress());
+        playerAddress = pr.playerAddress(gameID, playerID);
+    }
+
     function getPlayerID(address gameBoardAddress, uint256 gameID)
         public
         view

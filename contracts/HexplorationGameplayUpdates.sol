@@ -383,92 +383,11 @@ library HexplorationGameplayUpdates {
         playUpdates.randomness = HexplorationQueue(payable(queueAddress))
             .getRandomness(queueID);
 
-        return playUpdates;
-    }
+        playUpdates.gamePhase = HexplorationQueue(payable(queueAddress))
+            .isDayPhase(queueID)
+            ? "Day"
+            : "Night";
 
-    function playUpdatesForPlayThroughPhase(
-        address queueAddress,
-        uint256 queueID,
-        address gameBoardAddress,
-        address rollDrawAddress
-    ) public view returns (HexplorationGameplay.PlayUpdates memory) {
-        HexplorationGameplay.PlayUpdates memory playUpdates;
-
-        // uint256[] memory playersInQueue = QUEUE.getAllPlayers(queueID);
-        // uint256 position;
-
-        uint256 gameID = HexplorationQueue(payable(queueAddress)).game(queueID);
-        uint256 totalPlayers = PlayerRegistry(
-            HexplorationBoard(gameBoardAddress).prAddress()
-        ).totalRegistrations(gameID);
-
-        playUpdates.gamePhase = TokenInventory(
-            HexplorationBoard(gameBoardAddress).tokenInventory()
-        ).DAY_NIGHT_TOKEN().balance("Day", gameID, GAME_BOARD_WALLET_ID) > 0
-            ? "Night"
-            : "Day";
-
-        // uint256 totalPlayers = PlayerRegistry(GAME_BOARD.prAddress())
-        //     .totalRegistrations(gameID);
-
-        for (uint256 i = 0; i < totalPlayers; i++) {
-            uint256 playerID = i + 1;
-            // These are already processed... Don't need to reprocess.
-            // HexplorationQueue.Action activeAction = HexplorationQueue(
-            //     queueAddress
-            // ).activeAction(queueID, playerID);
-            /*
-            if (activeAction == HexplorationQueue.Action.Dig) {
-                // dig
-                if (
-                    dig(queueAddress, queueID, rollDrawAddress, playerID) ==
-                    RollDraw.CardType.Treasure
-                ) {
-                    // TODO:
-                    // dug treasure!
-                    // pick treasure card
-                    // if final artifact is found, playUpdates.setupEndgame = true;
-                } else {
-                    // TODO:
-                    // dug ambush...
-                    // play out consequences
-                }
-            } else if (activeAction == HexplorationQueue.Action.Rest) {
-                // rest
-                string memory restChoice = HexplorationQueue(queueAddress)
-                    .submissionOptions(queueID, playerID, 0);
-                if (stringsMatch(restChoice, "Movement")) {
-                    // TODO:
-                    // add 1 to movement
-                } else if (stringsMatch(restChoice, "Agility")) {
-                    // TODO:
-                    // add 1 to agility
-                } else if (stringsMatch(restChoice, "Dexterity")) {
-                    // TODO:
-                    // add 1 to dexterity
-                }
-            } else if (activeAction == HexplorationQueue.Action.Help) {
-                // help
-                // TODO:
-                // set player ID to help (options) as string choice
-            }
-            */
-
-            // to get current player stats...
-            //CharacterCard cc = CharacterCard(GAME_BOARD.characterCard());
-            // cc.movement(gameID, playerID) => returns uint8
-            // cc.agility(gameID, playerID) => returns uint8
-            // cc.dexterity(gameID, playerID) => returns uint8
-
-            //to subtract from player stats...
-            //subToZero(uint256(playerStat), reductionAmount);
-            // can submit numbers higher than max here, but won't actually get set to those
-            // will get set to max if max exceeded
-        }
-
-        // Day phase events, processed before players can submit choices
-
-        // return (playUpdates, dayPhaseUpdates);
         return playUpdates;
     }
 
@@ -562,8 +481,6 @@ library HexplorationGameplayUpdates {
                 } else {
                     // odd roll
                     // draw ambush card
-                    // TODO:
-                    // set player randomness by here (not in this view function)
                     int8[3] memory stats;
                     (
                         dayPhaseUpdates.activeActionResultCard[i][0],

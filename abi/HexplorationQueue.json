@@ -387,6 +387,11 @@
                 "internalType": "uint256",
                 "name": "",
                 "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
             }
         ],
         "name": "failedQueue",
@@ -462,7 +467,13 @@
         "type": "function"
     },
     {
-        "inputs": [],
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "gameID",
+                "type": "uint256"
+            }
+        ],
         "name": "getFailedQueue",
         "outputs": [
             {
