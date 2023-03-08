@@ -575,21 +575,12 @@ contract HexplorationStateUpdate is
     ) internal {
         // set to NEXT play phase
         if (bytes(updates.gamePhase).length > 0) {
-            GAME_EVENTS.emitGamePhaseChange(gameID, updates.gamePhase);
             TokenInventory ti = TokenInventory(GAME_BOARD.tokenInventory());
             if (
                 keccak256(abi.encodePacked(updates.gamePhase)) ==
                 keccak256(abi.encodePacked("Night"))
             ) {
                 // set to day
-                /*
-                transfer(
-        string memory tokenType,
-        uint256 gameID,
-        uint256 fromID,
-        uint256 toID,
-        uint256 quantity
-                */
                 ti.DAY_NIGHT_TOKEN().transfer(
                     "Day",
                     gameID,
@@ -604,6 +595,7 @@ contract HexplorationStateUpdate is
                     0,
                     1
                 );
+                GAME_EVENTS.emitGamePhaseChange(gameID, "Day");
             } else {
                 // set to night
                 ti.DAY_NIGHT_TOKEN().transfer(
@@ -620,6 +612,7 @@ contract HexplorationStateUpdate is
                     GAME_BOARD_WALLET_ID,
                     1
                 );
+                GAME_EVENTS.emitGamePhaseChange(gameID, "Night");
             }
         }
     }

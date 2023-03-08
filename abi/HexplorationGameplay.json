@@ -361,46 +361,35 @@
                 "internalType": "uint256",
                 "name": "queueID",
                 "type": "uint256"
-            },
+            }
+        ],
+        "name": "processFailedPlayThroughQueue",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
             {
-                "components": [
-                    {
-                        "internalType": "uint256",
-                        "name": "playerPositionUpdates",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "playerEquips",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "zoneTransfers",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "activeActions",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "playerTransfers",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "playerStatUpdates",
-                        "type": "uint256"
-                    }
-                ],
-                "internalType": "struct HexplorationGameplay.DataSummary",
-                "name": "summary",
-                "type": "tuple"
+                "internalType": "uint256",
+                "name": "queueID",
+                "type": "uint256"
             }
         ],
         "name": "processPlayThrough",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "queueID",
+                "type": "uint256"
+            }
+        ],
+        "name": "processPlayThroughUnsafe",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
@@ -451,6 +440,56 @@
             }
         ],
         "name": "processPlayerActions",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "queueID",
+                "type": "uint256"
+            },
+            {
+                "components": [
+                    {
+                        "internalType": "uint256",
+                        "name": "playerPositionUpdates",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "playerEquips",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "zoneTransfers",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "activeActions",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "playerTransfers",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "playerStatUpdates",
+                        "type": "uint256"
+                    }
+                ],
+                "internalType": "struct HexplorationGameplay.DataSummary",
+                "name": "summary",
+                "type": "tuple"
+            }
+        ],
+        "name": "processPlayerActionsUnsafe",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"

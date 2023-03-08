@@ -182,8 +182,9 @@ contract HexplorationGameplay is
             "Randomness not delivered"
         );
 
-        for (uint256 i = 0; i < QUEUE.getAllPlayers(queueID).length; i++) {
-            uint256 playerID = i + 1;
+        uint256[] memory players = QUEUE.getAllPlayers(queueID);
+        for (uint256 i = 0; i < players.length; i++) {
+            uint256 playerID = players[i];
             // ISSUE: isDayPhase is not yet set on queue... not set until next processing phase
             // SOLUTION: check something else to see if day phase here
             /*
@@ -217,13 +218,10 @@ contract HexplorationGameplay is
             }
         } else if (processingPhase == 3) {
             (bool success, ) = address(this).call(
-                abi.encodeWithSignature(
-                    "processPlayThrough(uint256,(uint256,uint256,uint256,uint256,uint256,uint256))",
-                    queueID,
-                    summary
-                )
+                abi.encodeWithSignature("processPlayThrough(uint256)", queueID)
             );
             if (!success) {
+                // TODO: don't fail yet, save to allow re-try
                 // Cannot reset queue since player actions already processed
                 QUEUE.failProcessing(queueID, activePlayers(queueID), false);
             }
@@ -342,6 +340,27 @@ contract HexplorationGameplay is
         public
     {
         require(_msgSender() == address(this), "internal function");
+        processPlayerActionsUnsafe(queueID, summary);
+    }
+
+    function processPlayThrough(uint256 queueID) public {
+        // TODO: rename this. It's currently only used for processing day phase events.
+        require(_msgSender() == address(this), "internal function");
+        processPlayThroughUnsafe(queueID);
+    }
+
+    function processFailedPlayThroughQueue(uint256 queueID) public {
+        // retry processing failed queue, set game queue new and continue play
+        // reset queue phase to play through then
+        QUEUE.setPhase(HexplorationQueue.ProcessingPhase.PlayThrough, queueID);
+        processPlayThroughUnsafe(queueID);
+    }
+
+    // functions to simulate upkeep
+    function processPlayerActionsUnsafe(
+        uint256 queueID,
+        DataSummary memory summary
+    ) public {
         uint256 gameID = QUEUE.game(queueID);
         // TODO: save update struct with all the actions from queue (what was originally the ints array)
         PlayUpdates memory playUpdates = HexplorationGameplayUpdates
@@ -375,23 +394,12 @@ contract HexplorationGameplay is
         QUEUE.setPhase(HexplorationQueue.ProcessingPhase.PlayThrough, queueID);
     }
 
-    function processPlayThrough(uint256 queueID, DataSummary memory summary)
-        public
-    {
-        // TODO: rename this. It's currently only used for processing day phase events.
-        require(_msgSender() == address(this), "internal function");
+    function processPlayThroughUnsafe(uint256 queueID) public {
         HexplorationQueue.ProcessingPhase phase = QUEUE.currentPhase(queueID);
-
         if (QUEUE.getRandomness(queueID).length > 0) {
             if (phase == HexplorationQueue.ProcessingPhase.PlayThrough) {
                 uint256 gameID = QUEUE.game(queueID);
-                // PlayUpdates memory playUpdates = HexplorationGameplayUpdates
-                //     .playUpdatesForPlayThroughPhase(
-                //         address(QUEUE),
-                //         queueID,
-                //         address(GAME_BOARD),
-                //         address(ROLL_DRAW)
-                //     );
+
                 if (!QUEUE.isDayPhase(queueID)) {
                     // current live phase is opposite of what queue is set to
                     // (we process day phase events with previous night's turn queue)
@@ -406,12 +414,6 @@ contract HexplorationGameplay is
                             );
                     GAME_STATE.postDayPhaseUpdates(dayPhaseUpdates, gameID);
                 }
-
-                // PlayUpdates
-                //     memory dayPhaseUpdates = dayPhaseUpdatesForPlayThroughPhase(
-                //         queueID,
-                //         summary
-                //     );
             }
             // TODO: set this to true when game is finished
             bool gameComplete = false;

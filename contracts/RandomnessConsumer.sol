@@ -285,7 +285,50 @@ contract RandomnessConsumer is
     }
 
     // fulfill all mock randomness requests
+    function fulfillNextMockRandomness(uint256 randomness) public {
+        require(useMockVRF, "Mock VRF not enabled");
+        uint256 numZeros = 0;
+        uint256 fulfillments = 0;
+        if (mockRequests.length > 0) {
+            for (uint256 i = 0; i < mockRequests.length; i++) {
+                if (mockRequests[i] != 0) {
+                    if (fulfillments == 0) {
+                        uint256 requestId = mockRequests[i];
+                        uint256[] memory randomWords = new uint256[](1);
+                        randomWords[0] = randomness;
+                        fulfillRandomWords(requestId, randomWords);
+                        ++fulfillments;
+                        delete mockRequests[i];
+                        ++numZeros;
+                        break;
+                    }
+                } else {
+                    ++numZeros;
+                }
+            }
+        }
+        // cleanup zeros
+        if (numZeros > 0) {
+            uint256 position = 0;
+            uint256[] memory zeroIndices = new uint256[](numZeros);
+            for (uint256 i = 0; i < mockRequests.length; i++) {
+                if (mockRequests[i] == 0) {
+                    zeroIndices[position] = i;
+                    ++position;
+                }
+            }
+            for (uint256 i = 0; i < zeroIndices.length; i++) {
+                uint256 zeroIndex = zeroIndices[i];
+                for (uint256 j = zeroIndex; i < mockRequests.length - 1; i++) {
+                    mockRequests[j] = mockRequests[j + 1];
+                }
+                mockRequests.pop();
+            }
+        }
+    }
+
     function fulfillMockRandomness() public {
+        require(useMockVRF, "Mock VRF not enabled");
         uint256 MAX_FULFILLMENTS = 4;
         uint256 numZeros = 0;
         uint256 fulfillments = 0;
@@ -402,6 +445,7 @@ contract RandomnessConsumer is
 
     function withdraw(uint256 amount, address payable to)
         public
+        virtual
         onlyRole(DEFAULT_ADMIN_ROLE)
     {
         (bool sent, ) = to.call{value: amount}("");

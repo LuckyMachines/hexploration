@@ -267,6 +267,9 @@ library HexplorationGameplayUpdates {
                     false,
                     true
                 );
+                playUpdates.playerStatUpdateIDs[
+                    playerStatPosition
+                ] = playersInQueue[i];
 
                 if (
                     bytes(playUpdates.activeActionInventoryChanges[position][0])
@@ -281,9 +284,9 @@ library HexplorationGameplayUpdates {
                     ];
                     playUpdates.playerTransferQtys[position] = 1;
                     // TODO: check if we need this...
-                    playUpdates.playerStatUpdateIDs[position] = playersInQueue[
-                        i
-                    ];
+                    // playUpdates.playerStatUpdateIDs[position] = playersInQueue[
+                    //     i
+                    // ];
                 } else if (
                     bytes(playUpdates.activeActionInventoryChanges[position][1])
                         .length > 0
@@ -295,9 +298,9 @@ library HexplorationGameplayUpdates {
                     playUpdates.playerTransfersFrom[position] = 0;
                     playUpdates.playerTransferQtys[position] = 1;
                     // TODO: check if we need this...
-                    playUpdates.playerStatUpdateIDs[position] = playersInQueue[
-                        i
-                    ];
+                    // playUpdates.playerStatUpdateIDs[position] = playersInQueue[
+                    //     i
+                    // ];
                 } else if (
                     bytes(playUpdates.activeActionInventoryChanges[position][2])
                         .length > 0
