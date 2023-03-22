@@ -139,6 +139,54 @@
                 "type": "uint256"
             }
         ],
+        "name": "allPlayZoneInventories",
+        "outputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "string",
+                        "name": "zoneAlias",
+                        "type": "string"
+                    },
+                    {
+                        "components": [
+                            {
+                                "internalType": "string",
+                                "name": "item",
+                                "type": "string"
+                            },
+                            {
+                                "internalType": "uint256",
+                                "name": "quantity",
+                                "type": "uint256"
+                            }
+                        ],
+                        "internalType": "struct PlayZoneSummary.InventoryItem[]",
+                        "name": "inventory",
+                        "type": "tuple[]"
+                    }
+                ],
+                "internalType": "struct PlayZoneSummary.ZoneInventory[]",
+                "name": "allInventory",
+                "type": "tuple[]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "gameBoardAddress",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "gameID",
+                "type": "uint256"
+            }
+        ],
         "name": "allPlayerActiveInventories",
         "outputs": [
             {
@@ -731,6 +779,47 @@
                 "internalType": "uint256",
                 "name": "gameID",
                 "type": "uint256"
+            },
+            {
+                "internalType": "string",
+                "name": "zoneAlias",
+                "type": "string"
+            }
+        ],
+        "name": "playZoneInventory",
+        "outputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "string",
+                        "name": "item",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "quantity",
+                        "type": "uint256"
+                    }
+                ],
+                "internalType": "struct PlayZoneSummary.InventoryItem[]",
+                "name": "inventory",
+                "type": "tuple[]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "gameBoardAddress",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "gameID",
+                "type": "uint256"
             }
         ],
         "name": "recoveredArtifacts",
@@ -776,6 +865,19 @@
             }
         ],
         "name": "revokeRole",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "playZoneSummaryAddress",
+                "type": "address"
+            }
+        ],
+        "name": "setPlayZoneSummary",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"

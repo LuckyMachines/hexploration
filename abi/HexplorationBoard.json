@@ -233,6 +233,29 @@
     {
         "inputs": [
             {
+                "internalType": "uint256",
+                "name": "gameID",
+                "type": "uint256"
+            },
+            {
+                "internalType": "string",
+                "name": "relicType",
+                "type": "string"
+            },
+            {
+                "internalType": "string",
+                "name": "_zoneAlias",
+                "type": "string"
+            }
+        ],
+        "name": "addRelic",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
                 "internalType": "address",
                 "name": "vcAddress",
                 "type": "address"
@@ -720,6 +743,25 @@
             }
         ],
         "name": "getPlayZones",
+        "outputs": [
+            {
+                "internalType": "string[]",
+                "name": "",
+                "type": "string[]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "gameID",
+                "type": "uint256"
+            }
+        ],
+        "name": "getRelics",
         "outputs": [
             {
                 "internalType": "string[]",
@@ -1237,6 +1279,54 @@
         "inputs": [
             {
                 "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            },
+            {
+                "internalType": "string",
+                "name": "",
+                "type": "string"
+            }
+        ],
+        "name": "relicLocation",
+        "outputs": [
+            {
+                "internalType": "string",
+                "name": "",
+                "type": "string"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "name": "relics",
+        "outputs": [
+            {
+                "internalType": "string",
+                "name": "",
+                "type": "string"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
                 "name": "gameID",
                 "type": "uint256"
             },
@@ -1488,6 +1578,29 @@
             }
         ],
         "name": "setPlayerRegistry",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "gameID",
+                "type": "uint256"
+            },
+            {
+                "internalType": "string",
+                "name": "relicType",
+                "type": "string"
+            },
+            {
+                "internalType": "enum HexplorationZone.Tile",
+                "name": "tile",
+                "type": "uint8"
+            }
+        ],
+        "name": "setRelicTile",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"

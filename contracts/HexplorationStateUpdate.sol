@@ -15,6 +15,7 @@ import "./HexplorationGameplay.sol";
 import "./GameEvents.sol";
 import "./RandomIndices.sol";
 import "./GameWallets.sol";
+import "./StateUpdateHelpers.sol";
 
 contract HexplorationStateUpdate is
     AccessControlEnumerable,
@@ -64,17 +65,15 @@ contract HexplorationStateUpdate is
 
     // Admin Functions
 
-    function addVerifiedController(address vcAddress)
-        public
-        onlyRole(DEFAULT_ADMIN_ROLE)
-    {
+    function addVerifiedController(
+        address vcAddress
+    ) public onlyRole(DEFAULT_ADMIN_ROLE) {
         grantRole(VERIFIED_CONTROLLER_ROLE, vcAddress);
     }
 
-    function setGameEvents(address gameEventsAddress)
-        public
-        onlyRole(DEFAULT_ADMIN_ROLE)
-    {
+    function setGameEvents(
+        address gameEventsAddress
+    ) public onlyRole(DEFAULT_ADMIN_ROLE) {
         GAME_EVENTS = GameEvents(gameEventsAddress);
     }
 
@@ -275,21 +274,27 @@ contract HexplorationStateUpdate is
             uint8[3] memory stats;
             // Subtracts from updates down to zero, may set higher than max, will get limited upon setting on CC
             stats[0] = updates.playerStatUpdates[i][0] < 0
-                ? subToZero(
+                ? StateUpdateHelpers.subToZero(
                     currentStats[0],
-                    absoluteValue(updates.playerStatUpdates[i][0])
+                    StateUpdateHelpers.absoluteValue(
+                        updates.playerStatUpdates[i][0]
+                    )
                 )
                 : currentStats[0] + uint8(updates.playerStatUpdates[i][0]);
             stats[1] = updates.playerStatUpdates[i][1] < 0
-                ? subToZero(
+                ? StateUpdateHelpers.subToZero(
                     currentStats[1],
-                    absoluteValue(updates.playerStatUpdates[i][1])
+                    StateUpdateHelpers.absoluteValue(
+                        updates.playerStatUpdates[i][1]
+                    )
                 )
                 : currentStats[1] + uint8(updates.playerStatUpdates[i][1]);
             stats[2] = updates.playerStatUpdates[i][2] < 0
-                ? subToZero(
+                ? StateUpdateHelpers.subToZero(
                     currentStats[2],
-                    absoluteValue(updates.playerStatUpdates[i][2])
+                    StateUpdateHelpers.absoluteValue(
+                        updates.playerStatUpdates[i][2]
+                    )
                 )
                 : currentStats[2] + uint8(updates.playerStatUpdates[i][2]);
             CHARACTER_CARD.setStats(stats, gameID, playerID);
@@ -409,7 +414,11 @@ contract HexplorationStateUpdate is
                         updates.playerTransferQtys[i]
                     );
                     // check if item is artifact
-                    if (itemIsArtifact(updates.playerTransferItemTypes[i])) {
+                    if (
+                        StateUpdateHelpers.itemIsArtifact(
+                            updates.playerTransferItemTypes[i]
+                        )
+                    ) {
                         // set artifact for player
                         CHARACTER_CARD.setArtifact(
                             updates.playerTransferItemTypes[i],
@@ -522,11 +531,10 @@ contract HexplorationStateUpdate is
         }
     }
 
-    function currentZoneIndex(uint256 gameID, uint256 playerID)
-        internal
-        view
-        returns (uint256 index)
-    {
+    function currentZoneIndex(
+        uint256 gameID,
+        uint256 playerID
+    ) internal view returns (uint256 index) {
         string memory zoneAlias = GAME_BOARD.currentPlayZone(gameID, playerID);
         string[] memory allZones = GAME_BOARD.getZoneAliases();
         index = 1111111111111;
@@ -547,26 +555,137 @@ contract HexplorationStateUpdate is
         uint256 playerID,
         uint256[] memory randomness
     ) public onlyRole(VERIFIED_CONTROLLER_ROLE) {
+        // TODO: look into extending this beyond 4...
         HexplorationZone.Tile[] memory tiles = new HexplorationZone.Tile[](
             zonePath.length > 4 ? 4 : zonePath.length
         );
-
+        HexplorationZone hexZone = HexplorationZone(
+            GAME_BOARD.hexZoneAddress()
+        );
+        TokenInventory ti = TokenInventory(GAME_BOARD.tokenInventory());
+        string memory currentZone;
         for (uint256 i = 0; i < tiles.length; i++) {
-            // Need # 1 - 4 for tile selection
-            tiles[i] = HexplorationZone.Tile(((randomness[i]) % 4) + 1);
+            currentZone = zonePath[i];
+            if (
+                hexZone.tile(gameID, currentZone) ==
+                HexplorationZone.Tile.RelicMystery
+            ) {
+                // relic needs to be revealed...
+                string[] memory relicChoices = StateUpdateHelpers
+                    .availableRelics(address(GAME_BOARD), gameID);
+                // choose one for this relic tile
+                string memory relicChoice = relicChoices[
+                    randomness[i] % relicChoices.length
+                ];
+                tiles[i] = StateUpdateHelpers.relicTileFromType(
+                    address(GAME_BOARD),
+                    relicChoice
+                );
+                GAME_BOARD.addRelic(gameID, relicChoice, currentZone);
+
+                // send the one relic token to that zone
+                uint256 toZoneIndex = StateUpdateHelpers.zoneIndex(
+                    address(GAME_BOARD),
+                    currentZone
+                );
+                ti.RELIC_TOKEN().transferToZone(
+                    relicChoice,
+                    gameID,
+                    0,
+                    toZoneIndex,
+                    1
+                );
+            } else {
+                // Standard tile selection
+                // TODO: set to 0 if already set.
+                // Won't double set, but want to avoid unnecessary computation.
+
+                // Need # 1 - 4 for tile selection
+                tiles[i] = HexplorationZone.Tile(((randomness[i]) % 4) + 1);
+            }
         }
 
         GAME_BOARD.moveThroughPath(zonePath, playerID, gameID, tiles);
 
+        // Current zone is now set to the final space
+        HexplorationZone.Tile zoneTile = hexZone.tile(gameID, currentZone);
         if (
-            stringsMatch(
-                zonePath[zonePath.length - 1],
+            StateUpdateHelpers.stringsMatch(
+                currentZone,
                 GAME_BOARD.initialPlayZone(gameID)
-            ) && playerHasArtifact(gameID, playerID)
+            ) &&
+            StateUpdateHelpers.playerHasArtifact(
+                address(CHARACTER_CARD),
+                gameID,
+                playerID
+            )
         ) {
             // last space is at ship and player holds artifact
             dropArtifactAtShip(gameID, playerID);
+        } else if (uint256(zoneTile) > 6 && uint256(zoneTile) < 12) {
+            // player is on relic space
+
+            // send existing relic back to relic zone if in posession
+            // resetPlayerRelic(gameID, playerID);
+            // transfer relic to player,
+            ti.RELIC_TOKEN().transferFromZone(
+                StateUpdateHelpers.relicTypeFromTile(
+                    address(GAME_BOARD),
+                    zoneTile
+                ),
+                gameID,
+                StateUpdateHelpers.zoneIndex(address(GAME_BOARD), currentZone),
+                playerID,
+                1
+            );
+
+            // set zone tile to empty relic
+            GAME_BOARD.setRelicTile(
+                gameID,
+                StateUpdateHelpers.relicTypeFromTile(
+                    address(GAME_BOARD),
+                    zoneTile
+                ),
+                HexplorationZone.Tile.RelicEmpty
+            );
         }
+    }
+
+    function resetPlayerRelic(uint256 gameID, uint256 playerID) internal {
+        // find any relics in posession
+        TokenInventory ti = TokenInventory(GAME_BOARD.tokenInventory());
+        string[] memory relicTypes = ti.RELIC_TOKEN().getTokenTypes();
+        string memory relicInPosession;
+        for (uint256 i = 1; i < relicTypes.length; i++) {
+            // Start at 1 so we don't use mystery relic
+            if (ti.RELIC_TOKEN().balance(relicTypes[i], gameID, playerID) > 0) {
+                relicInPosession = relicTypes[i];
+                break;
+            }
+        }
+        // find location of that relic on board
+        string memory relicZone = GAME_BOARD.relicLocation(
+            gameID,
+            relicInPosession
+        );
+
+        // transfer back to zone from player
+        ti.RELIC_TOKEN().transferToZone(
+            relicInPosession,
+            gameID,
+            playerID,
+            StateUpdateHelpers.zoneIndex(address(GAME_BOARD), relicZone),
+            1
+        );
+
+        GAME_BOARD.setRelicTile(
+            gameID,
+            relicInPosession,
+            StateUpdateHelpers.relicTileFromType(
+                address(GAME_BOARD),
+                relicInPosession
+            )
+        );
     }
 
     function updatePlayPhase(
@@ -615,55 +734,6 @@ contract HexplorationStateUpdate is
                 GAME_EVENTS.emitGamePhaseChange(gameID, "Night");
             }
         }
-    }
-
-    // Utility
-    // returns a - b or 0 if negative;
-    function subToZero(uint8 a, uint8 b)
-        internal
-        pure
-        returns (uint8 difference)
-    {
-        difference = a > b ? a - b : 0;
-    }
-
-    function absoluteValue(int8 x) internal pure returns (uint8 absX) {
-        absX = x >= 0 ? uint8(x) : uint8(-x);
-    }
-
-    function stringsMatch(string memory s1, string memory s2)
-        internal
-        pure
-        returns (bool)
-    {
-        return
-            keccak256(abi.encodePacked(s1)) == keccak256(abi.encodePacked(s2));
-    }
-
-    function itemIsArtifact(string memory itemType)
-        internal
-        pure
-        returns (bool)
-    {
-        return (stringsMatch(itemType, "Engraved Tablet") ||
-            stringsMatch(itemType, "Sigil Gem") ||
-            stringsMatch(itemType, "Ancient Tome"));
-    }
-
-    function itemIsCampsite(string memory itemType)
-        internal
-        pure
-        returns (bool)
-    {
-        return stringsMatch(itemType, "Campsite");
-    }
-
-    function playerHasArtifact(uint256 gameID, uint256 playerID)
-        internal
-        view
-        returns (bool)
-    {
-        return bytes(CHARACTER_CARD.artifact(gameID, playerID)).length > 0;
     }
 
     function dropArtifactAtShip(uint256 gameID, uint256 playerID) internal {

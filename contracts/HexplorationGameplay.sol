@@ -5,7 +5,7 @@ import "./HexplorationQueue.sol";
 import "./HexplorationStateUpdate.sol";
 import "./HexplorationBoard.sol";
 import "@openzeppelin/contracts/access/AccessControlEnumerable.sol";
-import "@chainlink/contracts/src/v0.8/KeeperCompatible.sol";
+import "@chainlink/contracts/src/v0.8/AutomationCompatible.sol";
 import "./RollDraw.sol";
 import "./HexplorationGameplayUpdates.sol";
 import "./GameWallets.sol";
@@ -15,7 +15,7 @@ import "./TokenInventory.sol";
 
 contract HexplorationGameplay is
     AccessControlEnumerable,
-    KeeperCompatibleInterface,
+    AutomationCompatibleInterface,
     GameWallets,
     RandomIndices,
     AutoLoopCompatible
@@ -79,25 +79,22 @@ contract HexplorationGameplay is
         ROLL_DRAW = RollDraw(_rollDrawAddress);
     }
 
-    function addVerifiedController(address vcAddress)
-        public
-        onlyRole(DEFAULT_ADMIN_ROLE)
-    {
+    function addVerifiedController(
+        address vcAddress
+    ) public onlyRole(DEFAULT_ADMIN_ROLE) {
         grantRole(VERIFIED_CONTROLLER_ROLE, vcAddress);
     }
 
-    function setQueue(address queueContract)
-        public
-        onlyRole(DEFAULT_ADMIN_ROLE)
-    {
+    function setQueue(
+        address queueContract
+    ) public onlyRole(DEFAULT_ADMIN_ROLE) {
         QUEUE = HexplorationQueue(payable(queueContract));
         _setupRole(VERIFIED_CONTROLLER_ROLE, queueContract);
     }
 
-    function setGameStateUpdate(address gsuAddress)
-        public
-        onlyRole(DEFAULT_ADMIN_ROLE)
-    {
+    function setGameStateUpdate(
+        address gsuAddress
+    ) public onlyRole(DEFAULT_ADMIN_ROLE) {
         GAME_STATE = HexplorationStateUpdate(gsuAddress);
     }
 
@@ -117,7 +114,9 @@ contract HexplorationGameplay is
     }
 
     // Keeper functions
-    function getSummaryForUpkeep(bytes calldata performData)
+    function getSummaryForUpkeep(
+        bytes calldata performData
+    )
         external
         pure
         returns (
@@ -265,11 +264,10 @@ contract HexplorationGameplay is
         }
     }
 
-    function getUpdateInfo(uint256 queueID, uint256 processingPhase)
-        public
-        view
-        returns (bytes memory)
-    {
+    function getUpdateInfo(
+        uint256 queueID,
+        uint256 processingPhase
+    ) public view returns (bytes memory) {
         DataSummary memory data = DataSummary(0, 0, 0, 0, 0, 0);
         uint256[] memory playersInQueue = QUEUE.getAllPlayers(queueID);
         for (uint256 i = 0; i < playersInQueue.length; i++) {
@@ -336,9 +334,10 @@ contract HexplorationGameplay is
         );
     }
 
-    function processPlayerActions(uint256 queueID, DataSummary memory summary)
-        public
-    {
+    function processPlayerActions(
+        uint256 queueID,
+        DataSummary memory summary
+    ) public {
         require(_msgSender() == address(this), "internal function");
         processPlayerActionsUnsafe(queueID, summary);
     }
@@ -839,20 +838,17 @@ contract HexplorationGameplay is
     }
 
     // Utilities
-    function stringsMatch(string memory s1, string memory s2)
-        internal
-        pure
-        returns (bool)
-    {
+    function stringsMatch(
+        string memory s1,
+        string memory s2
+    ) internal pure returns (bool) {
         return
             keccak256(abi.encodePacked(s1)) == keccak256(abi.encodePacked(s2));
     }
 
-    function itemIsArtifact(string memory itemType)
-        internal
-        pure
-        returns (bool)
-    {
+    function itemIsArtifact(
+        string memory itemType
+    ) internal pure returns (bool) {
         return (stringsMatch(itemType, "Engraved Tablet") ||
             stringsMatch(itemType, "Sigil Gem") ||
             stringsMatch(itemType, "Ancient Tome"));

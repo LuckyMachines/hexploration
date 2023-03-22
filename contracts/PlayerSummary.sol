@@ -22,11 +22,10 @@ contract PlayerSummary is Utilities, GameWallets {
         playerAddress = pr.playerAddress(gameID, playerID);
     }
 
-    function getPlayerID(address gameBoardAddress, uint256 gameID)
-        public
-        view
-        returns (uint256 playerID)
-    {
+    function getPlayerID(
+        address gameBoardAddress,
+        uint256 gameID
+    ) public view returns (uint256 playerID) {
         playerID = getPlayerID(gameBoardAddress, gameID, tx.origin);
     }
 
@@ -40,11 +39,10 @@ contract PlayerSummary is Utilities, GameWallets {
         playerID = pr.playerID(gameID, playerAddress);
     }
 
-    function isActive(address gameBoardAddress, uint256 gameID)
-        public
-        view
-        returns (bool playerIsActive)
-    {
+    function isActive(
+        address gameBoardAddress,
+        uint256 gameID
+    ) public view returns (bool playerIsActive) {
         playerIsActive = isActive(gameBoardAddress, gameID, tx.origin);
     }
 
@@ -69,11 +67,10 @@ contract PlayerSummary is Utilities, GameWallets {
         playerIsActive = pr.isActive(gameID, playerID);
     }
 
-    function isRegistered(address gameBoardAddress, uint256 gameID)
-        public
-        view
-        returns (bool playerIsRegistered)
-    {
+    function isRegistered(
+        address gameBoardAddress,
+        uint256 gameID
+    ) public view returns (bool playerIsRegistered) {
         playerIsRegistered = isRegistered(gameBoardAddress, gameID, tx.origin);
     }
 
@@ -90,11 +87,10 @@ contract PlayerSummary is Utilities, GameWallets {
     // See if player is active in current game. Players will remain registered even when inactive.
 
     // Player Summary Functions called directly by players
-    function activeAction(address gameBoardAddress, uint256 gameID)
-        public
-        view
-        returns (string memory action)
-    {
+    function activeAction(
+        address gameBoardAddress,
+        uint256 gameID
+    ) public view returns (string memory action) {
         HexplorationBoard board = HexplorationBoard(gameBoardAddress);
         uint256 playerID = PlayerRegistry(board.prAddress()).playerID(
             gameID,
@@ -128,7 +124,10 @@ contract PlayerSummary is Utilities, GameWallets {
         }
     }
 
-    function activeInventory(address gameBoardAddress, uint256 gameID)
+    function activeInventory(
+        address gameBoardAddress,
+        uint256 gameID
+    )
         public
         view
         returns (
@@ -228,11 +227,10 @@ contract PlayerSummary is Utilities, GameWallets {
         );
     }
 
-    function availableMovement(address gameBoardAddress, uint256 gameID)
-        public
-        view
-        returns (uint8 movement)
-    {
+    function availableMovement(
+        address gameBoardAddress,
+        uint256 gameID
+    ) public view returns (uint8 movement) {
         HexplorationBoard board = HexplorationBoard(gameBoardAddress);
         PlayerRegistry pr = PlayerRegistry(board.prAddress());
         uint256 playerID = pr.playerID(gameID, tx.origin);
@@ -288,7 +286,10 @@ contract PlayerSummary is Utilities, GameWallets {
         }
     }
 
-    function currentHandInventory(address gameBoardAddress, uint256 gameID)
+    function currentHandInventory(
+        address gameBoardAddress,
+        uint256 gameID
+    )
         public
         view
         returns (string memory leftHandItem, string memory rightHandItem)
@@ -333,11 +334,10 @@ contract PlayerSummary is Utilities, GameWallets {
             : "";
     }
 
-    function currentLocation(address gameBoardAddress, uint256 gameID)
-        public
-        view
-        returns (string memory location)
-    {
+    function currentLocation(
+        address gameBoardAddress,
+        uint256 gameID
+    ) public view returns (string memory location) {
         HexplorationBoard board = HexplorationBoard(gameBoardAddress);
         PlayerRegistry pr = PlayerRegistry(board.prAddress());
         uint256 playerID = pr.playerID(gameID, tx.origin);
@@ -353,15 +353,10 @@ contract PlayerSummary is Utilities, GameWallets {
         location = board.currentPlayZone(gameID, playerID);
     }
 
-    function currentPlayerStats(address gameBoardAddress, uint256 gameID)
-        public
-        view
-        returns (
-            uint8 movement,
-            uint8 agility,
-            uint8 dexterity
-        )
-    {
+    function currentPlayerStats(
+        address gameBoardAddress,
+        uint256 gameID
+    ) public view returns (uint8 movement, uint8 agility, uint8 dexterity) {
         HexplorationBoard board = HexplorationBoard(gameBoardAddress);
         PlayerRegistry pr = PlayerRegistry(board.prAddress());
         uint256 playerID = pr.playerID(gameID, tx.origin);
@@ -376,15 +371,7 @@ contract PlayerSummary is Utilities, GameWallets {
         address gameBoardAddress,
         uint256 gameID,
         uint256 playerID
-    )
-        public
-        view
-        returns (
-            uint8 movement,
-            uint8 agility,
-            uint8 dexterity
-        )
-    {
+    ) public view returns (uint8 movement, uint8 agility, uint8 dexterity) {
         HexplorationBoard board = HexplorationBoard(gameBoardAddress);
         CharacterCard cc = CharacterCard(board.characterCard());
         movement = cc.movement(gameID, playerID);
@@ -392,7 +379,10 @@ contract PlayerSummary is Utilities, GameWallets {
         dexterity = cc.dexterity(gameID, playerID);
     }
 
-    function inactiveInventory(address gameBoardAddress, uint256 gameID)
+    function inactiveInventory(
+        address gameBoardAddress,
+        uint256 gameID
+    )
         public
         view
         returns (string[] memory itemTypes, uint256[] memory itemBalances)
@@ -442,11 +432,10 @@ contract PlayerSummary is Utilities, GameWallets {
         }
     }
 
-    function isAtCampsite(address gameBoardAddress, uint256 gameID)
-        public
-        view
-        returns (bool atCampsite)
-    {
+    function isAtCampsite(
+        address gameBoardAddress,
+        uint256 gameID
+    ) public view returns (bool atCampsite) {
         HexplorationBoard board = HexplorationBoard(gameBoardAddress);
         PlayerRegistry pr = PlayerRegistry(board.prAddress());
         uint256 playerID = pr.playerID(gameID, tx.origin);
@@ -470,11 +459,10 @@ contract PlayerSummary is Utilities, GameWallets {
             0;
     }
 
-    function playerRecoveredArtifacts(address gameBoardAddress, uint256 gameID)
-        public
-        view
-        returns (string[] memory artifacts)
-    {
+    function playerRecoveredArtifacts(
+        address gameBoardAddress,
+        uint256 gameID
+    ) public view returns (string[] memory artifacts) {
         HexplorationBoard board = HexplorationBoard(gameBoardAddress);
         PlayerRegistry pr = PlayerRegistry(board.prAddress());
         uint256 playerID = pr.playerID(gameID, tx.origin);
@@ -495,11 +483,10 @@ contract PlayerSummary is Utilities, GameWallets {
     }
 
     // Internal Stuff
-    function currentPhase(address gameBoardAddress, uint256 gameID)
-        public
-        view
-        returns (string memory phase)
-    {
+    function currentPhase(
+        address gameBoardAddress,
+        uint256 gameID
+    ) public view returns (string memory phase) {
         HexplorationBoard board = HexplorationBoard(gameBoardAddress);
         TokenInventory tokens = TokenInventory(board.tokenInventory());
 
@@ -556,11 +543,10 @@ contract PlayerSummary is Utilities, GameWallets {
             ) > 0;
     }
 
-    function zoneIndex(address gameBoardAddress, string memory zoneAlias)
-        internal
-        view
-        returns (uint256 index)
-    {
+    function zoneIndex(
+        address gameBoardAddress,
+        string memory zoneAlias
+    ) internal view returns (uint256 index) {
         index = 1111111111111;
         HexplorationBoard board = HexplorationBoard(gameBoardAddress);
         string[] memory allZones = board.getZoneAliases();

@@ -10,9 +10,11 @@ import "./HexplorationQueue.sol";
 import "./GameWallets.sol";
 import "./Utilities.sol";
 import "./PlayerSummary.sol";
+import "./PlayZoneSummary.sol";
 
 contract GameSummary is GameWallets, Utilities, AccessControlEnumerable {
     PlayerSummary PLAYER_SUMMARY;
+    PlayZoneSummary PLAY_ZONE_SUMMARY;
 
     struct EventSummary {
         uint256 playerID;
@@ -32,12 +34,20 @@ contract GameSummary is GameWallets, Utilities, AccessControlEnumerable {
         bool isActive;
     }
 
+    struct InventoryItem {
+        string item;
+        uint256 quantity;
+    }
+
     constructor() {
         _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
     }
 
     // Public Game Summary Functions
-    function activeZones(address gameBoardAddress, uint256 gameID)
+    function activeZones(
+        address gameBoardAddress,
+        uint256 gameID
+    )
         public
         view
         returns (
@@ -58,6 +68,7 @@ contract GameSummary is GameWallets, Utilities, AccessControlEnumerable {
         zones = new string[](activeZoneCount);
         tiles = new uint16[](activeZoneCount);
         campsites = new bool[](activeZoneCount);
+        // relics = new string[](activeZoneCount);
 
         activeZoneCount = 0;
         for (uint256 i = 0; i < allZones.length; i++) {
@@ -81,11 +92,22 @@ contract GameSummary is GameWallets, Utilities, AccessControlEnumerable {
         }
     }
 
-    function allPlayers(address gameBoardAddress, uint256 gameID)
+    function allPlayZoneInventories(
+        address gameBoardAddress,
+        uint256 gameID
+    )
         public
         view
-        returns (PlayerInfo[] memory players)
+        returns (PlayZoneSummary.ZoneInventory[] memory allInventory)
     {
+        return
+            PLAY_ZONE_SUMMARY.allPlayZoneInventories(gameBoardAddress, gameID);
+    }
+
+    function allPlayers(
+        address gameBoardAddress,
+        uint256 gameID
+    ) public view returns (PlayerInfo[] memory players) {
         HexplorationBoard board = HexplorationBoard(gameBoardAddress);
         PlayerRegistry pr = PlayerRegistry(board.prAddress());
         uint256 registrations = pr.totalRegistrations(gameID);
@@ -189,7 +211,10 @@ contract GameSummary is GameWallets, Utilities, AccessControlEnumerable {
         }
     }
 
-    function allPlayerLocations(address gameBoardAddress, uint256 gameID)
+    function allPlayerLocations(
+        address gameBoardAddress,
+        uint256 gameID
+    )
         public
         view
         returns (uint256[] memory playerIDs, string[] memory playerZones)
@@ -205,11 +230,9 @@ contract GameSummary is GameWallets, Utilities, AccessControlEnumerable {
         }
     }
 
-    function boardSize(address gameBoardAddress)
-        public
-        view
-        returns (uint256 rows, uint256 columns)
-    {
+    function boardSize(
+        address gameBoardAddress
+    ) public view returns (uint256 rows, uint256 columns) {
         HexplorationBoard board = HexplorationBoard(gameBoardAddress);
         rows = board.gridHeight();
         columns = board.gridWidth();
@@ -232,31 +255,28 @@ contract GameSummary is GameWallets, Utilities, AccessControlEnumerable {
             !board.artifactFound(gameID, _zoneAlias);
     }
 
-    function currentDay(address gameBoardAddress, uint256 gameID)
-        public
-        view
-        returns (uint256 day)
-    {
+    function currentDay(
+        address gameBoardAddress,
+        uint256 gameID
+    ) public view returns (uint256 day) {
         HexplorationBoard board = HexplorationBoard(gameBoardAddress);
         HexplorationQueue q = HexplorationQueue(payable(board.gameplayQueue()));
         day = (q.getQueueIDs(gameID).length + 1) / 2;
     }
 
-    function currentGameplayQueue(address gameBoardAddress, uint256 gameID)
-        public
-        view
-        returns (uint256 queueID)
-    {
+    function currentGameplayQueue(
+        address gameBoardAddress,
+        uint256 gameID
+    ) public view returns (uint256 queueID) {
         HexplorationBoard board = HexplorationBoard(gameBoardAddress);
         HexplorationQueue q = HexplorationQueue(payable(board.gameplayQueue()));
         queueID = q.queueID(gameID);
     }
 
-    function currentPhase(address gameBoardAddress, uint256 gameID)
-        public
-        view
-        returns (string memory phase)
-    {
+    function currentPhase(
+        address gameBoardAddress,
+        uint256 gameID
+    ) public view returns (string memory phase) {
         HexplorationBoard board = HexplorationBoard(gameBoardAddress);
         TokenInventory tokens = TokenInventory(board.tokenInventory());
 
@@ -268,11 +288,10 @@ contract GameSummary is GameWallets, Utilities, AccessControlEnumerable {
         phase = dayBalance > 0 ? "Day" : "Night";
     }
 
-    function gameStarted(address gameBoardAddress, uint256 gameID)
-        public
-        view
-        returns (bool gameHasStarted)
-    {
+    function gameStarted(
+        address gameBoardAddress,
+        uint256 gameID
+    ) public view returns (bool gameHasStarted) {
         HexplorationBoard board = HexplorationBoard(gameBoardAddress);
         gameHasStarted = board.gameState(gameID) > 0;
     }
@@ -294,15 +313,17 @@ contract GameSummary is GameWallets, Utilities, AccessControlEnumerable {
         ).openGames(gameRegistryAddress);
     }
 
-    function landingSite(address gameBoardAddress, uint256 gameID)
-        public
-        view
-        returns (string memory zoneAlias)
-    {
+    function landingSite(
+        address gameBoardAddress,
+        uint256 gameID
+    ) public view returns (string memory zoneAlias) {
         zoneAlias = HexplorationBoard(gameBoardAddress).initialPlayZone(gameID);
     }
 
-    function lastDayPhaseEvents(address gameBoardAddress, uint256 gameID)
+    function lastDayPhaseEvents(
+        address gameBoardAddress,
+        uint256 gameID
+    )
         public
         view
         returns (
@@ -337,60 +358,10 @@ contract GameSummary is GameWallets, Utilities, AccessControlEnumerable {
         }
     }
 
-    // function lastPlayerActions(address gameBoardAddress, uint256 gameID)
-    //     public
-    //     view
-    //     returns (
-    //         uint256[] memory playerIDs,
-    //         string[] memory activeActionCardTypes,
-    //         string[] memory activeActionCardsDrawn,
-    //         uint8[] memory currentActiveActions,
-    //         string[] memory activeActionCardResults,
-    //         string[3][] memory activeActionCardInventoryChanges,
-    //         int8[3][] memory activeActionStatUpdates
-    //     )
-    // {
-    //     HexplorationBoard board = HexplorationBoard(gameBoardAddress);
-    //     CharacterCard cc = CharacterCard(board.characterCard());
-    //     PlayerRegistry pr = PlayerRegistry(board.prAddress());
-    //     uint256 totalRegistrations = pr.totalRegistrations(gameID);
-    //     playerIDs = new uint256[](totalRegistrations);
-    //     activeActionCardTypes = new string[](totalRegistrations);
-    //     activeActionCardsDrawn = new string[](totalRegistrations);
-    //     currentActiveActions = new uint8[](totalRegistrations);
-    //     activeActionCardResults = new string[](totalRegistrations);
-    //     activeActionCardInventoryChanges = new string[3][](totalRegistrations);
-    //     activeActionStatUpdates = new int8[3][](totalRegistrations);
-
-    //     // TODO: skip inactive players, will return 0 / default empty values
-    //     for (uint256 i = 0; i < totalRegistrations; i++) {
-    //         uint256 pID = i + 1;
-    //         playerIDs[i] = pID;
-    //         activeActionCardTypes[i] = cc.activeActionCardType(gameID, pID);
-    //         activeActionCardsDrawn[i] = cc.activeActionCardDrawn(gameID, pID);
-    //         currentActiveActions[i] = uint8(cc.action(gameID, pID));
-    //         activeActionCardResults[i] = cc.activeActionCardResult(gameID, pID);
-    //         activeActionCardInventoryChanges[i] = cc.getInventoryChanges(
-    //             gameID,
-    //             pID
-    //         );
-    //         activeActionStatUpdates[i] = cc.getStatUpdates(gameID, pID);
-    //     }
-    //     // returns
-    //     // playerIDs
-    //     // activeActionCardType - // "Event","Ambush","Treasure"
-    //     // activationActionCardsDrawn = card title of card drawn
-    //     // currentActveActions - action doing that led to card draw
-    //     // activeActionCardResults - outcomes of cards
-    //     // activeActionCardInventoryChangs - item loss, item gain, hand loss (left/right)
-    //     // activeActionStatUpdates - [movement adjust, agility adjust, dexterity adjust] (will only effect up to max and down to 0)
-    // }
-
-    function lastPlayerActions(address gameBoardAddress, uint256 gameID)
-        public
-        view
-        returns (EventSummary[] memory playerActions)
-    {
+    function lastPlayerActions(
+        address gameBoardAddress,
+        uint256 gameID
+    ) public view returns (EventSummary[] memory playerActions) {
         HexplorationBoard board = HexplorationBoard(gameBoardAddress);
         CharacterCard cc = CharacterCard(board.characterCard());
         PlayerRegistry pr = PlayerRegistry(board.prAddress());
@@ -417,12 +388,24 @@ contract GameSummary is GameWallets, Utilities, AccessControlEnumerable {
         }
     }
 
+    function playZoneInventory(
+        address gameBoardAddress,
+        uint256 gameID,
+        string memory zoneAlias
+    ) public view returns (PlayZoneSummary.InventoryItem[] memory inventory) {
+        return
+            PLAY_ZONE_SUMMARY.playZoneInventory(
+                gameBoardAddress,
+                gameID,
+                zoneAlias
+            );
+    }
+
     // Returns artifacts recovered and stored on the ship
-    function recoveredArtifacts(address gameBoardAddress, uint256 gameID)
-        public
-        view
-        returns (string[] memory artifacts)
-    {
+    function recoveredArtifacts(
+        address gameBoardAddress,
+        uint256 gameID
+    ) public view returns (string[] memory artifacts) {
         HexplorationBoard board = HexplorationBoard(gameBoardAddress);
         TokenInventory tokens = TokenInventory(board.tokenInventory());
         uint256 totalArtifacts = 0;
@@ -471,22 +454,20 @@ contract GameSummary is GameWallets, Utilities, AccessControlEnumerable {
         }
     }
 
-    function totalPlayers(address gameBoardAddress, uint256 gameID)
-        public
-        view
-        returns (uint256 numPlayers)
-    {
+    function totalPlayers(
+        address gameBoardAddress,
+        uint256 gameID
+    ) public view returns (uint256 numPlayers) {
         HexplorationBoard board = HexplorationBoard(gameBoardAddress);
         PlayerRegistry pr = PlayerRegistry(board.prAddress());
         numPlayers = pr.totalRegistrations(gameID);
     }
 
     // Internal Stuff
-    function zoneIndex(address gameBoardAddress, string memory zoneAlias)
-        internal
-        view
-        returns (uint256 index)
-    {
+    function zoneIndex(
+        address gameBoardAddress,
+        string memory zoneAlias
+    ) internal view returns (uint256 index) {
         index = 1111111111111;
         HexplorationBoard board = HexplorationBoard(gameBoardAddress);
         string[] memory allZones = board.getZoneAliases();
@@ -502,10 +483,15 @@ contract GameSummary is GameWallets, Utilities, AccessControlEnumerable {
     }
 
     // Admin functions
-    function setPlayerSummary(address playerSummaryAddress)
-        public
-        onlyRole(DEFAULT_ADMIN_ROLE)
-    {
+    function setPlayerSummary(
+        address playerSummaryAddress
+    ) public onlyRole(DEFAULT_ADMIN_ROLE) {
         PLAYER_SUMMARY = PlayerSummary(playerSummaryAddress);
+    }
+
+    function setPlayZoneSummary(
+        address playZoneSummaryAddress
+    ) public onlyRole(DEFAULT_ADMIN_ROLE) {
+        PLAY_ZONE_SUMMARY = PlayZoneSummary(playZoneSummaryAddress);
     }
 }

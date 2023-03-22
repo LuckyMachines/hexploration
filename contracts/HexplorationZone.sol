@@ -16,7 +16,8 @@ contract HexplorationZone is PlayZone {
         Relic2,
         Relic3,
         Relic4,
-        Relic5
+        Relic5,
+        RelicEmpty
     }
 
     // Mappings from game ID => zone alias

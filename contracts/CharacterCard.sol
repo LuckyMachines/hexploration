@@ -26,6 +26,11 @@ contract CharacterCard is AccessControlEnumerable {
     mapping(uint256 => mapping(uint256 => uint8)) public movement;
     mapping(uint256 => mapping(uint256 => uint8)) public agility;
     mapping(uint256 => mapping(uint256 => uint8)) public dexterity;
+    mapping(uint256 => mapping(uint256 => uint8)) public movementBuff;
+    mapping(uint256 => mapping(uint256 => uint8)) public agilityBuff;
+    mapping(uint256 => mapping(uint256 => uint8)) public dexterityBuff;
+    mapping(uint256 => mapping(uint256 => uint8)) public digOddsBuff;
+    mapping(uint256 => mapping(uint256 => uint8)) public combatBuff;
     mapping(uint256 => mapping(uint256 => Action)) public action; // set to enumerated list
     //// the following assign a token type, player must still hold balance to use item
     mapping(uint256 => mapping(uint256 => string)) public leftHandItem;
@@ -60,10 +65,9 @@ contract CharacterCard is AccessControlEnumerable {
         relicToken = relicTokenAddress;
     }
 
-    function addVerifiedController(address controllerAddress)
-        public
-        onlyRole(DEFAULT_ADMIN_ROLE)
-    {
+    function addVerifiedController(
+        address controllerAddress
+    ) public onlyRole(DEFAULT_ADMIN_ROLE) {
         grantRole(VERIFIED_CONTROLLER_ROLE, controllerAddress);
     }
 
@@ -71,53 +75,47 @@ contract CharacterCard is AccessControlEnumerable {
         return hasRole(VERIFIED_CONTROLLER_ROLE, testAddress);
     }
 
-    function getStats(uint256 gameID, uint256 playerID)
-        public
-        view
-        returns (uint8[3] memory stats)
-    {
+    function getStats(
+        uint256 gameID,
+        uint256 playerID
+    ) public view returns (uint8[3] memory stats) {
         stats[0] = movement[gameID][playerID];
         stats[1] = agility[gameID][playerID];
         stats[2] = dexterity[gameID][playerID];
     }
 
-    function getInventoryChanges(uint256 gameID, uint256 playerID)
-        public
-        view
-        returns (string[3] memory)
-    {
+    function getInventoryChanges(
+        uint256 gameID,
+        uint256 playerID
+    ) public view returns (string[3] memory) {
         return activeActionCardInventoryChanges[gameID][playerID];
     }
 
-    function getDayPhaseInventoryChanges(uint256 gameID, uint256 playerID)
-        public
-        view
-        returns (string[3] memory)
-    {
+    function getDayPhaseInventoryChanges(
+        uint256 gameID,
+        uint256 playerID
+    ) public view returns (string[3] memory) {
         return dayPhaseActionCardInventoryChanges[gameID][playerID];
     }
 
-    function getStatUpdates(uint256 gameID, uint256 playerID)
-        public
-        view
-        returns (int8[3] memory)
-    {
+    function getStatUpdates(
+        uint256 gameID,
+        uint256 playerID
+    ) public view returns (int8[3] memory) {
         return activeActionStatUpdates[gameID][playerID];
     }
 
-    function getDayPhaseStatUpdates(uint256 gameID, uint256 playerID)
-        public
-        view
-        returns (int8[3] memory)
-    {
+    function getDayPhaseStatUpdates(
+        uint256 gameID,
+        uint256 playerID
+    ) public view returns (int8[3] memory) {
         return dayPhaseActionStatUpdates[gameID][playerID];
     }
 
-    function playerIsDead(uint256 gameID, uint256 playerID)
-        public
-        view
-        returns (bool)
-    {
+    function playerIsDead(
+        uint256 gameID,
+        uint256 playerID
+    ) public view returns (bool) {
         if (
             movement[gameID][playerID] == 0 ||
             agility[gameID][playerID] == 0 ||
@@ -130,10 +128,10 @@ contract CharacterCard is AccessControlEnumerable {
     }
 
     // Controller functions
-    function resetActiveActions(uint256 gameID, uint256 totalPlayers)
-        external
-        onlyRole(VERIFIED_CONTROLLER_ROLE)
-    {
+    function resetActiveActions(
+        uint256 gameID,
+        uint256 totalPlayers
+    ) external onlyRole(VERIFIED_CONTROLLER_ROLE) {
         for (uint256 i = 1; i < totalPlayers + 1; i++) {
             // i = player ID
             activeActionCardType[gameID][i] = "";
@@ -144,10 +142,10 @@ contract CharacterCard is AccessControlEnumerable {
         }
     }
 
-    function resetDayPhaseActions(uint256 gameID, uint256 totalPlayers)
-        external
-        onlyRole(VERIFIED_CONTROLLER_ROLE)
-    {
+    function resetDayPhaseActions(
+        uint256 gameID,
+        uint256 totalPlayers
+    ) external onlyRole(VERIFIED_CONTROLLER_ROLE) {
         for (uint256 i = 1; i < totalPlayers + 1; i++) {
             // i = player ID
             dayPhaseActionCardType[gameID][i] = "";
@@ -328,11 +326,10 @@ contract CharacterCard is AccessControlEnumerable {
         dayPhaseActionStatUpdates[gameID][playerID] = cardStatUpdates;
     }
 
-    function compare(string memory s1, string memory s2)
-        public
-        pure
-        returns (bool isMatch)
-    {
+    function compare(
+        string memory s1,
+        string memory s2
+    ) public pure returns (bool isMatch) {
         isMatch =
             keccak256(abi.encodePacked(s1)) == keccak256(abi.encodePacked(s2));
     }

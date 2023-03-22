@@ -73,17 +73,15 @@ contract GameToken is AccessControlEnumerable {
         _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
     }
 
-    function addController(address controllerAddress)
-        public
-        onlyRole(DEFAULT_ADMIN_ROLE)
-    {
+    function addController(
+        address controllerAddress
+    ) public onlyRole(DEFAULT_ADMIN_ROLE) {
         grantRole(CONTROLLER_ROLE, controllerAddress);
     }
 
-    function addTokenTypes(string[] memory _tokenTypes)
-        public
-        onlyRole(DEFAULT_ADMIN_ROLE)
-    {
+    function addTokenTypes(
+        string[] memory _tokenTypes
+    ) public onlyRole(DEFAULT_ADMIN_ROLE) {
         for (uint256 i = 0; i < _tokenTypes.length; i++) {
             string memory tokenType = _tokenTypes[i];
             string[] storage tTypes = tokenTypes;
@@ -113,12 +111,12 @@ contract GameToken is AccessControlEnumerable {
         }
     }
 
-    function mintAllTokens(uint256 gameID, uint256 quantity)
-        public
-        onlyRole(CONTROLLER_ROLE)
-    {
+    function mintAllTokens(
+        uint256 gameID,
+        uint256 quantity
+    ) public onlyRole(CONTROLLER_ROLE) {
         for (uint256 i = 0; i < tokenTypes.length; i++) {
-            balance[tokenTypes[i]][gameID][0] = quantity;
+            balance[tokenTypes[i]][gameID][0] += quantity;
         }
     }
 
@@ -128,7 +126,7 @@ contract GameToken is AccessControlEnumerable {
         TokenState withState
     ) public onlyRole(CONTROLLER_ROLE) {
         for (uint256 i = 0; i < tokenTypes.length; i++) {
-            balance[tokenTypes[i]][gameID][0] = quantity;
+            balance[tokenTypes[i]][gameID][0] += quantity;
             _setAllTokenState(tokenTypes[i], withState);
         }
     }
@@ -139,7 +137,7 @@ contract GameToken is AccessControlEnumerable {
         uint256 quantity
     ) public onlyRole(CONTROLLER_ROLE) {
         require(tokenTypeSet[tokenType], "Token type not set");
-        balance[tokenType][gameID][0] = quantity;
+        balance[tokenType][gameID][0] += quantity;
     }
 
     function mintTo(
@@ -149,7 +147,7 @@ contract GameToken is AccessControlEnumerable {
         uint256 quantity
     ) public onlyRole(CONTROLLER_ROLE) {
         require(tokenTypeSet[tokenType], "Token type not set");
-        balance[tokenType][gameID][recipient] = quantity;
+        balance[tokenType][gameID][recipient] += quantity;
     }
 
     function setTokenState(
@@ -161,10 +159,10 @@ contract GameToken is AccessControlEnumerable {
         tokenState[tokenType][gameID][holderID] = state;
     }
 
-    function setAllTokenState(TokenState state, string memory tokenType)
-        public
-        onlyRole(CONTROLLER_ROLE)
-    {
+    function setAllTokenState(
+        TokenState state,
+        string memory tokenType
+    ) public onlyRole(CONTROLLER_ROLE) {
         allTokenState[tokenType] = state;
     }
 
@@ -259,9 +257,10 @@ contract GameToken is AccessControlEnumerable {
         return tokenTypes;
     }
 
-    function _setAllTokenState(string memory tokenType, TokenState state)
-        internal
-    {
+    function _setAllTokenState(
+        string memory tokenType,
+        TokenState state
+    ) internal {
         allTokenState[tokenType] = state;
     }
 }

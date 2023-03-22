@@ -7,10 +7,9 @@ import "@chainlink/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol";
 import "@chainlink/contracts/src/v0.8/VRFConsumerBaseV2.sol";
 
 interface IStringToUint {
-    function stringToUint(string calldata s)
-        external
-        pure
-        returns (uint256 result);
+    function stringToUint(
+        string calldata s
+    ) external pure returns (uint256 result);
 }
 
 // Band VRF Provider
@@ -60,7 +59,8 @@ contract RandomnessConsumer is
         uint64 time; // time fulfilled if band request
     }
     // Mappings from request ID
-    mapping(uint256 => RequestStatus) public randomnessRequests; /* requestId --> requestStatus */
+    mapping(uint256 => RequestStatus)
+        public randomnessRequests; /* requestId --> requestStatus */
     mapping(uint256 => uint256) public ids;
     mapping(uint256 => address) public addresses;
     // mapping(uint256 => uint256) public gameIDs;
@@ -107,27 +107,25 @@ contract RandomnessConsumer is
 
     receive() external payable {}
 
-    function setVRFSubscriptionID(uint64 _subscriptionID)
-        public
-        onlyRole(DEFAULT_ADMIN_ROLE)
-    {
+    function setVRFSubscriptionID(
+        uint64 _subscriptionID
+    ) public onlyRole(DEFAULT_ADMIN_ROLE) {
         subscriptionId = _subscriptionID;
         useMockVRF = subscriptionId == 0;
     }
 
-    function setTestingEnabled(bool enabled)
-        public
-        onlyRole(DEFAULT_ADMIN_ROLE)
-    {
+    function setTestingEnabled(
+        bool enabled
+    ) public onlyRole(DEFAULT_ADMIN_ROLE) {
         _setTestingEnabled(enabled);
     }
 
     // Chainlink
 
-    function requestRandomnessFromChainlink(uint256 id, address _address)
-        internal
-        returns (uint256 requestId)
-    {
+    function requestRandomnessFromChainlink(
+        uint256 id,
+        address _address
+    ) internal returns (uint256 requestId) {
         // Will revert if subscription is not set and funded.
         requestId = COORDINATOR.requestRandomWords(
             keyHash,
@@ -167,10 +165,10 @@ contract RandomnessConsumer is
     }
 
     // Band
-    function requestRandomnessFromBand(uint256 id, address _address)
-        internal
-        returns (uint256 requestId)
-    {
+    function requestRandomnessFromBand(
+        uint256 id,
+        address _address
+    ) internal returns (uint256 requestId) {
         bool canUseID = false;
         while (!canUseID) {
             ++bandID;
@@ -222,10 +220,10 @@ contract RandomnessConsumer is
     }
 
     // Testing
-    function testRequestRandomWords(uint256 id, address _address)
-        internal
-        returns (uint256 requestId)
-    {
+    function testRequestRandomWords(
+        uint256 id,
+        address _address
+    ) internal returns (uint256 requestId) {
         requestId = id;
         randomnessRequests[requestId] = RequestStatus({
             randomWords: new uint256[](0),
@@ -256,10 +254,10 @@ contract RandomnessConsumer is
 
     // Mock Randomness
     // Fulfilling mock request delivers unpredictable value, as opposed to test fulfill which fulfills with specified randomness
-    function mockRequestRandomWords(uint256 id, address _address)
-        internal
-        returns (uint256 requestId)
-    {
+    function mockRequestRandomWords(
+        uint256 id,
+        address _address
+    ) internal returns (uint256 requestId) {
         ++mockID;
         requestId = mockID;
         ids[requestId] = id;
@@ -394,10 +392,10 @@ contract RandomnessConsumer is
         emit RequestFulfilled(_requestId, _randomness);
     }
 
-    function requestRandomness(uint256 id, address _address)
-        internal
-        returns (uint256 requestId)
-    {
+    function requestRandomness(
+        uint256 id,
+        address _address
+    ) internal returns (uint256 requestId) {
         if (useMockVRF) {
             requestId = mockRequestRandomWords(id, _address);
         } else if (useBandVRF) {
@@ -408,11 +406,9 @@ contract RandomnessConsumer is
         }
     }
 
-    function getRequestStatus(uint256 _requestId)
-        external
-        view
-        returns (bool fulfilled, uint256[] memory randomWords)
-    {
+    function getRequestStatus(
+        uint256 _requestId
+    ) external view returns (bool fulfilled, uint256[] memory randomWords) {
         require(randomnessRequests[_requestId].exists, "request not found");
         RequestStatus memory request = randomnessRequests[_requestId];
         return (request.fulfilled, request.randomWords);
@@ -443,11 +439,10 @@ contract RandomnessConsumer is
         useChainlinkVRF = true;
     }
 
-    function withdraw(uint256 amount, address payable to)
-        public
-        virtual
-        onlyRole(DEFAULT_ADMIN_ROLE)
-    {
+    function withdraw(
+        uint256 amount,
+        address payable to
+    ) public virtual onlyRole(DEFAULT_ADMIN_ROLE) {
         (bool sent, ) = to.call{value: amount}("");
         require(sent, "Failed to withdraw");
     }

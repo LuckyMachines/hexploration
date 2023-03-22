@@ -13,6 +13,9 @@ contract HexplorationBoard is HexGrid {
     address public gameplayQueue;
     // mapping from gameID
     mapping(uint256 => bool) public gameOver;
+    mapping(uint256 => string[]) public relics;
+    // game ID => relic type
+    mapping(uint256 => mapping(string => string)) public relicLocation;
     // game ID => zone alias
     mapping(uint256 => mapping(string => bool)) public zoneEnabled;
     mapping(uint256 => mapping(string => bool)) public artifactFound; // can only dig on space if false
@@ -32,27 +35,28 @@ contract HexplorationBoard is HexGrid {
         return address(HEX_ZONE);
     }
 
-    function getAliasAddress(uint256 gameID, string memory zAlias)
-        public
-        view
-        returns (address)
-    {
+    function getAliasAddress(
+        uint256 gameID,
+        string memory zAlias
+    ) public view returns (address) {
         return zoneAlias[gameID][zAlias];
     }
 
-    function getArtifactsRetrieved(uint256 gameID, uint256 playerID)
-        public
-        view
-        returns (string[] memory)
-    {
+    function getArtifactsRetrieved(
+        uint256 gameID,
+        uint256 playerID
+    ) public view returns (string[] memory) {
         return artifactsRetrieved[gameID][playerID];
     }
 
-    function hasOutput(string memory fromZone, string memory toZone)
-        public
-        view
-        returns (bool zoneHasOutput)
-    {
+    function getRelics(uint256 gameID) public view returns (string[] memory) {
+        return relics[gameID];
+    }
+
+    function hasOutput(
+        string memory fromZone,
+        string memory toZone
+    ) public view returns (bool zoneHasOutput) {
         string[] memory outputs = getOutputs(0, fromZone);
         zoneHasOutput = false;
         for (uint256 i = 0; i < outputs.length; i++) {
@@ -68,38 +72,34 @@ contract HexplorationBoard is HexGrid {
 
     // VERIFIED CONTROLLER functions
     // We can assume these have been pre-verified
-    function setCharacterCard(address characterCardAddress)
-        public
-        onlyRole(DEFAULT_ADMIN_ROLE)
-    {
+    function setCharacterCard(
+        address characterCardAddress
+    ) public onlyRole(DEFAULT_ADMIN_ROLE) {
         characterCard = characterCardAddress;
     }
 
-    function setTokenInventory(address tokenInventoryAddress)
-        public
-        onlyRole(DEFAULT_ADMIN_ROLE)
-    {
+    function setTokenInventory(
+        address tokenInventoryAddress
+    ) public onlyRole(DEFAULT_ADMIN_ROLE) {
         tokenInventory = tokenInventoryAddress;
     }
 
-    function setGameplayQueue(address gameplayQueueAddress)
-        public
-        onlyRole(DEFAULT_ADMIN_ROLE)
-    {
+    function setGameplayQueue(
+        address gameplayQueueAddress
+    ) public onlyRole(DEFAULT_ADMIN_ROLE) {
         gameplayQueue = gameplayQueueAddress;
     }
 
-    function setPlayerRegistry(address playerRegistryAddress)
-        public
-        onlyRole(DEFAULT_ADMIN_ROLE)
-    {
+    function setPlayerRegistry(
+        address playerRegistryAddress
+    ) public onlyRole(DEFAULT_ADMIN_ROLE) {
         PLAYER_REGISTRY = PlayerRegistry(playerRegistryAddress);
     }
 
-    function setArtifactFound(uint256 gameID, string memory _zoneAlias)
-        public
-        onlyRole(VERIFIED_CONTROLLER_ROLE)
-    {
+    function setArtifactFound(
+        uint256 gameID,
+        string memory _zoneAlias
+    ) public onlyRole(VERIFIED_CONTROLLER_ROLE) {
         artifactFound[gameID][_zoneAlias] = true;
     }
 
@@ -111,24 +111,39 @@ contract HexplorationBoard is HexGrid {
         artifactsRetrieved[gameID][playerID].push(artifact);
     }
 
-    function setGameOver(uint256 gameID)
-        public
-        onlyRole(VERIFIED_CONTROLLER_ROLE)
-    {
+    function setGameOver(
+        uint256 gameID
+    ) public onlyRole(VERIFIED_CONTROLLER_ROLE) {
         gameOver[gameID] = true;
     }
 
-    function registerPlayer(address playerAddress, uint256 gameID)
-        public
-        onlyRole(VERIFIED_CONTROLLER_ROLE)
-    {
+    function addRelic(
+        uint256 gameID,
+        string memory relicType,
+        string memory _zoneAlias
+    ) public onlyRole(VERIFIED_CONTROLLER_ROLE) {
+        relics[gameID].push(relicType);
+        relicLocation[gameID][relicType] = _zoneAlias;
+    }
+
+    function setRelicTile(
+        uint256 gameID,
+        string memory relicType,
+        HexplorationZone.Tile tile
+    ) public onlyRole(VERIFIED_CONTROLLER_ROLE) {
+        HEX_ZONE.setTile(tile, gameID, relicLocation[gameID][relicType]);
+    }
+
+    function registerPlayer(
+        address playerAddress,
+        uint256 gameID
+    ) public onlyRole(VERIFIED_CONTROLLER_ROLE) {
         PLAYER_REGISTRY.registerPlayer(playerAddress, gameID);
     }
 
-    function lockRegistration(uint256 gameID)
-        public
-        onlyRole(VERIFIED_CONTROLLER_ROLE)
-    {
+    function lockRegistration(
+        uint256 gameID
+    ) public onlyRole(VERIFIED_CONTROLLER_ROLE) {
         PLAYER_REGISTRY.lockRegistration(gameID);
     }
 
@@ -150,10 +165,10 @@ contract HexplorationBoard is HexGrid {
         HEX_ZONE.exitPlayer(playerAddress, gameID, zone);
     }
 */
-    function requestNewGame(address gameRegistryAddress, uint256 maxPlayers)
-        external
-        onlyRole(VERIFIED_CONTROLLER_ROLE)
-    {
+    function requestNewGame(
+        address gameRegistryAddress,
+        uint256 maxPlayers
+    ) external onlyRole(VERIFIED_CONTROLLER_ROLE) {
         uint256 gameSize = maxPlayers > 4 ? 4 : maxPlayers == 0
             ? 1
             : maxPlayers;
@@ -162,10 +177,10 @@ contract HexplorationBoard is HexGrid {
         PLAYER_REGISTRY.setRegistrationLimit(gameSize, gameID);
     }
 
-    function setGameState(uint256 gs, uint256 gameID)
-        external
-        onlyRole(VERIFIED_CONTROLLER_ROLE)
-    {
+    function setGameState(
+        uint256 gs,
+        uint256 gameID
+    ) external onlyRole(VERIFIED_CONTROLLER_ROLE) {
         // 0 start
         // 1 inititalizing
         // 2 initialized
@@ -208,7 +223,9 @@ contract HexplorationBoard is HexGrid {
         }
     }
 
-    function openGames(address gameRegistryAddress)
+    function openGames(
+        address gameRegistryAddress
+    )
         public
         view
         returns (
