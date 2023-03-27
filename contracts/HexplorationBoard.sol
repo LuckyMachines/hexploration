@@ -199,6 +199,12 @@ contract HexplorationBoard is HexGrid {
         if (!zoneEnabled[gameID][_zoneAlias]) {
             HEX_ZONE.setTile(tile, gameID, _zoneAlias);
             zoneEnabled[gameID][_zoneAlias] = true;
+        } else if (
+            HEX_ZONE.tile(gameID, _zoneAlias) ==
+            HexplorationZone.Tile.RelicMystery
+        ) {
+            // allow setting tile since relic needs to be revealed
+            HEX_ZONE.setTile(tile, gameID, _zoneAlias);
         }
     }
 
