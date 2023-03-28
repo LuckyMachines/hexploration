@@ -16,6 +16,7 @@ import "./GameEvents.sol";
 import "./RandomIndices.sol";
 import "./GameWallets.sol";
 import "./StateUpdateHelpers.sol";
+import "./RelicManagement.sol";
 
 contract HexplorationStateUpdate is
     AccessControlEnumerable,
@@ -45,6 +46,7 @@ contract HexplorationStateUpdate is
     HexplorationBoard internal GAME_BOARD;
     CharacterCard internal CHARACTER_CARD;
     GameEvents internal GAME_EVENTS;
+    RelicManagement internal RELIC_MANAGEMENT;
 
     modifier onlyAdminVC() {
         require(
@@ -57,10 +59,15 @@ contract HexplorationStateUpdate is
 
     // set other addresses going to need here
     // decks, tokens?
-    constructor(address gameBoardAddress, address characterCardAddress) {
+    constructor(
+        address gameBoardAddress,
+        address characterCardAddress,
+        address relicManagementAddress
+    ) {
         _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
         GAME_BOARD = HexplorationBoard(gameBoardAddress);
         CHARACTER_CARD = CharacterCard(characterCardAddress);
+        RELIC_MANAGEMENT = RelicManagement(relicManagementAddress);
     }
 
     // Admin Functions
@@ -96,20 +103,37 @@ contract HexplorationStateUpdate is
         // switch between night / day
         updatePlayPhase(updates, gameID);
 
-        checkGameOver(gameID);
+        if (StateUpdateHelpers.checkGameOver(address(CHARACTER_CARD), gameID)) {
+            // set game over
+            GAME_BOARD.setGameOver(gameID);
+            // emit event
+            GAME_EVENTS.emitGameOver(gameID);
+        }
     }
 
     function postDayPhaseUpdates(
         HexplorationGameplay.PlayUpdates memory dayPhaseUpdates,
         uint256 gameID
     ) public onlyRole(VERIFIED_CONTROLLER_ROLE) {
-        if (!checkGameOver(gameID)) {
+        if (
+            !StateUpdateHelpers.checkGameOver(address(CHARACTER_CARD), gameID)
+        ) {
             applyDayPhaseEffects(dayPhaseUpdates, gameID);
             updatePlayerStats(dayPhaseUpdates, gameID);
             updatePlayerHands(dayPhaseUpdates, gameID);
             transferPlayerItems(dayPhaseUpdates, gameID);
             transferZoneItems(dayPhaseUpdates, gameID);
-            checkGameOver((gameID));
+            if (
+                StateUpdateHelpers.checkGameOver(
+                    address(CHARACTER_CARD),
+                    gameID
+                )
+            ) {
+                // set game over
+                GAME_BOARD.setGameOver(gameID);
+                // emit event
+                GAME_EVENTS.emitGameOver(gameID);
+            }
         }
     }
 
@@ -502,10 +526,18 @@ contract HexplorationStateUpdate is
             // If to == current zone, from = playerID
             // if from == current zone, to = playerID
             uint256 toID = updates.zoneTransfersTo[i] == 10000000000
-                ? currentZoneIndex(gameID, updates.zoneTransfersFrom[i])
+                ? StateUpdateHelpers.currentZoneIndex(
+                    address(GAME_BOARD),
+                    gameID,
+                    updates.zoneTransfersFrom[i]
+                )
                 : updates.zoneTransfersTo[i];
             uint256 fromID = updates.zoneTransfersFrom[i] == 10000000000
-                ? currentZoneIndex(gameID, updates.zoneTransfersTo[i])
+                ? StateUpdateHelpers.currentZoneIndex(
+                    address(GAME_BOARD),
+                    gameID,
+                    updates.zoneTransfersTo[i]
+                )
                 : updates.zoneTransfersFrom[i];
             uint256 tferQty = updates.zoneTransferQtys[i];
             string memory tferItem = updates.zoneTransferItemTypes[i];
@@ -531,24 +563,6 @@ contract HexplorationStateUpdate is
         }
     }
 
-    function currentZoneIndex(
-        uint256 gameID,
-        uint256 playerID
-    ) internal view returns (uint256 index) {
-        string memory zoneAlias = GAME_BOARD.currentPlayZone(gameID, playerID);
-        string[] memory allZones = GAME_BOARD.getZoneAliases();
-        index = 1111111111111;
-        for (uint256 i = 0; i < allZones.length; i++) {
-            if (
-                keccak256(abi.encodePacked(zoneAlias)) ==
-                keccak256(abi.encodePacked(allZones[i]))
-            ) {
-                index = i;
-                break;
-            }
-        }
-    }
-
     function moveThroughPath(
         string[] memory zonePath,
         uint256 gameID,
@@ -570,30 +584,11 @@ contract HexplorationStateUpdate is
                 hexZone.tile(gameID, currentZone) ==
                 HexplorationZone.Tile.RelicMystery
             ) {
-                // relic needs to be revealed...
-                string[] memory relicChoices = StateUpdateHelpers
-                    .availableRelics(address(GAME_BOARD), gameID);
-                // choose one for this relic tile
-                string memory relicChoice = relicChoices[
-                    randomness[i] % relicChoices.length
-                ];
-                tiles[i] = StateUpdateHelpers.relicTileFromType(
+                tiles[i] = RELIC_MANAGEMENT.revealRelic(
                     address(GAME_BOARD),
-                    relicChoice
-                );
-                GAME_BOARD.addRelic(gameID, relicChoice, currentZone);
-
-                // send the one relic token to that zone
-                uint256 toZoneIndex = StateUpdateHelpers.zoneIndex(
-                    address(GAME_BOARD),
-                    currentZone
-                );
-                ti.RELIC_TOKEN().transferToZone(
-                    relicChoice,
                     gameID,
-                    0,
-                    toZoneIndex,
-                    1
+                    currentZone,
+                    randomness[i]
                 );
             } else {
                 // Standard tile selection
@@ -624,69 +619,44 @@ contract HexplorationStateUpdate is
             dropArtifactAtShip(gameID, playerID);
         } else if (uint256(zoneTile) > 6 && uint256(zoneTile) < 12) {
             // player is on relic space
-
-            // send existing relic back to relic zone if in posession
-            // resetPlayerRelic(gameID, playerID);
-            // transfer relic to player,
-            ti.RELIC_TOKEN().transferFromZone(
-                StateUpdateHelpers.relicTypeFromTile(
-                    address(GAME_BOARD),
-                    zoneTile
-                ),
-                gameID,
-                StateUpdateHelpers.zoneIndex(address(GAME_BOARD), currentZone),
-                playerID,
-                1
-            );
-
-            // set zone tile to empty relic
-            GAME_BOARD.setRelicTile(
-                gameID,
-                StateUpdateHelpers.relicTypeFromTile(
-                    address(GAME_BOARD),
-                    zoneTile
-                ),
-                HexplorationZone.Tile.RelicEmpty
-            );
-        }
-    }
-
-    function resetPlayerRelic(uint256 gameID, uint256 playerID) internal {
-        // find any relics in posession
-        TokenInventory ti = TokenInventory(GAME_BOARD.tokenInventory());
-        string[] memory relicTypes = ti.RELIC_TOKEN().getTokenTypes();
-        string memory relicInPosession;
-        for (uint256 i = 1; i < relicTypes.length; i++) {
-            // Start at 1 so we don't use mystery relic
-            if (ti.RELIC_TOKEN().balance(relicTypes[i], gameID, playerID) > 0) {
-                relicInPosession = relicTypes[i];
-                break;
-            }
-        }
-        // find location of that relic on board
-        string memory relicZone = GAME_BOARD.relicLocation(
-            gameID,
-            relicInPosession
-        );
-
-        // transfer back to zone from player
-        ti.RELIC_TOKEN().transferToZone(
-            relicInPosession,
-            gameID,
-            playerID,
-            StateUpdateHelpers.zoneIndex(address(GAME_BOARD), relicZone),
-            1
-        );
-
-        GAME_BOARD.setRelicTile(
-            gameID,
-            relicInPosession,
-            StateUpdateHelpers.relicTileFromType(
+            RELIC_MANAGEMENT.pickupRelic(
                 address(GAME_BOARD),
-                relicInPosession
-            )
-        );
+                address(CHARACTER_CARD),
+                gameID,
+                playerID,
+                currentZone,
+                zoneTile
+            );
+        }
     }
+
+    // function resetPlayerRelic(
+    //     uint256 gameID,
+    //     uint256 playerID,
+    //     TokenInventory ti
+    // ) internal {
+    //     // TokenInventory ti = TokenInventory(GAME_BOARD.tokenInventory());
+    //     string[] memory relicTypes = ti.RELIC_TOKEN().getTokenTypes();
+
+    //     for (uint256 i = 1; i < relicTypes.length; i++) {
+    //         // Start at 1 so we don't use mystery relic
+    //         if (ti.RELIC_TOKEN().balance(relicTypes[i], gameID, playerID) > 0) {
+    //             // find location of that relic on board
+    //             // transfer back to zone from player
+    //             ti.RELIC_TOKEN().transferToZone(
+    //                 relicTypes[i],
+    //                 gameID,
+    //                 playerID,
+    //                 StateUpdateHelpers.zoneIndex(
+    //                     address(GAME_BOARD),
+    //                     GAME_BOARD.relicLocation(gameID, relicTypes[i])
+    //                 ),
+    //                 1
+    //             );
+    //             break;
+    //         }
+    //     }
+    // }
 
     function updatePlayPhase(
         HexplorationGameplay.PlayUpdates memory updates,
@@ -744,22 +714,5 @@ contract HexplorationStateUpdate is
         GAME_BOARD.setArtifactRetrieved(gameID, playerID, artifact);
         // remove artifact from character card
         CHARACTER_CARD.setArtifact("", gameID, playerID);
-    }
-
-    function checkGameOver(uint256 gameID) internal returns (bool gameOver) {
-        // checks if all players are dead, and if so ends game
-        gameOver = true;
-        for (uint256 i = 0; i < 4; i++) {
-            if (!CHARACTER_CARD.playerIsDead(gameID, i + 1)) {
-                gameOver = false;
-                break;
-            }
-        }
-        if (gameOver) {
-            // set game over
-            GAME_BOARD.setGameOver(gameID);
-            // emit event
-            GAME_EVENTS.emitGameOver(gameID);
-        }
     }
 }

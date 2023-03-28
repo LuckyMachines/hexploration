@@ -3,8 +3,9 @@ pragma solidity >=0.7.0 <0.9.0;
 
 import "@luckymachines/game-core/contracts/src/v0.0/custom_boards/HexGrid.sol";
 import "./HexplorationZone.sol";
+import "./Utilities.sol";
 
-contract HexplorationBoard is HexGrid {
+contract HexplorationBoard is HexGrid, Utilities {
     // This role is a hybrid controller, assumes on chain verification of moves before submission
 
     HexplorationZone internal HEX_ZONE;
@@ -40,6 +41,18 @@ contract HexplorationBoard is HexGrid {
         string memory zAlias
     ) public view returns (address) {
         return zoneAlias[gameID][zAlias];
+    }
+
+    function zoneIndex(
+        string memory _zoneAlias
+    ) external view returns (uint256 index) {
+        index = 1111111111111;
+        for (uint256 i = 0; i < zoneAliases.length; i++) {
+            if (stringsMatch(_zoneAlias, zoneAliases[i])) {
+                index = i;
+                break;
+            }
+        }
     }
 
     function getArtifactsRetrieved(

@@ -506,11 +506,16 @@ contract PlayerSummary is Utilities, GameWallets {
         uint256 holderID
     ) internal view returns (bool) {
         return
-            TokenInventory(inventoryAddress).ITEM_TOKEN().balance(
+            (TokenInventory(inventoryAddress).ITEM_TOKEN().balance(
                 tokenType,
                 gameID,
                 holderID
-            ) > 0;
+            ) > 0) ||
+            (TokenInventory(inventoryAddress).RELIC_TOKEN().balance(
+                tokenType,
+                gameID,
+                holderID
+            ) > 0);
     }
 
     // Artifact exists in player inventory
