@@ -1,3 +1,12 @@
+THIS REPOSITORY IS ARCHIVED/OLD
+
+PLEASE SEE HEXPLORATION IN THE GAME-CORE REPO - THANKS! :) 
+https://github.com/LuckyMachines/game-core/tree/main/games/hexploration
+
+
+
+
+
 # Hexploration
 
 ## An on-chain multiplayer explore & escape game where players work together to explore uncharted planets and recover buried artifacts.
