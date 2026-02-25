@@ -161,6 +161,36 @@ Player submits action → Controller tracks submission
          New queue created for next turn
 ```
 
+### Cost Comparison: AutoLoop vs Chainlink
+
+Estimated costs per game round and per full game (10-round average) on Ethereum mainnet at current prices (Feb 2026: ETH ~$1,850, LINK ~$8.20, gas ~0.5 gwei).
+
+**Per round, the game needs:**
+- 2 VRF fulfillments (GameSetup + Queue) -- ~200K gas each
+- 3 loop progressions (GameSetup, Controller, Gameplay) -- ~300-500K gas each
+- Total: ~5 transactions, ~1.5M gas per round
+
+| | AutoLoop | Chainlink VRF + Automation |
+|---|---|---|
+| **VRF cost per round** | Gas only: ~400K gas = ~$0.0004 | Gas + 20% LINK premium on callback gas + VRF verification overhead (~115K gas). Estimated ~$0.001 in LINK per request x 2 = ~$0.002 |
+| **Automation cost per round** | Gas only: ~1.1M gas = ~$0.001 | Gas + premium per `performUpkeep()` (varies by network). Estimated ~$0.003 in LINK for 3 upkeeps |
+| **Total per round** | **~$0.0014** (gas only) | **~$0.005** (gas + LINK premiums) |
+| **Per 10-round game** | **~$0.014** | **~$0.05** |
+| **Per 100 games** | **~$1.40** | **~$5.00** |
+| **Requires LINK tokens** | No | Yes |
+| **Requires VRF subscription** | No | Yes |
+| **Requires running a worker** | Yes | No (Chainlink nodes handle it) |
+| **Provably fair randomness** | No (mock VRF uses blockhash) | Yes (VRF proof verified on-chain) |
+
+**Notes:**
+- Gas prices fluctuate significantly. At 10 gwei (moderate congestion) costs scale ~20x. At 50 gwei (high congestion) costs scale ~100x.
+- AutoLoop costs are pure gas -- you pay ETH, no LINK tokens needed.
+- Chainlink premiums are percentage-based: VRF charges 20% on top of callback gas (paying in LINK) or 24% (paying in ETH). Automation charges a similar premium per upkeep.
+- AutoLoop requires running a Node.js worker process. Chainlink is fully decentralized -- no infrastructure to maintain.
+- For testnet (Sepolia), both approaches are effectively free since testnet ETH and LINK have no value.
+
+**Bottom line:** AutoLoop is ~3-4x cheaper per game but requires running your own worker. Chainlink costs more but is hands-off and provides provably fair randomness.
+
 ## Quick Start
 
 ```bash
