@@ -137,8 +137,8 @@ contract DeployHexploration is Script {
         s_stateUpdate = address(new HexplorationStateUpdate(s_board, s_characterCard, s_relicManagement));
         s_gameplay = address(new HexplorationGameplay(s_board, s_rollDraw));
 
-        // Mock VRF: keyHash=0, bandProvider=0 → useMockVRF=true
-        s_gameSetup = payable(address(new GameSetup(0, deployer, bytes32(0), address(0), s_stringToUint)));
+        // Mock VRF: subscriptionId=0, keyHash=0 → useMockVRF=true
+        s_gameSetup = payable(address(new GameSetup(0, deployer, bytes32(0))));
         s_controller = address(new HexplorationController(deployer));
     }
 
@@ -146,7 +146,7 @@ contract DeployHexploration is Script {
 
     function _deployPhase5() internal {
         s_queue = payable(address(new HexplorationQueue(
-            s_gameplay, s_characterCard, 0, deployer, bytes32(0), address(0), s_stringToUint
+            s_gameplay, s_characterCard, 0, deployer, bytes32(0)
         )));
         s_playerSummary = address(new PlayerSummary());
     }

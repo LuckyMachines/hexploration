@@ -12,7 +12,7 @@ Built on the [Lucky Machines Game Core](https://github.com/LuckyMachines/game-co
 - **Fully on-chain** -- all game state, randomness, and resolution happen in smart contracts. No backend server, no hidden information asymmetry.
 - **Cooperative tension** -- players share a board but compete for relics. Help each other survive, or race ahead and leave them behind.
 - **Emergent strategy** -- fog of war, random events, and inventory management mean no two games play the same way.
-- **Verifiable fairness** -- Chainlink VRF ensures every dice roll, card draw, and event trigger is provably random.
+- **Verifiable fairness** -- supports Chainlink VRF for provably random dice rolls, card draws, and event triggers. Mock VRF available for testing and low-cost deployments.
 
 ## The Game
 
@@ -43,7 +43,7 @@ Built on the [Lucky Machines Game Core](https://github.com/LuckyMachines/game-co
 | **Terrain** | Jungle, Plains, Desert, Mountain, Landing, Relic |
 | **Actions** | Move, Dig, Camp, Rest, Help, Flee |
 | **Stats** | Movement, Agility, Dexterity |
-| **Randomness** | Chainlink VRF (provably fair) |
+| **Randomness** | Mock VRF (default) or Chainlink VRF v2 |
 | **Contracts** | 25 Solidity contracts |
 
 ## Contract Architecture
@@ -108,6 +108,59 @@ Event, Ambush, Treasure, Land, Relic -- each deck is populated from `scripts/onc
 | **GameEvents** | Centralized event emission |
 | **GameSetup** | Game initialization and configuration queries |
 
+## Automation & Randomness
+
+Hexploration requires two things to keep running: **automation** (advancing game phases) and **randomness** (card draws, dice rolls, events). Both are pluggable.
+
+### AutoLoop (default)
+
+The automation worker (`scripts/hexploration-worker.mjs`) handles both automation and randomness out of the box:
+
+- Polls `shouldProgressLoop()` on Controller, Gameplay, and GameSetup contracts every 5 seconds
+- Calls `progressLoop()` to advance game phases when ready
+- Fulfills mock VRF randomness requests on-chain
+- No external subscriptions or token balances needed
+
+This is the recommended way to run Hexploration. Just start the worker:
+
+```bash
+node scripts/hexploration-worker.mjs
+```
+
+Configure via `scripts/hexploration-worker.env.example`. The worker needs a funded private key to submit transactions.
+
+### Chainlink VRF (alternative)
+
+The contracts also support Chainlink VRF v2 for provably fair randomness. To switch from mock VRF to Chainlink:
+
+1. Create and fund a Chainlink VRF subscription
+2. Call `setVRFSubscriptionID(subscriptionId)` on GameSetup and Queue contracts
+3. Add the contract addresses as consumers on your VRF subscription
+
+The `AutomationCompatibleInterface` (`checkUpkeep`/`performUpkeep`) is implemented on both `HexplorationController` and `HexplorationGameplay`, so Chainlink Automation can also replace the worker for phase advancement if desired.
+
+### How the Automation Loop Works
+
+```
+Player submits action → Controller tracks submission
+                              ↓
+         All players submit OR 10-min timeout
+                              ↓
+         Controller.shouldProgressLoop() → true
+                              ↓
+         Worker calls progressLoop() → Queue enters Processing phase
+                              ↓
+         Queue requests randomness (mock or Chainlink VRF)
+                              ↓
+         Randomness fulfilled → stored in Queue
+                              ↓
+         Gameplay.shouldProgressLoop() → true
+                              ↓
+         Worker calls progressLoop() → processes actions, advances state
+                              ↓
+         New queue created for next turn
+```
+
 ## Quick Start
 
 ```bash
@@ -150,25 +203,7 @@ node scripts/populate-decks.mjs
 node scripts/check-hex-status.mjs
 ```
 
-Full deployment costs approximately 0.00014 ETH on Sepolia.
-
-### Mock VRF
-
-The deployment uses mock VRF mode (no Chainlink subscription needed). The automation worker fulfills randomness requests locally. To enable mock VRF on an existing deployment:
-
-```bash
-node scripts/enable-mock-vrf.mjs
-```
-
-## Worker
-
-The automation worker (`scripts/hexploration-worker.mjs`) keeps the game running by:
-
-- Polling for games that need updates (pending VRF fulfillment or phase advancement)
-- Fulfilling mock VRF randomness requests on-chain
-- Advancing game phases (processing queued state updates)
-
-Configure via `scripts/hexploration-worker.env.example`. The worker needs a funded private key to submit transactions.
+Full deployment costs approximately 0.00014 ETH on Sepolia. Deploys in mock VRF mode by default (no Chainlink subscription needed).
 
 ## Frontend
 

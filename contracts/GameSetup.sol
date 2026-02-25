@@ -18,16 +18,12 @@ contract GameSetup is RandomnessConsumer, GameWallets {
     constructor(
         uint64 _vrfSubscriptionID,
         address _vrfCoordinator,
-        bytes32 _vrfKeyHash,
-        address _bandProvider,
-        address _stringToUint
+        bytes32 _vrfKeyHash
     )
         RandomnessConsumer(
             _vrfSubscriptionID,
             _vrfCoordinator,
-            _vrfKeyHash,
-            _bandProvider,
-            _stringToUint
+            _vrfKeyHash
         )
     {
         _setNumWords(2); // we need 2 numbers per request
@@ -62,11 +58,9 @@ contract GameSetup is RandomnessConsumer, GameWallets {
 
     function fulfillRandomness(
         uint256 _requestId,
-        uint256[] memory _randomness,
-        string memory _seed,
-        uint64 _time
+        uint256[] memory _randomness
     ) internal override {
-        super.fulfillRandomness(_requestId, _randomness, _seed, _time);
+        super.fulfillRandomness(_requestId, _randomness);
 
         chooseLandingSite(_requestId);
         mintGameTokens(_requestId);
