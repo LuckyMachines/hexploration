@@ -1,18 +1,50 @@
 # Hexploration
 
-An on-chain multiplayer explore & escape game where players work together to explore uncharted planets and recover buried artifacts.
+A fully on-chain multiplayer explore & escape game. Land on an uncharted planet, navigate a hex grid shrouded in fog, recover ancient relics, and make it back alive. Every action, dice roll, and card draw lives on-chain -- no hidden server state, no trust required.
+
+Built on the [Lucky Machines Game Core](https://github.com/LuckyMachines/game-core) framework with Chainlink VRF for provably fair randomness.
 
 - 1st place winner of Polygon Gaming prize @ Chainlink Spring 22 Hackathon
 - Recipient of Chainlink Top Quality prize @ Chainlink Spring 22 Hackathon
 
-## Game Overview
+## Why Play
 
-1-4 players explore a 10x10 hexagonal grid, collecting artifacts and surviving events to escape before their stats hit zero.
+- **Fully on-chain** -- all game state, randomness, and resolution happen in smart contracts. No backend server, no hidden information asymmetry.
+- **Cooperative tension** -- players share a board but compete for relics. Help each other survive, or race ahead and leave them behind.
+- **Emergent strategy** -- fog of war, random events, and inventory management mean no two games play the same way.
+- **Verifiable fairness** -- Chainlink VRF ensures every dice roll, card draw, and event trigger is provably random.
 
-- **Day/Night cycle** -- day phases let players move and explore; night phases trigger random events
-- **Card draws** -- land tiles, events, ambushes, treasures, and relics are drawn from on-chain card decks
-- **Combat & items** -- players find items, fight enemies, and manage inventory
-- **Escape** -- reach the landing zone with enough artifacts before your movement/agility/dexterity run out
+## The Game
+
+1-4 players land on an unexplored planet represented by a 10x10 hexagonal grid. The goal: **explore the map, collect relics, and escape back to the landing site before your stats run out.**
+
+### How It Works
+
+1. **Land** -- all players start at the landing site. The rest of the grid is hidden under fog of war.
+2. **Explore** -- on your turn, choose an action: **Move** to a new hex, **Dig** for artifacts, **Camp** to set up a safe point, **Rest** to recover stats, **Help** another player, or **Flee** back to the landing site.
+3. **Discover** -- moving into unexplored hexes reveals terrain (Jungle, Plains, Desert, Mountain) and triggers card draws: events, ambushes, treasures, and relics.
+4. **Survive** -- your character has three stats: **Movement**, **Agility**, and **Dexterity**. Events and combat drain them. If any stat hits zero, you're out.
+5. **Escape** -- return to the landing site with relics in your inventory to win. But don't wait too long -- the planet gets more dangerous at night.
+
+### Key Mechanics
+
+- **Day/Night cycle** -- day phases let players move and explore freely. Night phases trigger random events, enemies, and disasters.
+- **Card decks** -- 5 on-chain decks (Event, Ambush, Treasure, Land, Relic) are shuffled and drawn during gameplay. What you draw changes everything.
+- **Items & inventory** -- find shields, campsites, and tools. Equip items in your left/right hand slots. Manage limited inventory space.
+- **Combat** -- enemies appear during exploration and at night. Agility determines your odds. Failing costs stats.
+- **Relics** -- scattered across the map. Dig to find them. Collect enough and escape to win.
+
+### At a Glance
+
+| | |
+|---|---|
+| **Players** | 1-4 per game |
+| **Board** | 10x10 hex grid with fog of war |
+| **Terrain** | Jungle, Plains, Desert, Mountain, Landing, Relic |
+| **Actions** | Move, Dig, Camp, Rest, Help, Flee |
+| **Stats** | Movement, Agility, Dexterity |
+| **Randomness** | Chainlink VRF (provably fair) |
+| **Contracts** | 25 Solidity contracts |
 
 ## Contract Architecture
 
