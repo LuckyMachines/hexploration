@@ -140,23 +140,55 @@ Configure via `scripts/hexploration-worker.env.example`. The worker needs a fund
 
 ## Frontend
 
-The SPA in `app/` is built with:
+The SPA in `app/` is built with React 19, Vite, Wagmi 2, viem, and TailwindCSS. Dark expedition-themed UI with custom colors and fonts (Barlow Condensed for headings, JetBrains Mono for data).
 
-- **React 19** + **Vite** for fast development
-- **Wagmi 2** + **viem** for wallet connection and contract interaction
-- **TailwindCSS** for styling
+### Pages
 
-Key pages:
-- **Home** -- create or join games, view active games
-- **Game** -- hex grid view, player stats, action submission, game log
+- **`/`** -- Expedition Console. Browse active games, create new expeditions (select 1-4 players), join open games. Game cards show ID, player count, and registration status.
+- **`/game/:gameId`** -- Routes between three views based on game state:
+  - **Lobby** -- Crew manifest showing registered players, join/start buttons
+  - **Expedition Bench** -- Full game UI (see below)
+  - **Game Over** -- Final results and winner
 
-To run:
+### Expedition Bench (Active Game)
+
+The main gameplay screen is a dashboard layout:
+
+- **Top bar** -- Day/Night badge, current phase, day counter
+- **Hex grid** (left 2/3) -- SVG hexagonal grid with fog of war. Terrain tiles (Jungle, Plains, Desert, Mountain, Landing, Relic) reveal as players explore. Player position markers, landing site highlight, movement path overlay, and terrain legend.
+- **Expedition Crew** (right 1/3) -- Player dossiers showing address, current zone, three stat bars (Movement, Agility, Dexterity), active/inactive status, and action-submitted indicators
+- **Action Console** -- Tabbed interface with 6 actions: Move, Camp, Dig, Rest, Help, Flee
+- **Turn Results** -- Displays action outcomes and card draws after each phase
+- **Event Log** -- Real-time feed of on-chain game events
+
+### Contract Integration
+
+The SPA reads from 8 contracts (Board, Controller, GameSummary, PlayerSummary, GameEvents, Queue, GameSetup, GameRegistry) via 15+ custom Wagmi hooks with polling intervals (3-10s). Writes go through the Controller for game actions and the Board for game creation/registration. All contract events are watched in real-time.
+
+### Help System
+
+Built-in Field Manual modal with 4 tabs: Overview, Actions, Terrain types, and How to Play tutorial.
+
+### Running
 
 ```bash
 cd app && npm install && npm run dev
 ```
 
-Configure contract addresses in `app/.env` (see `VITE_*` variables).
+### Environment Variables
+
+```
+VITE_RPC_URL                     # Sepolia RPC endpoint
+VITE_WALLETCONNECT_PROJECT_ID    # WalletConnect project ID (optional)
+VITE_BOARD_ADDRESS               # HexplorationBoard contract
+VITE_CONTROLLER_ADDRESS          # HexplorationController contract
+VITE_GAME_SUMMARY_ADDRESS        # GameSummary contract
+VITE_PLAYER_SUMMARY_ADDRESS      # PlayerSummary contract
+VITE_GAME_EVENTS_ADDRESS         # GameEvents contract
+VITE_GAME_REGISTRY_ADDRESS       # GameRegistry contract
+VITE_GAME_QUEUE_ADDRESS          # HexplorationQueue contract
+VITE_GAME_SETUP_ADDRESS          # GameSetup contract
+```
 
 ## Project Structure
 
