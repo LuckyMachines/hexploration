@@ -1,0 +1,5447 @@
+{
+  "tokens": {
+    "DAY_NIGHT": [
+      "Day",
+      "Night"
+    ],
+    "DISASTER": [
+      "Earthquake",
+      "Volcano"
+    ],
+    "ENEMY": [
+      "Pirate",
+      "Pirate Ship",
+      "Deathbot",
+      "Guardian",
+      "Sandworm",
+      "Dragon"
+    ],
+    "ITEM": [
+      "Engraved Tablet",
+      "Sigil Gem",
+      "Ancient Tome",
+      "Electron Stabilizer",
+      "Gravity Shifter",
+      "Supersonic Absorber",
+      "Holo Module",
+      "Resonance Amplifier",
+      "Subsonic Projector",
+      "Plasma Loader",
+      "Fusion Torch",
+      "Phase Welder",
+      "Nano Driver",
+      "Neutron Disruptor",
+      "Particle Generator",
+      "Electron Injector",
+      "Compact Scanner",
+      "Gryroscopic Drill",
+      "Ion Generator",
+      "Particle Hammer",
+      "Warp Amplifier",
+      "Phase Scanner",
+      "Resonance Torch",
+      "Nano Manipulator",
+      "Supersonic Shifter",
+      "Neutron Loader",
+      "Tachyon Welder",
+      "Electron Blaster",
+      "Tachyon Driver",
+      "Particle Compactor",
+      "Plasma Hammer",
+      "Porta Drill",
+      "Fusion Loader",
+      "Temporal Shifter",
+      "Tachyon Cutter",
+      "Nano Scrubber",
+      "Resonance Generator",
+      "Chem Absorber",
+      "Mini Module",
+      "Magnetic Projector",
+      "Mega Controller",
+      "Ion Manipulator",
+      "Campsite",
+      "Shield"
+    ],
+    "PLAYER_STATUS": [
+      "Stunned",
+      "Burned"
+    ],
+    "RELIC": [
+      "Mystery",
+      "Relic 1",
+      "Relic 2",
+      "Relic 3",
+      "Relic 4",
+      "Relic 5"
+    ]
+  },
+  "decks": {
+    "EVENT": [
+      {
+        "title": "Mysterious Monolith",
+        "description": "A monolith's towering form pulses, each throb of energy tempting you closer. Its symbols, alien yet almost intelligible, whisper promises of secrets yet to unfold.",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          2,
+          5
+        ],
+        "rollTypeRequired": 0,
+        "movementAdjust": [
+          -1,
+          1,
+          2
+        ],
+        "agilityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "dexterityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "itemGain": [
+          "",
+          "",
+          ""
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "As you trace your fingers over the alien symbols etched into the monolith, a sudden energy pulse dizzies you. Unsettled, you're forced to take a moment to recover your equilibrium.",
+          "You manage to decipher some of the monolith's strange patterns. A surge of energy shoots through you, filling you with a sense of vitality.",
+          "You successfully decipher a critical sequence of symbols on the towering monolith. As a reward, it emits a brilliant glow, supercharging your abilities."
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      },
+      {
+        "title": "Meteor Shower",
+        "description": "With little warning, the skies turn into a theatre of cosmic chaos. Meteors rain down, their blazing trails a frantic call to seek immediate shelter.",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          2,
+          6
+        ],
+        "rollTypeRequired": 1,
+        "movementAdjust": [
+          -1,
+          1,
+          0
+        ],
+        "agilityAdjust": [
+          0,
+          0,
+          2
+        ],
+        "dexterityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "itemGain": [
+          "",
+          "",
+          ""
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "Taking shelter from the furious meteor shower, you find yourself disoriented and tense, the shock of the unexpected event hindering your progress.",
+          "While the meteor shower is fierce, you escape with minor scrapes and bruises, your nerves slightly frazzled.",
+          "Despite the meteor shower's intensity, you manage to avoid it completely. Amidst the debris, you discover a meteorite fragment that might prove invaluable for your mission."
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      },
+      {
+        "title": "Crystalline Maze",
+        "description": "You find yourself encased in a labyrinth of crystalline towers, their surfaces shimmering like distant galaxies. Getting lost in this mesmerizing maze is an all too likely fate.",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          2,
+          5
+        ],
+        "rollTypeRequired": 0,
+        "movementAdjust": [
+          -1,
+          0,
+          2
+        ],
+        "agilityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "dexterityAdjust": [
+          0,
+          1,
+          0
+        ],
+        "itemGain": [
+          "",
+          "",
+          ""
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "Navigating the labyrinthine crystal maze proves challenging, the reflections of the glittering formations leading you in circles and causing delays.",
+          "Even though the crystal maze is disorienting, you make your way through, though it does eat up a fair amount of your time.",
+          "With uncanny ease, you navigate the labyrinthine crystalline maze, discovering a beautiful crystal specimen that sparkles with potential."
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      },
+      {
+        "title": "Gravity Anomaly",
+        "description": "The rules of gravity betray you as an anomaly distorts the fundamental force. Your movements become a game of chance—each step an unpredictable gamble.",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          2,
+          6
+        ],
+        "rollTypeRequired": 2,
+        "movementAdjust": [
+          0,
+          0,
+          0
+        ],
+        "agilityAdjust": [
+          -1,
+          1,
+          1
+        ],
+        "dexterityAdjust": [
+          0,
+          0,
+          1
+        ],
+        "itemGain": [
+          "",
+          "",
+          ""
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "The gravity anomaly proves a formidable obstacle. It feels like an invisible hand shoving you in random directions, your efforts to resist draining your stamina.",
+          "Keeping your balance during the gravity anomaly proves challenging but you manage, though it leaves you feeling weary.",
+          "The gravity anomaly, initially a hindrance, becomes an advantage. With some adjustment, you use it to leap forward with increased speed."
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      },
+      {
+        "title": "Native Flora Bloom",
+        "description": "Alien flora burst into radiant bloom around you. The spectacle is enchantingly beautiful, yet the unearthly pollen dancing in the air foretells of possible unknown effects.",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          2,
+          5
+        ],
+        "rollTypeRequired": 1,
+        "movementAdjust": [
+          0,
+          0,
+          1
+        ],
+        "agilityAdjust": [
+          0,
+          0,
+          1
+        ],
+        "dexterityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "itemGain": [
+          "",
+          "",
+          ""
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "Inhaling the alien pollen from the erupting blooms triggers a sneezing fit. Momentarily distracted, you forge ahead without any serious repercussions.",
+          "Inhaling some of the strange pollen leaves you feeling slightly lightheaded, but it's a transient feeling that soon passes.",
+          "Inhaling the alien pollen leads to a surprising development. Instead of an allergic reaction, your senses become temporarily heightened, enhancing your agility."
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      },
+      {
+        "title": "Alien Artifact Discovery",
+        "description": "In the sands of the alien landscape, an artifact hums with alien energy. It is ancient, its origins shrouded in mystery—a potential treasure from a civilization lost to time.",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          2,
+          6
+        ],
+        "rollTypeRequired": 0,
+        "movementAdjust": [
+          0,
+          1,
+          1
+        ],
+        "agilityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "dexterityAdjust": [
+          0,
+          0,
+          1
+        ],
+        "itemGain": [
+          "",
+          "",
+          ""
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "The humming alien artifact before you emanates an uncanny energy. Respecting its potential, you observe it from a distance, leaving its secrets untouched for now.",
+          "Interacting with the ancient artifact, you feel it hum under your fingers, but no more significant reaction takes place.",
+          "By activating the ancient artifact, you unlock a temporary power boost to your equipment, amplifying its effectiveness."
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      },
+      {
+        "title": "Solar Flare Warning",
+        "description": "A solar flare surges through the vast cosmic sea towards you. The countdown to seek shelter from the impending wave of radiation has begun.",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          2,
+          5
+        ],
+        "rollTypeRequired": 2,
+        "movementAdjust": [
+          0,
+          0,
+          0
+        ],
+        "agilityAdjust": [
+          -1,
+          0,
+          1
+        ],
+        "dexterityAdjust": [
+          0,
+          1,
+          1
+        ],
+        "itemGain": [
+          "",
+          "",
+          ""
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "Ducking behind what little cover you can find, you still feel the prickling sensation of the solar flare's radiation. It leaves your equipment erratic and your skin tingling.",
+          "Taking cover from the solar flare, you shield yourself but it leaves you feeling strangely depleted.",
+          "Seeking refuge from the solar flare, you stumble upon a well-sheltered spot, providing you with an opportunity to rest and recover."
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      },
+      {
+        "title": "Fossil Remains",
+        "description": "Beneath your feet lie the fossilized remains of an enigmatic creature, its story trapped in stone. These ancient bones could reveal the secrets of this planet's lost eras.",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          2,
+          6
+        ],
+        "rollTypeRequired": 0,
+        "movementAdjust": [
+          0,
+          1,
+          1
+        ],
+        "agilityAdjust": [
+          0,
+          0,
+          1
+        ],
+        "dexterityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "itemGain": [
+          "",
+          "",
+          ""
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "The alien fossil remains are enigmatic, the bones of an unknown creature buried in time. They trigger a wave of wonder, but your inability to identify them leaves you slightly frustrated.",
+          "Examining the fossilized remains doesn't yield any immediate benefits, but it adds to your growing knowledge of this planet's ancient life.",
+          "While initially unidentifiable, a sudden insight allows you to recognize the fossil as a new species—information that could prove valuable to your mission."
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      },
+      {
+        "title": "Sudden Sandstorm",
+        "description": "Without a moment's notice, a mighty sandstorm descends upon you, its sandy veil threatening to erase your tracks and vision. Steadfast, you must weather this storm.",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          2,
+          5
+        ],
+        "rollTypeRequired": 2,
+        "movementAdjust": [
+          -1,
+          1,
+          0
+        ],
+        "agilityAdjust": [
+          0,
+          0,
+          2
+        ],
+        "dexterityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "itemGain": [
+          "",
+          "",
+          ""
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "Caught in the gritty embrace of the sandstorm, your every step becomes an effort. Sand grates in your joints and your visibility drops to zero, slowing your progress.",
+          "The sandstorm leaves you covered in grit and sapped of energy, but you push through the discomfort and continue onward.",
+          "Instead of letting the sandstorm hamper your progress, you use it as cover, advancing undetected and saving precious time."
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      },
+      {
+        "title": "Bioluminescent Night",
+        "description": "As night usurps day, a gentle glow washes over the alien landscape. The bioluminescent night holds an eerie beauty—the hushed whisper of the nocturnal world inviting exploration.",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          2,
+          6
+        ],
+        "rollTypeRequired": 0,
+        "movementAdjust": [
+          0,
+          1,
+          1
+        ],
+        "agilityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "dexterityAdjust": [
+          0,
+          0,
+          1
+        ],
+        "itemGain": [
+          "",
+          "",
+          ""
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "The bioluminescent glow casts an ethereal light over the landscape, yet offers little in terms of practical illumination. Its beauty, though captivating, doesn't help you with your mission.",
+          "The bioluminescent night soothes your eyes and calms your spirit, but it does little to aid your journey.",
+          "The ethereal bioluminescent glow has an unexpected benefit—your night vision is considerably improved, increasing your agility."
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      },
+      {
+        "title": "Abandoned Outpost",
+        "description": "An outpost, forgotten by time and its creators, stands silent in the alien landscape. As its gate creaks open under the alien wind, you wonder what secrets lie within its forsaken walls.",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          2,
+          5
+        ],
+        "rollTypeRequired": 1,
+        "movementAdjust": [
+          0,
+          0,
+          1
+        ],
+        "agilityAdjust": [
+          0,
+          1,
+          1
+        ],
+        "dexterityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "itemGain": [
+          "",
+          "",
+          ""
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "The mystery of the abandoned outpost looms in front of you. It's silent and ominous, caution prompting you to tread carefully lest you trigger any dormant systems.",
+          "Inside the abandoned outpost, an eerie silence reigns. You do, however, find some supplies left behind that may prove useful.",
+          "Inside the abandoned outpost, you hit the jackpot—valuable supplies that will bolster your chances of survival."
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      },
+      {
+        "title": "Mysterious Signal",
+        "description": "Your equipment buzzes with the rhythm of a mysterious signal. The message is cryptic: a desperate distress call or a cunning trap?",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          2,
+          6
+        ],
+        "rollTypeRequired": 0,
+        "movementAdjust": [
+          0,
+          0,
+          2
+        ],
+        "agilityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "dexterityAdjust": [
+          -1,
+          1,
+          0
+        ],
+        "itemGain": [
+          "",
+          "",
+          ""
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "The enigmatic signal that cuts through your comms is faint and distorted. Its origin and meaning remain elusive, adding another layer of complexity to your mission.",
+          "Despite your best efforts, the strange signal remains an enigma, its purpose or origin unclear.",
+          "After much effort, you're able to trace the source of the mysterious signal, leading you to a hidden cache of advanced alien technology."
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      },
+      {
+        "title": "Geothermal Vent",
+        "description": "Steam hisses and minerals sparkle as a geothermal vent erupts in a scalding display of the planet's raw power. Could this be the energy source you need?",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          2,
+          5
+        ],
+        "rollTypeRequired": 2,
+        "movementAdjust": [
+          0,
+          1,
+          0
+        ],
+        "agilityAdjust": [
+          0,
+          0,
+          2
+        ],
+        "dexterityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "itemGain": [
+          "",
+          "",
+          ""
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "Approaching the geothermal vent, you're hit by a wave of heat and sulfurous smell. It's a potential energy source, but too hazardous to exploit without proper equipment.",
+          "Approaching the geothermal vent carefully, you feel its heat but wisely keep your distance.",
+          "The searing heat of the geothermal vent powers up your equipment, temporarily boosting its functionality."
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      },
+      {
+        "title": "Dense Fog",
+        "description": "A dense, alien fog rolls in like an unwelcome specter, the world blurring into a hazy mirage. You must rely on your instincts to navigate through this visual deception.",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          2,
+          6
+        ],
+        "rollTypeRequired": 1,
+        "movementAdjust": [
+          -1,
+          0,
+          1
+        ],
+        "agilityAdjust": [
+          0,
+          1,
+          0
+        ],
+        "dexterityAdjust": [
+          0,
+          0,
+          1
+        ],
+        "itemGain": [
+          "",
+          "",
+          ""
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "The thick alien fog dampens your senses, turning the world into a muffled, blurry mystery. Moving slowly, you strain to discern any lurking dangers within the obscuring mist.",
+          "Navigating through the dense fog is challenging, but your cautious approach ensures you don't stumble into danger.",
+          "Your careful navigation through the dense fog reveals a hidden path, leading to a quicker route through the alien terrain."
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      },
+      {
+        "title": "Zero-G Zone",
+        "description": "An area of nullified gravity confronts you. The sensation of weightlessness is exhilarating yet disorienting. You must tread the unseen path with care.",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          2,
+          5
+        ],
+        "rollTypeRequired": 2,
+        "movementAdjust": [
+          0,
+          0,
+          0
+        ],
+        "agilityAdjust": [
+          -1,
+          0,
+          1
+        ],
+        "dexterityAdjust": [
+          0,
+          1,
+          1
+        ],
+        "itemGain": [
+          "",
+          "",
+          ""
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "Gravity, or rather the lack thereof, turns your every move into a disorienting dance. You're struggling to maintain direction and balance in this zero-G zone, wasting precious time.",
+          "Adjusting to the zero gravity area proves tricky and your progress slows down, but you manage to maintain control.",
+          "Mastering the disorienting zero gravity area, you're able to float through quickly, making up for lost time."
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      },
+      {
+        "title": "Echoing Caverns",
+        "description": "The walls of a vast cavern network carry your echoes, distorting sounds into misleading whispers. In this acoustic maze, trusting your sense of direction is crucial.",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          2,
+          6
+        ],
+        "rollTypeRequired": 0,
+        "movementAdjust": [
+          0,
+          1,
+          2
+        ],
+        "agilityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "dexterityAdjust": [
+          -1,
+          0,
+          0
+        ],
+        "itemGain": [
+          "",
+          "",
+          ""
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "The echo-laden caverns play tricks on your hearing. Sounds bounce and distort, your reliance on echolocation thwarted, making your journey through them slower.",
+          "Navigating through the echoing caverns is distracting with all the noises reverberating around, but you keep moving forward.",
+          "The echoing caverns, initially confusing, become a navigational tool. Using the echoes, you map a shortcut through the intricate network of passages."
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      },
+      {
+        "title": "Lethal Radiation Hotspot",
+        "description": "A shrill warning from your equipment. Ahead lies a zone aglow with lethal radiation. The only way forward is a way around this silent killer.",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          2,
+          5
+        ],
+        "rollTypeRequired": 2,
+        "movementAdjust": [
+          -1,
+          0,
+          0
+        ],
+        "agilityAdjust": [
+          0,
+          1,
+          1
+        ],
+        "dexterityAdjust": [
+          0,
+          0,
+          1
+        ],
+        "itemGain": [
+          "",
+          "",
+          ""
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "The sudden radiation warning forces an immediate detour, a longer path now necessary to circumnavigate the invisible, lethal obstacle.",
+          "You manage to navigate around the radiation hotspot, taking extra time but avoiding dangerous exposure.",
+          "Despite the lethal radiation, you find a safe path through the hotspot. Along the way, you discover a rare mineral—another unexpected bonus."
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      },
+      {
+        "title": "Resource Rich Area",
+        "description": "You discover a region lush with resources, the raw potential of the alien planet revealed. Setting up a temporary mining operation could be worth the effort.",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          2,
+          6
+        ],
+        "rollTypeRequired": 0,
+        "movementAdjust": [
+          0,
+          1,
+          2
+        ],
+        "agilityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "dexterityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "itemGain": [
+          "",
+          "",
+          ""
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "The sight of the resource-rich area makes your heart leap, yet without the right tools at hand, it remains an unexploited opportunity.",
+          "Collecting resources from the rich area without proper tools proves slow and laborious, but you manage to gather a small amount.",
+          "Your effort in the resource-rich area pays off. With some effort, you're able to extract a significant amount of valuable materials quickly."
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      },
+      {
+        "title": "Unexpected Oasis",
+        "description": "In the relentless embrace of the harsh landscape, an oasis blooms—a tranquil sanctuary where rest and resupply seem like divine gifts.",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          2,
+          5
+        ],
+        "rollTypeRequired": 1,
+        "movementAdjust": [
+          0,
+          0,
+          0
+        ],
+        "agilityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "dexterityAdjust": [
+          0,
+          1,
+          2
+        ],
+        "itemGain": [
+          "",
+          "",
+          ""
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "The tranquil oasis, an emerald gem in the barren terrain, offers a moment's respite, but you remain alert, aware that danger can lurk even here.",
+          "Resting at the oasis, you take a moment to recharge, the peaceful surroundings bolstering your spirits.",
+          "The unexpected oasis serves as a perfect rest stop. You take advantage of this, recovering fully and feeling a surge of rejuvenation."
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      },
+      {
+        "title": "Parasitic Spores",
+        "description": "A misstep, a moment's disturbance, and a nest of parasitic spores erupts. As the spores hover menacingly, you know you must evade their reach before they infest.",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          2,
+          6
+        ],
+        "rollTypeRequired": 2,
+        "movementAdjust": [
+          0,
+          0,
+          1
+        ],
+        "agilityAdjust": [
+          -1,
+          1,
+          0
+        ],
+        "dexterityAdjust": [
+          0,
+          0,
+          1
+        ],
+        "itemGain": [
+          "",
+          "",
+          ""
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "Disturbing the nest of parasitic spores triggers an immediate reaction. Fleeing the area, you hope to avoid inhaling any of the potential infesting particles.",
+          "You dodge most of the parasitic spores, but a few manage to cling to your suit, causing minor concern.",
+          "You successfully evade the parasitic spores. As a bonus, you come across a rare plant species in the infested area."
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      },
+      {
+        "title": "Unstable Ground",
+        "description": "The ground beneath you is a treacherous illusion of solid ground. Tread lightly, lest you provoke the unstable crust into a deadly collapse.",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          2,
+          5
+        ],
+        "rollTypeRequired": 0,
+        "movementAdjust": [
+          -1,
+          -1,
+          1
+        ],
+        "agilityAdjust": [
+          0,
+          0,
+          1
+        ],
+        "dexterityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "itemGain": [
+          "",
+          "",
+          ""
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "The ground beneath you is treacherously unstable. Every footfall could trigger a landslide, so you progress slowly, the fear of a misstep prolonging your journey.",
+          "Treading carefully over the unstable ground, you manage to avoid any mishaps, but it does slow your progress.",
+          "The unstable ground presents less of a challenge than anticipated. You cross it quickly, discovering a faster route on the other side."
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      },
+      {
+        "title": "Rare Comet Sighting",
+        "description": "A comet traces a path across the sky, a rare spectacle of cosmic grace. Its trail of light is beautiful but perhaps, an ominous omen.",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          2,
+          6
+        ],
+        "rollTypeRequired": 1,
+        "movementAdjust": [
+          0,
+          1,
+          2
+        ],
+        "agilityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "dexterityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "itemGain": [
+          "",
+          "",
+          ""
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "The comet streaking across the sky sparks an array of emotions, but its beauty doesn't impact your practical progress.",
+          "The sight of the comet lighting up the sky is truly mesmerizing, but it doesn't help or hinder your journey.",
+          "As the rare comet illuminates the sky, it reveals a hidden path. Following it, you manage to gain significant ground."
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      },
+      {
+        "title": "Electrical Storm",
+        "description": "The horizon thrashes under the reign of an electrical storm. Tall structures stand like lightning rods, and open areas invite the storm's wild dance. Seek shelter or bear the storm's wrath.",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          2,
+          5
+        ],
+        "rollTypeRequired": 2,
+        "movementAdjust": [
+          0,
+          0,
+          0
+        ],
+        "agilityAdjust": [
+          -1,
+          0,
+          1
+        ],
+        "dexterityAdjust": [
+          0,
+          1,
+          1
+        ],
+        "itemGain": [
+          "",
+          "",
+          ""
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "The brewing electrical storm forces you to seek shelter. Atmospheric interference scrambles your communications, adding a sense of isolation to your situation.",
+          "Taking cover from the electrical storm, your equipment experiences minor interference, but it's nothing you can't handle.",
+          "You use the electrical storm to your advantage, channeling the energy to temporarily supercharge your equipment's power."
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      },
+      {
+        "title": "Cryo-Volcanic Eruption",
+        "description": "The eruption of a cryo-volcano, a paradox of fire and ice, sends shards of icy debris into the sky. This chilling spectacle's beauty belies its danger.",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          2,
+          6
+        ],
+        "rollTypeRequired": 0,
+        "movementAdjust": [
+          -1,
+          1,
+          1
+        ],
+        "agilityAdjust": [
+          0,
+          0,
+          1
+        ],
+        "dexterityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "itemGain": [
+          "",
+          "",
+          ""
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "The cryo-volcano’s icy blasts create an impromptu no-go zone. You steer clear, the sub-zero temperatures and falling shards threatening any who dare approach.",
+          "Watching the cryo-volcanic eruption from a safe distance, the frigid temperature affects you slightly, but you manage to stay safe.",
+          "You collect shards from the cryo-volcanic eruption, which you realize can serve as effective coolants for your equipment."
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      },
+      {
+        "title": "Migrating Lifeforms",
+        "description": "A rumble grows into a thunderous cacophony as a mass migration of alien creatures storms the landscape. The only safe path is one that evades this unstoppable force.",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          2,
+          5
+        ],
+        "rollTypeRequired": 1,
+        "movementAdjust": [
+          0,
+          0,
+          0
+        ],
+        "agilityAdjust": [
+          0,
+          1,
+          0
+        ],
+        "dexterityAdjust": [
+          -1,
+          0,
+          2
+        ],
+        "itemGain": [
+          "",
+          "",
+          ""
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "Caught in the path of the migrating creatures, you seek refuge, giving them a wide berth to avoid any unwanted confrontations. Their mass movement offers a momentary spectacle, albeit a time-consuming one.",
+          "As the massive migration of alien creatures passes by, you stand aside, watching in awe but also delayed by the spectacle.",
+          "Allowing the migrating alien creatures to pass, you notice they've left something behind—an item of unknown origin that warrants further examination."
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      }
+    ],
+    "AMBUSH": [
+      {
+        "title": "Fury of the Giant Worm",
+        "description": "Suddenly, a gargantuan worm erupts from beneath the surface, its gigantic jaws snapping with fury.",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          2,
+          5
+        ],
+        "rollTypeRequired": 1,
+        "movementAdjust": [
+          -2,
+          -2,
+          1
+        ],
+        "agilityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "dexterityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "itemGain": [
+          "",
+          "",
+          ""
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "You are unable to evade the giant worm, suffering injuries in the encounter.",
+          "You manage to narrowly dodge the worm's assault, but not without getting shaken up.",
+          "You dodge the lunging earth, narrowly evading the monstrous form beneath."
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      },
+      {
+        "title": "Ghastly Ectoplasm",
+        "description": "An eerie ectoplasmic presence engulfs you, and you must muster all your strength to break free from its chilling hold.",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          2,
+          6
+        ],
+        "rollTypeRequired": 0,
+        "movementAdjust": [
+          -1,
+          -1,
+          0
+        ],
+        "agilityAdjust": [
+          -1,
+          -1,
+          0
+        ],
+        "dexterityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "itemGain": [
+          "",
+          "",
+          ""
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "The ectoplasm engulfs you, sapping your strength and vitality.",
+          "The ectoplasm has a draining effect, but you manage to pull free before it does severe damage.",
+          "An inner strength allows you to break free from the unseen clutches hindering your progress."
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      },
+      {
+        "title": "Parasitic Infestation",
+        "description": "You become an unwilling host to invasive microscopic organisms that breach your suit's defenses. You'll need to get them out—fast.",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          2,
+          5
+        ],
+        "rollTypeRequired": 2,
+        "movementAdjust": [
+          0,
+          0,
+          0
+        ],
+        "agilityAdjust": [
+          -1,
+          -1,
+          0
+        ],
+        "dexterityAdjust": [
+          -1,
+          -1,
+          1
+        ],
+        "itemGain": [
+          "",
+          "",
+          ""
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "The microscopic parasites are persistent, reducing your dexterity as you attempt to remove them.",
+          "With considerable effort, you manage to shake off the parasites. It's a draining experience, but you're safe for now.",
+          "Swift action leaves you unscathed from the micro-invaders."
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      },
+      {
+        "title": "Shadow Stalker Encounter",
+        "description": "A phantom predator, a shadowy menace, has you in its sights. Utilize the alien environment to evade capture.",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          2,
+          6
+        ],
+        "rollTypeRequired": 1,
+        "movementAdjust": [
+          -1,
+          -1,
+          1
+        ],
+        "agilityAdjust": [
+          -1,
+          -1,
+          0
+        ],
+        "dexterityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "itemGain": [
+          "",
+          "",
+          ""
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "The shadow stalker proves too elusive and manages to land a surprise attack.",
+          "Your evasion efforts against the shadow stalker are somewhat successful, though it leaves you feeling a bit winded.",
+          "Using the terrain to your advantage, you swiftly lose your silent pursuer."
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      },
+      {
+        "title": "Nest of the Winged Nightrunners",
+        "description": "You've disturbed a nest of winged nightrunners, their shrieks piercing the air. Find a safe spot or pacify these aggressive creatures.",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          2,
+          5
+        ],
+        "rollTypeRequired": 0,
+        "movementAdjust": [
+          -2,
+          -2,
+          0
+        ],
+        "agilityAdjust": [
+          0,
+          0,
+          1
+        ],
+        "dexterityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "itemGain": [
+          "",
+          "",
+          ""
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "Disturbing the nest of the winged nightrunners results in a swift and aggressive response.",
+          "The nightrunners' fury does result in a flurry of activity, but you're able to weather it with minor disturbances.",
+          "With careful navigation, you avoid disturbing the aerial nest."
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      },
+      {
+        "title": "Alpha Wraith Showdown",
+        "description": "A towering wraith, the leader of its pack, confronts you in a bold challenge. Will you stand your ground or retreat strategically?",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          2,
+          5
+        ],
+        "rollTypeRequired": 1,
+        "movementAdjust": [
+          -1,
+          -1,
+          0
+        ],
+        "agilityAdjust": [
+          -1,
+          -1,
+          0
+        ],
+        "dexterityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "itemGain": [
+          "",
+          "",
+          ""
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "The alpha wraith's presence is overpowering, causing you to lose some energy during the confrontation.",
+          "Your confrontation with the alpha wraith is intense, but neither of you manages to overpower the other.",
+          "A firm stance and powerful display deter the powerful entity from attacking."
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      },
+      {
+        "title": "Swarm of Nano-Drones",
+        "description": "A buzzing cloud of nano-drones encircles you, their sensors aglow. Rapid problem-solving might allow you to jam their frequency.",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          2,
+          6
+        ],
+        "rollTypeRequired": 2,
+        "movementAdjust": [
+          0,
+          0,
+          0
+        ],
+        "agilityAdjust": [
+          -1,
+          -1,
+          0
+        ],
+        "dexterityAdjust": [
+          -1,
+          -1,
+          1
+        ],
+        "itemGain": [
+          "",
+          "",
+          ""
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "The nano-drone swarm proves overwhelming, leading to substantial damage to your equipment.",
+          "You're partially successful in disrupting the nano-drones' control signal, leading to a moderate decrease in their harassment.",
+          "An ingenious signal disruption leaves the swarming entities confused and harmless."
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      },
+      {
+        "title": "Attack of the Starved Mind Leeches",
+        "description": "Mind leeches, driven by an insatiable hunger, are descending. Can you fend off their mental assault or mislead their cravings?",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          2,
+          6
+        ],
+        "rollTypeRequired": 0,
+        "movementAdjust": [
+          0,
+          0,
+          1
+        ],
+        "agilityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "dexterityAdjust": [
+          -2,
+          -2,
+          0
+        ],
+        "itemGain": [
+          "",
+          "",
+          ""
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "The mind leeches manage to attach themselves, causing a foggy confusion that impairs your dexterity.",
+          "The mind leeches latch on, but your strong will keeps their influence at bay.",
+          "With mental prowess, you fend off the unseen psychic assault."
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      },
+      {
+        "title": "Carnivorous Plant Trapping",
+        "description": "Caught in the lethal grasp of a carnivorous plant, you can feel the sting of its digestive juices. Fight your way out before you become its meal.",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          2,
+          5
+        ],
+        "rollTypeRequired": 2,
+        "movementAdjust": [
+          -2,
+          -2,
+          0
+        ],
+        "agilityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "dexterityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "itemGain": [
+          "",
+          "",
+          ""
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "The carnivorous plant's enzymes penetrate your suit, impairing your movement.",
+          "You're able to stave off the plant's corrosive effects for the most part, but it does leave you feeling a bit sluggish.",
+          "A quick burst of strength and you're free from the deadly botanical trap."
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      },
+      {
+        "title": "Rockslide Trap",
+        "description": "The ground shakes as a rockslide tumbles down towards you. Can you outrun the avalanche or take cover in time?",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          2,
+          5
+        ],
+        "rollTypeRequired": 1,
+        "movementAdjust": [
+          -2,
+          -2,
+          1
+        ],
+        "agilityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "dexterityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "itemGain": [
+          "",
+          "",
+          ""
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "Caught in the midst of the rockslide, you're struck by tumbling stones, hindering your mobility.",
+          "While the rockslide is overwhelming, you manage to find a relatively safe spot to wait it out, though it does shake you up.",
+          "Using your agility, you evade the deadly cascade of tumbling rocks."
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      },
+      {
+        "title": "Forcefield Glitch",
+        "description": "Your forcefield shimmers erratically as it malfunctions. Will you be able to repair it on the fly?",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          2,
+          6
+        ],
+        "rollTypeRequired": 2,
+        "movementAdjust": [
+          -1,
+          -1,
+          0
+        ],
+        "agilityAdjust": [
+          -1,
+          -1,
+          1
+        ],
+        "dexterityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "itemGain": [
+          "",
+          "",
+          ""
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "The forcefield glitch results in an energy backlash, causing some damage.",
+          "Your forcefield stabilizes after the glitch, but not before it has some negative effects.",
+          "Despite the sporadic sparks, you manage to stabilize the protective barrier."
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      },
+      {
+        "title": "Lurkers Stike",
+        "description": "Camouflaged amongst the alien vegetation, unknown entities lie in wait. Can you uncover their trap before it's sprung?",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          2,
+          6
+        ],
+        "rollTypeRequired": 0,
+        "movementAdjust": [
+          -1,
+          -1,
+          0
+        ],
+        "agilityAdjust": [
+          -1,
+          -1,
+          0
+        ],
+        "dexterityAdjust": [
+          0,
+          0,
+          1
+        ],
+        "itemGain": [
+          "",
+          "",
+          ""
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "You fail to detect the lurking predators in time, resulting in some injuries.",
+          "The lurking predators do manage to get a hit in, but you react swiftly enough to avoid serious damage.",
+          "Your alert senses detect and evade the impending surprise attack."
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      },
+      {
+        "title": "Solar Flare Interference",
+        "description": "A solar flare erupts, causing your systems to short-circuit. Can you recover your technology amidst the cosmic chaos?",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          2,
+          5
+        ],
+        "rollTypeRequired": 2,
+        "movementAdjust": [
+          0,
+          0,
+          1
+        ],
+        "agilityAdjust": [
+          -2,
+          -2,
+          0
+        ],
+        "dexterityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "itemGain": [
+          "",
+          "",
+          ""
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "Solar flare interference causes severe malfunctions in your equipment.",
+          "You're able to reboot your systems after the solar flare interference, though they are a bit slower to respond afterward.",
+          "Shielding your gear, you weather the electromagnetic disturbance unscathed."
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      },
+      {
+        "title": "Phase Spider Web",
+        "description": "You are entwined in the energy strands of a phase spider's web. Will you be able to free yourself from this multidimensional snare?",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          2,
+          5
+        ],
+        "rollTypeRequired": 1,
+        "movementAdjust": [
+          -2,
+          -2,
+          0
+        ],
+        "agilityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "dexterityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "itemGain": [
+          "",
+          "",
+          ""
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "Entangled in the intricate web of the phase spider, your movement is significantly slowed.",
+          "You free yourself from the phase spider web, but it takes a considerable amount of effort, leaving you feeling drained.",
+          "Quick thinking and nimble moves free you from the shimmering snare."
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      },
+      {
+        "title": "Magnetic Storm Disruption",
+        "description": "A sudden magnetic storm sends your equipment into a frenzy. Will you shield your gear or weather the storm until it subsides?",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          2,
+          6
+        ],
+        "rollTypeRequired": 0,
+        "movementAdjust": [
+          0,
+          0,
+          0
+        ],
+        "agilityAdjust": [
+          -2,
+          -2,
+          0
+        ],
+        "dexterityAdjust": [
+          0,
+          0,
+          1
+        ],
+        "itemGain": [
+          "",
+          "",
+          ""
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "The magnetic storm causes serious disruptions to your equipment, impacting your agility.",
+          "Your equipment is rattled by the magnetic storm, but it remains operational, albeit with reduced efficiency.",
+          "With a proper defensive protocol, your gear remains untouched by the magnetic chaos."
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      },
+      {
+        "title": "Predatory Gas Cloud",
+        "description": "A predatory gas cloud looms, turning the air itself into a foe. Can you divert the cloud or neutralize its harmful effects?",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          2,
+          5
+        ],
+        "rollTypeRequired": 1,
+        "movementAdjust": [
+          0,
+          0,
+          0
+        ],
+        "agilityAdjust": [
+          -2,
+          -2,
+          1
+        ],
+        "dexterityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "itemGain": [
+          "",
+          "",
+          ""
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "Breathing in the predatory gas cloud affects your senses, leading to a decrease in your agility.",
+          "You manage to withstand the effects of the predatory gas cloud, but it leaves you slightly disoriented.",
+          "Through precise control of your equipment, you avoid the threatening airborne hazard."
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      },
+      {
+        "title": "Quicksand Pit",
+        "description": "The ground underfoot liquefies into a pit of quicksand. Can you stop your descent and climb back to firm ground?",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          2,
+          5
+        ],
+        "rollTypeRequired": 2,
+        "movementAdjust": [
+          -2,
+          -2,
+          0
+        ],
+        "agilityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "dexterityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "itemGain": [
+          "",
+          "",
+          ""
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "The quicksand engulfs you faster than you can escape, slowing down your movements.",
+          "The quicksand slows you down considerably, but you manage to pull free without any serious mishaps.",
+          "Using your surroundings, you manage to escape the deceptive ground trap."
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      },
+      {
+        "title": "Rogue Security Droid",
+        "description": "A rogue security droid has you in its crosshairs. Can you convince it you mean no harm?",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          2,
+          6
+        ],
+        "rollTypeRequired": 0,
+        "movementAdjust": [
+          -1,
+          -1,
+          0
+        ],
+        "agilityAdjust": [
+          -1,
+          -1,
+          0
+        ],
+        "dexterityAdjust": [
+          0,
+          0,
+          1
+        ],
+        "itemGain": [
+          "",
+          "",
+          ""
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "The rogue security droid catches you off-guard, inflicting damage with its swift attack.",
+          "You successfully parry the rogue security droid's initial attack, though it leaves you on the backfoot.",
+          "An emergency protocol allows you to avoid any confrontation with the malfunctioning machine."
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      },
+      {
+        "title": "Quantum Distortion Field",
+        "description": "Your surroundings distort as a quantum field emerges. Can you stabilize the surrounding spacetime continuum?",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          2,
+          6
+        ],
+        "rollTypeRequired": 2,
+        "movementAdjust": [
+          0,
+          0,
+          1
+        ],
+        "agilityAdjust": [
+          -1,
+          -1,
+          0
+        ],
+        "dexterityAdjust": [
+          -1,
+          -1,
+          0
+        ],
+        "itemGain": [
+          "",
+          "",
+          ""
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "The quantum distortion field causes your equipment to malfunction, reducing your dexterity.",
+          "You manage to stabilize the quantum distortion field, but it requires a considerable amount of focus, leaving you a bit tired.",
+          "With concentration and quick adjustments, you manage to stabilize your immediate environment."
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      },
+      {
+        "title": "Galactic Marauders Ambush",
+        "description": "A group of galactic marauders appear on your path, their intentions hostile. Can you outsmart them or evade their grasp?",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          2,
+          5
+        ],
+        "rollTypeRequired": 1,
+        "movementAdjust": [
+          -1,
+          -1,
+          0
+        ],
+        "agilityAdjust": [
+          -1,
+          -1,
+          1
+        ],
+        "dexterityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "itemGain": [
+          "",
+          "",
+          ""
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "Caught off guard by the marauders, you suffer injuries in the initial confrontation.",
+          "The confrontation with the marauders is intense, but you manage to hold your own without any major injuries.",
+          "Using the terrain and your wit, you manage to slip away from the threatening group."
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      },
+      {
+        "title": "Psychic Echo",
+        "description": "A strange psychic wave disrupts your senses. Can you concentrate and resist the mental disruption?",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          2,
+          6
+        ],
+        "rollTypeRequired": 0,
+        "movementAdjust": [
+          0,
+          0,
+          0
+        ],
+        "agilityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "dexterityAdjust": [
+          -2,
+          -2,
+          0
+        ],
+        "itemGain": [
+          "",
+          "",
+          ""
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "The psychic echo leaves you disoriented and unsteady, affecting your dexterity.",
+          "You manage to clear your mind and resist the psychic echo, though it leaves you feeling slightly disoriented.",
+          "By centering yourself, you manage to resist the confusing mental reverberations."
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      },
+      {
+        "title": "Wrath of the Weather Control AI",
+        "description": "The weather control AI turns hostile, stirring up a fierce storm. Can you reprogram it before the storm wreaks havoc?",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          2,
+          5
+        ],
+        "rollTypeRequired": 2,
+        "movementAdjust": [
+          -2,
+          -2,
+          1
+        ],
+        "agilityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "dexterityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "itemGain": [
+          "",
+          "",
+          ""
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "The weather control AI's storm forces you to take cover, limiting your movement.",
+          "You take shelter from the AI-controlled storm, but it delays your progress and leaves you feeling a bit chilly.",
+          "Rapid adjustments in your gear avert the programmed meteorological chaos."
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      },
+      {
+        "title": "Abandoned Mine Explosion",
+        "description": "A violent explosion resounds from an abandoned mine, blocking your path with debris. Can you navigate through the wreckage?",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          2,
+          5
+        ],
+        "rollTypeRequired": 1,
+        "movementAdjust": [
+          -1,
+          -1,
+          0
+        ],
+        "agilityAdjust": [
+          -1,
+          -1,
+          0
+        ],
+        "dexterityAdjust": [
+          0,
+          0,
+          1
+        ],
+        "itemGain": [
+          "",
+          "",
+          ""
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "The mine explosion catches you unawares, reducing your agility due to injury and disorientation.",
+          "You're able to navigate through the mine explosion's aftermath with relative safety, though it does leave you feeling a bit shaken.",
+          "Through careful navigation, you manage to avoid the sudden geological danger."
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      },
+      {
+        "title": "Interdimensional Rift",
+        "description": "An interdimensional rift opens before you. Can you close it before unknown entities cross the threshold?",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          2,
+          6
+        ],
+        "rollTypeRequired": 0,
+        "movementAdjust": [
+          0,
+          0,
+          0
+        ],
+        "agilityAdjust": [
+          -1,
+          -1,
+          1
+        ],
+        "dexterityAdjust": [
+          -1,
+          -1,
+          0
+        ],
+        "itemGain": [
+          "",
+          "",
+          ""
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "The energy emitted by the interdimensional rift causes damage and leaves your systems unstable.",
+          "You manage to stay clear of the interdimensional rift, though the energy discharge leaves your equipment somewhat disrupted.",
+          "Quick thinking and fast actions prevent a potential multidimensional crisis."
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      },
+      {
+        "title": "Psionic Network Intrusion",
+        "description": "You feel the intrusive resonance of a planetary sentient network. Will you cut off their connection or unwillingly become a part of their consciousness?",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          2,
+          6
+        ],
+        "rollTypeRequired": 2,
+        "movementAdjust": [
+          0,
+          0,
+          1
+        ],
+        "agilityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "dexterityAdjust": [
+          -2,
+          -2,
+          0
+        ],
+        "itemGain": [
+          "",
+          "",
+          ""
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "The intrusive psychic vibrations from the psionic network impede your cognitive function, reducing your dexterity.",
+          "You resist the psionic network intrusion, but it leaves you feeling mentally drained.",
+          "Mental fortitude allows you to resist the sudden psychic intrusion."
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      }
+    ],
+    "TREASURE": [
+      {
+        "title": "Engraved Tablet",
+        "description": "Artifact - The engravings on this tablet seem to document the Great Misfortune. Who authored this tablet? Perhaps the Scientists will be able to figure it out.",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          0,
+          0
+        ],
+        "rollTypeRequired": 0,
+        "movementAdjust": [
+          0,
+          0,
+          0
+        ],
+        "agilityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "dexterityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "itemGain": [
+          "",
+          "",
+          "Engraved Tablet"
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "",
+          "",
+          "Artifact"
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      },
+      {
+        "title": "Sigil Gem",
+        "description": "Artifact - This gem has markings that indicate it may have been used for some powerful ritual. The Scientists will need to study it and see what power lies within.",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          0,
+          0
+        ],
+        "rollTypeRequired": 0,
+        "movementAdjust": [
+          0,
+          0,
+          0
+        ],
+        "agilityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "dexterityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "itemGain": [
+          "",
+          "",
+          "Sigil Gem"
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "",
+          "",
+          "Artifact"
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      },
+      {
+        "title": "Ancient Tome",
+        "description": "Artifact - This book contains several incantations in a language you cannot understand. If the Scientists can decipher it we may yet learn it's purpose.",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          0,
+          0
+        ],
+        "rollTypeRequired": 0,
+        "movementAdjust": [
+          0,
+          0,
+          0
+        ],
+        "agilityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "dexterityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "itemGain": [
+          "",
+          "",
+          "Ancient Tome"
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "",
+          "",
+          "Artifact"
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      },
+      {
+        "title": "\"Unwavering Hand\" ELS-78 Electron Stabilizer",
+        "description": "An advanced piece of technology, it hums with a subtle vibration as it holds the very fabric of electronic chaos at bay.",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          0,
+          0
+        ],
+        "rollTypeRequired": 0,
+        "movementAdjust": [
+          0,
+          0,
+          0
+        ],
+        "agilityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "dexterityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "itemGain": [
+          "",
+          "",
+          "Electron Stabilizer"
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "",
+          "",
+          "One-Handed Weapon"
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      },
+      {
+        "title": "\"Balance Broker\" GVTS-31 Gravity Shifter",
+        "description": "This compact device creates a localized gravitational field, warping the very concept of up and down within its radius.",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          0,
+          0
+        ],
+        "rollTypeRequired": 0,
+        "movementAdjust": [
+          0,
+          0,
+          0
+        ],
+        "agilityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "dexterityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "itemGain": [
+          "",
+          "",
+          "Gravity Shifter"
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "",
+          "",
+          "One-Handed Weapon"
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      },
+      {
+        "title": "\"The Silencer\" SPA-20 Supersonic Absorber",
+        "description": "A sleek gadget that nullifies high-frequency sound waves, it renders the user virtually silent to enhanced auditory senses.",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          0,
+          0
+        ],
+        "rollTypeRequired": 0,
+        "movementAdjust": [
+          0,
+          0,
+          0
+        ],
+        "agilityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "dexterityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "itemGain": [
+          "",
+          "",
+          "Supersonic Absorber"
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "",
+          "",
+          "One-Handed Weapon"
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      },
+      {
+        "title": "\"Reality Fabricator\" HMD-95 Holo Module",
+        "description": "An unassuming box that, when activated, projects a holographic image of the user, creating a realistic distraction.",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          0,
+          0
+        ],
+        "rollTypeRequired": 0,
+        "movementAdjust": [
+          0,
+          0,
+          0
+        ],
+        "agilityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "dexterityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "itemGain": [
+          "",
+          "",
+          "Holo Module"
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "",
+          "",
+          "One-Handed Weapon"
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      },
+      {
+        "title": "\"Wave Warrior\" RSA-76 Resonance Amplifier",
+        "description": "An intricately designed piece of machinery that amplifies vibrational energy, augmenting the force of impact with each use.",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          0,
+          0
+        ],
+        "rollTypeRequired": 0,
+        "movementAdjust": [
+          0,
+          0,
+          0
+        ],
+        "agilityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "dexterityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "itemGain": [
+          "",
+          "",
+          "Resonance Amplifier"
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "",
+          "",
+          "One-Handed Weapon"
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      },
+      {
+        "title": "\"Silent Stunner\" SUB-13 Subsonic Projector",
+        "description": "This high-tech projector emits low-frequency sound waves that can stun or disorient opponents.",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          0,
+          0
+        ],
+        "rollTypeRequired": 0,
+        "movementAdjust": [
+          0,
+          0,
+          0
+        ],
+        "agilityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "dexterityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "itemGain": [
+          "",
+          "",
+          "Subsonic Projector"
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "",
+          "",
+          "One-Handed Weapon"
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      },
+      {
+        "title": "\"Power Packer\" PLM-52 Plasma Loader",
+        "description": "A cylindrical device capable of storing and rapidly discharging high-energy plasma.",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          0,
+          0
+        ],
+        "rollTypeRequired": 0,
+        "movementAdjust": [
+          0,
+          0,
+          0
+        ],
+        "agilityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "dexterityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "itemGain": [
+          "",
+          "",
+          "Plasma Loader"
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "",
+          "",
+          "One-Handed Weapon"
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      },
+      {
+        "title": "\"Stellar Stoker\" FT-97 Fusion Torch",
+        "description": "A handheld device that emits a beam of high-intensity heat, capable of cutting or melting through most known materials.",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          0,
+          0
+        ],
+        "rollTypeRequired": 0,
+        "movementAdjust": [
+          0,
+          0,
+          0
+        ],
+        "agilityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "dexterityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "itemGain": [
+          "",
+          "",
+          "Fusion Torch"
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "",
+          "",
+          "One-Handed Weapon"
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      },
+      {
+        "title": "\"Fat Willy\" PW-83 Phase Welder",
+        "description": "A tool that uses phased energy to weld materials at the atomic level, creating incredibly strong bonds.",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          0,
+          0
+        ],
+        "rollTypeRequired": 0,
+        "movementAdjust": [
+          0,
+          0,
+          0
+        ],
+        "agilityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "dexterityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "itemGain": [
+          "",
+          "",
+          "Phase Welder"
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "",
+          "",
+          "One-Handed Weapon"
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      },
+      {
+        "title": "\"Atom Whisperer\" NDR-45 Nano Driver",
+        "description": "This handheld device can manipulate structures on a nanoscale, allowing for precise adjustments and modifications.",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          0,
+          0
+        ],
+        "rollTypeRequired": 0,
+        "movementAdjust": [
+          0,
+          0,
+          0
+        ],
+        "agilityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "dexterityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "itemGain": [
+          "",
+          "",
+          "Nano Driver"
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "",
+          "",
+          "One-Handed Weapon"
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      },
+      {
+        "title": "\"Chaos Seed\" NDIS-91 Neutron Disruptor",
+        "description": "A device that destabilizes neutron flow, capable of disrupting energy fields or interfering with electronic systems.",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          0,
+          0
+        ],
+        "rollTypeRequired": 0,
+        "movementAdjust": [
+          0,
+          0,
+          0
+        ],
+        "agilityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "dexterityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "itemGain": [
+          "",
+          "",
+          "Neutron Disruptor"
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "",
+          "",
+          "One-Handed Weapon"
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      },
+      {
+        "title": "\"Quantum Maestro\" PGN-68 Particle Generator",
+        "description": "An advanced generator that produces a stream of charged particles, useful for powering high-tech devices.",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          0,
+          0
+        ],
+        "rollTypeRequired": 0,
+        "movementAdjust": [
+          0,
+          0,
+          0
+        ],
+        "agilityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "dexterityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "itemGain": [
+          "",
+          "",
+          "Particle Generator"
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "",
+          "",
+          "One-Handed Weapon"
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      },
+      {
+        "title": "\"Energy Spiker\" EIN-34 Electron Injector",
+        "description": "A handheld device used for injecting electrons into systems, it can power up or overload electronic devices.",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          0,
+          0
+        ],
+        "rollTypeRequired": 0,
+        "movementAdjust": [
+          0,
+          0,
+          0
+        ],
+        "agilityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "dexterityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "itemGain": [
+          "",
+          "",
+          "Electron Injector"
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "",
+          "",
+          "One-Handed Weapon"
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      },
+      {
+        "title": "\"FractalVision\" CS-89 Compact Scanner",
+        "description": "A compact but powerful scanner capable of rendering detailed 3D images of scanned objects, revealing hidden details.",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          0,
+          0
+        ],
+        "rollTypeRequired": 0,
+        "movementAdjust": [
+          0,
+          0,
+          0
+        ],
+        "agilityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "dexterityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "itemGain": [
+          "",
+          "",
+          "Compact Scanner"
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "",
+          "",
+          "One-Handed Weapon"
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      },
+      {
+        "title": "\"Spin Borer\" GD-90 Gyroscopic Drill",
+        "description": "A high-powered drill stabilized by a gyroscope, it can bore through even the hardest materials with ease.",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          0,
+          0
+        ],
+        "rollTypeRequired": 0,
+        "movementAdjust": [
+          0,
+          0,
+          0
+        ],
+        "agilityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "dexterityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "itemGain": [
+          "",
+          "",
+          "Gryroscopic Drill"
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "",
+          "",
+          "One-Handed Weapon"
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      },
+      {
+        "title": "\"Iggy\" ION-72 Ion Generator",
+        "description": "A device capable of generating a stream of high-energy ions, potentially damaging to electronic systems.",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          0,
+          0
+        ],
+        "rollTypeRequired": 0,
+        "movementAdjust": [
+          0,
+          0,
+          0
+        ],
+        "agilityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "dexterityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "itemGain": [
+          "",
+          "",
+          "Ion Generator"
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "",
+          "",
+          "One-Handed Weapon"
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      },
+      {
+        "title": "\"Particle Pounder\" PHM-78 Particle Hammer",
+        "description": "A hammer augmented with particle energy, it delivers blows that can shatter the molecular bonds of objects.",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          0,
+          0
+        ],
+        "rollTypeRequired": 0,
+        "movementAdjust": [
+          0,
+          0,
+          0
+        ],
+        "agilityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "dexterityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "itemGain": [
+          "",
+          "",
+          "Particle Hammer"
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "",
+          "",
+          "One-Handed Weapon"
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      },
+      {
+        "title": "\"Wham\" WAMPL-91 Warp Amplifier",
+        "description": "A device that amplifies warp fields, potentially increasing the speed of faster-than-light travel.",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          0,
+          0
+        ],
+        "rollTypeRequired": 0,
+        "movementAdjust": [
+          0,
+          0,
+          0
+        ],
+        "agilityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "dexterityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "itemGain": [
+          "",
+          "",
+          "Warp Amplifier"
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "",
+          "",
+          "One-Handed Weapon"
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      },
+      {
+        "title": "\"Rift Gazer\" PSC-37 Phase Scanner",
+        "description": "A scanner that uses phase energy to view objects and beings in other dimensions or phased out of sync with our reality.",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          0,
+          0
+        ],
+        "rollTypeRequired": 0,
+        "movementAdjust": [
+          0,
+          0,
+          0
+        ],
+        "agilityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "dexterityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "itemGain": [
+          "",
+          "",
+          "Phase Scanner"
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "",
+          "",
+          "One-Handed Weapon"
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      },
+      {
+        "title": "\"Harbinger of Harmony\" RT-72 Resonance Torch",
+        "description": "A torch that uses resonating energy, it can cut, weld, or heat objects with great precision.",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          0,
+          0
+        ],
+        "rollTypeRequired": 0,
+        "movementAdjust": [
+          0,
+          0,
+          0
+        ],
+        "agilityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "dexterityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "itemGain": [
+          "",
+          "",
+          "Resonance Torch"
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "",
+          "",
+          "One-Handed Weapon"
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      },
+      {
+        "title": "\"Tiny the Tinkerer\" NMP-58 Nano Manipulator",
+        "description": "This nanoscale tool can manipulate molecules and atomic structures with unprecedented precision.",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          0,
+          0
+        ],
+        "rollTypeRequired": 0,
+        "movementAdjust": [
+          0,
+          0,
+          0
+        ],
+        "agilityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "dexterityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "itemGain": [
+          "",
+          "",
+          "Nano Manipulator"
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "",
+          "",
+          "One-Handed Weapon"
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      },
+      {
+        "title": "\"Soundwave Skipper\" SPR-10 Supersonic Shifter",
+        "description": "A device that can shift objects at supersonic speeds, almost instantly moving them from one location to another.",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          0,
+          0
+        ],
+        "rollTypeRequired": 0,
+        "movementAdjust": [
+          0,
+          0,
+          0
+        ],
+        "agilityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "dexterityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "itemGain": [
+          "",
+          "",
+          "Supersonic Shifter"
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "",
+          "",
+          "One-Handed Weapon"
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      },
+      {
+        "title": "\"Neutron Nanny\" NLD-73 Neutron Loader",
+        "description": "A large cylindrical device used for loading neutron charges, it's crucial for certain high-energy operations.",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          0,
+          0
+        ],
+        "rollTypeRequired": 0,
+        "movementAdjust": [
+          0,
+          0,
+          0
+        ],
+        "agilityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "dexterityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "itemGain": [
+          "",
+          "",
+          "Neutron Loader"
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "",
+          "",
+          "One-Handed Weapon"
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      },
+      {
+        "title": "\"The Seamstress\" TWD-83 Tachyon Welder",
+        "description": "A handheld device that uses tachyon particles to weld or cut through materials at a rapid pace.",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          0,
+          0
+        ],
+        "rollTypeRequired": 0,
+        "movementAdjust": [
+          0,
+          0,
+          0
+        ],
+        "agilityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "dexterityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "itemGain": [
+          "",
+          "",
+          "Tachyon Welder"
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "",
+          "",
+          "One-Handed Weapon"
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      },
+      {
+        "title": "\"Pulse Pistol\" EBL-47 Electron Blaster",
+        "description": "A handheld firearm that shoots a concentrated beam of electrons, capable of causing severe damage to targets.",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          0,
+          0
+        ],
+        "rollTypeRequired": 0,
+        "movementAdjust": [
+          0,
+          0,
+          0
+        ],
+        "agilityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "dexterityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "itemGain": [
+          "",
+          "",
+          "Electron Blaster"
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "",
+          "",
+          "One-Handed Weapon"
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      },
+      {
+        "title": "\"Chronos\" TDRV-84 Tachyon Driver",
+        "description": "A high-precision driving tool accelerated by tachyon particles, it can insert or remove components with incredible speed.",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          0,
+          0
+        ],
+        "rollTypeRequired": 0,
+        "movementAdjust": [
+          0,
+          0,
+          0
+        ],
+        "agilityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "dexterityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "itemGain": [
+          "",
+          "",
+          "Tachyon Driver"
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "",
+          "",
+          "One-Handed Weapon"
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      },
+      {
+        "title": "\"AtomZip\" PCT-74 Particle Compactor",
+        "description": "A device capable of compressing particles into a denser state, it's used to create high-density energy sources or materials.",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          0,
+          0
+        ],
+        "rollTypeRequired": 0,
+        "movementAdjust": [
+          0,
+          0,
+          0
+        ],
+        "agilityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "dexterityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "itemGain": [
+          "",
+          "",
+          "Particle Compactor"
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "",
+          "",
+          "One-Handed Weapon"
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      },
+      {
+        "title": "\"Mister Mjolnir\" PHAM-47 Plasma Hammer",
+        "description": "A massive hammer energized with plasma, it delivers incredibly powerful blows that can disrupt energy fields.",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          0,
+          0
+        ],
+        "rollTypeRequired": 0,
+        "movementAdjust": [
+          0,
+          0,
+          0
+        ],
+        "agilityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "dexterityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "itemGain": [
+          "",
+          "",
+          "Plasma Hammer"
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "",
+          "",
+          "One-Handed Weapon"
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      },
+      {
+        "title": "\"Pocket Miner\" PD-77 Porta Drill",
+        "description": "A portable, handheld drill for high-speed boring through various materials, it's an essential tool for any explorer.",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          0,
+          0
+        ],
+        "rollTypeRequired": 0,
+        "movementAdjust": [
+          0,
+          0,
+          0
+        ],
+        "agilityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "dexterityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "itemGain": [
+          "",
+          "",
+          "Porta Drill"
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "",
+          "",
+          "One-Handed Weapon"
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      },
+      {
+        "title": "\"Power Surge\" FLD-78 Fusion Loader",
+        "description": "A device designed for loading fusion cells, it's crucial for maintaining high-energy operations.",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          0,
+          0
+        ],
+        "rollTypeRequired": 0,
+        "movementAdjust": [
+          0,
+          0,
+          0
+        ],
+        "agilityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "dexterityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "itemGain": [
+          "",
+          "",
+          "Fusion Loader"
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "",
+          "",
+          "One-Handed Weapon"
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      },
+      {
+        "title": "\"Time Twister\" TMP-51 Temporal Shifter",
+        "description": "A device capable of distorting the flow of time within a localized area, allowing the user to briefly slow or speed up time.",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          0,
+          0
+        ],
+        "rollTypeRequired": 0,
+        "movementAdjust": [
+          0,
+          0,
+          0
+        ],
+        "agilityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "dexterityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "itemGain": [
+          "",
+          "",
+          "Temporal Shifter"
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "",
+          "",
+          "One-Handed Weapon"
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      },
+      {
+        "title": "\"Space Scissors\" TC-75 Tachyon Cutter",
+        "description": "A handheld cutter that uses tachyon particles for high-speed, precision cutting operations.",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          0,
+          0
+        ],
+        "rollTypeRequired": 0,
+        "movementAdjust": [
+          0,
+          0,
+          0
+        ],
+        "agilityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "dexterityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "itemGain": [
+          "",
+          "",
+          "Tachyon Cutter"
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "",
+          "",
+          "One-Handed Weapon"
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      },
+      {
+        "title": "\"Subatom Sweeper\" NSC-81 Nano Scrubber",
+        "description": "A small device capable of scrubbing or cleaning on a nano-scale, ideal for maintenance and repair operations.",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          0,
+          0
+        ],
+        "rollTypeRequired": 0,
+        "movementAdjust": [
+          0,
+          0,
+          0
+        ],
+        "agilityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "dexterityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "itemGain": [
+          "",
+          "",
+          "Nano Scrubber"
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "",
+          "",
+          "One-Handed Weapon"
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      },
+      {
+        "title": "\"The Virtuoso\" RGEN-29 Resonance Generator",
+        "description": "A device that generates a field of resonant energy, capable of disrupting or harmonizing with various energy sources.",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          0,
+          0
+        ],
+        "rollTypeRequired": 0,
+        "movementAdjust": [
+          0,
+          0,
+          0
+        ],
+        "agilityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "dexterityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "itemGain": [
+          "",
+          "",
+          "Resonance Generator"
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "",
+          "",
+          "One-Handed Weapon"
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      },
+      {
+        "title": "\"Matter Muncher\" ABS-40 Chemical Absorber",
+        "description": "A device that absorbs chemical substances, it can clean environments or neutralize harmful substances.",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          0,
+          0
+        ],
+        "rollTypeRequired": 0,
+        "movementAdjust": [
+          0,
+          0,
+          0
+        ],
+        "agilityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "dexterityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "itemGain": [
+          "",
+          "",
+          "Chem Absorber"
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "",
+          "",
+          "One-Handed Weapon"
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      },
+      {
+        "title": "\"MiniMod\" MM-25 Mini Module",
+        "description": "A miniature module carrying out a specific task, it's an essential component in larger, more complex systems.",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          0,
+          0
+        ],
+        "rollTypeRequired": 0,
+        "movementAdjust": [
+          0,
+          0,
+          0
+        ],
+        "agilityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "dexterityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "itemGain": [
+          "",
+          "",
+          "Mini Module"
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "",
+          "",
+          "One-Handed Weapon"
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      },
+      {
+        "title": "\"MagPro\" MP-50 Magnetic Projector",
+        "description": "A device that projects magnetic fields, it can attract or repel metallic objects with great force.",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          0,
+          0
+        ],
+        "rollTypeRequired": 0,
+        "movementAdjust": [
+          0,
+          0,
+          0
+        ],
+        "agilityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "dexterityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "itemGain": [
+          "",
+          "",
+          "Magnetic Projector"
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "",
+          "",
+          "One-Handed Weapon"
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      },
+      {
+        "title": "\"Titan\" MC-61 Mega Controller",
+        "description": "A multi-functional controller with a large variety of uses, it can control or interface with a multitude of systems.",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          0,
+          0
+        ],
+        "rollTypeRequired": 0,
+        "movementAdjust": [
+          0,
+          0,
+          0
+        ],
+        "agilityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "dexterityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "itemGain": [
+          "",
+          "",
+          "Mega Controller"
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "",
+          "",
+          "One-Handed Weapon"
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      },
+      {
+        "title": "\"The Charge Charmer\" IMAN-72 Ion Manipulator",
+        "description": "A tool that can manipulate ionized particles, it's useful in various scientific and technical applications.",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          0,
+          0
+        ],
+        "rollTypeRequired": 0,
+        "movementAdjust": [
+          0,
+          0,
+          0
+        ],
+        "agilityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "dexterityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "itemGain": [
+          "",
+          "",
+          "Ion Manipulator"
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "",
+          "",
+          "One-Handed Weapon"
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      }
+    ],
+    "LAND": [
+      {
+        "title": "Plains",
+        "description": "",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          0,
+          0
+        ],
+        "rollTypeRequired": 0,
+        "movementAdjust": [
+          0,
+          0,
+          0
+        ],
+        "agilityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "dexterityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "itemGain": [
+          "",
+          "",
+          ""
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "",
+          "",
+          ""
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      },
+      {
+        "title": "Jungle",
+        "description": "",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          0,
+          0
+        ],
+        "rollTypeRequired": 0,
+        "movementAdjust": [
+          0,
+          0,
+          0
+        ],
+        "agilityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "dexterityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "itemGain": [
+          "",
+          "",
+          ""
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "",
+          "",
+          ""
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      },
+      {
+        "title": "Mountain",
+        "description": "",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          0,
+          0
+        ],
+        "rollTypeRequired": 0,
+        "movementAdjust": [
+          0,
+          0,
+          0
+        ],
+        "agilityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "dexterityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "itemGain": [
+          "",
+          "",
+          ""
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "",
+          "",
+          ""
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      },
+      {
+        "title": "Desert",
+        "description": "",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          0,
+          0
+        ],
+        "rollTypeRequired": 0,
+        "movementAdjust": [
+          0,
+          0,
+          0
+        ],
+        "agilityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "dexterityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "itemGain": [
+          "",
+          "",
+          ""
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "",
+          "",
+          ""
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      }
+    ],
+    "RELIC": [
+      {
+        "title": "Relic 1",
+        "description": "Improve movement",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          0,
+          0
+        ],
+        "rollTypeRequired": 0,
+        "movementAdjust": [
+          0,
+          0,
+          0
+        ],
+        "agilityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "dexterityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "itemGain": [
+          "",
+          "",
+          ""
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "",
+          "",
+          ""
+        ],
+        "buffs": {
+          "movement": 1,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      },
+      {
+        "title": "Relic 2",
+        "description": "Improve agility",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          0,
+          0
+        ],
+        "rollTypeRequired": 0,
+        "movementAdjust": [
+          0,
+          0,
+          0
+        ],
+        "agilityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "dexterityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "itemGain": [
+          "",
+          "",
+          ""
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "",
+          "",
+          ""
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 1,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 0
+        }
+      },
+      {
+        "title": "Relic 3",
+        "description": "Improve dexterity",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          0,
+          0
+        ],
+        "rollTypeRequired": 0,
+        "movementAdjust": [
+          0,
+          0,
+          0
+        ],
+        "agilityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "dexterityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "itemGain": [
+          "",
+          "",
+          ""
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "",
+          "",
+          ""
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 1,
+          "digOdds": 0,
+          "combat": 0
+        }
+      },
+      {
+        "title": "Relic 4",
+        "description": "Improve dig odds",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          0,
+          0
+        ],
+        "rollTypeRequired": 0,
+        "movementAdjust": [
+          0,
+          0,
+          0
+        ],
+        "agilityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "dexterityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "itemGain": [
+          "",
+          "",
+          ""
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "",
+          "",
+          ""
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 1,
+          "combat": 0
+        }
+      },
+      {
+        "title": "Relic 5",
+        "description": "Improve combat odds",
+        "quantity": 1,
+        "rollThresholds": [
+          0,
+          0,
+          0
+        ],
+        "rollTypeRequired": 0,
+        "movementAdjust": [
+          0,
+          0,
+          0
+        ],
+        "agilityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "dexterityAdjust": [
+          0,
+          0,
+          0
+        ],
+        "itemGain": [
+          "",
+          "",
+          ""
+        ],
+        "itemLoss": [
+          "",
+          "",
+          ""
+        ],
+        "handLoss": [
+          "",
+          "",
+          ""
+        ],
+        "outcomeDescription": [
+          "",
+          "",
+          ""
+        ],
+        "buffs": {
+          "movement": 0,
+          "agility": 0,
+          "dexterity": 0,
+          "digOdds": 0,
+          "combat": 1
+        }
+      }
+    ]
+  },
+  "board": {
+    "gridWidth": 10,
+    "gridHeight": 10
+  }
+}

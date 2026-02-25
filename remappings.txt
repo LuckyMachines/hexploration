@@ -1,0 +1,5 @@
+@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/
+@chainlink/contracts/=lib/chainlink-brownie-contracts/contracts/
+@luckymachines/game-core/=lib/game-core/
+@luckymachines/autoloop/=lib/autoloop/
+forge-std/=lib/forge-std/src/

@@ -615,6 +615,18 @@ contract HexplorationController is
         }
     }
 
+    function supportsInterface(
+        bytes4 interfaceId
+    )
+        public
+        view
+        virtual
+        override(AccessControlEnumerable, AutoLoopCompatible)
+        returns (bool)
+    {
+        return super.supportsInterface(interfaceId);
+    }
+
     function stringsMatch(string memory s1, string memory s2)
         internal
         pure

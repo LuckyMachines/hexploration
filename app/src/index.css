@@ -1,0 +1,41 @@
+@import "tailwindcss";
+
+@theme {
+  --color-exp-dark: #0d0f0a;
+  --color-exp-surface: #151a12;
+  --color-exp-panel: #1a2016;
+  --color-exp-border: #2a3224;
+  --color-exp-text: #c4cbb8;
+  --color-exp-text-dim: #6a7560;
+
+  --color-compass: #c4a64a;
+  --color-compass-bright: #e8c860;
+
+  --color-signal-red: #d44040;
+  --color-signal-red-dim: #8b2020;
+
+  --color-oxide-green: #40a080;
+  --color-oxide-green-dim: #2a7058;
+
+  --color-blueprint: #3a7cc4;
+  --color-blueprint-dim: #1e4a7a;
+
+  --color-jungle: #3a8a50;
+  --color-plains: #a8b060;
+  --color-desert: #c4964a;
+  --color-mountain: #7a8088;
+  --color-landing: #5090c0;
+  --color-relic: #9060c0;
+
+  --color-day: #e8c860;
+  --color-night: #4060a0;
+
+  --font-display: "Barlow Condensed", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+}
+
+body {
+  @apply bg-exp-dark text-exp-text font-display;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}

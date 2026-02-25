@@ -425,6 +425,21 @@ contract HexplorationGameplay is
     }
 
     // Internal
+    function getDisputeRandomness(
+        uint256 gameID
+    ) internal view returns (uint256) {
+        return
+            QUEUE.isInTestMode()
+                ? QUEUE.randomness(
+                    QUEUE.queueID(gameID),
+                    uint256(RandomIndex.TieDispute)
+                )
+                : expandNumber(
+                    QUEUE.randomness(QUEUE.queueID(gameID), 0),
+                    RandomIndex.TieDispute
+                );
+    }
+
     function activePlayers(uint256 queueID) internal view returns (uint256) {
         uint256 gameID = QUEUE.game(queueID);
         PlayerRegistry pr = PlayerRegistry(GAME_BOARD.prAddress());
@@ -445,15 +460,7 @@ contract HexplorationGameplay is
         uint256 gameID,
         string[4] memory currentPlayZones
     ) internal view returns (PlayUpdates memory) {
-        uint256 randomness = QUEUE.isInTestMode()
-            ? QUEUE.randomness(
-                QUEUE.queueID(gameID),
-                uint256(RandomIndex.TieDispute)
-            )
-            : expandNumber(
-                QUEUE.randomness(QUEUE.queueID(gameID), 0),
-                RandomIndex.TieDispute
-            );
+        uint256 randomness = getDisputeRandomness(gameID);
 
         // campsite disputes hardcoded for max 2 disputes
         // with 4 players, no more than 2 disputes will ever occur (1-3 or 2-2 splits)
@@ -582,15 +589,7 @@ contract HexplorationGameplay is
         uint256 gameID,
         string[4] memory currentPlayZones
     ) internal view returns (PlayUpdates memory) {
-        uint256 randomness = QUEUE.isInTestMode()
-            ? QUEUE.randomness(
-                QUEUE.queueID(gameID),
-                uint256(RandomIndex.TieDispute)
-            )
-            : expandNumber(
-                QUEUE.randomness(QUEUE.queueID(gameID), 0),
-                RandomIndex.TieDispute
-            );
+        uint256 randomness = getDisputeRandomness(gameID);
         // campsite disputes hardcoded for max 2 disputes
         // with 4 players, no more than 2 disputes will ever occur (1-3 or 2-2 splits)
         string[2] memory campsiteBreakDownDisputes; //[zone, zone]
@@ -723,15 +722,7 @@ contract HexplorationGameplay is
         uint256 gameID,
         string[4] memory currentPlayZones
     ) internal view returns (PlayUpdates memory) {
-        uint256 randomness = QUEUE.isInTestMode()
-            ? QUEUE.randomness(
-                QUEUE.queueID(gameID),
-                uint256(RandomIndex.TieDispute)
-            )
-            : expandNumber(
-                QUEUE.randomness(QUEUE.queueID(gameID), 0),
-                RandomIndex.TieDispute
-            );
+        uint256 randomness = getDisputeRandomness(gameID);
         // campsite disputes hardcoded for max 2 disputes
         // with 4 players, no more than 2 disputes will ever occur (1-3 or 2-2 splits)
         string[2] memory digDisputes; //[map space, map space]
@@ -852,5 +843,17 @@ contract HexplorationGameplay is
         return (stringsMatch(itemType, "Engraved Tablet") ||
             stringsMatch(itemType, "Sigil Gem") ||
             stringsMatch(itemType, "Ancient Tome"));
+    }
+
+    function supportsInterface(
+        bytes4 interfaceId
+    )
+        public
+        view
+        virtual
+        override(AccessControlEnumerable, AutoLoopCompatible)
+        returns (bool)
+    {
+        return super.supportsInterface(interfaceId);
     }
 }

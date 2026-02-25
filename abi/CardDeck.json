@@ -1,0 +1,1541 @@
+[
+    {
+        "inputs": [],
+        "stateMutability": "nonpayable",
+        "type": "constructor"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "internalType": "bytes32",
+                "name": "role",
+                "type": "bytes32"
+            },
+            {
+                "indexed": true,
+                "internalType": "bytes32",
+                "name": "previousAdminRole",
+                "type": "bytes32"
+            },
+            {
+                "indexed": true,
+                "internalType": "bytes32",
+                "name": "newAdminRole",
+                "type": "bytes32"
+            }
+        ],
+        "name": "RoleAdminChanged",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "internalType": "bytes32",
+                "name": "role",
+                "type": "bytes32"
+            },
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "account",
+                "type": "address"
+            },
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "sender",
+                "type": "address"
+            }
+        ],
+        "name": "RoleGranted",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "internalType": "bytes32",
+                "name": "role",
+                "type": "bytes32"
+            },
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "account",
+                "type": "address"
+            },
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "sender",
+                "type": "address"
+            }
+        ],
+        "name": "RoleRevoked",
+        "type": "event"
+    },
+    {
+        "inputs": [],
+        "name": "CONTROLLER_ROLE",
+        "outputs": [
+            {
+                "internalType": "bytes32",
+                "name": "",
+                "type": "bytes32"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "DEFAULT_ADMIN_ROLE",
+        "outputs": [
+            {
+                "internalType": "bytes32",
+                "name": "",
+                "type": "bytes32"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "string[]",
+                "name": "titles",
+                "type": "string[]"
+            },
+            {
+                "internalType": "string[]",
+                "name": "descriptions",
+                "type": "string[]"
+            },
+            {
+                "internalType": "uint16[]",
+                "name": "quantities",
+                "type": "uint16[]"
+            }
+        ],
+        "name": "addCards",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "string[]",
+                "name": "titles",
+                "type": "string[]"
+            },
+            {
+                "internalType": "string[]",
+                "name": "descriptions",
+                "type": "string[]"
+            },
+            {
+                "internalType": "uint16[]",
+                "name": "quantities",
+                "type": "uint16[]"
+            },
+            {
+                "internalType": "string[3][]",
+                "name": "itemGains",
+                "type": "string[3][]"
+            },
+            {
+                "internalType": "string[3][]",
+                "name": "itemLosses",
+                "type": "string[3][]"
+            },
+            {
+                "internalType": "string[3][]",
+                "name": "outcomeDescriptions",
+                "type": "string[3][]"
+            }
+        ],
+        "name": "addCardsWithItemGains",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "string[]",
+                "name": "titles",
+                "type": "string[]"
+            },
+            {
+                "internalType": "string[]",
+                "name": "descriptions",
+                "type": "string[]"
+            },
+            {
+                "internalType": "uint16[]",
+                "name": "quantities",
+                "type": "uint16[]"
+            },
+            {
+                "internalType": "uint256[3][]",
+                "name": "rollThresholdValues",
+                "type": "uint256[3][]"
+            },
+            {
+                "internalType": "string[3][]",
+                "name": "outcomeDescriptions",
+                "type": "string[3][]"
+            },
+            {
+                "internalType": "int8[3][]",
+                "name": "movementAdjustments",
+                "type": "int8[3][]"
+            },
+            {
+                "internalType": "int8[3][]",
+                "name": "agilityAdjustments",
+                "type": "int8[3][]"
+            },
+            {
+                "internalType": "int8[3][]",
+                "name": "dexterityAdjustments",
+                "type": "int8[3][]"
+            },
+            {
+                "internalType": "uint256[]",
+                "name": "rollTypesRequired",
+                "type": "uint256[]"
+            }
+        ],
+        "name": "addCardsWithStatAdjustments",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "string[]",
+                "name": "titles",
+                "type": "string[]"
+            },
+            {
+                "internalType": "string[]",
+                "name": "descriptions",
+                "type": "string[]"
+            },
+            {
+                "internalType": "uint16[]",
+                "name": "quantities",
+                "type": "uint16[]"
+            },
+            {
+                "internalType": "int8[]",
+                "name": "movementBuffs",
+                "type": "int8[]"
+            },
+            {
+                "internalType": "int8[]",
+                "name": "agilityBuffs",
+                "type": "int8[]"
+            },
+            {
+                "internalType": "int8[]",
+                "name": "dexterityBuffs",
+                "type": "int8[]"
+            },
+            {
+                "internalType": "int8[]",
+                "name": "digOddsBuffs",
+                "type": "int8[]"
+            },
+            {
+                "internalType": "int8[]",
+                "name": "combatBuffs",
+                "type": "int8[]"
+            }
+        ],
+        "name": "addCardsWithStatBuffs",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "string",
+                "name": "",
+                "type": "string"
+            },
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "name": "agilityAdjust",
+        "outputs": [
+            {
+                "internalType": "int8",
+                "name": "",
+                "type": "int8"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "string",
+                "name": "",
+                "type": "string"
+            }
+        ],
+        "name": "agilityBuff",
+        "outputs": [
+            {
+                "internalType": "int8",
+                "name": "",
+                "type": "int8"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "string",
+                "name": "originalTitle",
+                "type": "string"
+            },
+            {
+                "internalType": "string",
+                "name": "newTitle",
+                "type": "string"
+            }
+        ],
+        "name": "changeCardTitle",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "string",
+                "name": "cardName",
+                "type": "string"
+            },
+            {
+                "internalType": "uint256[3]",
+                "name": "rollValues",
+                "type": "uint256[3]"
+            }
+        ],
+        "name": "chooseCard",
+        "outputs": [
+            {
+                "internalType": "string",
+                "name": "_card",
+                "type": "string"
+            },
+            {
+                "internalType": "int8",
+                "name": "_movementAdjust",
+                "type": "int8"
+            },
+            {
+                "internalType": "int8",
+                "name": "_agilityAdjust",
+                "type": "int8"
+            },
+            {
+                "internalType": "int8",
+                "name": "_dexterityAdjust",
+                "type": "int8"
+            },
+            {
+                "internalType": "string",
+                "name": "_itemLoss",
+                "type": "string"
+            },
+            {
+                "internalType": "string",
+                "name": "_itemGain",
+                "type": "string"
+            },
+            {
+                "internalType": "string",
+                "name": "_handLoss",
+                "type": "string"
+            },
+            {
+                "internalType": "string",
+                "name": "_outcomeDescription",
+                "type": "string"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "string",
+                "name": "",
+                "type": "string"
+            }
+        ],
+        "name": "combatBuff",
+        "outputs": [
+            {
+                "internalType": "int8",
+                "name": "",
+                "type": "int8"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "string",
+                "name": "",
+                "type": "string"
+            }
+        ],
+        "name": "description",
+        "outputs": [
+            {
+                "internalType": "string",
+                "name": "",
+                "type": "string"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "string",
+                "name": "",
+                "type": "string"
+            },
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "name": "dexterityAdjust",
+        "outputs": [
+            {
+                "internalType": "int8",
+                "name": "",
+                "type": "int8"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "string",
+                "name": "",
+                "type": "string"
+            }
+        ],
+        "name": "dexterityBuff",
+        "outputs": [
+            {
+                "internalType": "int8",
+                "name": "",
+                "type": "int8"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "string",
+                "name": "",
+                "type": "string"
+            }
+        ],
+        "name": "digOddsBuff",
+        "outputs": [
+            {
+                "internalType": "int8",
+                "name": "",
+                "type": "int8"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "randomWord",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256[3]",
+                "name": "rollValues",
+                "type": "uint256[3]"
+            }
+        ],
+        "name": "drawCard",
+        "outputs": [
+            {
+                "internalType": "string",
+                "name": "_card",
+                "type": "string"
+            },
+            {
+                "internalType": "int8",
+                "name": "_movementAdjust",
+                "type": "int8"
+            },
+            {
+                "internalType": "int8",
+                "name": "_agilityAdjust",
+                "type": "int8"
+            },
+            {
+                "internalType": "int8",
+                "name": "_dexterityAdjust",
+                "type": "int8"
+            },
+            {
+                "internalType": "string",
+                "name": "_itemLoss",
+                "type": "string"
+            },
+            {
+                "internalType": "string",
+                "name": "_itemGain",
+                "type": "string"
+            },
+            {
+                "internalType": "string",
+                "name": "_handLoss",
+                "type": "string"
+            },
+            {
+                "internalType": "string",
+                "name": "_outcomeDescription",
+                "type": "string"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "string",
+                "name": "cardTitle",
+                "type": "string"
+            }
+        ],
+        "name": "getAgilityAdjust",
+        "outputs": [
+            {
+                "internalType": "int8[3]",
+                "name": "",
+                "type": "int8[3]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "getDeck",
+        "outputs": [
+            {
+                "internalType": "string[]",
+                "name": "",
+                "type": "string[]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "string",
+                "name": "cardTitle",
+                "type": "string"
+            }
+        ],
+        "name": "getDescription",
+        "outputs": [
+            {
+                "internalType": "string",
+                "name": "",
+                "type": "string"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "string",
+                "name": "cardTitle",
+                "type": "string"
+            }
+        ],
+        "name": "getDexterityAdjust",
+        "outputs": [
+            {
+                "internalType": "int8[3]",
+                "name": "",
+                "type": "int8[3]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "string",
+                "name": "cardTitle",
+                "type": "string"
+            }
+        ],
+        "name": "getHandLoss",
+        "outputs": [
+            {
+                "internalType": "string[3]",
+                "name": "",
+                "type": "string[3]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "string",
+                "name": "cardTitle",
+                "type": "string"
+            }
+        ],
+        "name": "getItemGain",
+        "outputs": [
+            {
+                "internalType": "string[3]",
+                "name": "",
+                "type": "string[3]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "string",
+                "name": "cardTitle",
+                "type": "string"
+            }
+        ],
+        "name": "getItemLoss",
+        "outputs": [
+            {
+                "internalType": "string[3]",
+                "name": "",
+                "type": "string[3]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "string",
+                "name": "cardTitle",
+                "type": "string"
+            }
+        ],
+        "name": "getMovementAdjust",
+        "outputs": [
+            {
+                "internalType": "int8[3]",
+                "name": "",
+                "type": "int8[3]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "string",
+                "name": "cardTitle",
+                "type": "string"
+            }
+        ],
+        "name": "getMovementX",
+        "outputs": [
+            {
+                "internalType": "int256[3]",
+                "name": "",
+                "type": "int256[3]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "string",
+                "name": "cardTitle",
+                "type": "string"
+            }
+        ],
+        "name": "getMovementY",
+        "outputs": [
+            {
+                "internalType": "int256[3]",
+                "name": "",
+                "type": "int256[3]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "string",
+                "name": "cardTitle",
+                "type": "string"
+            }
+        ],
+        "name": "getOutcomeDescription",
+        "outputs": [
+            {
+                "internalType": "string[3]",
+                "name": "",
+                "type": "string[3]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "string",
+                "name": "cardTitle",
+                "type": "string"
+            }
+        ],
+        "name": "getQuantity",
+        "outputs": [
+            {
+                "internalType": "uint16",
+                "name": "",
+                "type": "uint16"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "bytes32",
+                "name": "role",
+                "type": "bytes32"
+            }
+        ],
+        "name": "getRoleAdmin",
+        "outputs": [
+            {
+                "internalType": "bytes32",
+                "name": "",
+                "type": "bytes32"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "bytes32",
+                "name": "role",
+                "type": "bytes32"
+            },
+            {
+                "internalType": "uint256",
+                "name": "index",
+                "type": "uint256"
+            }
+        ],
+        "name": "getRoleMember",
+        "outputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "bytes32",
+                "name": "role",
+                "type": "bytes32"
+            }
+        ],
+        "name": "getRoleMemberCount",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "string",
+                "name": "cardTitle",
+                "type": "string"
+            }
+        ],
+        "name": "getRollThresholds",
+        "outputs": [
+            {
+                "internalType": "uint256[3]",
+                "name": "",
+                "type": "uint256[3]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "string",
+                "name": "cardTitle",
+                "type": "string"
+            }
+        ],
+        "name": "getRollTypeRequired",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "bytes32",
+                "name": "role",
+                "type": "bytes32"
+            },
+            {
+                "internalType": "address",
+                "name": "account",
+                "type": "address"
+            }
+        ],
+        "name": "grantRole",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "string",
+                "name": "",
+                "type": "string"
+            },
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "name": "handLoss",
+        "outputs": [
+            {
+                "internalType": "string",
+                "name": "",
+                "type": "string"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "bytes32",
+                "name": "role",
+                "type": "bytes32"
+            },
+            {
+                "internalType": "address",
+                "name": "account",
+                "type": "address"
+            }
+        ],
+        "name": "hasRole",
+        "outputs": [
+            {
+                "internalType": "bool",
+                "name": "",
+                "type": "bool"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "string",
+                "name": "",
+                "type": "string"
+            },
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "name": "itemGain",
+        "outputs": [
+            {
+                "internalType": "string",
+                "name": "",
+                "type": "string"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "string",
+                "name": "",
+                "type": "string"
+            },
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "name": "itemLoss",
+        "outputs": [
+            {
+                "internalType": "string",
+                "name": "",
+                "type": "string"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "string",
+                "name": "",
+                "type": "string"
+            },
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "name": "movementAdjust",
+        "outputs": [
+            {
+                "internalType": "int8",
+                "name": "",
+                "type": "int8"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "string",
+                "name": "",
+                "type": "string"
+            }
+        ],
+        "name": "movementBuff",
+        "outputs": [
+            {
+                "internalType": "int8",
+                "name": "",
+                "type": "int8"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "string",
+                "name": "",
+                "type": "string"
+            },
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "name": "movementX",
+        "outputs": [
+            {
+                "internalType": "int256",
+                "name": "",
+                "type": "int256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "string",
+                "name": "",
+                "type": "string"
+            },
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "name": "movementY",
+        "outputs": [
+            {
+                "internalType": "int256",
+                "name": "",
+                "type": "int256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "string",
+                "name": "",
+                "type": "string"
+            },
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "name": "outcomeDescription",
+        "outputs": [
+            {
+                "internalType": "string",
+                "name": "",
+                "type": "string"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "string",
+                "name": "",
+                "type": "string"
+            }
+        ],
+        "name": "quantity",
+        "outputs": [
+            {
+                "internalType": "uint16",
+                "name": "",
+                "type": "uint16"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "bytes32",
+                "name": "role",
+                "type": "bytes32"
+            },
+            {
+                "internalType": "address",
+                "name": "account",
+                "type": "address"
+            }
+        ],
+        "name": "renounceRole",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "bytes32",
+                "name": "role",
+                "type": "bytes32"
+            },
+            {
+                "internalType": "address",
+                "name": "account",
+                "type": "address"
+            }
+        ],
+        "name": "revokeRole",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "string",
+                "name": "",
+                "type": "string"
+            },
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "name": "rollThresholds",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "string",
+                "name": "",
+                "type": "string"
+            }
+        ],
+        "name": "rollTypeRequired",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "int8[3]",
+                "name": "_agilityAdjust",
+                "type": "int8[3]"
+            },
+            {
+                "internalType": "string",
+                "name": "_cardName",
+                "type": "string"
+            }
+        ],
+        "name": "setAgilityAdjust",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "int8",
+                "name": "_buffValue",
+                "type": "int8"
+            },
+            {
+                "internalType": "string",
+                "name": "_cardName",
+                "type": "string"
+            }
+        ],
+        "name": "setAgilityBuff",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "int8",
+                "name": "_buffValue",
+                "type": "int8"
+            },
+            {
+                "internalType": "string",
+                "name": "_cardName",
+                "type": "string"
+            }
+        ],
+        "name": "setCombatBuff",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "string",
+                "name": "_description",
+                "type": "string"
+            },
+            {
+                "internalType": "string",
+                "name": "_cardName",
+                "type": "string"
+            }
+        ],
+        "name": "setDescription",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "int8[3]",
+                "name": "_dexterityAdjust",
+                "type": "int8[3]"
+            },
+            {
+                "internalType": "string",
+                "name": "_cardName",
+                "type": "string"
+            }
+        ],
+        "name": "setDexterityAdjust",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "int8",
+                "name": "_buffValue",
+                "type": "int8"
+            },
+            {
+                "internalType": "string",
+                "name": "_cardName",
+                "type": "string"
+            }
+        ],
+        "name": "setDexterityBuff",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "int8",
+                "name": "_buffValue",
+                "type": "int8"
+            },
+            {
+                "internalType": "string",
+                "name": "_cardName",
+                "type": "string"
+            }
+        ],
+        "name": "setDigOddsBuff",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "string[3]",
+                "name": "_handLoss",
+                "type": "string[3]"
+            },
+            {
+                "internalType": "string",
+                "name": "_cardName",
+                "type": "string"
+            }
+        ],
+        "name": "setHandLoss",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "string[3]",
+                "name": "_itemGain",
+                "type": "string[3]"
+            },
+            {
+                "internalType": "string",
+                "name": "_cardName",
+                "type": "string"
+            }
+        ],
+        "name": "setItemGain",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "string[3]",
+                "name": "_itemLoss",
+                "type": "string[3]"
+            },
+            {
+                "internalType": "string",
+                "name": "_cardName",
+                "type": "string"
+            }
+        ],
+        "name": "setItemLoss",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "int8[3]",
+                "name": "_movementAdjust",
+                "type": "int8[3]"
+            },
+            {
+                "internalType": "string",
+                "name": "_cardName",
+                "type": "string"
+            }
+        ],
+        "name": "setMovementAdjust",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "int8",
+                "name": "_buffValue",
+                "type": "int8"
+            },
+            {
+                "internalType": "string",
+                "name": "_cardName",
+                "type": "string"
+            }
+        ],
+        "name": "setMovementBuff",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "int256[3]",
+                "name": "_movementX",
+                "type": "int256[3]"
+            },
+            {
+                "internalType": "string",
+                "name": "_cardName",
+                "type": "string"
+            }
+        ],
+        "name": "setMovementX",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "int256[3]",
+                "name": "_movementY",
+                "type": "int256[3]"
+            },
+            {
+                "internalType": "string",
+                "name": "_cardName",
+                "type": "string"
+            }
+        ],
+        "name": "setMovementY",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "string[3]",
+                "name": "_outcomeDescription",
+                "type": "string[3]"
+            },
+            {
+                "internalType": "string",
+                "name": "_cardName",
+                "type": "string"
+            }
+        ],
+        "name": "setOutcomeDescription",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint16",
+                "name": "_quantity",
+                "type": "uint16"
+            },
+            {
+                "internalType": "string",
+                "name": "_cardName",
+                "type": "string"
+            }
+        ],
+        "name": "setQuantity",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256[3]",
+                "name": "_rollThresholds",
+                "type": "uint256[3]"
+            },
+            {
+                "internalType": "string",
+                "name": "_cardName",
+                "type": "string"
+            }
+        ],
+        "name": "setRollThresholds",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "_rollTypeRequired",
+                "type": "uint256"
+            },
+            {
+                "internalType": "string",
+                "name": "_cardName",
+                "type": "string"
+            }
+        ],
+        "name": "setRollTypeRequired",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "bytes4",
+                "name": "interfaceId",
+                "type": "bytes4"
+            }
+        ],
+        "name": "supportsInterface",
+        "outputs": [
+            {
+                "internalType": "bool",
+                "name": "",
+                "type": "bool"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    }
+]

@@ -1,7 +1,6 @@
-
-/node_modules
+out/
+cache/
+broadcast/
+node_modules/
 .env
 **/.DS_Store
-env.js
-/local
-yarn.lock

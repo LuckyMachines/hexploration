@@ -1,14 +1,14 @@
 {
   "name": "hexploration",
-  "version": "0.1.0",
-  "description": "Exploration game on the blockchain.",
-  "main": "truffle-config.js",
-  "directories": {
-    "test": "test"
-  },
+  "version": "0.2.0",
+  "description": "On-chain multiplayer explore & escape game.",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "import-all": "node local/import-all.js"
+    "build": "forge build",
+    "test": "forge test",
+    "worker": "node scripts/hexploration-worker.mjs",
+    "enable-mock-vrf": "node scripts/enable-mock-vrf.mjs",
+    "check-status": "node scripts/check-hex-status.mjs",
+    "dev": "cd app && npm run dev"
   },
   "repository": {
     "type": "git",
@@ -20,9 +20,8 @@
     "url": "https://github.com/LuckyMachines/hexploration/issues"
   },
   "homepage": "https://github.com/LuckyMachines/hexploration#readme",
-  "dependencies": {
-    "@chainlink/contracts": "^0.4.1",
-    "@luckymachines/game-core": "0.0.39",
-    "@openzeppelin/contracts": "^4.7.3"
+  "devDependencies": {
+    "dotenv": "^17.3.1",
+    "viem": "^2.46.2"
   }
 }
