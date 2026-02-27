@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0
-pragma solidity >=0.8.0;
+pragma solidity 0.8.34;
 
 import "./HexplorationBoard.sol";
 import "./HexplorationZone.sol";
@@ -40,7 +40,7 @@ contract GameSummary is GameWallets, Utilities, AccessControlEnumerable {
     }
 
     constructor() {
-        _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
+        _grantRole(DEFAULT_ADMIN_ROLE, _msgSender());
     }
 
     // Public Game Summary Functions

@@ -1,11 +1,15 @@
 import { useReadContract } from 'wagmi';
 import { playerSummaryRead } from '../config/contracts';
+import { parseUintId, safeUintId } from '../lib/ids';
 
 export function usePlayerStats(gameId, playerID) {
+  const gid = parseUintId(gameId);
+  const pid = parseUintId(playerID);
+  const hasPlayerID = pid !== null && pid > 0n;
   const { data, isLoading, error, refetch } = useReadContract({
-    ...playerSummaryRead('currentPlayerStats', [BigInt(gameId || 0), BigInt(playerID || 0)]),
+    ...playerSummaryRead('currentPlayerStats', [safeUintId(gid), safeUintId(pid)]),
     query: {
-      enabled: !!gameId && !!playerID,
+      enabled: gid !== null && hasPlayerID,
       refetchInterval: 5000,
     },
   });

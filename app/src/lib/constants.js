@@ -54,21 +54,23 @@ export const TILE_COLORS = {
 
 // Processing phases from the queue
 export const ProcessingPhase = {
-  IDLE: 0,
-  ACTIONS_SUBMITTED: 1,
-  RANDOMNESS_REQUESTED: 2,
-  RANDOMNESS_FULFILLED: 3,
-  PROCESSING: 4,
-  COMPLETE: 5,
+  START: 0,
+  SUBMISSION: 1,
+  PROCESSING: 2,
+  PLAY_THROUGH: 3,
+  PROCESSED: 4,
+  CLOSED: 5,
+  FAILED: 6,
 };
 
 export const PROCESSING_LABELS = {
-  [ProcessingPhase.IDLE]: 'Idle',
-  [ProcessingPhase.ACTIONS_SUBMITTED]: 'Actions Submitted',
-  [ProcessingPhase.RANDOMNESS_REQUESTED]: 'Awaiting VRF',
-  [ProcessingPhase.RANDOMNESS_FULFILLED]: 'Randomness Ready',
+  [ProcessingPhase.START]: 'Start',
+  [ProcessingPhase.SUBMISSION]: 'Submission',
   [ProcessingPhase.PROCESSING]: 'Processing',
-  [ProcessingPhase.COMPLETE]: 'Complete',
+  [ProcessingPhase.PLAY_THROUGH]: 'Play Through',
+  [ProcessingPhase.PROCESSED]: 'Processed',
+  [ProcessingPhase.CLOSED]: 'Closed',
+  [ProcessingPhase.FAILED]: 'Failed',
 };
 
 // Stat indices

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0
-pragma solidity >=0.7.0 <0.9.0;
+pragma solidity 0.8.34;
 
 // TODO: start using this for state updating outside of controller
 // Controller should only be used by users / UI directly sending
@@ -64,7 +64,7 @@ contract HexplorationStateUpdate is
         address characterCardAddress,
         address relicManagementAddress
     ) {
-        _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
+        _grantRole(DEFAULT_ADMIN_ROLE, _msgSender());
         GAME_BOARD = HexplorationBoard(gameBoardAddress);
         CHARACTER_CARD = CharacterCard(characterCardAddress);
         RELIC_MANAGEMENT = RelicManagement(relicManagementAddress);

@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useAccount } from 'wagmi';
 import { useAllPlayers } from '../../hooks/useAllPlayers';
-import { truncateAddress, formatBigInt } from '../../lib/formatting';
+import { truncateAddress } from '../../lib/formatting';
 import { PLAYER_COLORS } from '../../lib/constants';
 import Spinner from '../shared/Spinner';
 

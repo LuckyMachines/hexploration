@@ -43,7 +43,7 @@ export default function PlayerDossier({ player, index, isCurrentUser }) {
       </div>
 
       {/* Action submitted badge */}
-      {player.action && player.action !== '' && (
+      {player.action && player.action !== '' && player.action !== 'Idle' && (
         <div className="mt-2 flex items-center gap-1.5">
           <span className="w-1.5 h-1.5 rounded-full bg-blueprint" />
           <span className="font-mono text-[10px] text-blueprint uppercase tracking-wider">

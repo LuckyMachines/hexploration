@@ -9,9 +9,8 @@ export default function HelpControl({ gameId, currentPlayerID, onSubmit, disable
 
   const statOptions = ['Movement', 'Agility', 'Dexterity'];
 
-  // Filter out current player
-  const otherPlayers = (players || []).filter((p) => {
-    const pid = p.playerID !== undefined ? Number(p.playerID) : 0;
+  const otherPlayers = (players || []).filter((player) => {
+    const pid = player.playerID !== undefined ? Number(player.playerID) : 0;
     return pid !== Number(currentPlayerID || 0);
   });
 
@@ -21,7 +20,6 @@ export default function HelpControl({ gameId, currentPlayerID, onSubmit, disable
         Assist another player at your location by boosting one of their stats.
       </p>
 
-      {/* Target selection */}
       <div>
         <label className="font-mono text-[10px] text-exp-text-dim uppercase tracking-wider block mb-1">
           Target Explorer
@@ -33,19 +31,18 @@ export default function HelpControl({ gameId, currentPlayerID, onSubmit, disable
                      px-3 py-1.5 cursor-pointer hover:border-compass/40 transition-colors w-full"
         >
           <option value="">Select target...</option>
-          {otherPlayers.map((p, i) => {
-            const pid = p.playerID !== undefined ? Number(p.playerID) : i + 1;
-            const addr = p.playerAddress || '';
+          {otherPlayers.map((player, i) => {
+            const pid = player.playerID !== undefined ? Number(player.playerID) : i + 1;
+            const addr = player.playerAddress || '';
             return (
               <option key={pid} value={pid} className="bg-exp-dark text-exp-text">
-                P{pid} — {truncateAddress(addr)}
+                P{pid} - {truncateAddress(addr)}
               </option>
             );
           })}
         </select>
       </div>
 
-      {/* Stat selection */}
       <div>
         <label className="font-mono text-[10px] text-exp-text-dim uppercase tracking-wider block mb-1">
           Attribute to Boost

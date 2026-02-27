@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0
-pragma solidity >=0.7.0 <0.9.0;
+pragma solidity 0.8.34;
 
-import "@openzeppelin/contracts/access/AccessControlEnumerable.sol";
+import "@openzeppelin/contracts/access/extensions/AccessControlEnumerable.sol";
 
 contract CardDeck is AccessControlEnumerable {
     // This is an infinite deck, cards drawn are not removed from deck
@@ -37,7 +37,7 @@ contract CardDeck is AccessControlEnumerable {
     mapping(string => int8) public combatBuff;
 
     constructor() {
-        _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
+        _grantRole(DEFAULT_ADMIN_ROLE, _msgSender());
     }
 
     // this function does not provide randomness,

@@ -43,7 +43,7 @@ Built on the [Lucky Machines Game Core](https://github.com/LuckyMachines/game-co
 | **Terrain** | Jungle, Plains, Desert, Mountain, Landing, Relic |
 | **Actions** | Move, Dig, Camp, Rest, Help, Flee |
 | **Stats** | Movement, Agility, Dexterity |
-| **Randomness** | Mock VRF (default) or Chainlink VRF v2 |
+| **Randomness** | AutoLoop VRF (recommended), Mock VRF, or Chainlink VRF v2 |
 | **Contracts** | 25 Solidity contracts |
 
 ## Contract Architecture
@@ -92,6 +92,8 @@ Event, Ambush, Treasure, Land, Relic -- each deck is populated from `scripts/onc
 | **RollDraw** | Dice rolling and card drawing logic |
 | **RelicManagement** | Relic placement and collection |
 | **RandomnessConsumer** | Chainlink VRF / mock VRF randomness |
+| **VRFVerifier** | ECVRF proof verification library |
+| **AutoLoopVRFCompatible** | Abstract base for VRF-enabled AutoLoop contracts |
 | **RandomIndices** | Random index generation for shuffling |
 | **StateUpdateHelpers** | Shared state update utilities |
 | **StringToUint** | String-to-number conversion for coordinate parsing |
@@ -110,37 +112,54 @@ Event, Ambush, Treasure, Land, Relic -- each deck is populated from `scripts/onc
 
 ## Automation & Randomness
 
-Hexploration requires two things to keep running: **automation** (advancing game phases) and **randomness** (card draws, dice rolls, events). Both are pluggable.
+Hexploration requires two things to keep running: **automation** (advancing game phases) and **randomness** (card draws, dice rolls, events). Both are pluggable. Three randomness modes are supported:
 
-### AutoLoop (default)
+### AutoLoop VRF (recommended)
 
-The automation worker (`scripts/hexploration-worker.mjs`) handles both automation and randomness out of the box:
+The recommended approach. The worker generates an ECVRF proof off-chain, passes it to `progressLoop()`, and the contract verifies the proof on-chain — all in one transaction. Cheaper, faster, and cryptographically verifiable without Chainlink fees.
 
-- Polls `shouldProgressLoop()` on Controller, Gameplay, and GameSetup contracts every 5 seconds
-- Calls `progressLoop()` to advance game phases when ready
-- Fulfills mock VRF randomness requests on-chain
-- No external subscriptions or token balances needed
+```bash
+# One-time setup
+node scripts/register-vrf-key.mjs      # Register worker's VRF public key
+node scripts/enable-autoloop-vrf.mjs    # Enable VRF mode on contracts
 
-This is the recommended way to run Hexploration. Just start the worker:
+# Run the worker
+USE_AUTOLOOP_VRF=true node scripts/hexploration-worker.mjs
+```
+
+How it works:
+- Worker polls `shouldProgressLoop()` — no randomness check needed (randomness comes with the proof)
+- Worker computes `seed = keccak256(gameplayAddress, loopID)` and generates an ECVRF proof
+- Worker wraps the proof + game data into a VRF envelope and calls `progressLoop(vrfEnvelope)`
+- On-chain: `progressLoop()` verifies the ECVRF proof, extracts randomness, writes it to Queue, then processes the turn
+- GameSetup still uses Mock VRF (one-time cold path, not worth VRF overhead)
+
+### AutoLoop with Mock VRF (testing)
+
+The simplest setup for testing and development. Uses blockhash-based pseudo-randomness:
 
 ```bash
 node scripts/hexploration-worker.mjs
 ```
 
-Configure via `scripts/hexploration-worker.env.example`. The worker needs a funded private key to submit transactions.
+- Polls `shouldProgressLoop()` on Controller, Gameplay, and GameSetup contracts every 5 seconds
+- Calls `progressLoop()` to advance game phases when ready
+- Fulfills mock VRF randomness requests on-chain (separate transaction)
+- No external subscriptions or token balances needed
 
 ### Chainlink VRF (alternative)
 
-The contracts also support Chainlink VRF v2 for provably fair randomness. To switch from mock VRF to Chainlink:
+Chainlink VRF v2 for provably fair randomness without running your own worker:
 
 1. Create and fund a Chainlink VRF subscription
 2. Call `setVRFSubscriptionID(subscriptionId)` on GameSetup and Queue contracts
 3. Add the contract addresses as consumers on your VRF subscription
 
-The `AutomationCompatibleInterface` (`checkUpkeep`/`performUpkeep`) is implemented on both `HexplorationController` and `HexplorationGameplay`, so Chainlink Automation can also replace the worker for phase advancement if desired.
+The `AutomationCompatibleInterface` (`checkUpkeep`/`performUpkeep`) is implemented on both `HexplorationController` and `HexplorationGameplay`, so Chainlink Automation can also replace the worker for phase advancement.
 
 ### How the Automation Loop Works
 
+**AutoLoop VRF mode:**
 ```
 Player submits action → Controller tracks submission
                               ↓
@@ -150,9 +169,30 @@ Player submits action → Controller tracks submission
                               ↓
          Worker calls progressLoop() → Queue enters Processing phase
                               ↓
-         Queue requests randomness (mock or Chainlink VRF)
+         Gameplay.shouldProgressLoop() → true (no randomness wait)
                               ↓
-         Randomness fulfilled → stored in Queue
+         Worker generates ECVRF proof for seed(address, loopID)
+                              ↓
+         Worker calls progressLoop(vrfEnvelope)
+                              ↓
+         On-chain: verify proof → extract randomness → write to Queue → process turn
+                              ↓
+         New queue created for next turn
+```
+
+**Mock VRF mode:**
+```
+Player submits action → Controller tracks submission
+                              ↓
+         All players submit OR 10-min timeout
+                              ↓
+         Controller.shouldProgressLoop() → true
+                              ↓
+         Worker calls progressLoop() → Queue enters Processing phase
+                              ↓
+         Queue requests randomness (mock VRF)
+                              ↓
+         Worker fulfills mock randomness → stored in Queue
                               ↓
          Gameplay.shouldProgressLoop() → true
                               ↓
@@ -161,35 +201,45 @@ Player submits action → Controller tracks submission
          New queue created for next turn
 ```
 
-### Cost Comparison: AutoLoop vs Chainlink
+### Enabling AutoLoop VRF
+
+To switch an existing deployment from Mock VRF to AutoLoop VRF:
+
+```bash
+# 1. Register the worker's VRF public key on Gameplay
+node scripts/register-vrf-key.mjs
+
+# 2. Enable AutoLoop VRF on Queue and Gameplay contracts
+node scripts/enable-autoloop-vrf.mjs
+
+# 3. Start the worker with VRF mode
+USE_AUTOLOOP_VRF=true node scripts/hexploration-worker.mjs
+```
+
+To switch back to Mock VRF:
+```bash
+node scripts/enable-autoloop-vrf.mjs --disable
+node scripts/hexploration-worker.mjs
+```
+
+### Cost Comparison
 
 Estimated costs per game round and per full game (10-round average) on Ethereum mainnet at current prices (Feb 2026: ETH ~$1,850, LINK ~$8.20, gas ~0.5 gwei).
 
-**Per round, the game needs:**
-- 2 VRF fulfillments (GameSetup + Queue) -- ~200K gas each
-- 3 loop progressions (GameSetup, Controller, Gameplay) -- ~300-500K gas each
-- Total: ~5 transactions, ~1.5M gas per round
+| | AutoLoop VRF | AutoLoop (Mock VRF) | Chainlink VRF + Automation |
+|---|---|---|---|
+| **VRF cost per round** | Included in progressLoop (~50K extra gas for proof verification) = ~$0.00005 | Gas only: ~400K gas = ~$0.0004 | Gas + 20% LINK premium. ~$0.002 |
+| **Transactions per round** | 3 (GameSetup VRF + Controller loop + Gameplay VRF loop) | 5 (2 VRF fulfills + 3 loops) | 5 (Chainlink handles VRF + automation) |
+| **Automation cost per round** | Gas only: ~1.1M gas = ~$0.001 | Gas only: ~1.1M gas = ~$0.001 | Gas + LINK premium. ~$0.003 |
+| **Total per round** | **~$0.001** | **~$0.0014** | **~$0.005** |
+| **Per 10-round game** | **~$0.01** | **~$0.014** | **~$0.05** |
+| **Per 100 games** | **~$1.00** | **~$1.40** | **~$5.00** |
+| **Requires LINK tokens** | No | No | Yes |
+| **Requires VRF subscription** | No | No | Yes |
+| **Requires running a worker** | Yes | Yes | No |
+| **Provably fair randomness** | Yes (ECVRF proof on-chain) | No (blockhash) | Yes (Chainlink VRF proof) |
 
-| | AutoLoop | Chainlink VRF + Automation |
-|---|---|---|
-| **VRF cost per round** | Gas only: ~400K gas = ~$0.0004 | Gas + 20% LINK premium on callback gas + VRF verification overhead (~115K gas). Estimated ~$0.001 in LINK per request x 2 = ~$0.002 |
-| **Automation cost per round** | Gas only: ~1.1M gas = ~$0.001 | Gas + premium per `performUpkeep()` (varies by network). Estimated ~$0.003 in LINK for 3 upkeeps |
-| **Total per round** | **~$0.0014** (gas only) | **~$0.005** (gas + LINK premiums) |
-| **Per 10-round game** | **~$0.014** | **~$0.05** |
-| **Per 100 games** | **~$1.40** | **~$5.00** |
-| **Requires LINK tokens** | No | Yes |
-| **Requires VRF subscription** | No | Yes |
-| **Requires running a worker** | Yes | No (Chainlink nodes handle it) |
-| **Provably fair randomness** | No (mock VRF uses blockhash) | Yes (VRF proof verified on-chain) |
-
-**Notes:**
-- Gas prices fluctuate significantly. At 10 gwei (moderate congestion) costs scale ~20x. At 50 gwei (high congestion) costs scale ~100x.
-- AutoLoop costs are pure gas -- you pay ETH, no LINK tokens needed.
-- Chainlink premiums are percentage-based: VRF charges 20% on top of callback gas (paying in LINK) or 24% (paying in ETH). Automation charges a similar premium per upkeep.
-- AutoLoop requires running a Node.js worker process. Chainlink is fully decentralized -- no infrastructure to maintain.
-- For testnet (Sepolia), both approaches are effectively free since testnet ETH and LINK have no value.
-
-**Bottom line:** AutoLoop is ~3-4x cheaper per game but requires running your own worker. Chainlink costs more but is hands-off and provides provably fair randomness.
+**Bottom line:** AutoLoop VRF gives you provably fair randomness at the lowest cost. Mock VRF is cheapest for testing. Chainlink is hands-off but costs ~5x more.
 
 ## Quick Start
 
@@ -299,6 +349,9 @@ hexploration/
 │   ├── populate-decks.mjs        # Populate card decks on-chain
 │   ├── check-hex-status.mjs      # Verify deployment status
 │   ├── enable-mock-vrf.mjs       # Enable mock VRF mode
+│   ├── enable-autoloop-vrf.mjs   # Enable/disable AutoLoop VRF mode
+│   ├── register-vrf-key.mjs     # Register worker VRF public key
+│   ├── ecvrf-prover.mjs         # ECVRF proof generation library
 │   ├── pull-onchain-data.mjs     # Pull game data from chain
 │   ├── onchain-data.json         # Card deck + token data
 │   └── hexploration-worker.env.example
@@ -322,6 +375,9 @@ hexploration/
 | `populate-decks.mjs` | Populates all 5 card decks from `onchain-data.json` |
 | `check-hex-status.mjs` | Reads on-chain state to verify deployment is correctly wired |
 | `enable-mock-vrf.mjs` | Enables mock VRF mode on deployed contracts |
+| `enable-autoloop-vrf.mjs` | Enables/disables AutoLoop VRF mode on deployed contracts |
+| `register-vrf-key.mjs` | Registers worker's VRF public key on Gameplay contract |
+| `ecvrf-prover.mjs` | ECVRF proof generation library (used by worker in VRF mode) |
 | `pull-onchain-data.mjs` | Pulls current game/card data from deployed contracts |
 
 ## Current Sepolia Deployment

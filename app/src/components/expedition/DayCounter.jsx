@@ -1,11 +1,13 @@
 import { useReadContract } from 'wagmi';
 import { gameSummaryRead } from '../../config/contracts';
+import { parseUintId, safeUintId } from '../../lib/ids';
 
 export default function DayCounter({ gameId }) {
+  const gid = parseUintId(gameId);
   const { data } = useReadContract({
-    ...gameSummaryRead('currentDay', [BigInt(gameId || 0)]),
+    ...gameSummaryRead('currentDay', [safeUintId(gid)]),
     query: {
-      enabled: !!gameId,
+      enabled: gid !== null,
       refetchInterval: 5000,
     },
   });

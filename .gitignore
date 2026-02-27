@@ -3,4 +3,10 @@ cache/
 broadcast/
 node_modules/
 .env
+.env.*
+!.env.example
 **/.DS_Store
+*.log
+app/coverage/
+app/dist/
+app/test-results/

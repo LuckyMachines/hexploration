@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0
-pragma solidity >=0.7.0 <0.9.0;
+pragma solidity 0.8.34;
 
-import "@openzeppelin/contracts/access/AccessControlEnumerable.sol";
+import "@openzeppelin/contracts/access/extensions/AccessControlEnumerable.sol";
 import "./HexplorationBoard.sol";
 import "./HexplorationZone.sol";
 import "./CharacterCard.sol";
@@ -12,7 +12,7 @@ contract RelicManagement is AccessControlEnumerable {
         keccak256("VERIFIED_CONTROLLER_ROLE");
 
     constructor() {
-        _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
+        _grantRole(DEFAULT_ADMIN_ROLE, _msgSender());
     }
 
     function addVerifiedController(

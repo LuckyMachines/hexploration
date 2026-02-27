@@ -1,11 +1,13 @@
 import { useReadContract } from 'wagmi';
 import { gameSummaryRead } from '../config/contracts';
+import { parseUintId, safeUintId } from '../lib/ids';
 
 export function useLandingSite(gameId) {
+  const gid = parseUintId(gameId);
   const { data, isLoading, error } = useReadContract({
-    ...gameSummaryRead('landingSite', [BigInt(gameId || 0)]),
+    ...gameSummaryRead('landingSite', [safeUintId(gid)]),
     query: {
-      enabled: !!gameId,
+      enabled: gid !== null,
     },
   });
 

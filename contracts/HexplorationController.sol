@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0
-pragma solidity ^0.8.7;
+pragma solidity 0.8.34;
 
 import "@luckymachines/game-core/contracts/src/v0.0/GameController.sol";
 import "./HexplorationBoard.sol";
@@ -12,7 +12,7 @@ import "./GameEvents.sol";
 import "./GameSetup.sol";
 import "./GameWallets.sol";
 import "@chainlink/contracts/src/v0.8/AutomationCompatible.sol";
-import "@luckymachines/autoloop/contracts/AutoLoopCompatible.sol";
+import "@luckymachines/autoloop/src/AutoLoopCompatible.sol";
 
 contract HexplorationController is
     GameController,

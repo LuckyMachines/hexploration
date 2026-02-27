@@ -6,22 +6,34 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "vitest run --coverage",
+    "test:watch": "vitest",
+    "test:e2e": "playwright test",
+    "test:e2e:anvil": "node ../scripts/run-anvil-e2e.mjs",
+    "test:all": "npm run test && npm run test:e2e"
   },
   "dependencies": {
+    "@tanstack/react-query": "^5.80.6",
+    "clsx": "^2.1.1",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-router-dom": "^7.6.1",
-    "@tanstack/react-query": "^5.80.6",
-    "wagmi": "^2.15.4",
+    "tailwind-merge": "^3.3.0",
     "viem": "^2.31.3",
-    "clsx": "^2.1.1",
-    "tailwind-merge": "^3.3.0"
+    "wagmi": "^2.15.4"
   },
   "devDependencies": {
-    "@vitejs/plugin-react": "^4.5.2",
+    "@playwright/test": "^1.58.2",
     "@tailwindcss/vite": "^4.1.8",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.1",
+    "@vitejs/plugin-react": "^4.5.2",
+    "@vitest/coverage-v8": "^4.0.18",
+    "jsdom": "^28.1.0",
     "tailwindcss": "^4.1.8",
-    "vite": "^6.3.5"
+    "vite": "^6.3.5",
+    "vitest": "^4.0.18"
   }
 }

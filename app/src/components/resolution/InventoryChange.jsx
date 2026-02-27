@@ -1,7 +1,7 @@
 export default function InventoryChange({ inventoryChange }) {
   if (!inventoryChange || inventoryChange.length < 3) return null;
 
-  // inventoryChange is [string, string, string] — [gained, lost, description] or similar
+  // inventoryChange is [string, string, string] - [gained, lost, description] or similar
   const items = inventoryChange.filter((item) => item && item !== '');
 
   if (items.length === 0) return null;

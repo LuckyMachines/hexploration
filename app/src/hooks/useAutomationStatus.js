@@ -6,7 +6,7 @@ import {
   QueueABI,
 } from '../config/contracts';
 
-export function useWorkerStatus() {
+export function useAutomationStatus() {
   const { data, isLoading } = useReadContracts({
     contracts: [
       {
@@ -38,10 +38,14 @@ export function useWorkerStatus() {
   const setupReqs = data?.[2]?.result ?? [];
   const queueReqs = data?.[3]?.result ?? [];
 
-  const mockVRFActive = setupMock && queueMock;
   const pendingRequests =
     setupReqs.filter((r) => r > 0n).length +
     queueReqs.filter((r) => r > 0n).length;
 
-  return { mockVRFActive, pendingRequests, isLoading };
+  let mode = 'mismatch';
+  if (setupMock && queueMock) mode = 'mock';
+  if (setupMock && !queueMock) mode = 'external-queue';
+  if (!setupMock && !queueMock) mode = 'external';
+
+  return { mode, pendingRequests, isLoading };
 }

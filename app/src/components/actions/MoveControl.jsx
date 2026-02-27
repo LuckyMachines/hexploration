@@ -1,48 +1,16 @@
-import { useState, useCallback } from 'react';
-import { isAdjacent } from '../../lib/hexmath';
-import { Action } from '../../lib/constants';
-import Spinner from '../shared/Spinner';
-
-export default function MoveControl({ gameId, playerID, currentLocation, movement, onSubmit, disabled }) {
-  const [path, setPath] = useState([]);
-
-  const handleTileClick = useCallback((alias) => {
-    setPath((prev) => {
-      // If clicking the last tile in the path, remove it (undo)
-      if (prev.length > 0 && prev[prev.length - 1] === alias) {
-        return prev.slice(0, -1);
-      }
-
-      // Start from current location
-      const lastTile = prev.length > 0 ? prev[prev.length - 1] : currentLocation;
-
-      // Must be adjacent
-      if (!isAdjacent(lastTile, alias)) return prev;
-
-      // Can't exceed movement
-      if (prev.length >= movement) return prev;
-
-      // Can't revisit
-      if (prev.includes(alias)) return prev;
-
-      return [...prev, alias];
-    });
-  }, [currentLocation, movement]);
-
-  const handleSubmit = () => {
-    if (path.length === 0) return;
-    // Submit options as the movement path
-    onSubmit(Action.MOVE, path);
-    setPath([]);
-  };
-
-  const handleClear = () => setPath([]);
-
+export default function MoveControl({
+  currentLocation,
+  movement,
+  path = [],
+  onSubmit,
+  onClear,
+  disabled,
+}) {
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
         <p className="font-mono text-xs text-exp-text-dim">
-          Click adjacent tiles to build a path. Movement: <span className="text-compass">{movement}</span> tiles available.
+          Click reachable tiles on the map to build your route. Movement: <span className="text-compass">{movement}</span>.
         </p>
         <span className="font-mono text-xs text-compass tabular-nums">
           {path.length}/{movement}
@@ -68,7 +36,7 @@ export default function MoveControl({ gameId, playerID, currentLocation, movemen
       {/* Actions */}
       <div className="flex gap-2">
         <button
-          onClick={handleSubmit}
+          onClick={onSubmit}
           disabled={disabled || path.length === 0}
           className="px-4 py-2 bg-compass/10 border border-compass/40 rounded text-compass text-xs font-mono tracking-widest uppercase
                      hover:bg-compass/20 hover:border-compass/60 transition-colors
@@ -78,7 +46,7 @@ export default function MoveControl({ gameId, playerID, currentLocation, movemen
         </button>
         {path.length > 0 && (
           <button
-            onClick={handleClear}
+            onClick={onClear}
             className="px-3 py-2 border border-exp-border rounded text-exp-text-dim text-xs font-mono tracking-wider uppercase
                        hover:border-exp-text-dim/40 transition-colors"
           >

@@ -18,7 +18,11 @@ export default function App() {
           <Route path="/game/:gameId" element={<GamePage />} />
         </Routes>
       </main>
-      <Modal isOpen={isHelpOpen} onClose={() => setIsHelpOpen(false)}>
+      <Modal
+        isOpen={isHelpOpen}
+        onClose={() => setIsHelpOpen(false)}
+        ariaLabel="Field Manual"
+      >
         <FieldManual />
       </Modal>
     </div>

@@ -1,11 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0
-pragma solidity >=0.7.0 <0.9.0;
+pragma solidity 0.8.34;
 
 //TODO:
 // setup timer keeper for when all players don't submit moves
 
 // import "@openzeppelin/contracts/access/AccessControlEnumerable.sol";
-import "@openzeppelin/contracts/utils/Counters.sol";
 // import "@chainlink/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol";
 // import "@chainlink/contracts/src/v0.8/VRFConsumerBaseV2.sol";
 import "./RandomnessConsumer.sol";
@@ -13,8 +12,7 @@ import "./HexplorationStateUpdate.sol";
 import "./GameEvents.sol";
 
 contract HexplorationQueue is RandomnessConsumer {
-    using Counters for Counters.Counter;
-    Counters.Counter internal QUEUE_ID;
+    uint256 internal QUEUE_ID;
     CharacterCard internal CHARACTER_CARD;
     GameEvents internal GAME_EVENTS;
 
@@ -47,6 +45,10 @@ contract HexplorationQueue is RandomnessConsumer {
     bytes32 public constant VERIFIED_CONTROLLER_ROLE =
         keccak256("VERIFIED_CONTROLLER_ROLE");
     bytes32 public constant GAMEPLAY_ROLE = keccak256("GAMEPLAY_ROLE");
+
+    // AutoLoop VRF mode: when true, randomness comes from Gameplay's VRF proof
+    // instead of separate Mock/Chainlink VRF fulfillment transactions
+    bool public useAutoLoopVRF;
 
     // Array of Queue IDs to be processed.
     uint256[] public processingQueue;
@@ -101,9 +103,9 @@ contract HexplorationQueue is RandomnessConsumer {
             _vrfKeyHash
         )
     {
-        _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
-        _setupRole(GAMEPLAY_ROLE, gameplayAddress);
-        QUEUE_ID.increment(); // start at 1
+        _grantRole(DEFAULT_ADMIN_ROLE, _msgSender());
+        _grantRole(GAMEPLAY_ROLE, gameplayAddress);
+        ++QUEUE_ID; // start at 1
         CHARACTER_CARD = CharacterCard(characterCard);
         // s_subscriptionId = _vrfSubscriptionID;
         // s_keyHash = _vrfKeyHash;
@@ -122,6 +124,25 @@ contract HexplorationQueue is RandomnessConsumer {
         onlyRole(DEFAULT_ADMIN_ROLE)
     {
         GAME_EVENTS = GameEvents(gameEventsAddress);
+    }
+
+    function setUseAutoLoopVRF(bool enabled)
+        public
+        onlyRole(DEFAULT_ADMIN_ROLE)
+    {
+        useAutoLoopVRF = enabled;
+    }
+
+    /**
+     * @notice Allows Gameplay contract to write VRF-verified randomness directly.
+     * @dev Only callable in AutoLoop VRF mode by the GAMEPLAY_ROLE.
+     */
+    function setRandomnessFromGameplay(
+        uint256 _queueID,
+        uint256[] memory _randomness
+    ) external onlyRole(GAMEPLAY_ROLE) {
+        require(useAutoLoopVRF, "AutoLoop VRF not enabled");
+        randomness[_queueID] = _randomness;
     }
 
     function cleanQueue() public {
@@ -357,11 +378,15 @@ contract HexplorationQueue is RandomnessConsumer {
             // update idleness
             _updateIdleness(_queueID);
 
-            // request random number for phase
-            if (testingEnabled) {
-                testRequestRandomWords(_queueID, address(this));
-            } else {
-                requestRandomness(_queueID, address(this));
+            // In AutoLoop VRF mode, skip the randomness request — randomness
+            // will be provided by Gameplay via setRandomnessFromGameplay()
+            if (!useAutoLoopVRF) {
+                // request random number for phase
+                if (testingEnabled) {
+                    testRequestRandomWords(_queueID, address(this));
+                } else {
+                    requestRandomness(_queueID, address(this));
+                }
             }
         }
     }
@@ -403,12 +428,12 @@ contract HexplorationQueue is RandomnessConsumer {
         returns (uint256)
     {
         require(queueID[gameID] == 0, "queue already set");
-        uint256 newQueueID = QUEUE_ID.current();
+        uint256 newQueueID = QUEUE_ID;
         game[newQueueID] = gameID;
         queueID[gameID] = newQueueID;
         queueIDs[gameID].push(newQueueID);
         totalPlayers[newQueueID] = _totalPlayers;
-        QUEUE_ID.increment();
+        ++QUEUE_ID;
         return newQueueID;
     }
 }

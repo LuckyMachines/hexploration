@@ -1,13 +1,9 @@
 import { PROCESSING_LABELS } from '../../lib/constants';
 
-const PHASES = [
-  { key: 0, label: 'IDLE' },
-  { key: 1, label: 'SUBMIT' },
-  { key: 2, label: 'VRF' },
-  { key: 3, label: 'READY' },
-  { key: 4, label: 'PROCESS' },
-  { key: 5, label: 'DONE' },
-];
+const PHASES = Object.entries(PROCESSING_LABELS).map(([key, label]) => ({
+  key: Number(key),
+  label: label.toUpperCase(),
+}));
 
 export default function PhaseIndicator({ currentPhase = 0 }) {
   return (

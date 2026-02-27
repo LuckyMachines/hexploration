@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useAccount } from 'wagmi';
 import { useAllPlayers } from '../../hooks/useAllPlayers';
 import { useGameActions } from '../../hooks/useGameActions';
@@ -9,9 +10,9 @@ import Spinner from '../shared/Spinner';
 
 export default function GameLobby({ gameId }) {
   const { address } = useAccount();
-  const { players, isLoading: loadingPlayers } = useAllPlayers(gameId);
-  const { playerID } = usePlayerID(gameId, address);
-  const { isRegistered } = usePlayerSummary(gameId, playerID);
+  const { players, isLoading: loadingPlayers, refetch: refetchPlayers } = useAllPlayers(gameId);
+  const { playerID, refetch: refetchPlayerID } = usePlayerID(gameId, address);
+  const { isRegistered: isRegisteredBySummary, refetch: refetchPlayerSummary } = usePlayerSummary(gameId, playerID);
 
   const {
     registerForGame,
@@ -22,9 +23,20 @@ export default function GameLobby({ gameId }) {
     error,
   } = useGameActions();
 
+  const isRegisteredByRoster = (players || []).some(
+    (player) => (player.playerAddress || player)?.toLowerCase?.() === address?.toLowerCase(),
+  );
+  const isRegistered = isRegisteredBySummary || isRegisteredByRoster;
+
+  useEffect(() => {
+    if (!isSuccess) return;
+    refetchPlayers();
+    refetchPlayerID?.();
+    refetchPlayerSummary?.();
+  }, [isSuccess, refetchPlayers, refetchPlayerID, refetchPlayerSummary]);
+
   return (
     <div className="border border-exp-border rounded bg-exp-panel">
-      {/* Header stamp */}
       <div className="border-b border-exp-border px-6 py-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <h2 className="text-lg font-semibold tracking-[0.25em] text-compass uppercase font-display">
@@ -39,9 +51,7 @@ export default function GameLobby({ gameId }) {
         </span>
       </div>
 
-      {/* Body */}
       <div className="px-6 py-5 space-y-5">
-        {/* Crew manifest */}
         <div>
           <h3 className="font-mono text-[10px] tracking-[0.3em] text-exp-text-dim uppercase mb-3">
             Crew Manifest ({players.length} enrolled)
@@ -76,7 +86,6 @@ export default function GameLobby({ gameId }) {
           )}
         </div>
 
-        {/* Action buttons */}
         <div className="flex flex-wrap gap-3 pt-2 border-t border-exp-border/50">
           {!isRegistered && address && (
             <button
@@ -98,12 +107,11 @@ export default function GameLobby({ gameId }) {
 
           {isRegistered && (
             <p className="self-center font-mono text-xs text-oxide-green tracking-wider uppercase">
-              Registered — waiting for all explorers
+              Registered - waiting for all explorers
             </p>
           )}
         </div>
 
-        {/* Transaction status readout */}
         <TxStatus
           hash={hash}
           isPending={isPending}

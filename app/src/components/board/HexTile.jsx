@@ -4,7 +4,7 @@ import { TERRAIN_ICONS } from '../../lib/terrainIcons';
 
 export default function HexTile({
   cx, cy, tileType, alias, hasCampsite,
-  isSelected, isHovered, onClick, onHover,
+  isSelected, isHovered, isReachable, onClick, onHover,
 }) {
   const fillColor = TILE_COLORS[tileType] || TILE_COLORS[Tile.NONE];
   const TerrainIcon = TERRAIN_ICONS[tileType];
@@ -18,15 +18,18 @@ export default function HexTile({
     >
       {/* Hex shape */}
       <polygon
+        data-alias={alias}
+        data-reachable={isReachable ? 'true' : 'false'}
         points={hexPoints(cx, cy)}
         fill={fillColor}
-        fillOpacity={0.25}
+        fillOpacity={isReachable ? 0.35 : 0.25}
         stroke={
           isSelected ? '#e8c860'
             : isHovered ? '#c4cbb8'
-              : '#2a3224'
+              : isReachable ? '#c4a64a'
+                : '#2a3224'
         }
-        strokeWidth={isSelected ? 2 : 1}
+        strokeWidth={isSelected || isReachable ? 2 : 1}
         className="transition-all duration-200"
       />
 

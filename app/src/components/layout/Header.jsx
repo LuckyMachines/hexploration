@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import ConnectButton from '../wallet/ConnectButton';
 import NetworkBadge from '../wallet/NetworkBadge';
 import HelpButton from '../help/HelpButton';
-import WorkerBadge from '../shared/WorkerBadge';
+import AutomationStatus from '../shared/AutomationStatus';
 
 export default function Header({ onHelpClick }) {
   return (
@@ -15,7 +15,7 @@ export default function Header({ onHelpClick }) {
         </Link>
         <div className="flex items-center gap-3">
           <HelpButton onClick={onHelpClick} />
-          <WorkerBadge />
+          <AutomationStatus />
           <NetworkBadge />
           <ConnectButton />
         </div>

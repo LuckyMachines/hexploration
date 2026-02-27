@@ -1,4 +1,5 @@
 import GameBrowser from '../components/game/GameBrowser';
+import SystemHealth from '../components/shared/SystemHealth';
 
 export default function HomePage() {
   return (
@@ -9,6 +10,7 @@ export default function HomePage() {
       <p className="text-exp-text-dim font-mono text-sm mb-8">
         Select an expedition or launch a new one
       </p>
+      <SystemHealth />
       <GameBrowser />
     </div>
   );

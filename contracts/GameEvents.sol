@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0
-pragma solidity >=0.8.0;
+pragma solidity 0.8.34;
 
-import "@openzeppelin/contracts/access/AccessControlEnumerable.sol";
+import "@openzeppelin/contracts/access/extensions/AccessControlEnumerable.sol";
 
 contract GameEvents is AccessControlEnumerable {
     bytes32 public constant EVENT_SENDER_ROLE = keccak256("EVENT_SENDER_ROLE");
@@ -48,7 +48,7 @@ contract GameEvents is AccessControlEnumerable {
     event TurnProcessingStart(uint256 indexed gameID, uint256 timeStamp);
 
     constructor() {
-        _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
+        _grantRole(DEFAULT_ADMIN_ROLE, _msgSender());
     }
 
     // Event emitters

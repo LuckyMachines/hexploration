@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0
-pragma solidity >=0.7.0 <0.9.0;
+pragma solidity 0.8.34;
 
-import "@openzeppelin/contracts/access/AccessControlEnumerable.sol";
+import "@openzeppelin/contracts/access/extensions/AccessControlEnumerable.sol";
 
 contract CharacterCard is AccessControlEnumerable {
     enum Action {
@@ -60,7 +60,7 @@ contract CharacterCard is AccessControlEnumerable {
         public dayPhaseActionStatUpdates;
 
     constructor(address itemTokenAddress, address relicTokenAddress) {
-        _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
+        _grantRole(DEFAULT_ADMIN_ROLE, _msgSender());
         itemToken = itemTokenAddress;
         relicToken = relicTokenAddress;
     }

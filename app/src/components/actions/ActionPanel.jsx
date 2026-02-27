@@ -1,7 +1,6 @@
 import { useState } from 'react';
-import { Action, ACTION_LABELS } from '../../lib/constants';
+import { Action } from '../../lib/constants';
 import { useGameActions } from '../../hooks/useGameActions';
-import { usePlayerMovement } from '../../hooks/usePlayerMovement';
 import { usePlayerInventory } from '../../hooks/usePlayerInventory';
 import MoveControl from './MoveControl';
 import CampControl from './CampControl';
@@ -9,6 +8,7 @@ import DigControl from './DigControl';
 import RestControl from './RestControl';
 import HelpControl from './HelpControl';
 import TxStatus from '../shared/TxStatus';
+import ActionSimulator from './ActionSimulator';
 
 const TABS = [
   { action: Action.MOVE, label: 'Move' },
@@ -19,13 +19,31 @@ const TABS = [
   { action: Action.FLEE, label: 'Flee' },
 ];
 
-export default function ActionPanel({ gameId, playerID, currentLocation, stats, currentAction }) {
-  const [activeTab, setActiveTab] = useState(Action.MOVE);
+export default function ActionPanel({
+  gameId,
+  playerID,
+  currentLocation,
+  stats,
+  currentAction,
+  movement = 0,
+  movePath = [],
+  onMoveSubmit,
+  onMoveClear,
+  activeTab: controlledActiveTab,
+  onTabChange,
+  isSpectator = false,
+}) {
+  const [localActiveTab, setLocalActiveTab] = useState(Action.MOVE);
+  const activeTab = controlledActiveTab ?? localActiveTab;
   const { submitAction, hash, isPending, isConfirming, isSuccess, error } = useGameActions();
-  const { movement } = usePlayerMovement(gameId, playerID);
-  const { active: activeInv, inactive: inactiveInv } = usePlayerInventory(gameId, playerID);
+  const { active: activeInv } = usePlayerInventory(gameId, playerID);
 
-  const hasSubmitted = currentAction && currentAction !== '';
+  const hasSubmitted = currentAction && currentAction !== '' && currentAction !== 'Idle';
+
+  const setActiveTab = (tab) => {
+    if (onTabChange) onTabChange(tab);
+    if (controlledActiveTab === undefined) setLocalActiveTab(tab);
+  };
 
   const handleSubmit = (actionIndex, options = [], leftHand = '', rightHand = '') => {
     if (!playerID || !gameId) return;
@@ -76,12 +94,16 @@ export default function ActionPanel({ gameId, playerID, currentLocation, stats, 
       <div className="p-4">
         {activeTab === Action.MOVE && (
           <MoveControl
-            gameId={gameId}
-            playerID={playerID}
             currentLocation={currentLocation}
             movement={movement}
-            onSubmit={handleSubmit}
-            disabled={hasSubmitted || isPending || isConfirming}
+            path={movePath}
+            onSubmit={() => {
+              if (movePath.length === 0) return;
+              handleSubmit(Action.MOVE, movePath);
+              onMoveSubmit?.();
+            }}
+            onClear={onMoveClear}
+            disabled={isSpectator || hasSubmitted || isPending || isConfirming}
           />
         )}
         {(activeTab === Action.SETUP_CAMP || activeTab === Action.BREAK_DOWN_CAMP) && (
@@ -89,19 +111,19 @@ export default function ActionPanel({ gameId, playerID, currentLocation, stats, 
             activeInv={activeInv}
             onSubmitSetup={() => handleSubmit(Action.SETUP_CAMP)}
             onSubmitBreakdown={() => handleSubmit(Action.BREAK_DOWN_CAMP)}
-            disabled={hasSubmitted || isPending || isConfirming}
+            disabled={isSpectator || hasSubmitted || isPending || isConfirming}
           />
         )}
         {activeTab === Action.DIG && (
           <DigControl
             onSubmit={() => handleSubmit(Action.DIG)}
-            disabled={hasSubmitted || isPending || isConfirming}
+            disabled={isSpectator || hasSubmitted || isPending || isConfirming}
           />
         )}
         {activeTab === Action.REST && (
           <RestControl
             onSubmit={(statOption) => handleSubmit(Action.REST, [statOption])}
-            disabled={hasSubmitted || isPending || isConfirming}
+            disabled={isSpectator || hasSubmitted || isPending || isConfirming}
           />
         )}
         {activeTab === Action.HELP && (
@@ -109,7 +131,7 @@ export default function ActionPanel({ gameId, playerID, currentLocation, stats, 
             gameId={gameId}
             currentPlayerID={playerID}
             onSubmit={(targetPID, statOption) => handleSubmit(Action.HELP, [String(targetPID), statOption])}
-            disabled={hasSubmitted || isPending || isConfirming}
+            disabled={isSpectator || hasSubmitted || isPending || isConfirming}
           />
         )}
         {activeTab === Action.FLEE && (
@@ -120,7 +142,7 @@ export default function ActionPanel({ gameId, playerID, currentLocation, stats, 
             </p>
             <button
               onClick={() => handleSubmit(Action.FLEE)}
-              disabled={hasSubmitted || isPending || isConfirming}
+              disabled={isSpectator || hasSubmitted || isPending || isConfirming}
               className="px-4 py-2 bg-signal-red/10 border border-signal-red/40 rounded text-signal-red text-xs font-mono tracking-widest uppercase
                          hover:bg-signal-red/20 hover:border-signal-red/60 transition-colors
                          disabled:opacity-40 disabled:cursor-not-allowed"
@@ -129,6 +151,18 @@ export default function ActionPanel({ gameId, playerID, currentLocation, stats, 
             </button>
           </div>
         )}
+      </div>
+
+      <div className="px-4 pb-4">
+        <ActionSimulator
+          activeTab={activeTab}
+          movement={movement}
+          currentLocation={currentLocation}
+          path={movePath}
+          hasCampsiteKit={activeInv?.campsite ?? false}
+          hasSubmitted={hasSubmitted}
+          isSpectator={isSpectator}
+        />
       </div>
 
       {/* Tx status */}

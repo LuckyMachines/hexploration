@@ -1,14 +1,16 @@
 import { useReadContracts } from 'wagmi';
 import { gameSummaryRead } from '../config/contracts';
+import { parseUintId, safeUintId } from '../lib/ids';
 
 export function useGameState(gameId) {
+  const gid = parseUintId(gameId);
   const { data, isLoading, error, refetch } = useReadContracts({
     contracts: [
-      gameSummaryRead('gameStarted', [BigInt(gameId || 0)]),
-      gameSummaryRead('currentPhase', [BigInt(gameId || 0)]),
+      gameSummaryRead('gameStarted', [safeUintId(gid)]),
+      gameSummaryRead('currentPhase', [safeUintId(gid)]),
     ],
     query: {
-      enabled: !!gameId,
+      enabled: gid !== null,
       refetchInterval: 5000,
     },
   });

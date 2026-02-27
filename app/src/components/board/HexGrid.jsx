@@ -1,9 +1,16 @@
-import { useState, useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useBoardSize } from '../../hooks/useBoardSize';
 import { useActiveZones } from '../../hooks/useActiveZones';
 import { useAllPlayerLocations } from '../../hooks/useAllPlayerLocations';
 import { useLandingSite } from '../../hooks/useLandingSite';
-import { hexToPixel, gridViewBox, toAlias, aliasToPixel } from '../../lib/hexmath';
+import {
+  hexToPixel,
+  gridViewBox,
+  toAlias,
+  aliasToPixel,
+  parseAlias,
+  getAdjacent,
+} from '../../lib/hexmath';
 import HexTile from './HexTile';
 import FogOverlay from './FogOverlay';
 import PlayerMarker from './PlayerMarker';
@@ -12,14 +19,21 @@ import PathOverlay from './PathOverlay';
 import TerrainLegend from './TerrainLegend';
 import Spinner from '../shared/Spinner';
 
-export default function HexGrid({ gameId, selectedPath = [], onTileClick, currentPlayerIndex }) {
+export default function HexGrid({
+  gameId,
+  selectedPath = [],
+  onTileClick,
+  currentPlayerIndex,
+  currentLocation = '',
+  movement = 0,
+  isMovePlanning = false,
+}) {
   const { rows, columns, isLoading: loadingSize } = useBoardSize();
   const { zones, tiles, campsites } = useActiveZones(gameId);
   const { playerIDs, playerZones } = useAllPlayerLocations(gameId);
   const { zoneAlias: landingSite } = useLandingSite(gameId);
   const [hoveredTile, setHoveredTile] = useState(null);
 
-  // Build a map of revealed zones
   const revealedMap = useMemo(() => {
     const map = {};
     if (zones && tiles) {
@@ -33,7 +47,6 @@ export default function HexGrid({ gameId, selectedPath = [], onTileClick, curren
     return map;
   }, [zones, tiles, campsites]);
 
-  // Build player location map: alias → [playerIndex, ...]
   const playerLocationMap = useMemo(() => {
     const map = {};
     if (playerIDs && playerZones) {
@@ -45,6 +58,45 @@ export default function HexGrid({ gameId, selectedPath = [], onTileClick, curren
     }
     return map;
   }, [playerIDs, playerZones]);
+
+  const reachableTiles = useMemo(() => {
+    if (!isMovePlanning || !currentLocation || movement <= 0 || !rows || !columns) {
+      return new Set();
+    }
+
+    const start = parseAlias(currentLocation);
+    if (!start) return new Set();
+
+    const revealed = new Set(zones || []);
+    const inBounds = (alias) => {
+      const coord = parseAlias(alias);
+      return coord
+        && coord.col >= 0 && coord.col < columns
+        && coord.row >= 0 && coord.row < rows;
+    };
+
+    const visited = new Set([currentLocation]);
+    const reachable = new Set();
+    let frontier = [currentLocation];
+
+    for (let step = 0; step < movement; step++) {
+      const next = [];
+      frontier.forEach((alias) => {
+        const coord = parseAlias(alias);
+        if (!coord) return;
+        getAdjacent(coord.col, coord.row).forEach((neighbor) => {
+          if (!inBounds(neighbor) || !revealed.has(neighbor) || visited.has(neighbor)) return;
+          visited.add(neighbor);
+          reachable.add(neighbor);
+          next.push(neighbor);
+        });
+      });
+      frontier = next;
+      if (frontier.length === 0) break;
+    }
+
+    return reachable;
+  }, [isMovePlanning, currentLocation, movement, rows, columns, zones]);
 
   if (loadingSize || !rows || !columns) {
     return (
@@ -59,13 +111,12 @@ export default function HexGrid({ gameId, selectedPath = [], onTileClick, curren
 
   const viewBox = gridViewBox(columns, rows);
 
-  // Build all hex positions
   const allHexes = [];
   for (let col = 0; col < columns; col++) {
     for (let row = 0; row < rows; row++) {
       const alias = toAlias(col, row);
       const { x, y } = hexToPixel(col, row);
-      allHexes.push({ col, row, alias, x, y });
+      allHexes.push({ alias, x, y });
     }
   }
 
@@ -76,7 +127,6 @@ export default function HexGrid({ gameId, selectedPath = [], onTileClick, curren
         className="w-full h-auto"
         style={{ maxHeight: '450px' }}
       >
-        {/* All hexes */}
         {allHexes.map(({ alias, x, y }) => {
           const revealed = revealedMap[alias];
 
@@ -91,6 +141,7 @@ export default function HexGrid({ gameId, selectedPath = [], onTileClick, curren
                 hasCampsite={revealed.hasCampsite}
                 isSelected={selectedPath.includes(alias)}
                 isHovered={hoveredTile === alias}
+                isReachable={reachableTiles.has(alias)}
                 onClick={onTileClick}
                 onHover={setHoveredTile}
               />
@@ -104,20 +155,18 @@ export default function HexGrid({ gameId, selectedPath = [], onTileClick, curren
               cy={y}
               alias={alias}
               onClick={onTileClick}
+              isReachable={reachableTiles.has(alias)}
             />
           );
         })}
 
-        {/* Landing site marker */}
         {landingSite && (() => {
           const pos = aliasToPixel(landingSite);
           return <LandingMarker cx={pos.x} cy={pos.y} />;
         })()}
 
-        {/* Movement path overlay */}
-        <PathOverlay path={selectedPath} />
+        <PathOverlay origin={currentLocation} path={selectedPath} />
 
-        {/* Player markers */}
         {Object.entries(playerLocationMap).map(([zone, playerIndices]) =>
           playerIndices.map((pIdx) => {
             const pos = aliasToPixel(zone);
@@ -130,8 +179,7 @@ export default function HexGrid({ gameId, selectedPath = [], onTileClick, curren
                 isCurrentPlayer={pIdx === currentPlayerIndex}
               />
             );
-          })
-        )}
+          }))}
       </svg>
 
       <TerrainLegend />

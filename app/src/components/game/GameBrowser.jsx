@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useEffect } from 'react';
 import { useAccount } from 'wagmi';
 import { useAvailableGames } from '../../hooks/useAvailableGames';
 import { useGameActions } from '../../hooks/useGameActions';
@@ -8,7 +9,14 @@ import TxStatus from '../shared/TxStatus';
 
 export default function GameBrowser() {
   const { address } = useAccount();
-  const { gameIDs, maxPlayers, currentRegistrations, isLoading, error } = useAvailableGames();
+  const {
+    gameIDs,
+    maxPlayers,
+    currentRegistrations,
+    isLoading,
+    error,
+    refetch,
+  } = useAvailableGames();
   const {
     requestNewGame,
     hash,
@@ -19,6 +27,11 @@ export default function GameBrowser() {
   } = useGameActions();
 
   const [playerCount, setPlayerCount] = useState(2);
+
+  useEffect(() => {
+    if (!isSuccess) return;
+    refetch();
+  }, [isSuccess, refetch]);
 
   return (
     <div className="border border-exp-border rounded bg-exp-surface">

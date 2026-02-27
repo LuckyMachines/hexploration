@@ -1,9 +1,10 @@
 import { aliasToPixel } from '../../lib/hexmath';
 
-export default function PathOverlay({ path = [] }) {
-  if (path.length < 2) return null;
+export default function PathOverlay({ origin = '', path = [] }) {
+  const route = origin ? [origin, ...path] : path;
+  if (route.length < 2) return null;
 
-  const points = path.map((alias) => aliasToPixel(alias));
+  const points = route.map((alias) => aliasToPixel(alias));
 
   return (
     <g>

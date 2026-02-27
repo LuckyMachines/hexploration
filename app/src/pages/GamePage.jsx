@@ -4,10 +4,13 @@ import GameLobby from '../components/game/GameLobby';
 import ExpeditionBench from '../components/expedition/ExpeditionBench';
 import GameOver from '../components/game/GameOver';
 import Spinner from '../components/shared/Spinner';
+import { parseUintId } from '../lib/ids';
 
 export default function GamePage() {
   const { gameId } = useParams();
-  const { gameStarted, currentPhase, isLoading, error } = useGameState(gameId);
+  const parsedGameId = parseUintId(gameId);
+  const normalizedGameId = parsedGameId?.toString() ?? '';
+  const { gameStarted, currentPhase, isLoading, error } = useGameState(normalizedGameId);
 
   const isGameOver = currentPhase === 'The End';
 
@@ -18,11 +21,19 @@ export default function GamePage() {
           Expedition
         </h1>
         <span className="font-mono text-sm text-exp-text-dim bg-exp-panel border border-exp-border rounded px-2 py-0.5">
-          #{gameId}
+          #{normalizedGameId || 'Invalid'}
         </span>
       </div>
 
-      {isLoading && (
+      {parsedGameId === null && (
+        <div className="border border-signal-red/30 rounded bg-exp-panel p-8 text-center">
+          <p className="font-mono text-xs text-signal-red tracking-wider uppercase">
+            Invalid expedition id
+          </p>
+        </div>
+      )}
+
+      {parsedGameId !== null && isLoading && (
         <div className="border border-exp-border rounded bg-exp-panel p-12 flex items-center justify-center gap-3">
           <Spinner size="w-5 h-5" />
           <span className="font-mono text-xs text-exp-text-dim tracking-wider uppercase">
@@ -31,7 +42,7 @@ export default function GamePage() {
         </div>
       )}
 
-      {error && (
+      {parsedGameId !== null && error && (
         <div className="border border-signal-red/30 rounded bg-exp-panel p-8 text-center">
           <p className="font-mono text-xs text-signal-red tracking-wider uppercase">
             Failed to load expedition data
@@ -39,16 +50,16 @@ export default function GamePage() {
         </div>
       )}
 
-      {!isLoading && !error && !gameStarted && (
-        <GameLobby gameId={gameId} />
+      {parsedGameId !== null && !isLoading && !error && !gameStarted && (
+        <GameLobby gameId={normalizedGameId} />
       )}
 
-      {!isLoading && !error && gameStarted && !isGameOver && (
-        <ExpeditionBench gameId={gameId} />
+      {parsedGameId !== null && !isLoading && !error && gameStarted && !isGameOver && (
+        <ExpeditionBench gameId={normalizedGameId} />
       )}
 
-      {!isLoading && !error && gameStarted && isGameOver && (
-        <GameOver gameId={gameId} />
+      {parsedGameId !== null && !isLoading && !error && gameStarted && isGameOver && (
+        <GameOver gameId={normalizedGameId} />
       )}
     </div>
   );

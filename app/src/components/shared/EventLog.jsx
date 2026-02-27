@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { truncateAddress } from '../../lib/formatting';
+import { PROCESSING_LABELS } from '../../lib/constants';
 
 const EVENT_COLORS = {
   GameRegistration: 'text-oxide-green',
@@ -44,7 +45,7 @@ function formatEventDescription(event) {
     case 'LandingSiteSet':
       return `Landing site: ${args?.landingSite}`;
     case 'ProcessingPhaseChange':
-      return `Processing phase: ${args?.newPhase?.toString()}`;
+      return `Processing phase: ${PROCESSING_LABELS[Number(args?.newPhase ?? 0)] || args?.newPhase?.toString?.()}`;
     case 'TurnProcessingStart':
       return 'Turn processing started';
     case 'TurnProcessingFail':
@@ -101,7 +102,7 @@ export default function EventLog({ events = [] }) {
 
           return (
             <div
-              key={`${event.transactionHash}-${event.name}-${i}`}
+              key={event.key || `${event.transactionHash}-${event.name}-${i}`}
               className="flex items-start gap-2 font-mono text-xs leading-relaxed"
             >
               <span className="text-exp-text-dim shrink-0 tabular-nums">

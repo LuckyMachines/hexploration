@@ -1,17 +1,19 @@
 import { useReadContracts } from 'wagmi';
 import { playerSummaryRead } from '../config/contracts';
+import { parseUintId, safeUintId } from '../lib/ids';
 
 export function usePlayerInventory(gameId, playerID) {
-  const gid = BigInt(gameId || 0);
-  const pid = BigInt(playerID || 0);
+  const gid = parseUintId(gameId);
+  const pid = parseUintId(playerID);
+  const hasPlayerID = pid !== null && pid > 0n;
 
   const { data, isLoading, error, refetch } = useReadContracts({
     contracts: [
-      playerSummaryRead('activeInventory', [gid, pid]),
-      playerSummaryRead('inactiveInventory', [gid, pid]),
+      playerSummaryRead('activeInventory', [safeUintId(gid), safeUintId(pid)]),
+      playerSummaryRead('inactiveInventory', [safeUintId(gid), safeUintId(pid)]),
     ],
     query: {
-      enabled: !!gameId && !!playerID,
+      enabled: gid !== null && hasPlayerID,
       refetchInterval: 5000,
     },
   });

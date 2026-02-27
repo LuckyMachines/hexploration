@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0
-pragma solidity >=0.7.0 <0.9.0;
+pragma solidity 0.8.34;
 
-import "@openzeppelin/contracts/access/AccessControlEnumerable.sol";
+import "@openzeppelin/contracts/access/extensions/AccessControlEnumerable.sol";
 import "./CardDeck.sol";
 import "./HexplorationQueue.sol";
 import "./RandomIndices.sol";
@@ -30,7 +30,7 @@ contract RollDraw is AccessControlEnumerable, RandomIndices {
         address treasureDeckAddress,
         address ambushDeckAddress
     ) {
-        _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
+        _grantRole(DEFAULT_ADMIN_ROLE, _msgSender());
 
         EVENT_DECK = CardDeck(eventDeckAddress);
         TREASURE_DECK = CardDeck(treasureDeckAddress);
