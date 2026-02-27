@@ -21,6 +21,7 @@ import "../contracts/RelicManagement.sol";
 import "../contracts/GameEvents.sol";
 import "../contracts/GameSetup.sol";
 import "../contracts/HexplorationGameplay.sol";
+import "../contracts/HexplorationDisputeResolver.sol";
 import "../contracts/HexplorationStateUpdate.sol";
 import "../contracts/HexplorationQueue.sol";
 import "../contracts/HexplorationController.sol";
@@ -64,6 +65,7 @@ contract DeployHexploration is Script {
     address public s_controller;
     address payable public s_queue;
     address public s_playerSummary;
+    address public s_disputeResolver;
 
     function run() external {
         uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
@@ -113,6 +115,7 @@ contract DeployHexploration is Script {
         s_gameSummary = address(new GameSummary());
         s_playZoneSummary = address(new PlayZoneSummary());
         s_relicManagement = address(new RelicManagement());
+        s_disputeResolver = address(new HexplorationDisputeResolver());
     }
 
     // ── Phase 2: Single-dependency contracts ────────────────────────
@@ -135,7 +138,9 @@ contract DeployHexploration is Script {
 
     function _deployPhase4() internal {
         s_stateUpdate = address(new HexplorationStateUpdate(s_board, s_characterCard, s_relicManagement));
-        s_gameplay = address(new HexplorationGameplay(s_board, s_rollDraw));
+        s_gameplay = address(
+            new HexplorationGameplay(s_board, s_rollDraw, s_disputeResolver)
+        );
 
         // Mock VRF: subscriptionId=0, keyHash=0 → useMockVRF=true
         s_gameSetup = payable(address(new GameSetup(0, deployer, bytes32(0))));
@@ -184,11 +189,17 @@ contract DeployHexploration is Script {
         );
 
         GameToken(s_dayNight).addController(s_tokenInventory);
+        GameToken(s_dayNight).addController(s_gameSetup);
         GameToken(s_disaster).addController(s_tokenInventory);
+        GameToken(s_disaster).addController(s_gameSetup);
         GameToken(s_enemy).addController(s_tokenInventory);
+        GameToken(s_enemy).addController(s_gameSetup);
         GameToken(s_item).addController(s_tokenInventory);
+        GameToken(s_item).addController(s_gameSetup);
         GameToken(s_playerStatus).addController(s_tokenInventory);
+        GameToken(s_playerStatus).addController(s_gameSetup);
         GameToken(s_relic).addController(s_tokenInventory);
+        GameToken(s_relic).addController(s_gameSetup);
     }
 
     function _wireGameLogic() internal {
@@ -200,6 +211,7 @@ contract DeployHexploration is Script {
 
         // Queue
         HexplorationQueue(s_queue).addVerifiedController(s_controller);
+        HexplorationQueue(s_queue).addVerifiedController(s_gameSetup);
         HexplorationQueue(s_queue).setGameEvents(s_gameEvents);
 
         // Gameplay
@@ -222,6 +234,7 @@ contract DeployHexploration is Script {
         RelicManagement(s_relicManagement).addVerifiedController(s_stateUpdate);
 
         // CharacterCard
+        CharacterCard(s_characterCard).addVerifiedController(s_controller);
         CharacterCard(s_characterCard).addVerifiedController(s_gameplay);
         CharacterCard(s_characterCard).addVerifiedController(s_stateUpdate);
         CharacterCard(s_characterCard).addVerifiedController(s_gameSetup);
@@ -380,6 +393,7 @@ contract DeployHexploration is Script {
         console.log("CHARACTER_CARD:          ", s_characterCard);
         console.log("GAMEPLAY:                ", s_gameplay);
         console.log("ROLL_DRAW:               ", s_rollDraw);
+        console.log("DISPUTE_RESOLVER:        ", s_disputeResolver);
         console.log("GAME_QUEUE:              ", s_queue);
         console.log("GAME_STATE_UPDATE:       ", s_stateUpdate);
         console.log("GAME_EVENTS:             ", s_gameEvents);
