@@ -16,6 +16,7 @@
  */
 import { createPublicClient, createWalletClient, http } from 'viem';
 import { sepolia } from 'viem/chains';
+import { foundry } from 'viem/chains';
 import { privateKeyToAccount } from 'viem/accounts';
 import { readFileSync } from 'fs';
 import { resolve, dirname } from 'path';
@@ -38,11 +39,16 @@ if (!rpcUrl || !privateKey) {
   process.exit(1);
 }
 
+// ── Chain selection ──────────────────────────────────────────────────
+const CHAIN_NAME = process.env.CHAIN || 'sepolia';
+const chain = CHAIN_NAME === 'foundry' ? foundry : sepolia;
+
 // ── Load deployments ────────────────────────────────────────────────
-const deployments = JSON.parse(
-  readFileSync(resolve(root, 'deployments.json'), 'utf8')
-);
-const addrs = deployments.sepolia;
+const addrs = process.env.DEPLOYMENTS_JSON
+  ? JSON.parse(process.env.DEPLOYMENTS_JSON)
+  : JSON.parse(readFileSync(resolve(root, 'deployments.json'), 'utf8'))[CHAIN_NAME === 'foundry' ? 'sepolia' : CHAIN_NAME];
+// When using DEPLOYMENTS_JSON env var, addresses are passed directly (no network key).
+// When reading from file, fall back to the sepolia key (foundry reuses sepolia layout).
 
 // ── ABIs (minimal — only the functions we call) ─────────────────────
 const vrfAbi = [
@@ -60,8 +66,8 @@ const loopAbi = [
 // ── Clients ─────────────────────────────────────────────────────────
 const account = privateKeyToAccount(privateKey);
 const transport = http(rpcUrl);
-const publicClient = createPublicClient({ chain: sepolia, transport });
-const walletClient = createWalletClient({ chain: sepolia, transport, account });
+const publicClient = createPublicClient({ chain, transport });
+const walletClient = createWalletClient({ chain, transport, account });
 
 // ── ECVRF (lazy-loaded only in VRF mode) ────────────────────────────
 let ecvrfProver = null;

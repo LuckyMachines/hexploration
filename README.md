@@ -254,6 +254,64 @@ cd app && npm install && npm run dev
 node scripts/hexploration-worker.mjs
 ```
 
+## Local Development
+
+Run the entire stack locally with a single command -- Anvil chain, deployed contracts, populated card decks, a seeded game, the automation worker, and the Vite frontend:
+
+```bash
+npm run local
+```
+
+This takes about 60 seconds to boot. When you see the `Local Stack Running` banner, open `http://localhost:5502` in your browser.
+
+### What it does
+
+1. Starts an [Anvil](https://book.getfoundry.sh/reference/anvil/) local chain on port 9955 (chain ID 31337)
+2. Deploys all 25 contracts via `forge script`
+3. Populates all 5 card decks from `onchain-data.json`
+4. Seeds an open 2-player game so you can join immediately
+5. Writes `app/.env.local` with the deployed addresses
+6. Starts the automation worker (2s poll interval)
+7. Starts the Vite dev server on port 5502
+
+### MetaMask setup
+
+Add a custom network in MetaMask:
+
+| Field | Value |
+|-------|-------|
+| Network name | Anvil Local |
+| RPC URL | `http://127.0.0.1:9955` |
+| Chain ID | `31337` |
+| Currency symbol | ETH |
+
+Import the Anvil default account (pre-funded with 10,000 ETH):
+
+```
+Private key: 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80
+Address:     0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
+```
+
+### Configuration
+
+| Env var | Default | Description |
+|---------|---------|-------------|
+| `ANVIL_PORT` | `9955` | Port for the Anvil RPC server |
+
+```bash
+# Use a different port
+ANVIL_PORT=8545 npm run local
+```
+
+### Stopping
+
+Press `Ctrl+C` to cleanly shut down Anvil, the worker, and the dev server.
+
+### Notes
+
+- `app/.env.local` is gitignored (covered by the `.env.*` pattern) and is overwritten on each run
+- The existing `npm run worker` and `npm run dev` commands still work unchanged for Sepolia
+
 ## Deployment
 
 ### Prerequisites
@@ -351,6 +409,7 @@ hexploration/
 │   ├── enable-mock-vrf.mjs       # Enable mock VRF mode
 │   ├── enable-autoloop-vrf.mjs   # Enable/disable AutoLoop VRF mode
 │   ├── register-vrf-key.mjs     # Register worker VRF public key
+│   ├── run-local-stack.mjs       # Local full-stack orchestrator
 │   ├── ecvrf-prover.mjs         # ECVRF proof generation library
 │   ├── pull-onchain-data.mjs     # Pull game data from chain
 │   ├── onchain-data.json         # Card deck + token data
@@ -372,6 +431,7 @@ hexploration/
 | Script | Description |
 |--------|-------------|
 | `hexploration-worker.mjs` | Automation worker -- polls for pending games, fulfills VRF, advances phases |
+| `run-local-stack.mjs` | Boots full local stack: Anvil + contracts + decks + worker + frontend |
 | `populate-decks.mjs` | Populates all 5 card decks from `onchain-data.json` |
 | `check-hex-status.mjs` | Reads on-chain state to verify deployment is correctly wired |
 | `enable-mock-vrf.mjs` | Enables mock VRF mode on deployed contracts |

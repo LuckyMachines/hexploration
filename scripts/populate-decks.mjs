@@ -13,6 +13,7 @@ import "dotenv/config";
 import { createPublicClient, createWalletClient, http, parseAbi } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
 import { sepolia } from "viem/chains";
+import { foundry } from "viem/chains";
 import { readFileSync } from "fs";
 import { resolve, dirname } from "path";
 import { fileURLToPath } from "url";
@@ -22,16 +23,18 @@ const root = resolve(__dirname, "..");
 
 // ── Config ──────────────────────────────────────────────────────────
 
-const RPC_URL = process.env.SEPOLIA_RPC_URL || "https://1rpc.io/sepolia";
+const CHAIN_NAME = process.env.CHAIN || "sepolia";
+const chain = CHAIN_NAME === "foundry" ? foundry : sepolia;
+const RPC_URL = process.env.RPC_URL || process.env.SEPOLIA_RPC_URL || "https://1rpc.io/sepolia";
 const PRIVATE_KEY = process.env.PRIVATE_KEY;
 if (!PRIVATE_KEY) {
   console.error("ERROR: PRIVATE_KEY not set in .env");
   process.exit(1);
 }
 
-const deployments = JSON.parse(
-  readFileSync(resolve(root, "deployments.json"), "utf8")
-).sepolia;
+const deployments = process.env.DEPLOYMENTS_JSON
+  ? JSON.parse(process.env.DEPLOYMENTS_JSON)
+  : JSON.parse(readFileSync(resolve(root, "deployments.json"), "utf8")).sepolia;
 
 const onchainData = JSON.parse(
   readFileSync(resolve(root, "scripts", "onchain-data.json"), "utf8")
@@ -40,13 +43,13 @@ const onchainData = JSON.parse(
 const account = privateKeyToAccount(PRIVATE_KEY);
 
 const publicClient = createPublicClient({
-  chain: sepolia,
+  chain,
   transport: http(RPC_URL),
 });
 
 const walletClient = createWalletClient({
   account,
-  chain: sepolia,
+  chain,
   transport: http(RPC_URL),
 });
 

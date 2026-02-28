@@ -9,6 +9,7 @@
     "enable-mock-vrf": "node scripts/enable-mock-vrf.mjs",
     "check-status": "node scripts/check-hex-status.mjs",
     "dev": "cd app && npm run dev",
+    "local": "node scripts/run-local-stack.mjs",
     "test:e2e:anvil": "node scripts/run-anvil-e2e.mjs"
   },
   "repository": {
