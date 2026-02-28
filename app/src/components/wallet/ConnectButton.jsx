@@ -1,5 +1,4 @@
-import { useAccount, useConnect, useDisconnect } from 'wagmi';
-import { injected } from 'wagmi/connectors';
+import { useWallet } from '../../contexts/WalletContext';
 
 function truncateAddress(address) {
   if (!address) return '';
@@ -7,9 +6,7 @@ function truncateAddress(address) {
 }
 
 export default function ConnectButton() {
-  const { address, isConnected } = useAccount();
-  const { connect } = useConnect();
-  const { disconnect } = useDisconnect();
+  const { address, isConnected, connect, disconnect } = useWallet();
 
   if (isConnected) {
     return (
@@ -30,7 +27,7 @@ export default function ConnectButton() {
 
   return (
     <button
-      onClick={() => connect({ connector: injected() })}
+      onClick={() => connect()}
       className="
         border border-compass/50 bg-exp-panel
         hover:bg-compass/10 hover:border-compass

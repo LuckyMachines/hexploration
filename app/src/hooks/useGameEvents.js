@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { usePublicClient, useWatchContractEvent } from 'wagmi';
+import { usePublicClient, useWatchContractEvent } from './useContractEvents';
 import { EventsABI, GAME_EVENTS_ADDRESS } from '../config/contracts';
 import { parseUintId } from '../lib/ids';
 

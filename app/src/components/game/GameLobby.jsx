@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useAccount } from 'wagmi';
+import { useWallet } from '../../contexts/WalletContext';
 import { useAllPlayers } from '../../hooks/useAllPlayers';
 import { useGameActions } from '../../hooks/useGameActions';
 import { usePlayerSummary } from '../../hooks/usePlayerSummary';
@@ -9,7 +9,7 @@ import TxStatus from '../shared/TxStatus';
 import Spinner from '../shared/Spinner';
 
 export default function GameLobby({ gameId }) {
-  const { address } = useAccount();
+  const { address } = useWallet();
   const { players, isLoading: loadingPlayers, refetch: refetchPlayers } = useAllPlayers(gameId);
   const { playerID, refetch: refetchPlayerID } = usePlayerID(gameId, address);
   const { isRegistered: isRegisteredBySummary, refetch: refetchPlayerSummary } = usePlayerSummary(gameId, playerID);

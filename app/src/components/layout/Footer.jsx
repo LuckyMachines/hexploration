@@ -1,7 +1,7 @@
-import { useAccount } from 'wagmi';
+import { useWallet } from '../../contexts/WalletContext';
 
 export default function Footer() {
-  const { chain, isConnected } = useAccount();
+  const { chain, isConnected } = useWallet();
 
   return (
     <footer className="border-t border-exp-border bg-exp-surface/60 mt-auto">

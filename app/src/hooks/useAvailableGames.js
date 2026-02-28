@@ -1,4 +1,4 @@
-import { useReadContract } from 'wagmi';
+import { useReadContract } from './useContractRead';
 import { gameSummaryRead, GAME_REGISTRY_ADDRESS } from '../config/contracts';
 
 /**

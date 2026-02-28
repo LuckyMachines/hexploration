@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useEffect } from 'react';
-import { useAccount } from 'wagmi';
+import { useWallet } from '../../contexts/WalletContext';
 import { useAvailableGames } from '../../hooks/useAvailableGames';
 import { useGameActions } from '../../hooks/useGameActions';
 import GameCard from './GameCard';
@@ -8,7 +8,7 @@ import Spinner from '../shared/Spinner';
 import TxStatus from '../shared/TxStatus';
 
 export default function GameBrowser() {
-  const { address } = useAccount();
+  const { address } = useWallet();
   const {
     gameIDs,
     maxPlayers,

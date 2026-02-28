@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useAccount } from 'wagmi';
+import { useWallet } from '../../contexts/WalletContext';
 import { useGamePhase } from '../../hooks/useGamePhase';
 import { useAllPlayers } from '../../hooks/useAllPlayers';
 import { useAllPlayerLocations } from '../../hooks/useAllPlayerLocations';
@@ -25,7 +25,7 @@ import TurnResolution from '../resolution/TurnResolution';
 import EventLog from '../shared/EventLog';
 
 export default function ExpeditionBench({ gameId }) {
-  const { address } = useAccount();
+  const { address } = useWallet();
   const { phase } = useGamePhase(gameId);
   const { players } = useAllPlayers(gameId);
   const { playerIDs: locPlayerIDs, playerZones } = useAllPlayerLocations(gameId);

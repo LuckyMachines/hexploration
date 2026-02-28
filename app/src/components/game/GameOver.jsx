@@ -1,12 +1,12 @@
 import { Link } from 'react-router-dom';
-import { useAccount } from 'wagmi';
+import { useWallet } from '../../contexts/WalletContext';
 import { useAllPlayers } from '../../hooks/useAllPlayers';
 import { truncateAddress } from '../../lib/formatting';
 import { PLAYER_COLORS } from '../../lib/constants';
 import Spinner from '../shared/Spinner';
 
 export default function GameOver({ gameId }) {
-  const { address } = useAccount();
+  const { address } = useWallet();
   const { players, isLoading } = useAllPlayers(gameId);
 
   if (isLoading) {

@@ -1,4 +1,4 @@
-import { useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
+import { useContractWrite } from './useContractWrite';
 import {
   ControllerABI,
   CONTROLLER_ADDRESS,
@@ -7,9 +7,7 @@ import {
 } from '../config/contracts';
 
 export function useGameActions() {
-  const { writeContractAsync, data: hash, isPending, error } = useWriteContract();
-
-  const { isLoading: isConfirming, isSuccess } = useWaitForTransactionReceipt({ hash });
+  const { writeContractAsync, data: hash, isPending, isConfirming, isSuccess, error } = useContractWrite();
 
   const requestNewGame = (totalPlayers) =>
     writeContractAsync({

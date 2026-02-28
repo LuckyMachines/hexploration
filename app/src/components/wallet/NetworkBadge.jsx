@@ -1,11 +1,8 @@
-import { useAccount, useSwitchChain } from 'wagmi';
-import { foundry, sepolia } from 'wagmi/chains';
-
-const SUPPORTED_CHAINS = [foundry, sepolia];
+import { useWallet } from '../../contexts/WalletContext';
+import { SUPPORTED_CHAINS, foundry } from '../../config/chains';
 
 export default function NetworkBadge() {
-  const { chain, isConnected } = useAccount();
-  const { switchChain, isPending } = useSwitchChain();
+  const { chain, isConnected, switchChain, isSwitching: isPending } = useWallet();
 
   if (!isConnected) {
     return (

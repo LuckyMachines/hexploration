@@ -1,6 +1,5 @@
 import { useParams } from 'react-router-dom';
-import { useAccount, useConnect } from 'wagmi';
-import { injected } from 'wagmi/connectors';
+import { useWallet } from '../contexts/WalletContext';
 import { useGameState } from '../hooks/useGameState';
 import GameLobby from '../components/game/GameLobby';
 import ExpeditionBench from '../components/expedition/ExpeditionBench';
@@ -10,8 +9,7 @@ import { parseUintId } from '../lib/ids';
 
 export default function GamePage() {
   const { gameId } = useParams();
-  const { isConnected } = useAccount();
-  const { connect } = useConnect();
+  const { isConnected, connect } = useWallet();
   const parsedGameId = parseUintId(gameId);
   const normalizedGameId = parsedGameId?.toString() ?? '';
   const { gameStarted, currentPhase, isLoading, error } = useGameState(normalizedGameId);
@@ -46,7 +44,7 @@ export default function GamePage() {
             You need a connected wallet to register, submit actions, and interact with the game.
           </p>
           <button
-            onClick={() => connect({ connector: injected() })}
+            onClick={() => connect()}
             className="px-5 py-2.5 bg-compass/10 border border-compass/50 rounded text-compass text-xs font-display font-semibold tracking-widest uppercase
                        hover:bg-compass/20 hover:border-compass transition-colors"
           >

@@ -1,4 +1,4 @@
-import { useReadContract } from 'wagmi';
+import { useReadContract } from '../../hooks/useContractRead';
 import { gameSummaryRead } from '../../config/contracts';
 import { parseUintId, safeUintId } from '../../lib/ids';
 

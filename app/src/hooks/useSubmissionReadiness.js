@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { useReadContracts } from 'wagmi';
+import { useReadContracts } from './useContractReads';
 import { GAME_QUEUE_ADDRESS, QueueABI } from '../config/contracts';
 import { parseUintId } from '../lib/ids';
 

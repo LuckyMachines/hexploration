@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { useAccount } from 'wagmi';
+import { useWallet } from '../../contexts/WalletContext';
 import {
   BOARD_ADDRESS,
   CONTROLLER_ADDRESS,
@@ -23,7 +23,7 @@ const REQUIRED = [
 ];
 
 export default function SystemHealth() {
-  const { chain, isConnected } = useAccount();
+  const { chain, isConnected } = useWallet();
   const missing = useMemo(
     () => REQUIRED.filter(([, value]) => !value).map(([name]) => name),
     [],

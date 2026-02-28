@@ -3,6 +3,19 @@ import { render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import GamePage from './GamePage';
 
+vi.mock('../contexts/WalletContext', () => ({
+  useWallet: () => ({
+    address: null,
+    isConnected: false,
+    chain: null,
+    chainId: null,
+    connect: vi.fn(),
+    disconnect: vi.fn(),
+    switchChain: vi.fn(),
+    isSwitching: false,
+  }),
+}));
+
 vi.mock('../hooks/useGameState', () => ({
   useGameState: () => ({
     gameStarted: false,

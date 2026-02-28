@@ -1,4 +1,4 @@
-import { useReadContracts } from 'wagmi';
+import { useReadContracts } from './useContractReads';
 import {
   GAME_SETUP_ADDRESS,
   GAME_QUEUE_ADDRESS,

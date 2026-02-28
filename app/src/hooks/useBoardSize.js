@@ -1,4 +1,4 @@
-import { useReadContract } from 'wagmi';
+import { useReadContract } from './useContractRead';
 import { GameSummaryABI, GAME_SUMMARY_ADDRESS, BOARD_ADDRESS } from '../config/contracts';
 
 export function useBoardSize() {
