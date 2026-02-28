@@ -35,21 +35,22 @@
 }
 
 html {
-  /* Base font scale — bumps all rem/em-based sizes up globally */
-  font-size: 18px;
+  /* Base font scale — JS reads this variable and multiplies by user scale */
+  --base-font-size: 18px;
+  font-size: var(--base-font-size);
 }
 
 /* High-DPI screens (>= 1.5x device pixel ratio): scale up further */
 @media (min-resolution: 144dpi), (-webkit-min-device-pixel-ratio: 1.5) {
   html {
-    font-size: 20px;
+    --base-font-size: 20px;
   }
 }
 
 /* Very high-DPI (>= 2x, e.g. 4K, Retina): scale even more */
 @media (min-resolution: 192dpi), (-webkit-min-device-pixel-ratio: 2) {
   html {
-    font-size: 22px;
+    --base-font-size: 22px;
   }
 }
 

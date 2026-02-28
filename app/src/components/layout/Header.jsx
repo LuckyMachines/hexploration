@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import ConnectButton from '../wallet/ConnectButton';
 import NetworkBadge from '../wallet/NetworkBadge';
 import HelpButton from '../help/HelpButton';
+import ScaleControl from './ScaleControl';
 import AutomationStatus from '../shared/AutomationStatus';
 
 export default function Header({ onHelpClick }) {
@@ -15,6 +16,7 @@ export default function Header({ onHelpClick }) {
         </Link>
         <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
           <HelpButton onClick={onHelpClick} />
+          <ScaleControl />
           <AutomationStatus />
           <NetworkBadge />
           <ConnectButton />
