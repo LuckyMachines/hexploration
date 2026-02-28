@@ -4,6 +4,8 @@ WORKDIR /build
 COPY app/package*.json ./
 RUN npm ci
 COPY app/ ./
+# ABIs live at repo root; app imports them via ../../../abi/
+COPY abi/ /abi/
 
 # Vite inlines VITE_* env vars at build time.
 # Railway passes service variables as Docker build args automatically.
