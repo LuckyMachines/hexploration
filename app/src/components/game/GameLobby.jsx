@@ -53,7 +53,7 @@ export default function GameLobby({ gameId }) {
 
       <div className="px-6 py-5 space-y-5">
         <div>
-          <h3 className="font-mono text-[10px] tracking-[0.3em] text-exp-text-dim uppercase mb-3">
+          <h3 className="font-mono text-xs tracking-[0.3em] text-exp-text-dim uppercase mb-3">
             Crew Manifest ({players.length} enrolled)
           </h3>
 
@@ -77,7 +77,7 @@ export default function GameLobby({ gameId }) {
                       {truncateAddress(addr)}
                     </span>
                     {addr?.toLowerCase() === address?.toLowerCase() && (
-                      <span className="text-[10px] text-compass/70 uppercase tracking-wider">(you)</span>
+                      <span className="text-xs text-compass/70 uppercase tracking-wider">(you)</span>
                     )}
                   </li>
                 );

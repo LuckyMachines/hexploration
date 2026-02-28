@@ -2,7 +2,7 @@ import { Action } from '../../lib/constants';
 
 function SimulatorRow({ ok, label, detail }) {
   return (
-    <div className="flex items-start gap-2 text-[10px] font-mono">
+    <div className="flex items-start gap-2 text-xs font-mono">
       <span
         className={`inline-block mt-[2px] w-1.5 h-1.5 rounded-full ${
           ok ? 'bg-oxide-green' : 'bg-signal-red'
@@ -61,10 +61,10 @@ export default function ActionSimulator({
   return (
     <div className="border border-exp-border/60 rounded bg-exp-dark/40 p-3 space-y-2">
       <div className="flex items-center justify-between">
-        <h4 className="font-mono text-[10px] tracking-[0.3em] text-exp-text-dim uppercase">
+        <h4 className="font-mono text-xs tracking-[0.3em] text-exp-text-dim uppercase">
           Action Simulation
         </h4>
-        <span className={`font-mono text-[10px] uppercase tracking-wider ${canLikelySubmit ? 'text-oxide-green' : 'text-signal-red'}`}>
+        <span className={`font-mono text-xs uppercase tracking-wider ${canLikelySubmit ? 'text-oxide-green' : 'text-signal-red'}`}>
           {canLikelySubmit ? 'Likely Valid' : 'Likely Revert'}
         </span>
       </div>

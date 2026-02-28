@@ -14,7 +14,7 @@ export default function InventoryChange({ inventoryChange }) {
         return (
           <span
             key={i}
-            className={`font-mono text-[10px] px-1.5 py-0.5 rounded border
+            className={`font-mono text-xs px-1.5 py-0.5 rounded border
               ${isGain
                 ? 'text-compass border-compass/30 bg-compass/5'
                 : 'text-exp-text-dim border-exp-border bg-exp-dark/40'

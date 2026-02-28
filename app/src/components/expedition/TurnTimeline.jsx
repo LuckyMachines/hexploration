@@ -25,31 +25,31 @@ export default function TurnTimeline({ queueTelemetry, events = [] }) {
   return (
     <div className="border border-exp-border rounded bg-exp-panel p-3">
       <div className="flex items-center justify-between mb-2">
-        <h3 className="font-mono text-[10px] tracking-[0.3em] text-exp-text-dim uppercase">
+        <h3 className="font-mono text-xs tracking-[0.3em] text-exp-text-dim uppercase">
           Turn Timeline
         </h3>
-        <span className="font-mono text-[10px] uppercase tracking-wider text-exp-text-dim">
+        <span className="font-mono text-xs uppercase tracking-wider text-exp-text-dim">
           Queue #{queueTelemetry.queueID.toString()}
         </span>
       </div>
 
       <div className="grid sm:grid-cols-4 gap-2">
         <div className="border border-exp-border/60 rounded bg-exp-dark/40 px-2 py-1.5">
-          <div className="font-mono text-[10px] text-exp-text-dim uppercase">Phase</div>
+          <div className="font-mono text-xs text-exp-text-dim uppercase">Phase</div>
           <div className="font-mono text-xs text-compass">{phaseLabel}</div>
         </div>
         <div className="border border-exp-border/60 rounded bg-exp-dark/40 px-2 py-1.5">
-          <div className="font-mono text-[10px] text-exp-text-dim uppercase">Submissions</div>
+          <div className="font-mono text-xs text-exp-text-dim uppercase">Submissions</div>
           <div className="font-mono text-xs text-compass">
             {queueTelemetry.submittedCount}/{queueTelemetry.totalPlayers}
           </div>
         </div>
         <div className="border border-exp-border/60 rounded bg-exp-dark/40 px-2 py-1.5">
-          <div className="font-mono text-[10px] text-exp-text-dim uppercase">Randomness</div>
+          <div className="font-mono text-xs text-exp-text-dim uppercase">Randomness</div>
           <div className="font-mono text-xs text-compass">{queueTelemetry.randomnessCount} words</div>
         </div>
         <div className="border border-exp-border/60 rounded bg-exp-dark/40 px-2 py-1.5">
-          <div className="font-mono text-[10px] text-exp-text-dim uppercase">VRF Mode</div>
+          <div className="font-mono text-xs text-exp-text-dim uppercase">VRF Mode</div>
           <div className="font-mono text-xs text-compass">{mode}</div>
         </div>
       </div>
@@ -57,7 +57,7 @@ export default function TurnTimeline({ queueTelemetry, events = [] }) {
       {isProcessing && (
         <div className="mt-2 flex items-center gap-2 px-2 py-1.5 rounded border border-compass/30 bg-compass/5">
           <Spinner size="w-3 h-3" />
-          <span className="font-mono text-[10px] text-compass tracking-wider uppercase">
+          <span className="font-mono text-xs text-compass tracking-wider uppercase">
             Processing turn — worker is advancing the game loop...
           </span>
         </div>
@@ -66,13 +66,13 @@ export default function TurnTimeline({ queueTelemetry, events = [] }) {
       {isWaitingForSubmissions && (
         <div className="mt-2 flex items-center gap-2 px-2 py-1.5 rounded border border-blueprint/30 bg-blueprint/5">
           <span className="w-1.5 h-1.5 rounded-full bg-blueprint animate-pulse" />
-          <span className="font-mono text-[10px] text-blueprint tracking-wider uppercase">
+          <span className="font-mono text-xs text-blueprint tracking-wider uppercase">
             Waiting for {queueTelemetry.totalPlayers - queueTelemetry.submittedCount} more player{queueTelemetry.totalPlayers - queueTelemetry.submittedCount !== 1 ? 's' : ''} to submit actions
           </span>
         </div>
       )}
 
-      <div className="mt-2 font-mono text-[10px] text-exp-text-dim">
+      <div className="mt-2 font-mono text-xs text-exp-text-dim">
         Last event: {latestEvent ? `${latestEvent.name} @ block ${latestEvent.blockNumber?.toString?.() || latestEvent.blockNumber} (${formatTime(latestEvent.timestamp)})` : 'No events yet'}
       </div>
     </div>

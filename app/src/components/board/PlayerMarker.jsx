@@ -37,7 +37,7 @@ export default function PlayerMarker({ cx, cy, playerIndex, isCurrentPlayer }) {
         textAnchor="middle"
         dominantBaseline="middle"
         fill="#0d0f0a"
-        style={{ fontSize: '6px', fontWeight: 'bold', fontFamily: 'JetBrains Mono, monospace' }}
+        style={{ fontSize: '8px', fontWeight: 'bold', fontFamily: 'JetBrains Mono, monospace' }}
       >
         {label}
       </text>

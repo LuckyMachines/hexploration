@@ -19,7 +19,7 @@ export default function GameCard({ gameId, maxPlayers, registered }) {
             EXP-{String(gameId).padStart(3, '0')}
           </span>
           <span
-            className={`font-mono text-[10px] tracking-widest uppercase rounded px-2 py-0.5 border
+            className={`font-mono text-xs tracking-widest uppercase rounded px-2 py-0.5 border
               ${isFull
                 ? 'text-compass border-compass/30 bg-compass/5'
                 : 'text-oxide-green border-oxide-green/30 bg-oxide-green/5'
@@ -32,7 +32,7 @@ export default function GameCard({ gameId, maxPlayers, registered }) {
         {/* Details row */}
         <div className="flex items-center gap-6">
           <div>
-            <p className="font-mono text-[10px] tracking-[0.3em] text-exp-text-dim uppercase mb-0.5">
+            <p className="font-mono text-xs tracking-[0.3em] text-exp-text-dim uppercase mb-0.5">
               Explorers
             </p>
             <p className="font-mono text-xs text-exp-text">

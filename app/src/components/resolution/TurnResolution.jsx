@@ -25,7 +25,7 @@ export default function TurnResolution({ gameId }) {
         {/* Player action results */}
         {hasActions && (
           <div>
-            <h4 className="font-mono text-[10px] tracking-[0.3em] text-exp-text-dim uppercase mb-2">
+            <h4 className="font-mono text-xs tracking-[0.3em] text-exp-text-dim uppercase mb-2">
               Action Outcomes
             </h4>
             <div className="space-y-2">
@@ -40,7 +40,7 @@ export default function TurnResolution({ gameId }) {
         {hasActions && hasEvents && (
           <div className="flex items-center gap-2">
             <div className="h-px flex-1 bg-exp-border" />
-            <span className="font-display text-[10px] tracking-[0.3em] text-exp-text-dim uppercase">
+            <span className="font-display text-xs tracking-[0.3em] text-exp-text-dim uppercase">
               Day Phase Events
             </span>
             <div className="h-px flex-1 bg-exp-border" />

@@ -18,7 +18,7 @@ export default function StatChange({ statUpdate }) {
         return (
           <span
             key={change.label}
-            className={`font-mono text-[10px] px-1.5 py-0.5 rounded border
+            className={`font-mono text-xs px-1.5 py-0.5 rounded border
               ${isPositive
                 ? 'text-oxide-green border-oxide-green/30 bg-oxide-green/5'
                 : 'text-signal-red border-signal-red/30 bg-signal-red/5'

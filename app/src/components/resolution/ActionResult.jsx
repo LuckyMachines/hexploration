@@ -18,7 +18,7 @@ export default function ActionResult({ playerAction }) {
   return (
     <div className="flex items-start gap-3 p-2 rounded border border-exp-border/50 bg-exp-dark/40">
       <span className="shrink-0 w-6 h-6 rounded-full bg-compass/20 border border-compass/40
-                       flex items-center justify-center text-compass text-[10px] font-mono tabular-nums">
+                       flex items-center justify-center text-compass text-xs font-mono tabular-nums">
         P{pid}
       </span>
 
@@ -28,26 +28,26 @@ export default function ActionResult({ playerAction }) {
             {actionLabel}
           </span>
           {cardType ? (
-            <span className="font-mono text-[10px] text-exp-text-dim uppercase">
+            <span className="font-mono text-xs text-exp-text-dim uppercase">
               {cardType}
             </span>
           ) : null}
         </div>
 
         {cardDrawn ? (
-          <p className="font-mono text-[10px] text-exp-text-dim leading-relaxed">
+          <p className="font-mono text-xs text-exp-text-dim leading-relaxed">
             Card: {cardDrawn}
           </p>
         ) : null}
 
         {cardResult ? (
-          <p className="font-mono text-[10px] text-exp-text-dim leading-relaxed">
+          <p className="font-mono text-xs text-exp-text-dim leading-relaxed">
             {cardResult}
           </p>
         ) : null}
 
         {movementPath.length > 0 ? (
-          <p className="font-mono text-[10px] text-exp-text-dim leading-relaxed">
+          <p className="font-mono text-xs text-exp-text-dim leading-relaxed">
             Path: {movementPath.join(' -> ')}
           </p>
         ) : null}

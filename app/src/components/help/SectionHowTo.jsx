@@ -33,7 +33,7 @@ export default function SectionHowTo() {
         {STEPS.map((step, i) => (
           <li key={i} className="flex items-start gap-3">
             <span className="shrink-0 w-5 h-5 rounded-full bg-compass/20 border border-compass/40
-                             flex items-center justify-center text-compass text-[10px] tabular-nums">
+                             flex items-center justify-center text-compass text-xs tabular-nums">
               {i + 1}
             </span>
             <span className="text-exp-text-dim">{step}</span>

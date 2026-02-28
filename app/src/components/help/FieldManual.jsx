@@ -23,7 +23,7 @@ export default function FieldManual() {
           <h2 className="font-display text-lg tracking-[0.25em] text-compass uppercase">
             Field Manual
           </h2>
-          <span className="font-mono text-[10px] text-exp-text-dim tracking-wider uppercase">
+          <span className="font-mono text-xs text-exp-text-dim tracking-wider uppercase">
             Hexploration // Explorer Reference
           </span>
         </div>
@@ -38,7 +38,7 @@ export default function FieldManual() {
               key={tab.key}
               onClick={() => setActiveTab(tab.key)}
               className={`
-                px-3 py-1.5 text-[11px] font-mono uppercase tracking-wider
+                px-3 py-1.5 text-xs font-mono uppercase tracking-wider
                 border rounded transition-all duration-200
                 ${isActive
                   ? 'text-compass bg-compass/10 border-compass/40'

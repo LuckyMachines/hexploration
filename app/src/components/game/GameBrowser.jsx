@@ -37,7 +37,7 @@ export default function GameBrowser() {
     <div className="border border-exp-border rounded bg-exp-surface">
       {/* Header bar */}
       <div className="border-b border-exp-border px-6 py-4 flex items-center justify-between">
-        <h2 className="font-mono text-[10px] tracking-[0.3em] text-exp-text-dim uppercase">
+        <h2 className="font-mono text-xs tracking-[0.3em] text-exp-text-dim uppercase">
           Available Expeditions
         </h2>
 
@@ -101,7 +101,7 @@ export default function GameBrowser() {
             <p className="font-mono text-xs text-signal-red tracking-wider uppercase">
               Failed to load expeditions
             </p>
-            <p className="font-mono text-[10px] text-exp-text-dim break-all max-w-lg mx-auto">
+            <p className="font-mono text-xs text-exp-text-dim break-all max-w-lg mx-auto">
               {error?.shortMessage || error?.message || String(error)}
             </p>
           </div>

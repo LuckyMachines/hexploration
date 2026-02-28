@@ -60,7 +60,7 @@ export default function ActionPanel({
         {hasSubmitted && (
           <span className="flex items-center gap-1.5">
             <span className="w-1.5 h-1.5 rounded-full bg-blueprint" />
-            <span className="font-mono text-[10px] text-blueprint uppercase tracking-wider">
+            <span className="font-mono text-xs text-blueprint uppercase tracking-wider">
               Submitted: {currentAction}
             </span>
           </span>
@@ -76,7 +76,7 @@ export default function ActionPanel({
               key={tab.action}
               onClick={() => setActiveTab(tab.action)}
               className={`
-                px-3 py-1.5 text-[11px] font-mono uppercase tracking-wider shrink-0
+                px-3 py-1.5 text-xs font-mono uppercase tracking-wider shrink-0
                 border rounded transition-all duration-200
                 ${isActive
                   ? 'text-compass bg-compass/10 border-compass/40'

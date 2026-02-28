@@ -4,7 +4,7 @@ export default function InventoryPanel({ active, inactive }) {
 
   return (
     <div className="border border-exp-border rounded bg-exp-dark/40 p-3">
-      <h4 className="font-mono text-[10px] tracking-[0.3em] text-exp-text-dim uppercase mb-2">
+      <h4 className="font-mono text-xs tracking-[0.3em] text-exp-text-dim uppercase mb-2">
         Inventory
       </h4>
 
@@ -15,7 +15,7 @@ export default function InventoryPanel({ active, inactive }) {
             <span className="w-2 h-2 rounded-full bg-compass shrink-0" />
             <span className="font-mono text-xs text-compass">{active.artifact}</span>
             {active.status && (
-              <span className="font-mono text-[10px] text-exp-text-dim">({active.status})</span>
+              <span className="font-mono text-xs text-exp-text-dim">({active.status})</span>
             )}
           </div>
         )}
@@ -42,12 +42,12 @@ export default function InventoryPanel({ active, inactive }) {
       {/* Inactive inventory (bag) */}
       {inactive?.itemTypes?.length > 0 && (
         <div className="border-t border-exp-border/50 pt-2">
-          <span className="font-mono text-[10px] text-exp-text-dim uppercase tracking-wider">Bag</span>
+          <span className="font-mono text-xs text-exp-text-dim uppercase tracking-wider">Bag</span>
           <div className="mt-1 space-y-0.5">
             {inactive.itemTypes.map((item, i) => (
               <div key={i} className="flex items-center justify-between">
-                <span className="font-mono text-[10px] text-exp-text-dim">{item}</span>
-                <span className="font-mono text-[10px] text-exp-text tabular-nums">
+                <span className="font-mono text-xs text-exp-text-dim">{item}</span>
+                <span className="font-mono text-xs text-exp-text tabular-nums">
                   x{Number(inactive.itemBalances[i] || 0)}
                 </span>
               </div>
@@ -57,7 +57,7 @@ export default function InventoryPanel({ active, inactive }) {
       )}
 
       {!hasArtifact && !hasRelic && !active?.shield && !active?.campsite && inactive?.itemTypes?.length === 0 && (
-        <p className="font-mono text-[10px] text-exp-text-dim italic">Empty</p>
+        <p className="font-mono text-xs text-exp-text-dim italic">Empty</p>
       )}
     </div>
   );

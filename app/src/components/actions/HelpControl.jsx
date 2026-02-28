@@ -21,7 +21,7 @@ export default function HelpControl({ gameId, currentPlayerID, onSubmit, disable
       </p>
 
       <div>
-        <label className="font-mono text-[10px] text-exp-text-dim uppercase tracking-wider block mb-1">
+        <label className="font-mono text-xs text-exp-text-dim uppercase tracking-wider block mb-1">
           Target Explorer
         </label>
         <select
@@ -44,7 +44,7 @@ export default function HelpControl({ gameId, currentPlayerID, onSubmit, disable
       </div>
 
       <div>
-        <label className="font-mono text-[10px] text-exp-text-dim uppercase tracking-wider block mb-1">
+        <label className="font-mono text-xs text-exp-text-dim uppercase tracking-wider block mb-1">
           Attribute to Boost
         </label>
         <div className="flex gap-2">
@@ -53,7 +53,7 @@ export default function HelpControl({ gameId, currentPlayerID, onSubmit, disable
               key={stat}
               onClick={() => setSelectedStat(stat)}
               className={`
-                px-3 py-1.5 text-[11px] font-mono uppercase tracking-wider
+                px-3 py-1.5 text-xs font-mono uppercase tracking-wider
                 border rounded transition-all duration-200
                 ${selectedStat === stat
                   ? 'text-compass-bright bg-compass/10 border-compass/40'

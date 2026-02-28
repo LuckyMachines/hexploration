@@ -9,12 +9,12 @@ export default function CardDraw({ playerID, cardType, cardDrawn, cardResult, in
       {/* Header */}
       <div className="flex items-center gap-2 mb-2">
         <span className="shrink-0 w-6 h-6 rounded-full bg-compass/20 border border-compass/40
-                         flex items-center justify-center text-compass text-[10px] font-mono tabular-nums">
+                         flex items-center justify-center text-compass text-xs font-mono tabular-nums">
           P{playerID}
         </span>
         <div>
           {cardType && (
-            <span className="font-mono text-[10px] text-exp-text-dim uppercase tracking-wider block">
+            <span className="font-mono text-xs text-exp-text-dim uppercase tracking-wider block">
               {cardType}
             </span>
           )}
@@ -26,7 +26,7 @@ export default function CardDraw({ playerID, cardType, cardDrawn, cardResult, in
 
       {/* Card result description */}
       {cardResult && (
-        <p className="font-mono text-[10px] text-exp-text-dim leading-relaxed mb-2">
+        <p className="font-mono text-xs text-exp-text-dim leading-relaxed mb-2">
           {cardResult}
         </p>
       )}

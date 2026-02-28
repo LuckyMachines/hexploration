@@ -86,7 +86,7 @@ export default function GameOver({ gameId }) {
                         {truncateAddress(addr)}
                       </span>
                       {isYou && (
-                        <span className="font-display text-[10px] tracking-widest uppercase text-compass-bright border border-compass/30 rounded px-1.5 py-0.5 bg-compass/5">
+                        <span className="font-display text-xs tracking-widest uppercase text-compass-bright border border-compass/30 rounded px-1.5 py-0.5 bg-compass/5">
                           YOU
                         </span>
                       )}
@@ -123,7 +123,7 @@ export default function GameOver({ gameId }) {
 
       <div className="flex items-center justify-center gap-2">
         <div className="h-px w-12 bg-exp-border" />
-        <span className="font-display text-[10px] tracking-[0.4em] text-exp-text-dim uppercase">
+        <span className="font-display text-xs tracking-[0.4em] text-exp-text-dim uppercase">
           End of Report
         </span>
         <div className="h-px w-12 bg-exp-border" />

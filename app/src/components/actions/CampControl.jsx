@@ -23,7 +23,7 @@ export default function CampControl({ activeInv, onSubmitSetup, onSubmitBreakdow
           Setup Camp
         </button>
         {!hasCampsiteKit && (
-          <p className="font-mono text-[10px] text-exp-text-dim italic mt-2">
+          <p className="font-mono text-xs text-exp-text-dim italic mt-2">
             No campsite kit available.
           </p>
         )}

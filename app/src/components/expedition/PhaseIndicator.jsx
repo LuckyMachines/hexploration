@@ -16,7 +16,7 @@ export default function PhaseIndicator({ currentPhase = 0 }) {
           <div key={phase.key} className="flex items-center gap-1">
             <span
               className={`
-                px-2 py-0.5 rounded text-[10px] font-mono uppercase tracking-wider transition-all duration-300
+                px-2 py-0.5 rounded text-xs font-mono uppercase tracking-wider transition-all duration-300
                 ${isActive
                   ? 'text-compass bg-compass/15 shadow-[0_0_6px_var(--color-compass)]'
                   : isPast

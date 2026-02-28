@@ -11,7 +11,7 @@ export default function StatBar({ label, value, max = MAX_STAT }) {
 
   return (
     <div className="flex items-center gap-2">
-      <span className="font-mono text-[10px] tracking-wider text-exp-text-dim uppercase w-14 shrink-0">
+      <span className="font-mono text-xs tracking-wider text-exp-text-dim uppercase w-14 shrink-0">
         {label.slice(0, 3)}
       </span>
       <div className="flex gap-0.5">
@@ -27,7 +27,7 @@ export default function StatBar({ label, value, max = MAX_STAT }) {
           />
         ))}
       </div>
-      <span className="font-mono text-[10px] text-exp-text-dim tabular-nums w-4 text-right">
+      <span className="font-mono text-xs text-exp-text-dim tabular-nums w-4 text-right">
         {value}
       </span>
     </div>

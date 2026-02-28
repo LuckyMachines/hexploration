@@ -11,7 +11,7 @@ export default function TerrainLegend() {
             className="w-3 h-3 rounded-sm"
             style={{ backgroundColor: TILE_COLORS[tile] }}
           />
-          <span className="font-mono text-[10px] text-exp-text-dim uppercase tracking-wider">
+          <span className="font-mono text-xs text-exp-text-dim uppercase tracking-wider">
             {TILE_LABELS[tile]}
           </span>
         </div>

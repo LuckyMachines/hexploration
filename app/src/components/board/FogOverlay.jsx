@@ -20,7 +20,7 @@ export default function FogOverlay({ cx, cy, alias, onClick, isReachable }) {
         y={cy + 2}
         textAnchor="middle"
         fill={isReachable ? '#c4a64a' : '#6a7560'}
-        style={{ fontSize: '10px', fontFamily: 'JetBrains Mono, monospace' }}
+        style={{ fontSize: '12px', fontFamily: 'JetBrains Mono, monospace' }}
       >
         {isReachable ? '\u25CE' : '?'}
       </text>

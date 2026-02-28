@@ -20,7 +20,7 @@ export default function MoveControl({
       {/* Current path display */}
       {path.length > 0 && (
         <div className="flex items-center gap-1 flex-wrap">
-          <span className="font-mono text-[10px] text-exp-text-dim uppercase tracking-wider">Path:</span>
+          <span className="font-mono text-xs text-exp-text-dim uppercase tracking-wider">Path:</span>
           <span className="font-mono text-xs text-compass">{currentLocation}</span>
           {path.map((alias, i) => (
             <span key={i} className="flex items-center gap-1">

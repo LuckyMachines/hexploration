@@ -48,13 +48,13 @@ export default function MatchReplay({
   return (
     <div className="border border-exp-border rounded bg-exp-panel p-3 space-y-3">
       <div className="flex items-center justify-between">
-        <h3 className="font-mono text-[10px] tracking-[0.3em] text-exp-text-dim uppercase">
+        <h3 className="font-mono text-xs tracking-[0.3em] text-exp-text-dim uppercase">
           Match Replay
         </h3>
         <button
           onClick={() => onLoadFullHistory?.()}
           disabled={!onLoadFullHistory || isLoadingFullHistory}
-          className="px-2 py-1 border border-exp-border rounded text-[10px] font-mono uppercase tracking-wider text-exp-text-dim
+          className="px-2 py-1 border border-exp-border rounded text-xs font-mono uppercase tracking-wider text-exp-text-dim
                      hover:border-compass/40 hover:text-compass transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
         >
           {isLoadingFullHistory ? 'Loading history...' : 'Load Full History'}
@@ -66,11 +66,11 @@ export default function MatchReplay({
       ) : (
         <>
           <div className="border border-exp-border/60 rounded bg-exp-dark/40 p-2">
-            <div className="font-mono text-[10px] text-exp-text-dim uppercase">
+            <div className="font-mono text-xs text-exp-text-dim uppercase">
               Step {cursor + 1} / {steps.length}
             </div>
             <div className="font-mono text-xs text-compass">{current.label}</div>
-            <div className="font-mono text-[10px] text-exp-text-dim">
+            <div className="font-mono text-xs text-exp-text-dim">
               Block {current.blockNumber?.toString?.() || current.blockNumber}
             </div>
           </div>
@@ -87,7 +87,7 @@ export default function MatchReplay({
           <div className="flex items-center gap-2">
             <button
               onClick={() => setIsPlaying((prev) => !prev)}
-              className="px-3 py-1.5 bg-compass/10 border border-compass/40 rounded text-compass text-[10px] font-mono uppercase tracking-wider
+              className="px-3 py-1.5 bg-compass/10 border border-compass/40 rounded text-compass text-xs font-mono uppercase tracking-wider
                          hover:bg-compass/20 hover:border-compass/60 transition-colors"
             >
               {isPlaying ? 'Pause' : 'Play'}
@@ -97,7 +97,7 @@ export default function MatchReplay({
                 setIsPlaying(false);
                 setCursor(0);
               }}
-              className="px-3 py-1.5 border border-exp-border rounded text-exp-text-dim text-[10px] font-mono uppercase tracking-wider
+              className="px-3 py-1.5 border border-exp-border rounded text-exp-text-dim text-xs font-mono uppercase tracking-wider
                          hover:border-exp-text-dim/40 transition-colors"
             >
               Reset

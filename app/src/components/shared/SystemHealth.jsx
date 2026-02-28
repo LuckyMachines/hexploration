@@ -37,14 +37,14 @@ export default function SystemHealth() {
   return (
     <div className="border border-exp-border rounded bg-exp-panel p-4 mb-6">
       <div className="flex items-center justify-between mb-2">
-        <h2 className="font-mono text-[10px] tracking-[0.3em] text-exp-text-dim uppercase">
+        <h2 className="font-mono text-xs tracking-[0.3em] text-exp-text-dim uppercase">
           System Health
         </h2>
-        <span className={`font-mono text-[10px] uppercase tracking-wider ${missing.length === 0 ? 'text-oxide-green' : 'text-signal-red'}`}>
+        <span className={`font-mono text-xs uppercase tracking-wider ${missing.length === 0 ? 'text-oxide-green' : 'text-signal-red'}`}>
           {missing.length === 0 ? 'Ready' : 'Config Issue'}
         </span>
       </div>
-      <div className="grid sm:grid-cols-3 gap-2 text-[10px] font-mono">
+      <div className="grid sm:grid-cols-3 gap-2 text-xs font-mono">
         <div className="border border-exp-border/60 rounded bg-exp-dark/40 px-2 py-1.5">
           <div className="text-exp-text-dim uppercase">Wallet</div>
           <div className={isConnected ? 'text-oxide-green' : 'text-signal-red'}>
@@ -62,7 +62,7 @@ export default function SystemHealth() {
       </div>
 
       {missing.length > 0 && (
-        <p className="mt-2 font-mono text-[10px] text-signal-red">
+        <p className="mt-2 font-mono text-xs text-signal-red">
           Missing contract env vars: {missing.join(', ')}
         </p>
       )}

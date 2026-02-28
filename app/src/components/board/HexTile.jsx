@@ -44,7 +44,7 @@ export default function HexTile({
         y={cy + 18}
         textAnchor="middle"
         className="fill-exp-text-dim"
-        style={{ fontSize: '6px', fontFamily: 'JetBrains Mono, monospace' }}
+        style={{ fontSize: '8px', fontFamily: 'JetBrains Mono, monospace' }}
       >
         {alias}
       </text>

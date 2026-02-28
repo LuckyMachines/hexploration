@@ -18,7 +18,7 @@ export default function RestControl({ onSubmit, disabled }) {
             key={stat}
             onClick={() => setSelectedStat(stat)}
             className={`
-              px-3 py-1.5 text-[11px] font-mono uppercase tracking-wider
+              px-3 py-1.5 text-xs font-mono uppercase tracking-wider
               border rounded transition-all duration-200
               ${selectedStat === stat
                 ? 'text-blueprint bg-blueprint/10 border-blueprint/40'

@@ -126,7 +126,7 @@ export default function ExpeditionBench({ gameId }) {
         </div>
 
         <div className="space-y-3 max-h-[300px] lg:max-h-[500px] overflow-y-auto">
-          <h3 className="font-mono text-[10px] tracking-[0.3em] text-exp-text-dim uppercase sticky top-0 bg-exp-dark py-1">
+          <h3 className="font-mono text-xs tracking-[0.3em] text-exp-text-dim uppercase sticky top-0 bg-exp-dark py-1">
             Expedition Crew
           </h3>
           {enrichedPlayers.map((player, i) => (

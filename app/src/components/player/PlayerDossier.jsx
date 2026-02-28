@@ -18,17 +18,17 @@ export default function PlayerDossier({ player, index, isCurrentUser }) {
             {truncateAddress(addr)}
           </span>
           {isCurrentUser && (
-            <span className="text-[10px] text-compass/70 uppercase tracking-wider">(you)</span>
+            <span className="text-xs text-compass/70 uppercase tracking-wider">(you)</span>
           )}
         </div>
         {!player.isActive && player.playerAddress && (
-          <span className="text-[10px] font-mono text-signal-red uppercase tracking-wider">Inactive</span>
+          <span className="text-xs font-mono text-signal-red uppercase tracking-wider">Inactive</span>
         )}
       </div>
 
       {/* Location */}
       <div className="mb-2">
-        <span className="font-mono text-[10px] text-exp-text-dim tracking-wider uppercase">
+        <span className="font-mono text-xs text-exp-text-dim tracking-wider uppercase">
           Zone: </span>
         <span className="font-mono text-xs text-compass">
           {formatZoneAlias(player.currentZone)}
@@ -46,7 +46,7 @@ export default function PlayerDossier({ player, index, isCurrentUser }) {
       {player.action && player.action !== '' && player.action !== 'Idle' && (
         <div className="mt-2 flex items-center gap-1.5">
           <span className="w-1.5 h-1.5 rounded-full bg-blueprint" />
-          <span className="font-mono text-[10px] text-blueprint uppercase tracking-wider">
+          <span className="font-mono text-xs text-blueprint uppercase tracking-wider">
             Action: {player.action}
           </span>
         </div>
