@@ -13,7 +13,7 @@ export function useAllPlayers(gameId) {
   });
 
   return {
-    players: data?.[0] ?? [],
+    players: Array.isArray(data) ? data : [],
     isLoading,
     error,
     refetch,
