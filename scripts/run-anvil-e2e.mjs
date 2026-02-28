@@ -130,6 +130,31 @@ async function readDeploymentAddresses() {
   return required;
 }
 
+async function readDeckAddresses() {
+  const raw = await fs.readFile(broadcastLatest, 'utf8');
+  const json = JSON.parse(raw);
+
+  const cardDecks = [];
+  for (const tx of json.transactions || []) {
+    if (tx.contractName === 'CardDeck' && tx.contractAddress) {
+      cardDecks.push(tx.contractAddress);
+    }
+  }
+
+  if (cardDecks.length < 5) {
+    throw new Error(`Expected 5 CardDeck deploys, found ${cardDecks.length}. Deploy script order may have changed.`);
+  }
+
+  // CardDeck deploy order: event, ambush, treasure, land, relic
+  const DECK_KEYS = ['EVENT_DECK', 'AMBUSH_DECK', 'TREASURE_DECK', 'LAND_DECK', 'RELIC_DECK'];
+  const deckAddrs = {};
+  for (let i = 0; i < DECK_KEYS.length; i++) {
+    deckAddrs[DECK_KEYS[i]] = cardDecks[i];
+  }
+
+  return deckAddrs;
+}
+
 async function writeAppEnv(addresses, rpcUrl) {
   const lines = [
     ...Object.entries(addresses).map(([k, v]) => `${k}=${v}`),
@@ -227,6 +252,18 @@ async function main() {
     });
 
     const addresses = await readDeploymentAddresses();
+
+    console.log('[anvil-e2e] Populating card decks...');
+    const deckAddrs = await readDeckAddresses();
+    await runCommand('node', ['scripts/populate-decks.mjs'], {
+      env: {
+        CHAIN: 'foundry',
+        RPC_URL: rpcUrl,
+        PRIVATE_KEY: ANVIL_PK,
+        DEPLOYMENTS_JSON: JSON.stringify(deckAddrs),
+      },
+    });
+
     await writeAppEnv(addresses, rpcUrl);
     console.log(`[anvil-e2e] Wrote app env: ${appEnvFile}`);
 

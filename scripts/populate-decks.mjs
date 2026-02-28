@@ -213,6 +213,8 @@ async function main() {
   console.log(`Account: ${account.address}`);
   console.log(`RPC: ${RPC_URL}`);
 
+  const deckFilter = process.env.DECK_FILTER; // optional: populate only one deck (e.g. "EVENT")
+
   const deckMap = {
     EVENT: deployments.EVENT_DECK,
     AMBUSH: deployments.AMBUSH_DECK,
@@ -221,7 +223,11 @@ async function main() {
     RELIC: deployments.RELIC_DECK,
   };
 
-  for (const [name, address] of Object.entries(deckMap)) {
+  const filteredEntries = deckFilter
+    ? Object.entries(deckMap).filter(([name]) => name === deckFilter)
+    : Object.entries(deckMap);
+
+  for (const [name, address] of filteredEntries) {
     const cards = onchainData.decks[name];
     if (!cards || cards.length === 0) {
       console.log(`\n${name}: No card data — skipping`);

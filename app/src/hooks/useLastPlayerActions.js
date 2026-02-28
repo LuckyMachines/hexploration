@@ -2,6 +2,7 @@ import { useReadContract } from 'wagmi';
 import { gameSummaryRead } from '../config/contracts';
 import { parseUintId, safeUintId } from '../lib/ids';
 
+/** @returns {{ playerActions: any[], isLoading: boolean, error: Error|null, refetch: Function }} */
 export function useLastPlayerActions(gameId) {
   const gid = parseUintId(gameId);
   const { data, isLoading, error, refetch } = useReadContract({
@@ -13,7 +14,7 @@ export function useLastPlayerActions(gameId) {
   });
 
   return {
-    playerActions: data?.[0] ?? [],
+    playerActions: Array.isArray(data?.[0]) ? data[0] : [],
     isLoading,
     error,
     refetch,

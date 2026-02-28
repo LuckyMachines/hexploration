@@ -1,5 +1,6 @@
-import { PROCESSING_LABELS } from '../../lib/constants';
+import { ProcessingPhase, PROCESSING_LABELS } from '../../lib/constants';
 import { useAutomationStatus } from '../../hooks/useAutomationStatus';
+import Spinner from '../shared/Spinner';
 
 function formatTime(ts) {
   if (!ts) return '--:--:--';
@@ -14,6 +15,12 @@ export default function TurnTimeline({ queueTelemetry, events = [] }) {
   const { mode } = useAutomationStatus();
   const latestEvent = events.length > 0 ? events[events.length - 1] : null;
   const phaseLabel = PROCESSING_LABELS[queueTelemetry.phase] || 'Unknown';
+
+  const isProcessing = queueTelemetry.phase === ProcessingPhase.PROCESSING
+    || queueTelemetry.phase === ProcessingPhase.PLAY_THROUGH;
+  const isWaitingForSubmissions = queueTelemetry.phase === ProcessingPhase.SUBMISSION
+    && queueTelemetry.submittedCount > 0
+    && queueTelemetry.submittedCount < queueTelemetry.totalPlayers;
 
   return (
     <div className="border border-exp-border rounded bg-exp-panel p-3">
@@ -46,6 +53,24 @@ export default function TurnTimeline({ queueTelemetry, events = [] }) {
           <div className="font-mono text-xs text-compass">{mode}</div>
         </div>
       </div>
+
+      {isProcessing && (
+        <div className="mt-2 flex items-center gap-2 px-2 py-1.5 rounded border border-compass/30 bg-compass/5">
+          <Spinner size="w-3 h-3" />
+          <span className="font-mono text-[10px] text-compass tracking-wider uppercase">
+            Processing turn — worker is advancing the game loop...
+          </span>
+        </div>
+      )}
+
+      {isWaitingForSubmissions && (
+        <div className="mt-2 flex items-center gap-2 px-2 py-1.5 rounded border border-blueprint/30 bg-blueprint/5">
+          <span className="w-1.5 h-1.5 rounded-full bg-blueprint animate-pulse" />
+          <span className="font-mono text-[10px] text-blueprint tracking-wider uppercase">
+            Waiting for {queueTelemetry.totalPlayers - queueTelemetry.submittedCount} more player{queueTelemetry.totalPlayers - queueTelemetry.submittedCount !== 1 ? 's' : ''} to submit actions
+          </span>
+        </div>
+      )}
 
       <div className="mt-2 font-mono text-[10px] text-exp-text-dim">
         Last event: {latestEvent ? `${latestEvent.name} @ block ${latestEvent.blockNumber?.toString?.() || latestEvent.blockNumber} (${formatTime(latestEvent.timestamp)})` : 'No events yet'}

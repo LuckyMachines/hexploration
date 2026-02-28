@@ -127,7 +127,11 @@ async function readBroadcastAddresses() {
     }
   }
 
-  // CardDeck deploy order: event, ambush, treasure, land, relic
+  // CardDeck deploy order (must match DeployHexploration.s.sol):
+  // event, ambush, treasure, land, relic
+  if (cardDecks.length < 5) {
+    throw new Error(`Expected 5 CardDeck deploys, found ${cardDecks.length}. Deploy script order may have changed.`);
+  }
   const DECK_KEYS = ['EVENT_DECK', 'AMBUSH_DECK', 'TREASURE_DECK', 'LAND_DECK', 'RELIC_DECK'];
   const deckAddrs = {};
   for (let i = 0; i < DECK_KEYS.length; i++) {
@@ -286,17 +290,21 @@ async function main() {
   const { workerAddrs, appAddrs, deckAddrs } = await readBroadcastAddresses();
   log('Addresses extracted from broadcast.');
 
-  // 6. Populate card decks
-  log('Populating card decks...');
+  // 6. Populate card decks (in parallel — one process per deck)
+  log('Populating card decks (5 parallel)...');
   const deckDeployments = JSON.stringify(deckAddrs);
-  await runCommand('node', ['scripts/populate-decks.mjs'], {
-    env: {
-      CHAIN: 'foundry',
-      RPC_URL,
-      PRIVATE_KEY: ANVIL_PK,
-      DEPLOYMENTS_JSON: deckDeployments,
-    },
-  });
+  const deckNames = ['EVENT', 'AMBUSH', 'TREASURE', 'LAND', 'RELIC'];
+  await Promise.all(deckNames.map((name) =>
+    runCommand('node', ['scripts/populate-decks.mjs'], {
+      env: {
+        CHAIN: 'foundry',
+        RPC_URL,
+        PRIVATE_KEY: ANVIL_PK,
+        DEPLOYMENTS_JSON: deckDeployments,
+        DECK_FILTER: name,
+      },
+    }),
+  ));
   log('Card decks populated.');
 
   // 7. Seed an open game

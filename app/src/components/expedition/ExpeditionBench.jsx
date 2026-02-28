@@ -113,7 +113,7 @@ export default function ExpeditionBench({ gameId }) {
       />
 
       <div className="grid lg:grid-cols-3 gap-4">
-        <div className="lg:col-span-2 border border-exp-border rounded bg-exp-panel p-4 min-h-[400px]">
+        <div className="lg:col-span-2 border border-exp-border rounded bg-exp-panel p-2 sm:p-4 min-h-[280px] sm:min-h-[400px] overflow-x-auto">
           <HexGrid
             gameId={gameId}
             selectedPath={movePath}
@@ -125,7 +125,7 @@ export default function ExpeditionBench({ gameId }) {
           />
         </div>
 
-        <div className="space-y-3 max-h-[500px] overflow-y-auto">
+        <div className="space-y-3 max-h-[300px] lg:max-h-[500px] overflow-y-auto">
           <h3 className="font-mono text-[10px] tracking-[0.3em] text-exp-text-dim uppercase sticky top-0 bg-exp-dark py-1">
             Expedition Crew
           </h3>

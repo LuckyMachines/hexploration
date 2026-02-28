@@ -1,4 +1,6 @@
 import { useParams } from 'react-router-dom';
+import { useAccount, useConnect } from 'wagmi';
+import { injected } from 'wagmi/connectors';
 import { useGameState } from '../hooks/useGameState';
 import GameLobby from '../components/game/GameLobby';
 import ExpeditionBench from '../components/expedition/ExpeditionBench';
@@ -8,6 +10,8 @@ import { parseUintId } from '../lib/ids';
 
 export default function GamePage() {
   const { gameId } = useParams();
+  const { isConnected } = useAccount();
+  const { connect } = useConnect();
   const parsedGameId = parseUintId(gameId);
   const normalizedGameId = parsedGameId?.toString() ?? '';
   const { gameStarted, currentPhase, isLoading, error } = useGameState(normalizedGameId);
@@ -15,7 +19,7 @@ export default function GamePage() {
   const isGameOver = currentPhase === 'The End';
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-8">
+    <div className="max-w-6xl mx-auto px-3 sm:px-4 py-4 sm:py-8">
       <div className="flex items-center gap-3 mb-6">
         <h1 className="text-2xl font-semibold tracking-widest text-compass uppercase font-display">
           Expedition
@@ -33,7 +37,25 @@ export default function GamePage() {
         </div>
       )}
 
-      {parsedGameId !== null && isLoading && (
+      {parsedGameId !== null && !isConnected && (
+        <div className="border border-compass/30 rounded bg-exp-panel p-8 text-center space-y-4">
+          <p className="font-mono text-sm text-compass tracking-wider">
+            Connect your wallet to join this expedition
+          </p>
+          <p className="font-mono text-xs text-exp-text-dim">
+            You need a connected wallet to register, submit actions, and interact with the game.
+          </p>
+          <button
+            onClick={() => connect({ connector: injected() })}
+            className="px-5 py-2.5 bg-compass/10 border border-compass/50 rounded text-compass text-xs font-display font-semibold tracking-widest uppercase
+                       hover:bg-compass/20 hover:border-compass transition-colors"
+          >
+            Connect Wallet
+          </button>
+        </div>
+      )}
+
+      {parsedGameId !== null && isConnected && isLoading && (
         <div className="border border-exp-border rounded bg-exp-panel p-12 flex items-center justify-center gap-3">
           <Spinner size="w-5 h-5" />
           <span className="font-mono text-xs text-exp-text-dim tracking-wider uppercase">
@@ -42,7 +64,7 @@ export default function GamePage() {
         </div>
       )}
 
-      {parsedGameId !== null && error && (
+      {parsedGameId !== null && isConnected && error && (
         <div className="border border-signal-red/30 rounded bg-exp-panel p-8 text-center">
           <p className="font-mono text-xs text-signal-red tracking-wider uppercase">
             Failed to load expedition data
@@ -50,15 +72,15 @@ export default function GamePage() {
         </div>
       )}
 
-      {parsedGameId !== null && !isLoading && !error && !gameStarted && (
+      {parsedGameId !== null && isConnected && !isLoading && !error && !gameStarted && (
         <GameLobby gameId={normalizedGameId} />
       )}
 
-      {parsedGameId !== null && !isLoading && !error && gameStarted && !isGameOver && (
+      {parsedGameId !== null && isConnected && !isLoading && !error && gameStarted && !isGameOver && (
         <ExpeditionBench gameId={normalizedGameId} />
       )}
 
-      {parsedGameId !== null && !isLoading && !error && gameStarted && isGameOver && (
+      {parsedGameId !== null && isConnected && !isLoading && !error && gameStarted && isGameOver && (
         <GameOver gameId={normalizedGameId} />
       )}
     </div>

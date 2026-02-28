@@ -21,6 +21,7 @@ import { privateKeyToAccount } from 'viem/accounts';
 import { readFileSync } from 'fs';
 import { resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
+import { createServer } from 'http';
 import dotenv from 'dotenv';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -95,6 +96,24 @@ function fmtAddr(addr) {
   return `${addr.slice(0, 6)}...${addr.slice(-4)}`;
 }
 
+// ── Retry with exponential backoff ──────────────────────────────────
+async function withRetry(fn, label, maxAttempts = 3) {
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    try {
+      return await fn();
+    } catch (err) {
+      if (attempt === maxAttempts) throw err;
+      const delayMs = 1000 * Math.pow(2, attempt - 1); // 1s, 2s, 4s
+      log(`${label}: attempt ${attempt}/${maxAttempts} failed — retrying in ${delayMs}ms (${err.shortMessage || err.message})`);
+      await sleep(delayMs);
+    }
+  }
+}
+
+// ── Health-check state ──────────────────────────────────────────────
+let lastPollAt = null;
+const actions = { vrfFulfilled: 0, loopsProgressed: 0 };
+
 // ── VRF Fulfillment (Mock VRF path) ─────────────────────────────────
 async function fulfillVRF(label, address) {
   try {
@@ -111,13 +130,16 @@ async function fulfillVRF(label, address) {
     }
 
     log(`${label}: ${pending.length} pending VRF request(s) — fulfilling...`);
-    const hash = await walletClient.writeContract({
-      address,
-      abi: vrfAbi,
-      functionName: 'fulfillMockRandomness',
-    });
-    const receipt = await publicClient.waitForTransactionReceipt({ hash });
-    log(`${label}: VRF fulfilled (block ${Number(receipt.blockNumber)}, tx ${hash.slice(0, 14)}...)`);
+    const receipt = await withRetry(async () => {
+      const hash = await walletClient.writeContract({
+        address,
+        abi: vrfAbi,
+        functionName: 'fulfillMockRandomness',
+      });
+      return publicClient.waitForTransactionReceipt({ hash });
+    }, label);
+    log(`${label}: VRF fulfilled (block ${Number(receipt.blockNumber)})`);
+    actions.vrfFulfilled++;
     return true;
   } catch (err) {
     log(`${label}: VRF error — ${err.shortMessage || err.message}`);
@@ -140,14 +162,17 @@ async function progressIfReady(label, address) {
     }
 
     log(`${label}: loop ready — progressing...`);
-    const hash = await walletClient.writeContract({
-      address,
-      abi: loopAbi,
-      functionName: 'progressLoop',
-      args: [progressWithData],
-    });
-    const receipt = await publicClient.waitForTransactionReceipt({ hash });
-    log(`${label}: loop progressed (block ${Number(receipt.blockNumber)}, tx ${hash.slice(0, 14)}...)`);
+    const receipt = await withRetry(async () => {
+      const hash = await walletClient.writeContract({
+        address,
+        abi: loopAbi,
+        functionName: 'progressLoop',
+        args: [progressWithData],
+      });
+      return publicClient.waitForTransactionReceipt({ hash });
+    }, label);
+    log(`${label}: loop progressed (block ${Number(receipt.blockNumber)})`);
+    actions.loopsProgressed++;
     return true;
   } catch (err) {
     log(`${label}: loop error — ${err.shortMessage || err.message}`);
@@ -195,14 +220,17 @@ async function progressWithVRF(label, address) {
     verbose(`${label}: VRF proof generated, envelope size=${vrfEnvelope.length} chars`);
 
     // Call progressLoop with VRF-wrapped data
-    const hash = await walletClient.writeContract({
-      address,
-      abi: loopAbi,
-      functionName: 'progressLoop',
-      args: [vrfEnvelope],
-    });
-    const receipt = await publicClient.waitForTransactionReceipt({ hash });
-    log(`${label}: loop progressed with VRF (block ${Number(receipt.blockNumber)}, tx ${hash.slice(0, 14)}...)`);
+    const receipt = await withRetry(async () => {
+      const hash = await walletClient.writeContract({
+        address,
+        abi: loopAbi,
+        functionName: 'progressLoop',
+        args: [vrfEnvelope],
+      });
+      return publicClient.waitForTransactionReceipt({ hash });
+    }, label);
+    log(`${label}: loop progressed with VRF (block ${Number(receipt.blockNumber)})`);
+    actions.loopsProgressed++;
     return true;
   } catch (err) {
     log(`${label}: VRF loop error — ${err.shortMessage || err.message}`);
@@ -269,6 +297,7 @@ async function main() {
   log('Entering main loop — press Ctrl+C to stop\n');
 
   while (running) {
+    lastPollAt = new Date().toISOString();
     let actionTaken = false;
 
     // 1. Fulfill mock VRF on GameSetup (always — GameSetup stays on Mock VRF)
@@ -297,6 +326,30 @@ async function main() {
 
   log('=== Worker Stopped ===');
 }
+
+// ── Health Check HTTP Server ─────────────────────────────────────────
+const HEALTH_PORT = Number(process.env.HEALTH_PORT) || 9966;
+const startTime = Date.now();
+
+const healthServer = createServer((req, res) => {
+  if (req.method === 'GET' && req.url === '/health') {
+    const body = JSON.stringify({
+      status: 'ok',
+      uptime: Math.floor((Date.now() - startTime) / 1000),
+      lastPollAt,
+      actions,
+    });
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(body);
+  } else {
+    res.writeHead(404);
+    res.end();
+  }
+});
+
+healthServer.listen(HEALTH_PORT, () => {
+  log(`Health server listening on port ${HEALTH_PORT}`);
+});
 
 main().catch((err) => {
   console.error(err);

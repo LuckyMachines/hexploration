@@ -10,6 +10,7 @@
     "check-status": "node scripts/check-hex-status.mjs",
     "dev": "cd app && npm run dev",
     "local": "node scripts/run-local-stack.mjs",
+    "local:join": "node scripts/join-local-game.mjs",
     "test:e2e:anvil": "node scripts/run-anvil-e2e.mjs"
   },
   "repository": {

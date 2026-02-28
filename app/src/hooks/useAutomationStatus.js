@@ -35,8 +35,8 @@ export function useAutomationStatus() {
 
   const setupMock = data?.[0]?.result ?? false;
   const queueMock = data?.[1]?.result ?? false;
-  const setupReqs = data?.[2]?.result ?? [];
-  const queueReqs = data?.[3]?.result ?? [];
+  const setupReqs = Array.isArray(data?.[2]?.result) ? data[2].result : [];
+  const queueReqs = Array.isArray(data?.[3]?.result) ? data[3].result : [];
 
   const pendingRequests =
     setupReqs.filter((r) => r > 0n).length +
