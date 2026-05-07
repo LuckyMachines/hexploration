@@ -10,3 +10,5 @@ node_modules/
 app/coverage/
 app/dist/
 app/test-results/
+captures/
+gameplay-debug.png
