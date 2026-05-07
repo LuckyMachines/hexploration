@@ -9,9 +9,14 @@ export default function ReadinessMatrix({
         <h3 className="font-mono text-xs tracking-[0.3em] text-exp-text-dim uppercase mb-2">
           Submission Readiness
         </h3>
-        <p className="font-mono text-xs text-exp-text-dim italic">
-          Waiting for queue creation.
-        </p>
+        <div className="rounded border border-exp-border/60 bg-exp-dark/40 px-3 py-2">
+          <p className="font-mono text-xs text-compass-bright uppercase tracking-wider">
+            Waiting for queue creation.
+          </p>
+          <p className="mt-1 font-mono text-[11px] text-exp-text-dim">
+            Once the expedition begins, readiness moves here and submission status updates live.
+          </p>
+        </div>
       </div>
     );
   }

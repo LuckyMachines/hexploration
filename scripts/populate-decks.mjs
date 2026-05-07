@@ -3,7 +3,7 @@
  * existing Sepolia deployment (scripts/onchain-data.json).
  *
  * Usage:
- *   1. Deploy contracts: forge script script/DeployHexploration.s.sol --rpc-url sepolia --broadcast
+ *   1. Deploy contracts: forge script script/DeployXenovoya.s.sol --rpc-url sepolia --broadcast
  *   2. Update deployments.json with new addresses
  *   3. Run: node scripts/populate-decks.mjs
  *

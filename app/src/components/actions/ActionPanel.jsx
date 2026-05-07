@@ -39,6 +39,14 @@ export default function ActionPanel({
   const { active: activeInv } = usePlayerInventory(gameId, playerID);
 
   const hasSubmitted = currentAction && currentAction !== '' && currentAction !== 'Idle';
+  const isLocked = isSpectator || hasSubmitted || isPending || isConfirming;
+  const statusLabel = isSpectator
+    ? 'SPECTATOR'
+    : hasSubmitted
+      ? `SUBMITTED: ${currentAction}`
+      : movement > 0
+        ? 'READY TO PLAN'
+        : 'AWAITING STATE';
 
   const setActiveTab = (tab) => {
     if (onTabChange) onTabChange(tab);
@@ -51,20 +59,48 @@ export default function ActionPanel({
   };
 
   return (
-    <div className="border border-exp-border rounded bg-exp-surface">
-      {/* Header */}
-      <div className="border-b border-exp-border px-4 py-3 flex items-center justify-between">
-        <h3 className="font-display text-xs tracking-[0.25em] text-exp-text-dim uppercase">
-          Action Console
-        </h3>
-        {hasSubmitted && (
-          <span className="flex items-center gap-1.5">
-            <span className="w-1.5 h-1.5 rounded-full bg-blueprint" />
-            <span className="font-mono text-xs text-blueprint uppercase tracking-wider">
-              Submitted: {currentAction}
-            </span>
-          </span>
-        )}
+    <div className="border border-exp-border rounded bg-exp-surface shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]">
+      <div className="border-b border-exp-border px-4 py-3 flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h3 className="font-display text-xs tracking-[0.25em] text-exp-text-dim uppercase">
+            Action Console
+          </h3>
+          <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.3em] text-exp-text-dim">
+            Route movement, camp setup, digging, rest, help, or escape from the tablet.
+          </p>
+        </div>
+        <span className={`font-mono text-xs uppercase tracking-[0.25em] border rounded px-2.5 py-1 ${
+          isSpectator
+            ? 'text-exp-text-dim border-exp-border bg-exp-dark/40'
+            : hasSubmitted
+              ? 'text-blueprint border-blueprint/30 bg-blueprint/5'
+              : 'text-compass-bright border-compass/30 bg-compass/5'
+        }`}>
+          {statusLabel}
+        </span>
+      </div>
+
+      <div className="px-4 pt-3">
+        <div className="grid gap-2 sm:grid-cols-3">
+          <div className="border border-exp-border/60 rounded bg-exp-dark/40 px-3 py-2">
+            <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-exp-text-dim">Location</div>
+            <div className="mt-1 font-mono text-xs text-compass-bright tabular-nums break-all">
+              {currentLocation || 'Unknown'}
+            </div>
+          </div>
+          <div className="border border-exp-border/60 rounded bg-exp-dark/40 px-3 py-2">
+            <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-exp-text-dim">Movement</div>
+            <div className="mt-1 font-mono text-xs text-compass-bright tabular-nums">
+              {movement}
+            </div>
+          </div>
+          <div className="border border-exp-border/60 rounded bg-exp-dark/40 px-3 py-2">
+            <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-exp-text-dim">Mode</div>
+            <div className="mt-1 font-mono text-xs text-compass-bright uppercase tracking-widest">
+              {activeTab}
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Tab bar */}
@@ -103,7 +139,7 @@ export default function ActionPanel({
               onMoveSubmit?.();
             }}
             onClear={onMoveClear}
-            disabled={isSpectator || hasSubmitted || isPending || isConfirming}
+            disabled={isLocked}
           />
         )}
         {(activeTab === Action.SETUP_CAMP || activeTab === Action.BREAK_DOWN_CAMP) && (
@@ -111,19 +147,19 @@ export default function ActionPanel({
             activeInv={activeInv}
             onSubmitSetup={() => handleSubmit(Action.SETUP_CAMP)}
             onSubmitBreakdown={() => handleSubmit(Action.BREAK_DOWN_CAMP)}
-            disabled={isSpectator || hasSubmitted || isPending || isConfirming}
+            disabled={isLocked}
           />
         )}
         {activeTab === Action.DIG && (
           <DigControl
             onSubmit={() => handleSubmit(Action.DIG)}
-            disabled={isSpectator || hasSubmitted || isPending || isConfirming}
+            disabled={isLocked}
           />
         )}
         {activeTab === Action.REST && (
           <RestControl
             onSubmit={(statOption) => handleSubmit(Action.REST, [statOption])}
-            disabled={isSpectator || hasSubmitted || isPending || isConfirming}
+            disabled={isLocked}
           />
         )}
         {activeTab === Action.HELP && (
@@ -131,7 +167,7 @@ export default function ActionPanel({
             gameId={gameId}
             currentPlayerID={playerID}
             onSubmit={(targetPID, statOption) => handleSubmit(Action.HELP, [String(targetPID), statOption])}
-            disabled={isSpectator || hasSubmitted || isPending || isConfirming}
+            disabled={isLocked}
           />
         )}
         {activeTab === Action.FLEE && (
@@ -142,7 +178,7 @@ export default function ActionPanel({
             </p>
             <button
               onClick={() => handleSubmit(Action.FLEE)}
-              disabled={isSpectator || hasSubmitted || isPending || isConfirming}
+              disabled={isLocked}
               className="px-4 py-2 bg-signal-red/10 border border-signal-red/40 rounded text-signal-red text-xs font-mono tracking-widest uppercase
                          hover:bg-signal-red/20 hover:border-signal-red/60 transition-colors
                          disabled:opacity-40 disabled:cursor-not-allowed"

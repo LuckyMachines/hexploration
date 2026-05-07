@@ -477,7 +477,7 @@
                 "type": "string"
             },
             {
-                "internalType": "enum HexplorationZone.Tile",
+                "internalType": "enum XenovoyaZone.Tile",
                 "name": "tile",
                 "type": "uint8"
             },
@@ -1040,7 +1040,7 @@
                 "type": "uint256"
             },
             {
-                "internalType": "enum HexplorationZone.Tile[]",
+                "internalType": "enum XenovoyaZone.Tile[]",
                 "name": "tiles",
                 "type": "uint8[]"
             }
@@ -1595,7 +1595,7 @@
                 "type": "string"
             },
             {
-                "internalType": "enum HexplorationZone.Tile",
+                "internalType": "enum XenovoyaZone.Tile",
                 "name": "tile",
                 "type": "uint8"
             }

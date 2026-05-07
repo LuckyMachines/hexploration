@@ -14,7 +14,7 @@ export default function GameOver({ gameId }) {
       <div className="border border-exp-border rounded bg-exp-panel p-12 flex items-center justify-center gap-3">
         <Spinner size="w-5 h-5" />
         <span className="font-mono text-xs text-exp-text-dim tracking-wider uppercase">
-          Loading expedition report...
+          Loading survey report...
         </span>
       </div>
     );
@@ -26,10 +26,10 @@ export default function GameOver({ gameId }) {
       <div className="border border-exp-border rounded bg-exp-panel overflow-hidden">
         <div className="bg-exp-dark border-b border-exp-border px-4 py-2 flex items-center justify-between">
           <span className="font-display text-xs tracking-[0.3em] text-exp-text-dim uppercase">
-            Expedition Report
+            Survey Report
           </span>
           <span className="font-mono text-xs text-exp-text-dim">
-            Expedition #{gameId}
+            Survey #{gameId}
           </span>
         </div>
 
@@ -43,11 +43,11 @@ export default function GameOver({ gameId }) {
 
           <div className="relative z-10 space-y-4">
             <h2 className="text-2xl font-display font-bold tracking-[0.3em] text-compass-bright uppercase">
-              Expedition Complete
+              Survey Complete
             </h2>
 
             <p className="font-mono text-sm text-exp-text-dim">
-              The expedition has concluded. All explorers have returned or been lost to the planet.
+              The survey has concluded. All crew have returned or been lost to the planet.
             </p>
           </div>
         </div>
@@ -57,7 +57,7 @@ export default function GameOver({ gameId }) {
       <div className="border border-exp-border rounded bg-exp-panel overflow-hidden">
         <div className="bg-exp-dark border-b border-exp-border px-4 py-2">
           <span className="font-display text-xs tracking-[0.3em] text-exp-text-dim uppercase">
-            Explorer Report
+            Crew Report
           </span>
         </div>
 
@@ -65,7 +65,7 @@ export default function GameOver({ gameId }) {
           <thead>
             <tr className="border-b border-exp-border bg-exp-dark/50">
               <th className="px-4 py-2 text-left font-display text-xs tracking-widest text-exp-text-dim uppercase">
-                Explorer
+                Crew
               </th>
               <th className="px-4 py-2 text-center font-display text-xs tracking-widest text-exp-text-dim uppercase">
                 Status
@@ -111,13 +111,13 @@ export default function GameOver({ gameId }) {
           to="/"
           className="font-display text-xs tracking-widest uppercase text-exp-text-dim hover:text-exp-text border border-exp-border rounded px-4 py-2 bg-exp-panel hover:bg-exp-dark transition-colors"
         >
-          Return to Console
+          Return to Tablet
         </Link>
         <Link
           to="/"
           className="font-display text-xs tracking-widest uppercase text-compass hover:text-compass-bright border border-compass/30 hover:border-compass/50 rounded px-4 py-2 bg-compass/5 hover:bg-compass/10 transition-colors"
         >
-          New Expedition
+          New Survey
         </Link>
       </div>
 

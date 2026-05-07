@@ -96,12 +96,54 @@ export default function ExpeditionBench({ gameId }) {
     };
   });
 
+  const queueLabel = queueTelemetry.hasActiveQueue
+    ? `Queue #${queueTelemetry.queueID ?? 0} active`
+    : 'Queue idle';
+  const queueDetail = queueTelemetry.hasActiveQueue
+    ? 'Submissions resolve through the live queue.'
+    : 'Waiting for the expedition to create a queue.';
+
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between flex-wrap gap-3">
-        <DayNightBadge phase={phase} />
-        <PhaseIndicator currentPhase={queueTelemetry.phase} />
-        <DayCounter gameId={gameId} />
+      <div className="rounded border border-exp-border bg-exp-panel/80 p-3 sm:p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]">
+        <div className="flex items-center justify-between flex-wrap gap-3">
+          <DayNightBadge phase={phase} />
+          <PhaseIndicator currentPhase={queueTelemetry.phase} />
+          <DayCounter gameId={gameId} />
+        </div>
+
+        <div className="mt-3 grid gap-2 lg:grid-cols-[minmax(0,1.6fr)_minmax(240px,0.8fr)]">
+          <div className="border border-exp-border/60 rounded bg-exp-dark/40 px-3 py-2.5">
+            <p className="font-mono text-[10px] uppercase tracking-[0.35em] text-exp-text-dim">
+              Survey state
+            </p>
+            <p className="mt-1 font-display text-lg tracking-[0.22em] uppercase text-compass-bright">
+              {phase || 'Unknown'}
+            </p>
+            <p className="mt-1 font-mono text-xs text-exp-text-dim">
+              {queueDetail}
+            </p>
+          </div>
+
+          <div className="grid grid-cols-2 gap-2">
+            <div className="border border-exp-border/60 rounded bg-exp-dark/40 px-3 py-2.5">
+              <p className="font-mono text-[10px] uppercase tracking-[0.35em] text-exp-text-dim">
+                Queue
+              </p>
+              <p className="mt-1 font-mono text-xs uppercase tracking-widest text-compass-bright">
+                {queueLabel}
+              </p>
+            </div>
+            <div className="border border-exp-border/60 rounded bg-exp-dark/40 px-3 py-2.5">
+              <p className="font-mono text-[10px] uppercase tracking-[0.35em] text-exp-text-dim">
+                Crew
+              </p>
+              <p className="mt-1 font-mono text-xs uppercase tracking-widest text-compass-bright">
+                {enrichedPlayers.length} aboard
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
 
       <TurnTimeline queueTelemetry={queueTelemetry} events={events} />
@@ -112,8 +154,28 @@ export default function ExpeditionBench({ gameId }) {
         queueActive={queueTelemetry.hasActiveQueue}
       />
 
-      <div className="grid lg:grid-cols-3 gap-4">
-        <div className="lg:col-span-2 border border-exp-border rounded bg-exp-panel p-2 sm:p-4 min-h-[280px] sm:min-h-[400px] overflow-x-auto">
+      <div className="grid gap-4 lg:grid-cols-[minmax(0,1.45fr)_minmax(300px,0.78fr)]">
+        <div className="border border-exp-border rounded bg-exp-panel p-2 sm:p-4 min-h-[360px] sm:min-h-[520px] overflow-x-auto shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]">
+          <div className="mb-3 flex flex-wrap items-end justify-between gap-3 border-b border-exp-border/50 pb-2">
+            <div>
+              <p className="font-mono text-[10px] uppercase tracking-[0.35em] text-exp-text-dim">
+                Survey board
+              </p>
+              <p className="mt-1 font-mono text-xs text-exp-text-dim">
+                Trace revealed tiles to plan movement. Fogged cells stay locked.
+              </p>
+            </div>
+            {location && (
+              <div className="rounded border border-exp-border/60 bg-exp-dark/40 px-3 py-2">
+                <p className="font-mono text-[10px] uppercase tracking-[0.35em] text-exp-text-dim">
+                  Current location
+                </p>
+                <p className="mt-1 font-mono text-xs uppercase tracking-widest text-compass-bright">
+                  {location}
+                </p>
+              </div>
+            )}
+          </div>
           <HexGrid
             gameId={gameId}
             selectedPath={movePath}
@@ -125,7 +187,7 @@ export default function ExpeditionBench({ gameId }) {
           />
         </div>
 
-        <div className="space-y-3 max-h-[300px] lg:max-h-[500px] overflow-y-auto">
+        <div className="space-y-3 max-h-[340px] lg:max-h-[620px] overflow-y-auto">
           <h3 className="font-mono text-xs tracking-[0.3em] text-exp-text-dim uppercase sticky top-0 bg-exp-dark py-1">
             Expedition Crew
           </h3>

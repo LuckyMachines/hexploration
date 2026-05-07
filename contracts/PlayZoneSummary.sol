@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity 0.8.34;
 
-import "./HexplorationBoard.sol";
-import "./HexplorationZone.sol";
+import "./XenovoyaBoard.sol";
+import "./XenovoyaZone.sol";
 import "@luckymachines/game-core/contracts/src/v0.0/PlayerRegistry.sol";
 import "./CharacterCard.sol";
 import "./TokenInventory.sol";
-import "./HexplorationQueue.sol";
+import "./XenovoyaQueue.sol";
 import "./GameWallets.sol";
 import "./Utilities.sol";
 
@@ -41,7 +41,7 @@ contract PlayZoneSummary is GameWallets, Utilities, AccessControlEnumerable {
         address gameBoardAddress,
         uint256 gameID
     ) public view returns (ZoneInventory[] memory allInventory) {
-        HexplorationBoard board = HexplorationBoard(gameBoardAddress);
+        XenovoyaBoard board = XenovoyaBoard(gameBoardAddress);
         string[] memory zoneAliases = board.getZoneAliases();
         allInventory = new ZoneInventory[](zoneAliases.length);
         for (uint256 i = 0; i < zoneAliases.length; i++) {
@@ -62,7 +62,7 @@ contract PlayZoneSummary is GameWallets, Utilities, AccessControlEnumerable {
         string memory zoneAlias
     ) public view returns (InventoryItem[] memory inventory) {
         uint256 zi = zoneIndex(gameBoardAddress, zoneAlias);
-        HexplorationBoard board = HexplorationBoard(gameBoardAddress);
+        XenovoyaBoard board = XenovoyaBoard(gameBoardAddress);
         TokenInventory tokens = TokenInventory(board.tokenInventory());
 
         uint256 totalTypes = tokens.zoneHoldsToken(
@@ -242,7 +242,7 @@ contract PlayZoneSummary is GameWallets, Utilities, AccessControlEnumerable {
         string memory zoneAlias
     ) internal view returns (uint256 index) {
         index = 1111111111111;
-        HexplorationBoard board = HexplorationBoard(gameBoardAddress);
+        XenovoyaBoard board = XenovoyaBoard(gameBoardAddress);
         string[] memory allZones = board.getZoneAliases();
         for (uint256 i = 0; i < allZones.length; i++) {
             if (

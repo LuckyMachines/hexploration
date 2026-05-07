@@ -19,11 +19,15 @@ const appDir = path.resolve(repoRoot, 'app');
 const broadcastLatest = path.resolve(
   repoRoot,
   'broadcast',
-  'DeployHexploration.s.sol',
+  'DeployXenovoya.s.sol',
   '31337',
   'run-latest.json',
 );
 const appEnvFile = path.resolve(appDir, '.env.e2e-anvil');
+const foundryBinDir = process.env.FOUNDRY_BIN
+  || path.join(process.env.USERPROFILE || process.env.HOME || '', '.foundry', 'bin');
+const foundryExeSuffix = process.platform === 'win32' ? '.exe' : '';
+const windowsCmdSuffix = process.platform === 'win32' ? '.cmd' : '';
 
 const ANVIL_PK =
   process.env.ANVIL_PRIVATE_KEY
@@ -44,11 +48,12 @@ const controllerAbi = [
 ];
 
 function runCommand(command, args, options = {}) {
+  const defaultShell = command.toLowerCase().endsWith('.cmd');
   return new Promise((resolve, reject) => {
     const child = spawn(command, args, {
       cwd: options.cwd ?? repoRoot,
       env: { ...process.env, ...(options.env || {}) },
-      shell: options.shell ?? true,
+      shell: options.shell ?? defaultShell,
       stdio: options.stdio ?? 'inherit',
     });
 
@@ -58,6 +63,52 @@ function runCommand(command, args, options = {}) {
       else reject(new Error(`${command} ${args.join(' ')} exited with code ${code}`));
     });
   });
+}
+
+function resolveFoundryBinary(name) {
+  return path.join(foundryBinDir, `${name}${foundryExeSuffix}`);
+}
+
+function resolveShellBinary(name) {
+  return process.platform === 'win32' ? `${name}${windowsCmdSuffix}` : name;
+}
+
+async function getTransactionReceipt(rpcUrl, hash) {
+  const response = await fetch(rpcUrl, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({
+      jsonrpc: '2.0',
+      method: 'eth_getTransactionReceipt',
+      params: [hash],
+      id: 1,
+    }),
+  });
+  if (!response.ok) return null;
+  const json = await response.json();
+  return json.result ?? null;
+}
+
+async function waitForBroadcastFinalReceipt(rpcUrl) {
+  const raw = await fs.readFile(broadcastLatest, 'utf8');
+  const json = JSON.parse(raw);
+  const txs = json.transactions || [];
+  const lastTx = txs[txs.length - 1];
+  if (!lastTx?.hash) {
+    throw new Error('Broadcast file did not contain a final transaction hash.');
+  }
+
+  const start = Date.now();
+  const timeoutMs = 20 * 60 * 1000;
+  while (Date.now() - start < timeoutMs) {
+    const receipt = await getTransactionReceipt(rpcUrl, lastTx.hash);
+    if (receipt && receipt.status === '0x1') {
+      return receipt;
+    }
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+  }
+
+  throw new Error(`Timed out waiting for final deployment receipt: ${lastTx.hash}`);
 }
 
 function isPortAvailable(port) {
@@ -111,13 +162,13 @@ async function readDeploymentAddresses() {
   }
 
   const required = {
-    VITE_BOARD_ADDRESS: byName.HexplorationBoard,
-    VITE_CONTROLLER_ADDRESS: byName.HexplorationController,
+    VITE_BOARD_ADDRESS: byName.XenovoyaBoard,
+    VITE_CONTROLLER_ADDRESS: byName.XenovoyaController,
     VITE_GAME_SUMMARY_ADDRESS: byName.GameSummary,
     VITE_PLAYER_SUMMARY_ADDRESS: byName.PlayerSummary,
     VITE_GAME_EVENTS_ADDRESS: byName.GameEvents,
     VITE_GAME_REGISTRY_ADDRESS: byName.GameRegistry,
-    VITE_GAME_QUEUE_ADDRESS: byName.HexplorationQueue,
+    VITE_GAME_QUEUE_ADDRESS: byName.XenovoyaQueue,
     VITE_GAME_SETUP_ADDRESS: byName.GameSetup,
   };
 
@@ -200,10 +251,10 @@ async function main() {
   const baseURL = `http://127.0.0.1:${appPort}`;
 
   console.log('[anvil-e2e] Checking contract sizes against EIP-170...');
-  await runCommand('forge', ['build', '--sizes']);
+  await runCommand(resolveFoundryBinary('forge'), ['build', '--sizes']);
 
   console.log(`[anvil-e2e] Starting Anvil on ${rpcUrl}`);
-  const anvil = spawn('anvil', [
+  const anvil = spawn(resolveFoundryBinary('anvil'), [
     '--host',
     '127.0.0.1',
     '--port',
@@ -237,21 +288,38 @@ async function main() {
   try {
     await waitForRpc(rpcUrl);
 
-    console.log('[anvil-e2e] Deploying contracts to local Anvil...');
-    await runCommand('forge', [
-      'script',
-      'script/DeployHexploration.s.sol',
-      '--rpc-url',
-      rpcUrl,
-      '--broadcast',
-      '--non-interactive',
-    ], {
-      env: {
-        PRIVATE_KEY: ANVIL_PK,
-      },
+  console.log('[anvil-e2e] Deploying contracts to local Anvil...');
+  const forge = spawn(resolveFoundryBinary('forge'), [
+    'script',
+    'script/DeployXenovoya.s.sol',
+    '--rpc-url',
+    rpcUrl,
+    '--broadcast',
+    '--non-interactive',
+  ], {
+    cwd: repoRoot,
+    env: {
+      ...process.env,
+      PRIVATE_KEY: ANVIL_PK,
+    },
+    shell: false,
+    stdio: 'inherit',
+  });
+  const forgeExit = new Promise((resolve, reject) => {
+    forge.on('error', reject);
+    forge.on('exit', (code) => {
+      if (code === 0) resolve();
+      else reject(new Error(`forge script exited with code ${code}`));
     });
+  });
 
-    const addresses = await readDeploymentAddresses();
+  await waitForBroadcastFinalReceipt(rpcUrl);
+  if (!forge.killed) {
+    forge.kill('SIGTERM');
+  }
+  forgeExit.catch(() => {});
+
+  const addresses = await readDeploymentAddresses();
 
     console.log('[anvil-e2e] Populating card decks...');
     const deckAddrs = await readDeckAddresses();
@@ -271,7 +339,7 @@ async function main() {
     await seedOpenGame(rpcUrl, addresses);
 
     console.log('[anvil-e2e] Running Playwright against local chain...');
-    await runCommand('npx', [
+    await runCommand(resolveShellBinary('npx'), [
       'playwright',
       'test',
       '--config',

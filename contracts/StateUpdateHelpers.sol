@@ -2,7 +2,7 @@
 pragma solidity 0.8.34;
 
 import "./CharacterCard.sol";
-import "./HexplorationBoard.sol";
+import "./XenovoyaBoard.sol";
 
 library StateUpdateHelpers {
     function checkGameOver(
@@ -50,7 +50,7 @@ library StateUpdateHelpers {
         uint256 gameID,
         uint256 playerID
     ) internal view returns (uint256) {
-        HexplorationBoard board = HexplorationBoard(gameBoardAddress);
+        XenovoyaBoard board = XenovoyaBoard(gameBoardAddress);
         string memory zone = board.currentPlayZone(gameID, playerID);
         return board.zoneIndex(zone);
     }

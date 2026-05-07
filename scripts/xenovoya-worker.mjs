@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Hexploration automation worker.
+ * Xenovoya automation worker.
  * Polls contracts for pending mock VRF requests and game loop readiness,
  * then fulfills/progresses them automatically.
  *
@@ -11,8 +11,8 @@
  * GameSetup always uses Mock VRF (one-time cold path, not worth VRF overhead).
  *
  * Usage:
- *   cp scripts/hexploration-worker.env.example scripts/.env
- *   node scripts/hexploration-worker.mjs
+ *   cp scripts/xenovoya-worker.env.example scripts/.env
+ *   node scripts/xenovoya-worker.mjs
  */
 import { createPublicClient, createWalletClient, http } from 'viem';
 import { sepolia } from 'viem/chains';
@@ -36,7 +36,7 @@ const VERBOSE = process.env.VERBOSE === 'true';
 const USE_AUTOLOOP_VRF = process.env.USE_AUTOLOOP_VRF === 'true';
 
 if (!rpcUrl || !privateKey) {
-  console.error('Missing RPC_URL or PRIVATE_KEY. Copy hexploration-worker.env.example → .env');
+  console.error('Missing RPC_URL or PRIVATE_KEY. Copy xenovoya-worker.env.example → .env');
   process.exit(1);
 }
 
@@ -285,7 +285,7 @@ process.on('SIGTERM', () => {
 });
 
 async function main() {
-  log('=== Hexploration Worker Starting ===');
+  log('=== Xenovoya Worker Starting ===');
   log(`Worker wallet: ${account.address}`);
   log(`Poll interval: ${POLL_MS}ms`);
   log(`Verbose: ${VERBOSE}`);
@@ -309,7 +309,7 @@ async function main() {
     }
 
     // 3. Progress Controller loop (always standard — no VRF)
-    if (await progressIfReady('Controller', addrs.HEXPLORATION_CONTROLLER)) actionTaken = true;
+    if (await progressIfReady('Controller', addrs.XENOVOYA_CONTROLLER)) actionTaken = true;
 
     // 4. Progress Gameplay loop (VRF or standard depending on config)
     if (USE_AUTOLOOP_VRF) {

@@ -1,21 +1,21 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity 0.8.34;
 
-import "./HexplorationQueue.sol";
-import "./HexplorationStateUpdate.sol";
-import "./HexplorationBoard.sol";
+import "./XenovoyaQueue.sol";
+import "./XenovoyaStateUpdate.sol";
+import "./XenovoyaBoard.sol";
 import "@openzeppelin/contracts/access/extensions/AccessControlEnumerable.sol";
 import "@chainlink/contracts/src/v0.8/AutomationCompatible.sol";
 import "./RollDraw.sol";
-import "./HexplorationGameplayUpdates.sol";
-import "./HexplorationDisputeResolver.sol";
+import "./XenovoyaGameplayUpdates.sol";
+import "./XenovoyaDisputeResolver.sol";
 import "./GameWallets.sol";
 import "./CharacterCard.sol";
 import "@luckymachines/autoloop/src/AutoLoopCompatible.sol";
 import "@luckymachines/autoloop/src/AutoLoopVRFCompatible.sol";
 import "./TokenInventory.sol";
 
-contract HexplorationGameplay is
+contract XenovoyaGameplay is
     AccessControlEnumerable,
     AutomationCompatibleInterface,
     GameWallets,
@@ -25,11 +25,11 @@ contract HexplorationGameplay is
     bytes32 public constant VERIFIED_CONTROLLER_ROLE =
         keccak256("VERIFIED_CONTROLLER_ROLE");
 
-    HexplorationQueue QUEUE;
-    HexplorationStateUpdate GAME_STATE;
-    HexplorationBoard GAME_BOARD;
+    XenovoyaQueue QUEUE;
+    XenovoyaStateUpdate GAME_STATE;
+    XenovoyaBoard GAME_BOARD;
     RollDraw ROLL_DRAW;
-    HexplorationDisputeResolver DISPUTE_RESOLVER;
+    XenovoyaDisputeResolver DISPUTE_RESOLVER;
     uint256 constant LEFT_HAND = 0;
     uint256 constant RIGHT_HAND = 1;
 
@@ -86,9 +86,9 @@ contract HexplorationGameplay is
         address disputeResolverAddress
     ) {
         _grantRole(DEFAULT_ADMIN_ROLE, _msgSender());
-        GAME_BOARD = HexplorationBoard(gameBoardAddress);
+        GAME_BOARD = XenovoyaBoard(gameBoardAddress);
         ROLL_DRAW = RollDraw(_rollDrawAddress);
-        DISPUTE_RESOLVER = HexplorationDisputeResolver(disputeResolverAddress);
+        DISPUTE_RESOLVER = XenovoyaDisputeResolver(disputeResolverAddress);
     }
 
     function addVerifiedController(
@@ -100,14 +100,14 @@ contract HexplorationGameplay is
     function setQueue(
         address queueContract
     ) public onlyRole(DEFAULT_ADMIN_ROLE) {
-        QUEUE = HexplorationQueue(payable(queueContract));
+        QUEUE = XenovoyaQueue(payable(queueContract));
         _grantRole(VERIFIED_CONTROLLER_ROLE, queueContract);
     }
 
     function setGameStateUpdate(
         address gsuAddress
     ) public onlyRole(DEFAULT_ADMIN_ROLE) {
-        GAME_STATE = HexplorationStateUpdate(gsuAddress);
+        GAME_STATE = XenovoyaStateUpdate(gsuAddress);
     }
 
     function setUseAutoLoopVRF(
@@ -234,7 +234,7 @@ contract HexplorationGameplay is
             // ISSUE: isDayPhase is not yet set on queue... not set until next processing phase
             // SOLUTION: check something else to see if day phase here
             /*
-            HexplorationBoard board = HexplorationBoard(gameBoardAddress);
+            XenovoyaBoard board = XenovoyaBoard(gameBoardAddress);
         TokenInventory tokens = TokenInventory(board.tokenInventory());
 
         uint256 dayBalance = tokens.DAY_NIGHT_TOKEN().balance(
@@ -296,12 +296,12 @@ contract HexplorationGameplay is
 
         // Skip randomness check — VRF proof will provide it
 
-        HexplorationQueue.ProcessingPhase phase = QUEUE.currentPhase(
+        XenovoyaQueue.ProcessingPhase phase = QUEUE.currentPhase(
             queueIDToUpdate
         );
-        if (phase == HexplorationQueue.ProcessingPhase.Processing) {
+        if (phase == XenovoyaQueue.ProcessingPhase.Processing) {
             performData = getUpdateInfo(queueIDToUpdate, 2);
-        } else if (phase == HexplorationQueue.ProcessingPhase.PlayThrough) {
+        } else if (phase == XenovoyaQueue.ProcessingPhase.PlayThrough) {
             performData = getUpdateInfo(queueIDToUpdate, 3);
         } else {
             performData = getUpdateInfo(queueIDToUpdate, 4);
@@ -332,13 +332,13 @@ contract HexplorationGameplay is
             upkeepNeeded = false;
         }
 
-        HexplorationQueue.ProcessingPhase phase = QUEUE.currentPhase(
+        XenovoyaQueue.ProcessingPhase phase = QUEUE.currentPhase(
             queueIDToUpdate
         );
         // 2 = processing, 3 = play through, 4 = processed
-        if (phase == HexplorationQueue.ProcessingPhase.Processing) {
+        if (phase == XenovoyaQueue.ProcessingPhase.Processing) {
             performData = getUpdateInfo(queueIDToUpdate, 2);
-        } else if (phase == HexplorationQueue.ProcessingPhase.PlayThrough) {
+        } else if (phase == XenovoyaQueue.ProcessingPhase.PlayThrough) {
             performData = getUpdateInfo(queueIDToUpdate, 3);
         } else {
             performData = getUpdateInfo(queueIDToUpdate, 4);
@@ -353,11 +353,11 @@ contract HexplorationGameplay is
         uint256[] memory playersInQueue = QUEUE.getAllPlayers(queueID);
         for (uint256 i = 0; i < playersInQueue.length; i++) {
             uint256 playerID = playersInQueue[i];
-            HexplorationQueue.Action action = QUEUE.submissionAction(
+            XenovoyaQueue.Action action = QUEUE.submissionAction(
                 queueID,
                 playerID
             );
-            if (action == HexplorationQueue.Action.Move) {
+            if (action == XenovoyaQueue.Action.Move) {
                 data.playerPositionUpdates += 1;
             }
             if (bytes(QUEUE.submissionLeftHand(queueID, playerID)).length > 0) {
@@ -369,35 +369,35 @@ contract HexplorationGameplay is
                 data.playerEquips += 1;
             }
             if (
-                action == HexplorationQueue.Action.SetupCamp ||
-                action == HexplorationQueue.Action.BreakDownCamp
+                action == XenovoyaQueue.Action.SetupCamp ||
+                action == XenovoyaQueue.Action.BreakDownCamp
             ) {
                 data.zoneTransfers += 1;
             }
 
-            if (action == HexplorationQueue.Action.Dig) {
+            if (action == XenovoyaQueue.Action.Dig) {
                 data.playerTransfers += 1;
             }
 
             if (
-                action == HexplorationQueue.Action.Dig ||
-                action == HexplorationQueue.Action.Rest ||
-                action == HexplorationQueue.Action.Help ||
-                action == HexplorationQueue.Action.SetupCamp ||
-                action == HexplorationQueue.Action.BreakDownCamp ||
-                action == HexplorationQueue.Action.Move
+                action == XenovoyaQueue.Action.Dig ||
+                action == XenovoyaQueue.Action.Rest ||
+                action == XenovoyaQueue.Action.Help ||
+                action == XenovoyaQueue.Action.SetupCamp ||
+                action == XenovoyaQueue.Action.BreakDownCamp ||
+                action == XenovoyaQueue.Action.Move
             ) {
                 data.activeActions += 1;
             }
 
             if (
-                action == HexplorationQueue.Action.Dig ||
-                action == HexplorationQueue.Action.Rest
+                action == XenovoyaQueue.Action.Dig ||
+                action == XenovoyaQueue.Action.Rest
             ) {
                 data.playerStatUpdates += 1;
             }
 
-            if (action == HexplorationQueue.Action.Help) {
+            if (action == XenovoyaQueue.Action.Help) {
                 data.playerStatUpdates += 2;
             }
         }
@@ -432,7 +432,7 @@ contract HexplorationGameplay is
     function processFailedPlayThroughQueue(uint256 queueID) public {
         // retry processing failed queue, set game queue new and continue play
         // reset queue phase to play through then
-        QUEUE.setPhase(HexplorationQueue.ProcessingPhase.PlayThrough, queueID);
+        QUEUE.setPhase(XenovoyaQueue.ProcessingPhase.PlayThrough, queueID);
         processPlayThroughUnsafe(queueID);
     }
 
@@ -443,7 +443,7 @@ contract HexplorationGameplay is
     ) public {
         uint256 gameID = QUEUE.game(queueID);
         // TODO: save update struct with all the actions from queue (what was originally the ints array)
-        PlayUpdates memory playUpdates = HexplorationGameplayUpdates
+        PlayUpdates memory playUpdates = XenovoyaGameplayUpdates
             .playUpdatesForPlayerActionPhase(
                 address(QUEUE),
                 queueID,
@@ -502,20 +502,20 @@ contract HexplorationGameplay is
         GAME_STATE.postUpdates(playUpdates, gameID);
         // player actions
         // sets phase (token balance) to playUpdates.gamePhase
-        QUEUE.setPhase(HexplorationQueue.ProcessingPhase.PlayThrough, queueID);
+        QUEUE.setPhase(XenovoyaQueue.ProcessingPhase.PlayThrough, queueID);
     }
 
     function processPlayThroughUnsafe(uint256 queueID) public {
-        HexplorationQueue.ProcessingPhase phase = QUEUE.currentPhase(queueID);
+        XenovoyaQueue.ProcessingPhase phase = QUEUE.currentPhase(queueID);
         if (QUEUE.getRandomness(queueID).length > 0) {
-            if (phase == HexplorationQueue.ProcessingPhase.PlayThrough) {
+            if (phase == XenovoyaQueue.ProcessingPhase.PlayThrough) {
                 uint256 gameID = QUEUE.game(queueID);
 
                 if (!QUEUE.isDayPhase(queueID)) {
                     // current live phase is opposite of what queue is set to
                     // (we process day phase events with previous night's turn queue)
                     PlayUpdates
-                        memory dayPhaseUpdates = HexplorationGameplayUpdates
+                        memory dayPhaseUpdates = XenovoyaGameplayUpdates
                             .dayPhaseUpdatesForPlayThroughPhase(
                                 address(QUEUE),
                                 queueID,

@@ -1,5 +1,5 @@
 {
-  "name": "hexploration-app",
+  "name": "xenovoya-app",
   "private": true,
   "version": "0.0.1",
   "type": "module",
@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "test": "vitest run --coverage",
+    "test": "vitest run --coverage --pool=threads",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
     "test:e2e:anvil": "node ../scripts/run-anvil-e2e.mjs",

@@ -391,12 +391,12 @@ async function main() {
   try {
     const [width, height] = await Promise.all([
       client.readContract({
-        address: deployments.HEXPLORATION_BOARD,
+        address: deployments.XENOVOYA_BOARD,
         abi: boardAbi,
         functionName: "gridWidth",
       }),
       client.readContract({
-        address: deployments.HEXPLORATION_BOARD,
+        address: deployments.XENOVOYA_BOARD,
         abi: boardAbi,
         functionName: "gridHeight",
       }),

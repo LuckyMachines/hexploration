@@ -3,7 +3,7 @@ pragma solidity 0.8.34;
 
 import "@luckymachines/game-core/contracts/src/v0.0/PlayZone.sol";
 
-contract HexplorationZone is PlayZone {
+contract XenovoyaZone is PlayZone {
     enum Tile {
         Default,
         Jungle,

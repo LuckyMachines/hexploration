@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity 0.8.34;
 
-import "./HexplorationBoard.sol";
-import "./HexplorationQueue.sol";
+import "./XenovoyaBoard.sol";
+import "./XenovoyaQueue.sol";
 import "./RandomIndices.sol";
 
-contract HexplorationDisputeResolver is RandomIndices {
+contract XenovoyaDisputeResolver is RandomIndices {
     uint256 private constant CURRENT_PLAY_ZONE = 10000000000;
 
     function resolveCampSetupDisputes(
@@ -38,7 +38,7 @@ contract HexplorationDisputeResolver is RandomIndices {
                 stringsMatch(zoneTransferItemTypes[i], "Campsite")
             ) {
                 if (bytes(campsiteSetupDisputes[0]).length == 0) {
-                    campsiteSetupDisputes[0] = HexplorationBoard(
+                    campsiteSetupDisputes[0] = XenovoyaBoard(
                         gameBoardAddress
                     ).currentPlayZone(gameID, zoneTransfersFrom[i]);
                 } else if (
@@ -48,7 +48,7 @@ contract HexplorationDisputeResolver is RandomIndices {
                         campsiteSetupDisputes[0]
                     )
                 ) {
-                    campsiteSetupDisputes[1] = HexplorationBoard(
+                    campsiteSetupDisputes[1] = XenovoyaBoard(
                         gameBoardAddress
                     ).currentPlayZone(gameID, zoneTransfersFrom[i]);
                 }
@@ -155,7 +155,7 @@ contract HexplorationDisputeResolver is RandomIndices {
                 stringsMatch(zoneTransferItemTypes[i], "Campsite")
             ) {
                 if (bytes(campsiteBreakDownDisputes[0]).length == 0) {
-                    campsiteBreakDownDisputes[0] = HexplorationBoard(
+                    campsiteBreakDownDisputes[0] = XenovoyaBoard(
                         gameBoardAddress
                     ).currentPlayZone(gameID, zoneTransfersTo[i]);
                 } else if (
@@ -165,7 +165,7 @@ contract HexplorationDisputeResolver is RandomIndices {
                         campsiteBreakDownDisputes[0]
                     )
                 ) {
-                    campsiteBreakDownDisputes[1] = HexplorationBoard(
+                    campsiteBreakDownDisputes[1] = XenovoyaBoard(
                         gameBoardAddress
                     ).currentPlayZone(gameID, zoneTransfersTo[i]);
                 }
@@ -276,7 +276,7 @@ contract HexplorationDisputeResolver is RandomIndices {
                 itemIsArtifact(playerTransferItemTypes[i])
             ) {
                 if (bytes(digDisputes[0]).length == 0) {
-                    digDisputes[0] = HexplorationBoard(gameBoardAddress)
+                    digDisputes[0] = XenovoyaBoard(gameBoardAddress)
                         .currentPlayZone(gameID, playerTransfersTo[i]);
                 } else if (
                     bytes(digDisputes[1]).length == 0 &&
@@ -285,7 +285,7 @@ contract HexplorationDisputeResolver is RandomIndices {
                         digDisputes[0]
                     )
                 ) {
-                    digDisputes[1] = HexplorationBoard(gameBoardAddress)
+                    digDisputes[1] = XenovoyaBoard(gameBoardAddress)
                         .currentPlayZone(gameID, playerTransfersTo[i]);
                 }
                 uint256 currentIndex = stringsMatch(
@@ -357,7 +357,7 @@ contract HexplorationDisputeResolver is RandomIndices {
         uint256 gameID,
         address queueAddress
     ) internal view returns (uint256) {
-        HexplorationQueue queue = HexplorationQueue(payable(queueAddress));
+        XenovoyaQueue queue = XenovoyaQueue(payable(queueAddress));
         uint256 currentQueueID = queue.queueID(gameID);
         return
             queue.isInTestMode()

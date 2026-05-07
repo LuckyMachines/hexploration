@@ -28,10 +28,14 @@ const appDir = path.resolve(repoRoot, 'app');
 const broadcastLatest = path.resolve(
   repoRoot,
   'broadcast',
-  'DeployHexploration.s.sol',
+  'DeployXenovoya.s.sol',
   '31337',
   'run-latest.json',
 );
+const foundryBinDir = process.env.FOUNDRY_BIN
+  || path.join(process.env.USERPROFILE || process.env.HOME || '', '.foundry', 'bin');
+const foundryExeSuffix = process.platform === 'win32' ? '.exe' : '';
+const windowsCmdSuffix = process.platform === 'win32' ? '.cmd' : '';
 
 const ANVIL_PORT = Number(process.env.ANVIL_PORT) || 9955;
 const RPC_URL = `http://127.0.0.1:${ANVIL_PORT}`;
@@ -44,6 +48,14 @@ const children = [];
 
 function log(msg) {
   console.log(`[local-stack] ${msg}`);
+}
+
+function resolveFoundryBinary(name) {
+  return path.join(foundryBinDir, `${name}${foundryExeSuffix}`);
+}
+
+function resolveShellBinary(name) {
+  return process.platform === 'win32' ? `${name}${windowsCmdSuffix}` : name;
 }
 
 function isPortAvailable(port) {
@@ -81,11 +93,12 @@ async function waitForRpc(rpcUrl, timeoutMs = 25_000) {
 }
 
 function runCommand(command, args, options = {}) {
+  const defaultShell = command.toLowerCase().endsWith('.cmd');
   return new Promise((resolve, reject) => {
     const child = spawn(command, args, {
       cwd: options.cwd ?? repoRoot,
       env: { ...process.env, ...(options.env || {}) },
-      shell: options.shell ?? true,
+      shell: options.shell ?? defaultShell,
       stdio: options.stdio ?? 'inherit',
     });
 
@@ -98,10 +111,11 @@ function runCommand(command, args, options = {}) {
 }
 
 function spawnChild(command, args, options = {}) {
+  const defaultShell = command.toLowerCase().endsWith('.cmd');
   const child = spawn(command, args, {
     cwd: options.cwd ?? repoRoot,
     env: { ...process.env, ...(options.env || {}) },
-    shell: options.shell ?? true,
+    shell: options.shell ?? defaultShell,
     stdio: options.stdio ?? 'inherit',
   });
   children.push(child);
@@ -127,7 +141,7 @@ async function readBroadcastAddresses() {
     }
   }
 
-  // CardDeck deploy order (must match DeployHexploration.s.sol):
+  // CardDeck deploy order (must match DeployXenovoya.s.sol):
   // event, ambush, treasure, land, relic
   if (cardDecks.length < 5) {
     throw new Error(`Expected 5 CardDeck deploys, found ${cardDecks.length}. Deploy script order may have changed.`);
@@ -142,20 +156,20 @@ async function readBroadcastAddresses() {
   // Worker addresses
   const workerAddrs = {
     GAME_SETUP: byName.GameSetup,
-    GAME_QUEUE: byName.HexplorationQueue,
-    HEXPLORATION_CONTROLLER: byName.HexplorationController,
-    GAMEPLAY: byName.HexplorationGameplay,
+    GAME_QUEUE: byName.XenovoyaQueue,
+    XENOVOYA_CONTROLLER: byName.XenovoyaController,
+    GAMEPLAY: byName.XenovoyaGameplay,
   };
 
   // App / frontend addresses
   const appAddrs = {
-    VITE_BOARD_ADDRESS: byName.HexplorationBoard,
-    VITE_CONTROLLER_ADDRESS: byName.HexplorationController,
+    VITE_BOARD_ADDRESS: byName.XenovoyaBoard,
+    VITE_CONTROLLER_ADDRESS: byName.XenovoyaController,
     VITE_GAME_SUMMARY_ADDRESS: byName.GameSummary,
     VITE_PLAYER_SUMMARY_ADDRESS: byName.PlayerSummary,
     VITE_GAME_EVENTS_ADDRESS: byName.GameEvents,
     VITE_GAME_REGISTRY_ADDRESS: byName.GameRegistry,
-    VITE_GAME_QUEUE_ADDRESS: byName.HexplorationQueue,
+    VITE_GAME_QUEUE_ADDRESS: byName.XenovoyaQueue,
     VITE_GAME_SETUP_ADDRESS: byName.GameSetup,
   };
 
@@ -254,7 +268,7 @@ async function main() {
 
   // 2. Start Anvil
   log(`Starting Anvil on port ${ANVIL_PORT}...`);
-  const anvil = spawnChild('anvil', [
+  const anvil = spawnChild(resolveFoundryBinary('anvil'), [
     '--host', '127.0.0.1',
     '--port', String(ANVIL_PORT),
     '--chain-id', '31337',
@@ -275,9 +289,9 @@ async function main() {
 
   // 4. Deploy contracts
   log('Deploying contracts (forge script)...');
-  await runCommand('forge', [
+  await runCommand(resolveFoundryBinary('forge'), [
     'script',
-    'script/DeployHexploration.s.sol',
+    'script/DeployXenovoya.s.sol',
     '--rpc-url', RPC_URL,
     '--broadcast',
     '--non-interactive',
@@ -290,12 +304,12 @@ async function main() {
   const { workerAddrs, appAddrs, deckAddrs } = await readBroadcastAddresses();
   log('Addresses extracted from broadcast.');
 
-  // 6. Populate card decks (in parallel — one process per deck)
-  log('Populating card decks (5 parallel)...');
+  // 6. Populate card decks sequentially to avoid nonce collisions on Anvil.
+  log('Populating card decks...');
   const deckDeployments = JSON.stringify(deckAddrs);
   const deckNames = ['EVENT', 'AMBUSH', 'TREASURE', 'LAND', 'RELIC'];
-  await Promise.all(deckNames.map((name) =>
-    runCommand('node', ['scripts/populate-decks.mjs'], {
+  for (const name of deckNames) {
+    await runCommand('node', ['scripts/populate-decks.mjs'], {
       env: {
         CHAIN: 'foundry',
         RPC_URL,
@@ -303,8 +317,8 @@ async function main() {
         DEPLOYMENTS_JSON: deckDeployments,
         DECK_FILTER: name,
       },
-    }),
-  ));
+    });
+  }
   log('Card decks populated.');
 
   // 7. Seed an open game
@@ -318,7 +332,7 @@ async function main() {
   // 9. Spawn worker
   log('Starting automation worker...');
   const workerDeployments = JSON.stringify(workerAddrs);
-  spawnChild('node', ['scripts/hexploration-worker.mjs'], {
+  spawnChild('node', ['scripts/xenovoya-worker.mjs'], {
     env: {
       CHAIN: 'foundry',
       RPC_URL,
@@ -330,7 +344,7 @@ async function main() {
 
   // 10. Spawn Vite dev server
   log('Starting Vite dev server...');
-  spawnChild('npm', ['run', 'dev'], {
+  spawnChild(resolveShellBinary('npm'), ['run', 'dev'], {
     cwd: appDir,
     stdio: 'inherit',
   });

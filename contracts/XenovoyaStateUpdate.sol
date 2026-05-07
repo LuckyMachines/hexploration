@@ -7,18 +7,18 @@ pragma solidity 0.8.34;
 
 // This should be only associated with one board...
 
-import "./HexplorationController.sol";
-import "./HexplorationBoard.sol";
+import "./XenovoyaController.sol";
+import "./XenovoyaBoard.sol";
 import "./CardDeck.sol";
 import "./CharacterCard.sol";
-import "./HexplorationGameplay.sol";
+import "./XenovoyaGameplay.sol";
 import "./GameEvents.sol";
 import "./RandomIndices.sol";
 import "./GameWallets.sol";
 import "./StateUpdateHelpers.sol";
 import "./RelicManagement.sol";
 
-contract HexplorationStateUpdate is
+contract XenovoyaStateUpdate is
     AccessControlEnumerable,
     RandomIndices,
     GameWallets
@@ -43,7 +43,7 @@ contract HexplorationStateUpdate is
     )
 */
 
-    HexplorationBoard internal GAME_BOARD;
+    XenovoyaBoard internal GAME_BOARD;
     CharacterCard internal CHARACTER_CARD;
     GameEvents internal GAME_EVENTS;
     RelicManagement internal RELIC_MANAGEMENT;
@@ -65,7 +65,7 @@ contract HexplorationStateUpdate is
         address relicManagementAddress
     ) {
         _grantRole(DEFAULT_ADMIN_ROLE, _msgSender());
-        GAME_BOARD = HexplorationBoard(gameBoardAddress);
+        GAME_BOARD = XenovoyaBoard(gameBoardAddress);
         CHARACTER_CARD = CharacterCard(characterCardAddress);
         RELIC_MANAGEMENT = RelicManagement(relicManagementAddress);
     }
@@ -85,7 +85,7 @@ contract HexplorationStateUpdate is
     }
 
     function postUpdates(
-        HexplorationGameplay.PlayUpdates memory updates,
+        XenovoyaGameplay.PlayUpdates memory updates,
         uint256 gameID
     ) public onlyRole(VERIFIED_CONTROLLER_ROLE) {
         // go through values and post everything, transfer all the tokens, and pray
@@ -112,7 +112,7 @@ contract HexplorationStateUpdate is
     }
 
     function postDayPhaseUpdates(
-        HexplorationGameplay.PlayUpdates memory dayPhaseUpdates,
+        XenovoyaGameplay.PlayUpdates memory dayPhaseUpdates,
         uint256 gameID
     ) public onlyRole(VERIFIED_CONTROLLER_ROLE) {
         if (
@@ -167,7 +167,7 @@ contract HexplorationStateUpdate is
     */
 
     function updatePlayerPositions(
-        HexplorationGameplay.PlayUpdates memory updates,
+        XenovoyaGameplay.PlayUpdates memory updates,
         uint256 gameID
     ) internal {
         for (uint256 i = 0; i < updates.playerPositionIDs.length; i++) {
@@ -286,7 +286,7 @@ contract HexplorationStateUpdate is
     }
 
     function updatePlayerStats(
-        HexplorationGameplay.PlayUpdates memory updates,
+        XenovoyaGameplay.PlayUpdates memory updates,
         uint256 gameID
     ) internal {
         for (uint256 i = 0; i < updates.playerStatUpdateIDs.length; i++) {
@@ -326,7 +326,7 @@ contract HexplorationStateUpdate is
     }
 
     function updatePlayerHands(
-        HexplorationGameplay.PlayUpdates memory updates,
+        XenovoyaGameplay.PlayUpdates memory updates,
         uint256 gameID
     ) internal {
         // TODO: transfer item to bank if in inventory + removing from hand
@@ -349,7 +349,7 @@ contract HexplorationStateUpdate is
     }
 
     function applyActivityEffects(
-        HexplorationGameplay.PlayUpdates memory updates,
+        XenovoyaGameplay.PlayUpdates memory updates,
         uint256 gameID
     ) internal {
         for (uint256 i = 0; i < updates.activeActions.length; i++) {
@@ -384,7 +384,7 @@ contract HexplorationStateUpdate is
     }
 
     function applyDayPhaseEffects(
-        HexplorationGameplay.PlayUpdates memory updates,
+        XenovoyaGameplay.PlayUpdates memory updates,
         uint256 gameID
     ) internal {
         for (uint256 i = 0; i < updates.activeActions.length; i++) {
@@ -412,7 +412,7 @@ contract HexplorationStateUpdate is
     }
 
     function transferPlayerItems(
-        HexplorationGameplay.PlayUpdates memory updates,
+        XenovoyaGameplay.PlayUpdates memory updates,
         uint256 gameID
     ) internal {
         // Transfers to / from players (item gains / losses)
@@ -516,7 +516,7 @@ contract HexplorationStateUpdate is
     }
 
     function transferZoneItems(
-        HexplorationGameplay.PlayUpdates memory updates,
+        XenovoyaGameplay.PlayUpdates memory updates,
         uint256 gameID
     ) internal {
         // these are all current zone to player or player to current zone
@@ -570,10 +570,10 @@ contract HexplorationStateUpdate is
         uint256[] memory randomness
     ) public onlyRole(VERIFIED_CONTROLLER_ROLE) {
         // TODO: look into extending this beyond 4...
-        HexplorationZone.Tile[] memory tiles = new HexplorationZone.Tile[](
+        XenovoyaZone.Tile[] memory tiles = new XenovoyaZone.Tile[](
             zonePath.length > 4 ? 4 : zonePath.length
         );
-        HexplorationZone hexZone = HexplorationZone(
+        XenovoyaZone hexZone = XenovoyaZone(
             GAME_BOARD.hexZoneAddress()
         );
         TokenInventory ti = TokenInventory(GAME_BOARD.tokenInventory());
@@ -582,7 +582,7 @@ contract HexplorationStateUpdate is
             currentZone = zonePath[i];
             if (
                 hexZone.tile(gameID, currentZone) ==
-                HexplorationZone.Tile.RelicMystery
+                XenovoyaZone.Tile.RelicMystery
             ) {
                 tiles[i] = RELIC_MANAGEMENT.revealRelic(
                     address(GAME_BOARD),
@@ -596,14 +596,14 @@ contract HexplorationStateUpdate is
                 // Won't double set, but want to avoid unnecessary computation.
 
                 // Need # 1 - 4 for tile selection
-                tiles[i] = HexplorationZone.Tile(((randomness[i]) % 4) + 1);
+                tiles[i] = XenovoyaZone.Tile(((randomness[i]) % 4) + 1);
             }
         }
 
         GAME_BOARD.moveThroughPath(zonePath, playerID, gameID, tiles);
 
         // Current zone is now set to the final space
-        HexplorationZone.Tile zoneTile = hexZone.tile(gameID, currentZone);
+        XenovoyaZone.Tile zoneTile = hexZone.tile(gameID, currentZone);
         if (
             StateUpdateHelpers.stringsMatch(
                 currentZone,
@@ -659,7 +659,7 @@ contract HexplorationStateUpdate is
     // }
 
     function updatePlayPhase(
-        HexplorationGameplay.PlayUpdates memory updates,
+        XenovoyaGameplay.PlayUpdates memory updates,
         uint256 gameID
     ) internal {
         // set to NEXT play phase

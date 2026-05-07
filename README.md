@@ -1,4 +1,4 @@
-# Hexploration
+# Xenovoya
 
 A fully on-chain multiplayer explore & escape game. Land on an uncharted planet, navigate a hex grid shrouded in fog, recover ancient relics, and make it back alive. Every action, dice roll, and card draw lives on-chain -- no hidden server state, no trust required.
 
@@ -54,19 +54,19 @@ Built on the [Lucky Machines Game Core](https://github.com/LuckyMachines/game-co
 
 | Contract | Purpose |
 |----------|---------|
-| **HexplorationController** | Player action submission (move, explore, rest, help) |
-| **HexplorationGameplay** | Main gameplay logic and turn processing |
-| **HexplorationGameplayUpdates** | Gameplay state mutation helpers |
-| **HexplorationStateUpdate** | Phase transitions and state advancement |
-| **HexplorationQueue** | Pending game update queue for automation |
+| **XenovoyaController** | Player action submission (move, explore, rest, help) |
+| **XenovoyaGameplay** | Main gameplay logic and turn processing |
+| **XenovoyaGameplayUpdates** | Gameplay state mutation helpers |
+| **XenovoyaStateUpdate** | Phase transitions and state advancement |
+| **XenovoyaQueue** | Pending game update queue for automation |
 
 ### Board & Zones
 
 | Contract | Purpose |
 |----------|---------|
-| **HexplorationBoard** | 10x10 hex grid extending Game Core's HexGrid |
-| **HexplorationZone** | Zone logic for hex tiles |
-| **HexplorationRules** | Ruleset defining movement, capacity, and game parameters |
+| **XenovoyaBoard** | 10x10 hex grid extending Game Core's HexGrid |
+| **XenovoyaZone** | Zone logic for hex tiles |
+| **XenovoyaRules** | Ruleset defining movement, capacity, and game parameters |
 
 ### Data & Inventory
 
@@ -112,7 +112,7 @@ Event, Ambush, Treasure, Land, Relic -- each deck is populated from `scripts/onc
 
 ## Automation & Randomness
 
-Hexploration requires two things to keep running: **automation** (advancing game phases) and **randomness** (card draws, dice rolls, events). Both are pluggable. Three randomness modes are supported:
+Xenovoya requires two things to keep running: **automation** (advancing game phases) and **randomness** (card draws, dice rolls, events). Both are pluggable. Three randomness modes are supported:
 
 ### AutoLoop VRF (recommended)
 
@@ -124,7 +124,7 @@ node scripts/register-vrf-key.mjs      # Register worker's VRF public key
 node scripts/enable-autoloop-vrf.mjs    # Enable VRF mode on contracts
 
 # Run the worker
-USE_AUTOLOOP_VRF=true node scripts/hexploration-worker.mjs
+USE_AUTOLOOP_VRF=true node scripts/xenovoya-worker.mjs
 ```
 
 How it works:
@@ -139,7 +139,7 @@ How it works:
 The simplest setup for testing and development. Uses blockhash-based pseudo-randomness:
 
 ```bash
-node scripts/hexploration-worker.mjs
+node scripts/xenovoya-worker.mjs
 ```
 
 - Polls `shouldProgressLoop()` on Controller, Gameplay, and GameSetup contracts every 5 seconds
@@ -155,7 +155,7 @@ Chainlink VRF v2 for provably fair randomness without running your own worker:
 2. Call `setVRFSubscriptionID(subscriptionId)` on GameSetup and Queue contracts
 3. Add the contract addresses as consumers on your VRF subscription
 
-The `AutomationCompatibleInterface` (`checkUpkeep`/`performUpkeep`) is implemented on both `HexplorationController` and `HexplorationGameplay`, so Chainlink Automation can also replace the worker for phase advancement.
+The `AutomationCompatibleInterface` (`checkUpkeep`/`performUpkeep`) is implemented on both `XenovoyaController` and `XenovoyaGameplay`, so Chainlink Automation can also replace the worker for phase advancement.
 
 ### How the Automation Loop Works
 
@@ -213,13 +213,13 @@ node scripts/register-vrf-key.mjs
 node scripts/enable-autoloop-vrf.mjs
 
 # 3. Start the worker with VRF mode
-USE_AUTOLOOP_VRF=true node scripts/hexploration-worker.mjs
+USE_AUTOLOOP_VRF=true node scripts/xenovoya-worker.mjs
 ```
 
 To switch back to Mock VRF:
 ```bash
 node scripts/enable-autoloop-vrf.mjs --disable
-node scripts/hexploration-worker.mjs
+node scripts/xenovoya-worker.mjs
 ```
 
 ### Cost Comparison
@@ -251,7 +251,7 @@ forge build
 cd app && npm install && npm run dev
 
 # Run the automation worker
-node scripts/hexploration-worker.mjs
+node scripts/xenovoya-worker.mjs
 ```
 
 ## Local Development
@@ -328,7 +328,7 @@ cp .env.example .env
 # Edit .env with your PRIVATE_KEY and SEPOLIA_RPC_URL
 
 # 2. Deploy all contracts + wire + register tokens + create grid
-forge script script/DeployHexploration.s.sol --rpc-url sepolia --broadcast
+forge script script/DeployXenovoya.s.sol --rpc-url sepolia --broadcast
 
 # 3. Update deployments.json with new addresses from output
 
@@ -338,7 +338,7 @@ node scripts/populate-decks.mjs
 # 5. Update app/.env with new VITE_* addresses
 
 # 6. Verify deployment
-node scripts/check-hex-status.mjs
+node scripts/check-xenovoya-status.mjs
 ```
 
 Full deployment costs approximately 0.00014 ETH on Sepolia. Deploys in mock VRF mode by default (no Chainlink subscription needed).
@@ -385,27 +385,27 @@ cd app && npm install && npm run dev
 ```
 VITE_RPC_URL                     # Sepolia RPC endpoint
 VITE_WALLETCONNECT_PROJECT_ID    # WalletConnect project ID (optional)
-VITE_BOARD_ADDRESS               # HexplorationBoard contract
-VITE_CONTROLLER_ADDRESS          # HexplorationController contract
+VITE_BOARD_ADDRESS               # XenovoyaBoard contract
+VITE_CONTROLLER_ADDRESS          # XenovoyaController contract
 VITE_GAME_SUMMARY_ADDRESS        # GameSummary contract
 VITE_PLAYER_SUMMARY_ADDRESS      # PlayerSummary contract
 VITE_GAME_EVENTS_ADDRESS         # GameEvents contract
 VITE_GAME_REGISTRY_ADDRESS       # GameRegistry contract
-VITE_GAME_QUEUE_ADDRESS          # HexplorationQueue contract
+VITE_GAME_QUEUE_ADDRESS          # XenovoyaQueue contract
 VITE_GAME_SETUP_ADDRESS          # GameSetup contract
 ```
 
 ## Project Structure
 
 ```
-hexploration/
+xenovoya/
 ├── contracts/              # 25 Solidity contracts
 ├── script/
-│   └── DeployHexploration.s.sol  # Foundry deploy script
+│   └── DeployXenovoya.s.sol  # Foundry deploy script
 ├── scripts/
-│   ├── hexploration-worker.mjs   # Automation worker
+│   ├── xenovoya-worker.mjs   # Automation worker
 │   ├── populate-decks.mjs        # Populate card decks on-chain
-│   ├── check-hex-status.mjs      # Verify deployment status
+│   ├── check-xenovoya-status.mjs # Verify deployment status
 │   ├── enable-mock-vrf.mjs       # Enable mock VRF mode
 │   ├── enable-autoloop-vrf.mjs   # Enable/disable AutoLoop VRF mode
 │   ├── register-vrf-key.mjs     # Register worker VRF public key
@@ -413,7 +413,7 @@ hexploration/
 │   ├── ecvrf-prover.mjs         # ECVRF proof generation library
 │   ├── pull-onchain-data.mjs     # Pull game data from chain
 │   ├── onchain-data.json         # Card deck + token data
-│   └── hexploration-worker.env.example
+│   └── xenovoya-worker.env.example
 ├── app/                    # React SPA (Vite + Wagmi + TailwindCSS)
 │   ├── src/
 │   ├── index.html
@@ -430,10 +430,10 @@ hexploration/
 
 | Script | Description |
 |--------|-------------|
-| `hexploration-worker.mjs` | Automation worker -- polls for pending games, fulfills VRF, advances phases |
+| `xenovoya-worker.mjs` | Automation worker -- polls for pending games, fulfills VRF, advances phases |
 | `run-local-stack.mjs` | Boots full local stack: Anvil + contracts + decks + worker + frontend |
 | `populate-decks.mjs` | Populates all 5 card decks from `onchain-data.json` |
-| `check-hex-status.mjs` | Reads on-chain state to verify deployment is correctly wired |
+| `check-xenovoya-status.mjs` | Reads on-chain state to verify deployment is correctly wired |
 | `enable-mock-vrf.mjs` | Enables mock VRF mode on deployed contracts |
 | `enable-autoloop-vrf.mjs` | Enables/disables AutoLoop VRF mode on deployed contracts |
 | `register-vrf-key.mjs` | Registers worker's VRF public key on Gameplay contract |
@@ -450,6 +450,8 @@ Key addresses:
 - Game Queue: `0x77c5886c1e2be7E4100C31607D4E1EBF3965B484`
 
 See `deployments.json` for all contract addresses.
+
+Legacy `HEXPLORATION_*` env vars and deployment keys were not kept during this rename; use the `XENOVOYA_*` names everywhere.
 
 ## License
 

@@ -34,7 +34,7 @@ const gameSummaryAbi = JSON.parse(
   readFileSync(resolve(root, 'abi', 'GameSummary.json'), 'utf8'),
 );
 const controllerAbi = JSON.parse(
-  readFileSync(resolve(root, 'abi', 'HexplorationController.json'), 'utf8'),
+  readFileSync(resolve(root, 'abi', 'XenovoyaController.json'), 'utf8'),
 );
 
 // ── Anvil account #1 ───────────────────────────────────────────────

@@ -1,17 +1,20 @@
 import GameBrowser from '../components/game/GameBrowser';
 import SystemHealth from '../components/shared/SystemHealth';
+import SurveyTabletFrame from '../components/layout/SurveyTabletFrame';
 
 export default function HomePage() {
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-12">
-      <h1 className="text-3xl font-semibold tracking-widest text-compass uppercase mb-2 font-display">
-        Expedition Console
-      </h1>
-      <p className="text-exp-text-dim font-mono text-sm mb-8">
-        Select an expedition or launch a new one
-      </p>
-      <SystemHealth />
-      <GameBrowser />
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-12">
+      <SurveyTabletFrame
+        title="Xenovoya"
+        subtitle="Survey targets, system status, and live survey access"
+        status="SURVEY READY"
+      >
+        <div className="space-y-6">
+          <SystemHealth />
+          <GameBrowser />
+        </div>
+      </SurveyTabletFrame>
     </div>
   );
 }

@@ -35,6 +35,6 @@ describe('GamePage', () => {
       </MemoryRouter>,
     );
 
-    expect(screen.getByText(/Invalid expedition id/i)).toBeInTheDocument();
+    expect(screen.getByText(/Invalid survey id/i)).toBeInTheDocument();
   });
 });

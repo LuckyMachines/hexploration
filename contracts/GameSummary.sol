@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity 0.8.34;
 
-import "./HexplorationBoard.sol";
-import "./HexplorationZone.sol";
+import "./XenovoyaBoard.sol";
+import "./XenovoyaZone.sol";
 import "@luckymachines/game-core/contracts/src/v0.0/PlayerRegistry.sol";
 import "./CharacterCard.sol";
 import "./TokenInventory.sol";
-import "./HexplorationQueue.sol";
+import "./XenovoyaQueue.sol";
 import "./GameWallets.sol";
 import "./Utilities.sol";
 import "./PlayerSummary.sol";
@@ -56,7 +56,7 @@ contract GameSummary is GameWallets, Utilities, AccessControlEnumerable {
             bool[] memory campsites
         )
     {
-        HexplorationBoard board = HexplorationBoard(gameBoardAddress);
+        XenovoyaBoard board = XenovoyaBoard(gameBoardAddress);
         string[] memory allZones = board.getZoneAliases();
 
         uint16 activeZoneCount = 0;
@@ -74,7 +74,7 @@ contract GameSummary is GameWallets, Utilities, AccessControlEnumerable {
         for (uint256 i = 0; i < allZones.length; i++) {
             if (board.zoneEnabled(gameID, allZones[i])) {
                 zones[activeZoneCount] = allZones[i];
-                HexplorationZone hexZone = HexplorationZone(
+                XenovoyaZone hexZone = XenovoyaZone(
                     board.hexZoneAddress()
                 );
                 tiles[activeZoneCount] = uint16(
@@ -108,10 +108,10 @@ contract GameSummary is GameWallets, Utilities, AccessControlEnumerable {
         address gameBoardAddress,
         uint256 gameID
     ) public view returns (PlayerInfo[] memory players) {
-        HexplorationBoard board = HexplorationBoard(gameBoardAddress);
+        XenovoyaBoard board = XenovoyaBoard(gameBoardAddress);
         PlayerRegistry pr = PlayerRegistry(board.prAddress());
         uint256 registrations = pr.totalRegistrations(gameID);
-        HexplorationQueue q = HexplorationQueue(payable(board.gameplayQueue()));
+        XenovoyaQueue q = XenovoyaQueue(payable(board.gameplayQueue()));
 
         players = new PlayerInfo[](registrations);
         for (uint256 i = 0; i < registrations; i++) {
@@ -140,7 +140,7 @@ contract GameSummary is GameWallets, Utilities, AccessControlEnumerable {
             string[] memory rightHandItems
         )
     {
-        HexplorationBoard board = HexplorationBoard(gameBoardAddress);
+        XenovoyaBoard board = XenovoyaBoard(gameBoardAddress);
         // uint256 totalRegistrations = pr.totalRegistrations(gameID);
         playerIDs = new uint256[](
             PlayerRegistry(board.prAddress()).totalRegistrations(gameID)
@@ -197,7 +197,7 @@ contract GameSummary is GameWallets, Utilities, AccessControlEnumerable {
             uint256[][] memory itemBalances
         )
     {
-        HexplorationBoard board = HexplorationBoard(gameBoardAddress);
+        XenovoyaBoard board = XenovoyaBoard(gameBoardAddress);
         PlayerRegistry pr = PlayerRegistry(board.prAddress());
         uint256 totalRegistrations = pr.totalRegistrations(gameID);
         playerIDs = new uint256[](totalRegistrations);
@@ -219,7 +219,7 @@ contract GameSummary is GameWallets, Utilities, AccessControlEnumerable {
         view
         returns (uint256[] memory playerIDs, string[] memory playerZones)
     {
-        HexplorationBoard board = HexplorationBoard(gameBoardAddress);
+        XenovoyaBoard board = XenovoyaBoard(gameBoardAddress);
         PlayerRegistry pr = PlayerRegistry(board.prAddress());
         uint256 totalRegistrations = pr.totalRegistrations(gameID);
         playerIDs = new uint256[](totalRegistrations);
@@ -233,7 +233,7 @@ contract GameSummary is GameWallets, Utilities, AccessControlEnumerable {
     function boardSize(
         address gameBoardAddress
     ) public view returns (uint256 rows, uint256 columns) {
-        HexplorationBoard board = HexplorationBoard(gameBoardAddress);
+        XenovoyaBoard board = XenovoyaBoard(gameBoardAddress);
         rows = board.gridHeight();
         columns = board.gridWidth();
     }
@@ -244,7 +244,7 @@ contract GameSummary is GameWallets, Utilities, AccessControlEnumerable {
         string memory _zoneAlias
     ) public view returns (bool diggingAllowed) {
         uint256 index = zoneIndex(gameBoardAddress, _zoneAlias);
-        HexplorationBoard board = HexplorationBoard(gameBoardAddress);
+        XenovoyaBoard board = XenovoyaBoard(gameBoardAddress);
         diggingAllowed =
             TokenInventory(board.tokenInventory()).ITEM_TOKEN().zoneBalance(
                 "Campsite",
@@ -259,8 +259,8 @@ contract GameSummary is GameWallets, Utilities, AccessControlEnumerable {
         address gameBoardAddress,
         uint256 gameID
     ) public view returns (uint256 day) {
-        HexplorationBoard board = HexplorationBoard(gameBoardAddress);
-        HexplorationQueue q = HexplorationQueue(payable(board.gameplayQueue()));
+        XenovoyaBoard board = XenovoyaBoard(gameBoardAddress);
+        XenovoyaQueue q = XenovoyaQueue(payable(board.gameplayQueue()));
         day = (q.getQueueIDs(gameID).length + 1) / 2;
     }
 
@@ -268,8 +268,8 @@ contract GameSummary is GameWallets, Utilities, AccessControlEnumerable {
         address gameBoardAddress,
         uint256 gameID
     ) public view returns (uint256 queueID) {
-        HexplorationBoard board = HexplorationBoard(gameBoardAddress);
-        HexplorationQueue q = HexplorationQueue(payable(board.gameplayQueue()));
+        XenovoyaBoard board = XenovoyaBoard(gameBoardAddress);
+        XenovoyaQueue q = XenovoyaQueue(payable(board.gameplayQueue()));
         queueID = q.queueID(gameID);
     }
 
@@ -277,7 +277,7 @@ contract GameSummary is GameWallets, Utilities, AccessControlEnumerable {
         address gameBoardAddress,
         uint256 gameID
     ) public view returns (string memory phase) {
-        HexplorationBoard board = HexplorationBoard(gameBoardAddress);
+        XenovoyaBoard board = XenovoyaBoard(gameBoardAddress);
         TokenInventory tokens = TokenInventory(board.tokenInventory());
 
         uint256 dayBalance = tokens.DAY_NIGHT_TOKEN().balance(
@@ -292,7 +292,7 @@ contract GameSummary is GameWallets, Utilities, AccessControlEnumerable {
         address gameBoardAddress,
         uint256 gameID
     ) public view returns (bool gameHasStarted) {
-        HexplorationBoard board = HexplorationBoard(gameBoardAddress);
+        XenovoyaBoard board = XenovoyaBoard(gameBoardAddress);
         gameHasStarted = board.gameState(gameID) > 0;
     }
 
@@ -308,7 +308,7 @@ contract GameSummary is GameWallets, Utilities, AccessControlEnumerable {
             uint256[] memory currentRegistrations
         )
     {
-        (gameIDs, maxPlayers, currentRegistrations) = HexplorationBoard(
+        (gameIDs, maxPlayers, currentRegistrations) = XenovoyaBoard(
             gameBoardAddress
         ).openGames(gameRegistryAddress);
     }
@@ -317,7 +317,7 @@ contract GameSummary is GameWallets, Utilities, AccessControlEnumerable {
         address gameBoardAddress,
         uint256 gameID
     ) public view returns (string memory zoneAlias) {
-        zoneAlias = HexplorationBoard(gameBoardAddress).initialPlayZone(gameID);
+        zoneAlias = XenovoyaBoard(gameBoardAddress).initialPlayZone(gameID);
     }
 
     function lastDayPhaseEvents(
@@ -335,7 +335,7 @@ contract GameSummary is GameWallets, Utilities, AccessControlEnumerable {
             int8[3][] memory statUpdates
         )
     {
-        HexplorationBoard board = HexplorationBoard(gameBoardAddress);
+        XenovoyaBoard board = XenovoyaBoard(gameBoardAddress);
         CharacterCard cc = CharacterCard(board.characterCard());
         PlayerRegistry pr = PlayerRegistry(board.prAddress());
         uint256 totalRegistrations = pr.totalRegistrations(gameID);
@@ -362,7 +362,7 @@ contract GameSummary is GameWallets, Utilities, AccessControlEnumerable {
         address gameBoardAddress,
         uint256 gameID
     ) public view returns (EventSummary[] memory playerActions) {
-        HexplorationBoard board = HexplorationBoard(gameBoardAddress);
+        XenovoyaBoard board = XenovoyaBoard(gameBoardAddress);
         CharacterCard cc = CharacterCard(board.characterCard());
         PlayerRegistry pr = PlayerRegistry(board.prAddress());
         uint256 totalRegistrations = pr.totalRegistrations(gameID);
@@ -406,7 +406,7 @@ contract GameSummary is GameWallets, Utilities, AccessControlEnumerable {
         address gameBoardAddress,
         uint256 gameID
     ) public view returns (string[] memory artifacts) {
-        HexplorationBoard board = HexplorationBoard(gameBoardAddress);
+        XenovoyaBoard board = XenovoyaBoard(gameBoardAddress);
         TokenInventory tokens = TokenInventory(board.tokenInventory());
         uint256 totalArtifacts = 0;
         uint256 artifactBalance1 = tokens.ITEM_TOKEN().balance(
@@ -458,7 +458,7 @@ contract GameSummary is GameWallets, Utilities, AccessControlEnumerable {
         address gameBoardAddress,
         uint256 gameID
     ) public view returns (uint256 numPlayers) {
-        HexplorationBoard board = HexplorationBoard(gameBoardAddress);
+        XenovoyaBoard board = XenovoyaBoard(gameBoardAddress);
         PlayerRegistry pr = PlayerRegistry(board.prAddress());
         numPlayers = pr.totalRegistrations(gameID);
     }
@@ -469,7 +469,7 @@ contract GameSummary is GameWallets, Utilities, AccessControlEnumerable {
         string memory zoneAlias
     ) internal view returns (uint256 index) {
         index = 1111111111111;
-        HexplorationBoard board = HexplorationBoard(gameBoardAddress);
+        XenovoyaBoard board = XenovoyaBoard(gameBoardAddress);
         string[] memory allZones = board.getZoneAliases();
         for (uint256 i = 0; i < allZones.length; i++) {
             if (

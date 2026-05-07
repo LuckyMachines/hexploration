@@ -32,7 +32,7 @@ export default function SectionOverview() {
         <li>
           <span className="text-exp-text-dim">Night Phase</span> &mdash;
           Environmental events occur. Day/night cycles continue until
-          the expedition concludes.
+          the survey concludes.
         </li>
       </ol>
 

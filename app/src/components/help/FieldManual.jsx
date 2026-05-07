@@ -24,7 +24,7 @@ export default function FieldManual() {
             Field Manual
           </h2>
           <span className="font-mono text-xs text-exp-text-dim tracking-wider uppercase">
-            Hexploration // Explorer Reference
+            Xenovoya // Explorer Reference
           </span>
         </div>
       </div>

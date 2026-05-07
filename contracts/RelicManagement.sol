@@ -2,8 +2,8 @@
 pragma solidity 0.8.34;
 
 import "@openzeppelin/contracts/access/extensions/AccessControlEnumerable.sol";
-import "./HexplorationBoard.sol";
-import "./HexplorationZone.sol";
+import "./XenovoyaBoard.sol";
+import "./XenovoyaZone.sol";
 import "./CharacterCard.sol";
 import "./TokenInventory.sol";
 
@@ -30,8 +30,8 @@ contract RelicManagement is AccessControlEnumerable {
         uint256 gameID,
         string memory zoneAlias,
         uint256 randomness
-    ) external onlyRole(VERIFIED_CONTROLLER_ROLE) returns (HexplorationZone.Tile) {
-        HexplorationBoard board = HexplorationBoard(gameBoardAddress);
+    ) external onlyRole(VERIFIED_CONTROLLER_ROLE) returns (XenovoyaZone.Tile) {
+        XenovoyaBoard board = XenovoyaBoard(gameBoardAddress);
         TokenInventory ti = TokenInventory(board.tokenInventory());
 
         // Get all relic token types; index 0 = "Mystery", 1+ = named relics
@@ -44,7 +44,7 @@ contract RelicManagement is AccessControlEnumerable {
         string memory chosenRelic = relicTypes[chosenIndex];
 
         // Map chosen relic index to Tile enum: Relic1=7, Relic2=8, ...
-        HexplorationZone.Tile revealedTile = HexplorationZone.Tile(6 + chosenIndex);
+        XenovoyaZone.Tile revealedTile = XenovoyaZone.Tile(6 + chosenIndex);
 
         // Transfer mystery relic token out of zone, replace with named relic
         uint256 zoneIdx = board.zoneIndex(zoneAlias);
@@ -82,9 +82,9 @@ contract RelicManagement is AccessControlEnumerable {
         uint256 gameID,
         uint256 playerID,
         string memory zoneAlias,
-        HexplorationZone.Tile zoneTile
+        XenovoyaZone.Tile zoneTile
     ) external onlyRole(VERIFIED_CONTROLLER_ROLE) {
-        HexplorationBoard board = HexplorationBoard(gameBoardAddress);
+        XenovoyaBoard board = XenovoyaBoard(gameBoardAddress);
         CharacterCard cc = CharacterCard(characterCardAddress);
         TokenInventory ti = TokenInventory(board.tokenInventory());
 
@@ -109,6 +109,6 @@ contract RelicManagement is AccessControlEnumerable {
         cc.setRelic(relicType, gameID, playerID);
 
         // Set zone tile to empty (relic picked up)
-        board.setRelicTile(gameID, relicType, HexplorationZone.Tile.RelicEmpty);
+        board.setRelicTile(gameID, relicType, XenovoyaZone.Tile.RelicEmpty);
     }
 }

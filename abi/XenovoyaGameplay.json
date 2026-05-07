@@ -258,7 +258,7 @@
                         "type": "uint256"
                     }
                 ],
-                "internalType": "struct HexplorationGameplay.DataSummary",
+                "internalType": "struct XenovoyaGameplay.DataSummary",
                 "name": "summary",
                 "type": "tuple"
             },
@@ -434,7 +434,7 @@
                         "type": "uint256"
                     }
                 ],
-                "internalType": "struct HexplorationGameplay.DataSummary",
+                "internalType": "struct XenovoyaGameplay.DataSummary",
                 "name": "summary",
                 "type": "tuple"
             }
@@ -484,7 +484,7 @@
                         "type": "uint256"
                     }
                 ],
-                "internalType": "struct HexplorationGameplay.DataSummary",
+                "internalType": "struct XenovoyaGameplay.DataSummary",
                 "name": "summary",
                 "type": "tuple"
             }

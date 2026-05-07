@@ -2,13 +2,13 @@
 pragma solidity 0.8.34;
 
 import "@luckymachines/game-core/contracts/src/v0.0/custom_boards/HexGrid.sol";
-import "./HexplorationZone.sol";
+import "./XenovoyaZone.sol";
 import "./Utilities.sol";
 
-contract HexplorationBoard is HexGrid, Utilities {
+contract XenovoyaBoard is HexGrid, Utilities {
     // This role is a hybrid controller, assumes on chain verification of moves before submission
 
-    HexplorationZone internal HEX_ZONE;
+    XenovoyaZone internal HEX_ZONE;
     address public characterCard;
     address public tokenInventory;
     address public gameplayQueue;
@@ -29,7 +29,7 @@ contract HexplorationBoard is HexGrid, Utilities {
         uint256 _gridHeight,
         address _zoneAddress
     ) HexGrid(adminAddress, _gridWidth, _gridHeight, _zoneAddress) {
-        HEX_ZONE = HexplorationZone(_zoneAddress);
+        HEX_ZONE = XenovoyaZone(_zoneAddress);
     }
 
     function hexZoneAddress() public view returns (address) {
@@ -142,7 +142,7 @@ contract HexplorationBoard is HexGrid, Utilities {
     function setRelicTile(
         uint256 gameID,
         string memory relicType,
-        HexplorationZone.Tile tile
+        XenovoyaZone.Tile tile
     ) public onlyRole(VERIFIED_CONTROLLER_ROLE) {
         HEX_ZONE.setTile(tile, gameID, relicLocation[gameID][relicType]);
     }
@@ -206,7 +206,7 @@ contract HexplorationBoard is HexGrid, Utilities {
 
     function enableZone(
         string memory _zoneAlias,
-        HexplorationZone.Tile tile,
+        XenovoyaZone.Tile tile,
         uint256 gameID
     ) public onlyRole(VERIFIED_CONTROLLER_ROLE) {
         if (!zoneEnabled[gameID][_zoneAlias]) {
@@ -214,7 +214,7 @@ contract HexplorationBoard is HexGrid, Utilities {
             zoneEnabled[gameID][_zoneAlias] = true;
         } else if (
             HEX_ZONE.tile(gameID, _zoneAlias) ==
-            HexplorationZone.Tile.RelicMystery
+            XenovoyaZone.Tile.RelicMystery
         ) {
             // allow setting tile since relic needs to be revealed
             HEX_ZONE.setTile(tile, gameID, _zoneAlias);
@@ -227,7 +227,7 @@ contract HexplorationBoard is HexGrid, Utilities {
         string[] memory zonePath,
         uint256 playerID,
         uint256 gameID,
-        HexplorationZone.Tile[] memory tiles
+        XenovoyaZone.Tile[] memory tiles
     ) external onlyRole(VERIFIED_CONTROLLER_ROLE) {
         string memory currentZone = currentPlayZone[gameID][playerID];
         address playerAddress = PLAYER_REGISTRY.playerAddress(gameID, playerID);

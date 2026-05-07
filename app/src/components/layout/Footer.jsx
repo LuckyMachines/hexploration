@@ -10,7 +10,7 @@ export default function Footer() {
           {isConnected && chain ? `${chain.name} // Chain ${chain.id}` : 'No network'}
         </span>
         <span className="tracking-[0.2em] text-compass/60 uppercase font-display font-semibold">
-          Hexploration
+          Xenovoya
         </span>
       </div>
     </footer>

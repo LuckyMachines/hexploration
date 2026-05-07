@@ -8,10 +8,10 @@ pragma solidity 0.8.34;
 // import "@chainlink/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol";
 // import "@chainlink/contracts/src/v0.8/VRFConsumerBaseV2.sol";
 import "./RandomnessConsumer.sol";
-import "./HexplorationStateUpdate.sol";
+import "./XenovoyaStateUpdate.sol";
 import "./GameEvents.sol";
 
-contract HexplorationQueue is RandomnessConsumer {
+contract XenovoyaQueue is RandomnessConsumer {
     uint256 internal QUEUE_ID;
     CharacterCard internal CHARACTER_CARD;
     GameEvents internal GAME_EVENTS;

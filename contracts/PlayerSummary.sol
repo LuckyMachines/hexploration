@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity 0.8.34;
 
-import "./HexplorationBoard.sol";
-import "./HexplorationZone.sol";
+import "./XenovoyaBoard.sol";
+import "./XenovoyaZone.sol";
 import "@luckymachines/game-core/contracts/src/v0.0/PlayerRegistry.sol";
 import "./CharacterCard.sol";
 import "./TokenInventory.sol";
-import "./HexplorationQueue.sol";
+import "./XenovoyaQueue.sol";
 import "./GameWallets.sol";
 import "./Utilities.sol";
 
@@ -17,7 +17,7 @@ contract PlayerSummary is Utilities, GameWallets {
         uint256 gameID,
         uint256 playerID
     ) public view returns (address playerAddress) {
-        HexplorationBoard board = HexplorationBoard(gameBoardAddress);
+        XenovoyaBoard board = XenovoyaBoard(gameBoardAddress);
         PlayerRegistry pr = PlayerRegistry(board.prAddress());
         playerAddress = pr.playerAddress(gameID, playerID);
     }
@@ -34,7 +34,7 @@ contract PlayerSummary is Utilities, GameWallets {
         uint256 gameID,
         address playerAddress
     ) public view returns (uint256 playerID) {
-        HexplorationBoard board = HexplorationBoard(gameBoardAddress);
+        XenovoyaBoard board = XenovoyaBoard(gameBoardAddress);
         PlayerRegistry pr = PlayerRegistry(board.prAddress());
         playerID = pr.playerID(gameID, playerAddress);
     }
@@ -51,7 +51,7 @@ contract PlayerSummary is Utilities, GameWallets {
         uint256 gameID,
         address playerAddress
     ) public view returns (bool playerIsActive) {
-        HexplorationBoard board = HexplorationBoard(gameBoardAddress);
+        XenovoyaBoard board = XenovoyaBoard(gameBoardAddress);
         PlayerRegistry pr = PlayerRegistry(board.prAddress());
         uint256 playerID = pr.playerID(gameID, playerAddress);
         playerIsActive = pr.isActive(gameID, playerID);
@@ -62,7 +62,7 @@ contract PlayerSummary is Utilities, GameWallets {
         uint256 gameID,
         uint256 playerID
     ) public view returns (bool playerIsActive) {
-        HexplorationBoard board = HexplorationBoard(gameBoardAddress);
+        XenovoyaBoard board = XenovoyaBoard(gameBoardAddress);
         PlayerRegistry pr = PlayerRegistry(board.prAddress());
         playerIsActive = pr.isActive(gameID, playerID);
     }
@@ -79,7 +79,7 @@ contract PlayerSummary is Utilities, GameWallets {
         uint256 gameID,
         address playerAddress
     ) public view returns (bool playerIsRegistered) {
-        HexplorationBoard board = HexplorationBoard(gameBoardAddress);
+        XenovoyaBoard board = XenovoyaBoard(gameBoardAddress);
         PlayerRegistry pr = PlayerRegistry(board.prAddress());
         playerIsRegistered = pr.isRegistered(gameID, playerAddress);
     }
@@ -91,7 +91,7 @@ contract PlayerSummary is Utilities, GameWallets {
         address gameBoardAddress,
         uint256 gameID
     ) public view returns (string memory action) {
-        HexplorationBoard board = HexplorationBoard(gameBoardAddress);
+        XenovoyaBoard board = XenovoyaBoard(gameBoardAddress);
         uint256 playerID = PlayerRegistry(board.prAddress()).playerID(
             gameID,
             tx.origin
@@ -104,7 +104,7 @@ contract PlayerSummary is Utilities, GameWallets {
         uint256 gameID,
         uint256 playerID
     ) public view returns (string memory action) {
-        HexplorationBoard board = HexplorationBoard(gameBoardAddress);
+        XenovoyaBoard board = XenovoyaBoard(gameBoardAddress);
         CharacterCard cc = CharacterCard(board.characterCard());
         CharacterCard.Action a = cc.action(gameID, playerID);
 
@@ -140,7 +140,7 @@ contract PlayerSummary is Utilities, GameWallets {
             string memory rightHandItem
         )
     {
-        HexplorationBoard board = HexplorationBoard(gameBoardAddress);
+        XenovoyaBoard board = XenovoyaBoard(gameBoardAddress);
         PlayerRegistry pr = PlayerRegistry(board.prAddress());
         (
             artifact,
@@ -174,7 +174,7 @@ contract PlayerSummary is Utilities, GameWallets {
             string memory rightHandItem
         )
     {
-        HexplorationBoard board = HexplorationBoard(gameBoardAddress);
+        XenovoyaBoard board = XenovoyaBoard(gameBoardAddress);
         CharacterCard cc = CharacterCard(board.characterCard());
         artifact = inventoryArtifactExists(
             cc.artifact(gameID, playerID),
@@ -231,7 +231,7 @@ contract PlayerSummary is Utilities, GameWallets {
         address gameBoardAddress,
         uint256 gameID
     ) public view returns (uint8 movement) {
-        HexplorationBoard board = HexplorationBoard(gameBoardAddress);
+        XenovoyaBoard board = XenovoyaBoard(gameBoardAddress);
         PlayerRegistry pr = PlayerRegistry(board.prAddress());
         uint256 playerID = pr.playerID(gameID, tx.origin);
         movement = availableMovement(gameBoardAddress, gameID, playerID);
@@ -242,12 +242,12 @@ contract PlayerSummary is Utilities, GameWallets {
         uint256 gameID,
         uint256 playerID
     ) public view returns (uint8 movement) {
-        HexplorationBoard board = HexplorationBoard(gameBoardAddress);
-        HexplorationZone hexZone = HexplorationZone(board.hexZoneAddress());
+        XenovoyaBoard board = XenovoyaBoard(gameBoardAddress);
+        XenovoyaZone hexZone = XenovoyaZone(board.hexZoneAddress());
         CharacterCard cc = CharacterCard(board.characterCard());
         movement = cc.movement(gameID, playerID);
 
-        HexplorationZone.Tile currentTile = hexZone.tile(
+        XenovoyaZone.Tile currentTile = hexZone.tile(
             gameID,
             currentLocation(gameBoardAddress, gameID)
         );
@@ -259,11 +259,11 @@ contract PlayerSummary is Utilities, GameWallets {
             Mountain: -1 Speed
             Desert: -2 Speed
             */
-            if (currentTile == HexplorationZone.Tile.Jungle) {
+            if (currentTile == XenovoyaZone.Tile.Jungle) {
                 movement = movement > 0 ? movement - 1 : 0;
-            } else if (currentTile == HexplorationZone.Tile.Mountain) {
+            } else if (currentTile == XenovoyaZone.Tile.Mountain) {
                 movement = movement > 0 ? movement - 1 : 0;
-            } else if (currentTile == HexplorationZone.Tile.Desert) {
+            } else if (currentTile == XenovoyaZone.Tile.Desert) {
                 movement = movement > 1 ? movement - 2 : 0;
             }
         } else {
@@ -274,13 +274,13 @@ contract PlayerSummary is Utilities, GameWallets {
             Mountain: -2 Speed,
             Desert: -1 Speed
             */
-            if (currentTile == HexplorationZone.Tile.Plains) {
+            if (currentTile == XenovoyaZone.Tile.Plains) {
                 movement = movement > 0 ? movement - 1 : 0;
-            } else if (currentTile == HexplorationZone.Tile.Jungle) {
+            } else if (currentTile == XenovoyaZone.Tile.Jungle) {
                 movement = movement > 1 ? movement - 2 : 0;
-            } else if (currentTile == HexplorationZone.Tile.Mountain) {
+            } else if (currentTile == XenovoyaZone.Tile.Mountain) {
                 movement = movement > 1 ? movement - 2 : 0;
-            } else if (currentTile == HexplorationZone.Tile.Desert) {
+            } else if (currentTile == XenovoyaZone.Tile.Desert) {
                 movement = movement > 0 ? movement - 1 : 0;
             }
         }
@@ -294,7 +294,7 @@ contract PlayerSummary is Utilities, GameWallets {
         view
         returns (string memory leftHandItem, string memory rightHandItem)
     {
-        HexplorationBoard board = HexplorationBoard(gameBoardAddress);
+        XenovoyaBoard board = XenovoyaBoard(gameBoardAddress);
         PlayerRegistry pr = PlayerRegistry(board.prAddress());
         uint256 playerID = pr.playerID(gameID, tx.origin);
         (leftHandItem, rightHandItem) = currentHandInventory(
@@ -313,7 +313,7 @@ contract PlayerSummary is Utilities, GameWallets {
         view
         returns (string memory leftHandItem, string memory rightHandItem)
     {
-        HexplorationBoard board = HexplorationBoard(gameBoardAddress);
+        XenovoyaBoard board = XenovoyaBoard(gameBoardAddress);
         CharacterCard cc = CharacterCard(board.characterCard());
         leftHandItem = inventoryItemExists(
             cc.leftHandItem(gameID, playerID),
@@ -338,7 +338,7 @@ contract PlayerSummary is Utilities, GameWallets {
         address gameBoardAddress,
         uint256 gameID
     ) public view returns (string memory location) {
-        HexplorationBoard board = HexplorationBoard(gameBoardAddress);
+        XenovoyaBoard board = XenovoyaBoard(gameBoardAddress);
         PlayerRegistry pr = PlayerRegistry(board.prAddress());
         uint256 playerID = pr.playerID(gameID, tx.origin);
         location = currentLocation(gameBoardAddress, gameID, playerID);
@@ -349,7 +349,7 @@ contract PlayerSummary is Utilities, GameWallets {
         uint256 gameID,
         uint256 playerID
     ) public view returns (string memory location) {
-        HexplorationBoard board = HexplorationBoard(gameBoardAddress);
+        XenovoyaBoard board = XenovoyaBoard(gameBoardAddress);
         location = board.currentPlayZone(gameID, playerID);
     }
 
@@ -357,7 +357,7 @@ contract PlayerSummary is Utilities, GameWallets {
         address gameBoardAddress,
         uint256 gameID
     ) public view returns (uint8 movement, uint8 agility, uint8 dexterity) {
-        HexplorationBoard board = HexplorationBoard(gameBoardAddress);
+        XenovoyaBoard board = XenovoyaBoard(gameBoardAddress);
         PlayerRegistry pr = PlayerRegistry(board.prAddress());
         uint256 playerID = pr.playerID(gameID, tx.origin);
         (movement, agility, dexterity) = currentPlayerStats(
@@ -372,7 +372,7 @@ contract PlayerSummary is Utilities, GameWallets {
         uint256 gameID,
         uint256 playerID
     ) public view returns (uint8 movement, uint8 agility, uint8 dexterity) {
-        HexplorationBoard board = HexplorationBoard(gameBoardAddress);
+        XenovoyaBoard board = XenovoyaBoard(gameBoardAddress);
         CharacterCard cc = CharacterCard(board.characterCard());
         movement = cc.movement(gameID, playerID);
         agility = cc.agility(gameID, playerID);
@@ -387,7 +387,7 @@ contract PlayerSummary is Utilities, GameWallets {
         view
         returns (string[] memory itemTypes, uint256[] memory itemBalances)
     {
-        HexplorationBoard board = HexplorationBoard(gameBoardAddress);
+        XenovoyaBoard board = XenovoyaBoard(gameBoardAddress);
         PlayerRegistry pr = PlayerRegistry(board.prAddress());
         uint256 playerID = pr.playerID(gameID, tx.origin);
         (itemTypes, itemBalances) = inactiveInventory(
@@ -406,7 +406,7 @@ contract PlayerSummary is Utilities, GameWallets {
         view
         returns (string[] memory itemTypes, uint256[] memory itemBalances)
     {
-        HexplorationBoard board = HexplorationBoard(gameBoardAddress);
+        XenovoyaBoard board = XenovoyaBoard(gameBoardAddress);
         TokenInventory ti = TokenInventory(board.tokenInventory());
 
         GameToken itemToken = ti.ITEM_TOKEN();
@@ -436,7 +436,7 @@ contract PlayerSummary is Utilities, GameWallets {
         address gameBoardAddress,
         uint256 gameID
     ) public view returns (bool atCampsite) {
-        HexplorationBoard board = HexplorationBoard(gameBoardAddress);
+        XenovoyaBoard board = XenovoyaBoard(gameBoardAddress);
         PlayerRegistry pr = PlayerRegistry(board.prAddress());
         uint256 playerID = pr.playerID(gameID, tx.origin);
         atCampsite = isAtCampsite(gameBoardAddress, gameID, playerID);
@@ -447,7 +447,7 @@ contract PlayerSummary is Utilities, GameWallets {
         uint256 gameID,
         uint256 playerID
     ) public view returns (bool atCampsite) {
-        HexplorationBoard board = HexplorationBoard(gameBoardAddress);
+        XenovoyaBoard board = XenovoyaBoard(gameBoardAddress);
         string memory currentZone = board.currentPlayZone(gameID, playerID);
         uint256 index = zoneIndex(gameBoardAddress, currentZone);
         atCampsite =
@@ -463,7 +463,7 @@ contract PlayerSummary is Utilities, GameWallets {
         address gameBoardAddress,
         uint256 gameID
     ) public view returns (string[] memory artifacts) {
-        HexplorationBoard board = HexplorationBoard(gameBoardAddress);
+        XenovoyaBoard board = XenovoyaBoard(gameBoardAddress);
         PlayerRegistry pr = PlayerRegistry(board.prAddress());
         uint256 playerID = pr.playerID(gameID, tx.origin);
         artifacts = playerRecoveredArtifacts(
@@ -478,7 +478,7 @@ contract PlayerSummary is Utilities, GameWallets {
         uint256 gameID,
         uint256 playerID
     ) public view returns (string[] memory artifacts) {
-        HexplorationBoard board = HexplorationBoard(gameBoardAddress);
+        XenovoyaBoard board = XenovoyaBoard(gameBoardAddress);
         artifacts = board.getArtifactsRetrieved(gameID, playerID);
     }
 
@@ -487,7 +487,7 @@ contract PlayerSummary is Utilities, GameWallets {
         address gameBoardAddress,
         uint256 gameID
     ) public view returns (string memory phase) {
-        HexplorationBoard board = HexplorationBoard(gameBoardAddress);
+        XenovoyaBoard board = XenovoyaBoard(gameBoardAddress);
         TokenInventory tokens = TokenInventory(board.tokenInventory());
 
         uint256 dayBalance = tokens.DAY_NIGHT_TOKEN().balance(
@@ -553,7 +553,7 @@ contract PlayerSummary is Utilities, GameWallets {
         string memory zoneAlias
     ) internal view returns (uint256 index) {
         index = 1111111111111;
-        HexplorationBoard board = HexplorationBoard(gameBoardAddress);
+        XenovoyaBoard board = XenovoyaBoard(gameBoardAddress);
         string[] memory allZones = board.getZoneAliases();
         for (uint256 i = 0; i < allZones.length; i++) {
             if (

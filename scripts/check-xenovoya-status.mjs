@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 /**
- * Read-only diagnostic — check Hexploration contract state on Sepolia.
+ * Read-only diagnostic — check Xenovoya contract state on Sepolia.
  * No private key needed.
  *
- * Usage: node scripts/check-hex-status.mjs
+ * Usage: node scripts/check-xenovoya-status.mjs
  */
 import { createPublicClient, http } from 'viem';
 import { sepolia } from 'viem/chains';
@@ -57,7 +57,7 @@ function fmtAddr(addr) {
 
 // ── Main ────────────────────────────────────────────────────────────
 async function main() {
-  console.log('=== Hexploration Contract Status (Sepolia) ===\n');
+  console.log('=== Xenovoya Contract Status (Sepolia) ===\n');
 
   // VRF status on GameSetup & Queue
   for (const [label, addr] of [['GAME_SETUP', addrs.GAME_SETUP], ['GAME_QUEUE', addrs.GAME_QUEUE]]) {
@@ -78,10 +78,10 @@ async function main() {
   // shouldProgressLoop on GameSetup, Controller, Gameplay
   for (const [label, addr] of [
     ['GAME_SETUP', addrs.GAME_SETUP],
-    ['HEXPLORATION_CONTROLLER', addrs.HEXPLORATION_CONTROLLER],
+    ['XENOVOYA_CONTROLLER', addrs.XENOVOYA_CONTROLLER],
     ['GAMEPLAY', addrs.GAMEPLAY],
   ]) {
-    const abi = label === 'HEXPLORATION_CONTROLLER' ? controllerAbi : loopAbi;
+    const abi = label === 'XENOVOYA_CONTROLLER' ? controllerAbi : loopAbi;
     console.log(`${label} (${fmtAddr(addr)}):`);
     const loop = await safeRead(addr, abi, 'shouldProgressLoop');
     if (Array.isArray(loop)) {
@@ -90,7 +90,7 @@ async function main() {
       console.log(`  shouldProgressLoop = ${loop}`);
     }
 
-    if (label === 'HEXPLORATION_CONTROLLER') {
+    if (label === 'XENOVOYA_CONTROLLER') {
       const games = await safeRead(addr, controllerAbi, 'getActiveGames');
       if (Array.isArray(games)) {
         console.log(`  activeGames        = [${games.length}] ${games.map(String).join(', ') || '(none)'}`);

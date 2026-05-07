@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Enable AutoLoop VRF mode on deployed Hexploration contracts.
+ * Enable AutoLoop VRF mode on deployed Xenovoya contracts.
  * Switches the Gameplay loop from Mock VRF to on-chain VRF verification.
  *
  * Prerequisites:

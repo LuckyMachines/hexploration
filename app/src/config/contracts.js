@@ -1,9 +1,9 @@
 import GameSummaryABI from '../../../abi/GameSummary.json';
 import PlayerSummaryABI from '../../../abi/PlayerSummary.json';
-import ControllerABI from '../../../abi/HexplorationController.json';
+import ControllerABI from '../../../abi/XenovoyaController.json';
 import EventsABI from '../../../abi/GameEvents.json';
-import BoardABI from '../../../abi/HexplorationBoard.json';
-import QueueABI from '../../../abi/HexplorationQueue.json';
+import BoardABI from '../../../abi/XenovoyaBoard.json';
+import QueueABI from '../../../abi/XenovoyaQueue.json';
 import GameSetupABI from '../../../abi/GameSetup.json';
 
 export const BOARD_ADDRESS = import.meta.env.VITE_BOARD_ADDRESS;

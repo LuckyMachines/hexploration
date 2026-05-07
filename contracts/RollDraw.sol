@@ -3,14 +3,14 @@ pragma solidity 0.8.34;
 
 import "@openzeppelin/contracts/access/extensions/AccessControlEnumerable.sol";
 import "./CardDeck.sol";
-import "./HexplorationQueue.sol";
+import "./XenovoyaQueue.sol";
 import "./RandomIndices.sol";
 
 contract RollDraw is AccessControlEnumerable, RandomIndices {
     CardDeck EVENT_DECK;
     CardDeck TREASURE_DECK;
     CardDeck AMBUSH_DECK;
-    HexplorationQueue QUEUE;
+    XenovoyaQueue QUEUE;
 
     enum CardType {
         None,
@@ -41,11 +41,11 @@ contract RollDraw is AccessControlEnumerable, RandomIndices {
         public
         onlyRole(DEFAULT_ADMIN_ROLE)
     {
-        QUEUE = HexplorationQueue(payable(queueAddress));
+        QUEUE = XenovoyaQueue(payable(queueAddress));
     }
 
     // TODO: set access control for this, this should not be public, it changes the state
-    // Set hexploration gameplay to be verified controller
+    // Set xenovoya gameplay to be verified controller
     function setRandomnessForPlayer(
         uint256 playerID,
         uint256 queueID,

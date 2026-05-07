@@ -38,7 +38,7 @@ export default function GameBrowser() {
       {/* Header bar */}
       <div className="border-b border-exp-border px-6 py-4 flex items-center justify-between">
         <h2 className="font-mono text-xs tracking-[0.3em] text-exp-text-dim uppercase">
-          Available Expeditions
+          Available Surveys
         </h2>
 
         {address && (
@@ -67,7 +67,7 @@ export default function GameBrowser() {
                   <Spinner size="w-3 h-3" /> Creating...
                 </span>
               ) : (
-                'New Expedition'
+                'New Survey'
               )}
             </button>
           </div>
@@ -90,16 +90,21 @@ export default function GameBrowser() {
       {/* Game list */}
       <div className="px-6 py-5">
         {isLoading ? (
-          <div className="flex items-center justify-center py-12 gap-3">
-            <Spinner size="w-5 h-5" />
-            <span className="font-mono text-xs text-exp-text-dim tracking-wider uppercase">
-              Scanning expeditions...
-            </span>
+          <div className="flex items-center justify-center py-14">
+            <div className="max-w-md rounded border border-exp-border/70 bg-exp-dark/35 px-4 py-3 text-center">
+              <div className="flex items-center justify-center gap-2 font-mono text-[10px] uppercase tracking-[0.3em] text-compass-bright">
+                <Spinner size="w-4 h-4" />
+                Scanning surveys
+              </div>
+              <p className="mt-2 font-mono text-xs text-exp-text-dim">
+                Live expeditions will appear here as soon as the registry responds.
+              </p>
+            </div>
           </div>
         ) : error ? (
           <div className="text-center py-12 space-y-2">
             <p className="font-mono text-xs text-signal-red tracking-wider uppercase">
-              Failed to load expeditions
+              Failed to load surveys
             </p>
             <p className="font-mono text-xs text-exp-text-dim break-all max-w-lg mx-auto">
               {error?.shortMessage || error?.message || String(error)}
@@ -107,8 +112,11 @@ export default function GameBrowser() {
           </div>
         ) : gameIDs.length === 0 ? (
           <div className="text-center py-12">
-            <p className="font-mono text-xs text-exp-text-dim italic">
-              No expeditions found. Launch one to begin exploring.
+            <p className="font-mono text-xs text-exp-text-dim uppercase tracking-[0.3em]">
+              No surveys found
+            </p>
+            <p className="mt-2 font-mono text-xs text-exp-text-dim">
+              Launch a new survey to seed the registry and begin exploring.
             </p>
           </div>
         ) : (

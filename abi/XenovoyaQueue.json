@@ -250,7 +250,7 @@
         "name": "activeAction",
         "outputs": [
             {
-                "internalType": "enum HexplorationQueue.Action",
+                "internalType": "enum XenovoyaQueue.Action",
                 "name": "",
                 "type": "uint8"
             }
@@ -331,7 +331,7 @@
         "name": "currentPhase",
         "outputs": [
             {
-                "internalType": "enum HexplorationQueue.ProcessingPhase",
+                "internalType": "enum XenovoyaQueue.ProcessingPhase",
                 "name": "",
                 "type": "uint8"
             }
@@ -1244,7 +1244,7 @@
     {
         "inputs": [
             {
-                "internalType": "enum HexplorationQueue.ProcessingPhase",
+                "internalType": "enum XenovoyaQueue.ProcessingPhase",
                 "name": "phase",
                 "type": "uint8"
             },
@@ -1314,7 +1314,7 @@
         "name": "submissionAction",
         "outputs": [
             {
-                "internalType": "enum HexplorationQueue.Action",
+                "internalType": "enum XenovoyaQueue.Action",
                 "name": "",
                 "type": "uint8"
             }

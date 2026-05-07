@@ -5,7 +5,7 @@
  * Requires the deployer's private key (DEFAULT_ADMIN_ROLE).
  *
  * Usage:
- *   cp scripts/hexploration-worker.env.example scripts/.env
+ *   cp scripts/xenovoya-worker.env.example scripts/.env
  *   # Fill in RPC_URL and deployer PRIVATE_KEY
  *   node scripts/enable-mock-vrf.mjs
  */
@@ -27,7 +27,7 @@ const privateKey = process.env.PRIVATE_KEY;
 
 if (!rpcUrl || !privateKey) {
   console.error('Missing RPC_URL or PRIVATE_KEY in environment.');
-  console.error('Copy scripts/hexploration-worker.env.example → scripts/.env and fill in values.');
+  console.error('Copy scripts/xenovoya-worker.env.example → scripts/.env and fill in values.');
   process.exit(1);
 }
 
@@ -78,13 +78,13 @@ async function enableMockVRF(label, address) {
 }
 
 async function main() {
-  console.log('=== Enable Mock VRF on Hexploration Contracts (Sepolia) ===');
+  console.log('=== Enable Mock VRF on Xenovoya Contracts (Sepolia) ===');
   console.log(`Admin: ${account.address}`);
 
   await enableMockVRF('GAME_SETUP', addrs.GAME_SETUP);
   await enableMockVRF('GAME_QUEUE', addrs.GAME_QUEUE);
 
-  console.log('\n=== Done — run check-hex-status.mjs to verify ===');
+  console.log('\n=== Done — run check-xenovoya-status.mjs to verify ===');
 }
 
 main().catch((err) => {

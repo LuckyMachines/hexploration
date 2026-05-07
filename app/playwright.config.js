@@ -7,7 +7,9 @@ const webServerCommand = process.env.PLAYWRIGHT_WEB_SERVER_CMD
 
 export default defineConfig({
   testDir: './e2e',
-  timeout: 30_000,
+  timeout: 60_000,
+  fullyParallel: true,
+  workers: 4,
   expect: {
     timeout: 10_000,
   },
@@ -17,8 +19,24 @@ export default defineConfig({
   },
   projects: [
     {
-      name: 'chromium',
+      name: 'chromium-desktop',
       use: { ...devices['Desktop Chrome'] },
+    },
+    {
+      name: 'firefox-desktop',
+      use: { ...devices['Desktop Firefox'] },
+    },
+    {
+      name: 'webkit-desktop',
+      use: { ...devices['Desktop Safari'] },
+    },
+    {
+      name: 'pixel-7',
+      use: { ...devices['Pixel 7'] },
+    },
+    {
+      name: 'iphone-13',
+      use: { ...devices['iPhone 13'] },
     },
   ],
   webServer: {

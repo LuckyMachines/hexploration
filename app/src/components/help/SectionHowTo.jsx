@@ -9,7 +9,7 @@ function SectionHeader({ children }) {
 
 const STEPS = [
   'Connect your wallet and switch to the Sepolia network.',
-  'Create a new expedition or join an existing one from the console.',
+  'Create a new survey or join an existing one from the tablet.',
   'Wait for all players to register. The game starts automatically.',
   'On your turn, choose an action: Move to explore, Dig for artifacts, Rest to recover stats, or Help allies.',
   'Submit your action on-chain. A card draw determines the outcome using VRF randomness.',

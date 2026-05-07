@@ -3,7 +3,7 @@ pragma solidity 0.8.34;
 
 import "@luckymachines/game-core/contracts/src/v0.0/Ruleset.sol";
 
-contract HexplorationRules is Ruleset {
+contract XenovoyaRules is Ruleset {
     constructor(address adminAddress, address factoryAddress)
         Ruleset(adminAddress, factoryAddress)
     {

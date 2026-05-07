@@ -1,15 +1,15 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity 0.8.34;
 
-import "./HexplorationQueue.sol";
-import "./HexplorationGameplay.sol";
-import "./HexplorationBoard.sol";
+import "./XenovoyaQueue.sol";
+import "./XenovoyaGameplay.sol";
+import "./XenovoyaBoard.sol";
 import "./RollDraw.sol";
 import "./TokenInventory.sol";
 import "./CharacterCard.sol";
 import "./RandomIndices.sol";
 
-library HexplorationGameplayUpdates {
+library XenovoyaGameplayUpdates {
     uint256 public constant GAME_BOARD_WALLET_ID = 1000000;
     uint256 public constant LEFT_HAND = 0;
     uint256 public constant RIGHT_HAND = 1;
@@ -19,10 +19,10 @@ library HexplorationGameplayUpdates {
         uint256 queueID,
         address rollDrawAddress,
         bytes memory summaryData
-    ) public view returns (HexplorationGameplay.PlayUpdates memory) {
-        HexplorationGameplay.DataSummary memory summary = abi.decode(
+    ) public view returns (XenovoyaGameplay.PlayUpdates memory) {
+        XenovoyaGameplay.DataSummary memory summary = abi.decode(
             summaryData,
-            (HexplorationGameplay.DataSummary)
+            (XenovoyaGameplay.DataSummary)
         );
         return
             playUpdatesForPlayerActionPhase(
@@ -37,10 +37,10 @@ library HexplorationGameplayUpdates {
         address queueAddress,
         uint256 queueID,
         address rollDrawAddress,
-        HexplorationGameplay.DataSummary memory summary
-    ) public view returns (HexplorationGameplay.PlayUpdates memory) {
-        HexplorationGameplay.PlayUpdates memory playUpdates;
-        uint256[] memory playersInQueue = HexplorationQueue(
+        XenovoyaGameplay.DataSummary memory summary
+    ) public view returns (XenovoyaGameplay.PlayUpdates memory) {
+        XenovoyaGameplay.PlayUpdates memory playUpdates;
+        uint256[] memory playersInQueue = XenovoyaQueue(
             payable(queueAddress)
         ).getAllPlayers(queueID);
         uint256 position;
@@ -56,18 +56,18 @@ library HexplorationGameplayUpdates {
         position = 0;
         for (uint256 i = 0; i < playersInQueue.length; i++) {
             if (
-                HexplorationQueue(payable(queueAddress)).submissionAction(
+                XenovoyaQueue(payable(queueAddress)).submissionAction(
                     queueID,
                     playersInQueue[i]
-                ) == HexplorationQueue.Action.Move
+                ) == XenovoyaQueue.Action.Move
             ) {
                 // return [player id, # spaces to move]
 
                 playUpdates.playerPositionIDs[position] = playersInQueue[i];
-                playUpdates.spacesToMove[position] = HexplorationQueue(
+                playUpdates.spacesToMove[position] = XenovoyaQueue(
                     payable(queueAddress)
                 ).getSubmissionOptions(queueID, playersInQueue[i]).length;
-                string[] memory options = HexplorationQueue(
+                string[] memory options = XenovoyaQueue(
                     payable(queueAddress)
                 ).getSubmissionOptions(queueID, playersInQueue[i]);
                 for (uint256 j = 0; j < 7; j++) {
@@ -88,7 +88,7 @@ library HexplorationGameplayUpdates {
         for (uint256 i = 0; i < playersInQueue.length; i++) {
             if (
                 bytes(
-                    HexplorationQueue(payable(queueAddress)).submissionLeftHand(
+                    XenovoyaQueue(payable(queueAddress)).submissionLeftHand(
                         queueID,
                         playersInQueue[i]
                     )
@@ -98,7 +98,7 @@ library HexplorationGameplayUpdates {
 
                 playUpdates.playerEquipIDs[position] = playersInQueue[i];
                 playUpdates.playerEquipHands[position] = 0;
-                playUpdates.playerEquips[position] = HexplorationQueue(
+                playUpdates.playerEquips[position] = XenovoyaQueue(
                     payable(queueAddress)
                 ).submissionLeftHand(queueID, playersInQueue[i]);
                 position++;
@@ -109,7 +109,7 @@ library HexplorationGameplayUpdates {
         for (uint256 i = 0; i < playersInQueue.length; i++) {
             if (
                 bytes(
-                    HexplorationQueue(payable(queueAddress))
+                    XenovoyaQueue(payable(queueAddress))
                         .submissionRightHand(queueID, playersInQueue[i])
                 ).length > 0
             ) {
@@ -117,7 +117,7 @@ library HexplorationGameplayUpdates {
 
                 playUpdates.playerEquipIDs[position] = playersInQueue[i];
                 playUpdates.playerEquipHands[position] = 1;
-                playUpdates.playerEquips[position] = HexplorationQueue(
+                playUpdates.playerEquips[position] = XenovoyaQueue(
                     payable(queueAddress)
                 ).submissionRightHand(queueID, playersInQueue[i]);
                 position++;
@@ -132,10 +132,10 @@ library HexplorationGameplayUpdates {
         position = 0;
         for (uint256 i = 0; i < playersInQueue.length; i++) {
             if (
-                HexplorationQueue(payable(queueAddress)).submissionAction(
+                XenovoyaQueue(payable(queueAddress)).submissionAction(
                     queueID,
                     playersInQueue[i]
-                ) == HexplorationQueue.Action.SetupCamp
+                ) == XenovoyaQueue.Action.SetupCamp
             ) {
                 // setup camp
                 // transfer from player to zone
@@ -152,10 +152,10 @@ library HexplorationGameplayUpdates {
 
         for (uint256 i = 0; i < playersInQueue.length; i++) {
             if (
-                HexplorationQueue(payable(queueAddress)).submissionAction(
+                XenovoyaQueue(payable(queueAddress)).submissionAction(
                     queueID,
                     playersInQueue[i]
-                ) == HexplorationQueue.Action.BreakDownCamp
+                ) == XenovoyaQueue.Action.BreakDownCamp
             ) {
                 // break down camp
                 // transfer from zone to player
@@ -204,7 +204,7 @@ library HexplorationGameplayUpdates {
         /*
          else if (
                 QUEUE.submissionAction(queueID, playersInQueue[i]) ==
-                HexplorationQueue.Action.Move
+                XenovoyaQueue.Action.Move
             ) {
                 // TODO: use this...
                 playUpdates.activeActions[position] = "Move";
@@ -215,30 +215,30 @@ library HexplorationGameplayUpdates {
         */
         for (uint256 i = 0; i < playersInQueue.length; i++) {
             if (
-                HexplorationQueue(payable(queueAddress)).submissionAction(
+                XenovoyaQueue(payable(queueAddress)).submissionAction(
                     queueID,
                     playersInQueue[i]
-                ) == HexplorationQueue.Action.SetupCamp
+                ) == XenovoyaQueue.Action.SetupCamp
             ) {
                 playUpdates.activeActions[position] = "Setup camp";
                 playUpdates.activeActionOptions[position] = new string[](0);
                 playUpdates.playerActiveActionIDs[position] = playersInQueue[i];
                 position++;
             } else if (
-                HexplorationQueue(payable(queueAddress)).submissionAction(
+                XenovoyaQueue(payable(queueAddress)).submissionAction(
                     queueID,
                     playersInQueue[i]
-                ) == HexplorationQueue.Action.BreakDownCamp
+                ) == XenovoyaQueue.Action.BreakDownCamp
             ) {
                 playUpdates.activeActions[position] = "Break down camp";
                 playUpdates.activeActionOptions[position] = new string[](0);
                 playUpdates.playerActiveActionIDs[position] = playersInQueue[i];
                 position++;
             } else if (
-                HexplorationQueue(payable(queueAddress)).submissionAction(
+                XenovoyaQueue(payable(queueAddress)).submissionAction(
                     queueID,
                     playersInQueue[i]
-                ) == HexplorationQueue.Action.Dig
+                ) == XenovoyaQueue.Action.Dig
             ) {
                 playUpdates.activeActions[position] = "Dig";
                 playUpdates.playerActiveActionIDs[position] = playersInQueue[i];
@@ -319,13 +319,13 @@ library HexplorationGameplayUpdates {
                 playerStatPosition++;
                 position++;
             } else if (
-                HexplorationQueue(payable(queueAddress)).submissionAction(
+                XenovoyaQueue(payable(queueAddress)).submissionAction(
                     queueID,
                     playersInQueue[i]
-                ) == HexplorationQueue.Action.Rest
+                ) == XenovoyaQueue.Action.Rest
             ) {
                 playUpdates.activeActions[position] = "Rest";
-                playUpdates.activeActionOptions[position] = HexplorationQueue(
+                playUpdates.activeActionOptions[position] = XenovoyaQueue(
                     payable(queueAddress)
                 ).getSubmissionOptions(queueID, playersInQueue[i]);
                 playUpdates.playerActiveActionIDs[position] = playersInQueue[i];
@@ -340,13 +340,13 @@ library HexplorationGameplayUpdates {
                 playerStatPosition++;
                 position++;
             } else if (
-                HexplorationQueue(payable(queueAddress)).submissionAction(
+                XenovoyaQueue(payable(queueAddress)).submissionAction(
                     queueID,
                     playersInQueue[i]
-                ) == HexplorationQueue.Action.Help
+                ) == XenovoyaQueue.Action.Help
             ) {
                 playUpdates.activeActions[position] = "Help";
-                playUpdates.activeActionOptions[position] = HexplorationQueue(
+                playUpdates.activeActionOptions[position] = XenovoyaQueue(
                     payable(queueAddress)
                 ).getSubmissionOptions(queueID, playersInQueue[i]);
                 playUpdates.playerActiveActionIDs[position] = playersInQueue[i];
@@ -370,23 +370,23 @@ library HexplorationGameplayUpdates {
 
                 position++;
             } else if (
-                HexplorationQueue(payable(queueAddress)).submissionAction(
+                XenovoyaQueue(payable(queueAddress)).submissionAction(
                     queueID,
                     playersInQueue[i]
-                ) == HexplorationQueue.Action.Move
+                ) == XenovoyaQueue.Action.Move
             ) {
                 playUpdates.activeActions[position] = "Move";
-                playUpdates.activeActionOptions[position] = HexplorationQueue(
+                playUpdates.activeActionOptions[position] = XenovoyaQueue(
                     payable(queueAddress)
                 ).getSubmissionOptions(queueID, playersInQueue[i]);
                 playUpdates.playerActiveActionIDs[position] = playersInQueue[i];
                 position++;
             }
         }
-        playUpdates.randomness = HexplorationQueue(payable(queueAddress))
+        playUpdates.randomness = XenovoyaQueue(payable(queueAddress))
             .getRandomness(queueID);
 
-        playUpdates.gamePhase = HexplorationQueue(payable(queueAddress))
+        playUpdates.gamePhase = XenovoyaQueue(payable(queueAddress))
             .isDayPhase(queueID)
             ? "Day"
             : "Night";
@@ -400,19 +400,19 @@ library HexplorationGameplayUpdates {
         uint256 gameID,
         address gameBoardAddress,
         address rollDrawAddress
-    ) public view returns (HexplorationGameplay.PlayUpdates memory) {
-        HexplorationGameplay.PlayUpdates memory dayPhaseUpdates;
+    ) public view returns (XenovoyaGameplay.PlayUpdates memory) {
+        XenovoyaGameplay.PlayUpdates memory dayPhaseUpdates;
         uint256 totalPlayers = PlayerRegistry(
-            HexplorationBoard(gameBoardAddress).prAddress()
+            XenovoyaBoard(gameBoardAddress).prAddress()
         ).totalRegistrations(gameID);
         // if (
-        //     TokenInventory(HexplorationBoard(gameBoardAddress).tokenInventory())
+        //     TokenInventory(XenovoyaBoard(gameBoardAddress).tokenInventory())
         //         .DAY_NIGHT_TOKEN()
         //         .balance("Day", gameID, GAME_BOARD_WALLET_ID) > 0
         // ) {
         //updates.activeActions
         //updates.playerActiveActionIDs
-        dayPhaseUpdates.randomness = HexplorationQueue(payable(queueAddress))
+        dayPhaseUpdates.randomness = XenovoyaQueue(payable(queueAddress))
             .getRandomness(queueID);
         dayPhaseUpdates.activeActions = new string[](totalPlayers);
         dayPhaseUpdates.playerActiveActionIDs = new uint256[](totalPlayers);
@@ -439,7 +439,7 @@ library HexplorationGameplayUpdates {
             uint256 playerID = i + 1;
             if (
                 !CharacterCard(
-                    HexplorationBoard(gameBoardAddress).characterCard()
+                    XenovoyaBoard(gameBoardAddress).characterCard()
                 ).playerIsDead(gameID, playerID)
             ) {
                 RandomIndices.RandomIndex randomIndex = playerID == 1
@@ -556,7 +556,7 @@ library HexplorationGameplayUpdates {
                     if (
                         !stringsMatch(handItem, "") &&
                         TokenInventory(
-                            HexplorationBoard(gameBoardAddress).tokenInventory()
+                            XenovoyaBoard(gameBoardAddress).tokenInventory()
                         ).ITEM_TOKEN().balance(handItem, gameID, playerID) >
                         0
                     ) {
@@ -589,11 +589,11 @@ library HexplorationGameplayUpdates {
         item = "";
         if (stringsMatch(whichHand, "Left")) {
             item = CharacterCard(
-                HexplorationBoard(gameBoardAddress).characterCard()
+                XenovoyaBoard(gameBoardAddress).characterCard()
             ).leftHandItem(gameID, playerID);
         } else if (stringsMatch(whichHand, "Right")) {
             item = CharacterCard(
-                HexplorationBoard(gameBoardAddress).characterCard()
+                XenovoyaBoard(gameBoardAddress).characterCard()
             ).rightHandItem(gameID, playerID);
         }
     }
@@ -608,10 +608,10 @@ library HexplorationGameplayUpdates {
         // TODO:
         // roll dice (d6) for each player on space not resting
 
-        uint256 playersOnSpace = HexplorationQueue(payable(queueAddress))
+        uint256 playersOnSpace = XenovoyaQueue(payable(queueAddress))
             .getSubmissionOptions(queueID, playerID)
             .length - 1;
-        string memory phase = HexplorationQueue(payable(queueAddress))
+        string memory phase = XenovoyaQueue(payable(queueAddress))
             .getSubmissionOptions(queueID, playerID)[0];
         RandomIndices.RandomIndex randomIndex = playerID == 1
             ? RandomIndices.RandomIndex.P1DigPassFail
@@ -649,7 +649,7 @@ library HexplorationGameplayUpdates {
         )
     {
         // returns [playerStat adjustments, recipientAdjustments]
-        string[] memory helpOptions = HexplorationQueue(payable(queueAddress))
+        string[] memory helpOptions = XenovoyaQueue(payable(queueAddress))
             .getSubmissionOptions(queueID, playerID);
         if (stringsMatch(helpOptions[1], "Movement")) {
             playerStatAdjustment[0] = -1;
@@ -668,7 +668,7 @@ library HexplorationGameplayUpdates {
         uint256 queueID,
         uint256 playerID
     ) internal view returns (int8[3] memory stats) {
-        string memory statToRest = HexplorationQueue(payable(queueAddress))
+        string memory statToRest = XenovoyaQueue(payable(queueAddress))
             .getSubmissionOptions(queueID, playerID)[0];
         if (stringsMatch(statToRest, "Movement")) {
             stats[0] = 1;

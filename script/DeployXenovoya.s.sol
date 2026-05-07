@@ -7,29 +7,29 @@ import "forge-std/Script.sol";
 import "@luckymachines/game-core/contracts/src/v0.0/GameRegistry.sol";
 import "@luckymachines/game-core/contracts/src/v0.0/PlayerRegistry.sol";
 
-// --- hexploration ---
+// --- xenovoya ---
 import "../contracts/StringToUint.sol";
 import "../contracts/GameToken.sol";
 import "../contracts/CardDeck.sol";
 import "../contracts/TokenInventory.sol";
-import "../contracts/HexplorationRules.sol";
-import "../contracts/HexplorationZone.sol";
-import "../contracts/HexplorationBoard.sol";
+import "../contracts/XenovoyaRules.sol";
+import "../contracts/XenovoyaZone.sol";
+import "../contracts/XenovoyaBoard.sol";
 import "../contracts/CharacterCard.sol";
 import "../contracts/RollDraw.sol";
 import "../contracts/RelicManagement.sol";
 import "../contracts/GameEvents.sol";
 import "../contracts/GameSetup.sol";
-import "../contracts/HexplorationGameplay.sol";
-import "../contracts/HexplorationDisputeResolver.sol";
-import "../contracts/HexplorationStateUpdate.sol";
-import "../contracts/HexplorationQueue.sol";
-import "../contracts/HexplorationController.sol";
+import "../contracts/XenovoyaGameplay.sol";
+import "../contracts/XenovoyaDisputeResolver.sol";
+import "../contracts/XenovoyaStateUpdate.sol";
+import "../contracts/XenovoyaQueue.sol";
+import "../contracts/XenovoyaController.sol";
 import "../contracts/GameSummary.sol";
 import "../contracts/PlayerSummary.sol";
 import "../contracts/PlayZoneSummary.sol";
 
-contract DeployHexploration is Script {
+contract DeployXenovoya is Script {
     uint256 constant GRID_WIDTH = 10;
     uint256 constant GRID_HEIGHT = 10;
 
@@ -71,7 +71,7 @@ contract DeployHexploration is Script {
         uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
         deployer = vm.addr(deployerPrivateKey);
 
-        console.log("=== Hexploration Deployment ===");
+        console.log("=== Xenovoya Deployment ===");
         console.log("Deployer:", deployer);
 
         vm.startBroadcast(deployerPrivateKey);
@@ -83,7 +83,7 @@ contract DeployHexploration is Script {
         _deployPhase5();
         _wire();
         _registerTokenTypes();
-        HexplorationBoard(s_board).createGrid();
+        XenovoyaBoard(s_board).createGrid();
 
         vm.stopBroadcast();
 
@@ -115,14 +115,14 @@ contract DeployHexploration is Script {
         s_gameSummary = address(new GameSummary());
         s_playZoneSummary = address(new PlayZoneSummary());
         s_relicManagement = address(new RelicManagement());
-        s_disputeResolver = address(new HexplorationDisputeResolver());
+        s_disputeResolver = address(new XenovoyaDisputeResolver());
     }
 
     // ── Phase 2: Single-dependency contracts ────────────────────────
 
     function _deployPhase2() internal {
-        s_rules = address(new HexplorationRules(deployer, deployer));
-        s_zone = address(new HexplorationZone(s_rules, s_gameRegistry, deployer, deployer));
+        s_rules = address(new XenovoyaRules(deployer, deployer));
+        s_zone = address(new XenovoyaZone(s_rules, s_gameRegistry, deployer, deployer));
         s_rollDraw = address(new RollDraw(s_eventDeck, s_treasureDeck, s_ambushDeck));
         s_characterCard = address(new CharacterCard(s_item, s_relic));
     }
@@ -130,27 +130,27 @@ contract DeployHexploration is Script {
     // ── Phase 3: Board + PlayerRegistry ─────────────────────────────
 
     function _deployPhase3() internal {
-        s_board = address(new HexplorationBoard(deployer, GRID_WIDTH, GRID_HEIGHT, s_zone));
+        s_board = address(new XenovoyaBoard(deployer, GRID_WIDTH, GRID_HEIGHT, s_zone));
         s_playerRegistry = address(new PlayerRegistry(s_board, deployer));
     }
 
     // ── Phase 4: Board-dependent contracts ──────────────────────────
 
     function _deployPhase4() internal {
-        s_stateUpdate = address(new HexplorationStateUpdate(s_board, s_characterCard, s_relicManagement));
+        s_stateUpdate = address(new XenovoyaStateUpdate(s_board, s_characterCard, s_relicManagement));
         s_gameplay = address(
-            new HexplorationGameplay(s_board, s_rollDraw, s_disputeResolver)
+            new XenovoyaGameplay(s_board, s_rollDraw, s_disputeResolver)
         );
 
         // Mock VRF: subscriptionId=0, keyHash=0 → useMockVRF=true
         s_gameSetup = payable(address(new GameSetup(0, deployer, bytes32(0))));
-        s_controller = address(new HexplorationController(deployer));
+        s_controller = address(new XenovoyaController(deployer));
     }
 
     // ── Phase 5: Queue (depends on gameplay) ────────────────────────
 
     function _deployPhase5() internal {
-        s_queue = payable(address(new HexplorationQueue(
+        s_queue = payable(address(new XenovoyaQueue(
             s_gameplay, s_characterCard, 0, deployer, bytes32(0)
         )));
         s_playerSummary = address(new PlayerSummary());
@@ -169,7 +169,7 @@ contract DeployHexploration is Script {
     function _wireBoard() internal {
         GameRegistry(s_gameRegistry).addGameBoard(s_board);
 
-        HexplorationBoard board = HexplorationBoard(s_board);
+        XenovoyaBoard board = XenovoyaBoard(s_board);
         board.addVerifiedController(s_controller);
         board.addVerifiedController(s_gameplay);
         board.addVerifiedController(s_stateUpdate);
@@ -180,7 +180,7 @@ contract DeployHexploration is Script {
         board.setGameplayQueue(s_queue);
         board.setPlayerRegistry(s_playerRegistry);
 
-        HexplorationZone(s_zone).addGameBoard(s_board);
+        XenovoyaZone(s_zone).addGameBoard(s_board);
     }
 
     function _wireTokens() internal {
@@ -204,24 +204,24 @@ contract DeployHexploration is Script {
 
     function _wireGameLogic() internal {
         // Controller
-        HexplorationController(s_controller).setGameEvents(s_gameEvents);
-        HexplorationController(s_controller).setGameStateUpdate(s_stateUpdate);
-        HexplorationController(s_controller).setGameSetup(s_gameSetup);
-        HexplorationController(s_controller).addVerifiedController(deployer);
+        XenovoyaController(s_controller).setGameEvents(s_gameEvents);
+        XenovoyaController(s_controller).setGameStateUpdate(s_stateUpdate);
+        XenovoyaController(s_controller).setGameSetup(s_gameSetup);
+        XenovoyaController(s_controller).addVerifiedController(deployer);
 
         // Queue
-        HexplorationQueue(s_queue).addVerifiedController(s_controller);
-        HexplorationQueue(s_queue).addVerifiedController(s_gameSetup);
-        HexplorationQueue(s_queue).setGameEvents(s_gameEvents);
+        XenovoyaQueue(s_queue).addVerifiedController(s_controller);
+        XenovoyaQueue(s_queue).addVerifiedController(s_gameSetup);
+        XenovoyaQueue(s_queue).setGameEvents(s_gameEvents);
 
         // Gameplay
-        HexplorationGameplay(s_gameplay).addVerifiedController(s_controller);
-        HexplorationGameplay(s_gameplay).setQueue(s_queue);
-        HexplorationGameplay(s_gameplay).setGameStateUpdate(s_stateUpdate);
+        XenovoyaGameplay(s_gameplay).addVerifiedController(s_controller);
+        XenovoyaGameplay(s_gameplay).setQueue(s_queue);
+        XenovoyaGameplay(s_gameplay).setGameStateUpdate(s_stateUpdate);
 
         // StateUpdate
-        HexplorationStateUpdate(s_stateUpdate).addVerifiedController(s_gameplay);
-        HexplorationStateUpdate(s_stateUpdate).setGameEvents(s_gameEvents);
+        XenovoyaStateUpdate(s_stateUpdate).addVerifiedController(s_gameplay);
+        XenovoyaStateUpdate(s_stateUpdate).setGameEvents(s_gameEvents);
 
         // GameSetup
         GameSetup(s_gameSetup).addVerifiedController(s_controller);
@@ -373,8 +373,8 @@ contract DeployHexploration is Script {
         console.log("=== Deployed Addresses ===");
         console.log("GAME_REGISTRY:           ", s_gameRegistry);
         console.log("STRING_TO_UINT:          ", s_stringToUint);
-        console.log("HEXPLORATION_BOARD:      ", s_board);
-        console.log("HEXPLORATION_CONTROLLER: ", s_controller);
+        console.log("XENOVOYA_BOARD:      ", s_board);
+        console.log("XENOVOYA_CONTROLLER: ", s_controller);
         console.log("GAME_RULES:              ", s_rules);
         console.log("PLAY_ZONE:               ", s_zone);
         console.log("PLAYER_REGISTRY:         ", s_playerRegistry);

@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 test('invalid game id shows validation state', async ({ page }) => {
-  await page.goto('/game/not-a-number');
+  await page.goto('/game/not-a-number', { waitUntil: 'domcontentloaded' });
 
-  await expect(page.getByText(/Invalid expedition id/i)).toBeVisible();
+  await expect(page.getByText(/Invalid survey id/i)).toBeVisible();
 });

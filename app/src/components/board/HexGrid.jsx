@@ -100,11 +100,33 @@ export default function HexGrid({
 
   if (loadingSize || !rows || !columns) {
     return (
-      <div className="flex items-center justify-center h-full gap-3">
-        <Spinner size="w-5 h-5" />
-        <span className="font-mono text-xs text-exp-text-dim tracking-wider uppercase">
-          Loading grid...
-        </span>
+      <div className="flex min-h-[420px] items-center justify-center">
+        <div className="w-full max-w-xl rounded border border-exp-border bg-exp-dark/45 p-4 sm:p-5">
+          <div className="flex items-center justify-between gap-4 border-b border-exp-border/60 pb-3">
+            <div>
+              <p className="font-mono text-[10px] uppercase tracking-[0.35em] text-exp-text-dim">
+                Survey scan
+              </p>
+              <p className="mt-1 font-mono text-xs text-exp-text-dim">
+                Boarding map and terrain data are still arriving.
+              </p>
+            </div>
+            <div className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.3em] text-compass">
+              <Spinner size="w-4 h-4" />
+              Loading
+            </div>
+          </div>
+
+          <div className="mt-4 grid grid-cols-6 gap-2 opacity-60">
+            {Array.from({ length: 24 }).map((_, index) => (
+              <div
+                key={index}
+                className="hex-clip aspect-square border border-exp-border/60 bg-exp-surface/60 animate-pulse"
+                style={{ animationDelay: `${(index % 6) * 80}ms` }}
+              />
+            ))}
+          </div>
+        </div>
       </div>
     );
   }
@@ -125,7 +147,7 @@ export default function HexGrid({
       <svg
         viewBox={viewBox}
         className="w-full h-auto"
-        style={{ maxHeight: '450px' }}
+        style={{ maxHeight: '520px' }}
       >
         {allHexes.map(({ alias, x, y }) => {
           const revealed = revealedMap[alias];

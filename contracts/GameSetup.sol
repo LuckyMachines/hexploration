@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity 0.8.34;
 
-import "./HexplorationBoard.sol";
-import "./HexplorationQueue.sol";
+import "./XenovoyaBoard.sol";
+import "./XenovoyaQueue.sol";
 import "./CharacterCard.sol";
 import "./TokenInventory.sol";
 import "./GameEvents.sol";
@@ -46,7 +46,7 @@ contract GameSetup is RandomnessConsumer, GameWallets {
         address boardAddress
     ) public onlyRole(VERIFIED_CONTROLLER_ROLE) {
         // lock registration
-        HexplorationBoard board = HexplorationBoard(boardAddress);
+        XenovoyaBoard board = XenovoyaBoard(boardAddress);
         require(board.gameState(gameID) == 0, "game already started");
         board.lockRegistration(gameID);
         if (testingEnabled) {
@@ -81,7 +81,7 @@ contract GameSetup is RandomnessConsumer, GameWallets {
     function chooseLandingSite(uint256 requestID) internal {
         uint256 gameID = ids[requestID];
         address boardAddress = addresses[requestID];
-        HexplorationBoard board = HexplorationBoard(boardAddress);
+        XenovoyaBoard board = XenovoyaBoard(boardAddress);
 
         string[] memory allZones = board.getZoneAliases();
         // should have 2 random values stored, using second value
@@ -91,7 +91,7 @@ contract GameSetup is RandomnessConsumer, GameWallets {
 
         // PlayerRegistry pr = PlayerRegistry(board.prAddress());
 
-        board.enableZone(zoneChoice, HexplorationZone.Tile.LandingSite, gameID);
+        board.enableZone(zoneChoice, XenovoyaZone.Tile.LandingSite, gameID);
         // set landing site at space on board
         board.setInitialPlayZone(zoneChoice, gameID);
 
@@ -101,7 +101,7 @@ contract GameSetup is RandomnessConsumer, GameWallets {
     function startGame(uint256 requestID) internal {
         uint256 gameID = ids[requestID];
         address boardAddress = addresses[requestID];
-        HexplorationBoard board = HexplorationBoard(boardAddress);
+        XenovoyaBoard board = XenovoyaBoard(boardAddress);
         require(board.gameState(gameID) == 0, "game already started");
 
         PlayerRegistry pr = PlayerRegistry(board.prAddress());
@@ -109,7 +109,7 @@ contract GameSetup is RandomnessConsumer, GameWallets {
         // set game to initialized
         board.setGameState(2, gameID);
 
-        HexplorationQueue q = HexplorationQueue(payable(board.gameplayQueue()));
+        XenovoyaQueue q = XenovoyaQueue(payable(board.gameplayQueue()));
 
         uint256 qID = q.queueID(gameID);
         if (qID == 0) {
@@ -133,7 +133,7 @@ contract GameSetup is RandomnessConsumer, GameWallets {
 
     function mintGameTokens(uint256 requestID) internal {
         uint256 gameID = ids[requestID];
-        HexplorationBoard board = HexplorationBoard(addresses[requestID]);
+        XenovoyaBoard board = XenovoyaBoard(addresses[requestID]);
         PlayerRegistry pr = PlayerRegistry(board.prAddress());
         uint256 totalRegistrations = pr.totalRegistrations(gameID);
 
@@ -219,7 +219,7 @@ contract GameSetup is RandomnessConsumer, GameWallets {
 
             board.enableZone(
                 board.getZoneAliases()[relicZoneIDs[i]],
-                HexplorationZone.Tile.RelicMystery,
+                XenovoyaZone.Tile.RelicMystery,
                 gameID
             );
         }
@@ -249,7 +249,7 @@ contract GameSetup is RandomnessConsumer, GameWallets {
         string memory zoneAlias
     ) internal view returns (uint256 index) {
         index = 1111111111111;
-        HexplorationBoard board = HexplorationBoard(gameBoardAddress);
+        XenovoyaBoard board = XenovoyaBoard(gameBoardAddress);
         string[] memory allZones = board.getZoneAliases();
         for (uint256 i = 0; i < allZones.length; i++) {
             if (

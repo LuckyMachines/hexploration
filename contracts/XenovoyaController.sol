@@ -2,10 +2,10 @@
 pragma solidity 0.8.34;
 
 import "@luckymachines/game-core/contracts/src/v0.0/GameController.sol";
-import "./HexplorationBoard.sol";
-import "./HexplorationZone.sol";
-import "./HexplorationQueue.sol";
-import "./HexplorationStateUpdate.sol";
+import "./XenovoyaBoard.sol";
+import "./XenovoyaZone.sol";
+import "./XenovoyaQueue.sol";
+import "./XenovoyaStateUpdate.sol";
 import "./CharacterCard.sol";
 import "./TokenInventory.sol";
 import "./GameEvents.sol";
@@ -14,7 +14,7 @@ import "./GameWallets.sol";
 import "@chainlink/contracts/src/v0.8/AutomationCompatible.sol";
 import "@luckymachines/autoloop/src/AutoLoopCompatible.sol";
 
-contract HexplorationController is
+contract XenovoyaController is
     GameController,
     GameWallets,
     AutomationCompatibleInterface,
@@ -26,7 +26,7 @@ contract HexplorationController is
     bytes32 public constant VERIFIED_CONTROLLER_ROLE =
         keccak256("VERIFIED_CONTROLLER_ROLE");
 
-    HexplorationStateUpdate GAME_STATE;
+    XenovoyaStateUpdate GAME_STATE;
     GameEvents GAME_EVENTS;
     GameSetup GAME_SETUP;
 
@@ -64,7 +64,7 @@ contract HexplorationController is
         public
         onlyRole(DEFAULT_ADMIN_ROLE)
     {
-        GAME_STATE = HexplorationStateUpdate(gsuAddress);
+        GAME_STATE = XenovoyaStateUpdate(gsuAddress);
     }
 
     function setGameSetup(address gameSetupAddress)
@@ -107,7 +107,7 @@ contract HexplorationController is
 
     //Player Interactions
     function registerForGame(uint256 gameID, address boardAddress) public {
-        HexplorationBoard board = HexplorationBoard(boardAddress);
+        XenovoyaBoard board = XenovoyaBoard(boardAddress);
         PlayerRegistry pr = PlayerRegistry(board.prAddress());
         board.registerPlayer(tx.origin, gameID);
         uint256 playerID = pr.playerID(gameID, tx.origin);
@@ -144,8 +144,8 @@ contract HexplorationController is
             boardAddress,
             playerID
         );
-        HexplorationBoard board = HexplorationBoard(boardAddress);
-        HexplorationQueue q = HexplorationQueue(payable(board.gameplayQueue()));
+        XenovoyaBoard board = XenovoyaBoard(boardAddress);
+        XenovoyaQueue q = XenovoyaQueue(payable(board.gameplayQueue()));
         PlayerRegistry pr = PlayerRegistry(board.prAddress());
         require(
             pr.playerAddress(gameID, playerID) == tx.origin,
@@ -218,7 +218,7 @@ contract HexplorationController is
         address boardAddress,
         uint256 totalPlayers
     ) public {
-        HexplorationBoard board = HexplorationBoard(boardAddress);
+        XenovoyaBoard board = XenovoyaBoard(boardAddress);
         board.requestNewGame(gameRegistryAddress, totalPlayers);
     }
 
@@ -259,10 +259,10 @@ contract HexplorationController is
         uint256 queueID;
         for (uint256 i = 0; i < activeGames.length; i++) {
             if (activeGames[i] > 0) {
-                HexplorationBoard board = HexplorationBoard(
+                XenovoyaBoard board = XenovoyaBoard(
                     activeGameAddresses[i]
                 );
-                HexplorationQueue q = HexplorationQueue(
+                XenovoyaQueue q = XenovoyaQueue(
                     payable(board.gameplayQueue())
                 );
                 queueID = q.queueID(activeGames[i]);
@@ -336,8 +336,8 @@ contract HexplorationController is
 
     // Starts processing turn after timeout
     function submissionTimeout(uint256 gameID, address boardAddress) internal {
-        HexplorationBoard board = HexplorationBoard(boardAddress);
-        HexplorationQueue q = HexplorationQueue(payable(board.gameplayQueue()));
+        XenovoyaBoard board = XenovoyaBoard(boardAddress);
+        XenovoyaQueue q = XenovoyaQueue(payable(board.gameplayQueue()));
         uint256 qID = q.queueID(gameID);
         bool isDayPhase = TokenInventory(board.tokenInventory())
             .DAY_NIGHT_TOKEN()
@@ -381,8 +381,8 @@ contract HexplorationController is
         address gameBoardAddress,
         uint256 playerID
     ) public view returns (bool isValid, string memory invalidError) {
-        HexplorationBoard gameBoard = HexplorationBoard(gameBoardAddress);
-        HexplorationQueue q = HexplorationQueue(
+        XenovoyaBoard gameBoard = XenovoyaBoard(gameBoardAddress);
+        XenovoyaQueue q = XenovoyaQueue(
             payable(gameBoard.gameplayQueue())
         );
         uint256 qID = q.queueID(gameID);
