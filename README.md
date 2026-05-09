@@ -4,6 +4,9 @@ A fully on-chain multiplayer explore & escape game. Land on an uncharted planet,
 
 Built on the [Lucky Machines Game Core](https://github.com/LuckyMachines/game-core) framework with Chainlink VRF for provably fair randomness.
 
+Project tracking, report cards, rename notes, and ops notes live in the private coordinator repo:
+https://github.com/LuckyMachines/xenovoya-coordinator
+
 - 1st place winner of Polygon Gaming prize @ Chainlink Spring 22 Hackathon
 - Recipient of Chainlink Top Quality prize @ Chainlink Spring 22 Hackathon
 
