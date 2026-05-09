@@ -451,7 +451,7 @@ Key addresses:
 
 See `deployments.json` for all contract addresses.
 
-Legacy `HEXPLORATION_*` env vars and deployment keys were not kept during this rename; use the `XENOVOYA_*` names everywhere.
+Legacy env vars and deployment keys from the old naming scheme were not kept during this rename; use the `XENOVOYA_*` names everywhere.
 
 ## License
 

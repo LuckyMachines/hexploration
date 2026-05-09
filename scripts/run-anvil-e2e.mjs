@@ -7,6 +7,7 @@ import { fileURLToPath } from 'url';
 import {
   createPublicClient,
   createWalletClient,
+  encodeFunctionData,
   http,
 } from 'viem';
 import { foundry } from 'viem/chains';
@@ -43,6 +44,30 @@ const controllerAbi = [
       { name: 'boardAddress', type: 'address' },
       { name: 'totalPlayers', type: 'uint256' },
     ],
+    outputs: [],
+  },
+  {
+    type: 'function',
+    stateMutability: 'view',
+    name: 'VERIFIED_CONTROLLER_ROLE',
+    inputs: [],
+    outputs: [{ name: '', type: 'bytes32' }],
+  },
+  {
+    type: 'function',
+    stateMutability: 'view',
+    name: 'hasRole',
+    inputs: [
+      { name: 'role', type: 'bytes32' },
+      { name: 'account', type: 'address' },
+    ],
+    outputs: [{ name: '', type: 'bool' }],
+  },
+  {
+    type: 'function',
+    stateMutability: 'nonpayable',
+    name: 'addVerifiedController',
+    inputs: [{ name: 'vcAddress', type: 'address' }],
     outputs: [],
   },
 ];
@@ -89,26 +114,25 @@ async function getTransactionReceipt(rpcUrl, hash) {
   return json.result ?? null;
 }
 
-async function waitForBroadcastFinalReceipt(rpcUrl) {
-  const raw = await fs.readFile(broadcastLatest, 'utf8');
-  const json = JSON.parse(raw);
-  const txs = json.transactions || [];
-  const lastTx = txs[txs.length - 1];
-  if (!lastTx?.hash) {
-    throw new Error('Broadcast file did not contain a final transaction hash.');
+async function rpcRequest(rpcUrl, method, params = []) {
+  const response = await fetch(rpcUrl, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({
+      jsonrpc: '2.0',
+      id: 1,
+      method,
+      params,
+    }),
+  });
+  if (!response.ok) {
+    throw new Error(`${method} failed with HTTP ${response.status}`);
   }
-
-  const start = Date.now();
-  const timeoutMs = 20 * 60 * 1000;
-  while (Date.now() - start < timeoutMs) {
-    const receipt = await getTransactionReceipt(rpcUrl, lastTx.hash);
-    if (receipt && receipt.status === '0x1') {
-      return receipt;
-    }
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+  const json = await response.json();
+  if (json.error) {
+    throw new Error(json.error.message || `${method} failed`);
   }
-
-  throw new Error(`Timed out waiting for final deployment receipt: ${lastTx.hash}`);
+  return json.result;
 }
 
 function isPortAvailable(port) {
@@ -168,6 +192,7 @@ async function readDeploymentAddresses() {
     VITE_PLAYER_SUMMARY_ADDRESS: byName.PlayerSummary,
     VITE_GAME_EVENTS_ADDRESS: byName.GameEvents,
     VITE_GAME_REGISTRY_ADDRESS: byName.GameRegistry,
+    VITE_PLAYER_REGISTRY_ADDRESS: byName.PlayerRegistry,
     VITE_GAME_QUEUE_ADDRESS: byName.XenovoyaQueue,
     VITE_GAME_SETUP_ADDRESS: byName.GameSetup,
   };
@@ -217,29 +242,177 @@ async function writeAppEnv(addresses, rpcUrl) {
 }
 
 async function seedOpenGame(rpcUrl, addresses) {
-  const account = privateKeyToAccount(ANVIL_PK);
   const transport = http(rpcUrl);
-  const walletClient = createWalletClient({
-    account,
-    chain: foundry,
-    transport,
-  });
   const publicClient = createPublicClient({
     chain: foundry,
     transport,
   });
 
-  const hash = await walletClient.writeContract({
-    address: addresses.VITE_CONTROLLER_ADDRESS,
-    abi: controllerAbi,
-    functionName: 'requestNewGame',
-    args: [
-      addresses.VITE_GAME_REGISTRY_ADDRESS,
-      addresses.VITE_BOARD_ADDRESS,
-      2n,
-    ],
+  await rpcRequest(rpcUrl, 'anvil_impersonateAccount', [addresses.VITE_BOARD_ADDRESS]);
+  await rpcRequest(rpcUrl, 'anvil_setBalance', [addresses.VITE_BOARD_ADDRESS, '0x56BC75E2D63100000']);
+
+  const gameRegistryAbi = [
+    {
+      type: 'function',
+      stateMutability: 'view',
+      name: 'GAME_BOARD_ROLE',
+      inputs: [],
+      outputs: [{ name: '', type: 'bytes32' }],
+    },
+    {
+      type: 'function',
+      stateMutability: 'view',
+      name: 'hasRole',
+      inputs: [
+        { name: 'role', type: 'bytes32' },
+        { name: 'account', type: 'address' },
+      ],
+      outputs: [{ name: '', type: 'bool' }],
+    },
+    {
+      type: 'function',
+      stateMutability: 'nonpayable',
+      name: 'addGameBoard',
+      inputs: [{ name: 'gameBoardAddress', type: 'address' }],
+      outputs: [],
+    },
+    {
+      type: 'function',
+      stateMutability: 'nonpayable',
+      name: 'registerGame',
+      inputs: [],
+      outputs: [{ name: 'gameID', type: 'uint256' }],
+    },
+    {
+      type: 'function',
+      stateMutability: 'view',
+      name: 'latestGame',
+      inputs: [{ name: 'gameBoardAddress', type: 'address' }],
+      outputs: [{ name: '', type: 'uint256' }],
+    },
+  ];
+  const playerRegistryAbi = [
+    {
+      type: 'function',
+      stateMutability: 'view',
+      name: 'GAME_BOARD_ROLE',
+      inputs: [],
+      outputs: [{ name: '', type: 'bytes32' }],
+    },
+    {
+      type: 'function',
+      stateMutability: 'view',
+      name: 'hasRole',
+      inputs: [
+        { name: 'role', type: 'bytes32' },
+        { name: 'account', type: 'address' },
+      ],
+      outputs: [{ name: '', type: 'bool' }],
+    },
+    {
+      type: 'function',
+      stateMutability: 'nonpayable',
+      name: 'grantRole',
+      inputs: [
+        { name: 'role', type: 'bytes32' },
+        { name: 'account', type: 'address' },
+      ],
+      outputs: [],
+    },
+    {
+      type: 'function',
+      stateMutability: 'nonpayable',
+      name: 'setRegistrationLimit',
+      inputs: [
+        { name: 'limit', type: 'uint256' },
+        { name: 'gameID', type: 'uint256' },
+      ],
+      outputs: [],
+    },
+  ];
+
+  const registryRole = await publicClient.readContract({
+    address: addresses.VITE_GAME_REGISTRY_ADDRESS,
+    abi: gameRegistryAbi,
+    functionName: 'GAME_BOARD_ROLE',
+    args: [],
   });
-  await publicClient.waitForTransactionReceipt({ hash });
+  const boardOnRegistry = await publicClient.readContract({
+    address: addresses.VITE_GAME_REGISTRY_ADDRESS,
+    abi: gameRegistryAbi,
+    functionName: 'hasRole',
+    args: [registryRole, addresses.VITE_BOARD_ADDRESS],
+  });
+  if (!boardOnRegistry) {
+    const grantHash = await rpcRequest(rpcUrl, 'eth_sendTransaction', [{
+      from: addresses.VITE_BOARD_ADDRESS,
+      to: addresses.VITE_GAME_REGISTRY_ADDRESS,
+      data: encodeFunctionData({
+        abi: gameRegistryAbi,
+        functionName: 'addGameBoard',
+        args: [addresses.VITE_BOARD_ADDRESS],
+      }),
+    }]);
+    await publicClient.waitForTransactionReceipt({ hash: grantHash });
+  }
+
+  const playerBoardRole = await publicClient.readContract({
+    address: addresses.VITE_PLAYER_REGISTRY_ADDRESS,
+    abi: playerRegistryAbi,
+    functionName: 'GAME_BOARD_ROLE',
+    args: [],
+  });
+  const boardOnPlayerRegistry = await publicClient.readContract({
+    address: addresses.VITE_PLAYER_REGISTRY_ADDRESS,
+    abi: playerRegistryAbi,
+    functionName: 'hasRole',
+    args: [playerBoardRole, addresses.VITE_BOARD_ADDRESS],
+  });
+  if (!boardOnPlayerRegistry) {
+    const grantHash = await rpcRequest(rpcUrl, 'eth_sendTransaction', [{
+      from: addresses.VITE_BOARD_ADDRESS,
+      to: addresses.VITE_PLAYER_REGISTRY_ADDRESS,
+      data: encodeFunctionData({
+        abi: playerRegistryAbi,
+        functionName: 'grantRole',
+        args: [playerBoardRole, addresses.VITE_BOARD_ADDRESS],
+      }),
+    }]);
+    await publicClient.waitForTransactionReceipt({ hash: grantHash });
+  }
+
+  for (let i = 0; i < 2; i++) {
+    const txHash = await rpcRequest(rpcUrl, 'eth_sendTransaction', [{
+      from: addresses.VITE_BOARD_ADDRESS,
+      to: addresses.VITE_GAME_REGISTRY_ADDRESS,
+      data: encodeFunctionData({
+        abi: gameRegistryAbi,
+        functionName: 'registerGame',
+        args: [],
+      }),
+    }]);
+    await publicClient.waitForTransactionReceipt({ hash: txHash });
+
+    const gameId = await publicClient.readContract({
+      address: addresses.VITE_GAME_REGISTRY_ADDRESS,
+      abi: gameRegistryAbi,
+      functionName: 'latestGame',
+      args: [addresses.VITE_BOARD_ADDRESS],
+    });
+
+    const limitHash = await rpcRequest(rpcUrl, 'eth_sendTransaction', [{
+      from: addresses.VITE_BOARD_ADDRESS,
+      to: addresses.VITE_PLAYER_REGISTRY_ADDRESS,
+      data: encodeFunctionData({
+        abi: playerRegistryAbi,
+        functionName: 'setRegistrationLimit',
+        args: [2n, gameId],
+      }),
+    }]);
+    await publicClient.waitForTransactionReceipt({ hash: limitHash });
+  }
+
+  await rpcRequest(rpcUrl, 'anvil_stopImpersonatingAccount', [addresses.VITE_BOARD_ADDRESS]);
 }
 
 async function main() {
@@ -313,11 +486,7 @@ async function main() {
     });
   });
 
-  await waitForBroadcastFinalReceipt(rpcUrl);
-  if (!forge.killed) {
-    forge.kill('SIGTERM');
-  }
-  forgeExit.catch(() => {});
+  await forgeExit;
 
   const addresses = await readDeploymentAddresses();
 

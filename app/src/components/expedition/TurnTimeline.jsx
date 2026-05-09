@@ -58,7 +58,7 @@ export default function TurnTimeline({ queueTelemetry, events = [] }) {
         <div className="mt-2 flex items-center gap-2 px-2 py-1.5 rounded border border-compass/30 bg-compass/5">
           <Spinner size="w-3 h-3" />
           <span className="font-mono text-xs text-compass tracking-wider uppercase">
-            Processing turn — worker is advancing the game loop...
+            Processing turn - worker is advancing the game loop...
           </span>
         </div>
       )}

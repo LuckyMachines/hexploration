@@ -9,6 +9,15 @@ const expectOpenGame = process.env.E2E_EXPECT_OPEN_GAME === 'true';
 const captureDir = path.resolve(process.cwd(), '..', 'captures', 'game');
 const e2eEnvPath = path.resolve(process.cwd(), '.env.e2e-anvil');
 const localEnvPath = path.resolve(process.cwd(), '.env.local');
+const broadcastLatest = path.resolve(
+  process.cwd(),
+  '..',
+  'broadcast',
+  'DeployXenovoya.s.sol',
+  '31337',
+  'run-latest.json',
+);
+const seedPk = '0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80';
 const joinerPk = '0x59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d';
 const creatorPk = '0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80';
 const captureProjects = new Set(['chromium-desktop']);
@@ -44,7 +53,7 @@ async function rpcIsReachable(rpcUrl) {
 }
 
 async function readGameEnv() {
-  const candidates = [e2eEnvPath, localEnvPath];
+  const candidates = [localEnvPath, e2eEnvPath];
   for (const envPath of candidates) {
     try {
       const raw = await fs.readFile(envPath, 'utf8');
@@ -61,6 +70,18 @@ async function readGameEnv() {
 
 async function ensureCaptureDir() {
   await fs.mkdir(captureDir, { recursive: true });
+}
+
+async function readDeployments() {
+  const raw = await fs.readFile(broadcastLatest, 'utf8');
+  const json = JSON.parse(raw);
+  const byName = {};
+  for (const tx of json.transactions || []) {
+    if (tx.contractName && tx.contractAddress) {
+      byName[tx.contractName] = tx.contractAddress;
+    }
+  }
+  return byName;
 }
 
 async function installRpcWallet(page, rpcUrl, accountAddress) {
@@ -148,21 +169,23 @@ async function waitForGameStarted(publicClient, env, gameId, timeoutMs = 60_000)
 
 async function registerLocalPlayers(env) {
   const rpcUrl = env.VITE_FOUNDRY_RPC_URL;
-  const controller = env.VITE_CONTROLLER_ADDRESS;
   const board = env.VITE_BOARD_ADDRESS;
   const registry = env.VITE_GAME_REGISTRY_ADDRESS;
   const summary = env.VITE_GAME_SUMMARY_ADDRESS;
 
-  if (!rpcUrl || !controller || !board || !registry || !summary) {
+  if (!rpcUrl || !board || !registry || !summary) {
     throw new Error('Missing local Anvil env for capture');
   }
 
   const transport = http(rpcUrl);
   const publicClient = createPublicClient({ chain: foundry, transport });
   const joinerAccount = privateKeyToAccount(joinerPk);
-  const creatorAccount = privateKeyToAccount(creatorPk);
   const joinerClient = createWalletClient({ account: joinerAccount, chain: foundry, transport });
-  const creatorClient = createWalletClient({ account: creatorAccount, chain: foundry, transport });
+  const seedAccount = privateKeyToAccount(seedPk);
+  const seedClient = createWalletClient({ account: seedAccount, chain: foundry, transport });
+  const deployments = await readDeployments();
+  const gameSetup = deployments.GameSetup;
+  const characterCard = deployments.CharacterCard;
 
   const [gameIDs, maxPlayers, currentRegs] = await publicClient.readContract({
     address: summary,
@@ -196,37 +219,195 @@ async function registerLocalPlayers(env) {
   }
 
   const gameId = gameIDs[gameIndex];
-  await joinerClient.writeContract({
-    address: controller,
-    abi: [{
-      type: 'function',
-      stateMutability: 'nonpayable',
-      name: 'registerForGame',
-      inputs: [
-        { name: 'gameId', type: 'uint256' },
-        { name: 'boardAddress', type: 'address' },
-      ],
-      outputs: [],
-    }],
-    functionName: 'registerForGame',
-    args: [gameId, board],
-  });
+  const roleAbi = [{
+    type: 'function',
+    stateMutability: 'view',
+    name: 'VERIFIED_CONTROLLER_ROLE',
+    inputs: [],
+    outputs: [{ name: '', type: 'bytes32' }],
+  }, {
+    type: 'function',
+    stateMutability: 'view',
+    name: 'hasRole',
+    inputs: [
+      { name: 'role', type: 'bytes32' },
+      { name: 'account', type: 'address' },
+    ],
+    outputs: [{ name: '', type: 'bool' }],
+  }, {
+    type: 'function',
+    stateMutability: 'nonpayable',
+    name: 'addVerifiedController',
+    inputs: [{ name: 'vcAddress', type: 'address' }],
+    outputs: [],
+  }];
 
-  await creatorClient.writeContract({
-    address: controller,
+  const ensureRole = async (contractAddress, accountAddress) => {
+    const role = await publicClient.readContract({
+      address: contractAddress,
+      abi: roleAbi,
+      functionName: 'VERIFIED_CONTROLLER_ROLE',
+      args: [],
+    });
+    const hasRole = await publicClient.readContract({
+      address: contractAddress,
+      abi: roleAbi,
+      functionName: 'hasRole',
+      args: [role, accountAddress],
+    });
+    if (!hasRole) {
+      const hash = await seedClient.writeContract({
+        address: contractAddress,
+        abi: roleAbi,
+        functionName: 'addVerifiedController',
+        args: [accountAddress],
+      });
+      await publicClient.waitForTransactionReceipt({ hash });
+    }
+  };
+
+  await ensureRole(board, seedAccount.address);
+  await ensureRole(characterCard, seedAccount.address);
+  await ensureRole(gameSetup, seedAccount.address);
+
+  const boardWriteAbi = [{
+    type: 'function',
+    stateMutability: 'nonpayable',
+    name: 'registerPlayer',
+    inputs: [
+      { name: 'playerAddress', type: 'address' },
+      { name: 'gameID', type: 'uint256' },
+    ],
+    outputs: [],
+  }, {
+    type: 'function',
+    stateMutability: 'nonpayable',
+    name: 'createGrid',
+    inputs: [],
+    outputs: [],
+  }];
+  const statsAbi = [{
+    type: 'function',
+    stateMutability: 'nonpayable',
+    name: 'setStats',
+    inputs: [
+      { name: 'stats', type: 'uint8[3]' },
+      { name: 'gameID', type: 'uint256' },
+      { name: 'playerID', type: 'uint256' },
+    ],
+    outputs: [],
+  }];
+  const zoneAliases = await publicClient.readContract({
+    address: board,
+    abi: [{
+      type: 'function',
+      stateMutability: 'view',
+      name: 'getZoneAliases',
+      inputs: [],
+      outputs: [{ name: '', type: 'string[]' }],
+    }],
+    functionName: 'getZoneAliases',
+    args: [],
+  });
+  if (zoneAliases.length === 0) {
+    const gridHash = await seedClient.writeContract({
+      address: board,
+      abi: boardWriteAbi,
+      functionName: 'createGrid',
+      args: [],
+    });
+    await publicClient.waitForTransactionReceipt({ hash: gridHash });
+  }
+
+  const refreshedZoneAliases = await publicClient.readContract({
+    address: board,
+    abi: [{
+      type: 'function',
+      stateMutability: 'view',
+      name: 'getZoneAliases',
+      inputs: [],
+      outputs: [{ name: '', type: 'string[]' }],
+    }],
+    functionName: 'getZoneAliases',
+    args: [],
+  });
+  const landingZone = refreshedZoneAliases[0];
+  if (!landingZone) {
+    throw new Error('Board grid did not expose any zone aliases');
+  }
+
+  for (const [playerAddress, playerID] of [
+    [joinerAccount.address, 1n],
+    [privateKeyToAccount(creatorPk).address, 2n],
+  ]) {
+    const hash = await seedClient.writeContract({
+      address: board,
+      abi: boardWriteAbi,
+      functionName: 'registerPlayer',
+      args: [playerAddress, gameId],
+    });
+    await publicClient.waitForTransactionReceipt({ hash });
+
+    const statsHash = await seedClient.writeContract({
+      address: characterCard,
+      abi: statsAbi,
+      functionName: 'setStats',
+      args: [[4, 4, 4], gameId, playerID],
+    });
+    await publicClient.waitForTransactionReceipt({ hash: statsHash });
+
+    const enterHash = await seedClient.writeContract({
+      address: board,
+      abi: [{
+        type: 'function',
+        stateMutability: 'nonpayable',
+        name: 'enterPlayer',
+        inputs: [
+          { name: 'playerAddress', type: 'address' },
+          { name: 'gameID', type: 'uint256' },
+          { name: 'zone', type: 'string' },
+        ],
+        outputs: [],
+      }],
+      functionName: 'enterPlayer',
+      args: [playerAddress, gameId, landingZone],
+    });
+    await publicClient.waitForTransactionReceipt({ hash: enterHash });
+  }
+
+  const setInitialZoneHash = await seedClient.writeContract({
+    address: board,
     abi: [{
       type: 'function',
       stateMutability: 'nonpayable',
-      name: 'registerForGame',
+      name: 'setInitialPlayZone',
       inputs: [
-        { name: 'gameId', type: 'uint256' },
-        { name: 'boardAddress', type: 'address' },
+        { name: 'initialZone', type: 'string' },
+        { name: 'gameID', type: 'uint256' },
       ],
       outputs: [],
     }],
-    functionName: 'registerForGame',
-    args: [gameId, board],
+    functionName: 'setInitialPlayZone',
+    args: [landingZone, gameId],
   });
+  await publicClient.waitForTransactionReceipt({ hash: setInitialZoneHash });
+
+  const setGameStateHash = await seedClient.writeContract({
+    address: board,
+    abi: [{
+      type: 'function',
+      stateMutability: 'nonpayable',
+      name: 'setGameState',
+      inputs: [
+        { name: 'gs', type: 'uint256' },
+        { name: 'gameID', type: 'uint256' },
+      ],
+      outputs: [],
+    }],
+    functionName: 'setGameState',
+    args: [2n, gameId],
+  });
+  await publicClient.waitForTransactionReceipt({ hash: setGameStateHash });
 
   const isStarted = await waitForGameStarted(publicClient, env, Number(gameId));
   if (!isStarted) {

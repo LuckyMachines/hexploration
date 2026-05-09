@@ -32,6 +32,16 @@ export default function SurveyTabletFrame({
           )}
         </div>
 
+        <div className="border-b border-exp-border/60 bg-exp-dark/25 px-4 sm:px-5 py-2.5">
+          <div className="flex items-center justify-between gap-3 font-mono text-[10px] uppercase tracking-[0.3em] text-exp-text-dim">
+            <span>Survey signal</span>
+            <span>Live capture</span>
+          </div>
+          <div className="mt-2 h-2 overflow-hidden rounded-full border border-white/[0.06] bg-exp-dark/70">
+            <div className="h-full w-2/3 bg-[linear-gradient(90deg,rgba(64,160,128,0.06),rgba(64,160,128,0.85),rgba(232,200,96,0.85),rgba(64,160,128,0.06))]" />
+          </div>
+        </div>
+
         {subtitle && (
           <div className="border-b border-exp-border/60 bg-exp-dark/25 px-4 sm:px-5 py-2.5">
             <p className="font-mono text-xs sm:text-sm text-exp-text-dim tracking-wider uppercase">

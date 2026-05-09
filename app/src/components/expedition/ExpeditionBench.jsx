@@ -105,54 +105,25 @@ export default function ExpeditionBench({ gameId }) {
 
   return (
     <div className="space-y-4">
-      <div className="rounded border border-exp-border bg-exp-panel/80 p-3 sm:p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]">
-        <div className="flex items-center justify-between flex-wrap gap-3">
+      <div className="rounded border border-exp-border bg-exp-panel/80 px-4 py-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]">
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
           <DayNightBadge phase={phase} />
           <PhaseIndicator currentPhase={queueTelemetry.phase} />
           <DayCounter gameId={gameId} />
+          <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-exp-text-dim">
+            {phase || 'Unknown'}
+          </span>
+          <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-exp-text-dim">
+            {queueLabel}
+          </span>
+          <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-exp-text-dim">
+            {enrichedPlayers.length} aboard
+          </span>
         </div>
-
-        <div className="mt-3 grid gap-2 lg:grid-cols-[minmax(0,1.6fr)_minmax(240px,0.8fr)]">
-          <div className="border border-exp-border/60 rounded bg-exp-dark/40 px-3 py-2.5">
-            <p className="font-mono text-[10px] uppercase tracking-[0.35em] text-exp-text-dim">
-              Survey state
-            </p>
-            <p className="mt-1 font-display text-lg tracking-[0.22em] uppercase text-compass-bright">
-              {phase || 'Unknown'}
-            </p>
-            <p className="mt-1 font-mono text-xs text-exp-text-dim">
-              {queueDetail}
-            </p>
-          </div>
-
-          <div className="grid grid-cols-2 gap-2">
-            <div className="border border-exp-border/60 rounded bg-exp-dark/40 px-3 py-2.5">
-              <p className="font-mono text-[10px] uppercase tracking-[0.35em] text-exp-text-dim">
-                Queue
-              </p>
-              <p className="mt-1 font-mono text-xs uppercase tracking-widest text-compass-bright">
-                {queueLabel}
-              </p>
-            </div>
-            <div className="border border-exp-border/60 rounded bg-exp-dark/40 px-3 py-2.5">
-              <p className="font-mono text-[10px] uppercase tracking-[0.35em] text-exp-text-dim">
-                Crew
-              </p>
-              <p className="mt-1 font-mono text-xs uppercase tracking-widest text-compass-bright">
-                {enrichedPlayers.length} aboard
-              </p>
-            </div>
-          </div>
-        </div>
+        <p className="mt-2 font-mono text-[11px] text-exp-text-dim">
+          {queueDetail}
+        </p>
       </div>
-
-      <TurnTimeline queueTelemetry={queueTelemetry} events={events} />
-
-      <ReadinessMatrix
-        players={enrichedPlayers}
-        readinessByPlayerID={readinessByPlayerID}
-        queueActive={queueTelemetry.hasActiveQueue}
-      />
 
       <div className="grid gap-4 lg:grid-cols-[minmax(0,1.45fr)_minmax(300px,0.78fr)]">
         <div className="border border-exp-border rounded bg-exp-panel p-2 sm:p-4 min-h-[360px] sm:min-h-[520px] overflow-x-auto shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]">
@@ -202,6 +173,30 @@ export default function ExpeditionBench({ gameId }) {
         </div>
       </div>
 
+      <details className="group rounded border border-exp-border bg-exp-panel/70 px-4 py-3">
+        <summary className="cursor-pointer list-none flex items-center justify-between gap-3">
+          <div>
+            <h3 className="font-mono text-xs tracking-[0.3em] text-exp-text-dim uppercase">
+              Mission telemetry
+            </h3>
+            <p className="mt-1 font-mono text-[11px] text-exp-text-dim">
+              Queue phase, submission readiness, and turn history.
+            </p>
+          </div>
+          <span className="font-mono text-[10px] uppercase tracking-[0.28em] text-compass-bright border border-compass/30 rounded px-2 py-1 bg-compass/5">
+            Details
+          </span>
+        </summary>
+        <div className="mt-3 space-y-3">
+          <TurnTimeline queueTelemetry={queueTelemetry} events={events} />
+          <ReadinessMatrix
+            players={enrichedPlayers}
+            readinessByPlayerID={readinessByPlayerID}
+            queueActive={queueTelemetry.hasActiveQueue}
+          />
+        </div>
+      </details>
+
       {isSpectator && <SpectatorBanner />}
 
       {!isSpectator && (
@@ -223,13 +218,29 @@ export default function ExpeditionBench({ gameId }) {
 
       <TurnResolution gameId={gameId} />
 
-      <MatchReplay
-        events={events}
-        onLoadFullHistory={loadFullHistory}
-        isLoadingFullHistory={isLoadingFullHistory}
-      />
-
-      <EventLog events={events} />
+      <details className="group rounded border border-exp-border bg-exp-panel/70 px-4 py-3">
+        <summary className="cursor-pointer list-none flex items-center justify-between gap-3">
+          <div>
+            <h3 className="font-mono text-xs tracking-[0.3em] text-exp-text-dim uppercase">
+              Expedition history
+            </h3>
+            <p className="mt-1 font-mono text-[11px] text-exp-text-dim">
+              Full replay and event log for the current run.
+            </p>
+          </div>
+          <span className="font-mono text-[10px] uppercase tracking-[0.28em] text-compass-bright border border-compass/30 rounded px-2 py-1 bg-compass/5">
+            Details
+          </span>
+        </summary>
+        <div className="mt-3 space-y-3">
+          <MatchReplay
+            events={events}
+            onLoadFullHistory={loadFullHistory}
+            isLoadingFullHistory={isLoadingFullHistory}
+          />
+          <EventLog events={events} />
+        </div>
+      </details>
     </div>
   );
 }
