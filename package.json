@@ -10,7 +10,13 @@
     "check-status": "node scripts/check-xenovoya-status.mjs",
     "dev": "cd app && npm run dev",
     "local": "node scripts/run-local-stack.mjs",
+    "local:solo": "node scripts/run-local-stack.mjs --solo",
+    "local:multi": "node scripts/run-local-stack.mjs --multi",
+    "local:multi:3": "node scripts/run-local-stack.mjs --multi --players=3",
+    "local:multi:4": "node scripts/run-local-stack.mjs --multi --players=4",
     "local:join": "node scripts/join-local-game.mjs",
+    "local:bots": "node scripts/register-bots.mjs",
+    "local:auto-bots": "node scripts/auto-bots.mjs",
     "test:e2e:anvil": "node scripts/run-anvil-e2e.mjs"
   },
   "repository": {

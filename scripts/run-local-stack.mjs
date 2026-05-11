@@ -1,12 +1,23 @@
 #!/usr/bin/env node
 /**
  * Local full-stack orchestrator.
- * Boots Anvil, deploys contracts, populates card decks, seeds a game,
- * starts the automation worker, and launches the Vite dev server.
+ * Boots Anvil, deploys contracts, populates card decks, seeds a survey,
+ * (optionally) registers bot players, starts the automation worker (and
+ * auto-bot daemon for multi mode), and launches the Vite dev server.
  *
- * Usage:
- *   npm run local
- *   ANVIL_PORT=8545 npm run local
+ * Modes:
+ *   npm run local                # backwards-compat: 2-player survey, no bots
+ *   npm run local:solo           # 1-player survey, you can play immediately
+ *   npm run local:multi          # 2-player survey + 1 bot, you join slot 2
+ *   npm run local:multi:4        # 4-player survey + 3 bots, you join slot 4
+ *
+ * Flags:
+ *   --solo                       # 1-player survey
+ *   --multi                      # multi-player survey with bots filling N-1
+ *   --players=N                  # override player count (1..4)
+ *   --no-bots                    # multi mode but don't register bots
+ *                                  (you bring your own keys)
+ *   ANVIL_PORT=8545 ...          # change anvil port (default 9955)
  */
 import { spawn } from 'child_process';
 import { promises as fs } from 'fs';
@@ -41,6 +52,26 @@ const ANVIL_PORT = Number(process.env.ANVIL_PORT) || 9955;
 const RPC_URL = `http://127.0.0.1:${ANVIL_PORT}`;
 const ANVIL_PK =
   '0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80';
+
+// ── Args ─────────────────────────────────────────────────────────────
+const args = process.argv.slice(2);
+function flag(name) {
+  return args.find((a) => a === `--${name}` || a.startsWith(`--${name}=`));
+}
+function flagVal(name, def) {
+  const f = flag(name);
+  if (!f) return def;
+  const eq = f.indexOf('=');
+  return eq >= 0 ? f.slice(eq + 1) : true;
+}
+
+const isSolo  = !!flag('solo');
+const isMulti = !!flag('multi');
+const mode    = isSolo ? 'solo' : isMulti ? 'multi' : 'classic';
+const defaultPlayers = mode === 'solo' ? 1 : mode === 'multi' ? 2 : 2;
+const players = Math.max(1, Math.min(4, Number(flagVal('players', defaultPlayers))));
+const wantBots = mode === 'multi' && !flag('no-bots');
+const botCount = wantBots ? Math.max(0, players - 1) : 0;
 
 const children = [];
 
@@ -197,7 +228,7 @@ const controllerAbi = [
   },
 ];
 
-async function seedOpenGame(appAddrs) {
+async function seedOpenGame(appAddrs, totalPlayers) {
   const account = privateKeyToAccount(ANVIL_PK);
   const transport = http(RPC_URL);
   const walletClient = createWalletClient({ account, chain: foundry, transport });
@@ -210,7 +241,7 @@ async function seedOpenGame(appAddrs) {
     args: [
       appAddrs.VITE_GAME_REGISTRY_ADDRESS,
       appAddrs.VITE_BOARD_ADDRESS,
-      2n,
+      BigInt(totalPlayers),
     ],
   });
   await publicClient.waitForTransactionReceipt({ hash });
@@ -321,15 +352,24 @@ async function main() {
   }
   log('Card decks populated.');
 
-  // 7. Seed an open game
-  log('Seeding open game (2 players)...');
-  await seedOpenGame(appAddrs);
-  log('Game seeded.');
+  // 7. Seed an open survey at the chosen player count
+  log(`Seeding open survey (mode=${mode}, players=${players})...`);
+  await seedOpenGame(appAddrs, players);
+  log('Survey seeded.');
 
-  // 8. Write app/.env.local
+  // 8. Write app/.env.local — must happen before bot scripts run because
+  // register-bots reads VITE_* addresses from this file.
   await writeAppEnvLocal(appAddrs);
 
-  // 9. Spawn worker
+  // 8b. Register bot players for multi mode.
+  if (botCount > 0) {
+    log(`Registering ${botCount} bot player(s)...`);
+    await runCommand('node', ['scripts/register-bots.mjs', `--count=${botCount}`], {
+      stdio: 'inherit',
+    });
+  }
+
+  // 9. Spawn the VRF + loop worker (handles mock VRF fulfilment automatically).
   log('Starting automation worker...');
   const workerDeployments = JSON.stringify(workerAddrs);
   spawnChild('node', ['scripts/xenovoya-worker.mjs'], {
@@ -342,6 +382,18 @@ async function main() {
     },
   });
 
+  // 9b. Auto-bot daemon — submits IDLE on bots' turns so the game advances
+  // without human intervention. Only useful when bots are registered.
+  if (botCount > 0) {
+    log('Starting auto-bot daemon...');
+    spawnChild('node', ['scripts/auto-bots.mjs'], {
+      env: {
+        RPC_URL,
+        POLL_INTERVAL_MS: '2000',
+      },
+    });
+  }
+
   // 10. Spawn Vite dev server
   log('Starting Vite dev server...');
   spawnChild(resolveShellBinary('npm'), ['run', 'dev'], {
@@ -350,9 +402,17 @@ async function main() {
   });
 
   // 11. Print status banner
+  const modeLine =
+    mode === 'solo'
+      ? 'Solo (1 player, you play through alone)'
+      : mode === 'multi'
+        ? `Multi (${players} players · ${botCount} bot${botCount === 1 ? '' : 's'} auto-piloted)`
+        : `Classic (${players} players, no bots)`;
+
   console.log('\n' + '='.repeat(60));
   console.log('  Local Stack Running');
   console.log('='.repeat(60));
+  console.log(`  Mode:       ${modeLine}`);
   console.log(`  Anvil RPC:  ${RPC_URL}`);
   console.log(`  Chain ID:   31337`);
   console.log(`  Frontend:   http://localhost:5502`);
@@ -363,6 +423,11 @@ async function main() {
   console.log(`    Network RPC: ${RPC_URL}`);
   console.log('    Chain ID:    31337');
   console.log(`    Import key:  ${ANVIL_PK}`);
+  if (botCount > 0) {
+    console.log();
+    console.log(`  Bots auto-submit IDLE on their turn so multi-player`);
+    console.log(`  rounds resolve while you play a single seat.`);
+  }
   console.log('='.repeat(60));
   console.log('  Press Ctrl+C to stop all processes.');
   console.log('='.repeat(60) + '\n');
