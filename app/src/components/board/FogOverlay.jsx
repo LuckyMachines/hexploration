@@ -1,9 +1,11 @@
 import { hexPoints } from '../../lib/hexmath';
 
-export default function FogOverlay({ cx, cy, alias, onClick, isReachable }) {
+export default function FogOverlay({ cx, cy, alias, onClick, isReachable, isIntent, onHover }) {
   return (
     <g
       onClick={() => onClick?.(alias)}
+      onMouseEnter={() => onHover?.(alias)}
+      onMouseLeave={() => onHover?.(null)}
       style={{ cursor: onClick ? 'pointer' : 'default' }}
     >
       <polygon
@@ -12,8 +14,9 @@ export default function FogOverlay({ cx, cy, alias, onClick, isReachable }) {
         points={hexPoints(cx, cy)}
         fill={isReachable ? '#1a2016' : '#0d0f0a'}
         fillOpacity={isReachable ? 0.55 : 0.7}
-        stroke={isReachable ? '#c4a64a' : '#2a3224'}
-        strokeWidth={isReachable ? 2 : 1}
+        stroke={isIntent ? '#c4cbb8' : isReachable ? '#c4a64a' : '#2a3224'}
+        strokeWidth={isIntent || isReachable ? 2 : 1}
+        className="alive-tile"
       />
       <text
         x={cx}

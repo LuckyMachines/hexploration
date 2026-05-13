@@ -1,6 +1,6 @@
 import { aliasToPixel } from '../../lib/hexmath';
 
-export default function PathOverlay({ origin = '', path = [] }) {
+export default function PathOverlay({ origin = '', path = [], isCommitted = false, isHeavy = false }) {
   const route = origin ? [origin, ...path] : path;
   if (route.length < 2) return null;
 
@@ -13,9 +13,10 @@ export default function PathOverlay({ origin = '', path = [] }) {
         points={points.map((p) => `${p.x},${p.y}`).join(' ')}
         fill="none"
         stroke="#e8c860"
-        strokeWidth="2"
-        strokeDasharray="6 3"
-        opacity="0.7"
+        strokeWidth={isHeavy ? '3' : '2'}
+        strokeDasharray={isHeavy ? '8 5' : '6 3'}
+        opacity={isCommitted ? '0.92' : '0.7'}
+        className={isCommitted ? 'alive-route-locked' : 'alive-route-preview'}
       />
 
       {/* Direction arrows at each segment midpoint */}
@@ -27,14 +28,14 @@ export default function PathOverlay({ origin = '', path = [] }) {
 
         return (
           <g key={i} transform={`translate(${mx},${my}) rotate(${angle})`}>
-            <path d="M-3,-3 L3,0 L-3,3" fill="#e8c860" opacity="0.6" />
+            <path d="M-3,-3 L3,0 L-3,3" fill="#e8c860" opacity={isHeavy ? '0.85' : '0.6'} />
           </g>
         );
       })}
 
       {/* Waypoint dots */}
       {points.slice(1, -1).map((p, i) => (
-        <circle key={i} cx={p.x} cy={p.y} r="3" fill="#e8c860" opacity="0.5" />
+        <circle key={i} cx={p.x} cy={p.y} r={isHeavy ? '4' : '3'} fill="#e8c860" opacity={isCommitted ? '0.78' : '0.5'} />
       ))}
     </g>
   );

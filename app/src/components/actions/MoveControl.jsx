@@ -38,7 +38,7 @@ export default function MoveControl({
         <button
           onClick={onSubmit}
           disabled={disabled || path.length === 0}
-          className="px-4 py-2 bg-compass/10 border border-compass/40 rounded text-compass text-xs font-mono tracking-widest uppercase
+          className="alive-commit-button px-4 py-2 bg-compass/10 border border-compass/40 rounded text-compass text-xs font-mono tracking-widest uppercase
                      hover:bg-compass/20 hover:border-compass/60 transition-colors
                      disabled:opacity-40 disabled:cursor-not-allowed"
         >
@@ -47,7 +47,7 @@ export default function MoveControl({
         {path.length > 0 && (
           <button
             onClick={onClear}
-            className="px-3 py-2 border border-exp-border rounded text-exp-text-dim text-xs font-mono tracking-wider uppercase
+            className="alive-cancel-button px-3 py-2 border border-exp-border rounded text-exp-text-dim text-xs font-mono tracking-wider uppercase
                        hover:border-exp-text-dim/40 transition-colors"
           >
             Clear

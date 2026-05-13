@@ -6,6 +6,7 @@ import ExpeditionBench from '../components/expedition/ExpeditionBench';
 import GameOver from '../components/game/GameOver';
 import Spinner from '../components/shared/Spinner';
 import SurveyTabletFrame from '../components/layout/SurveyTabletFrame';
+import { useGameOver } from '../hooks/useGameOver';
 import { parseUintId } from '../lib/ids';
 
 export default function GamePage() {
@@ -13,12 +14,11 @@ export default function GamePage() {
   const { isConnected, connect } = useWallet();
   const parsedGameId = parseUintId(gameId);
   const normalizedGameId = parsedGameId?.toString() ?? '';
-  const { gameStarted, currentPhase, isLoading, error } = useGameState(normalizedGameId);
-
-  const isGameOver = currentPhase === 'The End';
+  const { gameStarted, isLoading, error } = useGameState(normalizedGameId);
+  const { isGameOver } = useGameOver(normalizedGameId);
 
   return (
-    <div className="max-w-7xl mx-auto px-3 sm:px-4 py-4 sm:py-8">
+    <div className="mx-auto w-full max-w-[100rem] px-3 py-4 sm:px-4 sm:py-8 2xl:px-6">
       <SurveyTabletFrame
         title={parsedGameId === null ? 'Survey Tablet' : `Survey #${normalizedGameId || 'Invalid'}`}
         subtitle="Live survey state, roster access, and mission actions"

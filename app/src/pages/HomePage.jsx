@@ -1,4 +1,5 @@
 import GameBrowser from '../components/game/GameBrowser';
+import FirstExpeditionGuide from '../components/game/FirstExpeditionGuide';
 import SystemHealth from '../components/shared/SystemHealth';
 import SurveyTabletFrame from '../components/layout/SurveyTabletFrame';
 
@@ -11,6 +12,7 @@ export default function HomePage() {
         status="SURVEY READY"
       >
         <div className="space-y-6">
+          <FirstExpeditionGuide />
           <SystemHealth />
           <GameBrowser />
         </div>

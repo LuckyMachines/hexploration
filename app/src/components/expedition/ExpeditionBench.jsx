@@ -18,6 +18,7 @@ import TurnTimeline from './TurnTimeline';
 import ReadinessMatrix from './ReadinessMatrix';
 import MatchReplay from './MatchReplay';
 import SpectatorBanner from './SpectatorBanner';
+import MissionStatus from './MissionStatus';
 import HexGrid from '../board/HexGrid';
 import PlayerDossier from '../player/PlayerDossier';
 import ActionPanel from '../actions/ActionPanel';
@@ -125,8 +126,16 @@ export default function ExpeditionBench({ gameId }) {
         </p>
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-[minmax(0,1.45fr)_minmax(300px,0.78fr)]">
-        <div className="border border-exp-border rounded bg-exp-panel p-2 sm:p-4 min-h-[360px] sm:min-h-[520px] overflow-x-auto shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]">
+      <MissionStatus
+        isSpectator={isSpectator}
+        currentAction={action}
+        queueTelemetry={queueTelemetry}
+        movePathLength={movePath.length}
+        crewCount={enrichedPlayers.length}
+      />
+
+      <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(300px,0.9fr)] 2xl:grid-cols-[minmax(0,760px)_minmax(360px,1fr)]">
+        <div className="min-w-0 border border-exp-border rounded bg-exp-panel p-2 sm:p-4 min-h-[360px] sm:min-h-[520px] overflow-hidden shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]">
           <div className="mb-3 flex flex-wrap items-end justify-between gap-3 border-b border-exp-border/50 pb-2">
             <div>
               <p className="font-mono text-[10px] uppercase tracking-[0.35em] text-exp-text-dim">
@@ -151,14 +160,19 @@ export default function ExpeditionBench({ gameId }) {
             gameId={gameId}
             selectedPath={movePath}
             onTileClick={activeTab === Action.MOVE ? handleMapTileClick : undefined}
+            onBacktrack={() => setMovePath((prev) => prev.slice(0, -1))}
             currentPlayerIndex={currentPlayerIndex}
             currentLocation={location}
             movement={movement}
             isMovePlanning={activeTab === Action.MOVE && !isSpectator}
+            activeAction={activeTab}
+            currentAction={action}
+            queuePhase={queueTelemetry.phase}
+            isSpectator={isSpectator}
           />
         </div>
 
-        <div className="space-y-3 max-h-[340px] lg:max-h-[620px] overflow-y-auto">
+        <div className="min-w-0 space-y-3 max-h-[340px] lg:max-h-[620px] 2xl:max-h-[min(720px,calc(100svh-13rem))] overflow-y-auto">
           <h3 className="font-mono text-xs tracking-[0.3em] text-exp-text-dim uppercase sticky top-0 bg-exp-dark py-1">
             Expedition Crew
           </h3>

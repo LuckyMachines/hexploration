@@ -195,7 +195,7 @@ contract XenovoyaQueue is RandomnessConsumer {
         string memory leftHand,
         string memory rightHand,
         uint256 _queueID,
-        bool _isDayPhase
+        bool
     ) public onlyRole(VERIFIED_CONTROLLER_ROLE) {
         require(
             currentPhase[_queueID] == ProcessingPhase.Submission,

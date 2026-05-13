@@ -33,6 +33,8 @@ library StateUpdateHelpers {
     }
 
     function absoluteValue(int8 value) internal pure returns (uint8) {
+        // casting to uint8 is safe because int8 absolute values are in range 0..128
+        // forge-lint: disable-next-line(unsafe-typecast)
         return value < 0 ? uint8(-value) : uint8(value);
     }
 

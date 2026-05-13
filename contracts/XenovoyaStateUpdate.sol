@@ -576,7 +576,6 @@ contract XenovoyaStateUpdate is
         XenovoyaZone hexZone = XenovoyaZone(
             GAME_BOARD.hexZoneAddress()
         );
-        TokenInventory ti = TokenInventory(GAME_BOARD.tokenInventory());
         string memory currentZone;
         for (uint256 i = 0; i < tiles.length; i++) {
             currentZone = zonePath[i];

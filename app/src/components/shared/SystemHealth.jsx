@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { useWallet } from '../../contexts/WalletContext';
+import { RPC_URLS, SUPPORTED_CHAINS } from '../../config/chains';
 import {
   BOARD_ADDRESS,
   CONTROLLER_ADDRESS,
@@ -23,16 +24,20 @@ const REQUIRED = [
 ];
 
 export default function SystemHealth() {
-  const { chain, isConnected } = useWallet();
+  const { chain, chainId, isConnected, switchChain, isSwitching } = useWallet();
   const missing = useMemo(
     () => REQUIRED.filter(([, value]) => !value).map(([name]) => name),
     [],
   );
 
-  const localRpc =
-    import.meta.env.VITE_FOUNDRY_RPC_URL
-    || import.meta.env.VITE_LOCAL_RPC_URL
-    || 'http://127.0.0.1:9955';
+  const targetChain = useMemo(
+    () => SUPPORTED_CHAINS.find((item) => RPC_URLS[item.id]) || SUPPORTED_CHAINS[0],
+    [],
+  );
+  const targetRpc = RPC_URLS[targetChain.id];
+  const wrongChain = isConnected && chainId !== targetChain.id;
+  const mode = targetChain.id === 31337 ? 'Local demo' : 'Testnet';
+  const ready = missing.length === 0 && !wrongChain;
 
   return (
     <div className="border border-exp-border rounded bg-exp-panel p-4 mb-6">
@@ -40,11 +45,11 @@ export default function SystemHealth() {
         <h2 className="font-mono text-xs tracking-[0.3em] text-exp-text-dim uppercase">
           System Health
         </h2>
-        <span className={`font-mono text-xs uppercase tracking-wider ${missing.length === 0 ? 'text-oxide-green' : 'text-signal-red'}`}>
-          {missing.length === 0 ? 'Ready' : 'Config Issue'}
+        <span className={`font-mono text-xs uppercase tracking-wider ${ready ? 'text-oxide-green' : 'text-signal-red'}`}>
+          {ready ? 'Ready' : 'Needs Attention'}
         </span>
       </div>
-      <div className="grid sm:grid-cols-3 gap-2 text-xs font-mono">
+      <div className="grid sm:grid-cols-4 gap-2 text-xs font-mono">
         <div className="border border-exp-border/60 rounded bg-exp-dark/40 px-2 py-1.5">
           <div className="text-exp-text-dim uppercase">Wallet</div>
           <div className={isConnected ? 'text-oxide-green' : 'text-signal-red'}>
@@ -53,11 +58,17 @@ export default function SystemHealth() {
         </div>
         <div className="border border-exp-border/60 rounded bg-exp-dark/40 px-2 py-1.5">
           <div className="text-exp-text-dim uppercase">Chain</div>
-          <div className="text-compass">{chain?.name || 'Unknown'}</div>
+          <div className={wrongChain ? 'text-signal-red' : 'text-compass'}>
+            {chain?.name || 'Unknown'}
+          </div>
         </div>
         <div className="border border-exp-border/60 rounded bg-exp-dark/40 px-2 py-1.5">
-          <div className="text-exp-text-dim uppercase">Local RPC</div>
-          <div className="text-compass break-all">{localRpc}</div>
+          <div className="text-exp-text-dim uppercase">Mode</div>
+          <div className="text-compass">{mode}</div>
+        </div>
+        <div className="border border-exp-border/60 rounded bg-exp-dark/40 px-2 py-1.5">
+          <div className="text-exp-text-dim uppercase">RPC</div>
+          <div className="text-compass break-all">{targetRpc || 'Missing'}</div>
         </div>
       </div>
 
@@ -65,6 +76,20 @@ export default function SystemHealth() {
         <p className="mt-2 font-mono text-xs text-signal-red">
           Missing contract env vars: {missing.join(', ')}
         </p>
+      )}
+      {wrongChain && (
+        <div className="mt-3 flex flex-wrap items-center justify-between gap-3 rounded border border-signal-red/30 bg-signal-red/5 px-3 py-2">
+          <p className="font-mono text-xs text-signal-red">
+            Wallet is on {chain?.name || 'an unsupported chain'}; this client is configured for {targetChain.name}.
+          </p>
+          <button
+            onClick={() => switchChain({ chainId: targetChain.id })}
+            disabled={isSwitching}
+            className="rounded border border-signal-red/40 px-3 py-1.5 font-display text-xs uppercase tracking-widest text-signal-red transition-colors hover:bg-signal-red/10 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            {isSwitching ? 'Switching' : 'Switch Chain'}
+          </button>
+        </div>
       )}
     </div>
   );

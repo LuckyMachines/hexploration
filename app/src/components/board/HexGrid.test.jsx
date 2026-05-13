@@ -27,6 +27,14 @@ vi.mock('../../hooks/useLandingSite', () => ({
 }));
 
 describe('HexGrid', () => {
+  it('caps the board viewport from grid aspect ratio', () => {
+    render(<HexGrid gameId="1" />);
+
+    expect(screen.getByTestId('hex-board-viewport')).toHaveStyle({
+      maxWidth: 'min(100%, 651px, 64.228svh)',
+    });
+  });
+
   it('highlights reachable tiles during move planning', () => {
     const { container } = render(
       <HexGrid

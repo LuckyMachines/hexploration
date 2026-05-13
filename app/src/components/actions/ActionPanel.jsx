@@ -112,6 +112,7 @@ export default function ActionPanel({
               key={tab.action}
               onClick={() => setActiveTab(tab.action)}
               className={`
+                alive-action-tab
                 px-3 py-1.5 text-xs font-mono uppercase tracking-wider shrink-0
                 border rounded transition-all duration-200
                 ${isActive

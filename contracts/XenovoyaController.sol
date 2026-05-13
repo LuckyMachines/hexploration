@@ -278,6 +278,8 @@ contract XenovoyaController is
                 uint256 startTime = submissionTimeStart[activeGameAddresses[i]][
                     activeGames[i]
                 ][queueID];
+                // Keeper timeout is intentionally based on block time.
+                // forge-lint: disable-next-line(block-timestamp)
                 if (startTime > 0 && block.timestamp - startTime >= timeLimit) {
                     gameIndex = i;
                     upkeepNeeded = true;
@@ -304,6 +306,8 @@ contract XenovoyaController is
             (startTime > 0 &&
                 activeGames.length > gameIndex &&
                 activeGames[gameIndex] > 0 &&
+                // Keeper timeout is intentionally based on block time.
+                // forge-lint: disable-next-line(block-timestamp)
                 block.timestamp - startTime > timeLimit)
         ) {
             submissionTimeout(

@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { useMemo, useState } from 'react';
 import { useWallet } from '../../contexts/WalletContext';
 import { useAllPlayers } from '../../hooks/useAllPlayers';
 import { truncateAddress } from '../../lib/formatting';
@@ -8,6 +9,20 @@ import Spinner from '../shared/Spinner';
 export default function GameOver({ gameId }) {
   const { address } = useWallet();
   const { players, isLoading } = useAllPlayers(gameId);
+  const [copied, setCopied] = useState(false);
+  const survivorCount = useMemo(
+    () => (players || []).filter((player) => player.isActive).length,
+    [players],
+  );
+  const lostCount = Math.max((players || []).length - survivorCount, 0);
+  const reportUrl = typeof window !== 'undefined' ? window.location.href : '';
+
+  const copyReport = async () => {
+    if (!navigator.clipboard || !reportUrl) return;
+    await navigator.clipboard.writeText(reportUrl);
+    setCopied(true);
+    window.setTimeout(() => setCopied(false), 1800);
+  };
 
   if (isLoading) {
     return (
@@ -54,6 +69,54 @@ export default function GameOver({ gameId }) {
       </div>
 
       {/* Explorer Report */}
+      <div className="border border-compass/30 rounded bg-exp-panel overflow-hidden">
+        <div className="bg-exp-dark border-b border-exp-border px-4 py-2 flex items-center justify-between gap-3">
+          <span className="font-display text-xs tracking-[0.3em] text-exp-text-dim uppercase">
+            Expedition Recap
+          </span>
+          <span className="font-mono text-xs text-compass-bright">
+            EXP-{String(gameId).padStart(3, '0')}
+          </span>
+        </div>
+        <div className="grid gap-3 p-5 sm:grid-cols-3">
+          <div className="rounded border border-exp-border bg-exp-dark/40 px-4 py-3">
+            <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-exp-text-dim">
+              Crew
+            </p>
+            <p className="mt-2 font-mono text-2xl text-exp-text">
+              {(players || []).length}
+            </p>
+          </div>
+          <div className="rounded border border-oxide-green/35 bg-oxide-green/5 px-4 py-3">
+            <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-exp-text-dim">
+              Survived
+            </p>
+            <p className="mt-2 font-mono text-2xl text-oxide-green">
+              {survivorCount}
+            </p>
+          </div>
+          <div className="rounded border border-signal-red/35 bg-signal-red/5 px-4 py-3">
+            <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-exp-text-dim">
+              Lost
+            </p>
+            <p className="mt-2 font-mono text-2xl text-signal-red">
+              {lostCount}
+            </p>
+          </div>
+        </div>
+        <div className="border-t border-exp-border px-5 py-4 flex flex-wrap items-center justify-between gap-3">
+          <p className="font-mono text-xs leading-relaxed text-exp-text-dim">
+            Share this report as the canonical record for the completed survey.
+          </p>
+          <button
+            onClick={copyReport}
+            className="rounded border border-compass/40 bg-compass/5 px-4 py-2 font-display text-xs uppercase tracking-widest text-compass transition-colors hover:border-compass/70 hover:bg-compass/10"
+          >
+            {copied ? 'Copied' : 'Copy Report Link'}
+          </button>
+        </div>
+      </div>
+
       <div className="border border-exp-border rounded bg-exp-panel overflow-hidden">
         <div className="bg-exp-dark border-b border-exp-border px-4 py-2">
           <span className="font-display text-xs tracking-[0.3em] text-exp-text-dim uppercase">

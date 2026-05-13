@@ -22,7 +22,7 @@ function parseEnv(raw) {
 }
 
 async function readGameEnv() {
-  const candidates = [new URL('../.env.local', import.meta.url), e2eEnvPath];
+  const candidates = [e2eEnvPath, new URL('../.env.local', import.meta.url)];
   for (const candidate of candidates) {
     try {
       const raw = await fs.readFile(candidate, 'utf8');
@@ -149,7 +149,10 @@ test('seeded anvil mode shows at least one expedition', async ({ page }) => {
 test('field manual modal opens and closes with Escape', async ({ page }) => {
   await page.goto('/', { waitUntil: 'domcontentloaded' });
 
-  await page.getByRole('button', { name: /Open Field Manual/i }).click();
+  const helpButton = page.getByRole('button', { name: /Open Field Manual/i });
+  await expect(helpButton).toBeVisible();
+  await helpButton.focus();
+  await page.keyboard.press('Enter');
   await expect(page.getByRole('dialog', { name: /Field Manual/i })).toBeVisible();
 
   await page.keyboard.press('Escape');

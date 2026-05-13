@@ -25,6 +25,14 @@ vi.mock('../hooks/useGameState', () => ({
   }),
 }));
 
+vi.mock('../hooks/useGameOver', () => ({
+  useGameOver: () => ({
+    isGameOver: false,
+    isLoading: false,
+    error: null,
+  }),
+}));
+
 describe('GamePage', () => {
   it('shows a clear error for invalid game ids', () => {
     render(
