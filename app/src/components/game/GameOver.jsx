@@ -12,6 +12,7 @@ export default function GameOver({ gameId }) {
   const reportGameId = expedition.gameId || gameId;
   const replayProof = expedition.turnReplay?.proof || [];
   const latestReplayStep = expedition.turnReplay?.latest;
+  const replayGroups = Object.entries(expedition.turnReplay?.grouped || {});
   const [copied, setCopied] = useState(false);
   const survivorCount = useMemo(
     () => players.filter((player) => player.isActive).length,
@@ -125,6 +126,20 @@ export default function GameOver({ gameId }) {
               : 'No replay events have loaded for this report yet.'}
           </p>
           <div className="grid gap-2">
+            {replayGroups.length > 0 && (
+              <div className="grid gap-2 sm:grid-cols-2">
+                {replayGroups.map(([actor, steps]) => (
+                  <div key={actor} className="rounded border border-exp-border bg-exp-dark/35 px-3 py-2">
+                    <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-exp-text-dim">
+                      {actor}
+                    </p>
+                    <p className="mt-1 font-mono text-xs text-exp-text">
+                      {steps.length} replay event{steps.length === 1 ? '' : 's'}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            )}
             {replayProof.length > 0 ? replayProof.map((proof, index) => (
               <div
                 key={`${proof.tx}-${index}`}

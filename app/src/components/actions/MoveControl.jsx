@@ -3,10 +3,23 @@ export default function MoveControl({
   movement,
   path = [],
   validation,
+  routeStatus,
   onSubmit,
   onClear,
+  onBacktrack,
   disabled,
 }) {
+  const status = routeStatus || {
+    used: path.length,
+    budget: movement,
+    remaining: Math.max(0, Number(movement || 0) - path.length),
+    isValid: validation?.ok !== false,
+    invalidReason: validation?.reason || '',
+    label: `${path.length}/${movement} steps planned`,
+    inventoryNote: 'No route item equipped.',
+    companionNote: 'No crew signal near intent.',
+  };
+
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
@@ -14,8 +27,35 @@ export default function MoveControl({
           Click reachable tiles on the map to build your route. Movement: <span className="text-compass">{movement}</span>.
         </p>
         <span className="font-mono text-xs text-compass tabular-nums">
-          {path.length}/{movement}
+          {status.used}/{status.budget}
         </span>
+      </div>
+
+      <div className="grid gap-2 sm:grid-cols-3">
+        <div className="rounded border border-exp-border/60 bg-exp-dark/35 px-3 py-2">
+          <p className="font-mono text-[10px] uppercase tracking-[0.26em] text-exp-text-dim">
+            Route
+          </p>
+          <p className={`mt-1 font-mono text-xs ${status.isValid ? 'text-compass-bright' : 'text-signal-red'}`}>
+            {status.label}
+          </p>
+        </div>
+        <div className="rounded border border-blueprint/25 bg-blueprint/5 px-3 py-2">
+          <p className="font-mono text-[10px] uppercase tracking-[0.26em] text-blueprint">
+            Gear
+          </p>
+          <p className="mt-1 font-mono text-xs text-exp-text-dim">
+            {status.inventoryNote}
+          </p>
+        </div>
+        <div className="rounded border border-oxide-green/25 bg-oxide-green/5 px-3 py-2">
+          <p className="font-mono text-[10px] uppercase tracking-[0.26em] text-oxide-green">
+            Crew
+          </p>
+          <p className="mt-1 font-mono text-xs text-exp-text-dim">
+            {status.companionNote}
+          </p>
+        </div>
       </div>
 
       {/* Current path display */}
@@ -48,13 +88,22 @@ export default function MoveControl({
       <div className="flex gap-2">
         <button
           onClick={onSubmit}
-          disabled={disabled || path.length === 0}
+          disabled={disabled || path.length === 0 || !status.isValid}
           className="alive-commit-button px-4 py-2 bg-compass/10 border border-compass/40 rounded text-compass text-xs font-mono tracking-widest uppercase
                      hover:bg-compass/20 hover:border-compass/60 transition-colors
                      disabled:opacity-40 disabled:cursor-not-allowed"
         >
           Submit Move
         </button>
+        {path.length > 0 && (
+          <button
+            onClick={onBacktrack}
+            className="alive-cancel-button px-3 py-2 border border-blueprint/35 rounded text-blueprint text-xs font-mono tracking-wider uppercase
+                       hover:border-blueprint/60 transition-colors"
+          >
+            Undo Step
+          </button>
+        )}
         {path.length > 0 && (
           <button
             onClick={onClear}

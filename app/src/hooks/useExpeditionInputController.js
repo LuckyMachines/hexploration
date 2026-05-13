@@ -52,8 +52,8 @@ export function useExpeditionInputController({
     onInvalid?.();
   }, [onInvalid]);
 
-  const triggerFeedback = useCallback((kind) => {
-    emitFeedback?.(kind, inputMode);
+  const triggerFeedback = useCallback((kind, modeOverride) => {
+    emitFeedback?.(kind, modeOverride || inputMode);
   }, [emitFeedback, inputMode]);
 
   const moveIntentBy = useCallback((deltaCol, deltaRow, mode = 'keyboard', pressure = 0.45) => {
@@ -65,7 +65,7 @@ export function useExpeditionInputController({
     const nextRow = Math.max(0, Math.min(rows - 1, current.row + deltaRow));
     const nextAlias = toAlias(nextCol, nextRow);
     onIntentMove?.(nextAlias);
-    triggerFeedback(pressure > 0.75 ? 'rush' : 'move');
+    triggerFeedback(pressure > 0.75 ? 'rush' : 'move', mode);
   }, [allHexes, columns, currentLocation, intentAlias, markInput, onIntentMove, rows, triggerFeedback]);
 
   const commitIntent = useCallback((alias = intentAlias, mode = 'keyboard', pressure = 0.8) => {
@@ -73,10 +73,10 @@ export function useExpeditionInputController({
     markInput(mode, 'commit', pressure);
     if (!canChooseTile?.(alias)) {
       pulseInvalid();
-      triggerFeedback('invalid');
+      triggerFeedback('invalid', mode);
       return;
     }
-    triggerFeedback('commit');
+    triggerFeedback('commit', mode);
     setCommitCount((count) => Math.min(count + 1, 9));
     onCommit?.(alias);
   }, [canChooseTile, intentAlias, markInput, onCommit, pulseInvalid, triggerFeedback]);
@@ -85,10 +85,10 @@ export function useExpeditionInputController({
     markInput(mode, 'backtrack', 0.55);
     if (selectedPath.length === 0) {
       pulseInvalid();
-      triggerFeedback('invalid');
+      triggerFeedback('invalid', mode);
       return;
     }
-    triggerFeedback('move');
+    triggerFeedback('move', mode);
     setBacktrackCount((count) => Math.min(count + 1, 9));
     onBacktrack?.();
   }, [markInput, onBacktrack, pulseInvalid, selectedPath.length, triggerFeedback]);
@@ -96,7 +96,7 @@ export function useExpeditionInputController({
   const toyPing = useCallback((mode = 'keyboard') => {
     markInput(mode, 'ping', 0.5);
     setLanternPing((ping) => ping + 1);
-    triggerFeedback('commit');
+    triggerFeedback('commit', mode);
     onPing?.();
   }, [markInput, onPing, triggerFeedback]);
 
@@ -203,6 +203,7 @@ export function useExpeditionInputController({
     pulseInvalid,
     triggerFeedback,
     commitIntent,
+    backtrackIntent,
     handleKeyDown,
   };
 }

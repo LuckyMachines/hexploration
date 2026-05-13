@@ -31,10 +31,13 @@ export default function ActionPanel({
   movePath = [],
   onMoveSubmit,
   onMoveClear,
+  onMoveBacktrack,
   activeTab: controlledActiveTab,
   onTabChange,
   isSpectator = false,
   moveValidation,
+  routeStatus,
+  boardInput,
   turnState,
 }) {
   const [localActiveTab, setLocalActiveTab] = useState(Action.MOVE);
@@ -44,9 +47,13 @@ export default function ActionPanel({
 
   const hasSubmitted = currentAction && currentAction !== '' && currentAction !== 'Idle';
   const isLocked = isSpectator || hasSubmitted || isPending || isConfirming;
+  const txPhase = isPending ? 'Wallet Pending' : isConfirming ? 'Confirming' : isSuccess ? 'Confirmed' : error ? 'Failed' : 'Idle';
+  const showControllerHints = boardInput?.inputMode === 'pad';
   const statusLabel = isSpectator
     ? 'SPECTATOR'
-    : hasSubmitted
+    : isPending || isConfirming
+      ? `SUBMITTING: ${getActionMeta(activeTab).label}`
+      : hasSubmitted
       ? `SUBMITTED: ${currentAction}`
       : movement > 0
         ? 'READY TO PLAN'
@@ -64,6 +71,28 @@ export default function ActionPanel({
   const setActiveTab = (tab) => {
     if (onTabChange) onTabChange(tab);
     if (controlledActiveTab === undefined) setLocalActiveTab(tab);
+  };
+
+  const handleTabKeyDown = (event) => {
+    const number = Number(event.key);
+    if (number >= 1 && number <= TABS.length) {
+      event.preventDefault();
+      setActiveTab(TABS[number - 1]);
+      return;
+    }
+
+    if (event.key === 'ArrowRight' || event.key.toLowerCase() === 'e') {
+      event.preventDefault();
+      const index = TABS.indexOf(activeTab);
+      setActiveTab(TABS[(index + 1) % TABS.length]);
+      return;
+    }
+
+    if (event.key === 'ArrowLeft' || event.key.toLowerCase() === 'q') {
+      event.preventDefault();
+      const index = TABS.indexOf(activeTab);
+      setActiveTab(TABS[(index - 1 + TABS.length) % TABS.length]);
+    }
   };
 
   const handleSubmit = (actionIndex, options = [], leftHand = '', rightHand = '') => {
@@ -94,7 +123,7 @@ export default function ActionPanel({
       </div>
 
       <div className="px-4 pt-3">
-        <div className="grid gap-2 sm:grid-cols-3">
+        <div className="grid gap-2 sm:grid-cols-4">
           <div className="border border-exp-border/60 rounded bg-exp-dark/40 px-3 py-2">
             <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-exp-text-dim">Location</div>
             <div className="mt-1 font-mono text-xs text-compass-bright tabular-nums break-all">
@@ -113,11 +142,28 @@ export default function ActionPanel({
               {activeTab}
             </div>
           </div>
+          <div className={`border rounded px-3 py-2 transition-[filter] ${
+            isPending || isConfirming
+              ? 'alive-tx-pulse border-blueprint/45 bg-blueprint/10'
+              : isSuccess
+                ? 'border-oxide-green/35 bg-oxide-green/5'
+                : error
+                  ? 'border-signal-red/35 bg-signal-red/5'
+                  : 'border-exp-border/60 bg-exp-dark/40'
+          }`}>
+            <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-exp-text-dim">Tx</div>
+            <div className="mt-1 font-mono text-xs text-compass-bright uppercase tracking-widest">
+              {txPhase}
+            </div>
+          </div>
         </div>
       </div>
 
       {/* Tab bar */}
-      <div className="flex gap-0.5 px-4 pt-3 pb-2 border-b border-exp-border/50 overflow-x-auto">
+      <div
+        className="flex gap-0.5 px-4 pt-3 pb-2 border-b border-exp-border/50 overflow-x-auto"
+        onKeyDown={handleTabKeyDown}
+      >
         {TABS.map((action) => {
           const meta = getActionMeta(action);
           const isActive = action === activeTab;
@@ -125,6 +171,7 @@ export default function ActionPanel({
             <button
               key={action}
               onClick={() => setActiveTab(action)}
+              title={`Press ${TABS.indexOf(action) + 1} to select ${meta.label}`}
               className={`
                 alive-action-tab
                 px-3 py-1.5 text-xs font-mono uppercase tracking-wider shrink-0
@@ -143,18 +190,30 @@ export default function ActionPanel({
 
       {/* Active control */}
       <div className="p-4">
+        {showControllerHints && (
+          <div className="mb-3 grid gap-2 sm:grid-cols-3">
+            {['Left stick / D-pad: aim route', 'A: commit intent', 'B: undo route step'].map((hint) => (
+              <div key={hint} className="rounded border border-blueprint/25 bg-blueprint/5 px-3 py-2 font-mono text-[11px] text-blueprint">
+                {hint}
+              </div>
+            ))}
+          </div>
+        )}
+
         {activeTab === Action.MOVE && (
           <MoveControl
             currentLocation={currentLocation}
             movement={movement}
             path={movePath}
             validation={moveValidation}
+            routeStatus={routeStatus}
             onSubmit={() => {
               if (movePath.length === 0) return;
               handleSubmit(Action.MOVE, movePath);
               onMoveSubmit?.();
             }}
             onClear={onMoveClear}
+            onBacktrack={onMoveBacktrack}
             disabled={isLocked}
           />
         )}

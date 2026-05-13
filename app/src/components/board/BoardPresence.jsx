@@ -269,12 +269,15 @@ function InputReadout({ currentLocation, controlFeel }) {
 
   return (
     <g transform={`translate(${pos.x - 62},${pos.y - 66})`}>
-      <rect x="0" y="0" width="124" height="24" rx="3" fill="#0d0f0a" opacity="0.66" stroke="#2a3224" strokeWidth="0.7" />
+      <rect x="0" y="0" width="124" height="32" rx="3" fill="#0d0f0a" opacity="0.66" stroke="#2a3224" strokeWidth="0.7" />
       <text x="62" y="9" textAnchor="middle" fill="#c4cbb8" style={{ fontSize: '6.4px', fontFamily: 'JetBrains Mono, monospace', letterSpacing: '0.1em' }}>
         {controlFeel?.inputCadence || 'idle'} / {controlFeel?.lastInputKind || 'wait'}
       </text>
       <text x="62" y="18" textAnchor="middle" fill={controlFeel?.lowStats ? '#d44040' : '#6a7560'} style={{ fontSize: '5.8px', fontFamily: 'JetBrains Mono, monospace' }}>
         {held}
+      </text>
+      <text x="62" y="27" textAnchor="middle" fill={controlFeel?.routeStatus?.isValid === false ? '#d44040' : '#3a7cc4'} style={{ fontSize: '5.8px', fontFamily: 'JetBrains Mono, monospace' }}>
+        {controlFeel?.routeStatus?.label || 'route waiting'}
       </text>
     </g>
   );

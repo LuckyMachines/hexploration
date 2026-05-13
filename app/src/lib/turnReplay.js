@@ -6,11 +6,19 @@ export function buildTurnReplay(events = []) {
     blockNumber: event.blockNumber,
     transactionHash: event.transactionHash,
     args: event.args || {},
+    actor: event.args?.playerID !== undefined ? `P${event.args.playerID}` : 'System',
     summary: summarizeReplayEvent(event),
   }));
+  const grouped = steps.reduce((acc, step) => {
+    const key = step.actor || 'System';
+    acc[key] ||= [];
+    acc[key].push(step);
+    return acc;
+  }, {});
 
   return {
     steps,
+    grouped,
     latest: steps[steps.length - 1] || null,
     proof: steps
       .filter((step) => step.transactionHash)
@@ -26,6 +34,7 @@ export function buildTurnReplay(events = []) {
 export function summarizeReplayEvent(event) {
   const gameID = event.args?.gameID !== undefined ? `G${event.args.gameID}` : '';
   const queueID = event.args?.queueID !== undefined ? `Q${event.args.queueID}` : '';
-  const parts = [event.name, gameID, queueID].filter(Boolean);
+  const playerID = event.args?.playerID !== undefined ? `P${event.args.playerID}` : '';
+  const parts = [event.name, playerID, gameID, queueID].filter(Boolean);
   return parts.join(' ');
 }

@@ -2,13 +2,22 @@ import { Action, Tile } from '../lib/constants';
 import { TurnState } from '../lib/turnState';
 import MissionStatus from '../components/expedition/MissionStatus';
 import ActionSimulator from '../components/actions/ActionSimulator';
+import MoveControl from '../components/actions/MoveControl';
 import BoardPresence from '../components/board/BoardPresence';
+import { buildRouteStatus } from '../lib/routeStatus';
 
 const STATES = [
   { state: TurnState.PLANNING, label: 'Planning', phaseLabel: 'Submission', copy: 'Choose an action and preview the consequence before submitting.' },
   { state: TurnState.WAITING_CREW, label: 'Waiting Crew', phaseLabel: 'Submission', copy: 'Your action is locked. Waiting for the crew.', waitingFor: 1, hasSubmitted: true },
   { state: TurnState.RESOLVING, label: 'Resolving', phaseLabel: 'Processing', copy: 'Submitted actions are resolving through the queue.', isResolving: true, hasSubmitted: true },
   { state: TurnState.SPECTATING, label: 'Watching', phaseLabel: 'Submission', copy: 'This wallet is observing the expedition.' },
+];
+
+const INPUT_STATES = [
+  { label: 'Idle', inputMode: 'mouse', inputCadence: 'idle', lastInputKind: 'wait', analogPressure: 0.05 },
+  { label: 'Keyboard', inputMode: 'keys', inputCadence: 'steady', lastInputKind: 'move', analogPressure: 0.42 },
+  { label: 'Controller', inputMode: 'pad', inputCadence: 'urgent', lastInputKind: 'commit', analogPressure: 0.9 },
+  { label: 'Observing', inputMode: 'mouse', inputCadence: 'idle', lastInputKind: 'observe', analogPressure: 0.12, isObserving: true },
 ];
 
 export default function GameUILab() {
@@ -22,6 +31,54 @@ export default function GameUILab() {
           Integrated states for mission copy, action validation, board presence, input feel, and turn status.
         </p>
       </div>
+
+      <section className="mb-4 rounded border border-exp-border bg-exp-panel p-4">
+        <h2 className="font-mono text-xs uppercase tracking-[0.3em] text-exp-text-dim">
+          Input Feel Harness
+        </h2>
+        <div className="mt-3 grid gap-3 md:grid-cols-4">
+          {INPUT_STATES.map((input) => (
+            <div key={input.label} className="rounded border border-exp-border/60 bg-exp-dark/40 p-3">
+              <svg viewBox="-90 -90 180 180" className="h-44 w-full">
+                <BoardPresence
+                  currentLocation="0,0"
+                  intentAlias={input.inputMode === 'pad' ? '1,1' : '1,0'}
+                  intentTile={{ tileType: input.inputMode === 'pad' ? Tile.RELIC : Tile.JUNGLE }}
+                  activeAction={input.inputMode === 'pad' ? Action.FLEE : Action.MOVE}
+                  path={input.inputMode === 'pad' ? ['1,0', '1,1'] : ['1,0']}
+                  previewPath={input.inputMode === 'pad' ? ['1,0', '1,1'] : ['1,0']}
+                  inputMode={input.inputMode}
+                  isObserving={input.isObserving}
+                  movement={3}
+                  stats={{ movement: 3, agility: 2, dexterity: 4 }}
+                  controlFeel={{
+                    ...input,
+                    fatigue: input.inputMode === 'pad' ? 0.76 : 0.15,
+                    intentIsDanger: input.inputMode === 'pad',
+                    activeInventory: { shield: input.inputMode === 'pad', leftHandItem: 'Compass' },
+                    routeStatus: buildRouteStatus({ currentLocation: '0,0', path: ['1,0'], movement: 3 }),
+                  }}
+                />
+              </svg>
+              <MoveControl
+                currentLocation="0,0"
+                movement={3}
+                path={input.inputMode === 'mouse' ? [] : ['1,0']}
+                validation={{ ok: input.inputMode !== 'pad', reason: input.inputMode === 'pad' ? 'Relic route requires one more step.' : 'Path is valid.' }}
+                routeStatus={buildRouteStatus({
+                  currentLocation: '0,0',
+                  path: input.inputMode === 'mouse' ? [] : ['1,0'],
+                  movement: 3,
+                  validation: { ok: input.inputMode !== 'pad', reason: 'Relic route requires one more step.' },
+                  activeInventory: { shield: input.inputMode === 'pad' },
+                  companionLocations: [{ isNearIntent: input.inputMode === 'keys' }],
+                })}
+                disabled
+              />
+            </div>
+          ))}
+        </div>
+      </section>
 
       <div className="grid gap-4 lg:grid-cols-2">
         {STATES.map((turnState, index) => (

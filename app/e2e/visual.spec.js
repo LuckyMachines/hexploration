@@ -376,6 +376,19 @@ test('invalid game id remains readable', async ({ page }) => {
   await expect(page.getByText(/Invalid survey id/i)).toBeVisible();
 });
 
+test('ui lab captures integrated board states', async ({ page }, testInfo) => {
+  test.skip(!captureProjects.has(testInfo.project.name), 'Capture run only uses the primary desktop browser.');
+
+  await page.goto('/ui-lab', { waitUntil: 'domcontentloaded' });
+  await expect(page.getByText(/Input Feel Harness/i)).toBeVisible();
+
+  await ensureCaptureDir();
+  await page.screenshot({
+    path: path.join(captureDir, `${testInfo.project.name}-ui-lab-board-states.png`),
+    fullPage: true,
+  });
+});
+
 test('seeded gameplay can be captured from a real local board', async ({ page }, testInfo) => {
   test.skip(!expectOpenGame, 'Only runs when seeded Anvil data is available.');
   test.skip(!captureProjects.has(testInfo.project.name), 'Capture run only uses the primary desktop browser.');

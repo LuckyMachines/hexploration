@@ -7,6 +7,7 @@ const FEEDBACK_PROFILE = {
   rush: { frequency: 330, type: 'triangle', gain: 0.016, vibrate: 12 },
   move: { frequency: 260, type: 'triangle', gain: 0.012, vibrate: 8 },
   'tx-pending': { frequency: 180, type: 'sine', gain: 0.01, vibrate: 6 },
+  'tx-confirming': { frequency: 240, type: 'sine', gain: 0.01, vibrate: 6 },
   'tx-success': { frequency: 520, type: 'triangle', gain: 0.016, vibrate: 18 },
   'tx-error': { frequency: 100, type: 'square', gain: 0.02, vibrate: 30 },
 };

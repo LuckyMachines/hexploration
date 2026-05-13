@@ -124,6 +124,11 @@ body {
   100% { filter: brightness(1); transform: translateY(0); }
 }
 
+@keyframes alive-tx-pulse {
+  0%, 100% { filter: brightness(1); }
+  50% { filter: brightness(1.32) drop-shadow(0 0 7px rgba(58, 124, 196, 0.34)); }
+}
+
 @keyframes alive-pressure {
   0%, 100% { opacity: 0.2; transform: scale(0.96); }
   50% { opacity: 0.5; transform: scale(1.05); }
@@ -302,6 +307,10 @@ body {
   transform: translateY(0);
 }
 
+.alive-tx-pulse {
+  animation: alive-tx-pulse 1.1s ease-in-out infinite;
+}
+
 .alive-commit-button:not(:disabled):hover,
 .alive-cancel-button:hover {
   transform: translateY(-1px);
@@ -328,7 +337,8 @@ body {
   .alive-lantern-ping,
   .alive-action-tab:active,
   .alive-commit-button:active,
-  .alive-cancel-button:active {
+  .alive-cancel-button:active,
+  .alive-tx-pulse {
     animation: none;
   }
 }

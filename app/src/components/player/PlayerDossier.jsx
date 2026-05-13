@@ -2,7 +2,7 @@ import { truncateAddress, formatZoneAlias } from '../../lib/formatting';
 import { PLAYER_COLORS, STAT_LABELS } from '../../lib/constants';
 import StatBar from './StatBar';
 
-export default function PlayerDossier({ player, index, isCurrentUser, isFocused, onFocus }) {
+export default function PlayerDossier({ player, index, isCurrentUser, isFocused, isNearIntent, onFocus }) {
   const addr = player.playerAddress || '';
   const color = PLAYER_COLORS[index] || PLAYER_COLORS[0];
 
@@ -52,6 +52,12 @@ export default function PlayerDossier({ player, index, isCurrentUser, isFocused,
           <span className="font-mono text-xs text-blueprint uppercase tracking-wider">
             Action: {player.action}
           </span>
+        </div>
+      )}
+
+      {isNearIntent && (
+        <div className="mt-2 rounded border border-blueprint/25 bg-blueprint/5 px-2 py-1 font-mono text-[11px] uppercase tracking-[0.2em] text-blueprint">
+          Near board intent
         </div>
       )}
     </button>

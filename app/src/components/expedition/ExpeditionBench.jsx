@@ -9,17 +9,22 @@ import ReadinessMatrix from './ReadinessMatrix';
 import MatchReplay from './MatchReplay';
 import SpectatorBanner from './SpectatorBanner';
 import MissionStatus from './MissionStatus';
+import TurnReadinessStrip from './TurnReadinessStrip';
 import HexGrid from '../board/HexGrid';
 import PlayerDossier from '../player/PlayerDossier';
 import ActionPanel from '../actions/ActionPanel';
 import TurnResolution from '../resolution/TurnResolution';
 import EventLog from '../shared/EventLog';
 import ExpeditionDebugOverlay from './ExpeditionDebugOverlay';
+import ErrorBoundary from '../shared/ErrorBoundary';
+import { buildRouteStatus } from '../../lib/routeStatus';
+import { getAdjacent, parseAlias } from '../../lib/hexmath';
 
 export default function ExpeditionBench() {
   const view = useExpedition();
   const [focusedPlayerID, setFocusedPlayerID] = useState(null);
   const [showDebug, setShowDebug] = useState(false);
+  const [boardInput, setBoardInput] = useState({ inputMode: 'mouse', inputCadence: 'idle', lastInputKind: 'idle' });
   const debugEnabled = import.meta.env.DEV
     || (typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('debug'));
 
@@ -61,6 +66,33 @@ export default function ExpeditionBench() {
     () => enrichedPlayers.find((player) => player.playerID === focusedPlayerID),
     [enrichedPlayers, focusedPlayerID],
   );
+  const intentAlias = movePath[movePath.length - 1] || location;
+  const intentNeighbors = useMemo(() => {
+    const coord = parseAlias(intentAlias);
+    return new Set(coord ? getAdjacent(coord.col, coord.row) : []);
+  }, [intentAlias]);
+  const companionLocations = useMemo(
+    () => enrichedPlayers
+      .map((player, index) => ({ player, index }))
+      .filter(({ player, index }) => index !== currentPlayerIndex && player.currentZone)
+      .map(({ player, index }) => ({
+        zone: player.currentZone,
+        index,
+        isNearIntent: player.currentZone === intentAlias || intentNeighbors.has(player.currentZone),
+      })),
+    [currentPlayerIndex, enrichedPlayers, intentAlias, intentNeighbors],
+  );
+  const routeStatus = useMemo(
+    () => buildRouteStatus({
+      currentLocation: location,
+      path: movePath,
+      movement,
+      validation: moveValidation,
+      activeInventory,
+      companionLocations,
+    }),
+    [activeInventory, companionLocations, location, movePath, moveValidation, movement],
+  );
 
   return (
     <div className="space-y-4">
@@ -99,6 +131,12 @@ export default function ExpeditionBench() {
         moveValidation={moveValidation}
         crewCount={enrichedPlayers.length}
       />
+      <TurnReadinessStrip
+        players={enrichedPlayers}
+        readinessByPlayerID={readinessByPlayerID}
+        currentPlayerIndex={currentPlayerIndex}
+        turnState={turnState}
+      />
 
       <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(300px,0.9fr)] 2xl:grid-cols-[minmax(0,760px)_minmax(360px,1fr)]">
         <div className="min-w-0 border border-exp-border rounded bg-exp-panel p-2 sm:p-4 min-h-[360px] sm:min-h-[520px] overflow-hidden shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]">
@@ -112,40 +150,68 @@ export default function ExpeditionBench() {
               </p>
             </div>
             {location && (
-              <div className="rounded border border-exp-border/60 bg-exp-dark/40 px-3 py-2">
-                <p className="font-mono text-[10px] uppercase tracking-[0.35em] text-exp-text-dim">
-                  Current location
-                </p>
-                <p className="mt-1 font-mono text-xs uppercase tracking-widest text-compass-bright">
-                  {location}
-                </p>
+              <div className="flex flex-wrap items-center gap-2 rounded border border-exp-border/60 bg-exp-dark/40 px-3 py-2">
+                <div>
+                  <p className="font-mono text-[10px] uppercase tracking-[0.35em] text-exp-text-dim">
+                    Current location
+                  </p>
+                  <p className="mt-1 font-mono text-xs uppercase tracking-widest text-compass-bright">
+                    {location}
+                  </p>
+                </div>
+                {movePath.length > 0 && (
+                  <button
+                    type="button"
+                    onClick={backtrackMovePath}
+                    className="alive-cancel-button rounded border border-blueprint/35 bg-blueprint/5 px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.22em] text-blueprint hover:border-blueprint/60"
+                  >
+                    Undo
+                  </button>
+                )}
               </div>
             )}
           </div>
-          <HexGrid
-            gameId={view.gameId}
-            selectedPath={movePath}
-            onTileClick={activeTab === Action.MOVE ? applyMoveStep : undefined}
-            onBacktrack={backtrackMovePath}
-            currentPlayerIndex={currentPlayerIndex}
-            currentLocation={location}
-            movement={movement}
-            isMovePlanning={activeTab === Action.MOVE && !isSpectator}
-            activeAction={activeTab}
-            currentAction={action}
-            queuePhase={queueTelemetry.phase}
-            isSpectator={isSpectator}
-            stats={stats}
-            activeInventory={activeInventory}
-            turnState={turnState}
-            onPlayerFocus={setFocusedPlayerID}
-          />
+          <ErrorBoundary>
+            <HexGrid
+              gameId={view.gameId}
+              selectedPath={movePath}
+              onTileClick={activeTab === Action.MOVE ? applyMoveStep : undefined}
+              onBacktrack={backtrackMovePath}
+              currentPlayerIndex={currentPlayerIndex}
+              currentLocation={location}
+              movement={movement}
+              isMovePlanning={activeTab === Action.MOVE && !isSpectator}
+              activeAction={activeTab}
+              currentAction={action}
+              queuePhase={queueTelemetry.phase}
+              isSpectator={isSpectator}
+              stats={stats}
+              activeInventory={activeInventory}
+              turnState={turnState}
+              onPlayerFocus={setFocusedPlayerID}
+              onInputSnapshot={setBoardInput}
+            />
+          </ErrorBoundary>
         </div>
 
         <div className="min-w-0 space-y-3 max-h-[340px] lg:max-h-[620px] 2xl:max-h-[min(720px,calc(100svh-13rem))] overflow-y-auto">
           <h3 className="font-mono text-xs tracking-[0.3em] text-exp-text-dim uppercase sticky top-0 bg-exp-dark py-1">
             Expedition Crew
           </h3>
+          {enrichedPlayers.length === 0 && (
+            <div className="space-y-2">
+              {Array.from({ length: 4 }).map((_, index) => (
+                <div key={index} className="rounded border border-exp-border bg-exp-panel p-3">
+                  <div className="h-3 w-28 animate-pulse rounded bg-exp-border/70" />
+                  <div className="mt-3 grid gap-2">
+                    <div className="h-2 animate-pulse rounded bg-exp-border/50" />
+                    <div className="h-2 animate-pulse rounded bg-exp-border/40" />
+                    <div className="h-2 animate-pulse rounded bg-exp-border/30" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
           {enrichedPlayers.map((player, i) => (
             <PlayerDossier
               key={i}
@@ -153,6 +219,7 @@ export default function ExpeditionBench() {
               index={i}
               isCurrentUser={player.playerAddress?.toLowerCase() === address?.toLowerCase()}
               isFocused={focusedPlayerID === player.playerID}
+              isNearIntent={player.currentZone === intentAlias || intentNeighbors.has(player.currentZone)}
               onFocus={() => setFocusedPlayerID(player.playerID)}
             />
           ))}
@@ -186,22 +253,27 @@ export default function ExpeditionBench() {
       {isSpectator && <SpectatorBanner />}
 
       {!isSpectator && (
-        <ActionPanel
-          gameId={view.gameId}
-          playerID={playerID}
-          currentLocation={location}
-          stats={stats}
-          currentAction={action}
-          movement={movement}
-          movePath={movePath}
-          onMoveSubmit={clearMovePath}
-          onMoveClear={clearMovePath}
-          activeTab={activeTab}
-          onTabChange={setActiveTab}
-          isSpectator={isSpectator}
-          moveValidation={moveValidation}
-          turnState={turnState}
-        />
+        <ErrorBoundary>
+          <ActionPanel
+            gameId={view.gameId}
+            playerID={playerID}
+            currentLocation={location}
+            stats={stats}
+            currentAction={action}
+            movement={movement}
+            movePath={movePath}
+            onMoveSubmit={clearMovePath}
+            onMoveClear={clearMovePath}
+            onMoveBacktrack={backtrackMovePath}
+            activeTab={activeTab}
+            onTabChange={setActiveTab}
+            isSpectator={isSpectator}
+            moveValidation={moveValidation}
+            routeStatus={routeStatus}
+            boardInput={boardInput}
+            turnState={turnState}
+          />
+        </ErrorBoundary>
       )}
 
       {focusedPlayer && (
@@ -210,7 +282,9 @@ export default function ExpeditionBench() {
         </div>
       )}
 
-      <TurnResolution gameId={view.gameId} events={events} turnState={turnState} turnReplay={view.turnReplay} />
+      <ErrorBoundary>
+        <TurnResolution gameId={view.gameId} events={events} turnState={turnState} turnReplay={view.turnReplay} />
+      </ErrorBoundary>
 
       <details className="group rounded border border-exp-border bg-exp-panel/70 px-4 py-3">
         <summary className="cursor-pointer list-none flex items-center justify-between gap-3">

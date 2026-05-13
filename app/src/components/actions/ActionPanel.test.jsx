@@ -89,4 +89,30 @@ describe('ActionPanel', () => {
 
     expect(screen.getByRole('button', { name: /Submit Move/i })).toBeDisabled();
   });
+
+  it('supports tab number shortcuts and route undo', async () => {
+    const user = userEvent.setup();
+    const onMoveBacktrack = vi.fn();
+
+    render(
+      <ActionPanel
+        gameId="1"
+        playerID={1}
+        currentLocation="0,0"
+        currentAction="Idle"
+        movement={2}
+        movePath={['1,0']}
+        onMoveBacktrack={onMoveBacktrack}
+        boardInput={{ inputMode: 'pad' }}
+      />,
+    );
+
+    await user.keyboard('{Tab}2');
+    expect(screen.getByRole('button', { name: /Setup Camp/i })).toBeInTheDocument();
+    expect(screen.getByText(/A: commit intent/i)).toBeInTheDocument();
+
+    await user.click(screen.getByRole('button', { name: /Move/i }));
+    await user.click(screen.getByRole('button', { name: /Undo Step/i }));
+    expect(onMoveBacktrack).toHaveBeenCalledTimes(1);
+  });
 });

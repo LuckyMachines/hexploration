@@ -11,6 +11,7 @@ import { useGameEvents } from './useGameEvents';
 import { useQueueTelemetry } from './useQueueTelemetry';
 import { useSubmissionReadiness } from './useSubmissionReadiness';
 import { useGameOver } from './useGameOver';
+import { usePersistentActionTab } from './usePersistentActionTab';
 import { Action } from '../lib/constants';
 import { deriveTurnState } from '../lib/turnState';
 import { validateMovePath, validateMoveStep } from '../lib/moveValidation';
@@ -29,7 +30,6 @@ export function useExpeditionViewModel(gameId) {
   const queueTelemetry = useQueueTelemetry(gameId);
   const { isGameOver } = useGameOver(gameId);
 
-  const [activeTab, setActiveTab] = useState(Action.MOVE);
   const [movePath, setMovePath] = useState([]);
 
   const playerIDs = useMemo(
@@ -55,6 +55,7 @@ export function useExpeditionViewModel(gameId) {
     ),
     [players, address],
   );
+  const [activeTab, setActiveTab] = usePersistentActionTab(gameId, playerID);
 
   const enrichedPlayers = useMemo(
     () => (players || []).map((player, i) => {

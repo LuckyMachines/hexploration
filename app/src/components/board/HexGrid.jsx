@@ -7,6 +7,7 @@ import { useExpeditionInputController } from '../../hooks/useExpeditionInputCont
 import { Action, ProcessingPhase, Tile } from '../../lib/constants';
 import { buildReachableTiles, validateMoveStep } from '../../lib/moveValidation';
 import { emitFeedbackEvent } from '../../lib/feedbackEvents';
+import { buildRouteStatus } from '../../lib/routeStatus';
 import {
   hexToPixel,
   gridViewBox,
@@ -50,6 +51,7 @@ export default function HexGrid({
   activeInventory = {},
   turnState,
   onPlayerFocus,
+  onInputSnapshot,
 }) {
   const { rows, columns, isLoading: loadingSize } = useBoardSize();
   const { zones, tiles, campsites } = useActiveZones(gameId);
@@ -163,6 +165,23 @@ export default function HexGrid({
     input.commitIntent(alias, 'mouse', 0.75);
   }, [input]);
 
+  useEffect(() => {
+    onInputSnapshot?.({
+      inputMode: input.inputMode,
+      inputCadence: input.inputCadence,
+      lastInputKind: input.lastInputKind,
+      analogPressure: input.analogPressure,
+      isObserving: input.isObserving,
+    });
+  }, [
+    input.analogPressure,
+    input.inputCadence,
+    input.inputMode,
+    input.isObserving,
+    input.lastInputKind,
+    onInputSnapshot,
+  ]);
+
   if (loadingSize || !rows || !columns) {
     return (
       <div className="flex min-h-[420px] items-center justify-center">
@@ -220,6 +239,17 @@ export default function HexGrid({
     selectedPath.length / Math.max(1, movement || 1),
     stats.movement <= 1 ? 0.75 : 0,
   ));
+  const routeStatus = buildRouteStatus({
+    currentLocation,
+    path: selectedPath,
+    movement,
+    validation: {
+      ok: !onTileClick || !intentAlias || canChooseTile(intentAlias),
+      reason: 'Intent tile is not reachable from this route.',
+    },
+    activeInventory,
+    companionLocations,
+  });
   const controlFeel = {
     analogPressure: input.analogPressure,
     inputCadence: input.isObserving ? 'idle' : input.inputCadence,
@@ -234,6 +264,7 @@ export default function HexGrid({
     pathIsHeavy: heavyRoute,
     lowStats: stats.movement <= 1 || stats.agility <= 1 || stats.dexterity <= 1,
     activeInventory,
+    routeStatus,
   };
 
   return (
@@ -271,6 +302,10 @@ export default function HexGrid({
                     isHovered={hoveredTile === alias}
                     isIntent={intentAlias === alias}
                     isReachable={reachableTiles.has(alias)}
+                    isInventoryAssisted={Boolean(
+                      activeInventory.shield && reachableTiles.has(alias)
+                      || activeInventory.relic && intentAlias === alias,
+                    )}
                     isCommitted={hasSubmitted && selectedPath.includes(alias)}
                     onClick={onTileClick ? handleTileClick : undefined}
                     onHover={handleHover}
@@ -286,6 +321,7 @@ export default function HexGrid({
                   alias={alias}
                   onClick={onTileClick ? handleTileClick : undefined}
                   isReachable={reachableTiles.has(alias)}
+                  isInventoryAssisted={Boolean(activeInventory.artifact && reachableTiles.has(alias))}
                   isIntent={intentAlias === alias}
                   onHover={handleHover}
                 />

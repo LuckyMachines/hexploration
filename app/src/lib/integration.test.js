@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { ProcessingPhase } from './constants';
 import { buildReachableTiles, validateMovePath, validateMoveStep } from './moveValidation';
+import { buildRouteStatus } from './routeStatus';
 import { buildTurnReplay } from './turnReplay';
 import { deriveTurnState, TurnState } from './turnState';
 
@@ -77,5 +78,20 @@ describe('integration primitives', () => {
       { label: 'ActionSubmitted', tx: '0xaaa', blockNumber: 11n },
       { label: 'TurnResolved', tx: '0xbbb', blockNumber: 12n },
     ]);
+  });
+
+  it('summarizes route budget, gear, and crew support', () => {
+    const status = buildRouteStatus({
+      currentLocation: '0,0',
+      path: ['1,0', '1,1'],
+      movement: 3,
+      validation: { ok: true },
+      activeInventory: { shield: true },
+      companionLocations: [{ isNearIntent: true }],
+    });
+
+    expect(status.remaining).toBe(1);
+    expect(status.inventoryNote).toMatch(/Shield/);
+    expect(status.companionNote).toMatch(/1 crew/);
   });
 });
