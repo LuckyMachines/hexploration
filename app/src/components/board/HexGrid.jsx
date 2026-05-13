@@ -3,7 +3,7 @@ import { useBoardSize } from '../../hooks/useBoardSize';
 import { useActiveZones } from '../../hooks/useActiveZones';
 import { useAllPlayerLocations } from '../../hooks/useAllPlayerLocations';
 import { useLandingSite } from '../../hooks/useLandingSite';
-import { Action, ProcessingPhase } from '../../lib/constants';
+import { Action, ProcessingPhase, Tile } from '../../lib/constants';
 import {
   hexToPixel,
   gridViewBox,
@@ -25,6 +25,17 @@ function submittedAction(action) {
   return action && action !== '' && action !== 'Idle';
 }
 
+function inputCadenceFromInterval(intervalMs) {
+  if (intervalMs < 180) return 'urgent';
+  if (intervalMs < 420) return 'steady';
+  return 'deliberate';
+}
+
+function adjacentAliases(alias) {
+  const coord = parseAlias(alias);
+  return coord ? getAdjacent(coord.col, coord.row) : [];
+}
+
 export default function HexGrid({
   gameId,
   selectedPath = [],
@@ -38,6 +49,8 @@ export default function HexGrid({
   currentAction = '',
   queuePhase,
   isSpectator = false,
+  stats = {},
+  activeInventory = {},
 }) {
   const { rows, columns, isLoading: loadingSize } = useBoardSize();
   const { zones, tiles, campsites } = useActiveZones(gameId);
@@ -46,6 +59,13 @@ export default function HexGrid({
   const [hoveredTile, setHoveredTile] = useState(null);
   const [intentTile, setIntentTile] = useState(null);
   const [inputMode, setInputMode] = useState('mouse');
+  const [analogPressure, setAnalogPressure] = useState(0);
+  const [inputCadence, setInputCadence] = useState('idle');
+  const [lastInputKind, setLastInputKind] = useState('idle');
+  const [backtrackCount, setBacktrackCount] = useState(0);
+  const [invalidCount, setInvalidCount] = useState(0);
+  const [commitCount, setCommitCount] = useState(0);
+  const [lanternPing, setLanternPing] = useState(0);
   const [invalidPulse, setInvalidPulse] = useState(false);
   const [isObserving, setIsObserving] = useState(false);
   const boardRef = useRef(null);
@@ -139,13 +159,18 @@ export default function HexGrid({
     return () => window.clearInterval(timer);
   }, []);
 
-  const markInput = useCallback((mode) => {
+  const markInput = useCallback((mode, kind = 'intent', pressure = 0) => {
+    const now = Date.now();
+    setInputCadence(inputCadenceFromInterval(now - lastInputAtRef.current));
     lastInputAtRef.current = Date.now();
     setIsObserving(false);
     setInputMode(mode);
+    setLastInputKind(kind);
+    setAnalogPressure((prev) => Math.max(pressure, prev * 0.55));
   }, []);
 
   const pulseInvalid = useCallback(() => {
+    setInvalidCount((count) => Math.min(count + 1, 9));
     setInvalidPulse(true);
     window.setTimeout(() => setInvalidPulse(false), 260);
   }, []);
@@ -195,13 +220,13 @@ export default function HexGrid({
   }, [currentLocation, isMovePlanning, movement, onTileClick, reachableTiles, selectedPath]);
 
   const handleHover = useCallback((alias) => {
-    markInput('mouse');
+    markInput('mouse', 'hover', 0.25);
     setHoveredTile(alias);
     if (alias) setIntentTile(alias);
   }, [markInput]);
 
   const handleTileClick = useCallback((alias) => {
-    markInput('mouse');
+    markInput('mouse', 'commit', 0.75);
     setIntentTile(alias);
 
     if (!canChooseTile(alias)) {
@@ -211,14 +236,15 @@ export default function HexGrid({
     }
 
     triggerFeedback('commit');
+    setCommitCount((count) => Math.min(count + 1, 9));
     onTileClick?.(alias);
   }, [canChooseTile, markInput, onTileClick, pulseInvalid, triggerFeedback]);
 
   const intentAlias = hoveredTile || intentTile || currentLocation || landingSite || allHexes[0]?.alias || '';
   const intentTileData = revealedMap[intentAlias] || null;
 
-  const moveIntentBy = useCallback((deltaCol, deltaRow, mode = 'keyboard') => {
-    markInput(mode);
+  const moveIntentBy = useCallback((deltaCol, deltaRow, mode = 'keyboard', pressure = 0.45) => {
+    markInput(mode, 'move', pressure);
     const current = parseAlias(intentAlias || currentLocation || allHexes[0]?.alias);
     if (!current) return;
 
@@ -227,31 +253,39 @@ export default function HexGrid({
     const nextAlias = toAlias(nextCol, nextRow);
     setHoveredTile(null);
     setIntentTile(nextAlias);
-    triggerFeedback('move');
+    triggerFeedback(pressure > 0.75 ? 'rush' : 'move');
   }, [allHexes, columns, currentLocation, intentAlias, markInput, rows, triggerFeedback]);
 
-  const commitIntent = useCallback((mode = 'keyboard') => {
+  const commitIntent = useCallback((mode = 'keyboard', pressure = 0.8) => {
     if (!intentAlias) return;
-    markInput(mode);
+    markInput(mode, 'commit', pressure);
     if (!canChooseTile(intentAlias)) {
       pulseInvalid();
       triggerFeedback('invalid');
       return;
     }
     triggerFeedback('commit');
+    setCommitCount((count) => Math.min(count + 1, 9));
     onTileClick?.(intentAlias);
   }, [canChooseTile, intentAlias, markInput, onTileClick, pulseInvalid, triggerFeedback]);
 
   const backtrackIntent = useCallback((mode = 'keyboard') => {
-    markInput(mode);
+    markInput(mode, 'backtrack', 0.55);
     if (selectedPath.length === 0) {
       pulseInvalid();
       triggerFeedback('invalid');
       return;
     }
     triggerFeedback('move');
+    setBacktrackCount((count) => Math.min(count + 1, 9));
     onBacktrack?.();
   }, [markInput, onBacktrack, pulseInvalid, selectedPath.length, triggerFeedback]);
+
+  const toyPing = useCallback((mode = 'keyboard') => {
+    markInput(mode, 'ping', 0.5);
+    setLanternPing((ping) => ping + 1);
+    triggerFeedback('commit');
+  }, [markInput, triggerFeedback]);
 
   const handleKeyDown = useCallback((event) => {
     const key = event.key.toLowerCase();
@@ -281,8 +315,14 @@ export default function HexGrid({
     if (key === 'escape' || key === 'backspace') {
       event.preventDefault();
       backtrackIntent('keys');
+      return;
     }
-  }, [backtrackIntent, commitIntent, moveIntentBy]);
+
+    if (key === 'f' || key === 'l') {
+      event.preventDefault();
+      toyPing('keys');
+    }
+  }, [backtrackIntent, commitIntent, moveIntentBy, toyPing]);
 
   useEffect(() => {
     let frame = 0;
@@ -297,19 +337,25 @@ export default function HexGrid({
       if (pad) {
         const horizontal = Math.abs(pad.axes[0] || 0) > 0.45 ? Math.sign(pad.axes[0]) : 0;
         const vertical = Math.abs(pad.axes[1] || 0) > 0.45 ? Math.sign(pad.axes[1]) : 0;
+        const pressure = Math.min(1, Math.hypot(pad.axes[0] || 0, pad.axes[1] || 0));
 
         if ((horizontal || vertical) && now - lastStepAt > 170) {
-          moveIntentBy(horizontal, vertical, 'pad');
+          moveIntentBy(horizontal, vertical, 'pad', pressure);
           lastStepAt = now;
         }
 
         if (pad.buttons[0]?.pressed && now - lastCommitAt > 260) {
-          commitIntent('pad');
+          commitIntent('pad', Math.max(0.8, pressure));
           lastCommitAt = now;
         }
 
         if (pad.buttons[1]?.pressed && now - lastCommitAt > 260) {
           backtrackIntent('pad');
+          lastCommitAt = now;
+        }
+
+        if (pad.buttons[2]?.pressed && now - lastCommitAt > 260) {
+          toyPing('pad');
           lastCommitAt = now;
         }
       }
@@ -363,6 +409,36 @@ export default function HexGrid({
   const hasSubmitted = submittedAction(currentAction);
   const isResolving = queuePhase === ProcessingPhase.PROCESSING || queuePhase === ProcessingPhase.PLAY_THROUGH;
   const heavyRoute = selectedPath.length >= Math.max(2, movement - 1);
+  const previewPath = canChooseTile(intentAlias) && !selectedPath.includes(intentAlias)
+    ? [...selectedPath, intentAlias]
+    : selectedPath;
+  const intentNeighbors = new Set(adjacentAliases(intentAlias));
+  const companionLocations = Object.entries(playerLocationMap)
+    .flatMap(([zone, playerIndices]) => playerIndices
+      .filter((index) => index !== currentPlayerIndex)
+      .map((index) => ({ zone, index, isNearIntent: intentNeighbors.has(zone) })));
+  const revealedAliases = new Set(zones || []);
+  const intentIsFog = Boolean(intentAlias && !revealedAliases.has(intentAlias));
+  const intentIsDanger = intentTileData?.tileType === Tile.RELIC || intentIsFog || activeAction === Action.FLEE;
+  const fatigue = Math.min(1, Math.max(
+    selectedPath.length / Math.max(1, movement || 1),
+    stats.movement <= 1 ? 0.75 : 0,
+  ));
+  const controlFeel = {
+    analogPressure,
+    inputCadence: isObserving ? 'idle' : inputCadence,
+    lastInputKind,
+    backtrackCount,
+    invalidCount,
+    commitCount,
+    lanternPing,
+    fatigue,
+    intentIsDanger,
+    intentIsFog,
+    pathIsHeavy: heavyRoute,
+    lowStats: stats.movement <= 1 || stats.agility <= 1 || stats.dexterity <= 1,
+    activeInventory,
+  };
 
   return (
     <div className="min-w-0">
@@ -438,6 +514,7 @@ export default function HexGrid({
               intentTile={intentTileData}
               activeAction={activeAction}
               path={selectedPath}
+              previewPath={previewPath}
               hasSubmitted={hasSubmitted}
               isResolving={isResolving}
               isSpectator={isSpectator}
@@ -445,6 +522,10 @@ export default function HexGrid({
               invalidPulse={invalidPulse}
               inputMode={inputMode}
               currentPlayerIndex={Math.max(0, currentPlayerIndex)}
+              movement={movement}
+              stats={stats}
+              companionLocations={companionLocations}
+              controlFeel={controlFeel}
             />
 
             {Object.entries(playerLocationMap).map(([zone, playerIndices]) =>

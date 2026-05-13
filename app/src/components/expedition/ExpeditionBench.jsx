@@ -7,6 +7,7 @@ import { usePlayerID } from '../../hooks/usePlayerID';
 import { usePlayerSummary } from '../../hooks/usePlayerSummary';
 import { useGameEvents } from '../../hooks/useGameEvents';
 import { usePlayerMovement } from '../../hooks/usePlayerMovement';
+import { usePlayerInventory } from '../../hooks/usePlayerInventory';
 import { useQueueTelemetry } from '../../hooks/useQueueTelemetry';
 import { useSubmissionReadiness } from '../../hooks/useSubmissionReadiness';
 import { Action } from '../../lib/constants';
@@ -33,6 +34,7 @@ export default function ExpeditionBench({ gameId }) {
   const { playerID } = usePlayerID(gameId, address);
   const { stats, location, action } = usePlayerSummary(gameId, playerID);
   const { movement } = usePlayerMovement(gameId, playerID);
+  const { active: activeInventory } = usePlayerInventory(gameId, playerID);
   const { events, loadFullHistory, isLoadingFullHistory } = useGameEvents(gameId);
   const queueTelemetry = useQueueTelemetry(gameId);
 
@@ -169,6 +171,8 @@ export default function ExpeditionBench({ gameId }) {
             currentAction={action}
             queuePhase={queueTelemetry.phase}
             isSpectator={isSpectator}
+            stats={stats}
+            activeInventory={activeInventory}
           />
         </div>
 
