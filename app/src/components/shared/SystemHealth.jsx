@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useWallet } from '../../contexts/WalletContext';
-import { RPC_URLS, SUPPORTED_CHAINS } from '../../config/chains';
+import { getRuntimeMode } from '../../lib/runtimeMode';
 import {
   BOARD_ADDRESS,
   CONTROLLER_ADDRESS,
@@ -30,13 +30,10 @@ export default function SystemHealth() {
     [],
   );
 
-  const targetChain = useMemo(
-    () => SUPPORTED_CHAINS.find((item) => RPC_URLS[item.id]) || SUPPORTED_CHAINS[0],
-    [],
-  );
-  const targetRpc = RPC_URLS[targetChain.id];
+  const runtime = useMemo(() => getRuntimeMode(), []);
+  const targetChain = runtime.chain;
+  const targetRpc = runtime.rpcUrl;
   const wrongChain = isConnected && chainId !== targetChain.id;
-  const mode = targetChain.id === 31337 ? 'Local demo' : 'Testnet';
   const ready = missing.length === 0 && !wrongChain;
 
   return (
@@ -64,7 +61,7 @@ export default function SystemHealth() {
         </div>
         <div className="border border-exp-border/60 rounded bg-exp-dark/40 px-2 py-1.5">
           <div className="text-exp-text-dim uppercase">Mode</div>
-          <div className="text-compass">{mode}</div>
+          <div className="text-compass">{runtime.label}</div>
         </div>
         <div className="border border-exp-border/60 rounded bg-exp-dark/40 px-2 py-1.5">
           <div className="text-exp-text-dim uppercase">RPC</div>

@@ -2,6 +2,7 @@ export default function MoveControl({
   currentLocation,
   movement,
   path = [],
+  validation,
   onSubmit,
   onClear,
   disabled,
@@ -30,6 +31,16 @@ export default function MoveControl({
               <span className="font-mono text-xs text-compass">{alias}</span>
             </span>
           ))}
+        </div>
+      )}
+
+      {path.length > 0 && validation && (
+        <div className={`rounded border px-3 py-2 font-mono text-[11px] ${
+          validation.ok
+            ? 'border-oxide-green/30 bg-oxide-green/5 text-oxide-green'
+            : 'border-signal-red/30 bg-signal-red/5 text-signal-red'
+        }`}>
+          {validation.reason}
         </div>
       )}
 

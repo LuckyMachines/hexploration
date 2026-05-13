@@ -2,13 +2,16 @@ import { truncateAddress, formatZoneAlias } from '../../lib/formatting';
 import { PLAYER_COLORS, STAT_LABELS } from '../../lib/constants';
 import StatBar from './StatBar';
 
-export default function PlayerDossier({ player, index, isCurrentUser }) {
+export default function PlayerDossier({ player, index, isCurrentUser, isFocused, onFocus }) {
   const addr = player.playerAddress || '';
   const color = PLAYER_COLORS[index] || PLAYER_COLORS[0];
 
   return (
-    <div className={`border rounded p-3 bg-exp-panel transition-colors
-      ${isCurrentUser ? 'border-compass/40' : 'border-exp-border'}`}
+    <button
+      type="button"
+      onClick={onFocus}
+      className={`block w-full text-left border rounded p-3 bg-exp-panel transition-colors
+      ${isFocused ? 'border-blueprint/60 shadow-[0_0_0_1px_rgba(58,124,196,0.25)]' : isCurrentUser ? 'border-compass/40' : 'border-exp-border'}`}
     >
       {/* Header */}
       <div className="flex items-center justify-between mb-2">
@@ -51,6 +54,6 @@ export default function PlayerDossier({ player, index, isCurrentUser }) {
           </span>
         </div>
       )}
-    </div>
+    </button>
   );
 }

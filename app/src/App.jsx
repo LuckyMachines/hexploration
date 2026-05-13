@@ -3,6 +3,7 @@ import { Routes, Route } from 'react-router-dom';
 import Header from './components/layout/Header';
 import HomePage from './pages/HomePage';
 import GamePage from './pages/GamePage';
+import GameUILab from './pages/GameUILab';
 import Modal from './components/shared/Modal';
 import FieldManual from './components/help/FieldManual';
 import ErrorBoundary from './components/shared/ErrorBoundary';
@@ -20,6 +21,7 @@ export default function App() {
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/game/:gameId" element={<GamePage />} />
+            <Route path="/ui-lab" element={<GameUILab />} />
           </Routes>
         </ErrorBoundary>
       </main>

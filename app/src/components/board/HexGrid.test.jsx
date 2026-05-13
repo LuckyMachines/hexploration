@@ -65,6 +65,6 @@ describe('HexGrid', () => {
     );
 
     await user.click(screen.getByText('1,1'));
-    expect(onTileClick).toHaveBeenCalledWith('1,1');
+    expect(onTileClick).toHaveBeenCalledWith('1,1', expect.any(Set));
   });
 });

@@ -1,6 +1,6 @@
 import { PLAYER_COLORS, PLAYER_LABELS } from '../../lib/constants';
 
-export default function PlayerMarker({ cx, cy, playerIndex, isCurrentPlayer }) {
+export default function PlayerMarker({ cx, cy, playerIndex, isCurrentPlayer, onClick }) {
   const color = PLAYER_COLORS[playerIndex] || PLAYER_COLORS[0];
   const label = PLAYER_LABELS[playerIndex] || 'P?';
 
@@ -9,7 +9,11 @@ export default function PlayerMarker({ cx, cy, playerIndex, isCurrentPlayer }) {
   const offsetY = (playerIndex < 2 ? -8 : 8);
 
   return (
-    <g transform={`translate(${cx + offsetX},${cy + offsetY})`}>
+    <g
+      transform={`translate(${cx + offsetX},${cy + offsetY})`}
+      onClick={onClick}
+      style={{ cursor: onClick ? 'pointer' : 'default' }}
+    >
       {/* Pulse ring for current player */}
       {isCurrentPlayer && (
         <circle r="8" fill="none" stroke={color} strokeWidth="1" opacity="0.4">

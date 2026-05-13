@@ -1,5 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Action } from '../../lib/constants';
+import { getActionMeta } from '../../lib/actionMeta';
+import { emitFeedbackEvent } from '../../lib/feedbackEvents';
 import { useGameActions } from '../../hooks/useGameActions';
 import { usePlayerInventory } from '../../hooks/usePlayerInventory';
 import MoveControl from './MoveControl';
@@ -11,12 +13,12 @@ import TxStatus from '../shared/TxStatus';
 import ActionSimulator from './ActionSimulator';
 
 const TABS = [
-  { action: Action.MOVE, label: 'Move' },
-  { action: Action.SETUP_CAMP, label: 'Camp' },
-  { action: Action.DIG, label: 'Dig' },
-  { action: Action.REST, label: 'Rest' },
-  { action: Action.HELP, label: 'Help' },
-  { action: Action.FLEE, label: 'Flee' },
+  Action.MOVE,
+  Action.SETUP_CAMP,
+  Action.DIG,
+  Action.REST,
+  Action.HELP,
+  Action.FLEE,
 ];
 
 export default function ActionPanel({
@@ -32,6 +34,8 @@ export default function ActionPanel({
   activeTab: controlledActiveTab,
   onTabChange,
   isSpectator = false,
+  moveValidation,
+  turnState,
 }) {
   const [localActiveTab, setLocalActiveTab] = useState(Action.MOVE);
   const activeTab = controlledActiveTab ?? localActiveTab;
@@ -47,6 +51,15 @@ export default function ActionPanel({
       : movement > 0
         ? 'READY TO PLAN'
         : 'AWAITING STATE';
+
+  useEffect(() => {
+    emitFeedbackEvent({
+      source: 'action-console',
+      kind: isPending ? 'tx-pending' : isConfirming ? 'tx-confirming' : isSuccess ? 'tx-success' : error ? 'tx-error' : 'tx-idle',
+      action: getActionMeta(activeTab).key,
+      turnState: turnState?.state,
+    });
+  }, [activeTab, error, isConfirming, isPending, isSuccess, turnState?.state]);
 
   const setActiveTab = (tab) => {
     if (onTabChange) onTabChange(tab);
@@ -105,12 +118,13 @@ export default function ActionPanel({
 
       {/* Tab bar */}
       <div className="flex gap-0.5 px-4 pt-3 pb-2 border-b border-exp-border/50 overflow-x-auto">
-        {TABS.map((tab) => {
-          const isActive = tab.action === activeTab;
+        {TABS.map((action) => {
+          const meta = getActionMeta(action);
+          const isActive = action === activeTab;
           return (
             <button
-              key={tab.action}
-              onClick={() => setActiveTab(tab.action)}
+              key={action}
+              onClick={() => setActiveTab(action)}
               className={`
                 alive-action-tab
                 px-3 py-1.5 text-xs font-mono uppercase tracking-wider shrink-0
@@ -121,7 +135,7 @@ export default function ActionPanel({
                 }
               `}
             >
-              {tab.label}
+              {meta.label}
             </button>
           );
         })}
@@ -134,6 +148,7 @@ export default function ActionPanel({
             currentLocation={currentLocation}
             movement={movement}
             path={movePath}
+            validation={moveValidation}
             onSubmit={() => {
               if (movePath.length === 0) return;
               handleSubmit(Action.MOVE, movePath);

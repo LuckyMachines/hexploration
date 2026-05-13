@@ -1,15 +1,24 @@
 import { Action, ACTION_LABELS, TILE_COLORS, TILE_LABELS, Tile } from '../../lib/constants';
+import { getActionMeta } from '../../lib/actionMeta';
 import { aliasToPixel } from '../../lib/hexmath';
 
-const ACTION_STANCE = {
-  [Action.MOVE]: { label: 'Route', color: '#e8c860', lean: 4, tool: 'compass' },
-  [Action.SETUP_CAMP]: { label: 'Camp', color: '#40a080', lean: 1, tool: 'stakes' },
-  [Action.BREAK_DOWN_CAMP]: { label: 'Pack', color: '#40a080', lean: 1, tool: 'pack' },
-  [Action.DIG]: { label: 'Dig', color: '#c4964a', lean: -2, tool: 'spade' },
-  [Action.REST]: { label: 'Rest', color: '#5090c0', lean: 0, tool: 'breath' },
-  [Action.HELP]: { label: 'Aid', color: '#9060c0', lean: 2, tool: 'signal' },
-  [Action.FLEE]: { label: 'Flee', color: '#d44040', lean: 7, tool: 'flare' },
+const ACTION_LEAN = {
+  [Action.MOVE]: 4,
+  [Action.SETUP_CAMP]: 1,
+  [Action.BREAK_DOWN_CAMP]: 1,
+  [Action.DIG]: -2,
+  [Action.REST]: 0,
+  [Action.HELP]: 2,
+  [Action.FLEE]: 7,
 };
+
+function actionPresence(action) {
+  const meta = getActionMeta(action);
+  return {
+    ...meta,
+    lean: ACTION_LEAN[action] ?? 0,
+  };
+}
 
 const TERRAIN_REACTION = {
   [Tile.NONE]: { glyph: '?', label: 'Uncharted', color: '#6a7560' },
@@ -124,7 +133,7 @@ function PreviewGhost({ currentLocation, intentAlias, activeAction, previewPath,
   if (previewPath.length === path.length) return null;
 
   const pos = aliasToPixel(intentAlias);
-  const action = ACTION_STANCE[activeAction] || ACTION_STANCE[Action.MOVE];
+  const action = actionPresence(activeAction);
   const angle = directionAngle(currentLocation, intentAlias);
 
   return (
@@ -284,7 +293,7 @@ function IntentCursor({
 
   const pos = aliasToPixel(intentAlias);
   const terrain = TERRAIN_REACTION[intentTile?.tileType ?? Tile.NONE] || TERRAIN_REACTION[Tile.NONE];
-  const action = ACTION_STANCE[activeAction] || ACTION_STANCE[Action.MOVE];
+  const action = actionPresence(activeAction);
   const angle = directionAngle(currentLocation, intentAlias);
   const terrainLabel = TILE_LABELS[intentTile?.tileType ?? Tile.NONE] || 'Unknown';
 
@@ -346,7 +355,7 @@ function LivingExplorer({
   if (!currentLocation) return null;
 
   const pos = aliasToPixel(currentLocation);
-  const action = ACTION_STANCE[activeAction] || ACTION_STANCE[Action.MOVE];
+  const action = actionPresence(activeAction);
   const angle = directionAngle(currentLocation, intentAlias || currentLocation);
   const stateLabel = isSpectator
     ? 'Observing'
@@ -417,7 +426,7 @@ function LivingExplorer({
 function ActionTelemetry({ currentLocation, intentAlias, path, activeAction, hasSubmitted, isResolving }) {
   if (!currentLocation) return null;
   const pos = aliasToPixel(currentLocation);
-  const action = ACTION_STANCE[activeAction] || ACTION_STANCE[Action.MOVE];
+  const action = actionPresence(activeAction);
   const label = ACTION_LABELS[activeAction] || 'Move';
   const detail = isResolving ? 'resolving' : hasSubmitted ? 'locked' : path.length > 0 ? `${path.length} steps` : 'awaiting intent';
 

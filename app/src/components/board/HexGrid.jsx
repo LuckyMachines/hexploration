@@ -4,6 +4,8 @@ import { useActiveZones } from '../../hooks/useActiveZones';
 import { useAllPlayerLocations } from '../../hooks/useAllPlayerLocations';
 import { useLandingSite } from '../../hooks/useLandingSite';
 import { Action, ProcessingPhase, Tile } from '../../lib/constants';
+import { buildReachableTiles, validateMoveStep } from '../../lib/moveValidation';
+import { emitFeedbackEvent } from '../../lib/feedbackEvents';
 import {
   hexToPixel,
   gridViewBox,
@@ -51,6 +53,8 @@ export default function HexGrid({
   isSpectator = false,
   stats = {},
   activeInventory = {},
+  turnState,
+  onPlayerFocus,
 }) {
   const { rows, columns, isLoading: loadingSize } = useBoardSize();
   const { zones, tiles, campsites } = useActiveZones(gameId);
@@ -113,39 +117,13 @@ export default function HexGrid({
     if (!isMovePlanning || !currentLocation || movement <= 0 || !rows || !columns) {
       return new Set();
     }
-
-    const start = parseAlias(currentLocation);
-    if (!start) return new Set();
-
-    const revealed = new Set(zones || []);
-    const inBounds = (alias) => {
-      const coord = parseAlias(alias);
-      return coord
-        && coord.col >= 0 && coord.col < columns
-        && coord.row >= 0 && coord.row < rows;
-    };
-
-    const visited = new Set([currentLocation]);
-    const reachable = new Set();
-    let frontier = [currentLocation];
-
-    for (let step = 0; step < movement; step++) {
-      const next = [];
-      frontier.forEach((alias) => {
-        const coord = parseAlias(alias);
-        if (!coord) return;
-        getAdjacent(coord.col, coord.row).forEach((neighbor) => {
-          if (!inBounds(neighbor) || !revealed.has(neighbor) || visited.has(neighbor)) return;
-          visited.add(neighbor);
-          reachable.add(neighbor);
-          next.push(neighbor);
-        });
-      });
-      frontier = next;
-      if (frontier.length === 0) break;
-    }
-
-    return reachable;
+    return buildReachableTiles({
+      currentLocation,
+      movement,
+      rows,
+      columns,
+      revealedZones: zones,
+    });
   }, [isMovePlanning, currentLocation, movement, rows, columns, zones]);
 
   useEffect(() => {
@@ -176,6 +154,14 @@ export default function HexGrid({
   }, []);
 
   const triggerFeedback = useCallback((kind) => {
+    emitFeedbackEvent({
+      source: 'board',
+      kind,
+      inputMode,
+      activeAction,
+      turnState: turnState?.state,
+    });
+
     if (typeof navigator !== 'undefined' && navigator.vibrate) {
       navigator.vibrate(kind === 'invalid' ? 34 : kind === 'commit' ? 18 : 8);
     }
@@ -202,21 +188,18 @@ export default function HexGrid({
     } catch {
       // Audio is a progressive enhancement; ignored when browsers block it.
     }
-  }, []);
+  }, [activeAction, inputMode, turnState?.state]);
 
   const canChooseTile = useCallback((alias) => {
     if (!onTileClick) return false;
     if (!isMovePlanning) return true;
-    if (!currentLocation || movement <= 0) return false;
-
-    const lastSelected = selectedPath[selectedPath.length - 1];
-    if (alias === lastSelected) return true;
-    if (selectedPath.includes(alias)) return false;
-    if (selectedPath.length >= movement) return false;
-
-    const lastTile = lastSelected || currentLocation;
-    const coord = parseAlias(lastTile);
-    return Boolean(coord && reachableTiles.has(alias) && getAdjacent(coord.col, coord.row).includes(alias));
+    return validateMoveStep({
+      alias,
+      currentLocation,
+      selectedPath,
+      movement,
+      reachableTiles,
+    }).ok;
   }, [currentLocation, isMovePlanning, movement, onTileClick, reachableTiles, selectedPath]);
 
   const handleHover = useCallback((alias) => {
@@ -237,8 +220,8 @@ export default function HexGrid({
 
     triggerFeedback('commit');
     setCommitCount((count) => Math.min(count + 1, 9));
-    onTileClick?.(alias);
-  }, [canChooseTile, markInput, onTileClick, pulseInvalid, triggerFeedback]);
+    onTileClick?.(alias, reachableTiles);
+  }, [canChooseTile, markInput, onTileClick, pulseInvalid, reachableTiles, triggerFeedback]);
 
   const intentAlias = hoveredTile || intentTile || currentLocation || landingSite || allHexes[0]?.alias || '';
   const intentTileData = revealedMap[intentAlias] || null;
@@ -266,8 +249,8 @@ export default function HexGrid({
     }
     triggerFeedback('commit');
     setCommitCount((count) => Math.min(count + 1, 9));
-    onTileClick?.(intentAlias);
-  }, [canChooseTile, intentAlias, markInput, onTileClick, pulseInvalid, triggerFeedback]);
+    onTileClick?.(intentAlias, reachableTiles);
+  }, [canChooseTile, intentAlias, markInput, onTileClick, pulseInvalid, reachableTiles, triggerFeedback]);
 
   const backtrackIntent = useCallback((mode = 'keyboard') => {
     markInput(mode, 'backtrack', 0.55);
@@ -516,7 +499,7 @@ export default function HexGrid({
               path={selectedPath}
               previewPath={previewPath}
               hasSubmitted={hasSubmitted}
-              isResolving={isResolving}
+              isResolving={turnState?.isResolving ?? isResolving}
               isSpectator={isSpectator}
               isObserving={isObserving}
               invalidPulse={invalidPulse}
@@ -536,9 +519,10 @@ export default function HexGrid({
                     key={`p-${pIdx}`}
                     cx={pos.x}
                     cy={pos.y}
-                    playerIndex={pIdx}
-                    isCurrentPlayer={pIdx === currentPlayerIndex}
-                  />
+                  playerIndex={pIdx}
+                  isCurrentPlayer={pIdx === currentPlayerIndex}
+                  onClick={() => onPlayerFocus?.(pIdx + 1)}
+                />
                 );
               }))}
           </svg>
