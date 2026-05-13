@@ -1,8 +1,9 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useBoardSize } from '../../hooks/useBoardSize';
 import { useActiveZones } from '../../hooks/useActiveZones';
 import { useAllPlayerLocations } from '../../hooks/useAllPlayerLocations';
 import { useLandingSite } from '../../hooks/useLandingSite';
+import { useExpeditionInputController } from '../../hooks/useExpeditionInputController';
 import { Action, ProcessingPhase, Tile } from '../../lib/constants';
 import { buildReachableTiles, validateMoveStep } from '../../lib/moveValidation';
 import { emitFeedbackEvent } from '../../lib/feedbackEvents';
@@ -25,12 +26,6 @@ import Spinner from '../shared/Spinner';
 
 function submittedAction(action) {
   return action && action !== '' && action !== 'Idle';
-}
-
-function inputCadenceFromInterval(intervalMs) {
-  if (intervalMs < 180) return 'urgent';
-  if (intervalMs < 420) return 'steady';
-  return 'deliberate';
 }
 
 function adjacentAliases(alias) {
@@ -62,19 +57,6 @@ export default function HexGrid({
   const { zoneAlias: landingSite } = useLandingSite(gameId);
   const [hoveredTile, setHoveredTile] = useState(null);
   const [intentTile, setIntentTile] = useState(null);
-  const [inputMode, setInputMode] = useState('mouse');
-  const [analogPressure, setAnalogPressure] = useState(0);
-  const [inputCadence, setInputCadence] = useState('idle');
-  const [lastInputKind, setLastInputKind] = useState('idle');
-  const [backtrackCount, setBacktrackCount] = useState(0);
-  const [invalidCount, setInvalidCount] = useState(0);
-  const [commitCount, setCommitCount] = useState(0);
-  const [lanternPing, setLanternPing] = useState(0);
-  const [invalidPulse, setInvalidPulse] = useState(false);
-  const [isObserving, setIsObserving] = useState(false);
-  const boardRef = useRef(null);
-  const lastInputAtRef = useRef(Date.now());
-  const audioContextRef = useRef(null);
 
   const revealedMap = useMemo(() => {
     const map = {};
@@ -130,66 +112,6 @@ export default function HexGrid({
     if (currentLocation) setIntentTile(currentLocation);
   }, [currentLocation]);
 
-  useEffect(() => {
-    const timer = window.setInterval(() => {
-      setIsObserving(Date.now() - lastInputAtRef.current > 2400);
-    }, 400);
-    return () => window.clearInterval(timer);
-  }, []);
-
-  const markInput = useCallback((mode, kind = 'intent', pressure = 0) => {
-    const now = Date.now();
-    setInputCadence(inputCadenceFromInterval(now - lastInputAtRef.current));
-    lastInputAtRef.current = Date.now();
-    setIsObserving(false);
-    setInputMode(mode);
-    setLastInputKind(kind);
-    setAnalogPressure((prev) => Math.max(pressure, prev * 0.55));
-  }, []);
-
-  const pulseInvalid = useCallback(() => {
-    setInvalidCount((count) => Math.min(count + 1, 9));
-    setInvalidPulse(true);
-    window.setTimeout(() => setInvalidPulse(false), 260);
-  }, []);
-
-  const triggerFeedback = useCallback((kind) => {
-    emitFeedbackEvent({
-      source: 'board',
-      kind,
-      inputMode,
-      activeAction,
-      turnState: turnState?.state,
-    });
-
-    if (typeof navigator !== 'undefined' && navigator.vibrate) {
-      navigator.vibrate(kind === 'invalid' ? 34 : kind === 'commit' ? 18 : 8);
-    }
-
-    if (typeof window === 'undefined') return;
-    const AudioContextCtor = window.AudioContext || window.webkitAudioContext;
-    if (!AudioContextCtor) return;
-
-    try {
-      audioContextRef.current ||= new AudioContextCtor();
-      const ctx = audioContextRef.current;
-      const oscillator = ctx.createOscillator();
-      const gain = ctx.createGain();
-      const now = ctx.currentTime;
-
-      oscillator.type = kind === 'invalid' ? 'square' : 'triangle';
-      oscillator.frequency.setValueAtTime(kind === 'invalid' ? 120 : kind === 'commit' ? 420 : 260, now);
-      gain.gain.setValueAtTime(0.0001, now);
-      gain.gain.exponentialRampToValueAtTime(kind === 'invalid' ? 0.024 : 0.014, now + 0.01);
-      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.08);
-      oscillator.connect(gain).connect(ctx.destination);
-      oscillator.start(now);
-      oscillator.stop(now + 0.09);
-    } catch {
-      // Audio is a progressive enhancement; ignored when browsers block it.
-    }
-  }, [activeAction, inputMode, turnState?.state]);
-
   const canChooseTile = useCallback((alias) => {
     if (!onTileClick) return false;
     if (!isMovePlanning) return true;
@@ -202,153 +124,44 @@ export default function HexGrid({
     }).ok;
   }, [currentLocation, isMovePlanning, movement, onTileClick, reachableTiles, selectedPath]);
 
-  const handleHover = useCallback((alias) => {
-    markInput('mouse', 'hover', 0.25);
-    setHoveredTile(alias);
-    if (alias) setIntentTile(alias);
-  }, [markInput]);
-
-  const handleTileClick = useCallback((alias) => {
-    markInput('mouse', 'commit', 0.75);
-    setIntentTile(alias);
-
-    if (!canChooseTile(alias)) {
-      pulseInvalid();
-      triggerFeedback('invalid');
-      return;
-    }
-
-    triggerFeedback('commit');
-    setCommitCount((count) => Math.min(count + 1, 9));
-    onTileClick?.(alias, reachableTiles);
-  }, [canChooseTile, markInput, onTileClick, pulseInvalid, reachableTiles, triggerFeedback]);
-
   const intentAlias = hoveredTile || intentTile || currentLocation || landingSite || allHexes[0]?.alias || '';
   const intentTileData = revealedMap[intentAlias] || null;
 
-  const moveIntentBy = useCallback((deltaCol, deltaRow, mode = 'keyboard', pressure = 0.45) => {
-    markInput(mode, 'move', pressure);
-    const current = parseAlias(intentAlias || currentLocation || allHexes[0]?.alias);
-    if (!current) return;
+  const input = useExpeditionInputController({
+    columns,
+    rows,
+    allHexes,
+    currentLocation,
+    intentAlias,
+    selectedPath,
+    canChooseTile,
+    onIntentMove: (alias) => {
+      setHoveredTile(null);
+      setIntentTile(alias);
+    },
+    onCommit: (alias) => onTileClick?.(alias, reachableTiles),
+    onBacktrack,
+    emitFeedback: (kind, mode) => {
+      emitFeedbackEvent({
+        source: 'board',
+        kind,
+        inputMode: mode,
+        activeAction,
+        turnState: turnState?.state,
+      });
+    },
+  });
 
-    const nextCol = Math.max(0, Math.min(columns - 1, current.col + deltaCol));
-    const nextRow = Math.max(0, Math.min(rows - 1, current.row + deltaRow));
-    const nextAlias = toAlias(nextCol, nextRow);
-    setHoveredTile(null);
-    setIntentTile(nextAlias);
-    triggerFeedback(pressure > 0.75 ? 'rush' : 'move');
-  }, [allHexes, columns, currentLocation, intentAlias, markInput, rows, triggerFeedback]);
+  const handleHover = useCallback((alias) => {
+    input.markInput('mouse', 'hover', 0.25);
+    setHoveredTile(alias);
+    if (alias) setIntentTile(alias);
+  }, [input]);
 
-  const commitIntent = useCallback((mode = 'keyboard', pressure = 0.8) => {
-    if (!intentAlias) return;
-    markInput(mode, 'commit', pressure);
-    if (!canChooseTile(intentAlias)) {
-      pulseInvalid();
-      triggerFeedback('invalid');
-      return;
-    }
-    triggerFeedback('commit');
-    setCommitCount((count) => Math.min(count + 1, 9));
-    onTileClick?.(intentAlias, reachableTiles);
-  }, [canChooseTile, intentAlias, markInput, onTileClick, pulseInvalid, reachableTiles, triggerFeedback]);
-
-  const backtrackIntent = useCallback((mode = 'keyboard') => {
-    markInput(mode, 'backtrack', 0.55);
-    if (selectedPath.length === 0) {
-      pulseInvalid();
-      triggerFeedback('invalid');
-      return;
-    }
-    triggerFeedback('move');
-    setBacktrackCount((count) => Math.min(count + 1, 9));
-    onBacktrack?.();
-  }, [markInput, onBacktrack, pulseInvalid, selectedPath.length, triggerFeedback]);
-
-  const toyPing = useCallback((mode = 'keyboard') => {
-    markInput(mode, 'ping', 0.5);
-    setLanternPing((ping) => ping + 1);
-    triggerFeedback('commit');
-  }, [markInput, triggerFeedback]);
-
-  const handleKeyDown = useCallback((event) => {
-    const key = event.key.toLowerCase();
-    const keyMoves = {
-      arrowup: [0, -1],
-      w: [0, -1],
-      arrowdown: [0, 1],
-      s: [0, 1],
-      arrowleft: [-1, 0],
-      a: [-1, 0],
-      arrowright: [1, 0],
-      d: [1, 0],
-    };
-
-    if (keyMoves[key]) {
-      event.preventDefault();
-      moveIntentBy(keyMoves[key][0], keyMoves[key][1], 'keys');
-      return;
-    }
-
-    if (key === 'enter' || key === ' ') {
-      event.preventDefault();
-      commitIntent('keys');
-      return;
-    }
-
-    if (key === 'escape' || key === 'backspace') {
-      event.preventDefault();
-      backtrackIntent('keys');
-      return;
-    }
-
-    if (key === 'f' || key === 'l') {
-      event.preventDefault();
-      toyPing('keys');
-    }
-  }, [backtrackIntent, commitIntent, moveIntentBy, toyPing]);
-
-  useEffect(() => {
-    let frame = 0;
-    let lastStepAt = 0;
-    let lastCommitAt = 0;
-
-    const pollGamepad = () => {
-      const pads = navigator.getGamepads?.() || [];
-      const pad = Array.from(pads).find(Boolean);
-      const now = performance.now();
-
-      if (pad) {
-        const horizontal = Math.abs(pad.axes[0] || 0) > 0.45 ? Math.sign(pad.axes[0]) : 0;
-        const vertical = Math.abs(pad.axes[1] || 0) > 0.45 ? Math.sign(pad.axes[1]) : 0;
-        const pressure = Math.min(1, Math.hypot(pad.axes[0] || 0, pad.axes[1] || 0));
-
-        if ((horizontal || vertical) && now - lastStepAt > 170) {
-          moveIntentBy(horizontal, vertical, 'pad', pressure);
-          lastStepAt = now;
-        }
-
-        if (pad.buttons[0]?.pressed && now - lastCommitAt > 260) {
-          commitIntent('pad', Math.max(0.8, pressure));
-          lastCommitAt = now;
-        }
-
-        if (pad.buttons[1]?.pressed && now - lastCommitAt > 260) {
-          backtrackIntent('pad');
-          lastCommitAt = now;
-        }
-
-        if (pad.buttons[2]?.pressed && now - lastCommitAt > 260) {
-          toyPing('pad');
-          lastCommitAt = now;
-        }
-      }
-
-      frame = window.requestAnimationFrame(pollGamepad);
-    };
-
-    frame = window.requestAnimationFrame(pollGamepad);
-    return () => window.cancelAnimationFrame(frame);
-  }, [backtrackIntent, commitIntent, moveIntentBy]);
+  const handleTileClick = useCallback((alias) => {
+    setIntentTile(alias);
+    input.commitIntent(alias, 'mouse', 0.75);
+  }, [input]);
 
   if (loadingSize || !rows || !columns) {
     return (
@@ -408,13 +221,13 @@ export default function HexGrid({
     stats.movement <= 1 ? 0.75 : 0,
   ));
   const controlFeel = {
-    analogPressure,
-    inputCadence: isObserving ? 'idle' : inputCadence,
-    lastInputKind,
-    backtrackCount,
-    invalidCount,
-    commitCount,
-    lanternPing,
+    analogPressure: input.analogPressure,
+    inputCadence: input.isObserving ? 'idle' : input.inputCadence,
+    lastInputKind: input.lastInputKind,
+    backtrackCount: input.backtrackCount,
+    invalidCount: input.invalidCount,
+    commitCount: input.commitCount,
+    lanternPing: input.lanternPing,
     fatigue,
     intentIsDanger,
     intentIsFog,
@@ -427,14 +240,14 @@ export default function HexGrid({
     <div className="min-w-0">
       <div className="flex min-w-0 justify-center">
         <div
-          ref={boardRef}
+          ref={input.boardRef}
           data-testid="hex-board-viewport"
           tabIndex={0}
           role="application"
           aria-label="Expedition survey board"
-          onKeyDown={handleKeyDown}
-          onMouseDown={() => boardRef.current?.focus()}
-          className={`w-full min-w-0 outline-none transition-[filter] duration-500 ${isObserving ? 'alive-observation-mode' : ''}`}
+          onKeyDown={input.handleKeyDown}
+          onMouseDown={() => input.boardRef.current?.focus()}
+          className={`w-full min-w-0 outline-none transition-[filter] duration-500 focus-visible:ring-2 focus-visible:ring-compass/60 ${input.isObserving ? 'alive-observation-mode' : ''}`}
           style={{ maxWidth: boardMaxWidth }}
         >
           <svg
@@ -501,9 +314,9 @@ export default function HexGrid({
               hasSubmitted={hasSubmitted}
               isResolving={turnState?.isResolving ?? isResolving}
               isSpectator={isSpectator}
-              isObserving={isObserving}
-              invalidPulse={invalidPulse}
-              inputMode={inputMode}
+              isObserving={input.isObserving}
+              invalidPulse={input.invalidPulse}
+              inputMode={input.inputMode}
               currentPlayerIndex={Math.max(0, currentPlayerIndex)}
               movement={movement}
               stats={stats}

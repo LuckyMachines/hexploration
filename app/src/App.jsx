@@ -8,9 +8,11 @@ import Modal from './components/shared/Modal';
 import FieldManual from './components/help/FieldManual';
 import ErrorBoundary from './components/shared/ErrorBoundary';
 import PseudoLocale from './components/shared/PseudoLocale';
+import { useFeedbackEffects } from './hooks/useFeedbackEffects';
 
 export default function App() {
   const [isHelpOpen, setIsHelpOpen] = useState(false);
+  useFeedbackEffects();
 
   return (
     <div className="min-h-screen flex flex-col">

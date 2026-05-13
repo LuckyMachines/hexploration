@@ -1,20 +1,23 @@
 import { Link } from 'react-router-dom';
 import { useMemo, useState } from 'react';
 import { useWallet } from '../../contexts/WalletContext';
-import { useAllPlayers } from '../../hooks/useAllPlayers';
+import { useExpedition } from '../../contexts/ExpeditionContext';
 import { truncateAddress } from '../../lib/formatting';
 import { PLAYER_COLORS } from '../../lib/constants';
-import Spinner from '../shared/Spinner';
 
 export default function GameOver({ gameId }) {
   const { address } = useWallet();
-  const { players, isLoading } = useAllPlayers(gameId);
+  const expedition = useExpedition();
+  const players = expedition.enrichedPlayers || [];
+  const reportGameId = expedition.gameId || gameId;
+  const replayProof = expedition.turnReplay?.proof || [];
+  const latestReplayStep = expedition.turnReplay?.latest;
   const [copied, setCopied] = useState(false);
   const survivorCount = useMemo(
-    () => (players || []).filter((player) => player.isActive).length,
+    () => players.filter((player) => player.isActive).length,
     [players],
   );
-  const lostCount = Math.max((players || []).length - survivorCount, 0);
+  const lostCount = Math.max(players.length - survivorCount, 0);
   const reportUrl = typeof window !== 'undefined' ? window.location.href : '';
 
   const copyReport = async () => {
@@ -23,17 +26,6 @@ export default function GameOver({ gameId }) {
     setCopied(true);
     window.setTimeout(() => setCopied(false), 1800);
   };
-
-  if (isLoading) {
-    return (
-      <div className="border border-exp-border rounded bg-exp-panel p-12 flex items-center justify-center gap-3">
-        <Spinner size="w-5 h-5" />
-        <span className="font-mono text-xs text-exp-text-dim tracking-wider uppercase">
-          Loading survey report...
-        </span>
-      </div>
-    );
-  }
 
   return (
     <div className="space-y-6">
@@ -44,7 +36,7 @@ export default function GameOver({ gameId }) {
             Survey Report
           </span>
           <span className="font-mono text-xs text-exp-text-dim">
-            Survey #{gameId}
+            Survey #{reportGameId}
           </span>
         </div>
 
@@ -75,7 +67,7 @@ export default function GameOver({ gameId }) {
             Expedition Recap
           </span>
           <span className="font-mono text-xs text-compass-bright">
-            EXP-{String(gameId).padStart(3, '0')}
+            EXP-{String(reportGameId).padStart(3, '0')}
           </span>
         </div>
         <div className="grid gap-3 p-5 sm:grid-cols-3">
@@ -84,7 +76,7 @@ export default function GameOver({ gameId }) {
               Crew
             </p>
             <p className="mt-2 font-mono text-2xl text-exp-text">
-              {(players || []).length}
+              {players.length}
             </p>
           </div>
           <div className="rounded border border-oxide-green/35 bg-oxide-green/5 px-4 py-3">
@@ -117,6 +109,43 @@ export default function GameOver({ gameId }) {
         </div>
       </div>
 
+      <div className="border border-blueprint/30 rounded bg-exp-panel overflow-hidden">
+        <div className="bg-exp-dark border-b border-exp-border px-4 py-2 flex items-center justify-between gap-3">
+          <span className="font-display text-xs tracking-[0.3em] text-exp-text-dim uppercase">
+            Resolution Proof
+          </span>
+          <span className="font-mono text-xs text-blueprint">
+            {expedition.turnState?.label || 'Complete'}
+          </span>
+        </div>
+        <div className="space-y-3 p-5">
+          <p className="font-mono text-xs leading-relaxed text-exp-text-dim">
+            {latestReplayStep
+              ? `Latest replay step: ${latestReplayStep.summary}.`
+              : 'No replay events have loaded for this report yet.'}
+          </p>
+          <div className="grid gap-2">
+            {replayProof.length > 0 ? replayProof.map((proof, index) => (
+              <div
+                key={`${proof.tx}-${index}`}
+                className="flex flex-wrap items-center justify-between gap-2 rounded border border-exp-border bg-exp-dark/40 px-3 py-2"
+              >
+                <span className="font-mono text-[10px] uppercase tracking-[0.24em] text-exp-text-dim">
+                  {proof.label} {proof.blockNumber ? `block ${proof.blockNumber}` : ''}
+                </span>
+                <span className="font-mono text-xs text-blueprint">
+                  {truncateAddress(proof.tx)}
+                </span>
+              </div>
+            )) : (
+              <div className="rounded border border-exp-border bg-exp-dark/35 px-3 py-2 font-mono text-xs text-exp-text-dim">
+                Replay proof is waiting on chain event history.
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
       <div className="border border-exp-border rounded bg-exp-panel overflow-hidden">
         <div className="bg-exp-dark border-b border-exp-border px-4 py-2">
           <span className="font-display text-xs tracking-[0.3em] text-exp-text-dim uppercase">
@@ -136,8 +165,8 @@ export default function GameOver({ gameId }) {
             </tr>
           </thead>
           <tbody>
-            {(players || []).map((player, i) => {
-              const addr = player.playerAddress || player;
+            {players.map((player, i) => {
+              const addr = player.playerAddress || (typeof player === 'string' ? player : '');
               const isYou = addr?.toLowerCase() === address?.toLowerCase();
 
               return (

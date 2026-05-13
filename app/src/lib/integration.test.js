@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { ProcessingPhase } from './constants';
 import { buildReachableTiles, validateMovePath, validateMoveStep } from './moveValidation';
+import { buildTurnReplay } from './turnReplay';
 import { deriveTurnState, TurnState } from './turnState';
 
 describe('integration primitives', () => {
@@ -52,5 +53,29 @@ describe('integration primitives', () => {
       path: ['2,1', '0,0'],
       movement: 2,
     }).ok).toBe(false);
+  });
+
+  it('builds replay steps and transaction proof from event history', () => {
+    const replay = buildTurnReplay([
+      {
+        name: 'ActionSubmitted',
+        blockNumber: 11n,
+        transactionHash: '0xaaa',
+        args: { gameID: 7n, queueID: 2n },
+      },
+      {
+        name: 'TurnResolved',
+        blockNumber: 12n,
+        transactionHash: '0xbbb',
+        args: { gameID: 7n, queueID: 2n },
+      },
+    ]);
+
+    expect(replay.steps).toHaveLength(2);
+    expect(replay.latest.summary).toBe('TurnResolved G7 Q2');
+    expect(replay.proof).toEqual([
+      { label: 'ActionSubmitted', tx: '0xaaa', blockNumber: 11n },
+      { label: 'TurnResolved', tx: '0xbbb', blockNumber: 12n },
+    ]);
   });
 });

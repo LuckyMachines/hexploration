@@ -30,7 +30,11 @@ export default function MissionStatus({
   }[toneForTurnState(turnState)];
 
   return (
-    <div className="rounded border border-exp-border bg-exp-panel/85 px-4 py-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
+    <div
+      role="status"
+      aria-live="polite"
+      className="rounded border border-exp-border bg-exp-panel/85 px-4 py-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]"
+    >
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <p className="font-mono text-[10px] uppercase tracking-[0.35em] text-exp-text-dim">
@@ -41,7 +45,10 @@ export default function MissionStatus({
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
-          <span className={`rounded border px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.28em] ${toneClass}`}>
+          <span
+            data-testid="turn-state"
+            className={`rounded border px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.28em] ${toneClass}`}
+          >
             {label}
           </span>
           <span className="rounded border border-exp-border bg-exp-dark/40 px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.28em] text-exp-text-dim">

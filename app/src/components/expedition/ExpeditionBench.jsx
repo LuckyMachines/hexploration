@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { useExpeditionViewModel } from '../../hooks/useExpeditionViewModel';
+import { useExpedition } from '../../contexts/ExpeditionContext';
 import { Action } from '../../lib/constants';
 import DayNightBadge from './DayNightBadge';
 import DayCounter from './DayCounter';
@@ -16,10 +16,12 @@ import TurnResolution from '../resolution/TurnResolution';
 import EventLog from '../shared/EventLog';
 import ExpeditionDebugOverlay from './ExpeditionDebugOverlay';
 
-export default function ExpeditionBench({ gameId }) {
-  const view = useExpeditionViewModel(gameId);
+export default function ExpeditionBench() {
+  const view = useExpedition();
   const [focusedPlayerID, setFocusedPlayerID] = useState(null);
   const [showDebug, setShowDebug] = useState(false);
+  const debugEnabled = import.meta.env.DEV
+    || (typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('debug'));
 
   const {
     address,
@@ -66,7 +68,7 @@ export default function ExpeditionBench({ gameId }) {
         <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
           <DayNightBadge phase={phase} />
           <PhaseIndicator currentPhase={queueTelemetry.phase} />
-          <DayCounter gameId={gameId} />
+          <DayCounter gameId={view.gameId} />
           <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-exp-text-dim">
             {phase || 'Unknown'}
           </span>
@@ -76,13 +78,15 @@ export default function ExpeditionBench({ gameId }) {
           <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-exp-text-dim">
             {enrichedPlayers.length} aboard
           </span>
-          <button
-            type="button"
-            onClick={() => setShowDebug((value) => !value)}
-            className="rounded border border-exp-border/70 bg-exp-dark/35 px-2 py-1 font-mono text-[10px] uppercase tracking-[0.22em] text-exp-text-dim transition-colors hover:border-compass/50 hover:text-compass"
-          >
-            Debug
-          </button>
+          {debugEnabled && (
+            <button
+              type="button"
+              onClick={() => setShowDebug((value) => !value)}
+              className="rounded border border-exp-border/70 bg-exp-dark/35 px-2 py-1 font-mono text-[10px] uppercase tracking-[0.22em] text-exp-text-dim transition-colors hover:border-compass/50 hover:text-compass"
+            >
+              Debug
+            </button>
+          )}
         </div>
         <p className="mt-2 font-mono text-[11px] text-exp-text-dim">
           {queueDetail}
@@ -119,7 +123,7 @@ export default function ExpeditionBench({ gameId }) {
             )}
           </div>
           <HexGrid
-            gameId={gameId}
+            gameId={view.gameId}
             selectedPath={movePath}
             onTileClick={activeTab === Action.MOVE ? applyMoveStep : undefined}
             onBacktrack={backtrackMovePath}
@@ -183,7 +187,7 @@ export default function ExpeditionBench({ gameId }) {
 
       {!isSpectator && (
         <ActionPanel
-          gameId={gameId}
+          gameId={view.gameId}
           playerID={playerID}
           currentLocation={location}
           stats={stats}
@@ -206,7 +210,7 @@ export default function ExpeditionBench({ gameId }) {
         </div>
       )}
 
-      <TurnResolution gameId={gameId} events={events} turnState={turnState} />
+      <TurnResolution gameId={view.gameId} events={events} turnState={turnState} turnReplay={view.turnReplay} />
 
       <details className="group rounded border border-exp-border bg-exp-panel/70 px-4 py-3">
         <summary className="cursor-pointer list-none flex items-center justify-between gap-3">
@@ -232,7 +236,7 @@ export default function ExpeditionBench({ gameId }) {
         </div>
       </details>
 
-      {showDebug && <ExpeditionDebugOverlay view={view} />}
+      {debugEnabled && showDebug && <ExpeditionDebugOverlay view={view} />}
     </div>
   );
 }

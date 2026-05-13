@@ -6,6 +6,7 @@ import ExpeditionBench from '../components/expedition/ExpeditionBench';
 import GameOver from '../components/game/GameOver';
 import Spinner from '../components/shared/Spinner';
 import SurveyTabletFrame from '../components/layout/SurveyTabletFrame';
+import { ExpeditionProvider } from '../contexts/ExpeditionContext';
 import { useGameOver } from '../hooks/useGameOver';
 import { parseUintId } from '../lib/ids';
 
@@ -73,11 +74,15 @@ export default function GamePage() {
           )}
 
           {parsedGameId !== null && isConnected && !isLoading && !error && gameStarted && !isGameOver && (
-            <ExpeditionBench gameId={normalizedGameId} />
+            <ExpeditionProvider gameId={normalizedGameId}>
+              <ExpeditionBench />
+            </ExpeditionProvider>
           )}
 
           {parsedGameId !== null && isConnected && !isLoading && !error && gameStarted && isGameOver && (
-            <GameOver gameId={normalizedGameId} />
+            <ExpeditionProvider gameId={normalizedGameId}>
+              <GameOver gameId={normalizedGameId} />
+            </ExpeditionProvider>
           )}
         </div>
       </SurveyTabletFrame>

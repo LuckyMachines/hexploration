@@ -14,6 +14,7 @@ import { useGameOver } from './useGameOver';
 import { Action } from '../lib/constants';
 import { deriveTurnState } from '../lib/turnState';
 import { validateMovePath, validateMoveStep } from '../lib/moveValidation';
+import { buildTurnReplay } from '../lib/turnReplay';
 
 export function useExpeditionViewModel(gameId) {
   const { address } = useWallet();
@@ -81,6 +82,7 @@ export function useExpeditionViewModel(gameId) {
     }),
     [action, isGameOver, isSpectator, queueTelemetry],
   );
+  const turnReplay = useMemo(() => buildTurnReplay(events), [events]);
 
   useEffect(() => {
     if (activeTab !== Action.MOVE) setMovePath([]);
@@ -149,5 +151,6 @@ export function useExpeditionViewModel(gameId) {
     backtrackMovePath,
     moveValidation,
     turnState,
+    turnReplay,
   };
 }

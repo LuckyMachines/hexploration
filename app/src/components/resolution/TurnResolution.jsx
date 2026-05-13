@@ -1,9 +1,11 @@
 import { useLastPlayerActions } from '../../hooks/useLastPlayerActions';
 import { useLastDayPhaseEvents } from '../../hooks/useLastDayPhaseEvents';
+import { buildTurnReplay } from '../../lib/turnReplay';
+import { truncateAddress } from '../../lib/formatting';
 import ActionResult from './ActionResult';
 import CardDraw from './CardDraw';
 
-export default function TurnResolution({ gameId, events = [], turnState }) {
+export default function TurnResolution({ gameId, events = [], turnState, turnReplay }) {
   const { playerActions } = useLastPlayerActions(gameId);
   const { playerIDs, cardTypes, cardsDrawn, cardResults, inventoryChanges, statUpdates } =
     useLastDayPhaseEvents(gameId);
@@ -11,7 +13,9 @@ export default function TurnResolution({ gameId, events = [], turnState }) {
   const hasActions = playerActions && playerActions.length > 0;
   const hasEvents = playerIDs && playerIDs.length > 0;
 
-  const latestEvents = events.slice(-4).reverse();
+  const replay = turnReplay || buildTurnReplay(events);
+  const latestEvents = replay.steps.slice(-4).reverse();
+  const replayProof = replay.proof || [];
 
   if (!hasActions && !hasEvents && latestEvents.length === 0) return null;
 
@@ -36,16 +40,31 @@ export default function TurnResolution({ gameId, events = [], turnState }) {
             </h4>
             <div className="grid gap-2 sm:grid-cols-2">
               {latestEvents.map((event) => (
-                <div key={event.key} className="rounded border border-exp-border/50 bg-exp-dark/40 px-3 py-2">
+                <div key={event.id} className="rounded border border-exp-border/50 bg-exp-dark/40 px-3 py-2">
                   <p className="font-mono text-xs uppercase tracking-wider text-blueprint">
-                    {event.name}
+                    {event.summary || event.name}
                   </p>
                   <p className="mt-1 break-all font-mono text-[11px] text-exp-text-dim">
                     block {event.blockNumber?.toString?.() || event.blockNumber || 'pending'}
                   </p>
+                  {event.transactionHash && (
+                    <p className="mt-1 font-mono text-[10px] text-exp-text-dim">
+                      tx {truncateAddress(event.transactionHash)}
+                    </p>
+                  )}
                 </div>
               ))}
             </div>
+            {replayProof.length > 0 && (
+              <div className="mt-3 rounded border border-blueprint/25 bg-blueprint/5 px-3 py-2">
+                <p className="font-mono text-[10px] uppercase tracking-[0.26em] text-blueprint">
+                  Replay proof
+                </p>
+                <p className="mt-1 font-mono text-[11px] text-exp-text-dim">
+                  {replayProof.map((proof) => truncateAddress(proof.tx)).join(' / ')}
+                </p>
+              </div>
+            )}
           </div>
         )}
 
