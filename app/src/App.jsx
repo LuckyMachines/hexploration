@@ -6,12 +6,14 @@ import GamePage from './pages/GamePage';
 import Modal from './components/shared/Modal';
 import FieldManual from './components/help/FieldManual';
 import ErrorBoundary from './components/shared/ErrorBoundary';
+import PseudoLocale from './components/shared/PseudoLocale';
 
 export default function App() {
   const [isHelpOpen, setIsHelpOpen] = useState(false);
 
   return (
     <div className="min-h-screen flex flex-col">
+      <PseudoLocale />
       <Header onHelpClick={() => setIsHelpOpen(true)} />
       <main className="flex-1">
         <ErrorBoundary>

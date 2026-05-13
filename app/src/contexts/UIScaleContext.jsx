@@ -14,6 +14,10 @@ function applyScale(scale) {
     .getPropertyValue('--base-font-size')
     .trim();
   document.documentElement.style.fontSize = `calc(${base} * ${scale})`;
+  // Also expose as a CSS variable so components can use --ui-scale directly
+  // for things that shouldn't go through rem (SVG sizes, fixed pixel
+  // overlays etc). Matches the marketing site's convention.
+  document.documentElement.style.setProperty('--ui-scale', String(scale));
 }
 
 export function UIScaleProvider({ children }) {

@@ -38,6 +38,15 @@ html {
   /* Base font scale — JS reads this variable and multiplies by user scale */
   --base-font-size: 18px;
   font-size: var(--base-font-size);
+
+  /* Safe-area insets exposed for layout code. `env()` is supported on all
+     modern browsers; fall back to 0. Fixed-positioned elements at the
+     viewport edge should add the matching inset so they don't sit under
+     iPhone notches, Steam Deck rounded corners, or TV overscan strips. */
+  --safe-t: env(safe-area-inset-top, 0px);
+  --safe-r: env(safe-area-inset-right, 0px);
+  --safe-b: env(safe-area-inset-bottom, 0px);
+  --safe-l: env(safe-area-inset-left, 0px);
 }
 
 /* High-DPI screens (>= 1.5x device pixel ratio): scale up further */
