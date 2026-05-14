@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { diagnoseEndState, getScenarioQuestion, getStrategyQuestion } from '../lib/detailText';
 
 const SAMPLE_REPORT = {
   generatedAt: null,
@@ -132,6 +133,9 @@ function StrategyComparison({ strategies = {} }) {
                 {stats.runs} run{stats.runs === 1 ? '' : 's'}
               </p>
             </div>
+            <p className="mb-3 font-mono text-[11px] leading-relaxed text-exp-text-dim">
+              {getStrategyQuestion(strategy)}
+            </p>
             <div className="grid gap-2 sm:grid-cols-4">
               <Metric label="Artifacts" value={stats.avgArtifacts?.toFixed?.(1) ?? '0'} tone="green" />
               <Metric label="Reveal" value={stats.avgRevealedZones?.toFixed?.(1) ?? '0'} tone="blue" />
@@ -152,6 +156,7 @@ function InsightPanel({ aggregate = {}, summary = {} }) {
   const warnings = aggregate.warnings || [];
   const spikeTurns = summary.spikeTurns || [];
   const boringTurns = summary.boringTurns || [];
+  const diagnosis = diagnoseEndState(summary);
 
   return (
     <section className="mt-4 rounded border border-exp-border bg-exp-panel p-4">
@@ -193,6 +198,14 @@ function InsightPanel({ aggregate = {}, summary = {} }) {
           </p>
         </div>
       </div>
+      <div className="mt-3 rounded border border-exp-border/60 bg-exp-dark/35 px-3 py-2">
+        <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-exp-text-dim">
+          End-state diagnosis
+        </p>
+        <p className="mt-1 font-mono text-xs leading-relaxed text-exp-text">
+          {diagnosis}
+        </p>
+      </div>
       {warnings.length > 0 && (
         <div className="mt-3 rounded border border-signal-red/30 bg-signal-red/5 px-3 py-2">
           <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-signal-red">
@@ -224,9 +237,21 @@ function TensionCurve({ points = [] }) {
             <div
               className="w-full rounded-t bg-compass-bright"
               style={{ height: `${Math.max(4, point.tension)}%` }}
-              title={`Turn ${point.turn}: ${point.tension}`}
+              title={`Turn ${point.turn}: ${point.tension} / ${(point.reasons || []).join(', ') || 'steady'}`}
             />
             <span className="font-mono text-[9px] text-exp-text-dim">{point.turn}</span>
+          </div>
+        ))}
+      </div>
+      <div className="mt-3 grid gap-2 md:grid-cols-2">
+        {points.filter((point) => point.tension > 0).slice(0, 4).map((point) => (
+          <div key={`reason-${point.turn}`} className="rounded border border-exp-border/50 bg-exp-dark/35 px-3 py-2">
+            <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-compass-bright">
+              Turn {point.turn} / {point.tension}
+            </p>
+            <p className="mt-1 font-mono text-[11px] leading-relaxed text-exp-text-dim">
+              {(point.reasons || []).join(', ') || 'Small pressure change.'}
+            </p>
           </div>
         ))}
       </div>
@@ -407,6 +432,8 @@ function PlayerSnapshot({ player }) {
 }
 
 function TurnCard({ turn }) {
+  const analysis = turn.analysis || {};
+  const recap = analysis.recap || [];
   return (
     <details className="rounded border border-exp-border bg-exp-panel px-3 py-2">
       <summary className="cursor-pointer list-none">
@@ -424,6 +451,20 @@ function TurnCard({ turn }) {
           </p>
         </div>
       </summary>
+      {recap.length > 0 && (
+        <div className="mt-3 grid gap-2 md:grid-cols-3">
+          {recap.map((item) => (
+            <div key={`${turn.turn}-${item.label}`} className="rounded border border-exp-border/50 bg-exp-dark/35 px-3 py-2">
+              <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-exp-text-dim">
+                {item.label}
+              </p>
+              <p className={`mt-1 font-mono text-xs ${item.tone === 'red' ? 'text-signal-red' : item.tone === 'gold' ? 'text-compass-bright' : 'text-blueprint'}`}>
+                {item.value}
+              </p>
+            </div>
+          ))}
+        </div>
+      )}
       <div className="mt-3 grid gap-2 md:grid-cols-2">
         {(turn.submissions || []).map((submission, index) => (
           <div key={`${submission.playerId}-${index}`} className="rounded border border-exp-border/60 bg-exp-dark/35 px-3 py-2">
@@ -437,6 +478,15 @@ function TurnCard({ turn }) {
               <p className="mt-1 font-mono text-[11px] text-blueprint">
                 {submission.options.join(' -> ')}
               </p>
+            )}
+            {submission.validityLog?.length > 0 && (
+              <div className="mt-2 space-y-1">
+                {submission.validityLog.slice(0, 3).map((entry) => (
+                  <p key={`${entry.action}-${entry.reason}`} className={`font-mono text-[10px] ${entry.ok ? 'text-oxide-green' : 'text-signal-red'}`}>
+                    {entry.ok ? 'valid' : 'blocked'} / {entry.action}{entry.reason ? ` / ${entry.reason}` : ''}
+                  </p>
+                ))}
+              </div>
             )}
           </div>
         ))}
@@ -536,6 +586,14 @@ export default function SimulatorPage() {
           <p className="mt-2 font-mono text-xs leading-relaxed text-exp-text-dim">
             Run the simulator from the repo root while the local stack is active. It writes the latest report into this app automatically.
           </p>
+          <div className="mt-3 rounded border border-compass/25 bg-compass/5 px-3 py-2">
+            <p className="font-mono text-[10px] uppercase tracking-[0.26em] text-compass">
+              Scenario question
+            </p>
+            <p className="mt-1 font-mono text-xs leading-relaxed text-exp-text">
+              {getScenarioQuestion(report.config?.scenario || 'benchmark')}
+            </p>
+          </div>
           <pre className="mt-3 overflow-x-auto rounded border border-exp-border bg-exp-dark/60 p-3 font-mono text-[11px] text-compass-bright">
             {`npm run local:solo\n${command}`}
           </pre>

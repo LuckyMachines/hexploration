@@ -1,5 +1,6 @@
 import { STAT_LABELS } from '../../lib/constants';
 import { statDelta } from '../../lib/formatting';
+import { statDetail } from '../../lib/detailText';
 
 export default function StatChange({ statUpdate }) {
   if (!statUpdate || statUpdate.length < 3) return null;
@@ -26,6 +27,9 @@ export default function StatChange({ statUpdate }) {
             `}
           >
             {change.label} {statDelta(change.value)}
+            <span className="ml-1 opacity-70">
+              {statDetail(change.value)}
+            </span>
           </span>
         );
       })}

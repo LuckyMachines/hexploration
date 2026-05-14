@@ -746,6 +746,38 @@ function analyzeTurn(turn) {
   if (zeroStats > 0) spikeReasons.push(`${zeroStats} zero-stat player${zeroStats === 1 ? '' : 's'}`);
   if (errors.length > 0) spikeReasons.push(`${errors.length} submission error${errors.length === 1 ? '' : 's'}`);
   if (cardDraws > 0) spikeReasons.push(`${cardDraws} card draw${cardDraws === 1 ? '' : 's'}`);
+  const recap = [
+    {
+      label: 'Stats',
+      value: statDelta === 0 ? 'No stat movement' : `${statDelta > 0 ? '+' : ''}${statDelta} total`,
+      tone: statDelta < 0 ? 'red' : statDelta > 0 ? 'green' : 'neutral',
+    },
+    {
+      label: 'Reveals',
+      value: revealedDelta === 0 ? 'No new zones' : `${revealedDelta > 0 ? '+' : ''}${revealedDelta} zones`,
+      tone: revealedDelta > 0 ? 'blue' : 'neutral',
+    },
+    {
+      label: 'Artifacts',
+      value: artifactDelta === 0 ? 'None recovered' : `${artifactDelta > 0 ? '+' : ''}${artifactDelta}`,
+      tone: artifactDelta > 0 ? 'gold' : 'neutral',
+    },
+    {
+      label: 'Cards',
+      value: cardDraws === 0 ? 'No cards' : `${cardDraws} drawn`,
+      tone: cardDraws > 0 ? 'gold' : 'neutral',
+    },
+    {
+      label: 'Validity',
+      value: invalidAttempts === 0 ? 'No invalid attempts' : `${invalidAttempts} invalid`,
+      tone: invalidAttempts > 0 ? 'red' : 'green',
+    },
+    {
+      label: 'Motion',
+      value: locationChanges === 0 ? 'No player moved' : `${locationChanges} location change${locationChanges === 1 ? '' : 's'}`,
+      tone: locationChanges > 0 ? 'blue' : 'neutral',
+    },
+  ];
 
   return {
     changed,
@@ -761,6 +793,7 @@ function analyzeTurn(turn) {
     meaningfulChoiceDensity,
     zeroStats,
     actions,
+    recap,
   };
 }
 
@@ -800,6 +833,14 @@ function analyzeRun(run) {
     artifactDelta: item.artifactDelta,
     invalidAttempts: item.invalidAttempts,
     zeroStats: item.zeroStats,
+    reasons: [
+      item.statDelta < 0 ? `stat pressure ${item.statDelta}` : null,
+      item.revealedDelta > 0 ? `revealed ${item.revealedDelta}` : null,
+      item.artifactDelta > 0 ? `artifact ${item.artifactDelta}` : null,
+      item.invalidAttempts > 0 ? `${item.invalidAttempts} invalid` : null,
+      item.zeroStats > 0 ? `${item.zeroStats} zero stat` : null,
+      item.cardDraws > 0 ? `${item.cardDraws} card` : null,
+    ].filter(Boolean),
     tension: Math.max(
       0,
       Math.min(100, (item.zeroStats * 30) + Math.abs(Math.min(0, item.statDelta)) * 8 + item.invalidAttempts * 6 + item.cardDraws * 5 + item.revealedDelta * 4),
@@ -1038,22 +1079,47 @@ function prioritizedTask(metric, message, hint, source) {
   };
 }
 
+function evidenceForMetric(report, metric) {
+  const strategies = Object.entries(report.aggregate?.strategies || {});
+  if (strategies.length === 0) return null;
+  const highBad = ['idleShare', 'restShare', 'boringTurns', 'invalidAttempts', 'zeroStatPlayers'];
+  const metricKey = {
+    artifacts: 'avgArtifacts',
+    revealedZones: 'avgRevealedZones',
+    statDelta: 'avgStatDelta',
+    boringTurns: 'avgBoringTurns',
+    spikeTurns: 'avgSpikeTurns',
+    meaningfulChoiceDensity: 'avgMeaningfulChoiceDensity',
+    invalidAttempts: 'avgInvalidAttempts',
+    zeroStatPlayers: 'avgZeroStatPlayers',
+  }[metric];
+  if (!metricKey) return null;
+  const sorted = strategies
+    .map(([strategy, stats]) => ({ strategy, value: Number(stats[metricKey] || 0) }))
+    .sort((a, b) => highBad.includes(metric) ? b.value - a.value : a.value - b.value);
+  const worst = sorted[0];
+  if (!worst) return null;
+  return `Worst strategy: ${worst.strategy} (${worst.value.toFixed(3)}).`;
+}
+
 function makeTuningTasks(report, tuningConfig) {
   const tasks = [];
   for (const check of report.targetEvaluation?.checks || []) {
     if (check.pass) continue;
+    const evidence = evidenceForMetric(report, check.metric);
     tasks.push(prioritizedTask(
       check.metric,
-      `${check.label} is ${check.value.toFixed(3)}; target is ${check.target}.`,
+      `${check.label} is ${check.value.toFixed(3)}; target is ${check.target}.${evidence ? ` ${evidence}` : ''}`,
       tuningConfig.taskHints?.[check.metric] || 'Adjust game data or strategy and rerun the benchmark.',
       'target',
     ));
   }
   for (const check of report.scenarioGoalEvaluation?.checks || []) {
     if (check.pass) continue;
+    const evidence = evidenceForMetric(report, check.metric);
     tasks.push(prioritizedTask(
       check.metric,
-      `${report.scenarioGoalEvaluation.scenario} ${check.metric} is ${check.value.toFixed(3)}; goal is ${check.target}.`,
+      `${report.scenarioGoalEvaluation.scenario} ${check.metric} is ${check.value.toFixed(3)}; goal is ${check.target}.${evidence ? ` ${evidence}` : ''}`,
       tuningConfig.taskHints?.[check.metric] || 'Tune this scenario and compare against baseline.',
       'scenario-goal',
     ));

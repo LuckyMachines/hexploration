@@ -77,6 +77,10 @@ The simulator now emits raw run traces plus aggregate learning data:
 - Baseline comparison deltas for before/after tuning runs.
 - Prioritized tuning tasks generated from failed targets, scenario goals, and warnings.
 - A rolling tuning ledger in `reports/simulator/tuning-ledger.json`.
+- Per-turn micro-recaps for stats, reveals, artifacts, cards, validity, and movement.
+- Annotated tension reasons so a spike explains what caused it.
+- Strategy and scenario design questions in the `/simulator` workbench.
+- Action validity logs on each submitted turn.
 - Opinionated warnings in `/simulator`.
 
 ## Tuning Targets

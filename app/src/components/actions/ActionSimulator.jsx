@@ -1,4 +1,5 @@
 import { Action } from '../../lib/constants';
+import { getActionDetail } from '../../lib/detailText';
 
 function SimulatorRow({ ok, label, detail }) {
   return (
@@ -26,6 +27,7 @@ export default function ActionSimulator({
   isSpectator,
 }) {
   const checks = [];
+  const detail = getActionDetail(activeTab);
 
   checks.push({
     ok: !isSpectator,
@@ -72,6 +74,17 @@ export default function ActionSimulator({
         {checks.map((check, index) => (
           <SimulatorRow key={index} ok={check.ok} label={check.label} detail={check.detail} />
         ))}
+      </div>
+      <div className="grid gap-2 border-t border-exp-border/50 pt-2 sm:grid-cols-3">
+        <p className="font-mono text-[11px] leading-relaxed text-exp-text-dim">
+          <span className="text-exp-text">Effect:</span> {detail.effect}
+        </p>
+        <p className="font-mono text-[11px] leading-relaxed text-exp-text-dim">
+          <span className="text-exp-text">Risk:</span> {detail.risk}
+        </p>
+        <p className="font-mono text-[11px] leading-relaxed text-exp-text-dim">
+          <span className="text-exp-text">Requires:</span> {detail.requirement}
+        </p>
       </div>
     </div>
   );

@@ -21,7 +21,7 @@ export default function InventoryChange({ inventoryChange }) {
               }
             `}
           >
-            {isGain ? '+' : ''}{item}
+            <span className="opacity-70">{isGain ? 'Gained' : i === 1 ? 'Lost' : 'Note'}:</span> {isGain ? '+' : ''}{item}
           </span>
         );
       })}

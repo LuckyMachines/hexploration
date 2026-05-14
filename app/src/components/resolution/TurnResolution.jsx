@@ -6,6 +6,10 @@ import { truncateAddress } from '../../lib/formatting';
 import ActionResult from './ActionResult';
 import CardDraw from './CardDraw';
 
+function countNonZero(values = []) {
+  return values.filter((value) => Number(value) !== 0).length;
+}
+
 export default function TurnResolution({ gameId, events = [], turnState, turnReplay }) {
   const { playerActions } = useLastPlayerActions(gameId);
   const { playerIDs, cardTypes, cardsDrawn, cardResults, inventoryChanges, statUpdates } =
@@ -20,6 +24,13 @@ export default function TurnResolution({ gameId, events = [], turnState, turnRep
   const [selectedReplayIndex, setSelectedReplayIndex] = useState(Math.max(0, replay.steps.length - 1));
   const selectedStep = replay.steps[Math.min(selectedReplayIndex, Math.max(0, replay.steps.length - 1))];
   const groupedEntries = Object.entries(replay.grouped || {});
+  const actionCount = playerActions?.length || 0;
+  const cardCount = cardsDrawn?.filter(Boolean).length || 0;
+  const statDeltaCount = (statUpdates || []).reduce((sum, update) => sum + countNonZero(update || []), 0);
+  const inventoryDeltaCount = (inventoryChanges || []).reduce(
+    (sum, update) => sum + (update || []).filter((item) => item && item !== '').length,
+    0,
+  );
 
   if (!hasActions && !hasEvents && latestEvents.length === 0) return null;
 
@@ -37,6 +48,24 @@ export default function TurnResolution({ gameId, events = [], turnState, turnRep
       </div>
 
       <div className="p-4 space-y-4">
+        <div className="grid gap-2 sm:grid-cols-4">
+          {[
+            ['Actions', actionCount],
+            ['Cards', cardCount],
+            ['Stat Deltas', statDeltaCount],
+            ['Inventory', inventoryDeltaCount],
+          ].map(([label, value]) => (
+            <div key={label} className="rounded border border-exp-border/50 bg-exp-dark/35 px-3 py-2">
+              <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-exp-text-dim">
+                {label}
+              </p>
+              <p className="mt-1 font-mono text-lg text-compass-bright tabular-nums">
+                {value}
+              </p>
+            </div>
+          ))}
+        </div>
+
         {latestEvents.length > 0 && (
           <div>
             <div className="mb-2 flex flex-wrap items-center justify-between gap-2">

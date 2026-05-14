@@ -1,8 +1,10 @@
 import StatChange from './StatChange';
 import InventoryChange from './InventoryChange';
+import { cardOutcomeDetail } from '../../lib/detailText';
 
 export default function CardDraw({ playerID, cardType, cardDrawn, cardResult, inventoryChange, statUpdate }) {
   if (!cardDrawn && !cardType) return null;
+  const detail = cardOutcomeDetail({ cardType, cardDrawn, cardResult, inventoryChange, statUpdate });
 
   return (
     <div className="border border-exp-border/50 rounded p-3 bg-exp-dark/40">
@@ -22,6 +24,15 @@ export default function CardDraw({ playerID, cardType, cardDrawn, cardResult, in
             {cardDrawn || 'Unknown Card'}
           </span>
         </div>
+      </div>
+
+      <div className="mb-2 rounded border border-blueprint/25 bg-blueprint/5 px-2 py-1">
+        <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-blueprint">
+          Card detail
+        </p>
+        <p className="mt-1 font-mono text-[11px] leading-relaxed text-exp-text-dim">
+          {detail.headline}
+        </p>
       </div>
 
       {/* Card result description */}

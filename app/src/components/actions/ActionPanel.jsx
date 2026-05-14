@@ -4,6 +4,7 @@ import { getActionMeta } from '../../lib/actionMeta';
 import { emitFeedbackEvent } from '../../lib/feedbackEvents';
 import { getActionBlockReason, getActionExplanation, getBestActionSuggestion } from '../../lib/uxGuidance';
 import { buildActionDrama } from '../../lib/funTelemetry';
+import { getActionStake, getBlockedDetail, conditionForStats } from '../../lib/detailText';
 import { useGameActions } from '../../hooks/useGameActions';
 import { usePlayerInventory } from '../../hooks/usePlayerInventory';
 import MoveControl from './MoveControl';
@@ -98,7 +99,10 @@ export default function ActionPanel({
   };
   const activeExplanation = getActionExplanation(activeTab, actionContext);
   const blockReason = getActionBlockReason({ action: activeTab, ...actionContext });
+  const blockedDetail = getBlockedDetail(activeTab, blockReason);
   const suggestion = getBestActionSuggestion({ activeTab, ...actionContext });
+  const actionStake = getActionStake(activeTab, { ...actionContext, stats });
+  const condition = conditionForStats(stats);
 
   useEffect(() => {
     emitFeedbackEvent({
@@ -242,6 +246,53 @@ export default function ActionPanel({
       </div>
 
       <div className="px-4 pt-3">
+        <div className="grid gap-2 md:grid-cols-3">
+          <div className={`rounded border px-3 py-2 ${
+            condition.tone === 'red'
+              ? 'border-signal-red/35 bg-signal-red/5'
+              : condition.tone === 'gold'
+                ? 'border-compass/35 bg-compass/5'
+                : 'border-blueprint/30 bg-blueprint/5'
+          }`}>
+            <p className="font-mono text-[10px] uppercase tracking-[0.26em] text-exp-text-dim">
+              Condition
+            </p>
+            <p className="mt-1 font-mono text-xs uppercase tracking-[0.16em] text-exp-text">
+              {condition.label}
+            </p>
+            <p className="mt-1 font-mono text-[11px] leading-relaxed text-exp-text-dim">
+              {condition.detail}
+            </p>
+          </div>
+          <div className={`rounded border px-3 py-2 ${
+            actionStake.tone === 'red'
+              ? 'border-signal-red/35 bg-signal-red/5'
+              : actionStake.tone === 'gold'
+                ? 'border-compass/35 bg-compass/5'
+                : 'border-blueprint/30 bg-blueprint/5'
+          }`}>
+            <p className="font-mono text-[10px] uppercase tracking-[0.26em] text-exp-text-dim">
+              Stakes
+            </p>
+            <p className="mt-1 font-mono text-xs uppercase tracking-[0.16em] text-exp-text">
+              {actionStake.band}
+            </p>
+            <p className="mt-1 font-mono text-[11px] leading-relaxed text-exp-text-dim">
+              {actionStake.risk}
+            </p>
+          </div>
+          <div className="rounded border border-exp-border/60 bg-exp-dark/35 px-3 py-2">
+            <p className="font-mono text-[10px] uppercase tracking-[0.26em] text-exp-text-dim">
+              Required
+            </p>
+            <p className="mt-1 font-mono text-xs leading-relaxed text-exp-text">
+              {actionStake.requirement}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div className="px-4 pt-3">
         <div className="rounded border border-exp-border/60 bg-exp-dark/35 px-3 py-2">
           <div className="flex flex-wrap items-start justify-between gap-2">
             <div>
@@ -251,9 +302,12 @@ export default function ActionPanel({
               <p className="mt-1 font-mono text-xs text-exp-text">
                 {activeExplanation.outcome}
               </p>
+              <p className="mt-1 font-mono text-[11px] leading-relaxed text-exp-text-dim">
+                {actionStake.effect}
+              </p>
               {blockReason && (
                 <p className="mt-1 font-mono text-[11px] text-signal-red">
-                  Blocked: {blockReason}
+                  Blocked: {blockedDetail}
                 </p>
               )}
             </div>

@@ -1,10 +1,16 @@
 import { truncateAddress, formatZoneAlias } from '../../lib/formatting';
 import { PLAYER_COLORS, STAT_LABELS } from '../../lib/constants';
+import { conditionForStats, statDetail } from '../../lib/detailText';
 import StatBar from './StatBar';
 
 export default function PlayerDossier({ player, index, isCurrentUser, isFocused, isNearIntent, onFocus }) {
   const addr = player.playerAddress || '';
   const color = PLAYER_COLORS[index] || PLAYER_COLORS[0];
+  const condition = conditionForStats(player);
+  const actionLabel = player.action && player.action !== '' ? player.action : 'Idle';
+  const idlePosture = actionLabel === 'Idle' || actionLabel === '0'
+    ? 'Listening posture: no locked action yet.'
+    : `Committed posture: ${actionLabel}.`;
 
   return (
     <button
@@ -35,6 +41,28 @@ export default function PlayerDossier({ player, index, isCurrentUser, isFocused,
         )}
       </div>
 
+      <div className={`mb-2 rounded border px-2 py-1 ${
+        condition.tone === 'red'
+          ? 'border-signal-red/30 bg-signal-red/5'
+          : condition.tone === 'gold'
+            ? 'border-compass/30 bg-compass/5'
+            : condition.tone === 'green'
+              ? 'border-oxide-green/30 bg-oxide-green/5'
+              : 'border-blueprint/25 bg-blueprint/5'
+      }`}>
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-exp-text">
+            {condition.label}
+          </span>
+          <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-exp-text-dim">
+            {idlePosture}
+          </span>
+        </div>
+        <p className="mt-1 font-mono text-[10px] leading-relaxed text-exp-text-dim">
+          {condition.detail}
+        </p>
+      </div>
+
       <div className="grid grid-cols-3 gap-1 border-t border-exp-border/50 pt-2">
         <span className="rounded border border-exp-border/50 bg-exp-dark/35 px-2 py-1 font-mono text-[10px] uppercase text-exp-text-dim">
           M {player.movement ?? 0}
@@ -51,6 +79,14 @@ export default function PlayerDossier({ player, index, isCurrentUser, isFocused,
         <StatBar label={STAT_LABELS[0]} value={player.movement ?? 0} />
         <StatBar label={STAT_LABELS[1]} value={player.agility ?? 0} />
         <StatBar label={STAT_LABELS[2]} value={player.dexterity ?? 0} />
+      </div>
+
+      <div className="mt-2 grid grid-cols-3 gap-1">
+        {[player.movement, player.agility, player.dexterity].map((value, statIndex) => (
+          <span key={STAT_LABELS[statIndex]} className="rounded border border-exp-border/50 bg-exp-dark/35 px-1.5 py-1 font-mono text-[10px] uppercase tracking-[0.12em] text-exp-text-dim">
+            {STAT_LABELS[statIndex][0]} {statDetail(value)}
+          </span>
+        ))}
       </div>
 
       {player.action && player.action !== '' && player.action !== 'Idle' && (
