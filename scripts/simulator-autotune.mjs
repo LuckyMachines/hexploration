@@ -215,13 +215,33 @@ function generateCandidates(sourceReport, balance) {
     ],
   };
   const selected = catalog[issue] || catalog.noBoardDelta;
+  const scenarioTags = sourceReport?.scenarioDefinition?.tags || [];
+  const scenarioCandidates = [];
+  if (scenarioTags.includes('escape')) {
+    scenarioCandidates.push(candidate('Escape Pressure Probe', issue, 'Escape scenarios need at least one high-stakes flee attempt without invalid-action noise.', {
+      fleeBias: knob(knobs, 'fleeBias', 1) + 1,
+      invalidAttemptPenalty: knob(knobs, 'invalidAttemptPenalty', 5) + 2,
+    }, 'Raises escape pressure while keeping invalid attempts costly.', 'medium'));
+  }
+  if (scenarioTags.includes('cooperation')) {
+    scenarioCandidates.push(candidate('Cooperation Recovery Probe', issue, 'Cooperation scenarios need visible help/recovery value.', {
+      restBias: knob(knobs, 'restBias', 1) + 1,
+      choiceDensityReward: knob(knobs, 'choiceDensityReward', 18) + 4,
+    }, 'Increases recovery-oriented choices and rewards choice density.', 'medium'));
+  }
+  if (scenarioTags.includes('artifact')) {
+    scenarioCandidates.push(candidate('Artifact Payoff Probe', issue, 'Artifact scenarios need stronger dig/reward evidence.', {
+      digBias: knob(knobs, 'digBias', 1) + 1,
+      artifactLifeReward: knob(knobs, 'artifactLifeReward', 22) + 4,
+    }, 'Raises dig pressure and artifact-moment value.', 'medium'));
+  }
   const fallback = [
     candidate('Low-Risk Life Weighting', issue, 'Improve debug sensitivity without behavior blast radius.', {
       quietTurnLifeBonus: knob(knobs, 'quietTurnLifeBonus', 0) + 3,
       choiceDensityReward: knob(knobs, 'choiceDensityReward', 18) + 3,
     }, 'Makes quiet feedback and choice density more visible in scoring.', 'low'),
   ];
-  return [...selected, ...fallback].slice(0, Math.max(2, Math.min(5, Number(arg('candidates', 4)))));
+  return [...scenarioCandidates, ...selected, ...fallback].slice(0, Math.max(2, Math.min(5, Number(arg('candidates', 4)))));
 }
 
 function simulatorArgs(extra = {}) {
@@ -239,6 +259,8 @@ function simulatorArgs(extra = {}) {
     '--quiet',
   ];
   if (strategies) result.push(`--strategies=${strategies}`);
+  if (arg('scenario-id', null)) result.push(`--scenario-id=${arg('scenario-id', null)}`);
+  if (arg('scenario-file', null)) result.push(`--scenario-file=${arg('scenario-file', null)}`);
   if (turns) result.push(`--turns=${turns}`);
   if (players) result.push(`--players=${players}`);
   for (const [key, value] of Object.entries(extra)) {

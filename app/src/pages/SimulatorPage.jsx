@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { diagnoseEndState, getScenarioQuestion, getStrategyQuestion } from '../lib/detailText';
+import { SCENARIO_CATALOG } from '../data/scenarioCatalog';
 
 const SAMPLE_REPORT = {
   generatedAt: null,
@@ -46,6 +47,8 @@ const SAMPLE_REPORT = {
     bestTurns: [],
   },
   autoTune: null,
+  scenarioVerdict: null,
+  scenarioDefinition: null,
 };
 
 function Metric({ label, value, tone = 'neutral' }) {
@@ -485,6 +488,90 @@ function AutoTunePanel({ report }) {
           ))}
         </div>
       )}
+    </section>
+  );
+}
+
+function ScenarioBrowser({ scenarios = [], verdict }) {
+  return (
+    <section className="mt-4 rounded border border-exp-border bg-exp-panel p-4">
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <h2 className="font-mono text-xs uppercase tracking-[0.3em] text-exp-text-dim">
+            Scenario Designer
+          </h2>
+          <p className="mt-1 font-mono text-xs leading-relaxed text-exp-text-dim">
+            Plain-English scenarios become saved design questions, simulator configs, targets, failure signals, and history.
+          </p>
+        </div>
+        <pre className="max-w-full overflow-x-auto rounded border border-exp-border bg-exp-dark/60 p-2 font-mono text-[10px] text-compass-bright">
+          {`npm run scenario:create -- "4-player escape pressure with two exhausted players"\nnpm run scenario:run -- --id=escape-pressure-4p`}
+        </pre>
+      </div>
+
+      {verdict && (
+        <div className={`mt-3 rounded border px-3 py-2 ${
+          verdict.verdict === 'answered'
+            ? 'border-oxide-green/30 bg-oxide-green/5'
+            : verdict.verdict === 'failed'
+              ? 'border-signal-red/30 bg-signal-red/5'
+              : 'border-compass/30 bg-compass/5'
+        }`}>
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-exp-text-dim">
+              Scenario answered?
+            </p>
+            <p className="font-mono text-xs uppercase tracking-[0.18em] text-exp-text">
+              {verdict.verdict}
+            </p>
+          </div>
+          <p className="mt-1 font-mono text-xs leading-relaxed text-exp-text">
+            {verdict.designQuestion}
+          </p>
+          <p className="mt-1 font-mono text-[11px] leading-relaxed text-exp-text-dim">
+            {(verdict.reasons || []).join(' / ')}
+          </p>
+          {verdict.nextScenario && (
+            <p className="mt-1 font-mono text-[11px] leading-relaxed text-compass-bright">
+              Next: {verdict.nextScenario.name} / {(verdict.nextScenario.changes || []).join(', ')}
+            </p>
+          )}
+        </div>
+      )}
+
+      <div className="mt-3 grid gap-3 lg:grid-cols-2">
+        {scenarios.map((scenario) => (
+          <div key={scenario.id} className="rounded border border-exp-border/60 bg-exp-dark/35 px-3 py-2">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <p className="font-mono text-xs uppercase tracking-[0.18em] text-compass-bright">
+                {scenario.name}
+              </p>
+              <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-exp-text-dim">
+                {scenario.players}P / {scenario.turns} turns
+              </p>
+            </div>
+            <p className="mt-1 font-mono text-xs leading-relaxed text-exp-text">
+              {scenario.designQuestion}
+            </p>
+            <div className="mt-2 flex flex-wrap gap-1">
+              {(scenario.tags || []).map((tag) => (
+                <span key={tag} className="rounded border border-blueprint/25 bg-blueprint/5 px-2 py-1 font-mono text-[10px] uppercase tracking-[0.16em] text-blueprint">
+                  {tag}
+                </span>
+              ))}
+            </div>
+            <p className="mt-2 font-mono text-[11px] leading-relaxed text-exp-text-dim">
+              Strategies: {(scenario.strategies || []).join(', ')}
+            </p>
+            <p className="mt-1 font-mono text-[11px] leading-relaxed text-exp-text-dim">
+              Assumptions: {(scenario.assumptions || []).join(' / ') || 'none'}
+            </p>
+            <pre className="mt-2 overflow-x-auto rounded border border-exp-border/60 bg-exp-dark/50 p-2 font-mono text-[10px] text-compass-bright">
+              {scenario.command}
+            </pre>
+          </div>
+        ))}
+      </div>
     </section>
   );
 }
@@ -976,6 +1063,7 @@ export default function SimulatorPage() {
       <InsightPanel aggregate={aggregate} summary={summary} />
       <FunDebuggerPanel funDebugger={funDebugger} />
       <AutoTunePanel report={autoTuneReport} />
+      <ScenarioBrowser scenarios={SCENARIO_CATALOG} verdict={report.scenarioVerdict} />
       <SmallestExperimentQueue experiments={funDebugger.smallestExperimentQueue || funDebugger.topExperiments || []} />
       <TargetScorecard targetEvaluation={targetEvaluation} scenarioGoalEvaluation={scenarioGoalEvaluation} />
       <TuningTasks tasks={tasks} tuning={tuning} />

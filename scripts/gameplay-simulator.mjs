@@ -24,6 +24,15 @@ import { dirname, resolve } from 'path';
 import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
 import { ANVIL_KEYS, DEPLOYER_KEY } from './anvil-keys.mjs';
+import {
+  evaluateScenarioReport,
+  findScenario,
+  loadScenarioStore,
+  normalizeScenario,
+  scenarioStorePath,
+  scenarioToSimulatorPreset,
+  writeScenarioReport,
+} from './scenario-utils.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = resolve(__dirname, '..');
@@ -69,8 +78,22 @@ const SCENARIOS = {
   },
 };
 
-const scenarioName = String(arg('scenario', 'solo-balanced'));
-const scenario = SCENARIOS[scenarioName] || {};
+function loadExternalScenarioDefinition() {
+  const inline = arg('scenario-json', '');
+  if (inline) return normalizeScenario(JSON.parse(String(inline)));
+  const scenarioIdArg = String(arg('scenario-id', ''));
+  const scenarioArg = String(arg('scenario', ''));
+  const id = scenarioIdArg || scenarioArg;
+  const file = String(arg('scenario-file', scenarioStorePath));
+  if (!id || SCENARIOS[id]) return null;
+  const store = loadScenarioStore(file);
+  const found = findScenario(store, id);
+  return found ? normalizeScenario(found) : null;
+}
+
+const scenarioDefinition = loadExternalScenarioDefinition();
+const scenarioName = String(arg('scenario-id', arg('scenario', scenarioDefinition?.id || 'solo-balanced')));
+const scenario = scenarioDefinition ? scenarioToSimulatorPreset(scenarioDefinition) : SCENARIOS[scenarioName] || {};
 
 const config = {
   rpcUrl: String(arg('rpc', process.env.RPC_URL || 'http://127.0.0.1:9955')),
@@ -86,6 +109,13 @@ const config = {
   hypothesis: String(arg('hypothesis', '')),
   changed: String(arg('changed', '')),
   balance: String(arg('balance', balanceConfigPath)),
+  scenarioFile: String(arg('scenario-file', scenarioStorePath)),
+  scenarioId: String(arg('scenario-id', '')),
+  scenarioJson: String(arg('scenario-json', '')),
+  designQuestion: String(arg('design-question', '')),
+  tags: String(arg('tags', '')).split(',').map((value) => value.trim()).filter(Boolean),
+  initialAssumptionMode: String(arg('initial-assumption-mode', 'metadata')),
+  scenarioDefinition,
   baseline: arg('baseline', null),
   saveBaseline: boolArg('save-baseline', false),
   gameId: arg('game', null),
@@ -338,6 +368,32 @@ const transport = http(config.rpcUrl);
 const publicClient = createPublicClient({ chain: foundry, transport });
 const deployer = privateKeyToAccount(DEPLOYER_KEY);
 const deployerWallet = createWalletClient({ chain: foundry, transport, account: deployer });
+
+async function assertRpcReachable(timeoutMs = 5_000) {
+  const deadline = Date.now() + timeoutMs;
+  let lastError = null;
+  while (Date.now() < deadline) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 1_000);
+    try {
+      const response = await fetch(config.rpcUrl, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ jsonrpc: '2.0', method: 'eth_chainId', params: [], id: 1 }),
+        signal: controller.signal,
+      });
+      if (response.ok) return;
+      lastError = new Error(`RPC responded with HTTP ${response.status}`);
+    } catch (error) {
+      lastError = error;
+    } finally {
+      clearTimeout(timer);
+    }
+    await new Promise((resolveRetry) => setTimeout(resolveRetry, 250));
+  }
+  const detail = lastError?.message ? ` Last error: ${lastError.message}` : '';
+  throw new Error(`RPC is not reachable at ${config.rpcUrl}. Start the local contract stack with "npm run local:solo" or pass --rpc=<url>.${detail}`);
+}
 
 function walletForIndex(index) {
   const key = ANVIL_KEYS[index + 1];
@@ -1768,6 +1824,7 @@ async function runSimulation(addresses, runConfig) {
 }
 
 async function main() {
+  await assertRpcReachable();
   const addresses = loadAddresses();
   const tuningConfig = loadTuningConfig();
   const balanceConfig = loadBalanceConfig();
@@ -1819,12 +1876,26 @@ async function main() {
     },
     balance: balanceConfig,
   };
+  if (config.scenarioDefinition) {
+    const scenarioForReport = normalizeScenario({
+      ...config.scenarioDefinition,
+      designQuestion: config.designQuestion || config.scenarioDefinition.designQuestion,
+      tags: config.tags.length > 0 ? config.tags : config.scenarioDefinition.tags,
+    });
+    report.scenarioDefinition = scenarioForReport;
+    report.scenarioVerdict = evaluateScenarioReport(report, scenarioForReport);
+  }
   report.targetEvaluation = evaluateTargets(report.aggregate, tuningConfig.targets);
   report.scenarioGoalEvaluation = evaluateScenarioGoals(report, tuningConfig.scenarioGoals);
   report.comparison = compareReports(report, baselineReport);
   report.tasks = makeTuningTasks(report, tuningConfig);
 
   const paths = await writeReport(report);
+  if (report.scenarioDefinition) {
+    const scenarioPaths = writeScenarioReport(report, report.scenarioDefinition);
+    paths.scenarioLatestPath = scenarioPaths.latest;
+    paths.scenarioPublicPath = scenarioPaths.publicLatest;
+  }
   const ledgerPath = appendTuningLedger(report, paths);
   if (config.saveBaseline) {
     writeFileSync(defaultBaselinePath, JSON.stringify(report, bigintReplacer, 2));
@@ -1845,6 +1916,7 @@ async function main() {
     },
     targetEvaluation: report.targetEvaluation,
     scenarioGoalEvaluation: report.scenarioGoalEvaluation,
+    scenarioVerdict: report.scenarioVerdict,
     comparison: report.comparison,
     tasks: report.tasks,
     paths: { ...paths, ledgerPath, baselinePath: config.saveBaseline ? defaultBaselinePath : report.tuning.baselinePath },

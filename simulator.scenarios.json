@@ -1,0 +1,163 @@
+{
+  "schemaVersion": 1,
+  "scenarios": [
+    {
+      "schemaVersion": 1,
+      "id": "solo-artifact-hunt",
+      "name": "Solo Artifact Hunt",
+      "version": 1,
+      "description": "Solo artifact hunt with high stat pressure.",
+      "designQuestion": "Does artifact hunting produce payoff before the run goes flat?",
+      "players": 1,
+      "turns": 12,
+      "strategies": ["dig", "balanced", "risky"],
+      "batch": 1,
+      "seed": "scenario-solo-artifact-hunt",
+      "tags": ["solo", "artifact", "survival"],
+      "initialState": {
+        "assumptions": [
+          {
+            "key": "playerStats",
+            "description": "pressure around low stats is intended",
+            "support": "notYetSupported",
+            "mode": "notYetSupported"
+          }
+        ],
+        "support": {
+          "playerStats": "notYetSupported",
+          "revealedZones": "notYetSupported",
+          "artifactsHeld": "notYetSupported",
+          "landingRevealed": "observedOnly",
+          "campsites": "observedOnly",
+          "inventory": "notYetSupported",
+          "queuePhase": "observedOnly",
+          "dayNumber": "observedOnly"
+        }
+      },
+      "targets": [
+        { "metric": "artifacts", "op": ">=", "value": 0.25, "label": "Artifact average" },
+        { "metric": "digActions", "op": ">=", "value": 1, "label": "Dig action count" },
+        { "metric": "zeroStatPlayers", "op": "<=", "value": 1, "label": "Zero-stat players" }
+      ],
+      "failureSignals": [
+        { "metric": "flatStreak", "op": ">=", "value": 3, "label": "Flat streak >= 3" },
+        { "metric": "artifacts", "op": "<", "value": 0.25, "label": "Artifact average too low" }
+      ],
+      "notes": {
+        "author": "system",
+        "hypothesis": "Dig-focused play should produce visible payoff or useful clues.",
+        "decision": ""
+      },
+      "ladder": {
+        "prerequisites": [],
+        "easier": [],
+        "harder": ["escape-pressure-4p"],
+        "related": []
+      },
+      "packs": ["artifacts"],
+      "createdAt": "2026-05-14T00:00:00.000Z",
+      "updatedAt": "2026-05-14T00:00:00.000Z",
+      "archived": false
+    },
+    {
+      "schemaVersion": 1,
+      "id": "escape-pressure-4p",
+      "name": "Escape Pressure 4P",
+      "version": 1,
+      "description": "4-player escape pressure with two exhausted players, one artifact, and landing relevance.",
+      "designQuestion": "Does escape pressure create interesting cooperation instead of pure panic?",
+      "players": 4,
+      "turns": 10,
+      "strategies": ["balanced", "rest", "move", "risky"],
+      "batch": 1,
+      "seed": "scenario-escape-pressure-4p",
+      "tags": ["multiplayer", "cooperation", "escape", "survival"],
+      "initialState": {
+        "assumptions": [
+          {
+            "key": "playerStats",
+            "description": "two exhausted players",
+            "support": "notYetSupported",
+            "mode": "notYetSupported"
+          },
+          {
+            "key": "artifactsHeld",
+            "description": "one player has an artifact",
+            "support": "notYetSupported",
+            "mode": "notYetSupported"
+          },
+          {
+            "key": "landingRevealed",
+            "description": "landing zone is revealed or strategically relevant",
+            "support": "observedOnly",
+            "mode": "observedOnly"
+          }
+        ],
+        "support": {
+          "playerStats": "notYetSupported",
+          "revealedZones": "notYetSupported",
+          "artifactsHeld": "notYetSupported",
+          "landingRevealed": "observedOnly",
+          "campsites": "observedOnly",
+          "inventory": "notYetSupported",
+          "queuePhase": "observedOnly",
+          "dayNumber": "observedOnly"
+        }
+      },
+      "targets": [
+        { "metric": "helpActions", "op": ">=", "value": 1, "label": "Help action count" },
+        { "metric": "fleeActions", "op": ">=", "value": 1, "label": "Escape attempts" },
+        { "metric": "lifeScore", "op": ">=", "value": 35, "label": "Life score" },
+        { "metric": "zeroStatPlayers", "op": "<=", "value": 1, "label": "Zero-stat players" }
+      ],
+      "failureSignals": [
+        { "metric": "flatStreak", "op": ">=", "value": 3, "label": "Flat streak >= 3" },
+        { "metric": "helpActions", "op": "==", "value": 0, "label": "No help actions" },
+        { "metric": "fleeActions", "op": "==", "value": 0, "label": "No flee actions" },
+        { "metric": "zeroStatPlayers", "op": ">", "value": 0, "label": "Any zero-stat player" }
+      ],
+      "notes": {
+        "author": "system",
+        "hypothesis": "Escape pressure should create cooperation and rescue choices.",
+        "decision": ""
+      },
+      "ladder": {
+        "prerequisites": ["solo-artifact-hunt"],
+        "easier": [],
+        "harder": [],
+        "related": []
+      },
+      "packs": ["escape", "cooperation"],
+      "createdAt": "2026-05-14T00:00:00.000Z",
+      "updatedAt": "2026-05-14T00:00:00.000Z",
+      "archived": false
+    }
+  ],
+  "packs": [
+    {
+      "id": "artifacts",
+      "name": "Artifacts",
+      "scenarioIds": ["solo-artifact-hunt"]
+    },
+    {
+      "id": "escape",
+      "name": "Escape",
+      "scenarioIds": ["escape-pressure-4p"]
+    },
+    {
+      "id": "cooperation",
+      "name": "Multiplayer Cooperation",
+      "scenarioIds": ["escape-pressure-4p"]
+    },
+    {
+      "id": "exploration",
+      "name": "Exploration",
+      "scenarioIds": []
+    },
+    {
+      "id": "chaos-regression",
+      "name": "Chaos Regression",
+      "scenarioIds": []
+    }
+  ]
+}

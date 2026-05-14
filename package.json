@@ -26,6 +26,14 @@
     "sim:compare": "node scripts/gameplay-simulator.mjs --scenario=benchmark --batch=5 --baseline",
     "sim:autotune": "node scripts/simulator-autotune.mjs --scenario=benchmark --batch=3",
     "sim:autotune:dry": "node scripts/simulator-autotune.mjs --dry-run",
+    "scenario:create": "node scripts/scenario-designer.mjs create",
+    "scenario:list": "node scripts/scenario-designer.mjs list",
+    "scenario:show": "node scripts/scenario-designer.mjs show",
+    "scenario:validate": "node scripts/scenario-designer.mjs validate",
+    "scenario:run": "node scripts/scenario-designer.mjs run",
+    "scenario:run-pack": "node scripts/scenario-designer.mjs run-pack",
+    "scenario:autotune": "node scripts/simulator-autotune.mjs --scenario=benchmark --batch=3",
+    "scenario:test": "node --test scripts/scenario-utils.test.mjs",
     "test:e2e:anvil": "node scripts/run-anvil-e2e.mjs"
   },
   "repository": {

@@ -129,9 +129,11 @@ npm run sim:baseline
 npm run sim:compare -- --changed="movement tuning"
 npm run sim:autotune:dry
 npm run sim:autotune
+npm run scenario:create -- "solo artifact hunt with high stat pressure"
+npm run scenario:run -- --id=solo-artifact-hunt
 ```
 
-Then open `http://localhost:5502/simulator`. The runner writes reports to `reports/simulator/latest-report.json` and `app/public/simulator/latest-report.json`, scores them against `simulator.tuning.json`, runs the Fun Debugger life-score/experiment analysis, can auto-tune safe knobs from `simulator.balance.json`, and appends `reports/simulator/tuning-ledger.json`.
+Then open `http://localhost:5502/simulator`. The runner writes reports to `reports/simulator/latest-report.json` and `app/public/simulator/latest-report.json`, scores them against `simulator.tuning.json`, runs the Fun Debugger life-score/experiment analysis, can auto-tune safe knobs from `simulator.balance.json`, and can save plain-English design scenarios from `simulator.scenarios.json`.
 
 See [docs/gameplay-simulator.md](docs/gameplay-simulator.md) for strategies and engine-path details.
 

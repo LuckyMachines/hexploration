@@ -42,7 +42,11 @@ npm run sim:baseline
 npm run sim:compare -- --changed="movement tuning"
 npm run sim:autotune:dry
 npm run sim:autotune
+npm run scenario:create -- "4-player escape pressure with two exhausted players and one artifact"
+npm run scenario:run -- --id=escape-pressure-4p
 ```
+
+Scenario runs use the same active Anvil deployment as `npm run sim:*`; keep `npm run local:solo` running or pass `--rpc=<url>` to target another local engine.
 
 ## Engine Path
 
@@ -90,7 +94,67 @@ The simulator now emits raw run traces plus aggregate learning data:
 - CLI summary with the top fun issue and top experiment after each simulator run.
 - Auto-tune sessions that generate candidate balance patches, run each candidate, reject harmful regressions, and rank winners.
 - Auto-tune history in `reports/simulator/experiments/index.json`.
+- Scenario Designer definitions in `simulator.scenarios.json`.
+- Plain-English scenario creation, validation, duplication, archiving, pack running, import/export, and report verdicts.
+- Scenario run history in `reports/simulator/scenarios/<scenario-id>/history.json`.
 - Opinionated warnings in `/simulator`.
+
+## Scenario Designer
+
+`simulator.scenarios.json` stores authored design questions. The CLI can create scenarios from plain English and preserve unsupported initial-state requests honestly as assumptions.
+
+Commands:
+
+```bash
+npm run scenario:create -- "solo artifact hunt with high stat pressure"
+npm run scenario:list
+npm run scenario:show -- --id=solo-artifact-hunt
+npm run scenario:validate
+npm run scenario:run -- --id=solo-artifact-hunt
+npm run scenario:run-pack -- --pack=escape
+npm run scenario:autotune -- --scenario-id=escape-pressure-4p
+```
+
+Utility commands:
+
+```bash
+node scripts/scenario-designer.mjs duplicate --id=solo-artifact-hunt --new-id=solo-artifact-hunt-hard
+node scripts/scenario-designer.mjs archive --id=solo-artifact-hunt-hard
+node scripts/scenario-designer.mjs export --file=scenario-export.json
+node scripts/scenario-designer.mjs import --file=scenario-export.json
+node scripts/scenario-designer.mjs decide --id=solo-artifact-hunt --decision=keep --notes="human playtest next"
+```
+
+Scenario fields:
+
+- `id`, `name`, `description`, `designQuestion`
+- `players`, `turns`, `strategies`, `batch`, `seed`
+- `tags`, `initialState.assumptions`, `targets`, `failureSignals`
+- `notes`, `ladder`, `packs`, `version`, `createdFrom`, `parentScenarioId`
+
+Current setup support:
+
+- `playerStats`: not yet enforced by contract setup helpers.
+- `revealedZones`: not yet enforced.
+- `artifactsHeld`: not yet enforced.
+- `landingRevealed`, `campsites`, `queuePhase`, `dayNumber`: observed only.
+
+The report will never claim unsupported assumptions were enforced. For example, “two exhausted players” is stored as a design assumption and approximated through strategy/targets until a dev setup hook can set starting stats directly.
+
+Scenario reports include:
+
+- `scenarioDefinition`: the full snapshot used for that run.
+- `scenarioVerdict`: `answered`, `inconclusive`, or `failed`.
+- pass/fail target checks and triggered failure signals.
+- unsupported assumptions.
+- recommended follow-up scenario variant.
+
+Scenario outputs:
+
+- `reports/simulator/scenarios/<scenario-id>/latest-report.json`
+- `reports/simulator/scenarios/<scenario-id>/run-<timestamp>.json`
+- `reports/simulator/scenarios/<scenario-id>/history.json`
+- `app/public/simulator/scenarios/<scenario-id>/latest-report.json`
 
 ## Balance Surface
 
