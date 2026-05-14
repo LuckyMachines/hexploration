@@ -4,6 +4,7 @@ import Header from './components/layout/Header';
 import HomePage from './pages/HomePage';
 import GamePage from './pages/GamePage';
 import GameUILab from './pages/GameUILab';
+import SimulatorPage from './pages/SimulatorPage';
 import Modal from './components/shared/Modal';
 import FieldManual from './components/help/FieldManual';
 import ErrorBoundary from './components/shared/ErrorBoundary';
@@ -26,6 +27,7 @@ export default function App() {
             <Route path="/" element={<HomePage />} />
             <Route path="/game/:gameId" element={<GamePage />} />
             <Route path="/ui-lab" element={<GameUILab />} />
+            <Route path="/simulator" element={<SimulatorPage />} />
           </Routes>
         </ErrorBoundary>
       </main>

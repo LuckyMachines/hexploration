@@ -117,6 +117,19 @@ Event, Ambush, Treasure, Land, Relic -- each deck is populated from `scripts/onc
 
 Xenovoya requires two things to keep running: **automation** (advancing game phases) and **randomness** (card draws, dice rolls, events). Both are pluggable. Three randomness modes are supported:
 
+## Gameplay Simulator
+
+Use the same-engine simulator to tune balance and outcomes against the local Solidity contracts:
+
+```bash
+npm run local:solo
+npm run sim:balanced
+```
+
+Then open `http://localhost:5502/simulator`. The runner writes reports to `reports/simulator/latest-report.json` and `app/public/simulator/latest-report.json`.
+
+See [docs/gameplay-simulator.md](docs/gameplay-simulator.md) for strategies and engine-path details.
+
 ### AutoLoop VRF (recommended)
 
 The recommended approach. The worker generates an ECVRF proof off-chain, passes it to `progressLoop()`, and the contract verifies the proof on-chain — all in one transaction. Cheaper, faster, and cryptographically verifiable without Chainlink fees.

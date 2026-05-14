@@ -17,6 +17,9 @@
     "local:join": "node scripts/join-local-game.mjs",
     "local:bots": "node scripts/register-bots.mjs",
     "local:auto-bots": "node scripts/auto-bots.mjs",
+    "sim": "node scripts/gameplay-simulator.mjs",
+    "sim:balanced": "node scripts/gameplay-simulator.mjs --turns=12 --strategy=balanced",
+    "sim:risky": "node scripts/gameplay-simulator.mjs --turns=12 --strategy=risky",
     "test:e2e:anvil": "node scripts/run-anvil-e2e.mjs"
   },
   "repository": {
