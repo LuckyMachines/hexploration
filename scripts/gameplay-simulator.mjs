@@ -373,6 +373,112 @@ function average(values) {
   return values.length > 0 ? values.reduce((sum, value) => sum + value, 0) / values.length : 0;
 }
 
+function clamp(value, min, max) {
+  return Math.max(min, Math.min(max, value));
+}
+
+const FUN_CAUSE_LIBRARY = {
+  noBoardDelta: {
+    label: 'No board delta',
+    system: 'board',
+    suggestion: 'Add an early reveal ping, route preview, or tile-state marker when a turn otherwise changes nothing.',
+    blastRadius: 'low',
+  },
+  noStatDelta: {
+    label: 'No stat delta',
+    system: 'stats',
+    suggestion: 'Make quiet turns nudge a stat, condition label, or visible pressure meter so the body still feels present.',
+    blastRadius: 'low',
+  },
+  noCardResult: {
+    label: 'No card result',
+    system: 'cards',
+    suggestion: 'Trigger a low-impact card, ambient omen, or card preview after repeated quiet turns.',
+    blastRadius: 'medium',
+  },
+  noArtifactPayoff: {
+    label: 'No artifact payoff',
+    system: 'artifacts',
+    suggestion: 'Raise dig feedback first: show clue, partial progress, or artifact odds before changing reward math.',
+    blastRadius: 'low',
+  },
+  repeatedAction: {
+    label: 'Repeated action',
+    system: 'pacing',
+    suggestion: 'Add a soft bonus or different feedback when the same action repeats twice in a row.',
+    blastRadius: 'medium',
+  },
+  oneChoice: {
+    label: 'Only one practical choice',
+    system: 'action-validity',
+    suggestion: 'Expose one additional valid alternative in this state or explain why other actions are locked.',
+    blastRadius: 'medium',
+  },
+  invalidFriction: {
+    label: 'Invalid action friction',
+    system: 'ui-feedback',
+    suggestion: 'Surface the first invalid reason before submit and bias the bot away from that failed option.',
+    blastRadius: 'low',
+  },
+  statCollapse: {
+    label: 'Stat collapse',
+    system: 'stats',
+    suggestion: 'Add a rescue/recovery affordance at one-stat danger before reducing global pressure.',
+    blastRadius: 'medium',
+  },
+  restDominance: {
+    label: 'Rest dominance',
+    system: 'stats',
+    suggestion: 'Make active play recover small amounts too, so rest is not the only readable safety valve.',
+    blastRadius: 'medium',
+  },
+  movementFriction: {
+    label: 'Movement friction',
+    system: 'movement',
+    suggestion: 'Make the first move step easier to plan or reward movement with a visible board change sooner.',
+    blastRadius: 'medium',
+  },
+  rewardMoment: {
+    label: 'Reward moment',
+    system: 'artifacts',
+    suggestion: 'Protect this beat: add stronger artifact presentation before changing its odds.',
+    blastRadius: 'low',
+  },
+  discoveryMoment: {
+    label: 'Discovery moment',
+    system: 'board',
+    suggestion: 'Use this reveal pattern as the baseline for earlier flat turns.',
+    blastRadius: 'low',
+  },
+  cardMoment: {
+    label: 'Card moment',
+    system: 'cards',
+    suggestion: 'Preserve this card feedback and make similar outcomes as legible in quiet turns.',
+    blastRadius: 'low',
+  },
+};
+
+function funCause(key, evidence) {
+  const cause = FUN_CAUSE_LIBRARY[key] || FUN_CAUSE_LIBRARY.noBoardDelta;
+  return { key, ...cause, evidence };
+}
+
+function countBy(items, keyFn) {
+  const counts = {};
+  for (const item of items) {
+    const key = keyFn(item);
+    if (!key) continue;
+    counts[key] = (counts[key] || 0) + 1;
+  }
+  return counts;
+}
+
+function sortedCounts(counts) {
+  return Object.entries(counts)
+    .map(([key, count]) => ({ key, count }))
+    .sort((a, b) => b.count - a.count || a.key.localeCompare(b.key));
+}
+
 async function createGame(addresses, players = config.players) {
   log(`creating ${players}-player simulator game`);
   await writeContract(deployerWallet, addresses.CONTROLLER, abis.controller, 'requestNewGame', [
@@ -713,7 +819,7 @@ async function progressEngine(addresses) {
   return progressCount;
 }
 
-function analyzeTurn(turn) {
+function analyzeTurn(turn, previousAnalysis = null) {
   const before = turn.before;
   const after = turn.after;
   const submissions = turn.submissions || [];
@@ -736,6 +842,7 @@ function analyzeTurn(turn) {
     : 0;
   const zeroStats = zeroStatPlayers(after);
   const actions = submissions.map((submission) => submission.action).filter(Boolean);
+  const uniqueActions = new Set(actions);
   const errors = submissions.filter((submission) => submission.error);
   const changed = Math.abs(statDelta) > 0 || artifactDelta > 0 || locationChanges > 0 || revealedDelta > 0 || cardDraws > 0;
   const boring = !turn.skipped && !changed && errors.length === 0;
@@ -778,6 +885,69 @@ function analyzeTurn(turn) {
       tone: locationChanges > 0 ? 'blue' : 'neutral',
     },
   ];
+  const repeatedAction = actions.length > 0
+    && previousAnalysis?.actions?.length > 0
+    && actions.every((action) => previousAnalysis.actions.includes(action));
+  const causes = [];
+  if (turn.skipped) causes.push(funCause('oneChoice', 'Queue was not in submission; the player could not act.'));
+  if (revealedDelta <= 0 && locationChanges <= 0) causes.push(funCause('noBoardDelta', 'No reveal or location change occurred.'));
+  if (statDelta === 0) causes.push(funCause('noStatDelta', 'No visible stat movement occurred.'));
+  if (cardDraws === 0) causes.push(funCause('noCardResult', 'No day card or event result surfaced.'));
+  if (artifactDelta === 0 && actions.includes('Dig')) causes.push(funCause('noArtifactPayoff', 'Dig did not produce an artifact payoff.'));
+  if (repeatedAction) causes.push(funCause('repeatedAction', `Repeated ${actions.join(', ')} after the previous turn.`));
+  if (meaningfulChoiceDensity <= 0.25 && submissions.length > 0) causes.push(funCause('oneChoice', 'Most submitted players had only one practical valid choice.'));
+  if (invalidAttempts > 0) causes.push(funCause('invalidFriction', `${invalidAttempts} invalid option${invalidAttempts === 1 ? '' : 's'} were tried before submit.`));
+  if (zeroStats > 0) causes.push(funCause('statCollapse', `${zeroStats} player${zeroStats === 1 ? '' : 's'} reached a zero stat.`));
+  if (actions.length > 0 && actions.every((action) => action === 'Rest')) causes.push(funCause('restDominance', 'Every submitted action was Rest.'));
+  if (actions.includes('Move') && revealedDelta <= 0 && locationChanges <= 0) causes.push(funCause('movementFriction', 'Move did not produce a visible board or location delta.'));
+
+  const livelyCauses = [];
+  if (artifactDelta > 0) livelyCauses.push(funCause('rewardMoment', `${artifactDelta} artifact${artifactDelta === 1 ? '' : 's'} recovered.`));
+  if (revealedDelta > 0 || locationChanges > 0) livelyCauses.push(funCause('discoveryMoment', `${revealedDelta} reveal delta, ${locationChanges} location change${locationChanges === 1 ? '' : 's'}.`));
+  if (cardDraws > 0) livelyCauses.push(funCause('cardMoment', `${cardDraws} card result${cardDraws === 1 ? '' : 's'} surfaced.`));
+
+  const positiveScore = (
+    (changed ? 10 : 0)
+    + clamp(revealedDelta, 0, 3) * 12
+    + clamp(locationChanges, 0, 4) * 8
+    + clamp(artifactDelta, 0, 3) * 22
+    + clamp(cardDraws, 0, 4) * 7
+    + (statDelta > 0 ? clamp(statDelta, 0, 6) * 3 : 0)
+    + (statDelta < 0 ? clamp(Math.abs(statDelta), 0, 4) * 2 : 0)
+    + Math.round(meaningfulChoiceDensity * 18)
+    + (uniqueActions.size > 1 ? 8 : 0)
+    + ((turn.progressCount || 0) > 0 ? 4 : 0)
+  );
+  const negativeScore = (
+    (boring ? 22 : 0)
+    + (turn.skipped ? 28 : 0)
+    + invalidAttempts * 5
+    + zeroStats * 14
+    + errors.length * 18
+    + (repeatedAction ? 6 : 0)
+  );
+  const lifeScore = clamp(Math.round(18 + positiveScore - negativeScore), 0, 100);
+  let classification = 'alive';
+  if (turn.skipped || causes.some((cause) => cause.key === 'oneChoice') && lifeScore < 35) classification = 'stalled';
+  else if (errors.length > 0 || invalidAttempts >= 3) classification = 'confusing';
+  else if (zeroStats > 0 || statDelta <= -5) classification = 'punishing';
+  else if (artifactDelta > 0 || cardDraws > 0) classification = 'rewarding';
+  else if (spikeReasons.length > 0 && lifeScore >= 40) classification = 'spiky';
+  else if (boring || lifeScore < 32) classification = 'flat';
+
+  const topCause = causes[0] || livelyCauses[0] || funCause('noBoardDelta', 'No dominant cause found.');
+  const confidence = clamp(
+    0.35
+      + (Math.abs(lifeScore - 50) / 100)
+      + (causes.length > 0 ? 0.15 : 0)
+      + (submissions.length > 0 ? 0.1 : 0),
+    0.35,
+    0.95,
+  );
+  const suggestion = classification === 'alive' || classification === 'rewarding' || classification === 'spiky'
+    ? (livelyCauses[0]?.suggestion || 'Preserve this pattern and compare nearby lower-score turns against it.')
+    : topCause.suggestion;
+  const systems = [...new Set([...causes, ...livelyCauses].map((cause) => cause.system))];
 
   return {
     changed,
@@ -794,6 +964,27 @@ function analyzeTurn(turn) {
     zeroStats,
     actions,
     recap,
+    funDebugger: {
+      lifeScore,
+      classification,
+      causes,
+      livelyCauses,
+      systems,
+      suggestion,
+      confidence,
+      evidence: {
+        changed,
+        statDelta,
+        artifactDelta,
+        locationChanges,
+        revealedDelta,
+        cardDraws,
+        invalidAttempts,
+        meaningfulChoiceDensity,
+        zeroStats,
+        repeatedAction,
+      },
+    },
   };
 }
 
@@ -810,9 +1001,98 @@ function failureReasons(run) {
   return reasons;
 }
 
+function flatStreaks(turns) {
+  const streaks = [];
+  let current = [];
+  for (const turn of turns) {
+    const classification = turn.analysis?.funDebugger?.classification;
+    if (classification === 'flat' || classification === 'stalled') {
+      current.push(turn.turn);
+      continue;
+    }
+    if (current.length > 0) streaks.push(current);
+    current = [];
+  }
+  if (current.length > 0) streaks.push(current);
+  return streaks.map((turnNumbers) => ({
+    turns: turnNumbers,
+    length: turnNumbers.length,
+    label: `Turns ${turnNumbers.join(', ')}`,
+  }));
+}
+
+function buildRunFunDebugger(run) {
+  const turns = run.turns || [];
+  const debugTurns = turns.map((turn) => ({
+    turn: turn.turn,
+    lifeScore: turn.analysis?.funDebugger?.lifeScore || 0,
+    classification: turn.analysis?.funDebugger?.classification || 'unknown',
+    causes: turn.analysis?.funDebugger?.causes || [],
+    livelyCauses: turn.analysis?.funDebugger?.livelyCauses || [],
+    systems: turn.analysis?.funDebugger?.systems || [],
+    suggestion: turn.analysis?.funDebugger?.suggestion || '',
+    confidence: turn.analysis?.funDebugger?.confidence || 0,
+    evidence: turn.analysis?.funDebugger?.evidence || {},
+  }));
+  const flatTurns = debugTurns.filter((turn) => turn.classification === 'flat' || turn.classification === 'stalled');
+  const aliveTurns = debugTurns.filter((turn) => ['alive', 'rewarding', 'spiky'].includes(turn.classification));
+  const worstTurn = [...debugTurns].sort((a, b) => a.lifeScore - b.lifeScore)[0] || null;
+  const bestTurn = [...debugTurns].sort((a, b) => b.lifeScore - a.lifeScore)[0] || null;
+  const causeCounts = sortedCounts(countBy(debugTurns.flatMap((turn) => turn.causes), (cause) => cause.key));
+  const livelyCounts = sortedCounts(countBy(debugTurns.flatMap((turn) => turn.livelyCauses), (cause) => cause.key));
+  const systemCounts = sortedCounts(countBy(debugTurns.flatMap((turn) => turn.systems), (system) => system));
+  const suggestions = sortedCounts(countBy(debugTurns.filter((turn) => turn.suggestion), (turn) => turn.suggestion))
+    .map((item) => {
+      const sourceTurn = debugTurns.find((turn) => turn.suggestion === item.key);
+      const sourceCause = sourceTurn?.causes?.[0] || sourceTurn?.livelyCauses?.[0];
+      return {
+        experiment: item.key,
+        count: item.count,
+        confidence: average(debugTurns.filter((turn) => turn.suggestion === item.key).map((turn) => turn.confidence)),
+        affectedTurns: debugTurns.filter((turn) => turn.suggestion === item.key).map((turn) => turn.turn),
+        system: sourceCause?.system || 'pacing',
+        blastRadius: sourceCause?.blastRadius || 'medium',
+      };
+    });
+  const topIssue = causeCounts[0]
+    ? {
+      key: causeCounts[0].key,
+      label: FUN_CAUSE_LIBRARY[causeCounts[0].key]?.label || causeCounts[0].key,
+      count: causeCounts[0].count,
+      system: FUN_CAUSE_LIBRARY[causeCounts[0].key]?.system || 'pacing',
+      suggestion: FUN_CAUSE_LIBRARY[causeCounts[0].key]?.suggestion || suggestions[0]?.experiment || '',
+    }
+    : null;
+
+  return {
+    schemaVersion: 1,
+    strategy: run.config?.strategy || 'unknown',
+    scenario: run.config?.scenario || 'unknown',
+    averageLifeScore: average(debugTurns.map((turn) => turn.lifeScore)),
+    flatTurnRate: debugTurns.length > 0 ? flatTurns.length / debugTurns.length : 0,
+    aliveTurnRate: debugTurns.length > 0 ? aliveTurns.length / debugTurns.length : 0,
+    classifications: countBy(debugTurns, (turn) => turn.classification),
+    flatTurns: flatTurns.map((turn) => turn.turn),
+    aliveTurns: aliveTurns.map((turn) => turn.turn),
+    bestTurn,
+    worstTurn,
+    flatStreaks: flatStreaks(turns),
+    topIssue,
+    dominantFailureMode: topIssue?.label || 'No repeated flat pattern detected.',
+    dominantFunSource: livelyCounts[0]?.key ? FUN_CAUSE_LIBRARY[livelyCounts[0].key]?.label || livelyCounts[0].key : 'No strong fun source detected.',
+    repeatedSystems: systemCounts,
+    experiments: suggestions,
+    topExperiment: suggestions[0] || null,
+    turns: debugTurns,
+  };
+}
+
 function analyzeRun(run) {
   const final = run.turns[run.turns.length - 1]?.after || run.initial;
-  const turnAnalyses = run.turns.map(analyzeTurn);
+  const turnAnalyses = [];
+  for (const turn of run.turns) {
+    turnAnalyses.push(analyzeTurn(turn, turnAnalyses[turnAnalyses.length - 1] || null));
+  }
   run.turns = run.turns.map((turn, index) => ({ ...turn, analysis: turnAnalyses[index] }));
 
   const actions = {};
@@ -878,7 +1158,18 @@ function analyzeRun(run) {
     failureReasons: failureReasons(run),
   };
 
-  return { ...summary, outcome: summary.gameOver && summary.totalArtifacts > 0 ? 'escaped-or-ended-with-artifacts' : summary.failureReasons.length > 0 ? 'needs-attention' : 'in-progress' };
+  run.funDebugger = buildRunFunDebugger(run);
+  return {
+    ...summary,
+    funDebugger: {
+      averageLifeScore: run.funDebugger.averageLifeScore,
+      flatTurnRate: run.funDebugger.flatTurnRate,
+      aliveTurnRate: run.funDebugger.aliveTurnRate,
+      topIssue: run.funDebugger.topIssue,
+      topExperiment: run.funDebugger.topExperiment,
+    },
+    outcome: summary.gameOver && summary.totalArtifacts > 0 ? 'escaped-or-ended-with-artifacts' : summary.failureReasons.length > 0 ? 'needs-attention' : 'in-progress',
+  };
 }
 
 function aggregateRuns(runs) {
@@ -965,6 +1256,110 @@ function aggregateRuns(runs) {
       zeroStatPlayers: average(summaries.map((summary) => summary.zeroStatPlayers)),
     },
     warnings,
+  };
+}
+
+function buildAggregateFunDebugger(runs) {
+  const runDebuggers = runs.map((run) => run.funDebugger).filter(Boolean);
+  const allTurns = runDebuggers.flatMap((debuggerRun) => (
+    (debuggerRun.turns || []).map((turn) => ({
+      ...turn,
+      strategy: debuggerRun.strategy,
+      scenario: debuggerRun.scenario,
+    }))
+  ));
+  const flatTurns = allTurns.filter((turn) => turn.classification === 'flat' || turn.classification === 'stalled');
+  const aliveTurns = allTurns.filter((turn) => ['alive', 'rewarding', 'spiky'].includes(turn.classification));
+  const causeCounts = sortedCounts(countBy(allTurns.flatMap((turn) => turn.causes || []), (cause) => cause.key));
+  const livelyCounts = sortedCounts(countBy(allTurns.flatMap((turn) => turn.livelyCauses || []), (cause) => cause.key));
+  const systemCounts = sortedCounts(countBy(allTurns.flatMap((turn) => turn.systems || []), (system) => system));
+  const strategyScores = {};
+  for (const run of runDebuggers) {
+    strategyScores[run.strategy] ||= { lifeScores: [], flatRates: [], aliveRates: [], issues: [] };
+    strategyScores[run.strategy].lifeScores.push(run.averageLifeScore);
+    strategyScores[run.strategy].flatRates.push(run.flatTurnRate);
+    strategyScores[run.strategy].aliveRates.push(run.aliveTurnRate);
+    if (run.topIssue?.key) strategyScores[run.strategy].issues.push(run.topIssue.key);
+  }
+  for (const [strategy, stats] of Object.entries(strategyScores)) {
+    strategyScores[strategy] = {
+      averageLifeScore: average(stats.lifeScores),
+      flatTurnRate: average(stats.flatRates),
+      aliveTurnRate: average(stats.aliveRates),
+      topIssue: sortedCounts(countBy(stats.issues, (issue) => issue))[0]?.key || null,
+    };
+  }
+
+  const experimentsByText = {};
+  for (const run of runDebuggers) {
+    for (const experiment of run.experiments || []) {
+      experimentsByText[experiment.experiment] ||= {
+        experiment: experiment.experiment,
+        count: 0,
+        confidenceValues: [],
+        affectedTurns: [],
+        strategies: new Set(),
+        systems: new Set(),
+        blastRadius: experiment.blastRadius || 'medium',
+      };
+      const bucket = experimentsByText[experiment.experiment];
+      bucket.count += experiment.count;
+      bucket.confidenceValues.push(experiment.confidence);
+      bucket.affectedTurns.push(...(experiment.affectedTurns || []).map((turn) => `${run.strategy}:T${turn}`));
+      bucket.strategies.add(run.strategy);
+      bucket.systems.add(experiment.system || 'pacing');
+      if (experiment.blastRadius === 'low') bucket.blastRadius = 'low';
+    }
+  }
+
+  const experiments = Object.values(experimentsByText)
+    .map((experiment) => ({
+      experiment: experiment.experiment,
+      count: experiment.count,
+      confidence: average(experiment.confidenceValues),
+      affectedTurns: experiment.affectedTurns.slice(0, 12),
+      affectedStrategies: [...experiment.strategies],
+      systems: [...experiment.systems],
+      blastRadius: experiment.blastRadius,
+      leverage: experiment.count * average(experiment.confidenceValues) * (experiment.blastRadius === 'low' ? 1.25 : experiment.blastRadius === 'medium' ? 1 : 0.75),
+    }))
+    .sort((a, b) => b.leverage - a.leverage || a.experiment.localeCompare(b.experiment));
+
+  const topIssue = causeCounts[0]
+    ? {
+      key: causeCounts[0].key,
+      label: FUN_CAUSE_LIBRARY[causeCounts[0].key]?.label || causeCounts[0].key,
+      count: causeCounts[0].count,
+      system: FUN_CAUSE_LIBRARY[causeCounts[0].key]?.system || 'pacing',
+      suggestion: FUN_CAUSE_LIBRARY[causeCounts[0].key]?.suggestion || experiments[0]?.experiment || '',
+    }
+    : null;
+
+  return {
+    schemaVersion: 1,
+    averageLifeScore: average(runDebuggers.map((run) => run.averageLifeScore)),
+    flatTurnRate: allTurns.length > 0 ? flatTurns.length / allTurns.length : 0,
+    aliveTurnRate: allTurns.length > 0 ? aliveTurns.length / allTurns.length : 0,
+    classifications: countBy(allTurns, (turn) => turn.classification),
+    topIssue,
+    topExperiments: experiments.slice(0, 5),
+    smallestExperimentQueue: experiments
+      .filter((experiment) => experiment.blastRadius === 'low' || experiment.blastRadius === 'medium')
+      .slice(0, 8),
+    repeatedFlatPatterns: causeCounts.slice(0, 8).map((item) => ({
+      ...item,
+      label: FUN_CAUSE_LIBRARY[item.key]?.label || item.key,
+      system: FUN_CAUSE_LIBRARY[item.key]?.system || 'pacing',
+    })),
+    repeatedHighLifePatterns: livelyCounts.slice(0, 8).map((item) => ({
+      ...item,
+      label: FUN_CAUSE_LIBRARY[item.key]?.label || item.key,
+      system: FUN_CAUSE_LIBRARY[item.key]?.system || 'pacing',
+    })),
+    systemicRisks: systemCounts.slice(0, 8),
+    strategyScores,
+    worstTurns: [...allTurns].sort((a, b) => a.lifeScore - b.lifeScore).slice(0, 8),
+    bestTurns: [...allTurns].sort((a, b) => b.lifeScore - a.lifeScore).slice(0, 8),
   };
 }
 
@@ -1064,6 +1459,26 @@ function compareReports(current, baseline) {
     currentGeneratedAt: current.generatedAt || null,
     averages,
     actionShares,
+    funDebugger: baseline.funDebugger && current.funDebugger ? {
+      averageLifeScore: {
+        before: baseline.funDebugger.averageLifeScore || 0,
+        after: current.funDebugger.averageLifeScore || 0,
+        delta: (current.funDebugger.averageLifeScore || 0) - (baseline.funDebugger.averageLifeScore || 0),
+      },
+      flatTurnRate: {
+        before: baseline.funDebugger.flatTurnRate || 0,
+        after: current.funDebugger.flatTurnRate || 0,
+        delta: (current.funDebugger.flatTurnRate || 0) - (baseline.funDebugger.flatTurnRate || 0),
+      },
+      aliveTurnRate: {
+        before: baseline.funDebugger.aliveTurnRate || 0,
+        after: current.funDebugger.aliveTurnRate || 0,
+        delta: (current.funDebugger.aliveTurnRate || 0) - (baseline.funDebugger.aliveTurnRate || 0),
+      },
+      topIssueBefore: baseline.funDebugger.topIssue?.label || null,
+      topIssueAfter: current.funDebugger.topIssue?.label || null,
+      topExperimentAfter: current.funDebugger.topExperiments?.[0]?.experiment || current.funDebugger.topExperiment?.experiment || null,
+    } : null,
     warningDelta: (current.aggregate?.warnings?.length || 0) - (baseline.aggregate?.warnings?.length || 0),
   };
 }
@@ -1104,6 +1519,16 @@ function evidenceForMetric(report, metric) {
 
 function makeTuningTasks(report, tuningConfig) {
   const tasks = [];
+  if (report.funDebugger?.topExperiments?.[0]) {
+    const experiment = report.funDebugger.topExperiments[0];
+    tasks.push({
+      priority: experiment.blastRadius === 'low' ? 'high' : 'medium',
+      source: 'fun-debugger',
+      metric: 'lifeScore',
+      message: `Top fun-debugger experiment affects ${experiment.count} turn pattern${experiment.count === 1 ? '' : 's'} across ${experiment.affectedStrategies.join(', ') || 'unknown strategies'}.`,
+      hint: experiment.experiment,
+    });
+  }
   for (const check of report.targetEvaluation?.checks || []) {
     if (check.pass) continue;
     const evidence = evidenceForMetric(report, check.metric);
@@ -1154,6 +1579,13 @@ function appendTuningLedger(report, paths) {
     scenarioScore: report.scenarioGoalEvaluation.score,
     averages: report.aggregate.averages,
     actionShares: report.aggregate.actionShares,
+    funDebugger: {
+      averageLifeScore: report.funDebugger?.averageLifeScore,
+      flatTurnRate: report.funDebugger?.flatTurnRate,
+      aliveTurnRate: report.funDebugger?.aliveTurnRate,
+      topIssue: report.funDebugger?.topIssue,
+      topExperiment: report.funDebugger?.topExperiments?.[0],
+    },
     warnings: report.aggregate.warnings,
     tasks: report.tasks,
     reportPath: paths.runPath,
@@ -1287,6 +1719,7 @@ async function main() {
     config,
     runs,
     aggregate,
+    funDebugger: buildAggregateFunDebugger(runs),
     summary: latest.summary,
     tuning: {
       note: config.note,
@@ -1316,6 +1749,13 @@ async function main() {
   console.log(JSON.stringify({
     summary: report.summary,
     aggregate: report.aggregate,
+    funDebugger: {
+      averageLifeScore: report.funDebugger.averageLifeScore,
+      flatTurnRate: report.funDebugger.flatTurnRate,
+      aliveTurnRate: report.funDebugger.aliveTurnRate,
+      topIssue: report.funDebugger.topIssue,
+      topExperiment: report.funDebugger.topExperiments?.[0] || null,
+    },
     targetEvaluation: report.targetEvaluation,
     scenarioGoalEvaluation: report.scenarioGoalEvaluation,
     comparison: report.comparison,

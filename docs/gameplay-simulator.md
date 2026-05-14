@@ -81,6 +81,11 @@ The simulator now emits raw run traces plus aggregate learning data:
 - Annotated tension reasons so a spike explains what caused it.
 - Strategy and scenario design questions in the `/simulator` workbench.
 - Action validity logs on each submitted turn.
+- Fun Debugger life scores, turn classifications, causes, systems, confidence, and suggested experiments.
+- Run-level best/worst turns, flat streaks, dominant failure modes, dominant fun sources, and top experiments.
+- Aggregate repeated flat patterns, high-life patterns, systemic risks, strategy life scores, and smallest experiment queue.
+- Baseline comparison for life score, flat-turn rate, and alive-turn rate.
+- CLI summary with the top fun issue and top experiment after each simulator run.
 - Opinionated warnings in `/simulator`.
 
 ## Tuning Targets
@@ -102,6 +107,7 @@ The latest report includes:
 
 - `targetEvaluation`: global tuning scorecard.
 - `scenarioGoalEvaluation`: scenario-specific scorecard.
+- `funDebugger`: life score, flat/alive rates, top issue, top experiments, repeated patterns, systemic risks, and strategy scores.
 - `comparison`: deltas against `reports/simulator/baseline-report.json` or an explicit `--baseline` report.
 - `tasks`: prioritized next tuning actions.
 - `tuning`: run notes, hypothesis, changed area, target config, and baseline metadata.

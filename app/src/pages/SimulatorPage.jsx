@@ -30,6 +30,21 @@ const SAMPLE_REPORT = {
   comparison: null,
   tasks: [],
   tuning: { note: '', hypothesis: '', changed: '', scenarioGoals: {} },
+  funDebugger: {
+    averageLifeScore: 0,
+    flatTurnRate: 0,
+    aliveTurnRate: 0,
+    classifications: {},
+    topIssue: null,
+    topExperiments: [],
+    smallestExperimentQueue: [],
+    repeatedFlatPatterns: [],
+    repeatedHighLifePatterns: [],
+    systemicRisks: [],
+    strategyScores: {},
+    worstTurns: [],
+    bestTurns: [],
+  },
 };
 
 function Metric({ label, value, tone = 'neutral' }) {
@@ -224,21 +239,163 @@ function InsightPanel({ aggregate = {}, summary = {} }) {
   );
 }
 
-function TensionCurve({ points = [] }) {
-  if (points.length === 0) return null;
+function FunDebuggerPanel({ funDebugger = {} }) {
+  const topExperiment = funDebugger.topExperiments?.[0] || funDebugger.topExperiment;
+  const flatPatterns = funDebugger.repeatedFlatPatterns || [];
+  const highLifePatterns = funDebugger.repeatedHighLifePatterns || [];
+  const systemicRisks = funDebugger.systemicRisks || [];
+
+  return (
+    <section className="mt-4 rounded border border-exp-border bg-exp-panel p-4">
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <h2 className="font-mono text-xs uppercase tracking-[0.3em] text-exp-text-dim">
+            Fun Debugger
+          </h2>
+          <p className="mt-1 font-mono text-xs leading-relaxed text-exp-text-dim">
+            Explains why turns feel alive or flat, then points at the smallest useful tuning experiment.
+          </p>
+        </div>
+        <div className="rounded border border-compass/30 bg-compass/5 px-3 py-2 text-right">
+          <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-exp-text-dim">
+            Life score
+          </p>
+          <p className="mt-1 font-mono text-xl text-compass-bright">
+            {formatNumber(funDebugger.averageLifeScore)}
+          </p>
+        </div>
+      </div>
+
+      <div className="mt-3 grid gap-3 md:grid-cols-3">
+        <PercentMetric label="Flat turn rate" value={funDebugger.flatTurnRate || 0} />
+        <PercentMetric label="Alive turn rate" value={funDebugger.aliveTurnRate || 0} />
+        <Metric label="Top issue" value={funDebugger.topIssue?.label || 'None yet'} tone={funDebugger.topIssue ? 'red' : 'green'} />
+      </div>
+
+      {topExperiment && (
+        <div className="mt-3 rounded border border-compass/35 bg-compass/5 px-3 py-2">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-compass">
+              Smallest next experiment
+            </p>
+            <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-exp-text-dim">
+              {topExperiment.blastRadius || 'medium'} / {Math.round((topExperiment.confidence || 0) * 100)}% confidence
+            </p>
+          </div>
+          <p className="mt-1 font-mono text-xs leading-relaxed text-exp-text">
+            {topExperiment.experiment}
+          </p>
+          <p className="mt-1 font-mono text-[11px] leading-relaxed text-exp-text-dim">
+            Affects {(topExperiment.affectedStrategies || []).join(', ') || 'unknown strategies'} / {(topExperiment.systems || []).join(', ') || 'pacing'}.
+          </p>
+        </div>
+      )}
+
+      <div className="mt-3 grid gap-3 lg:grid-cols-3">
+        <div className="rounded border border-signal-red/25 bg-signal-red/5 px-3 py-2">
+          <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-signal-red">
+            Repeated flat patterns
+          </p>
+          <div className="mt-2 space-y-1">
+            {flatPatterns.length > 0 ? flatPatterns.slice(0, 4).map((pattern) => (
+              <p key={pattern.key} className="font-mono text-[11px] text-exp-text-dim">
+                {pattern.label} / {pattern.count} / {pattern.system}
+              </p>
+            )) : (
+              <p className="font-mono text-[11px] text-exp-text-dim">No repeated flat pattern yet.</p>
+            )}
+          </div>
+        </div>
+        <div className="rounded border border-oxide-green/25 bg-oxide-green/5 px-3 py-2">
+          <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-oxide-green">
+            High-life sources
+          </p>
+          <div className="mt-2 space-y-1">
+            {highLifePatterns.length > 0 ? highLifePatterns.slice(0, 4).map((pattern) => (
+              <p key={pattern.key} className="font-mono text-[11px] text-exp-text-dim">
+                {pattern.label} / {pattern.count} / {pattern.system}
+              </p>
+            )) : (
+              <p className="font-mono text-[11px] text-exp-text-dim">No strong high-life source yet.</p>
+            )}
+          </div>
+        </div>
+        <div className="rounded border border-blueprint/25 bg-blueprint/5 px-3 py-2">
+          <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-blueprint">
+            Systemic risks
+          </p>
+          <div className="mt-2 space-y-1">
+            {systemicRisks.length > 0 ? systemicRisks.slice(0, 4).map((risk) => (
+              <p key={risk.key} className="font-mono text-[11px] text-exp-text-dim">
+                {risk.key} / {risk.count}
+              </p>
+            )) : (
+              <p className="font-mono text-[11px] text-exp-text-dim">No systemic risk yet.</p>
+            )}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function SmallestExperimentQueue({ experiments = [] }) {
+  if (experiments.length === 0) return null;
   return (
     <section className="mt-4 rounded border border-exp-border bg-exp-panel p-4">
       <h2 className="font-mono text-xs uppercase tracking-[0.3em] text-exp-text-dim">
-        Tension Curve
+        Smallest Experiment Queue
+      </h2>
+      <div className="mt-3 grid gap-2 lg:grid-cols-2">
+        {experiments.map((experiment, index) => (
+          <div key={`${experiment.experiment}-${index}`} className="rounded border border-exp-border/60 bg-exp-dark/35 px-3 py-2">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-compass-bright">
+                #{index + 1} / {experiment.blastRadius}
+              </p>
+              <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-exp-text-dim">
+                leverage {formatNumber(experiment.leverage)}
+              </p>
+            </div>
+            <p className="mt-1 font-mono text-xs leading-relaxed text-exp-text">
+              {experiment.experiment}
+            </p>
+            <p className="mt-1 font-mono text-[11px] leading-relaxed text-exp-text-dim">
+              {(experiment.affectedTurns || []).join(', ') || 'No turn list'} / {(experiment.systems || []).join(', ') || 'pacing'}
+            </p>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function TensionCurve({ points = [], turns = [] }) {
+  if (points.length === 0) return null;
+  const lifeByTurn = Object.fromEntries((turns || []).map((turn) => [
+    Number(turn.turn),
+    turn.analysis?.funDebugger?.lifeScore ?? turn.lifeScore ?? 0,
+  ]));
+  return (
+    <section className="mt-4 rounded border border-exp-border bg-exp-panel p-4">
+      <h2 className="font-mono text-xs uppercase tracking-[0.3em] text-exp-text-dim">
+        Tension / Life Curve
       </h2>
       <div className="mt-3 flex h-28 items-end gap-1 rounded border border-exp-border/60 bg-exp-dark/35 p-3">
         {points.map((point) => (
           <div key={point.turn} className="flex min-w-0 flex-1 flex-col items-center gap-1">
-            <div
-              className="w-full rounded-t bg-compass-bright"
-              style={{ height: `${Math.max(4, point.tension)}%` }}
-              title={`Turn ${point.turn}: ${point.tension} / ${(point.reasons || []).join(', ') || 'steady'}`}
-            />
+            <div className="flex h-20 w-full items-end gap-0.5">
+              <div
+                className="min-w-0 flex-1 rounded-t bg-compass-bright"
+                style={{ height: `${Math.max(4, point.tension)}%` }}
+                title={`Tension turn ${point.turn}: ${point.tension} / ${(point.reasons || []).join(', ') || 'steady'}`}
+              />
+              <div
+                className="min-w-0 flex-1 rounded-t bg-blueprint"
+                style={{ height: `${Math.max(4, lifeByTurn[Number(point.turn)] || 0)}%` }}
+                title={`Life turn ${point.turn}: ${lifeByTurn[Number(point.turn)] || 0}`}
+              />
+            </div>
             <span className="font-mono text-[9px] text-exp-text-dim">{point.turn}</span>
           </div>
         ))}
@@ -365,6 +522,8 @@ function BaselineComparison({ comparison }) {
   if (!comparison) return null;
   const averageEntries = Object.entries(comparison.averages || {});
   const shareEntries = Object.entries(comparison.actionShares || {});
+  const funEntries = Object.entries(comparison.funDebugger || {})
+    .filter(([, value]) => value && typeof value === 'object' && value.delta !== undefined);
 
   return (
     <section className="mt-4 rounded border border-exp-border bg-exp-panel p-4">
@@ -386,6 +545,26 @@ function BaselineComparison({ comparison }) {
           {shareEntries.map(([action, values]) => (
             <PercentMetric key={action} label={`${action} delta`} value={values.delta} />
           ))}
+        </div>
+      )}
+      {funEntries.length > 0 && (
+        <div className="mt-3 grid gap-2 md:grid-cols-3">
+          {funEntries.map(([metric, values]) => (
+            <Metric key={metric} label={`Fun ${metric}`} value={formatDelta(values.delta)} tone={values.delta >= 0 ? 'blue' : 'red'} />
+          ))}
+        </div>
+      )}
+      {comparison.funDebugger?.topExperimentAfter && (
+        <div className="mt-3 rounded border border-compass/25 bg-compass/5 px-3 py-2">
+          <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-compass">
+            Fun debugger comparison
+          </p>
+          <p className="mt-1 font-mono text-xs leading-relaxed text-exp-text-dim">
+            Issue before: {comparison.funDebugger.topIssueBefore || 'none'} / issue after: {comparison.funDebugger.topIssueAfter || 'none'}
+          </p>
+          <p className="mt-1 font-mono text-xs leading-relaxed text-compass-bright">
+            Next experiment: {comparison.funDebugger.topExperimentAfter}
+          </p>
         </div>
       )}
     </section>
@@ -434,6 +613,7 @@ function PlayerSnapshot({ player }) {
 function TurnCard({ turn }) {
   const analysis = turn.analysis || {};
   const recap = analysis.recap || [];
+  const turnDebug = analysis.funDebugger;
   return (
     <details className="rounded border border-exp-border bg-exp-panel px-3 py-2">
       <summary className="cursor-pointer list-none">
@@ -463,6 +643,24 @@ function TurnCard({ turn }) {
               </p>
             </div>
           ))}
+        </div>
+      )}
+      {turnDebug && (
+        <div className="mt-3 rounded border border-blueprint/25 bg-blueprint/5 px-3 py-2">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-blueprint">
+              Fun debugger / {turnDebug.classification}
+            </p>
+            <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-exp-text-dim">
+              life {turnDebug.lifeScore} / confidence {Math.round((turnDebug.confidence || 0) * 100)}%
+            </p>
+          </div>
+          <p className="mt-1 font-mono text-xs leading-relaxed text-exp-text">
+            {turnDebug.suggestion}
+          </p>
+          <p className="mt-1 font-mono text-[11px] leading-relaxed text-exp-text-dim">
+            {(turnDebug.causes || []).slice(0, 3).map((cause) => `${cause.label}: ${cause.evidence}`).join(' / ') || 'No flat cause.'}
+          </p>
         </div>
       )}
       <div className="mt-3 grid gap-2 md:grid-cols-2">
@@ -536,6 +734,7 @@ export default function SimulatorPage() {
   const scenarioGoalEvaluation = report.scenarioGoalEvaluation || SAMPLE_REPORT.scenarioGoalEvaluation;
   const tasks = report.tasks || [];
   const tuning = report.tuning || SAMPLE_REPORT.tuning;
+  const funDebugger = report.funDebugger || SAMPLE_REPORT.funDebugger;
   const command = `node scripts/gameplay-simulator.mjs --scenario=benchmark --batch=3 --note="first pass" --hypothesis="movement should reveal faster"`;
 
   return (
@@ -637,11 +836,13 @@ export default function SimulatorPage() {
       </div>
 
       <InsightPanel aggregate={aggregate} summary={summary} />
+      <FunDebuggerPanel funDebugger={funDebugger} />
+      <SmallestExperimentQueue experiments={funDebugger.smallestExperimentQueue || funDebugger.topExperiments || []} />
       <TargetScorecard targetEvaluation={targetEvaluation} scenarioGoalEvaluation={scenarioGoalEvaluation} />
       <TuningTasks tasks={tasks} tuning={tuning} />
       <BaselineComparison comparison={report.comparison} />
       <StrategyComparison strategies={aggregate.strategies} />
-      <TensionCurve points={summary.tensionCurve || []} />
+      <TensionCurve points={summary.tensionCurve || []} turns={report.turns || []} />
 
       {latest?.players?.length > 0 && (
         <section className="mt-4 rounded border border-exp-border bg-exp-panel p-4">
