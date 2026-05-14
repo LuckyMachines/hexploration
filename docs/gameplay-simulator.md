@@ -38,6 +38,8 @@ npm run sim -- --turns=12 --players=1 --strategy=rest
 npm run sim -- --turns=12 --players=1 --strategy=idle
 npm run sim -- --scenario=benchmark --batch=3
 npm run sim:golden
+npm run sim:baseline
+npm run sim:compare -- --changed="movement tuning"
 ```
 
 ## Engine Path
@@ -70,13 +72,42 @@ The simulator now emits raw run traces plus aggregate learning data:
 - Exploration metrics from revealed zone counts.
 - Player health metrics from stat totals and zero-stat frequency.
 - Card outcome counts from last day-phase events.
+- Target scorecards from `simulator.tuning.json`.
+- Scenario goal checks for each scenario preset.
+- Baseline comparison deltas for before/after tuning runs.
+- Prioritized tuning tasks generated from failed targets, scenario goals, and warnings.
+- A rolling tuning ledger in `reports/simulator/tuning-ledger.json`.
 - Opinionated warnings in `/simulator`.
+
+## Tuning Targets
+
+`simulator.tuning.json` owns the default pass/fail thresholds, scenario-specific goals, and task hints. A run copies those thresholds into the report so later reports remain explainable even after targets change.
+
+Useful flags:
+
+```bash
+npm run sim:golden -- --note="first balance pass"
+npm run sim:golden -- --hypothesis="more movement should reveal faster"
+npm run sim:golden -- --changed="lowered movement friction"
+npm run sim:golden -- --save-baseline
+npm run sim:golden -- --baseline
+npm run sim:golden -- --baseline=reports/simulator/run-OLDER.json
+```
+
+The latest report includes:
+
+- `targetEvaluation`: global tuning scorecard.
+- `scenarioGoalEvaluation`: scenario-specific scorecard.
+- `comparison`: deltas against `reports/simulator/baseline-report.json` or an explicit `--baseline` report.
+- `tasks`: prioritized next tuning actions.
+- `tuning`: run notes, hypothesis, changed area, target config, and baseline metadata.
 
 ## Recommended Benchmark Loop
 
-1. Run `npm run sim:golden`.
+1. Run `npm run sim:baseline` to capture a known baseline.
 2. Open `/simulator`.
-3. Note warnings and strategy outliers.
+3. Note failed targets, generated tasks, warnings, and strategy outliers.
 4. Make one gameplay/card/rules tuning change.
-5. Run `npm run sim:golden` again.
-6. Compare artifacts, reveal pace, stat pressure, boring turns, spike turns, and action mix.
+5. Run `npm run sim:compare -- --changed="short description"`.
+6. Compare artifacts, reveal pace, stat pressure, boring turns, spike turns, action mix, and target pass rate.
+7. Keep or revert the tuning change based on the target scorecard and baseline deltas.

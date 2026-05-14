@@ -125,9 +125,11 @@ Use the same-engine simulator to tune balance and outcomes against the local Sol
 npm run local:solo
 npm run sim:balanced
 npm run sim:golden
+npm run sim:baseline
+npm run sim:compare -- --changed="movement tuning"
 ```
 
-Then open `http://localhost:5502/simulator`. The runner writes reports to `reports/simulator/latest-report.json` and `app/public/simulator/latest-report.json`.
+Then open `http://localhost:5502/simulator`. The runner writes reports to `reports/simulator/latest-report.json` and `app/public/simulator/latest-report.json`, scores them against `simulator.tuning.json`, and appends `reports/simulator/tuning-ledger.json`.
 
 See [docs/gameplay-simulator.md](docs/gameplay-simulator.md) for strategies and engine-path details.
 

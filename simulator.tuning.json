@@ -1,0 +1,58 @@
+{
+  "targets": {
+    "idleShare": { "max": 0.15, "label": "Idle action share" },
+    "restShare": { "max": 0.3, "label": "Rest action share" },
+    "moveShare": { "min": 0.25, "label": "Move action share" },
+    "meaningfulChoiceDensity": { "min": 0.5, "label": "Meaningful choice density" },
+    "boringTurns": { "max": 1.5, "label": "Average boring turns" },
+    "invalidAttempts": { "max": 2, "label": "Average invalid attempts" },
+    "revealedZones": { "min": 1.5, "label": "Average zones revealed" },
+    "zeroStatPlayers": { "max": 0.25, "label": "Average zero-stat players" }
+  },
+  "scenarioGoals": {
+    "solo-balanced": {
+      "revealedZones": { "min": 1 },
+      "meaningfulChoiceDensity": { "min": 0.45 },
+      "boringTurns": { "max": 2 }
+    },
+    "solo-risky": {
+      "spikeTurns": { "min": 1 },
+      "artifacts": { "min": 0.25 },
+      "zeroStatPlayers": { "max": 1 }
+    },
+    "solo-dig-rush": {
+      "artifacts": { "min": 0.25 },
+      "revealedZones": { "min": 1 }
+    },
+    "solo-escape-rush": {
+      "artifacts": { "min": 0.25 },
+      "boringTurns": { "max": 2 }
+    },
+    "4p-cautious": {
+      "zeroStatPlayers": { "max": 0.75 },
+      "meaningfulChoiceDensity": { "min": 0.35 }
+    },
+    "4p-chaos": {
+      "spikeTurns": { "min": 1 },
+      "invalidAttempts": { "max": 4 }
+    },
+    "benchmark": {
+      "revealedZones": { "min": 1.5 },
+      "meaningfulChoiceDensity": { "min": 0.5 },
+      "boringTurns": { "max": 1.5 },
+      "invalidAttempts": { "max": 2 }
+    }
+  },
+  "taskHints": {
+    "idleShare": "Broaden valid actions or make the fallback state more expressive.",
+    "restShare": "Lower passive stat pressure or raise active-recovery rewards.",
+    "moveShare": "Make movement cheaper, clearer, or more rewarding in early turns.",
+    "meaningfulChoiceDensity": "Add more valid alternatives per state and expose why they matter.",
+    "boringTurns": "Add earlier discovery, pressure, card feedback, or board-state deltas.",
+    "invalidAttempts": "Tune strategy heuristics or improve action-validity affordances.",
+    "revealedZones": "Improve exploration incentives and reachable tile generation.",
+    "zeroStatPlayers": "Reduce stat collapse or introduce better rescue/recovery loops.",
+    "artifacts": "Increase dig payoff clarity or route players toward artifact opportunities.",
+    "spikeTurns": "Increase volatility for this scenario through events, cards, or risk rewards."
+  }
+}

@@ -32,6 +32,9 @@ const appEnvPath = resolve(appDir, '.env.local');
 const broadcastLatest = resolve(root, 'broadcast', 'DeployXenovoya.s.sol', '31337', 'run-latest.json');
 const reportDir = resolve(root, 'reports', 'simulator');
 const publicReportDir = resolve(appDir, 'public', 'simulator');
+const tuningConfigPath = resolve(root, 'simulator.tuning.json');
+const defaultBaselinePath = resolve(reportDir, 'baseline-report.json');
+const tuningLedgerPath = resolve(reportDir, 'tuning-ledger.json');
 
 const args = process.argv.slice(2);
 
@@ -78,12 +81,76 @@ const config = {
   strategies: String(arg('strategies', scenario.strategies || '')).split(',').map((value) => value.trim()).filter(Boolean),
   batch: Math.max(1, Number(arg('batch', scenario.batch || 1))),
   seed: String(arg('seed', process.env.SIM_SEED || 'default')),
+  note: String(arg('note', '')),
+  hypothesis: String(arg('hypothesis', '')),
+  changed: String(arg('changed', '')),
+  baseline: arg('baseline', null),
+  saveBaseline: boolArg('save-baseline', false),
   gameId: arg('game', null),
   createGame: boolArg('create', true),
   progressAttempts: Math.max(1, Number(arg('progress-attempts', 12))),
   quiet: boolArg('quiet', false),
 };
 if (config.strategies.length === 0) config.strategies = [config.strategy];
+
+const DEFAULT_TUNING_CONFIG = {
+  targets: {
+    idleShare: { max: 0.15, label: 'Idle action share' },
+    restShare: { max: 0.3, label: 'Rest action share' },
+    moveShare: { min: 0.25, label: 'Move action share' },
+    meaningfulChoiceDensity: { min: 0.5, label: 'Meaningful choice density' },
+    boringTurns: { max: 1.5, label: 'Average boring turns' },
+    invalidAttempts: { max: 2, label: 'Average invalid attempts' },
+    revealedZones: { min: 1.5, label: 'Average zones revealed' },
+    zeroStatPlayers: { max: 0.25, label: 'Average zero-stat players' },
+  },
+  scenarioGoals: {
+    'solo-balanced': {
+      revealedZones: { min: 1 },
+      meaningfulChoiceDensity: { min: 0.45 },
+      boringTurns: { max: 2 },
+    },
+    'solo-risky': {
+      spikeTurns: { min: 1 },
+      artifacts: { min: 0.25 },
+      zeroStatPlayers: { max: 1 },
+    },
+    'solo-dig-rush': {
+      artifacts: { min: 0.25 },
+      revealedZones: { min: 1 },
+    },
+    'solo-escape-rush': {
+      artifacts: { min: 0.25 },
+      boringTurns: { max: 2 },
+    },
+    '4p-cautious': {
+      zeroStatPlayers: { max: 0.75 },
+      meaningfulChoiceDensity: { min: 0.35 },
+    },
+    '4p-chaos': {
+      spikeTurns: { min: 1 },
+      invalidAttempts: { max: 4 },
+    },
+    benchmark: {
+      revealedZones: { min: 1.5 },
+      meaningfulChoiceDensity: { min: 0.5 },
+      boringTurns: { max: 1.5 },
+      invalidAttempts: { max: 2 },
+    },
+  },
+  taskHints: {
+    idleShare: 'Broaden valid actions or make the fallback state more expressive.',
+    restShare: 'Lower passive stat pressure or raise active-recovery rewards.',
+    moveShare: 'Make movement cheaper, clearer, or more rewarding in early turns.',
+    meaningfulChoiceDensity: 'Add more valid alternatives per state and expose why they matter.',
+    boringTurns: 'Add earlier discovery, pressure, card feedback, or board-state deltas.',
+    invalidAttempts: 'Tune strategy heuristics or improve action-validity affordances.',
+    revealedZones: 'Improve exploration incentives and reachable tile generation.',
+    zeroStatPlayers: 'Reduce stat collapse or introduce better rescue/recovery loops.',
+    artifacts: 'Increase dig payoff clarity or route players toward artifact opportunities.',
+    spikeTurns: 'Increase volatility for this scenario through events, cards, or risk rewards.',
+  },
+};
 
 const ACTION = {
   IDLE: 0,
@@ -135,6 +202,19 @@ function log(message) {
 
 function readJson(path) {
   return JSON.parse(readFileSync(path, 'utf8'));
+}
+
+function mergeTuningConfig(base, override = {}) {
+  return {
+    targets: { ...(base.targets || {}), ...(override.targets || {}) },
+    scenarioGoals: { ...(base.scenarioGoals || {}), ...(override.scenarioGoals || {}) },
+    taskHints: { ...(base.taskHints || {}), ...(override.taskHints || {}) },
+  };
+}
+
+function loadTuningConfig() {
+  if (!existsSync(tuningConfigPath)) return DEFAULT_TUNING_CONFIG;
+  return mergeTuningConfig(DEFAULT_TUNING_CONFIG, readJson(tuningConfigPath));
 }
 
 function readEnvFile(path) {
@@ -828,6 +908,11 @@ function aggregateRuns(runs) {
     runs: runs.length,
     strategies: strategySummaries,
     actionTotals,
+    actionShares: {
+      Idle: idleShare,
+      Rest: restShare,
+      Move: moveShare,
+    },
     averages: {
       artifacts: average(summaries.map((summary) => summary.totalArtifacts)),
       revealedZones: average(summaries.map((summary) => summary.revealedZonesGained)),
@@ -840,6 +925,175 @@ function aggregateRuns(runs) {
     },
     warnings,
   };
+}
+
+function metricValue(aggregate, metric) {
+  const averages = aggregate.averages || {};
+  const shares = aggregate.actionShares || {};
+  const values = {
+    idleShare: shares.Idle || 0,
+    restShare: shares.Rest || 0,
+    moveShare: shares.Move || 0,
+    artifacts: averages.artifacts || 0,
+    revealedZones: averages.revealedZones || 0,
+    statDelta: averages.statDelta || 0,
+    boringTurns: averages.boringTurns || 0,
+    spikeTurns: averages.spikeTurns || 0,
+    meaningfulChoiceDensity: averages.meaningfulChoiceDensity || 0,
+    invalidAttempts: averages.invalidAttempts || 0,
+    zeroStatPlayers: averages.zeroStatPlayers || 0,
+  };
+  return values[metric] ?? 0;
+}
+
+function evaluateLimit(value, limit) {
+  if (limit.min !== undefined && value < Number(limit.min)) return false;
+  if (limit.max !== undefined && value > Number(limit.max)) return false;
+  return true;
+}
+
+function targetDescription(limit) {
+  const parts = [];
+  if (limit.min !== undefined) parts.push(`>= ${limit.min}`);
+  if (limit.max !== undefined) parts.push(`<= ${limit.max}`);
+  return parts.join(' and ');
+}
+
+function evaluateTargets(aggregate, targets) {
+  const checks = Object.entries(targets || {}).map(([metric, limit]) => {
+    const value = metricValue(aggregate, metric);
+    return {
+      metric,
+      label: limit.label || metric,
+      value,
+      target: targetDescription(limit),
+      pass: evaluateLimit(value, limit),
+    };
+  });
+  const passed = checks.filter((check) => check.pass).length;
+  return {
+    passed,
+    total: checks.length,
+    score: checks.length > 0 ? passed / checks.length : 1,
+    checks,
+  };
+}
+
+function evaluateScenarioGoals(report, scenarioGoals) {
+  const goals = scenarioGoals?.[report.config?.scenario] || {};
+  const checks = Object.entries(goals).map(([metric, limit]) => {
+    const value = metricValue(report.aggregate || {}, metric);
+    return {
+      metric,
+      label: limit.label || metric,
+      value,
+      target: targetDescription(limit),
+      pass: evaluateLimit(value, limit),
+    };
+  });
+  const passed = checks.filter((check) => check.pass).length;
+  return {
+    scenario: report.config?.scenario || 'custom',
+    passed,
+    total: checks.length,
+    score: checks.length > 0 ? passed / checks.length : 1,
+    checks,
+  };
+}
+
+function compareReports(current, baseline) {
+  if (!baseline?.aggregate) return null;
+  const metrics = ['artifacts', 'revealedZones', 'statDelta', 'boringTurns', 'spikeTurns', 'meaningfulChoiceDensity', 'invalidAttempts', 'zeroStatPlayers'];
+  const averages = {};
+  for (const metric of metrics) {
+    const before = baseline.aggregate.averages?.[metric] || 0;
+    const after = current.aggregate?.averages?.[metric] || 0;
+    averages[metric] = { before, after, delta: after - before };
+  }
+
+  const actionShares = {};
+  for (const action of ['Idle', 'Move', 'Rest']) {
+    const before = baseline.aggregate.actionShares?.[action] || 0;
+    const after = current.aggregate?.actionShares?.[action] || 0;
+    actionShares[action] = { before, after, delta: after - before };
+  }
+
+  return {
+    baselineGeneratedAt: baseline.generatedAt || null,
+    currentGeneratedAt: current.generatedAt || null,
+    averages,
+    actionShares,
+    warningDelta: (current.aggregate?.warnings?.length || 0) - (baseline.aggregate?.warnings?.length || 0),
+  };
+}
+
+function prioritizedTask(metric, message, hint, source) {
+  const highPriority = ['meaningfulChoiceDensity', 'boringTurns', 'invalidAttempts', 'zeroStatPlayers'].includes(metric);
+  return {
+    priority: highPriority ? 'high' : 'medium',
+    source,
+    metric,
+    message,
+    hint,
+  };
+}
+
+function makeTuningTasks(report, tuningConfig) {
+  const tasks = [];
+  for (const check of report.targetEvaluation?.checks || []) {
+    if (check.pass) continue;
+    tasks.push(prioritizedTask(
+      check.metric,
+      `${check.label} is ${check.value.toFixed(3)}; target is ${check.target}.`,
+      tuningConfig.taskHints?.[check.metric] || 'Adjust game data or strategy and rerun the benchmark.',
+      'target',
+    ));
+  }
+  for (const check of report.scenarioGoalEvaluation?.checks || []) {
+    if (check.pass) continue;
+    tasks.push(prioritizedTask(
+      check.metric,
+      `${report.scenarioGoalEvaluation.scenario} ${check.metric} is ${check.value.toFixed(3)}; goal is ${check.target}.`,
+      tuningConfig.taskHints?.[check.metric] || 'Tune this scenario and compare against baseline.',
+      'scenario-goal',
+    ));
+  }
+  for (const warning of report.aggregate?.warnings || []) {
+    tasks.push({
+      priority: warning.includes('low') || warning.includes('high') ? 'medium' : 'low',
+      source: 'warning',
+      metric: 'aggregate',
+      message: warning,
+      hint: 'Use strategy comparison and turn logs to find the state that produces this warning.',
+    });
+  }
+  return tasks.slice(0, 12);
+}
+
+function appendTuningLedger(report, paths) {
+  mkdirSync(reportDir, { recursive: true });
+  const previous = existsSync(tuningLedgerPath) ? readJson(tuningLedgerPath) : [];
+  const ledger = Array.isArray(previous) ? previous : [];
+  ledger.push({
+    generatedAt: report.generatedAt,
+    scenario: report.config.scenario,
+    scenarioLabel: report.config.scenarioLabel,
+    strategies: report.config.strategies,
+    batch: report.config.batch,
+    seed: report.config.seed,
+    note: report.tuning.note,
+    hypothesis: report.tuning.hypothesis,
+    changed: report.tuning.changed,
+    score: report.targetEvaluation.score,
+    scenarioScore: report.scenarioGoalEvaluation.score,
+    averages: report.aggregate.averages,
+    actionShares: report.aggregate.actionShares,
+    warnings: report.aggregate.warnings,
+    tasks: report.tasks,
+    reportPath: paths.runPath,
+  });
+  writeFileSync(tuningLedgerPath, JSON.stringify(ledger.slice(-100), bigintReplacer, 2));
+  return tuningLedgerPath;
 }
 
 function summarize(report) {
@@ -933,6 +1187,7 @@ async function runSimulation(addresses, runConfig) {
 
 async function main() {
   const addresses = loadAddresses();
+  const tuningConfig = loadTuningConfig();
   await publicClient.getChainId();
   const runs = [];
 
@@ -952,20 +1207,55 @@ async function main() {
   }
 
   const latest = runs[runs.length - 1];
+  const aggregate = aggregateRuns(runs);
+  const baselinePath = config.baseline === true
+    ? defaultBaselinePath
+    : config.baseline
+      ? resolve(root, String(config.baseline))
+      : defaultBaselinePath;
+  const baselineReport = existsSync(baselinePath) ? readJson(baselinePath) : null;
   const report = {
     ...latest,
     schemaVersion: 2,
     generatedAt: new Date().toISOString(),
     config,
     runs,
-    aggregate: aggregateRuns(runs),
+    aggregate,
     summary: latest.summary,
+    tuning: {
+      note: config.note,
+      hypothesis: config.hypothesis,
+      changed: config.changed,
+      configPath: existsSync(tuningConfigPath) ? tuningConfigPath : null,
+      baselinePath: baselineReport ? baselinePath : null,
+      saveBaseline: config.saveBaseline,
+      targets: tuningConfig.targets,
+      scenarioGoals: tuningConfig.scenarioGoals?.[config.scenario] || {},
+    },
   };
+  report.targetEvaluation = evaluateTargets(report.aggregate, tuningConfig.targets);
+  report.scenarioGoalEvaluation = evaluateScenarioGoals(report, tuningConfig.scenarioGoals);
+  report.comparison = compareReports(report, baselineReport);
+  report.tasks = makeTuningTasks(report, tuningConfig);
 
   const paths = await writeReport(report);
+  const ledgerPath = appendTuningLedger(report, paths);
+  if (config.saveBaseline) {
+    writeFileSync(defaultBaselinePath, JSON.stringify(report, bigintReplacer, 2));
+    log(`saved baseline ${defaultBaselinePath}`);
+  }
   log(`wrote ${paths.latestPath}`);
   log(`wrote ${paths.publicPath}`);
-  console.log(JSON.stringify({ summary: report.summary, aggregate: report.aggregate, paths }, bigintReplacer, 2));
+  log(`updated ${ledgerPath}`);
+  console.log(JSON.stringify({
+    summary: report.summary,
+    aggregate: report.aggregate,
+    targetEvaluation: report.targetEvaluation,
+    scenarioGoalEvaluation: report.scenarioGoalEvaluation,
+    comparison: report.comparison,
+    tasks: report.tasks,
+    paths: { ...paths, ledgerPath, baselinePath: config.saveBaseline ? defaultBaselinePath : report.tuning.baselinePath },
+  }, bigintReplacer, 2));
 }
 
 main().catch((error) => {

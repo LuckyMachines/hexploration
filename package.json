@@ -22,6 +22,8 @@
     "sim:risky": "node scripts/gameplay-simulator.mjs --turns=12 --strategy=risky",
     "sim:batch": "node scripts/gameplay-simulator.mjs --scenario=benchmark --batch=3",
     "sim:golden": "node scripts/gameplay-simulator.mjs --scenario=benchmark --batch=5",
+    "sim:baseline": "node scripts/gameplay-simulator.mjs --scenario=benchmark --batch=5 --save-baseline",
+    "sim:compare": "node scripts/gameplay-simulator.mjs --scenario=benchmark --batch=5 --baseline",
     "test:e2e:anvil": "node scripts/run-anvil-e2e.mjs"
   },
   "repository": {

@@ -20,9 +20,15 @@ const SAMPLE_REPORT = {
     runs: 0,
     strategies: {},
     actionTotals: {},
+    actionShares: {},
     averages: {},
     warnings: [],
   },
+  targetEvaluation: { passed: 0, total: 0, score: 1, checks: [] },
+  scenarioGoalEvaluation: { scenario: 'none', passed: 0, total: 0, score: 1, checks: [] },
+  comparison: null,
+  tasks: [],
+  tuning: { note: '', hypothesis: '', changed: '', scenarioGoals: {} },
 };
 
 function Metric({ label, value, tone = 'neutral' }) {
@@ -80,6 +86,7 @@ function ActionBars({ actions = {} }) {
 
 function PercentMetric({ label, value }) {
   const pct = Math.round(Number(value || 0) * 100);
+  const width = Math.min(100, Math.abs(pct));
   return (
     <div className="rounded border border-exp-border/60 bg-exp-dark/35 px-3 py-2">
       <div className="mb-1 flex items-center justify-between gap-3 font-mono text-[11px]">
@@ -87,10 +94,22 @@ function PercentMetric({ label, value }) {
         <span className="text-compass-bright">{pct}%</span>
       </div>
       <div className="h-2 overflow-hidden rounded bg-exp-border/70">
-        <div className="h-full rounded bg-oxide-green" style={{ width: `${pct}%` }} />
+        <div className={`h-full rounded ${pct < 0 ? 'bg-signal-red' : 'bg-oxide-green'}`} style={{ width: `${width}%` }} />
       </div>
     </div>
   );
+}
+
+function formatNumber(value) {
+  const number = Number(value || 0);
+  if (Math.abs(number) < 1) return number.toFixed(2);
+  return number.toFixed(1);
+}
+
+function formatDelta(value) {
+  const number = Number(value || 0);
+  const sign = number > 0 ? '+' : '';
+  return `${sign}${formatNumber(number)}`;
 }
 
 function StrategyComparison({ strategies = {} }) {
@@ -215,6 +234,139 @@ function TensionCurve({ points = [] }) {
   );
 }
 
+function TargetScorecard({ targetEvaluation = {}, scenarioGoalEvaluation = {} }) {
+  const targetChecks = targetEvaluation.checks || [];
+  const scenarioChecks = scenarioGoalEvaluation.checks || [];
+  const checks = [
+    ...targetChecks.map((check) => ({ ...check, group: 'target' })),
+    ...scenarioChecks.map((check) => ({ ...check, group: scenarioGoalEvaluation.scenario || 'scenario' })),
+  ];
+  if (checks.length === 0) return null;
+
+  return (
+    <section className="mt-4 rounded border border-exp-border bg-exp-panel p-4">
+      <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
+        <h2 className="font-mono text-xs uppercase tracking-[0.3em] text-exp-text-dim">
+          Tuning Scorecard
+        </h2>
+        <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-exp-text-dim">
+          Targets {targetEvaluation.passed || 0}/{targetEvaluation.total || 0} / Scenario {scenarioGoalEvaluation.passed || 0}/{scenarioGoalEvaluation.total || 0}
+        </p>
+      </div>
+      <div className="grid gap-2 md:grid-cols-2 xl:grid-cols-4">
+        {checks.map((check) => (
+          <div
+            key={`${check.group}-${check.metric}`}
+            className={`rounded border px-3 py-2 ${
+              check.pass
+                ? 'border-oxide-green/30 bg-oxide-green/5'
+                : 'border-signal-red/35 bg-signal-red/5'
+            }`}
+          >
+            <div className="flex items-start justify-between gap-2">
+              <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-exp-text-dim">
+                {check.label || check.metric}
+              </p>
+              <span className={`font-mono text-[10px] uppercase tracking-[0.16em] ${check.pass ? 'text-oxide-green' : 'text-signal-red'}`}>
+                {check.pass ? 'Pass' : 'Tune'}
+              </span>
+            </div>
+            <p className="mt-2 font-mono text-lg text-exp-text">
+              {formatNumber(check.value)}
+            </p>
+            <p className="mt-1 font-mono text-[11px] text-exp-text-dim">
+              {check.group} / {check.target}
+            </p>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function TuningTasks({ tasks = [], tuning = {} }) {
+  if (tasks.length === 0 && !tuning.note && !tuning.hypothesis && !tuning.changed) return null;
+
+  return (
+    <section className="mt-4 rounded border border-exp-border bg-exp-panel p-4">
+      <h2 className="font-mono text-xs uppercase tracking-[0.3em] text-exp-text-dim">
+        Tuning Notes
+      </h2>
+      {(tuning.note || tuning.hypothesis || tuning.changed) && (
+        <div className="mt-3 grid gap-2 lg:grid-cols-3">
+          {[
+            ['Note', tuning.note],
+            ['Hypothesis', tuning.hypothesis],
+            ['Changed', tuning.changed],
+          ].filter(([, value]) => value).map(([label, value]) => (
+            <div key={label} className="rounded border border-exp-border/60 bg-exp-dark/35 px-3 py-2">
+              <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-exp-text-dim">
+                {label}
+              </p>
+              <p className="mt-1 break-words font-mono text-xs leading-relaxed text-exp-text">
+                {value}
+              </p>
+            </div>
+          ))}
+        </div>
+      )}
+      {tasks.length > 0 && (
+        <div className="mt-3 space-y-2">
+          {tasks.map((task, index) => (
+            <div key={`${task.source}-${task.metric}-${index}`} className="rounded border border-exp-border/60 bg-exp-dark/35 px-3 py-2">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <p className="font-mono text-xs uppercase tracking-[0.18em] text-exp-text">
+                  {task.priority} / {task.metric}
+                </p>
+                <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-exp-text-dim">
+                  {task.source}
+                </p>
+              </div>
+              <p className="mt-1 font-mono text-xs leading-relaxed text-exp-text-dim">
+                {task.message}
+              </p>
+              <p className="mt-1 font-mono text-[11px] leading-relaxed text-compass-bright">
+                {task.hint}
+              </p>
+            </div>
+          ))}
+        </div>
+      )}
+    </section>
+  );
+}
+
+function BaselineComparison({ comparison }) {
+  if (!comparison) return null;
+  const averageEntries = Object.entries(comparison.averages || {});
+  const shareEntries = Object.entries(comparison.actionShares || {});
+
+  return (
+    <section className="mt-4 rounded border border-exp-border bg-exp-panel p-4">
+      <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
+        <h2 className="font-mono text-xs uppercase tracking-[0.3em] text-exp-text-dim">
+          Baseline Delta
+        </h2>
+        <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-exp-text-dim">
+          Warnings {formatDelta(comparison.warningDelta)}
+        </p>
+      </div>
+      <div className="grid gap-2 md:grid-cols-2 xl:grid-cols-4">
+        {averageEntries.map(([metric, values]) => (
+          <Metric key={metric} label={metric} value={formatDelta(values.delta)} tone={values.delta >= 0 ? 'blue' : 'gold'} />
+        ))}
+      </div>
+      {shareEntries.length > 0 && (
+        <div className="mt-3 grid gap-2 md:grid-cols-3">
+          {shareEntries.map(([action, values]) => (
+            <PercentMetric key={action} label={`${action} delta`} value={values.delta} />
+          ))}
+        </div>
+      )}
+    </section>
+  );
+}
+
 function PlayerSnapshot({ player }) {
   return (
     <div className="rounded border border-exp-border/60 bg-exp-dark/35 px-3 py-2">
@@ -330,7 +482,11 @@ export default function SimulatorPage() {
   );
   const summary = report.summary || SAMPLE_REPORT.summary;
   const aggregate = report.aggregate || SAMPLE_REPORT.aggregate;
-  const command = `node scripts/gameplay-simulator.mjs --scenario=benchmark --batch=3`;
+  const targetEvaluation = report.targetEvaluation || SAMPLE_REPORT.targetEvaluation;
+  const scenarioGoalEvaluation = report.scenarioGoalEvaluation || SAMPLE_REPORT.scenarioGoalEvaluation;
+  const tasks = report.tasks || [];
+  const tuning = report.tuning || SAMPLE_REPORT.tuning;
+  const command = `node scripts/gameplay-simulator.mjs --scenario=benchmark --batch=3 --note="first pass" --hypothesis="movement should reveal faster"`;
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-6">
@@ -383,6 +539,9 @@ export default function SimulatorPage() {
           <pre className="mt-3 overflow-x-auto rounded border border-exp-border bg-exp-dark/60 p-3 font-mono text-[11px] text-compass-bright">
             {`npm run local:solo\n${command}`}
           </pre>
+          <pre className="mt-2 overflow-x-auto rounded border border-exp-border bg-exp-dark/60 p-3 font-mono text-[11px] text-blueprint">
+            {`npm run sim:golden -- --save-baseline\nnpm run sim:golden -- --baseline --changed="movement tuning"`}
+          </pre>
           <div className="mt-3 grid gap-2 sm:grid-cols-2">
             {['solo-balanced', 'solo-risky', 'solo-dig-rush', 'solo-escape-rush', '4p-cautious', '4p-chaos', 'benchmark'].map((strategy) => (
               <div key={strategy} className="rounded border border-exp-border/60 bg-exp-dark/35 px-3 py-2">
@@ -420,6 +579,9 @@ export default function SimulatorPage() {
       </div>
 
       <InsightPanel aggregate={aggregate} summary={summary} />
+      <TargetScorecard targetEvaluation={targetEvaluation} scenarioGoalEvaluation={scenarioGoalEvaluation} />
+      <TuningTasks tasks={tasks} tuning={tuning} />
+      <BaselineComparison comparison={report.comparison} />
       <StrategyComparison strategies={aggregate.strategies} />
       <TensionCurve points={summary.tensionCurve || []} />
 
