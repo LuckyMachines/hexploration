@@ -9,10 +9,12 @@ import FieldManual from './components/help/FieldManual';
 import ErrorBoundary from './components/shared/ErrorBoundary';
 import PseudoLocale from './components/shared/PseudoLocale';
 import { useFeedbackEffects } from './hooks/useFeedbackEffects';
+import { useUserPreferences } from './hooks/useUserPreferences';
 
 export default function App() {
   const [isHelpOpen, setIsHelpOpen] = useState(false);
   useFeedbackEffects();
+  useUserPreferences();
 
   return (
     <div className="min-h-screen flex flex-col">

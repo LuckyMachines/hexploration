@@ -6,6 +6,7 @@ import { useGameActions } from '../../hooks/useGameActions';
 import GameCard from './GameCard';
 import Spinner from '../shared/Spinner';
 import TxStatus from '../shared/TxStatus';
+import EmptyState from '../shared/EmptyState';
 
 export default function GameBrowser() {
   const { address } = useWallet();
@@ -102,23 +103,19 @@ export default function GameBrowser() {
             </div>
           </div>
         ) : error ? (
-          <div className="text-center py-12 space-y-2">
-            <p className="font-mono text-xs text-signal-red tracking-wider uppercase">
-              Failed to load surveys
-            </p>
-            <p className="font-mono text-xs text-exp-text-dim break-all max-w-lg mx-auto">
-              {error?.shortMessage || error?.message || String(error)}
-            </p>
-          </div>
+          <EmptyState
+            tone="red"
+            title="Failed to load surveys"
+            body={error?.shortMessage || error?.message || String(error)}
+            action="Retry"
+            onAction={refetch}
+          />
         ) : gameIDs.length === 0 ? (
-          <div className="text-center py-12">
-            <p className="font-mono text-xs text-exp-text-dim uppercase tracking-[0.3em]">
-              No surveys found
-            </p>
-            <p className="mt-2 font-mono text-xs text-exp-text-dim">
-              Launch a new survey to seed the registry and begin exploring.
-            </p>
-          </div>
+          <EmptyState
+            tone="gold"
+            title="No surveys found"
+            body={address ? 'Launch a new survey to seed the registry and begin exploring.' : 'Connect a wallet to create or join a survey.'}
+          />
         ) : (
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {gameIDs.map((id, i) => (

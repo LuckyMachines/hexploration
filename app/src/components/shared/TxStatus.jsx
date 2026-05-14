@@ -50,6 +50,9 @@ export default function TxStatus({ hash, isPending, isConfirming, isSuccess, err
           <p className="text-signal-red/70 mt-1 pl-5 break-all leading-relaxed">
             {error.shortMessage || error.message}
           </p>
+          <p className="mt-2 pl-5 text-exp-text-dim leading-relaxed">
+            Check wallet rejection, chain selection, and RPC connectivity. The action is not locked unless the transaction confirms.
+          </p>
         </div>
       )}
     </div>

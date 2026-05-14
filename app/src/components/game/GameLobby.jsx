@@ -7,6 +7,8 @@ import { usePlayerID } from '../../hooks/usePlayerID';
 import { truncateAddress } from '../../lib/formatting';
 import TxStatus from '../shared/TxStatus';
 import Spinner from '../shared/Spinner';
+import EmptyState from '../shared/EmptyState';
+import ShareGameLink from '../shared/ShareGameLink';
 
 export default function GameLobby({ gameId }) {
   const { address } = useWallet();
@@ -49,6 +51,7 @@ export default function GameLobby({ gameId }) {
         <span className="font-mono text-xs tracking-widest uppercase text-compass-bright border border-compass/30 rounded px-2 py-0.5 bg-compass/5">
           Staging
         </span>
+        <ShareGameLink />
       </div>
 
       <div className="px-6 py-5 space-y-5">
@@ -63,9 +66,11 @@ export default function GameLobby({ gameId }) {
               <span>Loading roster...</span>
             </div>
           ) : players.length === 0 ? (
-            <p className="font-mono text-xs text-exp-text-dim italic">
-              No crew registered yet.
-            </p>
+            <EmptyState
+              title="No crew yet"
+              body="This survey is waiting for its first explorer. Join to reserve a seat."
+              tone="gold"
+            />
           ) : (
             <ul className="space-y-1">
               {players.map((player, i) => {
@@ -106,9 +111,14 @@ export default function GameLobby({ gameId }) {
           )}
 
           {isRegistered && (
-            <p className="self-center font-mono text-xs text-oxide-green tracking-wider uppercase">
-              Registered - waiting for all crew
-            </p>
+            <div className="self-center rounded border border-oxide-green/30 bg-oxide-green/5 px-3 py-2">
+              <p className="font-mono text-xs text-oxide-green tracking-wider uppercase">
+                Registered - waiting for all crew
+              </p>
+              <p className="mt-1 font-mono text-[11px] text-exp-text-dim">
+                Share the survey link with the remaining players or wait for the lobby to fill.
+              </p>
+            </div>
           )}
         </div>
 

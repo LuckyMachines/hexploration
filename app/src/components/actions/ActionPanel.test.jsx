@@ -46,6 +46,8 @@ describe('ActionPanel', () => {
     expect(screen.queryByText(/Submitted: Idle/i)).not.toBeInTheDocument();
 
     await user.click(screen.getByRole('button', { name: /Submit Move/i }));
+    expect(screen.getByRole('dialog', { name: /Confirm turn action/i })).toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: /Send Transaction/i }));
 
     expect(submitActionMock).toHaveBeenCalledWith(
       1,
@@ -111,7 +113,7 @@ describe('ActionPanel', () => {
     expect(screen.getByRole('button', { name: /Setup Camp/i })).toBeInTheDocument();
     expect(screen.getByText(/A: commit intent/i)).toBeInTheDocument();
 
-    await user.click(screen.getByTitle(/Press 1 to select Move/i));
+    await user.click(screen.getByTitle(/Trace a reachable path across revealed adjacent tiles\. Press 1\./i));
     await user.click(screen.getByRole('button', { name: /Undo Step/i }));
     expect(onMoveBacktrack).toHaveBeenCalledTimes(1);
   });

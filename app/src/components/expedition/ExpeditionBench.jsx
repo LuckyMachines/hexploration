@@ -10,6 +10,8 @@ import MatchReplay from './MatchReplay';
 import SpectatorBanner from './SpectatorBanner';
 import MissionStatus from './MissionStatus';
 import TurnReadinessStrip from './TurnReadinessStrip';
+import UXStatusPanel from './UXStatusPanel';
+import GuidedFirstTurn from './GuidedFirstTurn';
 import HexGrid from '../board/HexGrid';
 import PlayerDossier from '../player/PlayerDossier';
 import ActionPanel from '../actions/ActionPanel';
@@ -17,14 +19,19 @@ import TurnResolution from '../resolution/TurnResolution';
 import EventLog from '../shared/EventLog';
 import ExpeditionDebugOverlay from './ExpeditionDebugOverlay';
 import ErrorBoundary from '../shared/ErrorBoundary';
+import UserPreferencesPanel from '../shared/UserPreferencesPanel';
+import ShareGameLink from '../shared/ShareGameLink';
 import { buildRouteStatus } from '../../lib/routeStatus';
 import { getAdjacent, parseAlias } from '../../lib/hexmath';
+import { getBestActionSuggestion, getTurnGuidance } from '../../lib/uxGuidance';
+import { useUserPreferences } from '../../hooks/useUserPreferences';
 
 export default function ExpeditionBench() {
   const view = useExpedition();
   const [focusedPlayerID, setFocusedPlayerID] = useState(null);
   const [showDebug, setShowDebug] = useState(false);
   const [boardInput, setBoardInput] = useState({ inputMode: 'mouse', inputCadence: 'idle', lastInputKind: 'idle' });
+  const { preferences } = useUserPreferences();
   const debugEnabled = import.meta.env.DEV
     || (typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('debug'));
 
@@ -93,6 +100,33 @@ export default function ExpeditionBench() {
     }),
     [activeInventory, companionLocations, location, movePath, moveValidation, movement],
   );
+  const hasSubmitted = action && action !== '' && action !== 'Idle';
+  const turnGuidance = useMemo(
+    () => getTurnGuidance({
+      isConnected: Boolean(address),
+      isSpectator,
+      hasSubmitted,
+      turnState,
+      routeStatus,
+      movePath,
+      readinessByPlayerID,
+      playerID,
+    }),
+    [address, hasSubmitted, isSpectator, movePath, playerID, readinessByPlayerID, routeStatus, turnState],
+  );
+  const suggestion = useMemo(
+    () => getBestActionSuggestion({
+      activeTab,
+      isSpectator,
+      hasSubmitted,
+      movement,
+      movePath,
+      routeStatus,
+      activeInventory,
+      turnState,
+    }),
+    [activeInventory, activeTab, hasSubmitted, isSpectator, movePath, movement, routeStatus, turnState],
+  );
 
   return (
     <div className="space-y-4">
@@ -119,6 +153,7 @@ export default function ExpeditionBench() {
               Debug
             </button>
           )}
+          <ShareGameLink />
         </div>
         <p className="mt-2 font-mono text-[11px] text-exp-text-dim">
           {queueDetail}
@@ -130,6 +165,17 @@ export default function ExpeditionBench() {
         movePathLength={movePath.length}
         moveValidation={moveValidation}
         crewCount={enrichedPlayers.length}
+      />
+      <GuidedFirstTurn
+        isSpectator={isSpectator}
+        hasSubmitted={hasSubmitted}
+        movePathLength={movePath.length}
+        turnState={turnState}
+      />
+      <UXStatusPanel
+        guidance={turnGuidance}
+        suggestion={suggestion}
+        onSuggestion={() => suggestion.action && setActiveTab(suggestion.action)}
       />
       <TurnReadinessStrip
         players={enrichedPlayers}
@@ -227,6 +273,9 @@ export default function ExpeditionBench() {
         </div>
       </div>
 
+      <UserPreferencesPanel />
+
+      {preferences.showTelemetry && (
       <details className="group rounded border border-exp-border bg-exp-panel/70 px-4 py-3">
         <summary className="cursor-pointer list-none flex items-center justify-between gap-3">
           <div>
@@ -250,6 +299,7 @@ export default function ExpeditionBench() {
           />
         </div>
       </details>
+      )}
 
       {isSpectator && <SpectatorBanner />}
 
@@ -307,7 +357,7 @@ export default function ExpeditionBench() {
             onLoadFullHistory={loadFullHistory}
             isLoadingFullHistory={isLoadingFullHistory}
           />
-          <EventLog events={events} />
+          <EventLog events={events} address={address} />
         </div>
       </details>
 

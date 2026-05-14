@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Action } from '../../lib/constants';
 import { getActionMeta } from '../../lib/actionMeta';
 import { emitFeedbackEvent } from '../../lib/feedbackEvents';
+import { getActionBlockReason, getActionExplanation, getBestActionSuggestion } from '../../lib/uxGuidance';
 import { useGameActions } from '../../hooks/useGameActions';
 import { usePlayerInventory } from '../../hooks/usePlayerInventory';
 import MoveControl from './MoveControl';
@@ -11,6 +12,8 @@ import RestControl from './RestControl';
 import HelpControl from './HelpControl';
 import TxStatus from '../shared/TxStatus';
 import ActionSimulator from './ActionSimulator';
+import SubmitConfirmation from './SubmitConfirmation';
+import ReceiptDrawer from './ReceiptDrawer';
 
 const TABS = [
   Action.MOVE,
@@ -22,12 +25,12 @@ const TABS = [
 ];
 
 const ACTION_GLYPHS = {
-  [Action.MOVE]: '◆',
-  [Action.SETUP_CAMP]: '⌂',
-  [Action.DIG]: '⌁',
-  [Action.REST]: '◐',
-  [Action.HELP]: '◇',
-  [Action.FLEE]: '▲',
+  [Action.MOVE]: 'M',
+  [Action.SETUP_CAMP]: 'C',
+  [Action.DIG]: 'D',
+  [Action.REST]: 'R',
+  [Action.HELP]: 'H',
+  [Action.FLEE]: 'F',
 };
 
 const TX_TONE = {
@@ -58,11 +61,15 @@ export default function ActionPanel({
   turnState,
 }) {
   const [localActiveTab, setLocalActiveTab] = useState(Action.MOVE);
+  const [pendingSubmission, setPendingSubmission] = useState(null);
+  const [lastSubmission, setLastSubmission] = useState(null);
+  const [optimisticSubmitted, setOptimisticSubmitted] = useState(null);
   const activeTab = controlledActiveTab ?? localActiveTab;
   const { submitAction, hash, isPending, isConfirming, isSuccess, error } = useGameActions();
   const { active: activeInv } = usePlayerInventory(gameId, playerID);
 
-  const hasSubmitted = currentAction && currentAction !== '' && currentAction !== 'Idle';
+  const hasChainSubmission = currentAction && currentAction !== '' && currentAction !== 'Idle';
+  const hasSubmitted = Boolean(optimisticSubmitted || hasChainSubmission);
   const isLocked = isSpectator || hasSubmitted || isPending || isConfirming;
   const txPhase = isPending ? 'Wallet Pending' : isConfirming ? 'Confirming' : isSuccess ? 'Confirmed' : error ? 'Failed' : 'Idle';
   const showControllerHints = boardInput?.inputMode === 'pad';
@@ -71,10 +78,25 @@ export default function ActionPanel({
     : isPending || isConfirming
       ? `SUBMITTING: ${getActionMeta(activeTab).label}`
       : hasSubmitted
-      ? `SUBMITTED: ${currentAction}`
-      : movement > 0
-        ? 'READY TO PLAN'
-        : 'AWAITING STATE';
+        ? `SUBMITTED: ${optimisticSubmitted?.label || currentAction}`
+        : movement > 0
+          ? 'READY TO PLAN'
+          : 'AWAITING STATE';
+
+  const actionContext = {
+    isSpectator,
+    hasSubmitted,
+    isPending,
+    isConfirming,
+    movement,
+    movePath,
+    routeStatus,
+    activeInventory: activeInv,
+    turnState,
+  };
+  const activeExplanation = getActionExplanation(activeTab, actionContext);
+  const blockReason = getActionBlockReason({ action: activeTab, ...actionContext });
+  const suggestion = getBestActionSuggestion({ activeTab, ...actionContext });
 
   useEffect(() => {
     emitFeedbackEvent({
@@ -84,6 +106,10 @@ export default function ActionPanel({
       turnState: turnState?.state,
     });
   }, [activeTab, error, isConfirming, isPending, isSuccess, turnState?.state]);
+
+  useEffect(() => {
+    if (isSuccess || hasChainSubmission) setOptimisticSubmitted(null);
+  }, [hasChainSubmission, isSuccess]);
 
   const setActiveTab = (tab) => {
     if (onTabChange) onTabChange(tab);
@@ -112,9 +138,36 @@ export default function ActionPanel({
     }
   };
 
-  const handleSubmit = (actionIndex, options = [], leftHand = '', rightHand = '') => {
+  const requestSubmit = (actionIndex, options = [], leftHand = '', rightHand = '') => {
     if (!playerID || !gameId) return;
-    submitAction(playerID, actionIndex, options, leftHand, rightHand, gameId);
+    setPendingSubmission({
+      playerID,
+      actionIndex,
+      label: getActionMeta(actionIndex).label,
+      options,
+      leftHand,
+      rightHand,
+      gameId,
+    });
+  };
+
+  const confirmSubmit = () => {
+    if (!pendingSubmission) return;
+    const submission = pendingSubmission;
+    setPendingSubmission(null);
+    setLastSubmission(submission);
+    setOptimisticSubmitted({ label: submission.label, options: submission.options });
+    Promise.resolve(submitAction(
+      submission.playerID,
+      submission.actionIndex,
+      submission.options,
+      submission.leftHand,
+      submission.rightHand,
+      submission.gameId,
+    )).catch(() => {
+      setOptimisticSubmitted(null);
+    });
+    if (submission.actionIndex === Action.MOVE) onMoveSubmit?.();
   };
 
   return (
@@ -133,9 +186,9 @@ export default function ActionPanel({
             ? 'text-exp-text-dim border-exp-border bg-exp-dark/40'
             : isPending || isConfirming
               ? 'text-blueprint border-blueprint/35 bg-blueprint/10 alive-tx-pulse'
-            : hasSubmitted
-              ? 'text-blueprint border-blueprint/30 bg-blueprint/5'
-              : 'text-compass-bright border-compass/30 bg-compass/5'
+              : hasSubmitted
+                ? 'text-blueprint border-blueprint/30 bg-blueprint/5'
+                : 'text-compass-bright border-compass/30 bg-compass/5'
         }`}>
           {statusLabel}
         </span>
@@ -171,7 +224,36 @@ export default function ActionPanel({
         </div>
       </div>
 
-      {/* Tab bar */}
+      <div className="px-4 pt-3">
+        <div className="rounded border border-exp-border/60 bg-exp-dark/35 px-3 py-2">
+          <div className="flex flex-wrap items-start justify-between gap-2">
+            <div>
+              <p className="font-mono text-[10px] uppercase tracking-[0.26em] text-exp-text-dim">
+                Action help
+              </p>
+              <p className="mt-1 font-mono text-xs text-exp-text">
+                {activeExplanation.outcome}
+              </p>
+              {blockReason && (
+                <p className="mt-1 font-mono text-[11px] text-signal-red">
+                  Blocked: {blockReason}
+                </p>
+              )}
+            </div>
+            {suggestion.action && suggestion.action !== activeTab && (
+              <button
+                type="button"
+                onClick={() => setActiveTab(suggestion.action)}
+                className="rounded border border-compass/35 bg-compass/5 px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.2em] text-compass"
+                title={suggestion.reason}
+              >
+                {suggestion.label}
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+
       <div
         className="grid grid-flow-col auto-cols-[minmax(4.8rem,1fr)] gap-1 px-4 pt-3 pb-2 border-b border-exp-border/50 overflow-x-auto"
         onKeyDown={handleTabKeyDown}
@@ -183,7 +265,7 @@ export default function ActionPanel({
             <button
               key={action}
               onClick={() => setActiveTab(action)}
-              title={`Press ${TABS.indexOf(action) + 1} to select ${meta.label}`}
+              title={`${meta.copy} Press ${TABS.indexOf(action) + 1}.`}
               className={`
                 alive-action-tab
                 min-h-12 px-2 py-1.5 text-xs font-mono uppercase tracking-wider shrink-0
@@ -201,7 +283,6 @@ export default function ActionPanel({
         })}
       </div>
 
-      {/* Active control */}
       <div className="p-4">
         {showControllerHints && (
           <div className="mb-3 grid gap-2 sm:grid-cols-3">
@@ -220,11 +301,8 @@ export default function ActionPanel({
             path={movePath}
             validation={moveValidation}
             routeStatus={routeStatus}
-            onSubmit={() => {
-              if (movePath.length === 0) return;
-              handleSubmit(Action.MOVE, movePath);
-              onMoveSubmit?.();
-            }}
+            blockedReason={blockReason}
+            onSubmit={() => requestSubmit(Action.MOVE, movePath)}
             onClear={onMoveClear}
             onBacktrack={onMoveBacktrack}
             disabled={isLocked}
@@ -233,20 +311,20 @@ export default function ActionPanel({
         {(activeTab === Action.SETUP_CAMP || activeTab === Action.BREAK_DOWN_CAMP) && (
           <CampControl
             activeInv={activeInv}
-            onSubmitSetup={() => handleSubmit(Action.SETUP_CAMP)}
-            onSubmitBreakdown={() => handleSubmit(Action.BREAK_DOWN_CAMP)}
+            onSubmitSetup={() => requestSubmit(Action.SETUP_CAMP)}
+            onSubmitBreakdown={() => requestSubmit(Action.BREAK_DOWN_CAMP)}
             disabled={isLocked}
           />
         )}
         {activeTab === Action.DIG && (
           <DigControl
-            onSubmit={() => handleSubmit(Action.DIG)}
+            onSubmit={() => requestSubmit(Action.DIG)}
             disabled={isLocked}
           />
         )}
         {activeTab === Action.REST && (
           <RestControl
-            onSubmit={(statOption) => handleSubmit(Action.REST, [statOption])}
+            onSubmit={(statOption) => requestSubmit(Action.REST, [statOption])}
             disabled={isLocked}
           />
         )}
@@ -254,7 +332,7 @@ export default function ActionPanel({
           <HelpControl
             gameId={gameId}
             currentPlayerID={playerID}
-            onSubmit={(targetPID, statOption) => handleSubmit(Action.HELP, [String(targetPID), statOption])}
+            onSubmit={(targetPID, statOption) => requestSubmit(Action.HELP, [String(targetPID), statOption])}
             disabled={isLocked}
           />
         )}
@@ -265,8 +343,9 @@ export default function ActionPanel({
               and have gathered sufficient artifacts.
             </p>
             <button
-              onClick={() => handleSubmit(Action.FLEE)}
+              onClick={() => requestSubmit(Action.FLEE)}
               disabled={isLocked}
+              title={blockReason || 'Review and send flee action'}
               className="px-4 py-2 bg-signal-red/10 border border-signal-red/40 rounded text-signal-red text-xs font-mono tracking-widest uppercase
                          hover:bg-signal-red/20 hover:border-signal-red/60 transition-colors
                          disabled:opacity-40 disabled:cursor-not-allowed"
@@ -289,7 +368,6 @@ export default function ActionPanel({
         />
       </div>
 
-      {/* Tx status */}
       {(hash || isPending || error) && (
         <div className="px-4 pb-4">
           <TxStatus
@@ -301,6 +379,49 @@ export default function ActionPanel({
           />
         </div>
       )}
+
+      <div className="px-4 pb-4">
+        <ReceiptDrawer
+          submission={lastSubmission}
+          hash={hash}
+          isPending={isPending}
+          isConfirming={isConfirming}
+          isSuccess={isSuccess}
+          error={error}
+        />
+      </div>
+
+      <div className="sticky bottom-0 z-20 border-t border-exp-border bg-exp-surface/95 px-3 py-2 lg:hidden">
+        <div className="flex items-center justify-between gap-2">
+          <button
+            type="button"
+            onClick={onMoveBacktrack}
+            disabled={movePath.length === 0 || isLocked}
+            className="rounded border border-blueprint/35 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.18em] text-blueprint disabled:opacity-40"
+          >
+            Undo
+          </button>
+          <span className="font-mono text-xs text-exp-text-dim">
+            {routeStatus?.label || `${movePath.length}/${movement}`}
+          </span>
+          <button
+            type="button"
+            onClick={() => requestSubmit(Action.MOVE, movePath)}
+            disabled={isLocked || activeTab !== Action.MOVE || movePath.length === 0 || routeStatus?.isValid === false}
+            className="rounded border border-compass/40 bg-compass/10 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.18em] text-compass-bright disabled:opacity-40"
+          >
+            Submit
+          </button>
+        </div>
+      </div>
+
+      <SubmitConfirmation
+        isOpen={Boolean(pendingSubmission)}
+        submission={pendingSubmission}
+        routeStatus={routeStatus}
+        onCancel={() => setPendingSubmission(null)}
+        onConfirm={confirmSubmit}
+      />
     </div>
   );
 }

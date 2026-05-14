@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { truncateAddress } from '../../lib/formatting';
 import { PROCESSING_LABELS } from '../../lib/constants';
 
@@ -69,21 +69,61 @@ function formatTimestamp(ts) {
   return `${h}:${m}:${s}`;
 }
 
-export default function EventLog({ events = [] }) {
+const FILTERS = [
+  ['all', 'All'],
+  ['mine', 'Mine'],
+  ['crew', 'Crew'],
+  ['tx', 'Tx'],
+  ['danger', 'Danger'],
+];
+
+function matchesFilter(event, filter, address) {
+  if (filter === 'all') return true;
+  if (filter === 'mine') return Boolean(address && event.args?.playerAddress?.toLowerCase?.() === address.toLowerCase());
+  if (filter === 'crew') return ['GameRegistration', 'ActionSubmit', 'PlayerIdleKick'].includes(event.name);
+  if (filter === 'tx') return Boolean(event.transactionHash);
+  if (filter === 'danger') return ['TurnProcessingFail', 'PlayerIdleKick', 'EndGameStarted', 'GameOver'].includes(event.name);
+  return true;
+}
+
+export default function EventLog({ events = [], address }) {
   const scrollRef = useRef(null);
+  const [filter, setFilter] = useState('all');
+  const filteredEvents = useMemo(
+    () => events.filter((event) => matchesFilter(event, filter, address)),
+    [address, events, filter],
+  );
 
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
-  }, [events.length]);
+  }, [filteredEvents.length]);
 
   return (
     <div className="bg-exp-dark border border-exp-border rounded">
       <div className="px-3 py-2 border-b border-exp-border">
-        <h3 className="font-display tracking-widest text-xs text-exp-text-dim uppercase">
-          Expedition Log
-        </h3>
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <h3 className="font-display tracking-widest text-xs text-exp-text-dim uppercase">
+            Expedition Log
+          </h3>
+          <div className="flex flex-wrap gap-1">
+            {FILTERS.map(([key, label]) => (
+              <button
+                key={key}
+                type="button"
+                onClick={() => setFilter(key)}
+                className={`rounded border px-2 py-1 font-mono text-[10px] uppercase tracking-[0.16em] ${
+                  filter === key
+                    ? 'border-compass/40 bg-compass/10 text-compass-bright'
+                    : 'border-exp-border bg-exp-dark/35 text-exp-text-dim'
+                }`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
 
       <div
@@ -95,8 +135,13 @@ export default function EventLog({ events = [] }) {
             No events recorded yet.
           </p>
         )}
+        {events.length > 0 && filteredEvents.length === 0 && (
+          <p className="font-mono text-xs text-exp-text-dim italic">
+            No events match this filter.
+          </p>
+        )}
 
-        {events.map((event, i) => {
+        {filteredEvents.map((event, i) => {
           const colorClass = EVENT_COLORS[event.name] || 'text-exp-text-dim';
           const icon = EVENT_ICONS[event.name] || '\u2022';
 

@@ -1,4 +1,5 @@
 import { useParams } from 'react-router-dom';
+import { useState } from 'react';
 import { useWallet } from '../contexts/WalletContext';
 import { useGameState } from '../hooks/useGameState';
 import GameLobby from '../components/game/GameLobby';
@@ -13,6 +14,7 @@ import { parseUintId } from '../lib/ids';
 export default function GamePage() {
   const { gameId } = useParams();
   const { isConnected, connect } = useWallet();
+  const [connectError, setConnectError] = useState('');
   const parsedGameId = parseUintId(gameId);
   const normalizedGameId = parsedGameId?.toString() ?? '';
   const { gameStarted, isLoading, error } = useGameState(normalizedGameId);
@@ -43,12 +45,26 @@ export default function GamePage() {
                 You need a connected wallet to register, submit actions, and interact with the game.
               </p>
               <button
-                onClick={() => connect()}
+                onClick={async () => {
+                  setConnectError('');
+                  try {
+                    await connect();
+                  } catch (err) {
+                    setConnectError(err?.message === 'No wallet found'
+                      ? 'No wallet was detected. Install or unlock one, then try again.'
+                      : err?.shortMessage || err?.message || 'Wallet connection failed.');
+                  }
+                }}
                 className="px-5 py-2.5 bg-compass/10 border border-compass/50 rounded text-compass text-xs font-display font-semibold tracking-widest uppercase
                            hover:bg-compass/20 hover:border-compass transition-colors"
               >
                 Connect Wallet
               </button>
+              {connectError && (
+                <p className="mx-auto max-w-md rounded border border-signal-red/30 bg-signal-red/5 px-3 py-2 font-mono text-xs text-signal-red">
+                  {connectError}
+                </p>
+              )}
             </div>
           )}
 
@@ -66,6 +82,16 @@ export default function GamePage() {
               <p className="font-mono text-xs text-signal-red tracking-wider uppercase">
                 Failed to load survey data
               </p>
+              <p className="mx-auto mt-2 max-w-xl break-all font-mono text-xs text-exp-text-dim">
+                {error?.shortMessage || error?.message || String(error)}
+              </p>
+              <button
+                type="button"
+                onClick={() => window.location.reload()}
+                className="mt-4 rounded border border-signal-red/40 px-3 py-2 font-mono text-xs uppercase tracking-[0.2em] text-signal-red hover:bg-signal-red/10"
+              >
+                Reload
+              </button>
             </div>
           )}
 

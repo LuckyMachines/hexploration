@@ -4,6 +4,7 @@ export default function MoveControl({
   path = [],
   validation,
   routeStatus,
+  blockedReason,
   onSubmit,
   onClear,
   onBacktrack,
@@ -58,7 +59,28 @@ export default function MoveControl({
         </div>
       </div>
 
-      {/* Current path display */}
+      <div className="rounded border border-exp-border/60 bg-exp-dark/25 px-3 py-2">
+        <p className="font-mono text-[10px] uppercase tracking-[0.26em] text-exp-text-dim">
+          Route breadcrumbs
+        </p>
+        <div className="mt-2 flex flex-wrap items-center gap-1.5">
+          <span className="rounded border border-compass/30 bg-compass/5 px-2 py-1 font-mono text-[10px] uppercase tracking-[0.18em] text-compass">
+            Start {currentLocation || 'unknown'}
+          </span>
+          {path.map((alias, index) => (
+            <span
+              key={`${alias}-${index}`}
+              className="rounded border border-exp-border bg-exp-dark/45 px-2 py-1 font-mono text-[10px] uppercase tracking-[0.18em] text-exp-text"
+            >
+              {index + 1}. {alias}
+            </span>
+          ))}
+          <span className="rounded border border-blueprint/25 bg-blueprint/5 px-2 py-1 font-mono text-[10px] uppercase tracking-[0.18em] text-blueprint">
+            {status.remaining} left
+          </span>
+        </div>
+      </div>
+
       {path.length > 0 && (
         <div className="flex items-center gap-1 flex-wrap">
           <span className="font-mono text-xs text-exp-text-dim uppercase tracking-wider">Path:</span>
@@ -81,6 +103,27 @@ export default function MoveControl({
             : 'border-signal-red/30 bg-signal-red/5 text-signal-red'
         }`}>
           {validation.reason}
+        </div>
+      )}
+      {blockedReason && (
+        <div className="rounded border border-signal-red/30 bg-signal-red/5 px-3 py-2 font-mono text-[11px] text-signal-red">
+          {blockedReason}
+        </div>
+      )}
+      {status.isValid === false && (
+        <div className="flex flex-wrap gap-2 rounded border border-signal-red/30 bg-exp-dark/35 px-3 py-2">
+          <span className="font-mono text-[11px] text-signal-red">
+            Fix: undo the last step, clear the route, or choose a highlighted adjacent tile.
+          </span>
+          {path.length > 0 && (
+            <button
+              type="button"
+              onClick={onBacktrack}
+              className="rounded border border-signal-red/35 px-2 py-1 font-mono text-[10px] uppercase tracking-[0.18em] text-signal-red"
+            >
+              Undo
+            </button>
+          )}
         </div>
       )}
 
