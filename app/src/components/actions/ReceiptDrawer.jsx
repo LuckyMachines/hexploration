@@ -44,6 +44,19 @@ export default function ReceiptDrawer({
           Options: {submission.options.join(' -> ')}
         </p>
       )}
+      {submission?.drama && (
+        <div className="mt-3 rounded border border-compass/25 bg-compass/5 px-3 py-2">
+          <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-compass">
+            {submission.drama.title}
+          </p>
+          <p className="mt-1 font-mono text-[11px] text-exp-text">
+            {submission.drama.receipt}
+          </p>
+          <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.18em] text-exp-text-dim">
+            Cue hook: {submission.drama.cue}
+          </p>
+        </div>
+      )}
       {error && (
         <p className="mt-2 break-all font-mono text-[11px] text-signal-red">
           {error.shortMessage || error.message || String(error)}
@@ -52,4 +65,3 @@ export default function ReceiptDrawer({
     </details>
   );
 }
-

@@ -50,6 +50,7 @@ export default function HexGrid({
   stats = {},
   activeInventory = {},
   turnState,
+  funTelemetry,
   focusedPlayerID,
   onPlayerFocus,
   onInputSnapshot,
@@ -281,6 +282,10 @@ export default function HexGrid({
     lowStats: stats.movement <= 1 || stats.agility <= 1 || stats.dexterity <= 1,
     activeInventory,
     routeStatus,
+    mood: funTelemetry?.mood,
+    bark: funTelemetry?.bark,
+    risk: funTelemetry?.risk,
+    namedMoment: funTelemetry?.namedMoment,
   };
 
   return (

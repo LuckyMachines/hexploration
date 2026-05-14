@@ -17,12 +17,35 @@ export default function SubmitConfirmation({
             Confirm turn action
           </p>
           <h2 className="mt-1 font-display text-xl uppercase tracking-[0.18em] text-compass-bright">
-            {submission.label}
+            {submission.drama?.title || submission.label}
           </h2>
           <p className="mt-2 font-mono text-xs leading-relaxed text-exp-text-dim">
-            This sends an on-chain transaction and locks the selected action for the turn.
+            {submission.drama?.body || 'This sends an on-chain transaction and locks the selected action for the turn.'}
           </p>
         </div>
+
+        {submission.drama && (
+          <div className={`rounded border px-3 py-2 ${
+            submission.drama.riskScore >= 72
+              ? 'alive-risk-redline border-signal-red/40 bg-signal-red/10 text-signal-red'
+              : 'border-compass/30 bg-compass/5 text-compass-bright'
+          }`}>
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <p className="font-mono text-[10px] uppercase tracking-[0.26em] opacity-80">
+                {submission.drama.label}
+              </p>
+              <p className="font-mono text-[10px] uppercase tracking-[0.22em] opacity-80">
+                {submission.drama.riskLabel} / {submission.drama.cue}
+              </p>
+            </div>
+            <div className="mt-2 h-1.5 overflow-hidden rounded bg-exp-dark/60">
+              <div
+                className={submission.drama.riskScore >= 72 ? 'h-full rounded bg-signal-red' : 'h-full rounded bg-compass-bright'}
+                style={{ width: `${submission.drama.riskScore}%` }}
+              />
+            </div>
+          </div>
+        )}
 
         <div className="grid gap-2 sm:grid-cols-2">
           <div className="rounded border border-exp-border bg-exp-dark/35 px-3 py-2">
@@ -63,4 +86,3 @@ export default function SubmitConfirmation({
     </Modal>
   );
 }
-

@@ -3,6 +3,7 @@ import { Action } from '../../lib/constants';
 import { getActionMeta } from '../../lib/actionMeta';
 import { emitFeedbackEvent } from '../../lib/feedbackEvents';
 import { getActionBlockReason, getActionExplanation, getBestActionSuggestion } from '../../lib/uxGuidance';
+import { buildActionDrama } from '../../lib/funTelemetry';
 import { useGameActions } from '../../hooks/useGameActions';
 import { usePlayerInventory } from '../../hooks/usePlayerInventory';
 import MoveControl from './MoveControl';
@@ -59,6 +60,7 @@ export default function ActionPanel({
   routeStatus,
   boardInput,
   turnState,
+  funTelemetry,
 }) {
   const [localActiveTab, setLocalActiveTab] = useState(Action.MOVE);
   const [pendingSubmission, setPendingSubmission] = useState(null);
@@ -148,6 +150,21 @@ export default function ActionPanel({
       leftHand,
       rightHand,
       gameId,
+      drama: buildActionDrama(actionIndex, {
+        isSpectator,
+        hasSubmitted,
+        isPending,
+        isConfirming,
+        movement,
+        movePath: actionIndex === Action.MOVE ? options : movePath,
+        routeStatus,
+        activeInventory: activeInv,
+        turnState,
+        location: currentLocation,
+        currentLocation,
+        stats,
+        boardInput,
+      }),
     });
   };
 
@@ -253,6 +270,38 @@ export default function ActionPanel({
           </div>
         </div>
       </div>
+
+      {funTelemetry && (
+        <div className="px-4 pt-3">
+          <div className="grid gap-2 md:grid-cols-[1fr_auto]">
+            <div className="rounded border border-compass/25 bg-compass/5 px-3 py-2">
+              <p className="font-mono text-[10px] uppercase tracking-[0.26em] text-compass">
+                {funTelemetry.preview.label}
+              </p>
+              <p className="mt-1 font-mono text-xs text-exp-text">
+                {funTelemetry.preview.body}
+              </p>
+              <p className="mt-1 font-mono text-[11px] text-exp-text-dim">
+                "{funTelemetry.bark.line}"
+              </p>
+            </div>
+            <div className={`rounded border px-3 py-2 ${
+              funTelemetry.risk.level === 'redline'
+                ? 'alive-risk-redline border-signal-red/40 bg-signal-red/10 text-signal-red'
+                : funTelemetry.risk.level === 'hot'
+                  ? 'border-compass/40 bg-compass/10 text-compass-bright'
+                  : 'border-oxide-green/35 bg-oxide-green/10 text-oxide-green'
+            }`}>
+              <p className="font-mono text-[10px] uppercase tracking-[0.24em] opacity-70">
+                Tension
+              </p>
+              <p className="mt-1 font-mono text-xs uppercase tracking-[0.18em]">
+                {funTelemetry.risk.label} {funTelemetry.risk.score}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div
         className="grid grid-flow-col auto-cols-[minmax(4.8rem,1fr)] gap-1 px-4 pt-3 pb-2 border-b border-exp-border/50 overflow-x-auto"

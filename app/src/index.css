@@ -208,6 +208,22 @@ body {
   50% { opacity: 0.62; }
 }
 
+@keyframes alive-bark {
+  0% { opacity: 0; transform: translateY(3px) scale(0.98); }
+  20%, 85% { opacity: 1; transform: translateY(0) scale(1); }
+  100% { opacity: 0.86; transform: translateY(-1px) scale(1); }
+}
+
+@keyframes alive-moment {
+  0%, 100% { filter: drop-shadow(0 0 1px rgba(232, 200, 96, 0.18)); }
+  50% { filter: drop-shadow(0 0 7px rgba(232, 200, 96, 0.4)); }
+}
+
+@keyframes alive-risk-redline {
+  0%, 100% { filter: brightness(1); }
+  50% { filter: brightness(1.22) drop-shadow(0 0 8px rgba(212, 64, 64, 0.35)); }
+}
+
 .alive-explorer {
   animation: alive-breathe 2.7s ease-in-out infinite;
   transform-box: fill-box;
@@ -385,6 +401,20 @@ body {
   transform-origin: center;
 }
 
+.alive-bark-bubble {
+  animation: alive-bark 2.8s ease-out both;
+  transform-box: fill-box;
+  transform-origin: bottom left;
+}
+
+.alive-moment-ribbon {
+  animation: alive-moment 2.6s ease-in-out infinite;
+}
+
+.alive-risk-redline {
+  animation: alive-risk-redline 0.9s ease-in-out infinite;
+}
+
 .alive-observation-mode {
   filter: saturate(0.88) contrast(1.04);
 }
@@ -441,6 +471,9 @@ body {
   .alive-relic-line,
   .alive-fog-line,
   .alive-marker-aura,
+  .alive-bark-bubble,
+  .alive-moment-ribbon,
+  .alive-risk-redline,
   .alive-action-tab:active,
   .alive-commit-button:active,
   .alive-cancel-button:active,

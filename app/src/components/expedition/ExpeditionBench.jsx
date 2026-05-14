@@ -12,6 +12,8 @@ import MissionStatus from './MissionStatus';
 import TurnReadinessStrip from './TurnReadinessStrip';
 import UXStatusPanel from './UXStatusPanel';
 import GuidedFirstTurn from './GuidedFirstTurn';
+import FunStatusPanel from './FunStatusPanel';
+import DiscoveryJournal from './DiscoveryJournal';
 import HexGrid from '../board/HexGrid';
 import PlayerDossier from '../player/PlayerDossier';
 import ActionPanel from '../actions/ActionPanel';
@@ -24,6 +26,7 @@ import ShareGameLink from '../shared/ShareGameLink';
 import { buildRouteStatus } from '../../lib/routeStatus';
 import { getAdjacent, parseAlias } from '../../lib/hexmath';
 import { getBestActionSuggestion, getTurnGuidance } from '../../lib/uxGuidance';
+import { buildFunTelemetry } from '../../lib/funTelemetry';
 import { useUserPreferences } from '../../hooks/useUserPreferences';
 
 export default function ExpeditionBench() {
@@ -127,6 +130,44 @@ export default function ExpeditionBench() {
     }),
     [activeInventory, activeTab, hasSubmitted, isSpectator, movePath, movement, routeStatus, turnState],
   );
+  const funTelemetry = useMemo(
+    () => buildFunTelemetry({
+      activeTab,
+      hasSubmitted,
+      isSpectator,
+      movement,
+      movePath,
+      routeStatus,
+      stats,
+      activeInventory,
+      turnState,
+      boardInput,
+      events,
+      location,
+      phase,
+      queueTelemetry,
+      readinessByPlayerID,
+      playerID,
+    }),
+    [
+      activeInventory,
+      activeTab,
+      boardInput,
+      events,
+      hasSubmitted,
+      isSpectator,
+      location,
+      movePath,
+      movement,
+      phase,
+      playerID,
+      queueTelemetry,
+      readinessByPlayerID,
+      routeStatus,
+      stats,
+      turnState,
+    ],
+  );
 
   return (
     <div className="space-y-4">
@@ -177,6 +218,7 @@ export default function ExpeditionBench() {
         suggestion={suggestion}
         onSuggestion={() => suggestion.action && setActiveTab(suggestion.action)}
       />
+      <FunStatusPanel telemetry={funTelemetry} />
       <TurnReadinessStrip
         players={enrichedPlayers}
         readinessByPlayerID={readinessByPlayerID}
@@ -234,6 +276,7 @@ export default function ExpeditionBench() {
               stats={stats}
               activeInventory={activeInventory}
               turnState={turnState}
+              funTelemetry={funTelemetry}
               focusedPlayerID={focusedPlayerID}
               onPlayerFocus={setFocusedPlayerID}
               onInputSnapshot={setBoardInput}
@@ -323,6 +366,7 @@ export default function ExpeditionBench() {
             routeStatus={routeStatus}
             boardInput={boardInput}
             turnState={turnState}
+            funTelemetry={funTelemetry}
           />
         </ErrorBoundary>
       )}
@@ -336,6 +380,7 @@ export default function ExpeditionBench() {
       <ErrorBoundary>
         <TurnResolution gameId={view.gameId} events={events} turnState={turnState} turnReplay={view.turnReplay} />
       </ErrorBoundary>
+      <DiscoveryJournal entries={funTelemetry.journalEntries} />
 
       <details className="group rounded border border-exp-border bg-exp-panel/70 px-4 py-3">
         <summary className="cursor-pointer list-none flex items-center justify-between gap-3">

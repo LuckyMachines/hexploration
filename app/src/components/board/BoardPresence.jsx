@@ -37,6 +37,10 @@ function routePoints(origin, path) {
   }));
 }
 
+function shortText(text = '', max = 30) {
+  return text.length > max ? `${text.slice(0, max - 3)}...` : text;
+}
+
 function directionAngle(fromAlias, toAlias) {
   if (!fromAlias || !toAlias) return 0;
   const from = aliasToPixel(fromAlias);
@@ -315,6 +319,45 @@ function InputReadout({ currentLocation, controlFeel }) {
   );
 }
 
+function ExplorerBark({ currentLocation, controlFeel }) {
+  if (!currentLocation || !controlFeel?.bark?.line) return null;
+  const pos = aliasToPixel(currentLocation);
+  const risk = controlFeel?.risk?.level;
+  const stroke = risk === 'redline' ? '#d44040' : controlFeel?.mood?.tone === 'green' ? '#40a080' : '#e8c860';
+
+  return (
+    <g transform={`translate(${pos.x + 26},${pos.y - 44})`} className="alive-bark-bubble">
+      <path
+        d="M0,0 H122 Q128,0 128,6 V31 Q128,37 122,37 H18 L7,48 L10,37 H0 Q-6,37 -6,31 V6 Q-6,0 0,0 Z"
+        fill="#0d0f0a"
+        opacity="0.82"
+        stroke={stroke}
+        strokeWidth="0.8"
+      />
+      <text x="61" y="13" textAnchor="middle" fill={stroke} style={{ fontSize: '6.6px', fontFamily: 'JetBrains Mono, monospace', letterSpacing: '0.08em' }}>
+        {controlFeel.mood?.label || 'Ready'}
+      </text>
+      <text x="61" y="26" textAnchor="middle" fill="#c4cbb8" style={{ fontSize: '6.2px', fontFamily: 'JetBrains Mono, monospace' }}>
+        {shortText(controlFeel.bark.line, 34)}
+      </text>
+    </g>
+  );
+}
+
+function MomentRibbon({ currentLocation, controlFeel }) {
+  if (!currentLocation || !controlFeel?.namedMoment?.title) return null;
+  const pos = aliasToPixel(currentLocation);
+
+  return (
+    <g transform={`translate(${pos.x - 70},${pos.y + 58})`} className="alive-moment-ribbon">
+      <rect x="0" y="0" width="140" height="18" rx="2" fill="#0d0f0a" opacity="0.72" stroke="#c4a64a" strokeWidth="0.7" />
+      <text x="70" y="12" textAnchor="middle" fill="#e8c860" style={{ fontSize: '6.4px', fontFamily: 'JetBrains Mono, monospace', letterSpacing: '0.08em' }}>
+        {shortText(controlFeel.namedMoment.title, 28)}
+      </text>
+    </g>
+  );
+}
+
 function IntentCursor({
   intentAlias,
   intentTile,
@@ -531,6 +574,8 @@ export default function BoardPresence({
         currentPlayerIndex={currentPlayerIndex}
         controlFeel={controlFeel}
       />
+      <ExplorerBark currentLocation={currentLocation} controlFeel={controlFeel} />
+      <MomentRibbon currentLocation={currentLocation} controlFeel={controlFeel} />
       <ConsequencePips
         currentLocation={currentLocation}
         movement={movement}
