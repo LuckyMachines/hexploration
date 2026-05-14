@@ -43,20 +43,22 @@ export default function TurnResolution({ gameId, events = [], turnState, turnRep
               <h4 className="font-mono text-xs tracking-[0.3em] text-exp-text-dim uppercase">
                 Chain Replay
               </h4>
-              <div className="flex items-center gap-1">
+              <div className="flex min-w-0 flex-1 items-center justify-end gap-1">
                 {replay.steps.map((step) => (
                   <button
                     key={step.id}
                     type="button"
                     onClick={() => setSelectedReplayIndex(step.index)}
-                    className={`h-6 min-w-6 rounded border px-1.5 font-mono text-[10px] ${
+                    className={`relative h-8 min-w-8 border px-1.5 font-mono text-[10px] ${
                       selectedStep?.id === step.id
                         ? 'border-compass/50 bg-compass/10 text-compass-bright'
                         : 'border-exp-border bg-exp-dark/35 text-exp-text-dim'
                     }`}
                     aria-label={`Replay step ${step.index + 1}`}
                   >
+                    <span className="absolute left-1/2 top-0 h-1.5 w-px -translate-x-1/2 bg-current opacity-50" />
                     {step.index + 1}
+                    <span className="absolute bottom-0 left-1/2 h-1.5 w-px -translate-x-1/2 bg-current opacity-50" />
                   </button>
                 ))}
               </div>
@@ -73,7 +75,11 @@ export default function TurnResolution({ gameId, events = [], turnState, turnRep
             )}
             <div className="grid gap-2 sm:grid-cols-2">
               {latestEvents.map((event) => (
-                <div key={event.id} className="rounded border border-exp-border/50 bg-exp-dark/40 px-3 py-2">
+                <div key={event.id} className={`rounded border px-3 py-2 ${
+                  selectedStep?.id === event.id
+                    ? 'border-compass/40 bg-compass/10'
+                    : 'border-exp-border/50 bg-exp-dark/40'
+                }`}>
                   <p className="font-mono text-xs uppercase tracking-wider text-blueprint">
                     {event.summary || event.name}
                   </p>

@@ -188,6 +188,7 @@ export default function ExpeditionBench() {
               stats={stats}
               activeInventory={activeInventory}
               turnState={turnState}
+              focusedPlayerID={focusedPlayerID}
               onPlayerFocus={setFocusedPlayerID}
               onInputSnapshot={setBoardInput}
             />

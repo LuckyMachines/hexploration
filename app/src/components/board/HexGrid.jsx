@@ -50,6 +50,7 @@ export default function HexGrid({
   stats = {},
   activeInventory = {},
   turnState,
+  focusedPlayerID,
   onPlayerFocus,
   onInputSnapshot,
 }) {
@@ -201,14 +202,21 @@ export default function HexGrid({
             </div>
           </div>
 
-          <div className="mt-4 grid grid-cols-6 gap-2 opacity-60">
-            {Array.from({ length: 24 }).map((_, index) => (
-              <div
-                key={index}
-                className="hex-clip aspect-square border border-exp-border/60 bg-exp-surface/60 animate-pulse"
-                style={{ animationDelay: `${(index % 6) * 80}ms` }}
-              />
-            ))}
+          <div className="mt-4 grid gap-4 sm:grid-cols-[1fr_auto]">
+            <div className="grid grid-cols-6 gap-2 opacity-70">
+              {Array.from({ length: 24 }).map((_, index) => (
+                <div
+                  key={index}
+                  className="hex-clip aspect-square border border-exp-border/60 bg-exp-surface/60 animate-pulse"
+                  style={{ animationDelay: `${(index % 6) * 80}ms` }}
+                />
+              ))}
+            </div>
+            <div className="hidden w-20 space-y-2 sm:block">
+              <div className="h-24 rounded border border-exp-border/60 bg-exp-surface/60 animate-pulse" />
+              <div className="h-8 rounded border border-exp-border/60 bg-exp-surface/50 animate-pulse" />
+              <div className="h-8 rounded border border-exp-border/60 bg-exp-surface/40 animate-pulse" />
+            </div>
           </div>
         </div>
       </div>
@@ -216,7 +224,7 @@ export default function HexGrid({
   }
 
   const viewBox = gridViewBox(columns, rows);
-  const [, , viewBoxWidth, viewBoxHeight] = viewBox.split(' ').map(Number);
+  const [viewBoxX, viewBoxY, viewBoxWidth, viewBoxHeight] = viewBox.split(' ').map(Number);
   const boardAspect = viewBoxWidth && viewBoxHeight ? viewBoxWidth / viewBoxHeight : 1;
   const boardMaxWidthPx = Math.round(760 * boardAspect);
   const boardMaxWidthSvh = Number((75 * boardAspect).toFixed(3));
@@ -250,6 +258,14 @@ export default function HexGrid({
     activeInventory,
     companionLocations,
   });
+  const invalidIntentAlias = !routeStatus.isValid && intentAlias ? intentAlias : '';
+  const boardToneClass = turnState?.isResolving || isResolving
+    ? 'alive-board-resolving'
+    : hasSubmitted
+      ? 'alive-board-submitted'
+      : isSpectator
+        ? 'alive-board-spectator'
+        : 'alive-board-planning';
   const controlFeel = {
     analogPressure: input.analogPressure,
     inputCadence: input.isObserving ? 'idle' : input.inputCadence,
@@ -278,7 +294,7 @@ export default function HexGrid({
           aria-label="Expedition survey board"
           onKeyDown={input.handleKeyDown}
           onMouseDown={() => input.boardRef.current?.focus()}
-          className={`w-full min-w-0 outline-none transition-[filter] duration-500 focus-visible:ring-2 focus-visible:ring-compass/60 ${input.isObserving ? 'alive-observation-mode' : ''}`}
+          className={`w-full min-w-0 outline-none transition-[filter] duration-500 focus-visible:ring-2 focus-visible:ring-compass/60 ${boardToneClass} ${input.isObserving ? 'alive-observation-mode' : ''}`}
           style={{ maxWidth: boardMaxWidth }}
         >
           <svg
@@ -286,6 +302,15 @@ export default function HexGrid({
             className="block h-auto w-full max-h-[min(75svh,760px)]"
             style={{ aspectRatio: `${viewBoxWidth} / ${viewBoxHeight}` }}
           >
+            <rect
+              x={viewBoxX}
+              y={viewBoxY}
+              width={viewBoxWidth}
+              height={viewBoxHeight}
+              fill="currentColor"
+              className="alive-board-light"
+              opacity="0.08"
+            />
             {allHexes.map(({ alias, x, y }) => {
               const revealed = revealedMap[alias];
 
@@ -336,6 +361,8 @@ export default function HexGrid({
             <PathOverlay
               origin={currentLocation}
               path={selectedPath}
+              previewPath={previewPath}
+              invalidAlias={invalidIntentAlias}
               isCommitted={hasSubmitted}
               isHeavy={heavyRoute}
             />
@@ -368,10 +395,11 @@ export default function HexGrid({
                     key={`p-${pIdx}`}
                     cx={pos.x}
                     cy={pos.y}
-                  playerIndex={pIdx}
-                  isCurrentPlayer={pIdx === currentPlayerIndex}
-                  onClick={() => onPlayerFocus?.(pIdx + 1)}
-                />
+                    playerIndex={pIdx}
+                    isCurrentPlayer={pIdx === currentPlayerIndex}
+                    isFocused={focusedPlayerID === pIdx + 1}
+                    onClick={() => onPlayerFocus?.(pIdx + 1)}
+                  />
                 );
               }))}
           </svg>

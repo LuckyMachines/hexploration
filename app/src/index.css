@@ -113,6 +113,11 @@ body {
   to { stroke-dashoffset: 0; }
 }
 
+@keyframes alive-route-heavy {
+  0%, 100% { stroke-dashoffset: 28; filter: drop-shadow(0 0 2px rgba(212, 64, 64, 0.3)); }
+  50% { stroke-dashoffset: 8; filter: drop-shadow(0 0 8px rgba(212, 64, 64, 0.56)); }
+}
+
 @keyframes alive-smoke {
   0%, 100% { opacity: 0.16; transform: translateY(0); }
   50% { opacity: 0.46; transform: translateY(-3px); }
@@ -158,6 +163,21 @@ body {
 @keyframes alive-ping {
   0% { opacity: 0.8; transform: scale(0.4); }
   100% { opacity: 0; transform: scale(2.2); }
+}
+
+@keyframes alive-relic-pulse {
+  0%, 100% { opacity: 0.28; transform: scale(0.94); }
+  50% { opacity: 0.72; transform: scale(1.08); }
+}
+
+@keyframes alive-fog-drift {
+  from { stroke-dashoffset: 0; }
+  to { stroke-dashoffset: 18; }
+}
+
+@keyframes alive-marker-aura {
+  0%, 100% { opacity: 0.12; transform: scale(0.96); }
+  50% { opacity: 0.26; transform: scale(1.1); }
 }
 
 @keyframes alive-companion {
@@ -221,6 +241,14 @@ body {
   filter: drop-shadow(0 0 4px rgba(232, 200, 96, 0.42));
 }
 
+.alive-route-heavy {
+  animation: alive-route-heavy 0.95s ease-in-out infinite;
+}
+
+.alive-invalid-tile-callout {
+  filter: drop-shadow(0 0 8px rgba(212, 64, 64, 0.42));
+}
+
 .alive-tile {
   transform-box: fill-box;
   transform-origin: center;
@@ -228,6 +256,56 @@ body {
 
 .alive-tile:hover {
   filter: brightness(1.16);
+}
+
+.alive-tile-intent {
+  filter: brightness(1.24) drop-shadow(0 0 7px rgba(196, 203, 184, 0.3));
+}
+
+.alive-relic-tile {
+  filter: drop-shadow(0 0 6px rgba(144, 96, 192, 0.34));
+}
+
+.alive-relic-pulse,
+.alive-relic-line {
+  animation: alive-relic-pulse 1.8s ease-in-out infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.alive-fog-line {
+  animation: alive-fog-drift 3.4s linear infinite;
+  stroke-dasharray: 4 6;
+}
+
+.alive-fog-intent {
+  filter: drop-shadow(0 0 8px rgba(196, 203, 184, 0.24));
+}
+
+.alive-marker-aura {
+  animation: alive-marker-aura 1.8s ease-in-out infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.alive-board-planning {
+  color: #c4a64a;
+}
+
+.alive-board-submitted {
+  color: #40a080;
+}
+
+.alive-board-resolving {
+  color: #3a7cc4;
+}
+
+.alive-board-spectator {
+  color: #6a7560;
+}
+
+.alive-board-light {
+  transition: opacity 300ms ease;
 }
 
 .alive-committed-tile {
@@ -325,6 +403,7 @@ body {
   .alive-slow-scan,
   .alive-invalid,
   .alive-route-preview,
+  .alive-route-heavy,
   .alive-route-locked,
   .alive-smoke,
   .alive-breath-mark,
@@ -335,6 +414,10 @@ body {
   .alive-discovery-field,
   .alive-companion-awareness,
   .alive-lantern-ping,
+  .alive-relic-pulse,
+  .alive-relic-line,
+  .alive-fog-line,
+  .alive-marker-aura,
   .alive-action-tab:active,
   .alive-commit-button:active,
   .alive-cancel-button:active,

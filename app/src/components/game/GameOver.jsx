@@ -19,6 +19,7 @@ export default function GameOver({ gameId }) {
     [players],
   );
   const lostCount = Math.max(players.length - survivorCount, 0);
+  const outcomeTone = lostCount === 0 ? 'text-oxide-green' : survivorCount > 0 ? 'text-compass-bright' : 'text-signal-red';
   const reportUrl = typeof window !== 'undefined' ? window.location.href : '';
 
   const copyReport = async () => {
@@ -41,7 +42,7 @@ export default function GameOver({ gameId }) {
           </span>
         </div>
 
-        <div className="relative p-8 text-center overflow-hidden">
+        <div className="relative overflow-hidden p-8 text-center">
           <div
             className="absolute inset-0 pointer-events-none"
             style={{
@@ -50,13 +51,25 @@ export default function GameOver({ gameId }) {
           />
 
           <div className="relative z-10 space-y-4">
-            <h2 className="text-2xl font-display font-bold tracking-[0.3em] text-compass-bright uppercase">
+            <h2 className={`text-2xl font-display font-bold tracking-[0.3em] uppercase ${outcomeTone}`}>
               Survey Complete
             </h2>
 
             <p className="font-mono text-sm text-exp-text-dim">
               The survey has concluded. All crew have returned or been lost to the planet.
             </p>
+            <div className="mx-auto mt-4 grid max-w-xl gap-2 sm:grid-cols-3">
+              {['Crew', 'Survived', 'Lost'].map((label, index) => {
+                const value = [players.length, survivorCount, lostCount][index];
+                const tone = index === 1 ? 'text-oxide-green' : index === 2 ? 'text-signal-red' : 'text-exp-text';
+                return (
+                  <div key={label} className="rounded border border-exp-border bg-exp-dark/45 px-3 py-2">
+                    <p className="font-mono text-[10px] uppercase tracking-[0.28em] text-exp-text-dim">{label}</p>
+                    <p className={`mt-1 font-mono text-2xl ${tone}`}>{value}</p>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </div>
       </div>
@@ -96,6 +109,12 @@ export default function GameOver({ gameId }) {
               {lostCount}
             </p>
           </div>
+        </div>
+        <div className="mx-5 mb-4 h-2 overflow-hidden rounded bg-exp-dark">
+          <div
+            className="h-full rounded bg-oxide-green"
+            style={{ width: `${players.length ? (survivorCount / players.length) * 100 : 0}%` }}
+          />
         </div>
         <div className="border-t border-exp-border px-5 py-4 flex flex-wrap items-center justify-between gap-3">
           <p className="font-mono text-xs leading-relaxed text-exp-text-dim">
@@ -188,10 +207,17 @@ export default function GameOver({ gameId }) {
                 <tr key={i} className={`border-b border-exp-border/50 ${isYou ? 'bg-compass/5' : ''}`}>
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-2">
-                      <div className="w-3 h-3 rounded-full" style={{ backgroundColor: PLAYER_COLORS[i] }} />
-                      <span className="font-mono text-xs text-exp-text">
-                        {truncateAddress(addr)}
-                      </span>
+                      <div className="grid h-7 w-7 place-items-center rounded border border-exp-border bg-exp-dark/60" style={{ color: PLAYER_COLORS[i] }}>
+                        <span className="font-mono text-[10px] font-bold">P{i + 1}</span>
+                      </div>
+                      <div>
+                        <span className="block font-mono text-xs text-exp-text">
+                          {truncateAddress(addr)}
+                        </span>
+                        <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-exp-text-dim">
+                          {player.currentZone || 'unknown'}
+                        </span>
+                      </div>
                       {isYou && (
                         <span className="font-display text-xs tracking-widest uppercase text-compass-bright border border-compass/30 rounded px-1.5 py-0.5 bg-compass/5">
                           YOU

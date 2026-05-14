@@ -8,6 +8,8 @@ export default function HexTile({
 }) {
   const fillColor = TILE_COLORS[tileType] || TILE_COLORS[Tile.NONE];
   const TerrainIcon = TERRAIN_ICONS[tileType];
+  const isRelic = tileType === Tile.RELIC;
+  const patternColor = isRelic ? '#e8c860' : tileType === Tile.MOUNTAIN ? '#c4cbb8' : '#0d0f0a';
 
   return (
     <g
@@ -22,7 +24,7 @@ export default function HexTile({
         data-reachable={isReachable ? 'true' : 'false'}
         points={hexPoints(cx, cy)}
         fill={fillColor}
-        fillOpacity={isReachable ? 0.35 : 0.25}
+        fillOpacity={isIntent ? 0.52 : isHovered ? 0.46 : isReachable ? 0.36 : 0.25}
         stroke={
           isSelected ? '#e8c860'
             : isInventoryAssisted ? '#3a7cc4'
@@ -31,8 +33,16 @@ export default function HexTile({
               : isReachable ? '#c4a64a'
                 : '#2a3224'
         }
-        strokeWidth={isSelected || isIntent || isReachable ? 2 : 1}
-        className={`alive-tile transition-all duration-200 ${isCommitted ? 'alive-committed-tile' : ''}`}
+        strokeWidth={isSelected || isIntent ? 2.8 : isReachable ? 2 : 1}
+        className={`alive-tile transition-all duration-200 ${isCommitted ? 'alive-committed-tile' : ''} ${isIntent ? 'alive-tile-intent' : ''} ${isRelic ? 'alive-relic-tile' : ''}`}
+      />
+      <path
+        d={`M${cx - 22},${cy - 10} C${cx - 9},${cy - 18} ${cx + 8},${cy - 2} ${cx + 22},${cy - 10} M${cx - 20},${cy + 8} C${cx - 6},${cy + 1} ${cx + 7},${cy + 15} ${cx + 20},${cy + 6}`}
+        fill="none"
+        stroke={patternColor}
+        strokeWidth="0.7"
+        opacity={isIntent || isHovered ? '0.3' : '0.16'}
+        className={isRelic ? 'alive-relic-line' : ''}
       />
       {isInventoryAssisted && (
         <circle
@@ -51,6 +61,19 @@ export default function HexTile({
       {/* Terrain icon */}
       {TerrainIcon && (
         <TerrainIcon transform={`translate(${cx},${cy})`} style={{ color: fillColor }} />
+      )}
+      {isRelic && (
+        <circle
+          cx={cx}
+          cy={cy}
+          r="19"
+          fill="none"
+          stroke="#e8c860"
+          strokeWidth="0.9"
+          strokeDasharray="2 5"
+          opacity="0.48"
+          className="alive-relic-pulse"
+        />
       )}
 
       {/* Zone label */}

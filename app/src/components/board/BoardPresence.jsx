@@ -193,6 +193,38 @@ function ConsequencePips({ currentLocation, movement, path, previewPath, stats =
   );
 }
 
+function RouteMeter({ currentLocation, controlFeel }) {
+  const status = controlFeel?.routeStatus;
+  if (!currentLocation || !status || status.budget <= 0) return null;
+  const pos = aliasToPixel(currentLocation);
+  const fillHeight = Math.max(0, Math.min(1, status.used / Math.max(1, status.budget))) * 44;
+
+  return (
+    <g transform={`translate(${pos.x - 77},${pos.y + 6})`}>
+      <rect x="0" y="-26" width="13" height="52" rx="2" fill="#0d0f0a" opacity="0.72" stroke="#2a3224" strokeWidth="0.8" />
+      <rect x="3" y={21 - fillHeight} width="7" height={fillHeight} rx="1.5" fill={status.isValid ? '#e8c860' : '#d44040'} opacity="0.82" />
+      {Array.from({ length: status.budget }).map((_, index) => (
+        <line
+          key={index}
+          x1="0"
+          x2="13"
+          y1={21 - ((index + 1) / status.budget) * 44}
+          y2={21 - ((index + 1) / status.budget) * 44}
+          stroke="#c4cbb8"
+          strokeWidth="0.5"
+          opacity="0.24"
+        />
+      ))}
+      <text x="20" y="-17" fill="#6a7560" style={{ fontSize: '5.8px', fontFamily: 'JetBrains Mono, monospace', letterSpacing: '0.08em' }}>
+        ROUTE
+      </text>
+      <text x="20" y="-8" fill={status.isValid ? '#e8c860' : '#d44040'} style={{ fontSize: '6.8px', fontFamily: 'JetBrains Mono, monospace' }}>
+        {status.used}/{status.budget}
+      </text>
+    </g>
+  );
+}
+
 function DiscoveryField({ intentAlias, controlFeel, intentTile }) {
   if (!intentAlias || (!controlFeel?.intentIsFog && !controlFeel?.intentIsDanger)) return null;
   const pos = aliasToPixel(intentAlias);
@@ -507,6 +539,7 @@ export default function BoardPresence({
         stats={stats}
         controlFeel={controlFeel}
       />
+      <RouteMeter currentLocation={currentLocation} controlFeel={controlFeel} />
       <LanternPing currentLocation={currentLocation} lanternPing={controlFeel.lanternPing} inputMode={inputMode} />
       <InputReadout currentLocation={currentLocation} controlFeel={controlFeel} />
       <ActionTelemetry

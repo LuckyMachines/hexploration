@@ -21,6 +21,23 @@ const TABS = [
   Action.FLEE,
 ];
 
+const ACTION_GLYPHS = {
+  [Action.MOVE]: '◆',
+  [Action.SETUP_CAMP]: '⌂',
+  [Action.DIG]: '⌁',
+  [Action.REST]: '◐',
+  [Action.HELP]: '◇',
+  [Action.FLEE]: '▲',
+};
+
+const TX_TONE = {
+  Idle: 'border-exp-border/60 bg-exp-dark/40 text-exp-text-dim',
+  'Wallet Pending': 'alive-tx-pulse border-compass/45 bg-compass/10 text-compass-bright',
+  Confirming: 'alive-tx-pulse border-blueprint/45 bg-blueprint/10 text-blueprint',
+  Confirmed: 'border-oxide-green/45 bg-oxide-green/10 text-oxide-green',
+  Failed: 'alive-invalid border-signal-red/45 bg-signal-red/10 text-signal-red',
+};
+
 export default function ActionPanel({
   gameId,
   playerID,
@@ -114,6 +131,8 @@ export default function ActionPanel({
         <span className={`font-mono text-xs uppercase tracking-[0.25em] border rounded px-2.5 py-1 ${
           isSpectator
             ? 'text-exp-text-dim border-exp-border bg-exp-dark/40'
+            : isPending || isConfirming
+              ? 'text-blueprint border-blueprint/35 bg-blueprint/10 alive-tx-pulse'
             : hasSubmitted
               ? 'text-blueprint border-blueprint/30 bg-blueprint/5'
               : 'text-compass-bright border-compass/30 bg-compass/5'
@@ -123,7 +142,7 @@ export default function ActionPanel({
       </div>
 
       <div className="px-4 pt-3">
-        <div className="grid gap-2 sm:grid-cols-4">
+        <div className="grid gap-2 grid-cols-2 lg:grid-cols-4">
           <div className="border border-exp-border/60 rounded bg-exp-dark/40 px-3 py-2">
             <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-exp-text-dim">Location</div>
             <div className="mt-1 font-mono text-xs text-compass-bright tabular-nums break-all">
@@ -139,20 +158,13 @@ export default function ActionPanel({
           <div className="border border-exp-border/60 rounded bg-exp-dark/40 px-3 py-2">
             <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-exp-text-dim">Mode</div>
             <div className="mt-1 font-mono text-xs text-compass-bright uppercase tracking-widest">
-              {activeTab}
+              {ACTION_GLYPHS[activeTab]} {getActionMeta(activeTab).label}
             </div>
           </div>
-          <div className={`border rounded px-3 py-2 transition-[filter] ${
-            isPending || isConfirming
-              ? 'alive-tx-pulse border-blueprint/45 bg-blueprint/10'
-              : isSuccess
-                ? 'border-oxide-green/35 bg-oxide-green/5'
-                : error
-                  ? 'border-signal-red/35 bg-signal-red/5'
-                  : 'border-exp-border/60 bg-exp-dark/40'
-          }`}>
+          <div className={`border rounded px-3 py-2 transition-[filter] ${TX_TONE[txPhase] || TX_TONE.Idle}`}>
             <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-exp-text-dim">Tx</div>
-            <div className="mt-1 font-mono text-xs text-compass-bright uppercase tracking-widest">
+            <div className="mt-1 flex items-center gap-1.5 font-mono text-xs uppercase tracking-widest">
+              <span className="h-2 w-2 rounded-full bg-current" />
               {txPhase}
             </div>
           </div>
@@ -161,7 +173,7 @@ export default function ActionPanel({
 
       {/* Tab bar */}
       <div
-        className="flex gap-0.5 px-4 pt-3 pb-2 border-b border-exp-border/50 overflow-x-auto"
+        className="grid grid-flow-col auto-cols-[minmax(4.8rem,1fr)] gap-1 px-4 pt-3 pb-2 border-b border-exp-border/50 overflow-x-auto"
         onKeyDown={handleTabKeyDown}
       >
         {TABS.map((action) => {
@@ -174,15 +186,16 @@ export default function ActionPanel({
               title={`Press ${TABS.indexOf(action) + 1} to select ${meta.label}`}
               className={`
                 alive-action-tab
-                px-3 py-1.5 text-xs font-mono uppercase tracking-wider shrink-0
+                min-h-12 px-2 py-1.5 text-xs font-mono uppercase tracking-wider shrink-0
                 border rounded transition-all duration-200
                 ${isActive
-                  ? 'text-compass bg-compass/10 border-compass/40'
+                  ? 'text-compass bg-compass/10 border-compass/40 shadow-[inset_0_0_0_1px_rgba(232,200,96,0.12)]'
                   : 'text-exp-text-dim bg-exp-dark/40 border-exp-border hover:text-exp-text hover:border-exp-text-dim/40'
                 }
               `}
             >
-              {meta.label}
+              <span className="block text-base leading-none">{ACTION_GLYPHS[action]}</span>
+              <span className="mt-1 block text-[10px] leading-none">{meta.label}</span>
             </button>
           );
         })}

@@ -111,7 +111,7 @@ describe('ActionPanel', () => {
     expect(screen.getByRole('button', { name: /Setup Camp/i })).toBeInTheDocument();
     expect(screen.getByText(/A: commit intent/i)).toBeInTheDocument();
 
-    await user.click(screen.getByRole('button', { name: /Move/i }));
+    await user.click(screen.getByTitle(/Press 1 to select Move/i));
     await user.click(screen.getByRole('button', { name: /Undo Step/i }));
     expect(onMoveBacktrack).toHaveBeenCalledTimes(1);
   });

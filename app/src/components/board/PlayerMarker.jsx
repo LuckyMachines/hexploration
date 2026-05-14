@@ -1,6 +1,6 @@
 import { PLAYER_COLORS, PLAYER_LABELS } from '../../lib/constants';
 
-export default function PlayerMarker({ cx, cy, playerIndex, isCurrentPlayer, onClick }) {
+export default function PlayerMarker({ cx, cy, playerIndex, isCurrentPlayer, isFocused, onClick }) {
   const color = PLAYER_COLORS[playerIndex] || PLAYER_COLORS[0];
   const label = PLAYER_LABELS[playerIndex] || 'P?';
 
@@ -14,12 +14,14 @@ export default function PlayerMarker({ cx, cy, playerIndex, isCurrentPlayer, onC
       onClick={onClick}
       style={{ cursor: onClick ? 'pointer' : 'default' }}
     >
-      {/* Pulse ring for current player */}
+      {(isCurrentPlayer || isFocused) && (
+        <circle r="12" fill={color} opacity={isCurrentPlayer ? '0.12' : '0.06'} className="alive-marker-aura" />
+      )}
       {isCurrentPlayer && (
-        <circle r="8" fill="none" stroke={color} strokeWidth="1" opacity="0.4">
+        <circle r="10" fill="none" stroke={color} strokeWidth="1.4" opacity="0.55">
           <animate
             attributeName="r"
-            values="6;10;6"
+            values="8;15;8"
             dur="2s"
             repeatCount="indefinite"
           />
@@ -32,16 +34,23 @@ export default function PlayerMarker({ cx, cy, playerIndex, isCurrentPlayer, onC
         </circle>
       )}
 
-      {/* Marker circle */}
-      <circle r="6" fill={color} stroke="#0d0f0a" strokeWidth="1.5" />
+      <path
+        d="M0,-12 L12,-4 L8,11 L0,15 L-8,11 L-12,-4 Z"
+        fill="#0d0f0a"
+        stroke={isFocused ? '#3a7cc4' : color}
+        strokeWidth={isCurrentPlayer ? '2' : '1.4'}
+      />
+      <circle r="7" fill={color} stroke="#0d0f0a" strokeWidth="1.4" />
+      {isCurrentPlayer && (
+        <path d="M0,-17 L4,-10 L0,-12 L-4,-10 Z" fill="#e8c860" />
+      )}
 
-      {/* Label */}
       <text
-        y="1"
+        y="0.5"
         textAnchor="middle"
         dominantBaseline="middle"
         fill="#0d0f0a"
-        style={{ fontSize: '8px', fontWeight: 'bold', fontFamily: 'JetBrains Mono, monospace' }}
+        style={{ fontSize: '7px', fontWeight: 'bold', fontFamily: 'JetBrains Mono, monospace' }}
       >
         {label}
       </text>
