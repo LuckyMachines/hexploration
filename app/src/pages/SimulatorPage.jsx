@@ -45,6 +45,7 @@ const SAMPLE_REPORT = {
     worstTurns: [],
     bestTurns: [],
   },
+  autoTune: null,
 };
 
 function Metric({ label, value, tone = 'neutral' }) {
@@ -366,6 +367,124 @@ function SmallestExperimentQueue({ experiments = [] }) {
           </div>
         ))}
       </div>
+    </section>
+  );
+}
+
+function AutoTunePanel({ report }) {
+  if (!report) {
+    return (
+      <section className="mt-4 rounded border border-exp-border bg-exp-panel p-4">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h2 className="font-mono text-xs uppercase tracking-[0.3em] text-exp-text-dim">
+              Auto-Tune Lab
+            </h2>
+            <p className="mt-1 font-mono text-xs leading-relaxed text-exp-text-dim">
+              Generate candidates with `npm run sim:autotune:dry`, then run `npm run sim:autotune` while the local stack is active.
+            </p>
+          </div>
+          <span className="rounded border border-compass/30 bg-compass/5 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.2em] text-compass-bright">
+            Awaiting report
+          </span>
+        </div>
+      </section>
+    );
+  }
+
+  const ranked = report.ranked?.length > 0 ? report.ranked : report.results || [];
+  const winner = report.winner;
+
+  return (
+    <section className="mt-4 rounded border border-exp-border bg-exp-panel p-4">
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <h2 className="font-mono text-xs uppercase tracking-[0.3em] text-exp-text-dim">
+            Auto-Tune Lab
+          </h2>
+          <p className="mt-1 font-mono text-xs leading-relaxed text-exp-text-dim">
+            Candidate balance patches are tested against the same simulator scenario and deterministic seed.
+          </p>
+        </div>
+        <span className={`rounded border px-3 py-2 font-mono text-[10px] uppercase tracking-[0.2em] ${
+          report.dryRun
+            ? 'border-blueprint/35 bg-blueprint/10 text-blueprint'
+            : winner
+              ? 'border-oxide-green/35 bg-oxide-green/10 text-oxide-green'
+              : 'border-signal-red/35 bg-signal-red/10 text-signal-red'
+        }`}>
+          {report.dryRun ? 'Dry run' : winner ? 'Winner found' : 'No winner'}
+        </span>
+      </div>
+
+      {winner && (
+        <div className="mt-3 rounded border border-oxide-green/30 bg-oxide-green/5 px-3 py-2">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-oxide-green">
+              Winner / {winner.name}
+            </p>
+            <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-exp-text-dim">
+              score {formatNumber(winner.weightedScore)}
+            </p>
+          </div>
+          <p className="mt-1 font-mono text-xs leading-relaxed text-exp-text">
+            {winner.explanation || report.recommendation}
+          </p>
+          <pre className="mt-2 overflow-x-auto rounded border border-exp-border/60 bg-exp-dark/50 p-2 font-mono text-[11px] text-compass-bright">
+            {JSON.stringify(winner.patch?.knobs || {}, null, 2)}
+          </pre>
+        </div>
+      )}
+
+      {report.candidates?.length > 0 && report.dryRun && (
+        <div className="mt-3 grid gap-2 lg:grid-cols-2">
+          {report.candidates.map((candidate) => (
+            <div key={candidate.id} className="rounded border border-exp-border/60 bg-exp-dark/35 px-3 py-2">
+              <p className="font-mono text-xs uppercase tracking-[0.18em] text-compass-bright">
+                {candidate.name}
+              </p>
+              <p className="mt-1 font-mono text-[11px] leading-relaxed text-exp-text-dim">
+                {candidate.hypothesis}
+              </p>
+              <pre className="mt-2 overflow-x-auto rounded border border-exp-border/60 bg-exp-dark/50 p-2 font-mono text-[10px] text-blueprint">
+                {JSON.stringify(candidate.patch?.knobs || {}, null, 2)}
+              </pre>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {ranked.length > 0 && (
+        <div className="mt-3 space-y-2">
+          {ranked.slice(0, 5).map((item, index) => (
+            <div key={item.id || index} className={`rounded border px-3 py-2 ${
+              item.rejected
+                ? 'border-signal-red/25 bg-signal-red/5'
+                : 'border-exp-border/60 bg-exp-dark/35'
+            }`}>
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <p className="font-mono text-xs uppercase tracking-[0.18em] text-exp-text">
+                  #{index + 1} {item.name}
+                </p>
+                <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-exp-text-dim">
+                  {item.rejected ? 'rejected' : 'candidate'} / {formatNumber(item.weightedScore)}
+                </p>
+              </div>
+              <p className="mt-1 font-mono text-[11px] leading-relaxed text-exp-text-dim">
+                {item.rejected ? item.rejectedReasons?.join(' / ') : item.explanation || item.expectedEffect}
+              </p>
+              {item.deltas && (
+                <div className="mt-2 grid gap-2 md:grid-cols-4">
+                  <Metric label="Life" value={formatDelta(item.deltas.lifeScore?.delta)} tone={item.deltas.lifeScore?.delta >= 0 ? 'green' : 'red'} />
+                  <Metric label="Flat" value={formatDelta(item.deltas.flatTurnRate?.delta)} tone={item.deltas.flatTurnRate?.delta <= 0 ? 'green' : 'red'} />
+                  <Metric label="Alive" value={formatDelta(item.deltas.aliveTurnRate?.delta)} tone={item.deltas.aliveTurnRate?.delta >= 0 ? 'green' : 'red'} />
+                  <Metric label="Invalid" value={formatDelta(item.deltas.invalidAttempts?.delta)} tone={item.deltas.invalidAttempts?.delta <= 0 ? 'green' : 'red'} />
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
     </section>
   );
 }
@@ -700,6 +819,7 @@ function TurnCard({ turn }) {
 
 export default function SimulatorPage() {
   const [report, setReport] = useState(SAMPLE_REPORT);
+  const [autoTuneReport, setAutoTuneReport] = useState(null);
   const [loadState, setLoadState] = useState('loading');
 
   useEffect(() => {
@@ -718,6 +838,24 @@ export default function SimulatorPage() {
         if (cancelled) return;
         setReport(SAMPLE_REPORT);
         setLoadState('empty');
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch('/simulator/autotune/latest-report.json', { cache: 'no-store' })
+      .then((response) => {
+        if (!response.ok) throw new Error('No auto-tune report found.');
+        return response.json();
+      })
+      .then((json) => {
+        if (!cancelled) setAutoTuneReport(json);
+      })
+      .catch(() => {
+        if (!cancelled) setAutoTuneReport(null);
       });
     return () => {
       cancelled = true;
@@ -837,6 +975,7 @@ export default function SimulatorPage() {
 
       <InsightPanel aggregate={aggregate} summary={summary} />
       <FunDebuggerPanel funDebugger={funDebugger} />
+      <AutoTunePanel report={autoTuneReport} />
       <SmallestExperimentQueue experiments={funDebugger.smallestExperimentQueue || funDebugger.topExperiments || []} />
       <TargetScorecard targetEvaluation={targetEvaluation} scenarioGoalEvaluation={scenarioGoalEvaluation} />
       <TuningTasks tasks={tasks} tuning={tuning} />

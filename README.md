@@ -127,9 +127,11 @@ npm run sim:balanced
 npm run sim:golden
 npm run sim:baseline
 npm run sim:compare -- --changed="movement tuning"
+npm run sim:autotune:dry
+npm run sim:autotune
 ```
 
-Then open `http://localhost:5502/simulator`. The runner writes reports to `reports/simulator/latest-report.json` and `app/public/simulator/latest-report.json`, scores them against `simulator.tuning.json`, runs the Fun Debugger life-score/experiment analysis, and appends `reports/simulator/tuning-ledger.json`.
+Then open `http://localhost:5502/simulator`. The runner writes reports to `reports/simulator/latest-report.json` and `app/public/simulator/latest-report.json`, scores them against `simulator.tuning.json`, runs the Fun Debugger life-score/experiment analysis, can auto-tune safe knobs from `simulator.balance.json`, and appends `reports/simulator/tuning-ledger.json`.
 
 See [docs/gameplay-simulator.md](docs/gameplay-simulator.md) for strategies and engine-path details.
 

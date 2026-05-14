@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "description": "Safe simulator auto-tune knobs. These affect simulator agent behavior and fun-debugger scoring, not deployed contract code.",
+  "knobs": {
+    "moveBias": 1,
+    "digBias": 1,
+    "restBias": 1,
+    "idleBias": 1,
+    "fleeBias": 1,
+    "recoverAtStat": 1,
+    "movementFallbackPriority": 1,
+    "quietTurnLifeBonus": 0,
+    "noBoardDeltaPenalty": 22,
+    "noStatDeltaPenalty": 0,
+    "invalidAttemptPenalty": 5,
+    "statCollapsePenalty": 14,
+    "repeatedActionPenalty": 6,
+    "discoveryLifeReward": 12,
+    "movementLifeReward": 8,
+    "cardLifeReward": 7,
+    "artifactLifeReward": 22,
+    "choiceDensityReward": 18,
+    "progressLifeReward": 4
+  },
+  "gates": {
+    "minLifeScoreGain": 2,
+    "maxFlatTurnRateIncrease": 0.02,
+    "maxZeroStatPlayersIncrease": 0.15,
+    "maxInvalidAttemptsIncrease": 1,
+    "maxArtifactLoss": 0.25
+  }
+}

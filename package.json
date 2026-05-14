@@ -24,6 +24,8 @@
     "sim:golden": "node scripts/gameplay-simulator.mjs --scenario=benchmark --batch=5",
     "sim:baseline": "node scripts/gameplay-simulator.mjs --scenario=benchmark --batch=5 --save-baseline",
     "sim:compare": "node scripts/gameplay-simulator.mjs --scenario=benchmark --batch=5 --baseline",
+    "sim:autotune": "node scripts/simulator-autotune.mjs --scenario=benchmark --batch=3",
+    "sim:autotune:dry": "node scripts/simulator-autotune.mjs --dry-run",
     "test:e2e:anvil": "node scripts/run-anvil-e2e.mjs"
   },
   "repository": {

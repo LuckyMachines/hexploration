@@ -10,5 +10,7 @@ node_modules/
 app/coverage/
 app/dist/
 app/test-results/
+app/public/simulator/
 captures/
 gameplay-debug.png
+reports/simulator/

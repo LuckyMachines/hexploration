@@ -40,6 +40,8 @@ npm run sim -- --scenario=benchmark --batch=3
 npm run sim:golden
 npm run sim:baseline
 npm run sim:compare -- --changed="movement tuning"
+npm run sim:autotune:dry
+npm run sim:autotune
 ```
 
 ## Engine Path
@@ -86,7 +88,22 @@ The simulator now emits raw run traces plus aggregate learning data:
 - Aggregate repeated flat patterns, high-life patterns, systemic risks, strategy life scores, and smallest experiment queue.
 - Baseline comparison for life score, flat-turn rate, and alive-turn rate.
 - CLI summary with the top fun issue and top experiment after each simulator run.
+- Auto-tune sessions that generate candidate balance patches, run each candidate, reject harmful regressions, and rank winners.
+- Auto-tune history in `reports/simulator/experiments/index.json`.
 - Opinionated warnings in `/simulator`.
+
+## Balance Surface
+
+`simulator.balance.json` is the safe auto-tune surface. It contains simulator-agent behavior knobs and Fun Debugger scoring weights. It does not claim to mutate deployed Solidity contracts; the simulator still submits actions, validates actions, fulfills randomness, and progresses the same local engine.
+
+Important knobs include:
+
+- `moveBias`, `digBias`, `restBias`, `idleBias`, `fleeBias`: action-selection pressure for simulator agents.
+- `recoverAtStat`: the stat threshold where bots prefer recovery.
+- `movementFallbackPriority`: whether movement is tried early or late as a fallback.
+- `quietTurnLifeBonus`, `noBoardDeltaPenalty`, `invalidAttemptPenalty`, `statCollapsePenalty`: Fun Debugger scoring pressure.
+- `discoveryLifeReward`, `movementLifeReward`, `cardLifeReward`, `artifactLifeReward`, `choiceDensityReward`: what the debugger treats as life-giving.
+- `gates`: rejection thresholds for harmful candidates.
 
 ## Tuning Targets
 
@@ -112,12 +129,44 @@ The latest report includes:
 - `tasks`: prioritized next tuning actions.
 - `tuning`: run notes, hypothesis, changed area, target config, and baseline metadata.
 
+## Auto-Tune Workflow
+
+Dry-run candidate generation:
+
+```bash
+npm run sim:autotune:dry
+```
+
+Full auto-tune run while local Anvil is active:
+
+```bash
+npm run local:solo
+npm run sim:autotune
+```
+
+Apply a passing winner to `simulator.balance.json`:
+
+```bash
+npm run sim:autotune -- --apply-winner
+```
+
+Auto-tune writes:
+
+- `reports/simulator/experiments/<timestamp>/autotune-report.json`
+- `reports/simulator/experiments/<timestamp>/<candidate>/report.json`
+- `reports/simulator/experiments/index.json`
+- `app/public/simulator/autotune/latest-report.json`
+
+Each candidate includes a hypothesis, changed knobs, expected effect, blast radius, weighted score, rejection reasons, and report paths. Candidates are rejected if they improve life score while harming flat-turn rate, invalid attempts, zero-stat players, artifacts, or warning count beyond configured gates.
+
 ## Recommended Benchmark Loop
 
 1. Run `npm run sim:baseline` to capture a known baseline.
 2. Open `/simulator`.
 3. Note failed targets, generated tasks, warnings, and strategy outliers.
-4. Make one gameplay/card/rules tuning change.
-5. Run `npm run sim:compare -- --changed="short description"`.
-6. Compare artifacts, reveal pace, stat pressure, boring turns, spike turns, action mix, and target pass rate.
-7. Keep or revert the tuning change based on the target scorecard and baseline deltas.
+4. Run `npm run sim:autotune:dry` to inspect candidate patches.
+5. Run `npm run sim:autotune` to test candidates with the same scenario, batch, strategies, and seed.
+6. Inspect `/simulator` Auto-Tune Lab for ranking, winner explanation, rejected reasons, and patch diff.
+7. Optionally run `npm run sim:autotune -- --apply-winner`.
+8. Run `npm run sim:compare -- --changed="short description"`.
+9. Keep or revert the tuning change based on life score, flat-turn rate, artifacts, stat pressure, and target scorecard.

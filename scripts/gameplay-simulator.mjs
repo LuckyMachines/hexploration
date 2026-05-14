@@ -33,6 +33,7 @@ const broadcastLatest = resolve(root, 'broadcast', 'DeployXenovoya.s.sol', '3133
 const reportDir = resolve(root, 'reports', 'simulator');
 const publicReportDir = resolve(appDir, 'public', 'simulator');
 const tuningConfigPath = resolve(root, 'simulator.tuning.json');
+const balanceConfigPath = resolve(root, 'simulator.balance.json');
 const defaultBaselinePath = resolve(reportDir, 'baseline-report.json');
 const tuningLedgerPath = resolve(reportDir, 'tuning-ledger.json');
 
@@ -84,6 +85,7 @@ const config = {
   note: String(arg('note', '')),
   hypothesis: String(arg('hypothesis', '')),
   changed: String(arg('changed', '')),
+  balance: String(arg('balance', balanceConfigPath)),
   baseline: arg('baseline', null),
   saveBaseline: boolArg('save-baseline', false),
   gameId: arg('game', null),
@@ -152,6 +154,39 @@ const DEFAULT_TUNING_CONFIG = {
   },
 };
 
+const DEFAULT_BALANCE_CONFIG = {
+  schemaVersion: 1,
+  description: 'Safe simulator auto-tune knobs. These affect simulator agent behavior and fun-debugger scoring, not deployed contract code.',
+  knobs: {
+    moveBias: 1,
+    digBias: 1,
+    restBias: 1,
+    idleBias: 1,
+    fleeBias: 1,
+    recoverAtStat: 1,
+    movementFallbackPriority: 1,
+    quietTurnLifeBonus: 0,
+    noBoardDeltaPenalty: 22,
+    noStatDeltaPenalty: 0,
+    invalidAttemptPenalty: 5,
+    statCollapsePenalty: 14,
+    repeatedActionPenalty: 6,
+    discoveryLifeReward: 12,
+    movementLifeReward: 8,
+    cardLifeReward: 7,
+    artifactLifeReward: 22,
+    choiceDensityReward: 18,
+    progressLifeReward: 4,
+  },
+  gates: {
+    minLifeScoreGain: 2,
+    maxFlatTurnRateIncrease: 0.02,
+    maxZeroStatPlayersIncrease: 0.15,
+    maxInvalidAttemptsIncrease: 1,
+    maxArtifactLoss: 0.25,
+  },
+};
+
 const ACTION = {
   IDLE: 0,
   MOVE: 1,
@@ -215,6 +250,21 @@ function mergeTuningConfig(base, override = {}) {
 function loadTuningConfig() {
   if (!existsSync(tuningConfigPath)) return DEFAULT_TUNING_CONFIG;
   return mergeTuningConfig(DEFAULT_TUNING_CONFIG, readJson(tuningConfigPath));
+}
+
+function mergeBalanceConfig(base, override = {}) {
+  return {
+    ...base,
+    ...override,
+    knobs: { ...(base.knobs || {}), ...(override.knobs || {}) },
+    gates: { ...(base.gates || {}), ...(override.gates || {}) },
+  };
+}
+
+function loadBalanceConfig(path = config.balance) {
+  const resolved = resolve(root, String(path || balanceConfigPath));
+  if (!existsSync(resolved)) return { ...DEFAULT_BALANCE_CONFIG, path: null };
+  return { ...mergeBalanceConfig(DEFAULT_BALANCE_CONFIG, readJson(resolved)), path: resolved };
 }
 
 function readEnvFile(path) {
@@ -479,6 +529,15 @@ function sortedCounts(counts) {
     .sort((a, b) => b.count - a.count || a.key.localeCompare(b.key));
 }
 
+function weightedActions(entries, knobs = {}) {
+  const actions = [];
+  for (const [action, key] of entries) {
+    const weight = clamp(Math.round(Number(knobs[key] ?? 1)), 0, 5);
+    for (let index = 0; index < weight; index += 1) actions.push(action);
+  }
+  return actions.length > 0 ? actions : entries.map(([action]) => action);
+}
+
 async function createGame(addresses, players = config.players) {
   log(`creating ${players}-player simulator game`);
   await writeContract(deployerWallet, addresses.CONTROLLER, abis.controller, 'requestNewGame', [
@@ -656,21 +715,36 @@ async function findMovePath(addresses, gameId, player) {
 }
 
 function plannedActionFor(strategy, turn, playerIndex, player, context) {
+  const knobs = context.balance?.knobs || {};
   const offset = stableHash([context.seed, context.runIndex, playerIndex]) % 5;
   if (strategy === 'idle') return { action: ACTION.IDLE, options: [], reason: 'idle baseline' };
   if (strategy === 'dig') return { action: ACTION.DIG, options: [], reason: 'dig focus' };
   if (strategy === 'rest') return { action: ACTION.REST, options: ['Movement'], reason: 'rest focus' };
   if (strategy === 'move') return { action: ACTION.MOVE, options: context.movePath, reason: 'move focus' };
   if (strategy === 'risky') {
-    const cycle = [ACTION.DIG, ACTION.MOVE, ACTION.DIG, ACTION.FLEE, ACTION.REST];
-    return { action: cycle[(turn + playerIndex + offset) % cycle.length], options: [], reason: 'risky cycle' };
+    const cycle = weightedActions([
+      [ACTION.DIG, 'digBias'],
+      [ACTION.MOVE, 'moveBias'],
+      [ACTION.DIG, 'digBias'],
+      [ACTION.FLEE, 'fleeBias'],
+      [ACTION.REST, 'restBias'],
+    ], knobs);
+    return { action: cycle[(turn + playerIndex + offset) % cycle.length], options: [], reason: 'risky weighted cycle' };
   }
 
-  if (player.stats.movement <= 1 || player.stats.agility <= 1 || player.stats.dexterity <= 1) {
+  const recoverAtStat = Number(knobs.recoverAtStat ?? 1);
+  if (player.stats.movement <= recoverAtStat || player.stats.agility <= recoverAtStat || player.stats.dexterity <= recoverAtStat) {
     return { action: ACTION.REST, options: ['Movement'], reason: 'recover low stats' };
   }
-  const cycle = [ACTION.MOVE, ACTION.DIG, ACTION.REST, ACTION.MOVE, ACTION.SETUP_CAMP];
-  return { action: cycle[(turn + playerIndex + offset) % cycle.length], options: [], reason: 'balanced cycle' };
+  const cycle = weightedActions([
+    [ACTION.MOVE, 'moveBias'],
+    [ACTION.DIG, 'digBias'],
+    [ACTION.REST, 'restBias'],
+    [ACTION.MOVE, 'moveBias'],
+    [ACTION.SETUP_CAMP, 'digBias'],
+    [ACTION.IDLE, 'idleBias'],
+  ], knobs);
+  return { action: cycle[(turn + playerIndex + offset) % cycle.length], options: [], reason: 'balanced weighted cycle' };
 }
 
 async function isValidAction(addresses, gameId, playerId, plan) {
@@ -697,12 +771,18 @@ async function chooseAction(addresses, gameId, turn, playerIndex, player, runCon
     movePath,
     seed: runConfig.seed,
     runIndex: runConfig.runIndex,
+    balance: runConfig.balance,
   });
   if (primary.action === ACTION.MOVE) primary.options = movePath;
   candidates.push(primary);
-  candidates.push({ action: ACTION.MOVE, options: movePath, reason: 'valid move fallback' });
+  if ((runConfig.balance?.knobs?.movementFallbackPriority || 1) >= 1) {
+    candidates.push({ action: ACTION.MOVE, options: movePath, reason: 'valid move fallback' });
+  }
   candidates.push({ action: ACTION.DIG, options: [], reason: 'dig fallback' });
   candidates.push({ action: ACTION.REST, options: ['Movement'], reason: 'rest fallback' });
+  if ((runConfig.balance?.knobs?.movementFallbackPriority || 1) < 1) {
+    candidates.push({ action: ACTION.MOVE, options: movePath, reason: 'late move fallback' });
+  }
   candidates.push({ action: ACTION.IDLE, options: [], reason: 'idle fallback' });
 
   const validityLog = [];
@@ -820,6 +900,7 @@ async function progressEngine(addresses) {
 }
 
 function analyzeTurn(turn, previousAnalysis = null) {
+  const knobs = turn.balance?.knobs || {};
   const before = turn.before;
   const after = turn.after;
   const submissions = turn.submissions || [];
@@ -908,23 +989,24 @@ function analyzeTurn(turn, previousAnalysis = null) {
 
   const positiveScore = (
     (changed ? 10 : 0)
-    + clamp(revealedDelta, 0, 3) * 12
-    + clamp(locationChanges, 0, 4) * 8
-    + clamp(artifactDelta, 0, 3) * 22
-    + clamp(cardDraws, 0, 4) * 7
+    + clamp(revealedDelta, 0, 3) * Number(knobs.discoveryLifeReward ?? 12)
+    + clamp(locationChanges, 0, 4) * Number(knobs.movementLifeReward ?? 8)
+    + clamp(artifactDelta, 0, 3) * Number(knobs.artifactLifeReward ?? 22)
+    + clamp(cardDraws, 0, 4) * Number(knobs.cardLifeReward ?? 7)
     + (statDelta > 0 ? clamp(statDelta, 0, 6) * 3 : 0)
     + (statDelta < 0 ? clamp(Math.abs(statDelta), 0, 4) * 2 : 0)
-    + Math.round(meaningfulChoiceDensity * 18)
+    + Math.round(meaningfulChoiceDensity * Number(knobs.choiceDensityReward ?? 18))
     + (uniqueActions.size > 1 ? 8 : 0)
-    + ((turn.progressCount || 0) > 0 ? 4 : 0)
+    + ((turn.progressCount || 0) > 0 ? Number(knobs.progressLifeReward ?? 4) : 0)
+    + (!changed ? Number(knobs.quietTurnLifeBonus ?? 0) : 0)
   );
   const negativeScore = (
-    (boring ? 22 : 0)
+    (boring ? Number(knobs.noBoardDeltaPenalty ?? 22) : 0)
     + (turn.skipped ? 28 : 0)
-    + invalidAttempts * 5
-    + zeroStats * 14
+    + invalidAttempts * Number(knobs.invalidAttemptPenalty ?? 5)
+    + zeroStats * Number(knobs.statCollapsePenalty ?? 14)
     + errors.length * 18
-    + (repeatedAction ? 6 : 0)
+    + (repeatedAction ? Number(knobs.repeatedActionPenalty ?? 6) : 0)
   );
   const lifeScore = clamp(Math.round(18 + positiveScore - negativeScore), 0, 100);
   let classification = 'alive';
@@ -1660,6 +1742,7 @@ async function runSimulation(addresses, runConfig) {
         queueId,
         skipped: true,
         reason: `Queue phase is ${PHASE_LABEL[queuePhase] || 'not ready for submission'}`,
+        balance: runConfig.balance,
         before: await snapshot(addresses, gameId, seats, `turn-${turn}-before`),
         after: await snapshot(addresses, gameId, seats, `turn-${turn}-after`),
       });
@@ -1674,6 +1757,7 @@ async function runSimulation(addresses, runConfig) {
       queueId,
       submissions,
       progressCount,
+      balance: runConfig.balance,
       before,
       after,
     });
@@ -1686,6 +1770,7 @@ async function runSimulation(addresses, runConfig) {
 async function main() {
   const addresses = loadAddresses();
   const tuningConfig = loadTuningConfig();
+  const balanceConfig = loadBalanceConfig();
   await publicClient.getChainId();
   const runs = [];
 
@@ -1697,6 +1782,7 @@ async function main() {
         runIndex: batchIndex + 1,
         runLabel: `${config.scenarioLabel} / ${strategy} / ${batchIndex + 1}`,
         seed: `${config.seed}:${strategy}:${batchIndex + 1}`,
+        balance: balanceConfig,
         createGame: config.gameId ? false : config.createGame,
       };
       log(`run ${runs.length + 1}/${config.strategies.length * config.batch}: ${runConfig.runLabel}`);
@@ -1731,6 +1817,7 @@ async function main() {
       targets: tuningConfig.targets,
       scenarioGoals: tuningConfig.scenarioGoals?.[config.scenario] || {},
     },
+    balance: balanceConfig,
   };
   report.targetEvaluation = evaluateTargets(report.aggregate, tuningConfig.targets);
   report.scenarioGoalEvaluation = evaluateScenarioGoals(report, tuningConfig.scenarioGoals);
