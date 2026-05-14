@@ -36,6 +36,8 @@ npm run sim -- --turns=12 --players=1 --strategy=dig
 npm run sim -- --turns=12 --players=1 --strategy=move
 npm run sim -- --turns=12 --players=1 --strategy=rest
 npm run sim -- --turns=12 --players=1 --strategy=idle
+npm run sim -- --scenario=benchmark --batch=3
+npm run sim:golden
 ```
 
 ## Engine Path
@@ -52,3 +54,29 @@ Each run:
 8. Captures before/after snapshots and aggregate outcomes.
 
 That means tuning reports reflect the real deployed local contracts, contract validation, queue phases, randomness path, and turn processing.
+
+## Learning Features
+
+The simulator now emits raw run traces plus aggregate learning data:
+
+- Scenario presets: `solo-balanced`, `solo-risky`, `solo-dig-rush`, `solo-escape-rush`, `4p-cautious`, `4p-chaos`, `benchmark`.
+- Batch runs via `--batch=N`.
+- Strategy comparison via `--strategies=balanced,risky,dig,move,rest,idle`.
+- Deterministic strategy seed labels via `--seed=NAME`.
+- Before/after snapshots for every turn.
+- Action distribution, invalid-attempt counts, and meaningful-choice density.
+- Boring-turn detection when nothing meaningfully changes.
+- Spike-turn detection for stat drops, artifacts, card draws, zero stats, reveal jumps, and submission errors.
+- Exploration metrics from revealed zone counts.
+- Player health metrics from stat totals and zero-stat frequency.
+- Card outcome counts from last day-phase events.
+- Opinionated warnings in `/simulator`.
+
+## Recommended Benchmark Loop
+
+1. Run `npm run sim:golden`.
+2. Open `/simulator`.
+3. Note warnings and strategy outliers.
+4. Make one gameplay/card/rules tuning change.
+5. Run `npm run sim:golden` again.
+6. Compare artifacts, reveal pace, stat pressure, boring turns, spike turns, and action mix.

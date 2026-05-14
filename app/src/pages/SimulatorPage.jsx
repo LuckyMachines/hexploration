@@ -16,6 +16,13 @@ const SAMPLE_REPORT = {
   },
   turns: [],
   players: [],
+  aggregate: {
+    runs: 0,
+    strategies: {},
+    actionTotals: {},
+    averages: {},
+    warnings: [],
+  },
 };
 
 function Metric({ label, value, tone = 'neutral' }) {
@@ -68,6 +75,143 @@ function ActionBars({ actions = {} }) {
         );
       })}
     </div>
+  );
+}
+
+function PercentMetric({ label, value }) {
+  const pct = Math.round(Number(value || 0) * 100);
+  return (
+    <div className="rounded border border-exp-border/60 bg-exp-dark/35 px-3 py-2">
+      <div className="mb-1 flex items-center justify-between gap-3 font-mono text-[11px]">
+        <span className="uppercase tracking-[0.16em] text-exp-text-dim">{label}</span>
+        <span className="text-compass-bright">{pct}%</span>
+      </div>
+      <div className="h-2 overflow-hidden rounded bg-exp-border/70">
+        <div className="h-full rounded bg-oxide-green" style={{ width: `${pct}%` }} />
+      </div>
+    </div>
+  );
+}
+
+function StrategyComparison({ strategies = {} }) {
+  const entries = Object.entries(strategies);
+  if (entries.length === 0) return null;
+
+  return (
+    <section className="mt-4 rounded border border-exp-border bg-exp-panel p-4">
+      <h2 className="font-mono text-xs uppercase tracking-[0.3em] text-exp-text-dim">
+        Strategy Comparison
+      </h2>
+      <div className="mt-3 grid gap-3 xl:grid-cols-2">
+        {entries.map(([strategy, stats]) => (
+          <div key={strategy} className="rounded border border-exp-border/60 bg-exp-dark/35 p-3">
+            <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
+              <p className="font-mono text-xs uppercase tracking-[0.2em] text-compass-bright">
+                {strategy}
+              </p>
+              <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-exp-text-dim">
+                {stats.runs} run{stats.runs === 1 ? '' : 's'}
+              </p>
+            </div>
+            <div className="grid gap-2 sm:grid-cols-4">
+              <Metric label="Artifacts" value={stats.avgArtifacts?.toFixed?.(1) ?? '0'} tone="green" />
+              <Metric label="Reveal" value={stats.avgRevealedZones?.toFixed?.(1) ?? '0'} tone="blue" />
+              <Metric label="Boring" value={stats.avgBoringTurns?.toFixed?.(1) ?? '0'} tone="gold" />
+              <Metric label="Invalid" value={stats.avgInvalidAttempts?.toFixed?.(1) ?? '0'} tone="red" />
+            </div>
+            <div className="mt-3">
+              <PercentMetric label="Choice density" value={stats.avgMeaningfulChoiceDensity} />
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function InsightPanel({ aggregate = {}, summary = {} }) {
+  const warnings = aggregate.warnings || [];
+  const spikeTurns = summary.spikeTurns || [];
+  const boringTurns = summary.boringTurns || [];
+
+  return (
+    <section className="mt-4 rounded border border-exp-border bg-exp-panel p-4">
+      <h2 className="font-mono text-xs uppercase tracking-[0.3em] text-exp-text-dim">
+        Simulator Readout
+      </h2>
+      <div className="mt-3 grid gap-3 lg:grid-cols-3">
+        <div className="rounded border border-compass/25 bg-compass/5 px-3 py-2">
+          <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-compass">
+            Boring turns
+          </p>
+          <p className="mt-1 font-mono text-lg text-compass-bright">
+            {boringTurns.length}
+          </p>
+          <p className="mt-1 font-mono text-[11px] text-exp-text-dim">
+            {boringTurns.length > 0 ? `Turns ${boringTurns.join(', ')}` : 'No flat turns flagged in latest run.'}
+          </p>
+        </div>
+        <div className="rounded border border-signal-red/25 bg-signal-red/5 px-3 py-2">
+          <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-signal-red">
+            Spike turns
+          </p>
+          <p className="mt-1 font-mono text-lg text-signal-red">
+            {spikeTurns.length}
+          </p>
+          <p className="mt-1 font-mono text-[11px] text-exp-text-dim">
+            {spikeTurns.length > 0 ? spikeTurns.slice(0, 2).map((turn) => `T${turn.turn}: ${turn.reasons.join(', ')}`).join(' / ') : 'No major spikes flagged in latest run.'}
+          </p>
+        </div>
+        <div className="rounded border border-blueprint/25 bg-blueprint/5 px-3 py-2">
+          <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-blueprint">
+            Invalid attempts
+          </p>
+          <p className="mt-1 font-mono text-lg text-blueprint">
+            {summary.invalidAttempts || 0}
+          </p>
+          <p className="mt-1 font-mono text-[11px] text-exp-text-dim">
+            Lower is better unless you are testing affordance boundaries.
+          </p>
+        </div>
+      </div>
+      {warnings.length > 0 && (
+        <div className="mt-3 rounded border border-signal-red/30 bg-signal-red/5 px-3 py-2">
+          <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-signal-red">
+            Opinionated warnings
+          </p>
+          <ul className="mt-2 space-y-1">
+            {warnings.map((warning) => (
+              <li key={warning} className="font-mono text-xs text-exp-text-dim">
+                {warning}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </section>
+  );
+}
+
+function TensionCurve({ points = [] }) {
+  if (points.length === 0) return null;
+  return (
+    <section className="mt-4 rounded border border-exp-border bg-exp-panel p-4">
+      <h2 className="font-mono text-xs uppercase tracking-[0.3em] text-exp-text-dim">
+        Tension Curve
+      </h2>
+      <div className="mt-3 flex h-28 items-end gap-1 rounded border border-exp-border/60 bg-exp-dark/35 p-3">
+        {points.map((point) => (
+          <div key={point.turn} className="flex min-w-0 flex-1 flex-col items-center gap-1">
+            <div
+              className="w-full rounded-t bg-compass-bright"
+              style={{ height: `${Math.max(4, point.tension)}%` }}
+              title={`Turn ${point.turn}: ${point.tension}`}
+            />
+            <span className="font-mono text-[9px] text-exp-text-dim">{point.turn}</span>
+          </div>
+        ))}
+      </div>
+    </section>
   );
 }
 
@@ -185,7 +329,8 @@ export default function SimulatorPage() {
     [report],
   );
   const summary = report.summary || SAMPLE_REPORT.summary;
-  const command = `node scripts/gameplay-simulator.mjs --turns=12 --players=${report.config?.players || 1} --strategy=${report.config?.strategy || 'balanced'}`;
+  const aggregate = report.aggregate || SAMPLE_REPORT.aggregate;
+  const command = `node scripts/gameplay-simulator.mjs --scenario=benchmark --batch=3`;
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-6">
@@ -218,6 +363,15 @@ export default function SimulatorPage() {
         </div>
       </section>
 
+      <section className="mb-4 rounded border border-exp-border bg-exp-panel p-4">
+        <div className="grid gap-3 md:grid-cols-4">
+          <Metric label="Runs" value={aggregate.runs || report.runs?.length || 0} tone="gold" />
+          <Metric label="Avg Artifacts" value={aggregate.averages?.artifacts?.toFixed?.(1) ?? '0'} tone="green" />
+          <Metric label="Avg Reveal" value={aggregate.averages?.revealedZones?.toFixed?.(1) ?? '0'} tone="blue" />
+          <Metric label="Avg Boring" value={aggregate.averages?.boringTurns?.toFixed?.(1) ?? '0'} tone="red" />
+        </div>
+      </section>
+
       <div className="grid gap-4 lg:grid-cols-[minmax(0,0.9fr)_minmax(360px,1.1fr)]">
         <section className="rounded border border-exp-border bg-exp-panel p-4">
           <h2 className="font-mono text-xs uppercase tracking-[0.3em] text-exp-text-dim">
@@ -230,13 +384,13 @@ export default function SimulatorPage() {
             {`npm run local:solo\n${command}`}
           </pre>
           <div className="mt-3 grid gap-2 sm:grid-cols-2">
-            {['balanced', 'risky', 'dig', 'move', 'rest', 'idle'].map((strategy) => (
+            {['solo-balanced', 'solo-risky', 'solo-dig-rush', 'solo-escape-rush', '4p-cautious', '4p-chaos', 'benchmark'].map((strategy) => (
               <div key={strategy} className="rounded border border-exp-border/60 bg-exp-dark/35 px-3 py-2">
                 <p className="font-mono text-xs uppercase tracking-[0.18em] text-exp-text">
                   {strategy}
                 </p>
                 <p className="mt-1 font-mono text-[11px] text-exp-text-dim">
-                  `--strategy={strategy}`
+                  --scenario={strategy}
                 </p>
               </div>
             ))}
@@ -264,6 +418,10 @@ export default function SimulatorPage() {
           <ActionBars actions={summary.actions} />
         </section>
       </div>
+
+      <InsightPanel aggregate={aggregate} summary={summary} />
+      <StrategyComparison strategies={aggregate.strategies} />
+      <TensionCurve points={summary.tensionCurve || []} />
 
       {latest?.players?.length > 0 && (
         <section className="mt-4 rounded border border-exp-border bg-exp-panel p-4">

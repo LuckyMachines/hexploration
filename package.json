@@ -20,6 +20,8 @@
     "sim": "node scripts/gameplay-simulator.mjs",
     "sim:balanced": "node scripts/gameplay-simulator.mjs --turns=12 --strategy=balanced",
     "sim:risky": "node scripts/gameplay-simulator.mjs --turns=12 --strategy=risky",
+    "sim:batch": "node scripts/gameplay-simulator.mjs --scenario=benchmark --batch=3",
+    "sim:golden": "node scripts/gameplay-simulator.mjs --scenario=benchmark --batch=5",
     "test:e2e:anvil": "node scripts/run-anvil-e2e.mjs"
   },
   "repository": {

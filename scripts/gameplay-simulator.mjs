@@ -48,16 +48,42 @@ function boolArg(name, fallback = false) {
   return !['false', '0', 'no'].includes(String(value).toLowerCase());
 }
 
+const SCENARIOS = {
+  'solo-balanced': { players: 1, turns: 12, strategy: 'balanced', batch: 1, label: 'Solo Balanced' },
+  'solo-risky': { players: 1, turns: 12, strategy: 'risky', batch: 1, label: 'Solo Risky' },
+  'solo-dig-rush': { players: 1, turns: 12, strategy: 'dig', batch: 1, label: 'Solo Dig Rush' },
+  'solo-escape-rush': { players: 1, turns: 12, strategy: 'risky', batch: 1, label: 'Solo Escape Rush' },
+  '4p-cautious': { players: 4, turns: 10, strategy: 'rest', batch: 1, label: '4P Cautious' },
+  '4p-chaos': { players: 4, turns: 10, strategy: 'risky', batch: 1, label: '4P Chaos' },
+  benchmark: {
+    players: 1,
+    turns: 10,
+    strategy: 'balanced',
+    strategies: 'balanced,risky,dig,move,rest,idle',
+    batch: 1,
+    label: 'Golden Benchmark',
+  },
+};
+
+const scenarioName = String(arg('scenario', 'solo-balanced'));
+const scenario = SCENARIOS[scenarioName] || {};
+
 const config = {
   rpcUrl: String(arg('rpc', process.env.RPC_URL || 'http://127.0.0.1:9955')),
-  turns: Math.max(1, Number(arg('turns', 8))),
-  players: Math.max(1, Math.min(4, Number(arg('players', 1)))),
-  strategy: String(arg('strategy', 'balanced')),
+  scenario: scenarioName,
+  scenarioLabel: String(scenario.label || scenarioName),
+  turns: Math.max(1, Number(arg('turns', scenario.turns || 8))),
+  players: Math.max(1, Math.min(4, Number(arg('players', scenario.players || 1)))),
+  strategy: String(arg('strategy', scenario.strategy || 'balanced')),
+  strategies: String(arg('strategies', scenario.strategies || '')).split(',').map((value) => value.trim()).filter(Boolean),
+  batch: Math.max(1, Number(arg('batch', scenario.batch || 1))),
+  seed: String(arg('seed', process.env.SIM_SEED || 'default')),
   gameId: arg('game', null),
   createGame: boolArg('create', true),
   progressAttempts: Math.max(1, Number(arg('progress-attempts', 12))),
   quiet: boolArg('quiet', false),
 };
+if (config.strategies.length === 0) config.strategies = [config.strategy];
 
 const ACTION = {
   IDLE: 0,
@@ -158,6 +184,7 @@ const abis = {
   gameSummary: readJson(resolve(root, 'abi', 'GameSummary.json')),
   playerSummary: readJson(resolve(root, 'abi', 'PlayerSummary.json')),
   queue: readJson(resolve(root, 'abi', 'XenovoyaQueue.json')),
+  board: readJson(resolve(root, 'abi', 'XenovoyaBoard.json')),
   vrf: [
     { inputs: [], name: 'getMockRequests', outputs: [{ type: 'uint256[]' }], stateMutability: 'view', type: 'function' },
     { inputs: [], name: 'fulfillMockRandomness', outputs: [], stateMutability: 'nonpayable', type: 'function' },
@@ -226,12 +253,52 @@ function toNumber(value, fallback = 0) {
   return Number.isFinite(number) ? number : fallback;
 }
 
-async function createGame(addresses) {
-  log(`creating ${config.players}-player simulator game`);
+function stableHash(parts) {
+  const text = parts.filter((part) => part !== undefined && part !== null).join('|');
+  let hash = 0;
+  for (let index = 0; index < text.length; index += 1) {
+    hash = (hash * 33 + text.charCodeAt(index)) % 1000003;
+  }
+  return Math.abs(hash);
+}
+
+function statTotal(player) {
+  return (player?.stats?.movement || 0) + (player?.stats?.agility || 0) + (player?.stats?.dexterity || 0);
+}
+
+function allArtifacts(snapshotData) {
+  return (snapshotData?.players || []).reduce((sum, player) => sum + (player.artifacts?.length || 0), 0);
+}
+
+function totalStats(snapshotData) {
+  return (snapshotData?.players || []).reduce((sum, player) => sum + statTotal(player), 0);
+}
+
+function zeroStatPlayers(snapshotData) {
+  return (snapshotData?.players || []).filter((player) => (
+    (player.stats?.movement || 0) <= 0
+    || (player.stats?.agility || 0) <= 0
+    || (player.stats?.dexterity || 0) <= 0
+  )).length;
+}
+
+function median(values) {
+  if (values.length === 0) return 0;
+  const sorted = [...values].sort((a, b) => a - b);
+  const mid = Math.floor(sorted.length / 2);
+  return sorted.length % 2 === 0 ? (sorted[mid - 1] + sorted[mid]) / 2 : sorted[mid];
+}
+
+function average(values) {
+  return values.length > 0 ? values.reduce((sum, value) => sum + value, 0) / values.length : 0;
+}
+
+async function createGame(addresses, players = config.players) {
+  log(`creating ${players}-player simulator game`);
   await writeContract(deployerWallet, addresses.CONTROLLER, abis.controller, 'requestNewGame', [
     addresses.GAME_REGISTRY,
     addresses.BOARD,
-    BigInt(config.players),
+    BigInt(players),
   ]);
   await progressEngine(addresses);
 
@@ -257,15 +324,23 @@ async function pickOpenGame(addresses) {
 
 async function ensureGame(addresses) {
   if (config.gameId) return BigInt(config.gameId);
-  if (config.createGame) return createGame(addresses);
+  if (config.createGame) return createGame(addresses, config.players);
   const openGame = await pickOpenGame(addresses);
   if (!openGame) throw new Error('No open game found. Re-run with --create=true or start npm run local:solo.');
   return openGame;
 }
 
-async function registerPlayers(addresses, gameId) {
+async function ensureGameForRun(addresses, runConfig) {
+  if (runConfig.gameId) return BigInt(runConfig.gameId);
+  if (runConfig.createGame) return createGame(addresses, runConfig.players);
+  const openGame = await pickOpenGame(addresses);
+  if (!openGame) throw new Error('No open game found. Re-run with --create=true or start npm run local:solo.');
+  return openGame;
+}
+
+async function registerPlayers(addresses, gameId, players = config.players) {
   const seats = [];
-  for (let index = 0; index < config.players; index += 1) {
+  for (let index = 0; index < players; index += 1) {
     const seat = walletForIndex(index);
     try {
       await writeContract(seat.wallet, addresses.CONTROLLER, abis.controller, 'registerForGame', [gameId, addresses.BOARD]);
@@ -306,13 +381,16 @@ async function getPhase(addresses, queueId) {
 }
 
 async function snapshot(addresses, gameId, seats, label) {
-  const [phase, day, queueId, totalPlayers, locations, inventories] = await Promise.all([
+  const [phase, day, queueId, totalPlayers, locations, inventories, activeZones, lastDayEvents, gameOver] = await Promise.all([
     readContract(addresses.GAME_SUMMARY, abis.gameSummary, 'currentPhase', [addresses.BOARD, gameId]).catch(() => 'Unknown'),
     readContract(addresses.GAME_SUMMARY, abis.gameSummary, 'currentDay', [addresses.BOARD, gameId]).catch(() => 0n),
     currentQueueId(addresses, gameId).catch(() => 0n),
     readContract(addresses.GAME_SUMMARY, abis.gameSummary, 'totalPlayers', [addresses.BOARD, gameId]).catch(() => 0n),
     readContract(addresses.GAME_SUMMARY, abis.gameSummary, 'allPlayerLocations', [addresses.BOARD, gameId]).catch(() => [[], []]),
     readContract(addresses.GAME_SUMMARY, abis.gameSummary, 'allPlayerActiveInventories', [addresses.BOARD, gameId]).catch(() => [[], [], [], [], [], [], [], []]),
+    readContract(addresses.GAME_SUMMARY, abis.gameSummary, 'activeZones', [addresses.BOARD, gameId]).catch(() => [[], [], []]),
+    readContract(addresses.GAME_SUMMARY, abis.gameSummary, 'lastDayPhaseEvents', [addresses.BOARD, gameId]).catch(() => [[], [], [], [], [], []]),
+    readContract(addresses.BOARD, abis.board, 'gameOver', [gameId]).catch(() => false),
   ]);
 
   const players = [];
@@ -361,6 +439,21 @@ async function snapshot(addresses, gameId, seats, label) {
       zones: Array.from(locations[1] || []),
     },
     inventoryPlayerIds: Array.from(inventories[0] || []).map(String),
+    activeZones: {
+      count: Array.from(activeZones[0] || []).length,
+      zones: Array.from(activeZones[0] || []),
+      tiles: Array.from(activeZones[1] || []).map(Number),
+      campsites: Array.from(activeZones[2] || []).map(Boolean),
+    },
+    lastDayEvents: {
+      playerIds: Array.from(lastDayEvents[0] || []).map(String),
+      cardTypes: Array.from(lastDayEvents[1] || []),
+      cardsDrawn: Array.from(lastDayEvents[2] || []),
+      cardResults: Array.from(lastDayEvents[3] || []),
+      inventoryChanges: Array.from(lastDayEvents[4] || []),
+      statUpdates: Array.from(lastDayEvents[5] || []),
+    },
+    gameOver: Boolean(gameOver),
     players,
   };
 }
@@ -377,20 +470,21 @@ async function findMovePath(addresses, gameId, player) {
 }
 
 function plannedActionFor(strategy, turn, playerIndex, player, context) {
+  const offset = stableHash([context.seed, context.runIndex, playerIndex]) % 5;
   if (strategy === 'idle') return { action: ACTION.IDLE, options: [], reason: 'idle baseline' };
   if (strategy === 'dig') return { action: ACTION.DIG, options: [], reason: 'dig focus' };
   if (strategy === 'rest') return { action: ACTION.REST, options: ['Movement'], reason: 'rest focus' };
   if (strategy === 'move') return { action: ACTION.MOVE, options: context.movePath, reason: 'move focus' };
   if (strategy === 'risky') {
     const cycle = [ACTION.DIG, ACTION.MOVE, ACTION.DIG, ACTION.FLEE, ACTION.REST];
-    return { action: cycle[(turn + playerIndex) % cycle.length], options: [], reason: 'risky cycle' };
+    return { action: cycle[(turn + playerIndex + offset) % cycle.length], options: [], reason: 'risky cycle' };
   }
 
   if (player.stats.movement <= 1 || player.stats.agility <= 1 || player.stats.dexterity <= 1) {
     return { action: ACTION.REST, options: ['Movement'], reason: 'recover low stats' };
   }
   const cycle = [ACTION.MOVE, ACTION.DIG, ACTION.REST, ACTION.MOVE, ACTION.SETUP_CAMP];
-  return { action: cycle[(turn + playerIndex) % cycle.length], options: [], reason: 'balanced cycle' };
+  return { action: cycle[(turn + playerIndex + offset) % cycle.length], options: [], reason: 'balanced cycle' };
 }
 
 async function isValidAction(addresses, gameId, playerId, plan) {
@@ -410,10 +504,14 @@ async function isValidAction(addresses, gameId, playerId, plan) {
   }
 }
 
-async function chooseAction(addresses, gameId, turn, playerIndex, player) {
+async function chooseAction(addresses, gameId, turn, playerIndex, player, runConfig) {
   const movePath = await findMovePath(addresses, gameId, player);
   const candidates = [];
-  const primary = plannedActionFor(config.strategy, turn, playerIndex, player, { movePath });
+  const primary = plannedActionFor(runConfig.strategy, turn, playerIndex, player, {
+    movePath,
+    seed: runConfig.seed,
+    runIndex: runConfig.runIndex,
+  });
   if (primary.action === ACTION.MOVE) primary.options = movePath;
   candidates.push(primary);
   candidates.push({ action: ACTION.MOVE, options: movePath, reason: 'valid move fallback' });
@@ -421,15 +519,38 @@ async function chooseAction(addresses, gameId, turn, playerIndex, player) {
   candidates.push({ action: ACTION.REST, options: ['Movement'], reason: 'rest fallback' });
   candidates.push({ action: ACTION.IDLE, options: [], reason: 'idle fallback' });
 
+  const validityLog = [];
   for (const plan of candidates) {
     if (plan.action === ACTION.MOVE && plan.options.length === 0) continue;
     const validity = await isValidAction(addresses, gameId, player.playerId, plan);
-    if (validity.ok) return { ...plan, validity };
+    validityLog.push({
+      action: ACTION_LABEL[plan.action],
+      actionIndex: plan.action,
+      ok: validity.ok,
+      reason: validity.reason,
+    });
+    if (validity.ok) {
+      return {
+        ...plan,
+        validity,
+        validChoiceCount: validityLog.filter((entry) => entry.ok).length,
+        invalidAttempts: validityLog.filter((entry) => !entry.ok).length,
+        validityLog,
+      };
+    }
   }
-  return { action: ACTION.IDLE, options: [], reason: 'forced idle fallback', validity: { ok: true, reason: '' } };
+  return {
+    action: ACTION.IDLE,
+    options: [],
+    reason: 'forced idle fallback',
+    validity: { ok: true, reason: '' },
+    validChoiceCount: 1,
+    invalidAttempts: validityLog.length,
+    validityLog,
+  };
 }
 
-async function submitTurnActions(addresses, gameId, queueId, turn, seats, beforeSnapshot) {
+async function submitTurnActions(addresses, gameId, queueId, turn, seats, beforeSnapshot, runConfig) {
   const submissions = [];
   for (let index = 0; index < seats.length; index += 1) {
     const seat = seats[index];
@@ -440,7 +561,7 @@ async function submitTurnActions(addresses, gameId, queueId, turn, seats, before
     }
 
     const player = beforeSnapshot.players.find((entry) => String(entry.playerId) === String(seat.playerId));
-    const plan = await chooseAction(addresses, gameId, turn, index, player || { playerId: seat.playerId, location: '', stats: {} });
+    const plan = await chooseAction(addresses, gameId, turn, index, player || { playerId: seat.playerId, location: '', stats: {} }, runConfig);
     try {
       const receipt = await writeContract(seat.wallet, addresses.CONTROLLER, abis.controller, 'submitAction', [
         seat.playerId,
@@ -458,6 +579,9 @@ async function submitTurnActions(addresses, gameId, queueId, turn, seats, before
         actionIndex: plan.action,
         options: plan.options || [],
         reason: plan.reason,
+        validChoiceCount: plan.validChoiceCount,
+        invalidAttempts: plan.invalidAttempts,
+        validityLog: plan.validityLog,
         blockNumber: receipt.blockNumber,
         transactionHash: receipt.transactionHash,
       });
@@ -509,6 +633,215 @@ async function progressEngine(addresses) {
   return progressCount;
 }
 
+function analyzeTurn(turn) {
+  const before = turn.before;
+  const after = turn.after;
+  const submissions = turn.submissions || [];
+  const beforeStats = totalStats(before);
+  const afterStats = totalStats(after);
+  const beforeArtifacts = allArtifacts(before);
+  const afterArtifacts = allArtifacts(after);
+  const statDelta = afterStats - beforeStats;
+  const artifactDelta = afterArtifacts - beforeArtifacts;
+  const locationChanges = (after?.players || []).filter((player) => {
+    const previous = before?.players?.find((entry) => String(entry.playerId) === String(player.playerId));
+    return previous && previous.location !== player.location;
+  }).length;
+  const revealedDelta = (after?.activeZones?.count || 0) - (before?.activeZones?.count || 0);
+  const cardDraws = after?.lastDayEvents?.cardsDrawn?.filter(Boolean)?.length || 0;
+  const invalidAttempts = submissions.reduce((sum, submission) => sum + (submission.invalidAttempts || 0), 0);
+  const validChoiceCounts = submissions.map((submission) => submission.validChoiceCount || 0).filter((count) => count > 0);
+  const meaningfulChoiceDensity = validChoiceCounts.length > 0
+    ? validChoiceCounts.filter((count) => count > 1).length / validChoiceCounts.length
+    : 0;
+  const zeroStats = zeroStatPlayers(after);
+  const actions = submissions.map((submission) => submission.action).filter(Boolean);
+  const errors = submissions.filter((submission) => submission.error);
+  const changed = Math.abs(statDelta) > 0 || artifactDelta > 0 || locationChanges > 0 || revealedDelta > 0 || cardDraws > 0;
+  const boring = !turn.skipped && !changed && errors.length === 0;
+  const spikeReasons = [];
+  if (statDelta <= -3) spikeReasons.push(`stat drop ${statDelta}`);
+  if (artifactDelta > 0) spikeReasons.push(`artifact gain ${artifactDelta}`);
+  if (revealedDelta >= 2) spikeReasons.push(`revealed ${revealedDelta} zones`);
+  if (zeroStats > 0) spikeReasons.push(`${zeroStats} zero-stat player${zeroStats === 1 ? '' : 's'}`);
+  if (errors.length > 0) spikeReasons.push(`${errors.length} submission error${errors.length === 1 ? '' : 's'}`);
+  if (cardDraws > 0) spikeReasons.push(`${cardDraws} card draw${cardDraws === 1 ? '' : 's'}`);
+
+  return {
+    changed,
+    boring,
+    spike: spikeReasons.length > 0,
+    spikeReasons,
+    statDelta,
+    artifactDelta,
+    locationChanges,
+    revealedDelta,
+    cardDraws,
+    invalidAttempts,
+    meaningfulChoiceDensity,
+    zeroStats,
+    actions,
+  };
+}
+
+function failureReasons(run) {
+  const reasons = [];
+  const final = run.turns[run.turns.length - 1]?.after || run.initial;
+  const skipped = run.turns.filter((turn) => turn.skipped).length;
+  const errors = run.turns.flatMap((turn) => turn.submissions || []).filter((submission) => submission.error);
+  if (final?.gameOver && allArtifacts(final) === 0) reasons.push('game ended without recovered artifacts');
+  if (zeroStatPlayers(final) > 0) reasons.push('one or more players reached a zero stat');
+  if (skipped > 0) reasons.push(`${skipped} turn${skipped === 1 ? '' : 's'} skipped because queue was not in submission`);
+  if (errors.length > 0) reasons.push(`${errors.length} action submission error${errors.length === 1 ? '' : 's'}`);
+  if ((final?.activeZones?.count || 0) <= (run.initial?.activeZones?.count || 0) && run.turns.length >= 4) reasons.push('exploration stalled');
+  return reasons;
+}
+
+function analyzeRun(run) {
+  const final = run.turns[run.turns.length - 1]?.after || run.initial;
+  const turnAnalyses = run.turns.map(analyzeTurn);
+  run.turns = run.turns.map((turn, index) => ({ ...turn, analysis: turnAnalyses[index] }));
+
+  const actions = {};
+  for (const turn of run.turns) {
+    for (const action of turn.analysis.actions) {
+      actions[action] = (actions[action] || 0) + 1;
+    }
+  }
+
+  const boringTurns = run.turns.filter((turn) => turn.analysis.boring);
+  const spikeTurns = run.turns.filter((turn) => turn.analysis.spike);
+  const invalidAttempts = turnAnalyses.reduce((sum, item) => sum + item.invalidAttempts, 0);
+  const meaningfulChoiceDensity = average(turnAnalyses.map((item) => item.meaningfulChoiceDensity));
+  const tensionCurve = turnAnalyses.map((item, index) => ({
+    turn: index + 1,
+    statDelta: item.statDelta,
+    revealedDelta: item.revealedDelta,
+    artifactDelta: item.artifactDelta,
+    invalidAttempts: item.invalidAttempts,
+    zeroStats: item.zeroStats,
+    tension: Math.max(
+      0,
+      Math.min(100, (item.zeroStats * 30) + Math.abs(Math.min(0, item.statDelta)) * 8 + item.invalidAttempts * 6 + item.cardDraws * 5 + item.revealedDelta * 4),
+    ),
+  }));
+
+  const cardOutcomes = {};
+  for (const turn of run.turns) {
+    for (const card of turn.after?.lastDayEvents?.cardsDrawn || []) {
+      if (!card) continue;
+      cardOutcomes[card] = (cardOutcomes[card] || 0) + 1;
+    }
+  }
+
+  const summary = {
+    turnsRun: run.turns.length,
+    finalDay: final.day,
+    finalPhase: final.phase,
+    finalQueuePhase: final.queuePhase,
+    totalArtifacts: allArtifacts(final),
+    actions,
+    activePlayers: final.players.length,
+    gameOver: Boolean(final.gameOver),
+    finalRevealedZones: final.activeZones?.count || 0,
+    revealedZonesGained: (final.activeZones?.count || 0) - (run.initial?.activeZones?.count || 0),
+    finalStatTotal: totalStats(final),
+    statTotalDelta: totalStats(final) - totalStats(run.initial),
+    zeroStatPlayers: zeroStatPlayers(final),
+    boringTurns: boringTurns.map((turn) => turn.turn),
+    spikeTurns: spikeTurns.map((turn) => ({ turn: turn.turn, reasons: turn.analysis.spikeReasons })),
+    invalidAttempts,
+    meaningfulChoiceDensity,
+    cardOutcomes,
+    tensionCurve,
+    failureReasons: failureReasons(run),
+  };
+
+  return { ...summary, outcome: summary.gameOver && summary.totalArtifacts > 0 ? 'escaped-or-ended-with-artifacts' : summary.failureReasons.length > 0 ? 'needs-attention' : 'in-progress' };
+}
+
+function aggregateRuns(runs) {
+  const summaries = runs.map((run) => run.summary);
+  const actionTotals = {};
+  const strategySummaries = {};
+  const warnings = [];
+
+  for (const run of runs) {
+    for (const [action, count] of Object.entries(run.summary.actions || {})) {
+      actionTotals[action] = (actionTotals[action] || 0) + Number(count);
+    }
+    const strategy = run.config.strategy;
+    strategySummaries[strategy] ||= {
+      runs: 0,
+      artifacts: [],
+      revealedZones: [],
+      statDelta: [],
+      boringTurns: [],
+      spikeTurns: [],
+      meaningfulChoiceDensity: [],
+      invalidAttempts: [],
+      zeroStatPlayers: [],
+      actions: {},
+    };
+    const bucket = strategySummaries[strategy];
+    bucket.runs += 1;
+    bucket.artifacts.push(run.summary.totalArtifacts);
+    bucket.revealedZones.push(run.summary.revealedZonesGained);
+    bucket.statDelta.push(run.summary.statTotalDelta);
+    bucket.boringTurns.push(run.summary.boringTurns.length);
+    bucket.spikeTurns.push(run.summary.spikeTurns.length);
+    bucket.meaningfulChoiceDensity.push(run.summary.meaningfulChoiceDensity);
+    bucket.invalidAttempts.push(run.summary.invalidAttempts);
+    bucket.zeroStatPlayers.push(run.summary.zeroStatPlayers);
+    for (const [action, count] of Object.entries(run.summary.actions || {})) {
+      bucket.actions[action] = (bucket.actions[action] || 0) + Number(count);
+    }
+  }
+
+  for (const [strategy, bucket] of Object.entries(strategySummaries)) {
+    strategySummaries[strategy] = {
+      ...bucket,
+      avgArtifacts: average(bucket.artifacts),
+      medianArtifacts: median(bucket.artifacts),
+      avgRevealedZones: average(bucket.revealedZones),
+      avgStatDelta: average(bucket.statDelta),
+      avgBoringTurns: average(bucket.boringTurns),
+      avgSpikeTurns: average(bucket.spikeTurns),
+      avgMeaningfulChoiceDensity: average(bucket.meaningfulChoiceDensity),
+      avgInvalidAttempts: average(bucket.invalidAttempts),
+      avgZeroStatPlayers: average(bucket.zeroStatPlayers),
+    };
+  }
+
+  const totalActions = Object.values(actionTotals).reduce((sum, count) => sum + Number(count), 0);
+  const idleShare = totalActions > 0 ? (actionTotals.Idle || 0) / totalActions : 0;
+  const restShare = totalActions > 0 ? (actionTotals.Rest || 0) / totalActions : 0;
+  const moveShare = totalActions > 0 ? (actionTotals.Move || 0) / totalActions : 0;
+  if (idleShare > 0.2) warnings.push('Idle share is high; strategies or valid-action affordances may be too constrained.');
+  if (restShare > 0.35) warnings.push('Rest is dominating; stat pressure may be too punishing.');
+  if (moveShare < 0.25 && totalActions > 0) warnings.push('Move is underused; exploration may be blocked or less attractive than alternatives.');
+  if (average(summaries.map((summary) => summary.meaningfulChoiceDensity)) < 0.35) warnings.push('Meaningful choice density is low; many turns have only one practical action.');
+  if (average(summaries.map((summary) => summary.boringTurns.length)) > 2) warnings.push('Boring-turn count is high; add discovery, pressure, or clearer rewards earlier.');
+  if (average(summaries.map((summary) => summary.invalidAttempts)) > 3) warnings.push('Invalid action attempts are high; improve bot strategy or action readability.');
+
+  return {
+    runs: runs.length,
+    strategies: strategySummaries,
+    actionTotals,
+    averages: {
+      artifacts: average(summaries.map((summary) => summary.totalArtifacts)),
+      revealedZones: average(summaries.map((summary) => summary.revealedZonesGained)),
+      statDelta: average(summaries.map((summary) => summary.statTotalDelta)),
+      boringTurns: average(summaries.map((summary) => summary.boringTurns.length)),
+      spikeTurns: average(summaries.map((summary) => summary.spikeTurns.length)),
+      meaningfulChoiceDensity: average(summaries.map((summary) => summary.meaningfulChoiceDensity)),
+      invalidAttempts: average(summaries.map((summary) => summary.invalidAttempts)),
+      zeroStatPlayers: average(summaries.map((summary) => summary.zeroStatPlayers)),
+    },
+    warnings,
+  };
+}
+
 function summarize(report) {
   const final = report.turns[report.turns.length - 1]?.after || report.initial;
   const totalArtifacts = final.players.reduce((sum, player) => sum + player.artifacts.length, 0);
@@ -544,11 +877,9 @@ async function writeReport(report) {
   return { runPath, latestPath, publicPath };
 }
 
-async function main() {
-  const addresses = loadAddresses();
-  await publicClient.getChainId();
-  const gameId = await ensureGame(addresses);
-  const seats = await registerPlayers(addresses, gameId);
+async function runSimulation(addresses, runConfig) {
+  const gameId = await ensureGameForRun(addresses, runConfig);
+  const seats = await registerPlayers(addresses, gameId, runConfig.players);
   if (seats.length === 0) throw new Error('No simulator seats registered.');
 
   await progressEngine(addresses);
@@ -558,7 +889,7 @@ async function main() {
     generatedAt: new Date().toISOString(),
     engine: 'local-anvil-solidity-contracts',
     exactEngine: true,
-    config,
+    config: runConfig,
     addresses,
     gameId,
     players: seats.map((seat) => ({ playerId: seat.playerId, address: seat.account.address })),
@@ -566,7 +897,7 @@ async function main() {
     turns: [],
   };
 
-  for (let turn = 1; turn <= config.turns; turn += 1) {
+  for (let turn = 1; turn <= runConfig.turns; turn += 1) {
     await progressEngine(addresses);
     const queueId = await currentQueueId(addresses, gameId);
     const queuePhase = await getPhase(addresses, queueId);
@@ -583,7 +914,7 @@ async function main() {
       continue;
     }
     const before = await snapshot(addresses, gameId, seats, `turn-${turn}-before`);
-    const submissions = await submitTurnActions(addresses, gameId, queueId, turn, seats, before);
+    const submissions = await submitTurnActions(addresses, gameId, queueId, turn, seats, before, runConfig);
     const progressCount = await progressEngine(addresses);
     const after = await snapshot(addresses, gameId, seats, `turn-${turn}-after`);
     report.turns.push({
@@ -596,11 +927,45 @@ async function main() {
     });
   }
 
-  report.summary = summarize(report);
+  report.summary = analyzeRun(report);
+  return report;
+}
+
+async function main() {
+  const addresses = loadAddresses();
+  await publicClient.getChainId();
+  const runs = [];
+
+  for (const strategy of config.strategies) {
+    for (let batchIndex = 0; batchIndex < config.batch; batchIndex += 1) {
+      const runConfig = {
+        ...config,
+        strategy,
+        runIndex: batchIndex + 1,
+        runLabel: `${config.scenarioLabel} / ${strategy} / ${batchIndex + 1}`,
+        seed: `${config.seed}:${strategy}:${batchIndex + 1}`,
+        createGame: config.gameId ? false : config.createGame,
+      };
+      log(`run ${runs.length + 1}/${config.strategies.length * config.batch}: ${runConfig.runLabel}`);
+      runs.push(await runSimulation(addresses, runConfig));
+    }
+  }
+
+  const latest = runs[runs.length - 1];
+  const report = {
+    ...latest,
+    schemaVersion: 2,
+    generatedAt: new Date().toISOString(),
+    config,
+    runs,
+    aggregate: aggregateRuns(runs),
+    summary: latest.summary,
+  };
+
   const paths = await writeReport(report);
   log(`wrote ${paths.latestPath}`);
   log(`wrote ${paths.publicPath}`);
-  console.log(JSON.stringify({ summary: report.summary, paths }, bigintReplacer, 2));
+  console.log(JSON.stringify({ summary: report.summary, aggregate: report.aggregate, paths }, bigintReplacer, 2));
 }
 
 main().catch((error) => {

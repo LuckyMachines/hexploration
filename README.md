@@ -124,6 +124,7 @@ Use the same-engine simulator to tune balance and outcomes against the local Sol
 ```bash
 npm run local:solo
 npm run sim:balanced
+npm run sim:golden
 ```
 
 Then open `http://localhost:5502/simulator`. The runner writes reports to `reports/simulator/latest-report.json` and `app/public/simulator/latest-report.json`.
