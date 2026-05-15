@@ -66,6 +66,9 @@ function deltaMetric(candidate, baseline, path) {
 function summarizeMetrics(report) {
   return {
     lifeScore: report.funDebugger?.averageLifeScore || 0,
+    oracleScore: report.oracle?.weightedScore || 0,
+    oracleAgency: report.oracle?.experienceScores?.agency?.score || 0,
+    oracleReadability: report.oracle?.experienceScores?.readability?.score || 0,
     flatTurnRate: report.funDebugger?.flatTurnRate || 0,
     aliveTurnRate: report.funDebugger?.aliveTurnRate || 0,
     artifacts: report.aggregate?.averages?.artifacts || 0,
@@ -91,9 +94,15 @@ function scoreCandidate(candidateReport, baselineReport, balance) {
   if (deltas.zeroStatPlayers.delta > Number(gates.maxZeroStatPlayersIncrease ?? 0.15)) rejectedReasons.push(`zero-stat players worsened by ${deltas.zeroStatPlayers.delta.toFixed(2)}`);
   if (deltas.invalidAttempts.delta > Number(gates.maxInvalidAttemptsIncrease ?? 1)) rejectedReasons.push(`invalid attempts worsened by ${deltas.invalidAttempts.delta.toFixed(2)}`);
   if (deltas.artifacts.delta < -Number(gates.maxArtifactLoss ?? 0.25)) rejectedReasons.push(`artifact average dropped by ${Math.abs(deltas.artifacts.delta).toFixed(2)}`);
+  if (base.oracleScore > 0 && deltas.oracleScore.delta < -3) rejectedReasons.push(`oracle score regressed by ${Math.abs(deltas.oracleScore.delta).toFixed(2)}`);
+  if (base.oracleReadability > 0 && deltas.oracleReadability.delta < -5) rejectedReasons.push(`oracle readability regressed by ${Math.abs(deltas.oracleReadability.delta).toFixed(2)}`);
+  if (base.oracleAgency > 0 && deltas.oracleAgency.delta < -5) rejectedReasons.push(`oracle agency regressed by ${Math.abs(deltas.oracleAgency.delta).toFixed(2)}`);
 
   const weightedScore = (
     deltas.lifeScore.delta * 3
+    + deltas.oracleScore.delta * 0.8
+    + deltas.oracleAgency.delta * 0.3
+    + deltas.oracleReadability.delta * 0.3
     + (-deltas.flatTurnRate.delta) * 60
     + deltas.aliveTurnRate.delta * 45
     + deltas.artifacts.delta * 8
@@ -107,6 +116,7 @@ function scoreCandidate(candidateReport, baselineReport, balance) {
     metrics: current,
     deltas,
     weightedScore,
+    oracleScore: current.oracleScore,
     rejected: rejectedReasons.length > 0,
     rejectedReasons,
   };
@@ -381,7 +391,7 @@ async function main() {
       ...score,
       explanation: score.rejected
         ? `Rejected: ${score.rejectedReasons.join('; ')}.`
-        : `Improved life by ${score.deltas.lifeScore.delta.toFixed(2)} and flat-turn rate by ${score.deltas.flatTurnRate.delta.toFixed(3)}.`,
+        : `Improved life by ${score.deltas.lifeScore.delta.toFixed(2)}, Oracle by ${score.deltas.oracleScore.delta.toFixed(2)}, and flat-turn rate by ${score.deltas.flatTurnRate.delta.toFixed(3)}.`,
     });
   }
 

@@ -49,6 +49,7 @@ const SAMPLE_REPORT = {
   autoTune: null,
   scenarioVerdict: null,
   scenarioDefinition: null,
+  oracle: null,
 };
 
 function Metric({ label, value, tone = 'neutral' }) {
@@ -492,7 +493,164 @@ function AutoTunePanel({ report }) {
   );
 }
 
-function ScenarioBrowser({ scenarios = [], verdict }) {
+function OraclePanel({ oracle, history = [] }) {
+  if (!oracle) {
+    return (
+      <section className="mt-4 rounded border border-exp-border bg-exp-panel p-4">
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div>
+            <h2 className="font-mono text-xs uppercase tracking-[0.3em] text-exp-text-dim">
+              Gameplay Oracle
+            </h2>
+            <p className="mt-1 font-mono text-xs leading-relaxed text-exp-text-dim">
+              Run `npm run oracle:latest` after a simulator report to get a design verdict, decisive turns, and one next experiment.
+            </p>
+          </div>
+          <span className="rounded border border-compass/30 bg-compass/5 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.2em] text-compass-bright">
+            Awaiting oracle
+          </span>
+        </div>
+      </section>
+    );
+  }
+
+  const scores = Object.entries(oracle.experienceScores || {}).sort(([a], [b]) => a.localeCompare(b));
+  const weakest = [...scores].sort(([, a], [, b]) => a.score - b.score)[0];
+  const strongest = [...scores].sort(([, a], [, b]) => b.score - a.score)[0];
+  const decisiveTurns = oracle.evidence?.decisiveTurns || [];
+  const experiment = oracle.smallestNextExperiment;
+
+  return (
+    <section className="mt-4 rounded border border-exp-border bg-exp-panel p-4">
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <h2 className="font-mono text-xs uppercase tracking-[0.3em] text-exp-text-dim">
+            Gameplay Oracle
+          </h2>
+          <p className="mt-1 font-mono text-xs leading-relaxed text-exp-text-dim">
+            Design-level readout for agency, readability, pacing, system interaction, and the smallest next experiment.
+          </p>
+        </div>
+        <div className={`rounded border px-3 py-2 text-right ${
+          ['strong-pass', 'pass'].includes(oracle.oracleVerdict)
+            ? 'border-oxide-green/35 bg-oxide-green/10 text-oxide-green'
+            : oracle.oracleVerdict === 'fail' || oracle.oracleVerdict === 'blocked'
+              ? 'border-signal-red/35 bg-signal-red/10 text-signal-red'
+              : 'border-compass/35 bg-compass/10 text-compass-bright'
+        }`}>
+          <p className="font-mono text-[10px] uppercase tracking-[0.2em]">
+            {oracle.oracleVerdict}
+          </p>
+          <p className="mt-1 font-mono text-xl tabular-nums">
+            {oracle.weightedScore}
+          </p>
+        </div>
+      </div>
+
+      <div className="mt-3 grid gap-3 md:grid-cols-3">
+        <Metric label="Confidence" value={`${Math.round((oracle.confidence || 0) * 100)}%`} tone="blue" />
+        <Metric label="Weakest" value={weakest ? `${weakest[0]} ${weakest[1].score}` : 'none'} tone="red" />
+        <Metric label="Strongest" value={strongest ? `${strongest[0]} ${strongest[1].score}` : 'none'} tone="green" />
+      </div>
+
+      <div className="mt-3 grid gap-2 md:grid-cols-2 xl:grid-cols-5">
+        {scores.map(([key, item]) => {
+          const pct = Math.max(0, Math.min(100, Number(item.score || 0)));
+          return (
+            <div key={key} className="rounded border border-exp-border/60 bg-exp-dark/35 px-3 py-2">
+              <div className="mb-1 flex items-center justify-between gap-2 font-mono text-[10px]">
+                <span className="uppercase tracking-[0.16em] text-exp-text-dim">{key}</span>
+                <span className="text-compass-bright">{pct}</span>
+              </div>
+              <div className="h-2 overflow-hidden rounded bg-exp-border/70" aria-label={`${key} score ${pct}`}>
+                <div className={`h-full rounded ${pct >= 70 ? 'bg-oxide-green' : pct >= 50 ? 'bg-compass-bright' : 'bg-signal-red'}`} style={{ width: `${pct}%` }} />
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      <div className="mt-3 grid gap-3 lg:grid-cols-[minmax(0,1fr)_minmax(320px,0.8fr)]">
+        <div className="rounded border border-exp-border/60 bg-exp-dark/35 px-3 py-2">
+          <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-exp-text-dim">
+            Diagnosis
+          </p>
+          <div className="mt-2 space-y-1">
+            {(oracle.diagnosis || []).map((line) => (
+              <p key={line} className="font-mono text-xs leading-relaxed text-exp-text">
+                {line}
+              </p>
+            ))}
+          </div>
+        </div>
+        <div className="rounded border border-compass/30 bg-compass/5 px-3 py-2">
+          <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-compass">
+            Smallest next experiment
+          </p>
+          <p className="mt-1 font-mono text-xs leading-relaxed text-exp-text">
+            {experiment?.title || 'No experiment generated.'}
+          </p>
+          <p className="mt-1 font-mono text-[11px] leading-relaxed text-exp-text-dim">
+            {experiment?.why || 'Run a scenario report to generate a targeted recommendation.'}
+          </p>
+          {experiment?.verificationCommand && (
+            <p className="mt-1 break-words font-mono text-[11px] leading-relaxed text-compass-bright">
+              {experiment.verificationCommand}
+            </p>
+          )}
+        </div>
+      </div>
+
+      {decisiveTurns.length > 0 && (
+        <div className="mt-3 grid gap-2 lg:grid-cols-2">
+          {decisiveTurns.slice(0, 6).map((turn) => (
+            <div key={turn.id} className="rounded border border-exp-border/60 bg-exp-dark/35 px-3 py-2">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <p className="font-mono text-xs uppercase tracking-[0.18em] text-compass-bright">
+                  T{turn.turn} / {turn.label}
+                </p>
+                <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-exp-text-dim">
+                  {turn.strategy} / {turn.experience}
+                </p>
+              </div>
+              <p className="mt-1 font-mono text-[11px] leading-relaxed text-exp-text-dim">
+                {turn.why}
+              </p>
+              <p className="mt-1 font-mono text-[11px] leading-relaxed text-blueprint">
+                actions {(turn.actions || []).join(', ') || 'none'} / stats {formatDelta(turn.statDelta)} / reveal {formatDelta(turn.revealedDelta)} / artifacts {formatDelta(turn.artifactDelta)}
+              </p>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {history.length > 0 && (
+        <div className="mt-3 rounded border border-exp-border/60 bg-exp-dark/35 px-3 py-2">
+          <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-exp-text-dim">
+            Oracle history
+          </p>
+          <div className="mt-2 grid gap-2 md:grid-cols-2 xl:grid-cols-5">
+            {history.slice(0, 10).map((entry) => (
+              <div key={`${entry.generatedAt}-${entry.scenarioId}`} className="rounded border border-exp-border/50 px-2 py-2">
+                <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-compass-bright">
+                  {entry.scenarioId}
+                </p>
+                <p className="mt-1 font-mono text-[11px] text-exp-text">
+                  {entry.verdict} / {entry.weightedScore}
+                </p>
+                <p className="mt-1 font-mono text-[10px] text-exp-text-dim">
+                  weak {entry.weakestScore?.metric || 'none'}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </section>
+  );
+}
+
+function ScenarioBrowser({ scenarios = [], verdict, oracle }) {
   return (
     <section className="mt-4 rounded border border-exp-border bg-exp-panel p-4">
       <div className="flex flex-wrap items-start justify-between gap-3">
@@ -550,6 +708,11 @@ function ScenarioBrowser({ scenarios = [], verdict }) {
                 {scenario.players}P / {scenario.turns} turns
               </p>
             </div>
+            {oracle?.scenarioId === scenario.id && (
+              <p className="mt-1 font-mono text-[11px] uppercase tracking-[0.16em] text-oxide-green">
+                Oracle: {oracle.oracleVerdict} / score {oracle.weightedScore} / next {oracle.smallestNextExperiment?.title || 'none'}
+              </p>
+            )}
             <p className="mt-1 font-mono text-xs leading-relaxed text-exp-text">
               {scenario.designQuestion}
             </p>
@@ -907,6 +1070,8 @@ function TurnCard({ turn }) {
 export default function SimulatorPage() {
   const [report, setReport] = useState(SAMPLE_REPORT);
   const [autoTuneReport, setAutoTuneReport] = useState(null);
+  const [oracleReport, setOracleReport] = useState(null);
+  const [oracleHistory, setOracleHistory] = useState([]);
   const [loadState, setLoadState] = useState('loading');
 
   useEffect(() => {
@@ -949,6 +1114,42 @@ export default function SimulatorPage() {
     };
   }, []);
 
+  useEffect(() => {
+    let cancelled = false;
+    fetch('/simulator/oracle/latest-oracle.json', { cache: 'no-store' })
+      .then((response) => {
+        if (!response.ok) throw new Error('No Oracle report found.');
+        return response.json();
+      })
+      .then((json) => {
+        if (!cancelled) setOracleReport(json);
+      })
+      .catch(() => {
+        if (!cancelled) setOracleReport(null);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch('/simulator/oracle/summary-index.json', { cache: 'no-store' })
+      .then((response) => {
+        if (!response.ok) throw new Error('No Oracle history found.');
+        return response.json();
+      })
+      .then((json) => {
+        if (!cancelled) setOracleHistory(Array.isArray(json) ? json : []);
+      })
+      .catch(() => {
+        if (!cancelled) setOracleHistory([]);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   const latest = useMemo(
     () => report.turns?.[report.turns.length - 1]?.after || report.initial || null,
     [report],
@@ -960,6 +1161,7 @@ export default function SimulatorPage() {
   const tasks = report.tasks || [];
   const tuning = report.tuning || SAMPLE_REPORT.tuning;
   const funDebugger = report.funDebugger || SAMPLE_REPORT.funDebugger;
+  const oracle = oracleReport || report.oracle || SAMPLE_REPORT.oracle;
   const command = `node scripts/gameplay-simulator.mjs --scenario=benchmark --batch=3 --note="first pass" --hypothesis="movement should reveal faster"`;
 
   return (
@@ -1062,8 +1264,9 @@ export default function SimulatorPage() {
 
       <InsightPanel aggregate={aggregate} summary={summary} />
       <FunDebuggerPanel funDebugger={funDebugger} />
+      <OraclePanel oracle={oracle} history={oracleHistory} />
       <AutoTunePanel report={autoTuneReport} />
-      <ScenarioBrowser scenarios={SCENARIO_CATALOG} verdict={report.scenarioVerdict} />
+      <ScenarioBrowser scenarios={SCENARIO_CATALOG} verdict={report.scenarioVerdict} oracle={oracle} />
       <SmallestExperimentQueue experiments={funDebugger.smallestExperimentQueue || funDebugger.topExperiments || []} />
       <TargetScorecard targetEvaluation={targetEvaluation} scenarioGoalEvaluation={scenarioGoalEvaluation} />
       <TuningTasks tasks={tasks} tuning={tuning} />

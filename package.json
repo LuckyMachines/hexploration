@@ -34,6 +34,14 @@
     "scenario:run-pack": "node scripts/scenario-designer.mjs run-pack",
     "scenario:autotune": "node scripts/simulator-autotune.mjs --scenario=benchmark --batch=3",
     "scenario:test": "node --test scripts/scenario-utils.test.mjs",
+    "oracle:run": "node scripts/gameplay-oracle.mjs run",
+    "oracle:scenario": "node scripts/gameplay-oracle.mjs scenario",
+    "oracle:pack": "node scripts/gameplay-oracle.mjs pack",
+    "oracle:project": "node scripts/gameplay-oracle.mjs project",
+    "oracle:latest": "node scripts/gameplay-oracle.mjs latest",
+    "oracle:doctor": "node scripts/gameplay-oracle.mjs doctor",
+    "oracle:ci": "node scripts/gameplay-oracle.mjs ci",
+    "oracle:test": "node --test scripts/gameplay-oracle-utils.test.mjs",
     "test:e2e:anvil": "node scripts/run-anvil-e2e.mjs"
   },
   "repository": {

@@ -54,5 +54,24 @@
     "zeroStatPlayers": "Reduce stat collapse or introduce better rescue/recovery loops.",
     "artifacts": "Increase dig payoff clarity or route players toward artifact opportunities.",
     "spikeTurns": "Increase volatility for this scenario through events, cards, or risk rewards."
+  },
+  "oracleWeights": {
+    "agency": 1.25,
+    "readability": 1.25,
+    "tension": 1.1,
+    "surprise": 0.85,
+    "recovery": 0.85,
+    "systemIntegration": 1.2,
+    "replayability": 0.9,
+    "pacing": 1.1,
+    "emotionalTexture": 0.85,
+    "outcomeLegibility": 1.2
+  },
+  "oracleGates": {
+    "minimumWeightedScore": 60,
+    "minimumAgency": 50,
+    "minimumReadability": 55,
+    "maximumRegression": 8,
+    "failOnBlocked": true
   }
 }

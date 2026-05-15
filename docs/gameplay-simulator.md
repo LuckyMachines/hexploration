@@ -44,6 +44,8 @@ npm run sim:autotune:dry
 npm run sim:autotune
 npm run scenario:create -- "4-player escape pressure with two exhausted players and one artifact"
 npm run scenario:run -- --id=escape-pressure-4p
+npm run oracle:latest
+npm run oracle:scenario -- --id=escape-pressure-4p
 ```
 
 Scenario runs use the same active Anvil deployment as `npm run sim:*`; keep `npm run local:solo` running or pass `--rpc=<url>` to target another local engine.
@@ -97,6 +99,7 @@ The simulator now emits raw run traces plus aggregate learning data:
 - Scenario Designer definitions in `simulator.scenarios.json`.
 - Plain-English scenario creation, validation, duplication, archiving, pack running, import/export, and report verdicts.
 - Scenario run history in `reports/simulator/scenarios/<scenario-id>/history.json`.
+- Gameplay Oracle verdicts in `reports/simulator/oracle/latest-oracle.json` and `/simulator`.
 - Opinionated warnings in `/simulator`.
 
 ## Scenario Designer
@@ -155,6 +158,22 @@ Scenario outputs:
 - `reports/simulator/scenarios/<scenario-id>/run-<timestamp>.json`
 - `reports/simulator/scenarios/<scenario-id>/history.json`
 - `app/public/simulator/scenarios/<scenario-id>/latest-report.json`
+
+## Gameplay Oracle
+
+The Gameplay Oracle turns simulator evidence into a deterministic design readout. It scores agency, readability, tension, surprise, recovery, system integration, replayability, pacing, emotional texture, and outcome legibility, then recommends one smallest next experiment.
+
+```bash
+npm run oracle:latest
+npm run oracle:scenario -- --id=solo-artifact-hunt
+npm run oracle:pack -- --pack=artifacts --continue
+npm run oracle:project
+npm run oracle:doctor
+```
+
+The simulator also embeds an Oracle report when it writes `latest-report.json`, so `/simulator` can show the current verdict immediately after a run.
+
+See [gameplay-oracle.md](gameplay-oracle.md) for the full rubric, outputs, and workflow.
 
 ## Balance Surface
 

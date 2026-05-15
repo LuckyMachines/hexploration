@@ -33,6 +33,12 @@ import {
   scenarioToSimulatorPreset,
   writeScenarioReport,
 } from './scenario-utils.mjs';
+import {
+  evaluateOracle,
+  oracleTaskFromRecommendation,
+  readOracleHistory,
+  writeOracleReport,
+} from './gameplay-oracle-utils.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = resolve(__dirname, '..');
@@ -1889,8 +1895,20 @@ async function main() {
   report.scenarioGoalEvaluation = evaluateScenarioGoals(report, tuningConfig.scenarioGoals);
   report.comparison = compareReports(report, baselineReport);
   report.tasks = makeTuningTasks(report, tuningConfig);
+  report.oracle = evaluateOracle(report, report.scenarioDefinition || null, {
+    sourceReportPath: resolve(reportDir, 'latest-report.json'),
+    weights: tuningConfig.oracleWeights || {},
+    gates: tuningConfig.oracleGates || {},
+    history: readOracleHistory(report.scenarioDefinition?.id || null),
+  });
+  const oracleTask = oracleTaskFromRecommendation(report.oracle.smallestNextExperiment);
+  if (oracleTask) report.tasks = [oracleTask, ...report.tasks].slice(0, 12);
 
   const paths = await writeReport(report);
+  const oraclePaths = writeOracleReport(report.oracle, { scenarioId: null, markdown: true });
+  if (report.scenarioDefinition?.id) writeOracleReport(report.oracle, { scenarioId: report.scenarioDefinition.id, markdown: true });
+  paths.oracleLatestPath = oraclePaths.latest;
+  paths.oraclePublicPath = oraclePaths.publicLatest;
   if (report.scenarioDefinition) {
     const scenarioPaths = writeScenarioReport(report, report.scenarioDefinition);
     paths.scenarioLatestPath = scenarioPaths.latest;
@@ -1917,6 +1935,13 @@ async function main() {
     targetEvaluation: report.targetEvaluation,
     scenarioGoalEvaluation: report.scenarioGoalEvaluation,
     scenarioVerdict: report.scenarioVerdict,
+    oracle: {
+      verdict: report.oracle.oracleVerdict,
+      weightedScore: report.oracle.weightedScore,
+      confidence: report.oracle.confidence,
+      weakestScore: Object.entries(report.oracle.experienceScores || {}).sort(([, a], [, b]) => a.score - b.score)[0]?.[0] || null,
+      smallestNextExperiment: report.oracle.smallestNextExperiment?.title || null,
+    },
     comparison: report.comparison,
     tasks: report.tasks,
     paths: { ...paths, ledgerPath, baselinePath: config.saveBaseline ? defaultBaselinePath : report.tuning.baselinePath },

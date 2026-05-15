@@ -285,6 +285,8 @@ export function normalizeScenario(scenario) {
     notes: scenario.notes || {},
     ladder: scenario.ladder || { prerequisites: [], easier: [], harder: [], related: [] },
     packs: scenario.packs || tags.filter((tag) => ['exploration', 'artifact', 'escape', 'cooperation'].includes(tag)),
+    importance: scenario.importance || (tags.includes('artifact') || tags.includes('escape') || tags.includes('cooperation') ? 'core' : 'supporting'),
+    oracleGoals: scenario.oracleGoals || {},
     createdAt: scenario.createdAt || now(),
     updatedAt: now(),
     archived: Boolean(scenario.archived),

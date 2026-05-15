@@ -1,0 +1,113 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-05-14T00:00:00.000Z",
+  "config": {
+    "scenario": "solo-artifact-hunt",
+    "turns": 3,
+    "strategies": ["dig", "move"]
+  },
+  "scenarioDefinition": {
+    "id": "solo-artifact-hunt",
+    "name": "Solo Artifact Hunt",
+    "designQuestion": "Does artifact hunting produce payoff before the run goes flat?",
+    "tags": ["solo", "artifact", "survival"],
+    "players": 1,
+    "strategies": ["dig", "move"],
+    "initialState": { "assumptions": [] }
+  },
+  "runs": [
+    {
+      "config": { "strategy": "dig" },
+      "turns": [
+        {
+          "turn": 1,
+          "before": { "players": [{ "playerId": 1, "stats": { "movement": 3, "agility": 3, "dexterity": 3 }, "artifacts": [] }], "activeZones": { "count": 1 } },
+          "after": { "players": [{ "playerId": 1, "stats": { "movement": 2, "agility": 3, "dexterity": 3 }, "artifacts": [] }], "activeZones": { "count": 2 } },
+          "submissions": [{ "playerId": 1, "action": "Move", "validityLog": [{ "action": "Move", "ok": true }] }],
+          "analysis": { "statDelta": -1, "revealedDelta": 1, "artifactDelta": 0, "invalidAttempts": 0, "zeroStats": 0, "spike": false, "meaningfulChoiceDensity": 0.7, "funDebugger": { "lifeScore": 72 } }
+        },
+        {
+          "turn": 2,
+          "before": { "players": [{ "playerId": 1, "stats": { "movement": 2, "agility": 3, "dexterity": 3 }, "artifacts": [] }], "activeZones": { "count": 2 } },
+          "after": { "players": [{ "playerId": 1, "stats": { "movement": 2, "agility": 2, "dexterity": 3 }, "artifacts": ["Relic"] }], "activeZones": { "count": 2 } },
+          "submissions": [{ "playerId": 1, "action": "Dig", "validityLog": [{ "action": "Dig", "ok": true }] }],
+          "analysis": { "statDelta": -1, "revealedDelta": 0, "artifactDelta": 1, "invalidAttempts": 0, "zeroStats": 0, "spike": true, "meaningfulChoiceDensity": 0.72, "funDebugger": { "lifeScore": 86 } }
+        },
+        {
+          "turn": 3,
+          "before": { "players": [{ "playerId": 1, "stats": { "movement": 2, "agility": 2, "dexterity": 3 }, "artifacts": ["Relic"] }], "activeZones": { "count": 2 } },
+          "after": { "players": [{ "playerId": 1, "stats": { "movement": 3, "agility": 3, "dexterity": 3 }, "artifacts": ["Relic"] }], "activeZones": { "count": 2 } },
+          "submissions": [{ "playerId": 1, "action": "Rest", "validityLog": [{ "action": "Rest", "ok": true }] }],
+          "analysis": { "statDelta": 2, "revealedDelta": 0, "artifactDelta": 0, "invalidAttempts": 0, "zeroStats": 0, "spike": false, "meaningfulChoiceDensity": 0.68, "funDebugger": { "lifeScore": 64 } }
+        }
+      ],
+      "summary": {
+        "totalArtifacts": 1,
+        "revealedZonesGained": 1,
+        "statTotalDelta": 0,
+        "zeroStatPlayers": 0,
+        "spikeTurns": [{ "turn": 2, "reasons": ["artifact"] }],
+        "invalidAttempts": 0,
+        "meaningfulChoiceDensity": 0.7,
+        "cardOutcomes": { "clue": 1, "relic": 1 },
+        "tensionCurve": [
+          { "turn": 1, "tension": 24 },
+          { "turn": 2, "tension": 58 },
+          { "turn": 3, "tension": 28 }
+        ],
+        "actions": { "Move": 1, "Dig": 1, "Rest": 1 },
+        "outcome": "escaped-or-ended-with-artifacts"
+      },
+      "funDebugger": {
+        "averageLifeScore": 74,
+        "flatTurnRate": 0.1,
+        "aliveTurnRate": 0.85,
+        "flatStreaks": [],
+        "turns": [
+          { "turn": 1, "lifeScore": 72, "classification": "alive" },
+          { "turn": 2, "lifeScore": 86, "classification": "rewarding" },
+          { "turn": 3, "lifeScore": 64, "classification": "alive" }
+        ]
+      }
+    }
+  ],
+  "turns": [],
+  "summary": {
+    "totalArtifacts": 1,
+    "revealedZonesGained": 1,
+    "statTotalDelta": 0,
+    "zeroStatPlayers": 0,
+    "spikeTurns": [{ "turn": 2, "reasons": ["artifact"] }],
+    "invalidAttempts": 0,
+    "meaningfulChoiceDensity": 0.7,
+    "actions": { "Move": 1, "Dig": 1, "Rest": 1 },
+    "outcome": "escaped-or-ended-with-artifacts"
+  },
+  "aggregate": {
+    "runs": 1,
+    "strategies": { "dig": { "runs": 1 } },
+    "actionTotals": { "Move": 1, "Dig": 1, "Rest": 1 },
+    "averages": {
+      "artifacts": 1,
+      "revealedZones": 1,
+      "statDelta": 0,
+      "boringTurns": 0,
+      "spikeTurns": 1,
+      "meaningfulChoiceDensity": 0.7,
+      "invalidAttempts": 0,
+      "zeroStatPlayers": 0
+    },
+    "warnings": []
+  },
+  "funDebugger": {
+    "averageLifeScore": 74,
+    "flatTurnRate": 0.1,
+    "aliveTurnRate": 0.85,
+    "systemicRisks": [{ "key": "board", "count": 1 }, { "key": "stats", "count": 1 }],
+    "topExperiments": []
+  },
+  "scenarioVerdict": {
+    "verdict": "answered",
+    "designQuestion": "Does artifact hunting produce payoff before the run goes flat?"
+  }
+}
