@@ -8,6 +8,7 @@ test('simulator workbench renders without a report', async ({ page }) => {
   await expect(page.getByRole('heading', { name: /Scenario Setup Forge/i })).toBeVisible();
   await expect(page.getByRole('heading', { name: /Gameplay Oracle/i })).toBeVisible();
   await expect(page.getByRole('heading', { name: /Scenario Autopilot/i })).toBeVisible();
+  await expect(page.getByRole('heading', { name: /Playable Design Memory/i })).toBeVisible();
   await expect(page.getByRole('heading', { name: /Scenario Designer/i })).toBeVisible();
   await expect(page.getByText(/Solo Artifact Hunt/i)).toBeVisible();
 });

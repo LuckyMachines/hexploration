@@ -48,6 +48,8 @@ npm run setup:explain -- --id=escape-pressure-4p
 npm run autopilot:dry -- "4-player escape should feel desperate but cooperative"
 npm run oracle:latest
 npm run oracle:scenario -- --id=escape-pressure-4p
+npm run memory:build
+npm run memory:query -- "what do we know about escape pressure?"
 ```
 
 Scenario runs use the same active Anvil deployment as `npm run sim:*`; keep `npm run local:solo` running or pass `--rpc=<url>` to target another local engine.
@@ -102,6 +104,7 @@ The simulator now emits raw run traces plus aggregate learning data:
 - Plain-English scenario creation, validation, duplication, archiving, pack running, import/export, and report verdicts.
 - Scenario Setup Forge for applying authored starting stats, items, artifacts, reveals, terrain, campsites, pressure, and prelude turns before measured turns.
 - Scenario Autopilot for turning a design intent into a scenario, setup validation, Oracle diagnosis, candidate patch, rerun comparison, and design memo.
+- Playable Design Memory for rolling scenario, simulator, setup, Oracle, auto-tune, and Autopilot evidence into queryable project memory.
 - Scenario run history in `reports/simulator/scenarios/<scenario-id>/history.json`.
 - Gameplay Oracle verdicts in `reports/simulator/oracle/latest-oracle.json` and `/simulator`.
 - Opinionated warnings in `/simulator`.
@@ -182,6 +185,21 @@ npm run autopilot:latest -- --markdown
 Dry runs do not execute the simulator. Iteration only edits `simulator.scenarios.json` and `simulator.balance.json`, and rejected candidate changes are rolled back from snapshots.
 
 See [scenario-autopilot.md](scenario-autopilot.md) for the full workflow and safety model.
+
+## Playable Design Memory
+
+Playable Design Memory reads all simulator-family reports and builds a project-level evidence snapshot:
+
+```bash
+npm run memory:build
+npm run memory:latest -- --markdown
+npm run memory:query -- "which setup blockers matter most?"
+npm run memory:doctor
+```
+
+It writes `reports/simulator/memory/latest-memory.json` and `app/public/simulator/memory/latest-memory.json`, which the `/simulator` workbench displays in the Playable Design Memory panel.
+
+See [playable-design-memory.md](playable-design-memory.md) for schema, outputs, and query examples.
 
 ## Gameplay Oracle
 

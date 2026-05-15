@@ -56,6 +56,12 @@
     "autopilot:scenario": "node scripts/scenario-autopilot.mjs scenario",
     "autopilot:latest": "node scripts/scenario-autopilot.mjs latest",
     "autopilot:test": "node --test scripts/scenario-autopilot-utils.test.mjs",
+    "memory": "node scripts/playable-design-memory.mjs",
+    "memory:build": "node scripts/playable-design-memory.mjs build",
+    "memory:query": "node scripts/playable-design-memory.mjs query",
+    "memory:latest": "node scripts/playable-design-memory.mjs latest",
+    "memory:doctor": "node scripts/playable-design-memory.mjs doctor",
+    "memory:test": "node --test scripts/playable-design-memory-utils.test.mjs",
     "test:e2e:anvil": "node scripts/run-anvil-e2e.mjs"
   },
   "repository": {

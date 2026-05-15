@@ -51,6 +51,8 @@ Autopilot does not edit Solidity contracts, frontend gameplay code, deploy scrip
 
 Autopilot never commits changes.
 
+Playable Design Memory treats Autopilot reports as experiment history. Accepted comparisons become evidence for what worked; rejected comparisons become warnings against repeating a harmful change.
+
 ## Reports
 
 Autopilot writes:
@@ -79,3 +81,11 @@ The `/simulator` workbench shows the latest Scenario Autopilot report, including
 5. If the recommendation is low-risk, run `npm run autopilot -- --id=<scenario-id> --mode=iterate --apply`.
 6. Inspect `/simulator` and `reports/simulator/autopilot/latest-report.md`.
 7. Keep accepted JSON changes or manually revise from the memo.
+8. Run `npm run memory:build` so the accepted or rejected experiment is available to future queries.
+
+Useful memory queries:
+
+```bash
+npm run memory:query -- "what Autopilot changes improved cooperation?"
+npm run memory:query -- "which rejected changes hurt escape pressure?"
+```

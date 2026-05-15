@@ -31,6 +31,8 @@ When a scenario has a `setupForge` block, `--run` applies the supported setup fi
 
 Scenario Autopilot uses the Oracle as its acceptance judge. It reads the weakest dimension, setup level, confidence, gate failures, and smallest next experiment, then converts those into a candidate scenario or balance patch.
 
+Playable Design Memory also reads Oracle reports. It keeps each verdict, weakest dimension, confidence, setup state, gate result, and smallest next experiment available for later queries across the whole project.
+
 Useful options:
 
 - `--gate`: exits non-zero if Oracle regression gates fail, including unmet required setup levels.
@@ -101,3 +103,12 @@ npm run autopilot -- --id=escape-pressure-4p --mode=single-pass
 ```
 
 See [scenario-autopilot.md](scenario-autopilot.md) for patch safety, rerun comparison, and memo outputs.
+
+After a batch of Oracle work, run:
+
+```bash
+npm run memory:build
+npm run memory:query -- "which Oracle weaknesses repeat?"
+```
+
+See [playable-design-memory.md](playable-design-memory.md) for the memory workflow.

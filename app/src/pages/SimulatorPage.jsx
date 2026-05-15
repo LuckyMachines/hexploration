@@ -633,6 +633,188 @@ function AutopilotPanel({ report }) {
   );
 }
 
+function PlayableDesignMemoryPanel({ memory, currentScenarioId }) {
+  if (!memory) {
+    return (
+      <section className="mt-4 rounded border border-exp-border bg-exp-panel p-4">
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div>
+            <h2 className="font-mono text-xs uppercase tracking-[0.3em] text-exp-text-dim">
+              Playable Design Memory
+            </h2>
+            <p className="mt-1 font-mono text-xs leading-relaxed text-exp-text-dim">
+              Builds a queryable memory from scenario definitions, simulator traces, setup reports, Oracle verdicts, auto-tune outcomes, and Autopilot memos.
+            </p>
+          </div>
+          <span className="rounded border border-blueprint/35 bg-blueprint/10 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.2em] text-blueprint">
+            Awaiting memory
+          </span>
+        </div>
+        <pre className="mt-3 overflow-x-auto rounded border border-exp-border bg-exp-dark/60 p-3 font-mono text-[11px] text-compass-bright">
+          {`npm run memory:build\nnpm run memory:query -- "what do we know about escape pressure?"`}
+        </pre>
+      </section>
+    );
+  }
+
+  const sourceCounts = Object.entries(memory.sourceCounts || {});
+  const scenario = (memory.scenarios || []).find((item) => item.scenarioId === currentScenarioId) || memory.scenarios?.[0];
+  const findings = memory.findings || [];
+  const setupLimits = memory.setupLimits || [];
+  const recommendations = memory.recommendations || [];
+  const examples = memory.queryExamples || [];
+  const citations = memory.citations || [];
+
+  return (
+    <section className="mt-4 rounded border border-exp-border bg-exp-panel p-4">
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <h2 className="font-mono text-xs uppercase tracking-[0.3em] text-exp-text-dim">
+            Playable Design Memory
+          </h2>
+          <p className="mt-1 font-mono text-xs leading-relaxed text-exp-text-dim">
+            Queryable project memory built from the same simulator evidence shown in this workbench.
+          </p>
+        </div>
+        <div className="rounded border border-compass/30 bg-compass/5 px-3 py-2 text-right">
+          <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-exp-text-dim">
+            Built
+          </p>
+          <p className="mt-1 font-mono text-[11px] text-compass-bright">
+            {memory.generatedAt || 'unknown'}
+          </p>
+        </div>
+      </div>
+
+      <div className="mt-3 grid gap-3 md:grid-cols-4">
+        <Metric label="Events" value={memory.eventCount || 0} tone="gold" />
+        <Metric label="Scenarios" value={memory.scenarioCount || 0} tone="blue" />
+        <Metric label="Findings" value={findings.length} tone={findings.length ? 'red' : 'green'} />
+        <Metric label="Limits" value={setupLimits.length} tone={setupLimits.length ? 'gold' : 'green'} />
+      </div>
+
+      {sourceCounts.length > 0 && (
+        <div className="mt-3 grid gap-2 md:grid-cols-3 xl:grid-cols-6">
+          {sourceCounts.map(([type, count]) => (
+            <div key={type} className="rounded border border-exp-border/60 bg-exp-dark/35 px-3 py-2">
+              <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-exp-text-dim">
+                {type.replace(/Report$/, '')}
+              </p>
+              <p className="mt-1 font-mono text-lg text-exp-text">
+                {count}
+              </p>
+            </div>
+          ))}
+        </div>
+      )}
+
+      <div className="mt-3 grid gap-3 lg:grid-cols-[minmax(0,1fr)_minmax(320px,0.9fr)]">
+        <div className="rounded border border-exp-border/60 bg-exp-dark/35 px-3 py-2">
+          <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-exp-text-dim">
+            Current scenario memory
+          </p>
+          {scenario ? (
+            <>
+              <div className="mt-2 grid gap-2 sm:grid-cols-4">
+                <Metric label="Scenario" value={scenario.scenarioId} tone="blue" />
+                <Metric label="Verdict" value={scenario.latestVerdict || 'unknown'} tone="gold" />
+                <Metric label="Score" value={scenario.latestScore ?? 'n/a'} tone="green" />
+                <Metric label="Weakest" value={scenario.weakestMetric || 'n/a'} tone="red" />
+              </div>
+              <p className="mt-2 font-mono text-xs leading-relaxed text-exp-text">
+                {scenario.currentRecommendation?.title || 'No recommendation generated yet.'}
+              </p>
+              <p className="mt-1 font-mono text-[11px] leading-relaxed text-exp-text-dim">
+                {scenario.currentRecommendation?.reason || scenario.designQuestion || 'Build memory after running a scenario and Oracle pass.'}
+              </p>
+            </>
+          ) : (
+            <p className="mt-2 font-mono text-xs text-exp-text-dim">
+              No scenario rollups found. Run `npm run memory:build` after a simulator or Oracle report exists.
+            </p>
+          )}
+        </div>
+
+        <div className="rounded border border-exp-border/60 bg-exp-dark/35 px-3 py-2">
+          <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-exp-text-dim">
+            Top recommendation
+          </p>
+          {recommendations[0] ? (
+            <>
+              <p className="mt-1 font-mono text-xs leading-relaxed text-exp-text">
+                {recommendations[0].title}
+              </p>
+              <pre className="mt-2 overflow-x-auto rounded border border-exp-border/60 bg-exp-dark/50 p-2 font-mono text-[10px] text-compass-bright">
+                {recommendations[0].command}
+              </pre>
+            </>
+          ) : (
+            <p className="mt-1 font-mono text-xs text-exp-text-dim">No recommendation yet.</p>
+          )}
+        </div>
+      </div>
+
+      <div className="mt-3 grid gap-3 lg:grid-cols-3">
+        <div className="rounded border border-signal-red/25 bg-signal-red/5 px-3 py-2">
+          <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-signal-red">
+            Findings
+          </p>
+          <div className="mt-2 space-y-1">
+            {findings.length > 0 ? findings.slice(0, 4).map((finding) => (
+              <p key={`${finding.type}-${finding.title}`} className="font-mono text-[11px] leading-relaxed text-exp-text-dim">
+                {finding.severity} / {finding.title}
+              </p>
+            )) : (
+              <p className="font-mono text-[11px] text-exp-text-dim">No findings yet.</p>
+            )}
+          </div>
+        </div>
+        <div className="rounded border border-compass/25 bg-compass/5 px-3 py-2">
+          <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-compass">
+            Setup limits
+          </p>
+          <div className="mt-2 space-y-1">
+            {setupLimits.length > 0 ? setupLimits.slice(0, 4).map((limit) => (
+              <p key={limit.field} className="font-mono text-[11px] leading-relaxed text-exp-text-dim">
+                {limit.field} / {limit.count} / {limit.recommendation}
+              </p>
+            )) : (
+              <p className="font-mono text-[11px] text-exp-text-dim">No setup blockers detected.</p>
+            )}
+          </div>
+        </div>
+        <div className="rounded border border-blueprint/25 bg-blueprint/5 px-3 py-2">
+          <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-blueprint">
+            Query examples
+          </p>
+          <div className="mt-2 space-y-1">
+            {examples.slice(0, 4).map((query) => (
+              <p key={query} className="font-mono text-[11px] leading-relaxed text-exp-text-dim">
+                npm run memory:query -- "{query}"
+              </p>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {citations.length > 0 && (
+        <div className="mt-3 rounded border border-exp-border/60 bg-exp-dark/35 px-3 py-2">
+          <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-exp-text-dim">
+            Recent citations
+          </p>
+          <div className="mt-2 grid gap-2 lg:grid-cols-2">
+            {citations.slice(0, 6).map((citation) => (
+              <p key={`${citation.id}-${citation.sourcePath}`} className="break-all font-mono text-[11px] leading-relaxed text-exp-text-dim">
+                {citation.type} / {citation.scenarioId || 'project'} / {citation.sourcePath}
+              </p>
+            ))}
+          </div>
+        </div>
+      )}
+    </section>
+  );
+}
+
 function setupTone(level) {
   if (level === 'exact') return 'green';
   if (level === 'partial') return 'gold';
@@ -1380,6 +1562,7 @@ export default function SimulatorPage() {
   const [report, setReport] = useState(SAMPLE_REPORT);
   const [autoTuneReport, setAutoTuneReport] = useState(null);
   const [autopilotReport, setAutopilotReport] = useState(null);
+  const [memoryReport, setMemoryReport] = useState(null);
   const [oracleReport, setOracleReport] = useState(null);
   const [oracleHistory, setOracleHistory] = useState([]);
   const [loadState, setLoadState] = useState('loading');
@@ -1444,6 +1627,24 @@ export default function SimulatorPage() {
 
   useEffect(() => {
     let cancelled = false;
+    fetch('/simulator/memory/latest-memory.json', { cache: 'no-store' })
+      .then((response) => {
+        if (!response.ok) throw new Error('No memory report found.');
+        return response.json();
+      })
+      .then((json) => {
+        if (!cancelled) setMemoryReport(json);
+      })
+      .catch(() => {
+        if (!cancelled) setMemoryReport(null);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
     fetch('/simulator/oracle/latest-oracle.json', { cache: 'no-store' })
       .then((response) => {
         if (!response.ok) throw new Error('No Oracle report found.');
@@ -1490,6 +1691,7 @@ export default function SimulatorPage() {
   const tuning = report.tuning || SAMPLE_REPORT.tuning;
   const funDebugger = report.funDebugger || SAMPLE_REPORT.funDebugger;
   const oracle = oracleReport || report.oracle || SAMPLE_REPORT.oracle;
+  const currentScenarioId = report.scenarioDefinition?.id || report.config?.scenarioId || report.config?.scenario || '';
   const command = `node scripts/gameplay-simulator.mjs --scenario=benchmark --batch=3 --setup-mode=best-effort --note="first pass" --hypothesis="movement should reveal faster"`;
 
   return (
@@ -1596,6 +1798,7 @@ export default function SimulatorPage() {
       <OraclePanel oracle={oracle} history={oracleHistory} />
       <AutoTunePanel report={autoTuneReport} />
       <AutopilotPanel report={autopilotReport} />
+      <PlayableDesignMemoryPanel memory={memoryReport} currentScenarioId={currentScenarioId} />
       <ScenarioBrowser scenarios={SCENARIO_CATALOG} verdict={report.scenarioVerdict} oracle={oracle} />
       <SmallestExperimentQueue experiments={funDebugger.smallestExperimentQueue || funDebugger.topExperiments || []} />
       <TargetScorecard targetEvaluation={targetEvaluation} scenarioGoalEvaluation={scenarioGoalEvaluation} />
