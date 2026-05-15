@@ -69,6 +69,13 @@
     "time-machine:latest": "node scripts/scenario-time-machine.mjs latest",
     "time-machine:doctor": "node scripts/scenario-time-machine.mjs doctor",
     "time-machine:test": "node --test scripts/scenario-time-machine-utils.test.mjs",
+    "lab": "node scripts/scenario-lab-notebook.mjs",
+    "lab:entry": "node scripts/scenario-lab-notebook.mjs entry",
+    "lab:daily": "node scripts/scenario-lab-notebook.mjs daily",
+    "lab:decision": "node scripts/scenario-lab-notebook.mjs decision",
+    "lab:latest": "node scripts/scenario-lab-notebook.mjs latest",
+    "lab:doctor": "node scripts/scenario-lab-notebook.mjs doctor",
+    "lab:test": "node --test scripts/scenario-lab-notebook-utils.test.mjs",
     "test:e2e:anvil": "node scripts/run-anvil-e2e.mjs"
   },
   "repository": {

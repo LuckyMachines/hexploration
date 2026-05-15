@@ -54,5 +54,6 @@ Generated outputs are ignored by Git.
 1. Run scenario, Oracle, setup, Autopilot, or memory workflows as usual.
 2. Run `npm run memory:build`.
 3. Run `npm run time-machine:scenario -- --id=<scenario-id>`.
-4. Inspect the Scenario Time Machine panel in `/simulator`.
-5. Use the top recommendation as the next smallest experiment.
+4. Run `npm run lab:entry -- --id=<scenario-id>` to record the design learning.
+5. Inspect the Scenario Time Machine and Scenario Lab Notebook panels in `/simulator`.
+6. Use the top recommendation as the next smallest experiment.

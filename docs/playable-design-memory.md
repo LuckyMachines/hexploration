@@ -74,3 +74,14 @@ npm run time-machine:compare -- --id=solo-artifact-hunt --against=last-good
 ```
 
 Use Time Machine when the question is not only "what do we know?" but "are we better than before?"
+
+## Scenario Lab Notebook
+
+Scenario Lab Notebook uses memory and Time Machine evidence to write a persistent scenario journal:
+
+```bash
+npm run lab:entry -- --id=escape-pressure-4p
+npm run lab:latest -- --id=escape-pressure-4p --markdown
+```
+
+Use the notebook when the question is "what do we believe now, what decision did we make, and what should we run next?"

@@ -107,6 +107,7 @@ The simulator now emits raw run traces plus aggregate learning data:
 - Scenario Autopilot for turning a design intent into a scenario, setup validation, Oracle diagnosis, candidate patch, rerun comparison, and design memo.
 - Playable Design Memory for rolling scenario, simulator, setup, Oracle, auto-tune, and Autopilot evidence into queryable project memory.
 - Scenario Time Machine for comparing each scenario's evidence over time and finding best, latest, last-good, and regressed versions.
+- Scenario Lab Notebook for recording scenario learning, current belief, decisions, unresolved assumptions, readiness, and next experiments.
 - Scenario run history in `reports/simulator/scenarios/<scenario-id>/history.json`.
 - Gameplay Oracle verdicts in `reports/simulator/oracle/latest-oracle.json` and `/simulator`.
 - Opinionated warnings in `/simulator`.
@@ -217,6 +218,21 @@ npm run time-machine:doctor
 It writes `reports/simulator/time-machine/<scenario-id>/latest-report.json` and `app/public/simulator/time-machine/<scenario-id>/latest-report.json`, which the `/simulator` workbench displays in the Scenario Time Machine panel.
 
 See [scenario-time-machine.md](scenario-time-machine.md) for trend meanings, compare modes, and output paths.
+
+## Scenario Lab Notebook
+
+Scenario Lab Notebook turns scenario evidence into a persistent design journal:
+
+```bash
+npm run lab:entry -- --id=escape-pressure-4p
+npm run lab:decision -- --id=solo-artifact-hunt --decision=playtest --why="Artifact payoff is readable enough for a live playtest."
+npm run lab:daily
+npm run lab:doctor
+```
+
+It writes `reports/simulator/lab-notebook/<scenario-id>/latest-entry.json` and `app/public/simulator/lab-notebook/<scenario-id>/latest-entry.json`, which the `/simulator` workbench displays in the Scenario Lab Notebook panel.
+
+See [scenario-lab-notebook.md](scenario-lab-notebook.md) for entry types, decisions, readiness labels, and output paths.
 
 ## Gameplay Oracle
 

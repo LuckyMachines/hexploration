@@ -992,6 +992,188 @@ function ScenarioTimeMachinePanel({ report, index, currentScenarioId }) {
   );
 }
 
+function readinessTone(status) {
+  if (status === 'ready') return 'green';
+  if (status === 'ready-with-caveats') return 'gold';
+  if (status === 'blocked-by-setup' || status === 'regressed') return 'red';
+  if (status === 'needs-engine-evidence') return 'blue';
+  return 'neutral';
+}
+
+function ScenarioLabNotebookPanel({ entry, index, currentScenarioId }) {
+  if (!entry) {
+    const indexedScenario = (index?.scenarios || []).find((item) => item.scenarioId === currentScenarioId);
+    return (
+      <section className="mt-4 rounded border border-exp-border bg-exp-panel p-4">
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div>
+            <h2 className="font-mono text-xs uppercase tracking-[0.3em] text-exp-text-dim">
+              Scenario Lab Notebook
+            </h2>
+            <p className="mt-1 font-mono text-xs leading-relaxed text-exp-text-dim">
+              Writes the design journal for each scenario cycle: learning, belief, decisions, unresolved assumptions, and the next experiment.
+            </p>
+          </div>
+          <span className="rounded border border-blueprint/35 bg-blueprint/10 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.2em] text-blueprint">
+            Awaiting entry
+          </span>
+        </div>
+        <pre className="mt-3 overflow-x-auto rounded border border-exp-border bg-exp-dark/60 p-3 font-mono text-[11px] text-compass-bright">
+          {`npm run lab:entry -- --id=${currentScenarioId || 'escape-pressure-4p'}\nnpm run lab:latest -- --id=${currentScenarioId || 'escape-pressure-4p'} --markdown`}
+        </pre>
+        {indexedScenario && (
+          <div className="mt-3 rounded border border-exp-border/60 bg-exp-dark/35 px-3 py-2">
+            <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-exp-text-dim">
+              Notebook index
+            </p>
+            <p className="mt-1 font-mono text-xs leading-relaxed text-exp-text">
+              {indexedScenario.scenarioId}: {indexedScenario.readiness?.status || 'no entry'} / {indexedScenario.latestLearning || 'generate an entry to record current learning'}
+            </p>
+          </div>
+        )}
+      </section>
+    );
+  }
+
+  const readiness = entry.playtestReadiness || {};
+  const tone = readinessTone(readiness.status);
+  const assumptions = entry.unresolvedAssumptions || [];
+  const citations = entry.citations || [];
+  const decision = entry.decision;
+  const history = (index?.scenarios || []).find((item) => item.scenarioId === entry.scenarioId);
+
+  return (
+    <section className="mt-4 rounded border border-exp-border bg-exp-panel p-4">
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <h2 className="font-mono text-xs uppercase tracking-[0.3em] text-exp-text-dim">
+            Scenario Lab Notebook
+          </h2>
+          <p className="mt-1 font-mono text-xs leading-relaxed text-exp-text-dim">
+            Latest journal entry for {entry.scenarioId}; decisions are human records, while beliefs are generated from simulator evidence.
+          </p>
+        </div>
+        <div className={`rounded border px-3 py-2 text-right ${
+          tone === 'green'
+            ? 'border-oxide-green/35 bg-oxide-green/10 text-oxide-green'
+            : tone === 'red'
+              ? 'border-signal-red/35 bg-signal-red/10 text-signal-red'
+              : tone === 'blue'
+                ? 'border-blueprint/35 bg-blueprint/10 text-blueprint'
+                : tone === 'gold'
+                  ? 'border-compass/35 bg-compass/10 text-compass-bright'
+                  : 'border-exp-border bg-exp-dark/40 text-exp-text-dim'
+        }`}>
+          <p className="font-mono text-[10px] uppercase tracking-[0.2em]">
+            {readiness.status || 'unknown'}
+          </p>
+          <p className="mt-1 font-mono text-[11px] uppercase tracking-[0.16em]">
+            {entry.confidence || 'low'} confidence
+          </p>
+        </div>
+      </div>
+
+      <div className="mt-3 grid gap-3 md:grid-cols-4">
+        <Metric label="Trend" value={entry.evidenceSummary?.trend || 'unknown'} tone={trendTone(entry.evidenceSummary?.trend)} />
+        <Metric label="Health" value={entry.evidenceSummary?.latestHealth ?? 'n/a'} tone={tone} />
+        <Metric label="Unproven" value={assumptions.length} tone={assumptions.length ? 'gold' : 'green'} />
+        <Metric label="Citations" value={citations.length} tone="blue" />
+      </div>
+
+      <div className="mt-3 grid gap-3 lg:grid-cols-[minmax(0,1fr)_minmax(320px,0.85fr)]">
+        <div className="rounded border border-exp-border/60 bg-exp-dark/35 px-3 py-2">
+          <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-exp-text-dim">
+            Latest learning
+          </p>
+          <p className="mt-2 font-mono text-xs leading-relaxed text-exp-text">
+            {entry.latestLearning || 'No learning recorded.'}
+          </p>
+          <p className="mt-2 font-mono text-[10px] uppercase tracking-[0.24em] text-exp-text-dim">
+            Current belief
+          </p>
+          <p className="mt-1 font-mono text-xs leading-relaxed text-exp-text-dim">
+            {entry.currentBelief || entry.beliefAfter || 'No belief recorded.'}
+          </p>
+        </div>
+
+        <div className="rounded border border-exp-border/60 bg-exp-dark/35 px-3 py-2">
+          <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-exp-text-dim">
+            Next experiment
+          </p>
+          <p className="mt-1 font-mono text-xs leading-relaxed text-exp-text">
+            {entry.nextAction?.title || 'No next action recorded.'}
+          </p>
+          {entry.nextAction?.command && (
+            <pre className="mt-2 overflow-x-auto rounded border border-exp-border/60 bg-exp-dark/50 p-2 font-mono text-[10px] text-compass-bright">
+              {entry.nextAction.command}
+            </pre>
+          )}
+        </div>
+      </div>
+
+      <div className="mt-3 grid gap-3 lg:grid-cols-3">
+        <div className="rounded border border-blueprint/25 bg-blueprint/5 px-3 py-2">
+          <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-blueprint">
+            Latest decision
+          </p>
+          <p className="mt-1 font-mono text-[11px] leading-relaxed text-exp-text-dim">
+            {decision ? `${decision.decisionType}: ${decision.reason}` : 'No decision recorded yet.'}
+          </p>
+        </div>
+        <div className="rounded border border-compass/25 bg-compass/5 px-3 py-2">
+          <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-compass">
+            Unresolved assumptions
+          </p>
+          <div className="mt-2 space-y-1">
+            {assumptions.length > 0 ? assumptions.slice(0, 4).map((assumption) => (
+              <p key={`${assumption.source}-${assumption.key}`} className="font-mono text-[11px] leading-relaxed text-exp-text-dim">
+                {assumption.severity} / {assumption.title || assumption.key}
+              </p>
+            )) : (
+              <p className="font-mono text-[11px] text-exp-text-dim">No unresolved assumptions recorded.</p>
+            )}
+          </div>
+        </div>
+        <div className="rounded border border-oxide-green/25 bg-oxide-green/5 px-3 py-2">
+          <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-oxide-green">
+            Notebook commands
+          </p>
+          <pre className="mt-2 overflow-x-auto font-mono text-[10px] leading-relaxed text-exp-text-dim">
+            {`npm run lab:entry -- --id=${entry.scenarioId}\nnpm run lab:decision -- --id=${entry.scenarioId} --decision=playtest --why="..."`}
+          </pre>
+        </div>
+      </div>
+
+      {(history?.latestDecision || citations.length > 0) && (
+        <div className="mt-3 rounded border border-exp-border/60 bg-exp-dark/35 px-3 py-2">
+          <div className="grid gap-3 lg:grid-cols-2">
+            <div>
+              <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-exp-text-dim">
+                Index status
+              </p>
+              <p className="mt-1 font-mono text-[11px] leading-relaxed text-exp-text-dim">
+                {history?.latestGeneratedAt || entry.generatedAt || 'unknown'} / unresolved {history?.unresolvedCount ?? assumptions.length}
+              </p>
+            </div>
+            <div>
+              <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-exp-text-dim">
+                Citations
+              </p>
+              <div className="mt-1 space-y-1">
+                {citations.slice(0, 3).map((citation) => (
+                  <p key={`${citation.id}-${citation.sourcePath}`} className="break-all font-mono text-[11px] leading-relaxed text-exp-text-dim">
+                    {citation.type || 'evidence'} / {citation.sourcePath || 'unknown'}
+                  </p>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </section>
+  );
+}
+
 function setupTone(level) {
   if (level === 'exact') return 'green';
   if (level === 'partial') return 'gold';
@@ -1742,6 +1924,8 @@ export default function SimulatorPage() {
   const [memoryReport, setMemoryReport] = useState(null);
   const [timeMachineIndex, setTimeMachineIndex] = useState(null);
   const [timeMachineReport, setTimeMachineReport] = useState(null);
+  const [labNotebookIndex, setLabNotebookIndex] = useState(null);
+  const [labNotebookEntry, setLabNotebookEntry] = useState(null);
   const [oracleReport, setOracleReport] = useState(null);
   const [oracleHistory, setOracleHistory] = useState([]);
   const [loadState, setLoadState] = useState('loading');
@@ -1842,6 +2026,24 @@ export default function SimulatorPage() {
 
   useEffect(() => {
     let cancelled = false;
+    fetch('/simulator/lab-notebook/index.json', { cache: 'no-store' })
+      .then((response) => {
+        if (!response.ok) throw new Error('No Lab Notebook index found.');
+        return response.json();
+      })
+      .then((json) => {
+        if (!cancelled) setLabNotebookIndex(json);
+      })
+      .catch(() => {
+        if (!cancelled) setLabNotebookIndex(null);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
     fetch('/simulator/oracle/latest-oracle.json', { cache: 'no-store' })
       .then((response) => {
         if (!response.ok) throw new Error('No Oracle report found.');
@@ -1907,6 +2109,28 @@ export default function SimulatorPage() {
       })
       .catch(() => {
         if (!cancelled) setTimeMachineReport(null);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [currentScenarioId]);
+
+  useEffect(() => {
+    if (!currentScenarioId || currentScenarioId === 'none') {
+      setLabNotebookEntry(null);
+      return undefined;
+    }
+    let cancelled = false;
+    fetch(`/simulator/lab-notebook/${currentScenarioId}/latest-entry.json`, { cache: 'no-store' })
+      .then((response) => {
+        if (!response.ok) throw new Error('No Lab Notebook entry found.');
+        return response.json();
+      })
+      .then((json) => {
+        if (!cancelled) setLabNotebookEntry(json);
+      })
+      .catch(() => {
+        if (!cancelled) setLabNotebookEntry(null);
       });
     return () => {
       cancelled = true;
@@ -2019,6 +2243,7 @@ export default function SimulatorPage() {
       <AutopilotPanel report={autopilotReport} />
       <PlayableDesignMemoryPanel memory={memoryReport} currentScenarioId={currentScenarioId} />
       <ScenarioTimeMachinePanel report={timeMachineReport} index={timeMachineIndex} currentScenarioId={currentScenarioId} />
+      <ScenarioLabNotebookPanel entry={labNotebookEntry} index={labNotebookIndex} currentScenarioId={currentScenarioId} />
       <ScenarioBrowser scenarios={SCENARIO_CATALOG} verdict={report.scenarioVerdict} oracle={oracle} />
       <SmallestExperimentQueue experiments={funDebugger.smallestExperimentQueue || funDebugger.topExperiments || []} />
       <TargetScorecard targetEvaluation={targetEvaluation} scenarioGoalEvaluation={scenarioGoalEvaluation} />
