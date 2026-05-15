@@ -51,6 +51,11 @@
     "setup:variant": "node scripts/scenario-setup-forge.mjs variant",
     "setup:backlog": "node scripts/scenario-setup-forge.mjs backlog",
     "setup:test": "node --test scripts/setup-forge-utils.test.mjs",
+    "autopilot": "node scripts/scenario-autopilot.mjs",
+    "autopilot:dry": "node scripts/scenario-autopilot.mjs dry",
+    "autopilot:scenario": "node scripts/scenario-autopilot.mjs scenario",
+    "autopilot:latest": "node scripts/scenario-autopilot.mjs latest",
+    "autopilot:test": "node --test scripts/scenario-autopilot-utils.test.mjs",
     "test:e2e:anvil": "node scripts/run-anvil-e2e.mjs"
   },
   "repository": {

@@ -45,6 +45,7 @@ npm run sim:autotune
 npm run scenario:create -- "4-player escape pressure with two exhausted players and one artifact"
 npm run scenario:run -- --id=escape-pressure-4p
 npm run setup:explain -- --id=escape-pressure-4p
+npm run autopilot:dry -- "4-player escape should feel desperate but cooperative"
 npm run oracle:latest
 npm run oracle:scenario -- --id=escape-pressure-4p
 ```
@@ -100,6 +101,7 @@ The simulator now emits raw run traces plus aggregate learning data:
 - Scenario Designer definitions in `simulator.scenarios.json`.
 - Plain-English scenario creation, validation, duplication, archiving, pack running, import/export, and report verdicts.
 - Scenario Setup Forge for applying authored starting stats, items, artifacts, reveals, terrain, campsites, pressure, and prelude turns before measured turns.
+- Scenario Autopilot for turning a design intent into a scenario, setup validation, Oracle diagnosis, candidate patch, rerun comparison, and design memo.
 - Scenario run history in `reports/simulator/scenarios/<scenario-id>/history.json`.
 - Gameplay Oracle verdicts in `reports/simulator/oracle/latest-oracle.json` and `/simulator`.
 - Opinionated warnings in `/simulator`.
@@ -165,6 +167,21 @@ Scenario outputs:
 - `app/public/simulator/scenarios/<scenario-id>/latest-report.json`
 
 See [scenario-setup-forge.md](scenario-setup-forge.md) for setup authoring, support levels, and the CLI workflow.
+
+## Scenario Autopilot
+
+Scenario Autopilot coordinates the scenario, setup, simulator, Oracle, and safe balance surfaces:
+
+```bash
+npm run autopilot:dry -- "solo artifact hunting should feel risky but rewarding"
+npm run autopilot -- --id=solo-artifact-hunt --mode=single-pass
+npm run autopilot -- --id=escape-pressure-4p --mode=iterate --iterations=2 --apply
+npm run autopilot:latest -- --markdown
+```
+
+Dry runs do not execute the simulator. Iteration only edits `simulator.scenarios.json` and `simulator.balance.json`, and rejected candidate changes are rolled back from snapshots.
+
+See [scenario-autopilot.md](scenario-autopilot.md) for the full workflow and safety model.
 
 ## Gameplay Oracle
 

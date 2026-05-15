@@ -497,6 +497,142 @@ function AutoTunePanel({ report }) {
   );
 }
 
+function AutopilotPanel({ report }) {
+  if (!report) {
+    return (
+      <section className="mt-4 rounded border border-exp-border bg-exp-panel p-4">
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div>
+            <h2 className="font-mono text-xs uppercase tracking-[0.3em] text-exp-text-dim">
+              Scenario Autopilot
+            </h2>
+            <p className="mt-1 font-mono text-xs leading-relaxed text-exp-text-dim">
+              Turns a plain-English gameplay intent into a scenario, setup plan, Oracle diagnosis, candidate change, rerun comparison, and design memo.
+            </p>
+          </div>
+          <span className="rounded border border-blueprint/35 bg-blueprint/10 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.2em] text-blueprint">
+            Awaiting autopilot
+          </span>
+        </div>
+        <pre className="mt-3 overflow-x-auto rounded border border-exp-border bg-exp-dark/60 p-3 font-mono text-[11px] text-compass-bright">
+          {`npm run autopilot:dry -- "4-player escape should feel desperate but cooperative"\nnpm run autopilot -- --id=escape-pressure-4p --mode=single-pass`}
+        </pre>
+      </section>
+    );
+  }
+
+  const comparison = report.comparison;
+  const selected = report.selectedChange;
+  const baseline = report.baselineRun;
+  const rerun = report.rerun;
+  const candidateChanges = report.candidateChanges || [];
+  const memoLines = String(report.designMemo || '').split('\n').filter((line) => line && !line.startsWith('#')).slice(0, 8);
+
+  return (
+    <section className="mt-4 rounded border border-exp-border bg-exp-panel p-4">
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <h2 className="font-mono text-xs uppercase tracking-[0.3em] text-exp-text-dim">
+            Scenario Autopilot
+          </h2>
+          <p className="mt-1 font-mono text-xs leading-relaxed text-exp-text-dim">
+            Latest orchestration pass across Scenario Designer, Setup Forge, exact-engine simulator, and Gameplay Oracle.
+          </p>
+        </div>
+        <div className={`rounded border px-3 py-2 text-right ${
+          ['target-met', 'improved', 'healthy'].includes(report.finalVerdict)
+            ? 'border-oxide-green/35 bg-oxide-green/10 text-oxide-green'
+            : report.finalVerdict === 'blocked' || report.finalVerdict === 'rejected-regression'
+              ? 'border-signal-red/35 bg-signal-red/10 text-signal-red'
+              : 'border-compass/35 bg-compass/10 text-compass-bright'
+        }`}>
+          <p className="font-mono text-[10px] uppercase tracking-[0.2em]">{report.finalVerdict}</p>
+          <p className="mt-1 font-mono text-[11px] uppercase tracking-[0.16em]">{report.mode}</p>
+        </div>
+      </div>
+
+      <div className="mt-3 rounded border border-compass/25 bg-compass/5 px-3 py-2">
+        <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-compass">
+          Intent
+        </p>
+        <p className="mt-1 font-mono text-xs leading-relaxed text-exp-text">
+          {report.intent?.text || 'No intent recorded.'}
+        </p>
+      </div>
+
+      <div className="mt-3 grid gap-3 md:grid-cols-4">
+        <Metric label="Baseline" value={baseline ? baseline.weightedScore : 'plan'} tone="blue" />
+        <Metric label="Final" value={rerun ? rerun.weightedScore : report.finalOracle?.weightedScore ?? baseline?.weightedScore ?? 'plan'} tone="green" />
+        <Metric label="Confidence" value={`${Math.round(((report.finalOracle?.confidence ?? report.baselineOracle?.confidence) || 0) * 100)}%`} tone="gold" />
+        <Metric label="Setup" value={baseline?.setupLevel || report.setupForge?.requiredSetupLevel || 'metadata'} tone="neutral" />
+      </div>
+
+      {comparison && (
+        <div className="mt-3 grid gap-2 md:grid-cols-5">
+          <Metric label="Score Delta" value={formatDelta(comparison.delta?.weightedScore)} tone={comparison.delta?.weightedScore >= 0 ? 'green' : 'red'} />
+          <Metric label="Life Delta" value={formatDelta(comparison.delta?.lifeScore)} tone={comparison.delta?.lifeScore >= 0 ? 'green' : 'red'} />
+          <Metric label="Flat Delta" value={formatDelta(comparison.delta?.flatTurnRate)} tone={comparison.delta?.flatTurnRate <= 0 ? 'green' : 'red'} />
+          <Metric label="Invalid" value={formatDelta(comparison.delta?.invalidAttempts)} tone={comparison.delta?.invalidAttempts <= 0 ? 'green' : 'red'} />
+          <Metric label="Accepted" value={comparison.accepted ? 'yes' : 'no'} tone={comparison.accepted ? 'green' : 'red'} />
+        </div>
+      )}
+
+      <div className="mt-3 grid gap-3 lg:grid-cols-[minmax(0,0.9fr)_minmax(320px,1fr)]">
+        <div className="rounded border border-exp-border/60 bg-exp-dark/35 px-3 py-2">
+          <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-exp-text-dim">
+            Selected change
+          </p>
+          <p className="mt-1 font-mono text-xs leading-relaxed text-exp-text">
+            {selected?.title || 'No change selected yet.'}
+          </p>
+          <p className="mt-1 font-mono text-[11px] leading-relaxed text-exp-text-dim">
+            {selected?.hypothesis || 'Run a baseline or enable iteration to select a grounded change.'}
+          </p>
+          {selected?.patch && (
+            <pre className="mt-2 overflow-x-auto rounded border border-exp-border/60 bg-exp-dark/50 p-2 font-mono text-[10px] text-blueprint">
+              {JSON.stringify(selected.patch, null, 2)}
+            </pre>
+          )}
+        </div>
+        <div className="rounded border border-exp-border/60 bg-exp-dark/35 px-3 py-2">
+          <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-exp-text-dim">
+            Design memo
+          </p>
+          <div className="mt-2 space-y-1">
+            {memoLines.length > 0 ? memoLines.map((line) => (
+              <p key={line} className="font-mono text-[11px] leading-relaxed text-exp-text-dim">
+                {line.replace(/^[-*]\s*/, '')}
+              </p>
+            )) : (
+              <p className="font-mono text-xs text-exp-text-dim">No memo has been generated yet.</p>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {candidateChanges.length > 0 && (
+        <div className="mt-3 grid gap-2 lg:grid-cols-2">
+          {candidateChanges.slice(0, 4).map((candidate) => (
+            <div key={candidate.id} className="rounded border border-exp-border/60 bg-exp-dark/35 px-3 py-2">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <p className="font-mono text-xs uppercase tracking-[0.18em] text-compass-bright">
+                  {candidate.title}
+                </p>
+                <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-exp-text-dim">
+                  {candidate.changeType}
+                </p>
+              </div>
+              <p className="mt-1 font-mono text-[11px] leading-relaxed text-exp-text-dim">
+                {candidate.hypothesis}
+              </p>
+            </div>
+          ))}
+        </div>
+      )}
+    </section>
+  );
+}
+
 function setupTone(level) {
   if (level === 'exact') return 'green';
   if (level === 'partial') return 'gold';
@@ -1243,6 +1379,7 @@ function TurnCard({ turn }) {
 export default function SimulatorPage() {
   const [report, setReport] = useState(SAMPLE_REPORT);
   const [autoTuneReport, setAutoTuneReport] = useState(null);
+  const [autopilotReport, setAutopilotReport] = useState(null);
   const [oracleReport, setOracleReport] = useState(null);
   const [oracleHistory, setOracleHistory] = useState([]);
   const [loadState, setLoadState] = useState('loading');
@@ -1281,6 +1418,24 @@ export default function SimulatorPage() {
       })
       .catch(() => {
         if (!cancelled) setAutoTuneReport(null);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch('/simulator/autopilot/latest-report.json', { cache: 'no-store' })
+      .then((response) => {
+        if (!response.ok) throw new Error('No Autopilot report found.');
+        return response.json();
+      })
+      .then((json) => {
+        if (!cancelled) setAutopilotReport(json);
+      })
+      .catch(() => {
+        if (!cancelled) setAutopilotReport(null);
       });
     return () => {
       cancelled = true;
@@ -1440,6 +1595,7 @@ export default function SimulatorPage() {
       <SetupForgePanel report={report} />
       <OraclePanel oracle={oracle} history={oracleHistory} />
       <AutoTunePanel report={autoTuneReport} />
+      <AutopilotPanel report={autopilotReport} />
       <ScenarioBrowser scenarios={SCENARIO_CATALOG} verdict={report.scenarioVerdict} oracle={oracle} />
       <SmallestExperimentQueue experiments={funDebugger.smallestExperimentQueue || funDebugger.topExperiments || []} />
       <TargetScorecard targetEvaluation={targetEvaluation} scenarioGoalEvaluation={scenarioGoalEvaluation} />

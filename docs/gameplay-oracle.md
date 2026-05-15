@@ -29,6 +29,8 @@ npm run oracle:scenario -- --id=escape-pressure-4p --run
 
 When a scenario has a `setupForge` block, `--run` applies the supported setup fields before measured turns begin and embeds setup evidence in the Oracle report.
 
+Scenario Autopilot uses the Oracle as its acceptance judge. It reads the weakest dimension, setup level, confidence, gate failures, and smallest next experiment, then converts those into a candidate scenario or balance patch.
+
 Useful options:
 
 - `--gate`: exits non-zero if Oracle regression gates fail, including unmet required setup levels.
@@ -90,3 +92,12 @@ The Oracle scores ten experience dimensions from `0-100`:
 The Oracle is a design assistant, not perfect truth. Its confidence drops when batch size is low, only one strategy was run, scenario setup assumptions are not engine-enforced, or telemetry is missing. Unsupported assumptions are reported explicitly rather than treated as proven facts.
 
 Setup confidence is intentionally conservative: exact Setup Forge application can raise confidence, while skipped critical fields or an unmet required setup level lower confidence and can turn an otherwise useful readout into a blocked verdict.
+
+For an end-to-end loop, use:
+
+```bash
+npm run autopilot:dry -- "4-player escape should feel desperate but cooperative"
+npm run autopilot -- --id=escape-pressure-4p --mode=single-pass
+```
+
+See [scenario-autopilot.md](scenario-autopilot.md) for patch safety, rerun comparison, and memo outputs.
