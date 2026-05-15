@@ -76,6 +76,13 @@
     "lab:latest": "node scripts/scenario-lab-notebook.mjs latest",
     "lab:doctor": "node scripts/scenario-lab-notebook.mjs doctor",
     "lab:test": "node --test scripts/scenario-lab-notebook-utils.test.mjs",
+    "tutor": "node scripts/scenario-self-driving-tutor.mjs",
+    "tutor:build": "node scripts/scenario-self-driving-tutor.mjs build",
+    "tutor:scenario": "node scripts/scenario-self-driving-tutor.mjs scenario",
+    "tutor:next": "node scripts/scenario-self-driving-tutor.mjs next",
+    "tutor:complete": "node scripts/scenario-self-driving-tutor.mjs complete",
+    "tutor:doctor": "node scripts/scenario-self-driving-tutor.mjs doctor",
+    "tutor:test": "node --test scripts/scenario-self-driving-tutor-utils.test.mjs",
     "test:e2e:anvil": "node scripts/run-anvil-e2e.mjs"
   },
   "repository": {

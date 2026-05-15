@@ -1174,6 +1174,187 @@ function ScenarioLabNotebookPanel({ entry, index, currentScenarioId }) {
   );
 }
 
+function tutorTone(status) {
+  if (status === 'graduated' || status === 'passed') return 'green';
+  if (status === 'blocked' || status === 'regressed' || status === 'failed') return 'red';
+  if (status === 'needs-evidence') return 'blue';
+  if (status === 'in-progress') return 'gold';
+  return 'neutral';
+}
+
+function ScenarioSelfDrivingTutorPanel({ lesson, curriculum, currentScenarioId }) {
+  if (!lesson) {
+    const top = curriculum?.highestPriorityLesson || curriculum?.lessons?.[0];
+    return (
+      <section className="mt-4 rounded border border-exp-border bg-exp-panel p-4">
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div>
+            <h2 className="font-mono text-xs uppercase tracking-[0.3em] text-exp-text-dim">
+              Scenario Self-Driving Tutor
+            </h2>
+            <p className="mt-1 font-mono text-xs leading-relaxed text-exp-text-dim">
+              Builds the next gameplay lesson: what to work on, why it matters, the command chain, and what evidence proves it worked.
+            </p>
+          </div>
+          <span className="rounded border border-blueprint/35 bg-blueprint/10 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.2em] text-blueprint">
+            Awaiting lesson
+          </span>
+        </div>
+        <pre className="mt-3 overflow-x-auto rounded border border-exp-border bg-exp-dark/60 p-3 font-mono text-[11px] text-compass-bright">
+          {`npm run tutor:scenario -- --id=${currentScenarioId || 'escape-pressure-4p'}\nnpm run tutor:next -- --markdown`}
+        </pre>
+        {top && (
+          <div className="mt-3 rounded border border-exp-border/60 bg-exp-dark/35 px-3 py-2">
+            <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-exp-text-dim">
+              Top project lesson
+            </p>
+            <p className="mt-1 font-mono text-xs leading-relaxed text-exp-text">
+              {top.scenarioId}: {top.primaryWeakness?.title || top.category}
+            </p>
+          </div>
+        )}
+      </section>
+    );
+  }
+
+  const tone = tutorTone(lesson.status);
+  const criteria = lesson.successCriteria || [];
+  const blockers = lesson.blockers || [];
+  const steps = lesson.steps || [];
+  const citations = lesson.citations || [];
+  const topProject = curriculum?.highestPriorityLesson;
+
+  return (
+    <section className="mt-4 rounded border border-exp-border bg-exp-panel p-4">
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <h2 className="font-mono text-xs uppercase tracking-[0.3em] text-exp-text-dim">
+            Scenario Self-Driving Tutor
+          </h2>
+          <p className="mt-1 font-mono text-xs leading-relaxed text-exp-text-dim">
+            Current lesson for {lesson.scenarioId}; the tutor ranks the next useful learning task from Memory, Time Machine, and Lab Notebook evidence.
+          </p>
+        </div>
+        <div className={`rounded border px-3 py-2 text-right ${
+          tone === 'green'
+            ? 'border-oxide-green/35 bg-oxide-green/10 text-oxide-green'
+            : tone === 'red'
+              ? 'border-signal-red/35 bg-signal-red/10 text-signal-red'
+              : tone === 'blue'
+                ? 'border-blueprint/35 bg-blueprint/10 text-blueprint'
+                : tone === 'gold'
+                  ? 'border-compass/35 bg-compass/10 text-compass-bright'
+                  : 'border-exp-border bg-exp-dark/40 text-exp-text-dim'
+        }`}>
+          <p className="font-mono text-[10px] uppercase tracking-[0.2em]">
+            {lesson.status || 'ready'}
+          </p>
+          <p className="mt-1 font-mono text-[11px] uppercase tracking-[0.16em]">
+            {lesson.priority || 'medium'} priority
+          </p>
+        </div>
+      </div>
+
+      <div className="mt-3 grid gap-3 md:grid-cols-4">
+        <Metric label="Category" value={lesson.category || 'lesson'} tone="blue" />
+        <Metric label="Health" value={lesson.evidence?.latestHealth ?? 'n/a'} tone={tone} />
+        <Metric label="Criteria" value={criteria.length} tone="green" />
+        <Metric label="Blockers" value={blockers.length} tone={blockers.length ? 'red' : 'green'} />
+      </div>
+
+      <div className="mt-3 grid gap-3 lg:grid-cols-[minmax(0,1fr)_minmax(320px,0.85fr)]">
+        <div className="rounded border border-exp-border/60 bg-exp-dark/35 px-3 py-2">
+          <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-exp-text-dim">
+            Primary weakness
+          </p>
+          <p className="mt-2 font-mono text-xs leading-relaxed text-exp-text">
+            {lesson.primaryWeakness?.title || 'No weakness detected.'}
+          </p>
+          <p className="mt-1 font-mono text-[11px] leading-relaxed text-exp-text-dim">
+            {lesson.whyItMatters || lesson.primaryWeakness?.why || 'No rationale recorded.'}
+          </p>
+          {topProject && topProject.scenarioId !== lesson.scenarioId && (
+            <p className="mt-2 font-mono text-[11px] leading-relaxed text-compass-bright">
+              Project top priority: {topProject.scenarioId} / {topProject.primaryWeakness?.title || topProject.category}
+            </p>
+          )}
+        </div>
+
+        <div className="rounded border border-exp-border/60 bg-exp-dark/35 px-3 py-2">
+          <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-exp-text-dim">
+            Primary command
+          </p>
+          <pre className="mt-2 overflow-x-auto rounded border border-exp-border/60 bg-exp-dark/50 p-2 font-mono text-[10px] text-compass-bright">
+            {lesson.commands?.primary || `npm run tutor:scenario -- --id=${lesson.scenarioId}`}
+          </pre>
+          <p className="mt-2 font-mono text-[10px] uppercase tracking-[0.24em] text-exp-text-dim">
+            Graduation
+          </p>
+          <p className="mt-1 font-mono text-[11px] leading-relaxed text-exp-text-dim">
+            {lesson.graduation?.status || 'ready'} / {lesson.graduation?.reason || 'No graduation check recorded.'}
+          </p>
+        </div>
+      </div>
+
+      <div className="mt-3 grid gap-3 lg:grid-cols-3">
+        <div className="rounded border border-blueprint/25 bg-blueprint/5 px-3 py-2">
+          <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-blueprint">
+            Lesson steps
+          </p>
+          <div className="mt-2 space-y-1">
+            {steps.slice(0, 4).map((step) => (
+              <p key={`${step.order}-${step.title}`} className="font-mono text-[11px] leading-relaxed text-exp-text-dim">
+                {step.order}. {step.title}
+              </p>
+            ))}
+          </div>
+        </div>
+        <div className="rounded border border-oxide-green/25 bg-oxide-green/5 px-3 py-2">
+          <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-oxide-green">
+            Success criteria
+          </p>
+          <div className="mt-2 space-y-1">
+            {criteria.slice(0, 4).map((criterion) => (
+              <p key={`${criterion.metric}-${criterion.label}`} className="font-mono text-[11px] leading-relaxed text-exp-text-dim">
+                {criterion.label}
+              </p>
+            ))}
+          </div>
+        </div>
+        <div className="rounded border border-compass/25 bg-compass/5 px-3 py-2">
+          <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-compass">
+            Blockers
+          </p>
+          <div className="mt-2 space-y-1">
+            {blockers.length > 0 ? blockers.slice(0, 4).map((blocker) => (
+              <p key={`${blocker.type || blocker.source}-${blocker.field || blocker.key || blocker.title}`} className="font-mono text-[11px] leading-relaxed text-exp-text-dim">
+                {blocker.message || blocker.title || blocker.field || blocker.key}
+              </p>
+            )) : (
+              <p className="font-mono text-[11px] text-exp-text-dim">No blockers recorded.</p>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {citations.length > 0 && (
+        <div className="mt-3 rounded border border-exp-border/60 bg-exp-dark/35 px-3 py-2">
+          <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-exp-text-dim">
+            Evidence citations
+          </p>
+          <div className="mt-2 grid gap-2 lg:grid-cols-2">
+            {citations.slice(0, 4).map((citation) => (
+              <p key={`${citation.id}-${citation.sourcePath}`} className="break-all font-mono text-[11px] leading-relaxed text-exp-text-dim">
+                {citation.type || 'evidence'} / {citation.sourcePath || 'unknown'}
+              </p>
+            ))}
+          </div>
+        </div>
+      )}
+    </section>
+  );
+}
+
 function setupTone(level) {
   if (level === 'exact') return 'green';
   if (level === 'partial') return 'gold';
@@ -1926,6 +2107,8 @@ export default function SimulatorPage() {
   const [timeMachineReport, setTimeMachineReport] = useState(null);
   const [labNotebookIndex, setLabNotebookIndex] = useState(null);
   const [labNotebookEntry, setLabNotebookEntry] = useState(null);
+  const [tutorCurriculum, setTutorCurriculum] = useState(null);
+  const [tutorLesson, setTutorLesson] = useState(null);
   const [oracleReport, setOracleReport] = useState(null);
   const [oracleHistory, setOracleHistory] = useState([]);
   const [loadState, setLoadState] = useState('loading');
@@ -2044,6 +2227,24 @@ export default function SimulatorPage() {
 
   useEffect(() => {
     let cancelled = false;
+    fetch('/simulator/tutor/latest-curriculum.json', { cache: 'no-store' })
+      .then((response) => {
+        if (!response.ok) throw new Error('No Tutor curriculum found.');
+        return response.json();
+      })
+      .then((json) => {
+        if (!cancelled) setTutorCurriculum(json);
+      })
+      .catch(() => {
+        if (!cancelled) setTutorCurriculum(null);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
     fetch('/simulator/oracle/latest-oracle.json', { cache: 'no-store' })
       .then((response) => {
         if (!response.ok) throw new Error('No Oracle report found.');
@@ -2131,6 +2332,28 @@ export default function SimulatorPage() {
       })
       .catch(() => {
         if (!cancelled) setLabNotebookEntry(null);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [currentScenarioId]);
+
+  useEffect(() => {
+    if (!currentScenarioId || currentScenarioId === 'none') {
+      setTutorLesson(null);
+      return undefined;
+    }
+    let cancelled = false;
+    fetch(`/simulator/tutor/${currentScenarioId}/latest-lesson.json`, { cache: 'no-store' })
+      .then((response) => {
+        if (!response.ok) throw new Error('No Tutor lesson found.');
+        return response.json();
+      })
+      .then((json) => {
+        if (!cancelled) setTutorLesson(json);
+      })
+      .catch(() => {
+        if (!cancelled) setTutorLesson(null);
       });
     return () => {
       cancelled = true;
@@ -2244,6 +2467,7 @@ export default function SimulatorPage() {
       <PlayableDesignMemoryPanel memory={memoryReport} currentScenarioId={currentScenarioId} />
       <ScenarioTimeMachinePanel report={timeMachineReport} index={timeMachineIndex} currentScenarioId={currentScenarioId} />
       <ScenarioLabNotebookPanel entry={labNotebookEntry} index={labNotebookIndex} currentScenarioId={currentScenarioId} />
+      <ScenarioSelfDrivingTutorPanel lesson={tutorLesson} curriculum={tutorCurriculum} currentScenarioId={currentScenarioId} />
       <ScenarioBrowser scenarios={SCENARIO_CATALOG} verdict={report.scenarioVerdict} oracle={oracle} />
       <SmallestExperimentQueue experiments={funDebugger.smallestExperimentQueue || funDebugger.topExperiments || []} />
       <TargetScorecard targetEvaluation={targetEvaluation} scenarioGoalEvaluation={scenarioGoalEvaluation} />

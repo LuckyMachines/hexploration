@@ -55,5 +55,6 @@ Generated outputs are ignored by Git.
 2. Run `npm run memory:build`.
 3. Run `npm run time-machine:scenario -- --id=<scenario-id>`.
 4. Run `npm run lab:entry -- --id=<scenario-id>` to record the design learning.
-5. Inspect the Scenario Time Machine and Scenario Lab Notebook panels in `/simulator`.
-6. Use the top recommendation as the next smallest experiment.
+5. Run `npm run tutor:scenario -- --id=<scenario-id>` to convert the evidence into an ordered lesson.
+6. Inspect the Scenario Time Machine, Scenario Lab Notebook, and Scenario Self-Driving Tutor panels in `/simulator`.
+7. Use the top recommendation as the next smallest experiment.

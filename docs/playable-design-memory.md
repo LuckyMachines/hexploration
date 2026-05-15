@@ -85,3 +85,14 @@ npm run lab:latest -- --id=escape-pressure-4p --markdown
 ```
 
 Use the notebook when the question is "what do we believe now, what decision did we make, and what should we run next?"
+
+## Scenario Self-Driving Tutor
+
+Scenario Self-Driving Tutor consumes memory, Time Machine, and Lab Notebook evidence to rank the next gameplay learning task:
+
+```bash
+npm run tutor:build
+npm run tutor:next -- --markdown
+```
+
+Use the tutor when the question is "what should we work on next, in what order, and what evidence proves improvement?"

@@ -59,6 +59,17 @@ npm run lab:doctor -- --markdown
 
 The `/simulator` workbench reads the public copies and shows the latest notebook entry for the current scenario.
 
+## Scenario Self-Driving Tutor
+
+The tutor reads Lab Notebook beliefs and unresolved assumptions, then turns them into ordered gameplay lessons:
+
+```sh
+npm run tutor:scenario -- --id=escape-pressure-4p
+npm run tutor:next -- --markdown
+```
+
+Use the tutor after a notebook entry when you want the next command chain and measurable success criteria.
+
 ## Readiness Labels
 
 - `ready`: enough history, strong health, passing evidence, and no severe blockers.

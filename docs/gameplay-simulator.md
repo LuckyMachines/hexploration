@@ -108,6 +108,7 @@ The simulator now emits raw run traces plus aggregate learning data:
 - Playable Design Memory for rolling scenario, simulator, setup, Oracle, auto-tune, and Autopilot evidence into queryable project memory.
 - Scenario Time Machine for comparing each scenario's evidence over time and finding best, latest, last-good, and regressed versions.
 - Scenario Lab Notebook for recording scenario learning, current belief, decisions, unresolved assumptions, readiness, and next experiments.
+- Scenario Self-Driving Tutor for ranking the next gameplay lesson, command chain, and success criteria.
 - Scenario run history in `reports/simulator/scenarios/<scenario-id>/history.json`.
 - Gameplay Oracle verdicts in `reports/simulator/oracle/latest-oracle.json` and `/simulator`.
 - Opinionated warnings in `/simulator`.
@@ -233,6 +234,22 @@ npm run lab:doctor
 It writes `reports/simulator/lab-notebook/<scenario-id>/latest-entry.json` and `app/public/simulator/lab-notebook/<scenario-id>/latest-entry.json`, which the `/simulator` workbench displays in the Scenario Lab Notebook panel.
 
 See [scenario-lab-notebook.md](scenario-lab-notebook.md) for entry types, decisions, readiness labels, and output paths.
+
+## Scenario Self-Driving Tutor
+
+Scenario Self-Driving Tutor turns evidence into an ordered gameplay curriculum:
+
+```bash
+npm run tutor:build
+npm run tutor:next -- --markdown
+npm run tutor:scenario -- --id=escape-pressure-4p
+npm run tutor:complete -- --id=escape-pressure-4p --lesson=<lesson-id> --status=passed --why="Evidence improved."
+npm run tutor:doctor
+```
+
+It writes `reports/simulator/tutor/latest-curriculum.json` and `app/public/simulator/tutor/latest-curriculum.json`, plus per-scenario lesson reports that the `/simulator` workbench displays in the Scenario Self-Driving Tutor panel.
+
+See [scenario-self-driving-tutor.md](scenario-self-driving-tutor.md) for lesson statuses, success criteria, completion records, and output paths.
 
 ## Gameplay Oracle
 
