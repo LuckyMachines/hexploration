@@ -50,6 +50,7 @@ npm run oracle:latest
 npm run oracle:scenario -- --id=escape-pressure-4p
 npm run memory:build
 npm run memory:query -- "what do we know about escape pressure?"
+npm run time-machine:scenario -- --id=escape-pressure-4p
 ```
 
 Scenario runs use the same active Anvil deployment as `npm run sim:*`; keep `npm run local:solo` running or pass `--rpc=<url>` to target another local engine.
@@ -105,6 +106,7 @@ The simulator now emits raw run traces plus aggregate learning data:
 - Scenario Setup Forge for applying authored starting stats, items, artifacts, reveals, terrain, campsites, pressure, and prelude turns before measured turns.
 - Scenario Autopilot for turning a design intent into a scenario, setup validation, Oracle diagnosis, candidate patch, rerun comparison, and design memo.
 - Playable Design Memory for rolling scenario, simulator, setup, Oracle, auto-tune, and Autopilot evidence into queryable project memory.
+- Scenario Time Machine for comparing each scenario's evidence over time and finding best, latest, last-good, and regressed versions.
 - Scenario run history in `reports/simulator/scenarios/<scenario-id>/history.json`.
 - Gameplay Oracle verdicts in `reports/simulator/oracle/latest-oracle.json` and `/simulator`.
 - Opinionated warnings in `/simulator`.
@@ -200,6 +202,21 @@ npm run memory:doctor
 It writes `reports/simulator/memory/latest-memory.json` and `app/public/simulator/memory/latest-memory.json`, which the `/simulator` workbench displays in the Playable Design Memory panel.
 
 See [playable-design-memory.md](playable-design-memory.md) for schema, outputs, and query examples.
+
+## Scenario Time Machine
+
+Scenario Time Machine turns memory evidence into a per-scenario timeline:
+
+```bash
+npm run time-machine:build
+npm run time-machine:scenario -- --id=escape-pressure-4p
+npm run time-machine:compare -- --id=solo-artifact-hunt --against=best --markdown
+npm run time-machine:doctor
+```
+
+It writes `reports/simulator/time-machine/<scenario-id>/latest-report.json` and `app/public/simulator/time-machine/<scenario-id>/latest-report.json`, which the `/simulator` workbench displays in the Scenario Time Machine panel.
+
+See [scenario-time-machine.md](scenario-time-machine.md) for trend meanings, compare modes, and output paths.
 
 ## Gameplay Oracle
 

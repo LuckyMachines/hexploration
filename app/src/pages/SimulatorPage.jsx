@@ -815,6 +815,183 @@ function PlayableDesignMemoryPanel({ memory, currentScenarioId }) {
   );
 }
 
+function trendTone(trend) {
+  if (trend === 'improving') return 'green';
+  if (trend === 'regressing' || trend === 'blocked') return 'red';
+  if (trend === 'stable') return 'blue';
+  return 'gold';
+}
+
+function ScenarioTimeMachinePanel({ report, index, currentScenarioId }) {
+  if (!report) {
+    const indexedScenario = (index?.scenarios || []).find((item) => item.scenarioId === currentScenarioId);
+    return (
+      <section className="mt-4 rounded border border-exp-border bg-exp-panel p-4">
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div>
+            <h2 className="font-mono text-xs uppercase tracking-[0.3em] text-exp-text-dim">
+              Scenario Time Machine
+            </h2>
+            <p className="mt-1 font-mono text-xs leading-relaxed text-exp-text-dim">
+              Compares each scenario's evidence over time: latest, previous, best known, last good, regressions, inferred causes, and next action.
+            </p>
+          </div>
+          <span className="rounded border border-blueprint/35 bg-blueprint/10 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.2em] text-blueprint">
+            Awaiting timeline
+          </span>
+        </div>
+        <pre className="mt-3 overflow-x-auto rounded border border-exp-border bg-exp-dark/60 p-3 font-mono text-[11px] text-compass-bright">
+          {`npm run time-machine:scenario -- --id=${currentScenarioId || 'escape-pressure-4p'}\nnpm run time-machine:compare -- --id=${currentScenarioId || 'escape-pressure-4p'} --against=last-good --markdown`}
+        </pre>
+        {indexedScenario && (
+          <div className="mt-3 rounded border border-exp-border/60 bg-exp-dark/35 px-3 py-2">
+            <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-exp-text-dim">
+              Index preview
+            </p>
+            <p className="mt-1 font-mono text-xs leading-relaxed text-exp-text">
+              {indexedScenario.scenarioId}: {indexedScenario.trend || 'unknown'} / latest health {indexedScenario.latestHealth ?? 'n/a'}
+            </p>
+          </div>
+        )}
+      </section>
+    );
+  }
+
+  const trend = report.trend || 'insufficient-evidence';
+  const timeline = report.timeline || [];
+  const causes = report.inferredCauses || [];
+  const recommendation = report.recommendation;
+  const regression = report.biggestRegression;
+  const improvement = report.biggestImprovement;
+
+  return (
+    <section className="mt-4 rounded border border-exp-border bg-exp-panel p-4">
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <h2 className="font-mono text-xs uppercase tracking-[0.3em] text-exp-text-dim">
+            Scenario Time Machine
+          </h2>
+          <p className="mt-1 font-mono text-xs leading-relaxed text-exp-text-dim">
+            Latest timeline for {report.scenarioId}; causes are inferred from nearby report evidence and should be verified with reruns.
+          </p>
+        </div>
+        <div className={`rounded border px-3 py-2 text-right ${
+          trendTone(trend) === 'green'
+            ? 'border-oxide-green/35 bg-oxide-green/10 text-oxide-green'
+            : trendTone(trend) === 'red'
+              ? 'border-signal-red/35 bg-signal-red/10 text-signal-red'
+              : trendTone(trend) === 'blue'
+                ? 'border-blueprint/35 bg-blueprint/10 text-blueprint'
+                : 'border-compass/35 bg-compass/10 text-compass-bright'
+        }`}>
+          <p className="font-mono text-[10px] uppercase tracking-[0.2em]">
+            {trend}
+          </p>
+          <p className="mt-1 font-mono text-[11px] uppercase tracking-[0.16em]">
+            {report.timelineCount || 0} points
+          </p>
+        </div>
+      </div>
+
+      <div className="mt-3 grid gap-3 md:grid-cols-4">
+        <Metric label="Latest" value={report.latest?.health?.score ?? 'n/a'} tone={trendTone(trend)} />
+        <Metric label="Best" value={report.bestKnown?.health?.score ?? 'n/a'} tone="green" />
+        <Metric label="Last Good" value={report.lastGood?.health?.score ?? 'n/a'} tone="blue" />
+        <Metric label="Stale" value={report.stale ? 'yes' : 'no'} tone={report.stale ? 'gold' : 'green'} />
+      </div>
+
+      <div className="mt-3 grid gap-3 lg:grid-cols-[minmax(0,1fr)_minmax(320px,0.9fr)]">
+        <div className="rounded border border-exp-border/60 bg-exp-dark/35 px-3 py-2">
+          <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-exp-text-dim">
+            Latest state
+          </p>
+          <div className="mt-2 grid gap-2 sm:grid-cols-4">
+            <Metric label="Source" value={report.latest?.sourceType || 'none'} tone="neutral" />
+            <Metric label="Oracle" value={report.latest?.oracle?.weightedScore ?? 'n/a'} tone="green" />
+            <Metric label="Confidence" value={report.latest?.oracle?.confidence !== undefined ? `${Math.round(report.latest.oracle.confidence * 100)}%` : 'n/a'} tone="gold" />
+            <Metric label="Setup" value={report.latest?.setup?.fidelity !== undefined ? `${Math.round(report.latest.setup.fidelity * 100)}%` : 'n/a'} tone="blue" />
+          </div>
+          <p className="mt-2 font-mono text-xs leading-relaxed text-exp-text">
+            {report.summaries?.currentState || report.latest?.summary || 'No latest state.'}
+          </p>
+        </div>
+
+        <div className="rounded border border-exp-border/60 bg-exp-dark/35 px-3 py-2">
+          <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-exp-text-dim">
+            Next action
+          </p>
+          <p className="mt-1 font-mono text-xs leading-relaxed text-exp-text">
+            {recommendation?.title || 'No recommendation generated.'}
+          </p>
+          {recommendation?.command && (
+            <pre className="mt-2 overflow-x-auto rounded border border-exp-border/60 bg-exp-dark/50 p-2 font-mono text-[10px] text-compass-bright">
+              {recommendation.command}
+            </pre>
+          )}
+        </div>
+      </div>
+
+      <div className="mt-3 grid gap-3 lg:grid-cols-3">
+        <div className="rounded border border-oxide-green/25 bg-oxide-green/5 px-3 py-2">
+          <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-oxide-green">
+            Biggest improvement
+          </p>
+          <p className="mt-1 font-mono text-[11px] leading-relaxed text-exp-text-dim">
+            {improvement?.summary || 'No improvement detected.'}
+          </p>
+        </div>
+        <div className="rounded border border-signal-red/25 bg-signal-red/5 px-3 py-2">
+          <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-signal-red">
+            Biggest regression
+          </p>
+          <p className="mt-1 font-mono text-[11px] leading-relaxed text-exp-text-dim">
+            {regression?.summary || 'No regression detected.'}
+          </p>
+        </div>
+        <div className="rounded border border-blueprint/25 bg-blueprint/5 px-3 py-2">
+          <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-blueprint">
+            Inferred causes
+          </p>
+          <div className="mt-2 space-y-1">
+            {causes.length > 0 ? causes.slice(0, 3).map((cause) => (
+              <p key={`${cause.generatedAt}-${cause.title}`} className="font-mono text-[11px] leading-relaxed text-exp-text-dim">
+                {cause.sourceType} / {cause.why}
+              </p>
+            )) : (
+              <p className="font-mono text-[11px] text-exp-text-dim">No inferred cause yet.</p>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {timeline.length > 0 && (
+        <div className="mt-3 space-y-2">
+          {timeline.slice(-6).reverse().map((point) => (
+            <details key={point.id} className="rounded border border-exp-border/60 bg-exp-dark/35 px-3 py-2">
+              <summary className="cursor-pointer list-none">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <p className="font-mono text-xs uppercase tracking-[0.18em] text-compass-bright">
+                    {point.sourceType} / health {point.health?.score ?? 'n/a'}
+                  </p>
+                  <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-exp-text-dim">
+                    {point.generatedAt}
+                  </p>
+                </div>
+              </summary>
+              <p className="mt-2 font-mono text-xs leading-relaxed text-exp-text">
+                {point.title}
+              </p>
+              <p className="mt-1 break-all font-mono text-[11px] leading-relaxed text-exp-text-dim">
+                {point.citation?.sourcePath || point.sourcePath || 'no citation'}
+              </p>
+            </details>
+          ))}
+        </div>
+      )}
+    </section>
+  );
+}
+
 function setupTone(level) {
   if (level === 'exact') return 'green';
   if (level === 'partial') return 'gold';
@@ -1563,6 +1740,8 @@ export default function SimulatorPage() {
   const [autoTuneReport, setAutoTuneReport] = useState(null);
   const [autopilotReport, setAutopilotReport] = useState(null);
   const [memoryReport, setMemoryReport] = useState(null);
+  const [timeMachineIndex, setTimeMachineIndex] = useState(null);
+  const [timeMachineReport, setTimeMachineReport] = useState(null);
   const [oracleReport, setOracleReport] = useState(null);
   const [oracleHistory, setOracleHistory] = useState([]);
   const [loadState, setLoadState] = useState('loading');
@@ -1645,6 +1824,24 @@ export default function SimulatorPage() {
 
   useEffect(() => {
     let cancelled = false;
+    fetch('/simulator/time-machine/index.json', { cache: 'no-store' })
+      .then((response) => {
+        if (!response.ok) throw new Error('No Time Machine index found.');
+        return response.json();
+      })
+      .then((json) => {
+        if (!cancelled) setTimeMachineIndex(json);
+      })
+      .catch(() => {
+        if (!cancelled) setTimeMachineIndex(null);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
     fetch('/simulator/oracle/latest-oracle.json', { cache: 'no-store' })
       .then((response) => {
         if (!response.ok) throw new Error('No Oracle report found.');
@@ -1693,6 +1890,28 @@ export default function SimulatorPage() {
   const oracle = oracleReport || report.oracle || SAMPLE_REPORT.oracle;
   const currentScenarioId = report.scenarioDefinition?.id || report.config?.scenarioId || report.config?.scenario || '';
   const command = `node scripts/gameplay-simulator.mjs --scenario=benchmark --batch=3 --setup-mode=best-effort --note="first pass" --hypothesis="movement should reveal faster"`;
+
+  useEffect(() => {
+    if (!currentScenarioId || currentScenarioId === 'none') {
+      setTimeMachineReport(null);
+      return undefined;
+    }
+    let cancelled = false;
+    fetch(`/simulator/time-machine/${currentScenarioId}/latest-report.json`, { cache: 'no-store' })
+      .then((response) => {
+        if (!response.ok) throw new Error('No Time Machine report found.');
+        return response.json();
+      })
+      .then((json) => {
+        if (!cancelled) setTimeMachineReport(json);
+      })
+      .catch(() => {
+        if (!cancelled) setTimeMachineReport(null);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [currentScenarioId]);
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-6">
@@ -1799,6 +2018,7 @@ export default function SimulatorPage() {
       <AutoTunePanel report={autoTuneReport} />
       <AutopilotPanel report={autopilotReport} />
       <PlayableDesignMemoryPanel memory={memoryReport} currentScenarioId={currentScenarioId} />
+      <ScenarioTimeMachinePanel report={timeMachineReport} index={timeMachineIndex} currentScenarioId={currentScenarioId} />
       <ScenarioBrowser scenarios={SCENARIO_CATALOG} verdict={report.scenarioVerdict} oracle={oracle} />
       <SmallestExperimentQueue experiments={funDebugger.smallestExperimentQueue || funDebugger.topExperiments || []} />
       <TargetScorecard targetEvaluation={targetEvaluation} scenarioGoalEvaluation={scenarioGoalEvaluation} />

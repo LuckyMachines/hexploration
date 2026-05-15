@@ -63,3 +63,14 @@ Answers include citations back to source report paths, so every claim can be tra
 4. Ask targeted questions with `npm run memory:query`.
 5. Use `npm run memory:doctor` before making a larger balance or setup claim.
 6. Inspect the Playable Design Memory panel in `/simulator`.
+
+## Scenario Time Machine
+
+Scenario Time Machine consumes raw memory events and turns them into per-scenario trend reports:
+
+```bash
+npm run time-machine:scenario -- --id=escape-pressure-4p
+npm run time-machine:compare -- --id=solo-artifact-hunt --against=last-good
+```
+
+Use Time Machine when the question is not only "what do we know?" but "are we better than before?"

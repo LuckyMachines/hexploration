@@ -62,6 +62,13 @@
     "memory:latest": "node scripts/playable-design-memory.mjs latest",
     "memory:doctor": "node scripts/playable-design-memory.mjs doctor",
     "memory:test": "node --test scripts/playable-design-memory-utils.test.mjs",
+    "time-machine": "node scripts/scenario-time-machine.mjs",
+    "time-machine:build": "node scripts/scenario-time-machine.mjs build",
+    "time-machine:scenario": "node scripts/scenario-time-machine.mjs scenario",
+    "time-machine:compare": "node scripts/scenario-time-machine.mjs compare",
+    "time-machine:latest": "node scripts/scenario-time-machine.mjs latest",
+    "time-machine:doctor": "node scripts/scenario-time-machine.mjs doctor",
+    "time-machine:test": "node --test scripts/scenario-time-machine-utils.test.mjs",
     "test:e2e:anvil": "node scripts/run-anvil-e2e.mjs"
   },
   "repository": {

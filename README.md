@@ -137,11 +137,12 @@ npm run oracle:latest
 npm run oracle:scenario -- --id=solo-artifact-hunt
 npm run memory:build
 npm run memory:query -- "what do we know about artifact hunting?"
+npm run time-machine:scenario -- --id=solo-artifact-hunt
 ```
 
-Then open `http://localhost:5502/simulator`. The runner writes reports to `reports/simulator/latest-report.json` and `app/public/simulator/latest-report.json`, scores them against `simulator.tuning.json`, runs the Fun Debugger life-score/experiment analysis, applies supported Scenario Setup Forge starting conditions, evaluates the Gameplay Oracle's design verdicts, can auto-tune safe knobs from `simulator.balance.json`, can save plain-English design scenarios from `simulator.scenarios.json`, can run Scenario Autopilot to plan, diagnose, patch, rerun, compare, and memo a gameplay intent, and can build Playable Design Memory so past evidence stays queryable.
+Then open `http://localhost:5502/simulator`. The runner writes reports to `reports/simulator/latest-report.json` and `app/public/simulator/latest-report.json`, scores them against `simulator.tuning.json`, runs the Fun Debugger life-score/experiment analysis, applies supported Scenario Setup Forge starting conditions, evaluates the Gameplay Oracle's design verdicts, can auto-tune safe knobs from `simulator.balance.json`, can save plain-English design scenarios from `simulator.scenarios.json`, can run Scenario Autopilot to plan, diagnose, patch, rerun, compare, and memo a gameplay intent, can build Playable Design Memory so past evidence stays queryable, and can build Scenario Time Machine reports to compare scenario progress over time.
 
-See [docs/gameplay-simulator.md](docs/gameplay-simulator.md) for strategies and engine-path details, [docs/scenario-setup-forge.md](docs/scenario-setup-forge.md) for scenario setup support, [docs/scenario-autopilot.md](docs/scenario-autopilot.md) for the orchestration loop, [docs/gameplay-oracle.md](docs/gameplay-oracle.md) for Oracle scoring and daily tuning workflows, and [docs/playable-design-memory.md](docs/playable-design-memory.md) for memory queries and report outputs.
+See [docs/gameplay-simulator.md](docs/gameplay-simulator.md) for strategies and engine-path details, [docs/scenario-setup-forge.md](docs/scenario-setup-forge.md) for scenario setup support, [docs/scenario-autopilot.md](docs/scenario-autopilot.md) for the orchestration loop, [docs/gameplay-oracle.md](docs/gameplay-oracle.md) for Oracle scoring and daily tuning workflows, [docs/playable-design-memory.md](docs/playable-design-memory.md) for memory queries and report outputs, and [docs/scenario-time-machine.md](docs/scenario-time-machine.md) for scenario trend reports.
 
 ### AutoLoop VRF (recommended)
 

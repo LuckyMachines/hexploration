@@ -82,6 +82,7 @@ The `/simulator` workbench shows the latest Scenario Autopilot report, including
 6. Inspect `/simulator` and `reports/simulator/autopilot/latest-report.md`.
 7. Keep accepted JSON changes or manually revise from the memo.
 8. Run `npm run memory:build` so the accepted or rejected experiment is available to future queries.
+9. Run `npm run time-machine:scenario -- --id=<scenario-id>` to see whether the scenario improved, regressed, or stayed blocked after the Autopilot evidence.
 
 Useful memory queries:
 
