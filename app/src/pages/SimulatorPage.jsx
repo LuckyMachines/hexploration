@@ -1174,6 +1174,155 @@ function ScenarioLabNotebookPanel({ entry, index, currentScenarioId }) {
   );
 }
 
+function feelingTone(score) {
+  if (score >= 70) return 'green';
+  if (score >= 55) return 'gold';
+  if (score > 0) return 'red';
+  return 'blue';
+}
+
+function PlayerFeelingBlackBoxPanel({ report, index, currentScenarioId }) {
+  if (!report) {
+    const indexedScenario = (index?.scenarios || []).find((item) => item.scenarioId === currentScenarioId);
+    return (
+      <section className="mt-4 rounded border border-exp-border bg-exp-panel p-4">
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div>
+            <h2 className="font-mono text-xs uppercase tracking-[0.3em] text-exp-text-dim">
+              Player Feeling Black Box
+            </h2>
+            <p className="mt-1 font-mono text-xs leading-relaxed text-exp-text-dim">
+              Turns exact-engine input and state deltas into a felt-control timeline: alive moments, flat turns, friction spikes, payoff, recovery, and arc shape.
+            </p>
+          </div>
+          <span className="rounded border border-blueprint/35 bg-blueprint/10 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.2em] text-blueprint">
+            Awaiting arc
+          </span>
+        </div>
+        <pre className="mt-3 overflow-x-auto rounded border border-exp-border bg-exp-dark/60 p-3 font-mono text-[11px] text-compass-bright">
+          {`npm run feel:scenario -- --id=${currentScenarioId || 'escape-pressure-4p'}\nnpm run feel:scenario -- --id=${currentScenarioId || 'escape-pressure-4p'} --markdown`}
+        </pre>
+        {indexedScenario && (
+          <div className="mt-3 rounded border border-exp-border/60 bg-exp-dark/35 px-3 py-2">
+            <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-exp-text-dim">
+              Feeling index
+            </p>
+            <p className="mt-1 font-mono text-xs leading-relaxed text-exp-text">
+              {indexedScenario.scenarioId}: {indexedScenario.arcShape || 'unknown'} / score {indexedScenario.arcScore ?? 'n/a'} / {indexedScenario.recommendation?.title || 'generate a fresh feeling report'}
+            </p>
+          </div>
+        )}
+      </section>
+    );
+  }
+
+  const arc = report.arc || {};
+  const tone = feelingTone(arc.arcScore || 0);
+  const timeline = report.timeline || [];
+  const labelEntries = Object.entries(arc.labelCounts || {}).sort(([, a], [, b]) => b - a);
+  const recommendation = report.recommendedImprovement || arc.recommendedImprovement || {};
+
+  return (
+    <section className="mt-4 rounded border border-exp-border bg-exp-panel p-4">
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <h2 className="font-mono text-xs uppercase tracking-[0.3em] text-exp-text-dim">
+            Player Feeling Black Box
+          </h2>
+          <p className="mt-1 font-mono text-xs leading-relaxed text-exp-text-dim">
+            Latest felt-control readout for {report.scenarioId}; it scores whether inputs make the board feel alive before the design systems explain why.
+          </p>
+        </div>
+        <div className={`rounded border px-3 py-2 text-right ${
+          tone === 'green'
+            ? 'border-oxide-green/35 bg-oxide-green/10 text-oxide-green'
+            : tone === 'red'
+              ? 'border-signal-red/35 bg-signal-red/10 text-signal-red'
+              : tone === 'gold'
+                ? 'border-compass/35 bg-compass/10 text-compass-bright'
+                : 'border-blueprint/35 bg-blueprint/10 text-blueprint'
+        }`}>
+          <p className="font-mono text-[10px] uppercase tracking-[0.2em]">
+            {arc.arcShape || 'unknown'}
+          </p>
+          <p className="mt-1 font-mono text-xl tabular-nums">
+            {arc.arcScore ?? 'n/a'}
+          </p>
+        </div>
+      </div>
+
+      <div className="mt-3 grid gap-3 md:grid-cols-4">
+        <Metric label="First alive" value={arc.firstAliveTurn ?? 'none'} tone={arc.firstAliveTurn && arc.firstAliveTurn <= 2 ? 'green' : 'gold'} />
+        <Metric label="First flat" value={arc.firstFlatTurn ?? 'none'} tone={arc.firstFlatTurn ? 'red' : 'green'} />
+        <Metric label="Agency peak" value={arc.strongestAgencyMoment?.agencyScore ?? 'n/a'} tone="blue" />
+        <Metric label="Friction peak" value={arc.strongestFrictionMoment?.frictionScore ?? 'n/a'} tone={arc.strongestFrictionMoment?.frictionScore > 55 ? 'red' : 'green'} />
+      </div>
+
+      <div className="mt-3 grid gap-3 lg:grid-cols-[minmax(0,1fr)_minmax(320px,0.85fr)]">
+        <div className="rounded border border-exp-border/60 bg-exp-dark/35 px-3 py-2">
+          <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-exp-text-dim">
+            Felt-control timeline
+          </p>
+          <div className="mt-3 flex h-28 items-end gap-1 rounded border border-exp-border/60 bg-exp-dark/35 p-3">
+            {timeline.slice(0, 18).map((event, index) => (
+              <div key={`${event.runIndex}-${event.turn}-${index}`} className="flex min-w-0 flex-1 flex-col items-center gap-1">
+                <div className="flex h-20 w-full items-end gap-0.5">
+                  <div
+                    className={`min-w-0 flex-1 rounded-t ${event.frictionScore >= 55 ? 'bg-signal-red' : event.lifePulse >= 65 ? 'bg-oxide-green' : 'bg-compass-bright'}`}
+                    style={{ height: `${Math.max(5, event.lifePulse || 0)}%` }}
+                    title={`Turn ${event.turn}: ${event.feelingLabel} / pulse ${event.lifePulse}`}
+                  />
+                </div>
+                <span className="font-mono text-[9px] text-exp-text-dim">{event.turn}</span>
+              </div>
+            ))}
+          </div>
+          <div className="mt-2 flex flex-wrap gap-1">
+            {labelEntries.slice(0, 8).map(([label, count]) => (
+              <span key={label} className="rounded border border-exp-border/60 bg-exp-dark/50 px-2 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-exp-text-dim">
+                {label} {count}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        <div className="rounded border border-compass/25 bg-compass/5 px-3 py-2">
+          <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-compass">
+            Next feeling experiment
+          </p>
+          <p className="mt-2 font-mono text-xs leading-relaxed text-exp-text">
+            {recommendation.title || 'No feeling recommendation generated.'}
+          </p>
+          <p className="mt-1 font-mono text-[11px] leading-relaxed text-exp-text-dim">
+            {recommendation.reason || 'Run a feeling report after the next simulator pass.'}
+          </p>
+          {recommendation.command && (
+            <pre className="mt-2 overflow-x-auto rounded border border-exp-border/60 bg-exp-dark/50 p-2 font-mono text-[10px] text-compass-bright">
+              {recommendation.command}
+            </pre>
+          )}
+        </div>
+      </div>
+
+      <div className="mt-3 grid gap-3 lg:grid-cols-3">
+        {[arc.bestMoment, arc.worstMoment, arc.payoffMoment || arc.recoveryMoment].filter(Boolean).map((moment) => (
+          <div key={`${moment.label}-${moment.turn}-${moment.action}`} className="rounded border border-exp-border/60 bg-exp-dark/35 px-3 py-2">
+            <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-compass-bright">
+              Turn {moment.turn} / {moment.label}
+            </p>
+            <p className="mt-1 font-mono text-[11px] leading-relaxed text-exp-text">
+              {moment.controlFeelNote || moment.reason}
+            </p>
+            <p className="mt-1 font-mono text-[11px] leading-relaxed text-exp-text-dim">
+              action {moment.action || 'none'} / pulse {moment.lifePulse} / agency {moment.agencyScore} / friction {moment.frictionScore}
+            </p>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 function tutorTone(status) {
   if (status === 'graduated' || status === 'passed') return 'green';
   if (status === 'blocked' || status === 'regressed' || status === 'failed') return 'red';
@@ -2109,6 +2258,8 @@ export default function SimulatorPage() {
   const [labNotebookEntry, setLabNotebookEntry] = useState(null);
   const [tutorCurriculum, setTutorCurriculum] = useState(null);
   const [tutorLesson, setTutorLesson] = useState(null);
+  const [feelingIndex, setFeelingIndex] = useState(null);
+  const [feelingReport, setFeelingReport] = useState(null);
   const [oracleReport, setOracleReport] = useState(null);
   const [oracleHistory, setOracleHistory] = useState([]);
   const [loadState, setLoadState] = useState('loading');
@@ -2245,6 +2396,24 @@ export default function SimulatorPage() {
 
   useEffect(() => {
     let cancelled = false;
+    fetch('/simulator/feeling-black-box/index.json', { cache: 'no-store' })
+      .then((response) => {
+        if (!response.ok) throw new Error('No Player Feeling Black Box index found.');
+        return response.json();
+      })
+      .then((json) => {
+        if (!cancelled) setFeelingIndex(json);
+      })
+      .catch(() => {
+        if (!cancelled) setFeelingIndex(null);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
     fetch('/simulator/oracle/latest-oracle.json', { cache: 'no-store' })
       .then((response) => {
         if (!response.ok) throw new Error('No Oracle report found.');
@@ -2360,6 +2529,28 @@ export default function SimulatorPage() {
     };
   }, [currentScenarioId]);
 
+  useEffect(() => {
+    if (!currentScenarioId || currentScenarioId === 'none') {
+      setFeelingReport(null);
+      return undefined;
+    }
+    let cancelled = false;
+    fetch(`/simulator/feeling-black-box/${currentScenarioId}/latest-report.json`, { cache: 'no-store' })
+      .then((response) => {
+        if (!response.ok) throw new Error('No Player Feeling Black Box report found.');
+        return response.json();
+      })
+      .then((json) => {
+        if (!cancelled) setFeelingReport(json);
+      })
+      .catch(() => {
+        if (!cancelled) setFeelingReport(null);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [currentScenarioId]);
+
   return (
     <div className="mx-auto max-w-7xl px-4 py-6">
       <div className="mb-5 flex flex-wrap items-start justify-between gap-4">
@@ -2467,6 +2658,7 @@ export default function SimulatorPage() {
       <PlayableDesignMemoryPanel memory={memoryReport} currentScenarioId={currentScenarioId} />
       <ScenarioTimeMachinePanel report={timeMachineReport} index={timeMachineIndex} currentScenarioId={currentScenarioId} />
       <ScenarioLabNotebookPanel entry={labNotebookEntry} index={labNotebookIndex} currentScenarioId={currentScenarioId} />
+      <PlayerFeelingBlackBoxPanel report={feelingReport} index={feelingIndex} currentScenarioId={currentScenarioId} />
       <ScenarioSelfDrivingTutorPanel lesson={tutorLesson} curriculum={tutorCurriculum} currentScenarioId={currentScenarioId} />
       <ScenarioBrowser scenarios={SCENARIO_CATALOG} verdict={report.scenarioVerdict} oracle={oracle} />
       <SmallestExperimentQueue experiments={funDebugger.smallestExperimentQueue || funDebugger.topExperiments || []} />

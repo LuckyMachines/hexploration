@@ -35,6 +35,7 @@ const AUTHORITY = {
   oracleReport: 5,
   autopilotReport: 4,
   setupReport: 4,
+  feelingReport: 4,
   simulatorReport: 3,
   autoTuneReport: 3,
   tuningLedger: 2,
@@ -47,6 +48,7 @@ const REPORT_PATHS = [
   resolve(root, 'reports', 'simulator', 'oracle'),
   resolve(root, 'reports', 'simulator', 'setup-forge'),
   resolve(root, 'reports', 'simulator', 'autopilot'),
+  resolve(root, 'reports', 'simulator', 'feeling-black-box'),
   resolve(root, 'reports', 'simulator', 'experiments'),
   resolve(root, 'reports', 'simulator', 'tuning-ledger.json'),
   scenarioReportRoot,
@@ -118,6 +120,7 @@ function sourceTitle(type, source = {}, scenario = null) {
   if (type === 'oracleReport') return `Oracle ${source.oracleVerdict || 'verdict'}`;
   if (type === 'autopilotReport') return source.selectedChange?.title || source.intent?.text || 'Scenario Autopilot';
   if (type === 'setupReport') return `Setup ${source.setupLevel || source.setupApplication?.setupLevel || 'report'}`;
+  if (type === 'feelingReport') return `Feeling arc ${source.arc?.arcShape || 'report'}`;
   if (type === 'autoTuneReport') return source.winner?.name || source.recommendation || 'Auto-tune report';
   if (type === 'tuningLedger') return source.changed || source.hypothesis || 'Tuning ledger';
   return source.config?.scenario || source.engine || 'Simulator report';
@@ -136,6 +139,10 @@ function sourceSummary(type, source = {}, scenario = null) {
   if (type === 'setupReport') {
     const app = source.setupApplication || source;
     return `Setup reached ${source.setupLevel || app.setupLevel || 'unknown'} with ${asArray(app.applied).length} applied, ${asArray(app.skipped).length} skipped, ${asArray(app.failed).length} failed.`;
+  }
+  if (type === 'feelingReport') {
+    const arc = source.arc || {};
+    return `Feeling arc ${arc.arcShape || 'unknown'} scored ${arc.arcScore ?? 'unknown'}; first alive turn ${arc.firstAliveTurn ?? 'none'}, first flat turn ${arc.firstFlatTurn ?? 'none'}.`;
   }
   if (type === 'autoTuneReport') {
     return source.winner
@@ -186,6 +193,22 @@ function metricsFor(type, source = {}) {
       failed: asArray(app.failed).length,
       warnings: asArray(app.warnings).length,
       errors: asArray(app.errors).length,
+    });
+  }
+  if (type === 'feelingReport') {
+    const arc = source.arc || {};
+    return compact({
+      arcScore: arc.arcScore,
+      arcShape: arc.arcShape,
+      firstAliveTurn: arc.firstAliveTurn,
+      firstFlatTurn: arc.firstFlatTurn,
+      turnCount: arc.turnCount || source.turnCount,
+      bestMomentLabel: arc.bestMoment?.label,
+      worstMomentLabel: arc.worstMoment?.label,
+      strongestAgency: arc.strongestAgencyMoment?.agencyScore,
+      strongestFriction: arc.strongestFrictionMoment?.frictionScore,
+      payoffTurn: arc.payoffMoment?.turn,
+      recoveryTurn: arc.recoveryMoment?.turn,
     });
   }
   if (type === 'autopilotReport') {
@@ -244,6 +267,21 @@ function evidenceFor(type, source = {}) {
       support: asArray(app.support).slice(0, 8),
     });
   }
+  if (type === 'feelingReport') {
+    const arc = source.arc || {};
+    return compact({
+      firstAliveTurn: arc.firstAliveTurn,
+      firstFlatTurn: arc.firstFlatTurn,
+      bestMoment: arc.bestMoment || null,
+      worstMoment: arc.worstMoment || null,
+      strongestAgencyMoment: arc.strongestAgencyMoment || null,
+      strongestFrictionMoment: arc.strongestFrictionMoment || null,
+      labelCounts: arc.labelCounts,
+      polarityMix: arc.polarityMix,
+      recommendation: source.recommendedImprovement || arc.recommendedImprovement || null,
+      warnings: asArray(source.warnings),
+    });
+  }
   if (type === 'autopilotReport') {
     return compact({
       intent: source.intent?.text,
@@ -298,6 +336,12 @@ function systemsFor(type, source = {}) {
     const app = source.setupApplication || source;
     for (const item of [...asArray(app.applied), ...asArray(app.skipped), ...asArray(app.failed)]) systems.add(item.field);
   }
+  if (type === 'feelingReport') {
+    systems.add('feeling');
+    systems.add(source.arc?.arcShape);
+    systems.add(source.recommendedImprovement?.type || source.arc?.recommendedImprovement?.type);
+    for (const event of asArray(source.timeline).slice(0, 8)) systems.add(event.feelingLabel);
+  }
   if (type === 'autopilotReport') {
     systems.add(source.selectedChange?.changeType || 'autopilot');
     for (const file of asArray(source.selectedChange?.files)) systems.add(file);
@@ -308,6 +352,7 @@ function systemsFor(type, source = {}) {
 export function classifyMemorySource(path, source) {
   const normalizedPath = path ? normalizePath(path) : '';
   if (normalizedPath.includes('/experiments/') && !normalizedPath.endsWith('/autotune-report.json') && !normalizedPath.endsWith('/index.json')) return 'unknown';
+  if (source?.blackBoxVersion || normalizedPath.includes('/feeling-black-box/')) return 'feelingReport';
   if (source?.oracleVersion || source?.experienceScores || source?.oracleVerdict) return 'oracleReport';
   if (source?.autopilotVersion || source?.candidateChanges || normalizedPath.includes('/autopilot/')) return 'autopilotReport';
   if (source?.setupForgeVersion || source?.setupApplication || normalizedPath.includes('setup-forge') || normalizedPath.endsWith('latest-setup-report.json')) return 'setupReport';

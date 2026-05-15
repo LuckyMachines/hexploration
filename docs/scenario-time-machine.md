@@ -28,6 +28,7 @@ Evidence comes from:
 - Gameplay Oracle reports
 - Scenario Setup Forge reports
 - Scenario Autopilot reports
+- Player Feeling Black Box reports
 - Auto-tune reports
 - Tuning ledger entries when present
 
@@ -44,7 +45,7 @@ Generated outputs are ignored by Git.
 ## How To Read It
 
 - **Trend** says whether latest evidence is improving, regressing, stable, noisy, blocked, or insufficient.
-- **Health score** is explainable and combines Oracle score, confidence, setup fidelity, simulator life score, and penalties for flat turns, invalid actions, zero-stat collapse, failed gates, and rejected changes.
+- **Health score** is explainable and combines Oracle score, confidence, setup fidelity, simulator life score, Player Feeling Black Box arc score, and penalties for flat turns, invalid actions, zero-stat collapse, failed gates, and rejected changes.
 - **Best known version** is the strongest historical point with acceptable confidence and setup fidelity.
 - **Last good version** is the newest point with a healthy verdict, passing gate, or accepted improvement.
 - **Inferred causes** are nearby evidence events that likely explain a major change. They are explicitly labeled as inferred.
@@ -54,7 +55,8 @@ Generated outputs are ignored by Git.
 1. Run scenario, Oracle, setup, Autopilot, or memory workflows as usual.
 2. Run `npm run memory:build`.
 3. Run `npm run time-machine:scenario -- --id=<scenario-id>`.
-4. Run `npm run lab:entry -- --id=<scenario-id>` to record the design learning.
-5. Run `npm run tutor:scenario -- --id=<scenario-id>` to convert the evidence into an ordered lesson.
-6. Inspect the Scenario Time Machine, Scenario Lab Notebook, and Scenario Self-Driving Tutor panels in `/simulator`.
-7. Use the top recommendation as the next smallest experiment.
+4. Run `npm run feel:scenario -- --id=<scenario-id>` when you want the timeline to include felt-control arcs.
+5. Run `npm run lab:entry -- --id=<scenario-id>` to record the design learning.
+6. Run `npm run tutor:scenario -- --id=<scenario-id>` to convert the evidence into an ordered lesson.
+7. Inspect the Scenario Time Machine, Scenario Lab Notebook, Player Feeling Black Box, and Scenario Self-Driving Tutor panels in `/simulator`.
+8. Use the top recommendation as the next smallest experiment.

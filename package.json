@@ -83,6 +83,12 @@
     "tutor:complete": "node scripts/scenario-self-driving-tutor.mjs complete",
     "tutor:doctor": "node scripts/scenario-self-driving-tutor.mjs doctor",
     "tutor:test": "node --test scripts/scenario-self-driving-tutor-utils.test.mjs",
+    "feel": "node scripts/player-feeling-black-box.mjs latest",
+    "feel:latest": "node scripts/player-feeling-black-box.mjs latest",
+    "feel:scenario": "node scripts/player-feeling-black-box.mjs scenario",
+    "feel:index": "node scripts/player-feeling-black-box.mjs index",
+    "feel:doctor": "node scripts/player-feeling-black-box.mjs doctor",
+    "feel:test": "node --test scripts/player-feeling-black-box-utils.test.mjs",
     "test:e2e:anvil": "node scripts/run-anvil-e2e.mjs"
   },
   "repository": {

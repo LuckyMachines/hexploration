@@ -18,6 +18,9 @@ import {
   loadLabMemory,
 } from './scenario-lab-notebook-utils.mjs';
 import {
+  feelingPaths,
+} from './player-feeling-black-box-utils.mjs';
+import {
   findScenario,
   loadScenarioStore,
   readJson,
@@ -129,6 +132,10 @@ function latestLabEntryForScenario(scenarioId) {
   return readJson(paths.latestEntry, null);
 }
 
+function latestFeelingForScenario(scenarioId) {
+  return readJson(feelingPaths(scenarioId).latest, null);
+}
+
 function labIndexOrBuild(memory = null) {
   const paths = labIndexPaths();
   return readJson(paths.index, null) || buildLabIndex({ memory });
@@ -200,7 +207,7 @@ function setupBlockedFields({ scenario = {}, timeMachine = {}, labEntry = null }
   ]);
 }
 
-export function detectPrimaryWeakness({ scenario = {}, timeMachine = {}, labEntry = null, memory = null } = {}) {
+export function detectPrimaryWeakness({ scenario = {}, timeMachine = {}, labEntry = null, memory = null, feelingReport = null } = {}) {
   const latest = timeMachine.latest || {};
   const sources = sourceTypes(timeMachine);
   const setupFields = setupBlockedFields({ scenario, timeMachine, labEntry });
@@ -239,6 +246,44 @@ export function detectPrimaryWeakness({ scenario = {}, timeMachine = {}, labEntr
       why: `The tutor cannot graduate this scenario until ${missing.join(' and ') || 'fresh'} evidence exists.`,
       missing,
     });
+  }
+  const feeling = feelingReport || null;
+  if (feeling?.arc) {
+    const arc = feeling.arc;
+    const arcScore = number(arc.arcScore, 100);
+    if (arcScore < 50 || arc.arcShape === 'flatline') {
+      weaknesses.push({
+        category: 'weak-pacing',
+        type: 'feeling-flat',
+        priority: arcScore < 40 ? 'high' : 'medium',
+        title: 'Make the first alive control moment arrive sooner',
+        why: `The Player Feeling Black Box scored the arc ${arcScore} with shape ${arc.arcShape || 'unknown'}.`,
+        metric: 'feelingArcScore',
+        score: arcScore,
+        firstAliveTurn: arc.firstAliveTurn,
+        firstFlatTurn: arc.firstFlatTurn,
+      });
+    } else if (number(arc.strongestFrictionMoment?.frictionScore, 0) >= 55) {
+      weaknesses.push({
+        category: 'weak-readability',
+        type: 'feeling-friction',
+        priority: 'medium',
+        title: 'Reduce the strongest felt input friction spike',
+        why: `Turn ${arc.strongestFrictionMoment.turn} has friction ${arc.strongestFrictionMoment.frictionScore}.`,
+        metric: 'strongestFriction',
+        score: arc.strongestFrictionMoment.frictionScore,
+      });
+    } else if (arc.arcShape === 'panic-loop') {
+      weaknesses.push({
+        category: 'weak-recovery',
+        type: 'feeling-panic',
+        priority: 'medium',
+        title: 'Add recovery after the pressure loop',
+        why: 'The Player Feeling Black Box detected panic without enough recovery.',
+        metric: 'feelingArcScore',
+        score: arcScore,
+      });
+    }
   }
   const weakestMetric = latest.oracle?.weakestMetric || labEntry?.evidenceSummary?.weakestMetric;
   if (weakestMetric) {
@@ -304,6 +349,8 @@ export function commandsForLesson({ scenarioId, weakness = {}, timeMachine = {} 
         : `npm run oracle:scenario -- --id=${id}`;
   } else if (weakness.type === 'regression') {
     primary = `npm run time-machine:compare -- --id=${id} --against=last-good --markdown`;
+  } else if (String(weakness.type || '').startsWith('feeling-')) {
+    primary = `npm run feel:scenario -- --id=${id} --markdown`;
   } else if (weakness.recommendation?.command) {
     primary = weakness.recommendation.command;
   } else if (timeMachine.recommendation?.command) {
@@ -311,14 +358,14 @@ export function commandsForLesson({ scenarioId, weakness = {}, timeMachine = {} 
   }
   return {
     primary,
-    verification: `npm run scenario:run -- --id=${id} && npm run oracle:scenario -- --id=${id} && npm run time-machine:scenario -- --id=${id}`,
+    verification: `npm run scenario:run -- --id=${id} && npm run oracle:scenario -- --id=${id} && npm run feel:scenario -- --id=${id} && npm run time-machine:scenario -- --id=${id}`,
     notebook: `npm run lab:entry -- --id=${id}`,
     tutor: `npm run tutor:scenario -- --id=${id}`,
     completion: `npm run tutor:complete -- --id=${id} --lesson=<lesson-id> --status=passed --why="Evidence improved."`,
   };
 }
 
-export function successCriteriaForLesson({ weakness = {}, timeMachine = {}, labEntry = null } = {}) {
+export function successCriteriaForLesson({ weakness = {}, timeMachine = {}, labEntry = null, feelingReport = null } = {}) {
   const criteria = [];
   if (weakness.type === 'setup') {
     criteria.push({ metric: 'setupFidelity', op: '>=', value: 0.65, label: 'Setup fidelity reaches partial-or-better confidence.' });
@@ -329,6 +376,11 @@ export function successCriteriaForLesson({ weakness = {}, timeMachine = {}, labE
   } else if (weakness.type === 'regression') {
     criteria.push({ metric: 'trend', op: 'in', value: ['stable', 'improving'], label: 'Time Machine trend is stable or improving.' });
     criteria.push({ metric: 'latestHealth', op: '>=', value: number(timeMachine.lastGood?.health?.score, 60), label: 'Latest health recovers to last-good health.' });
+  } else if (String(weakness.type || '').startsWith('feeling-')) {
+    const arcScore = number(feelingReport?.arc?.arcScore, weakness.score || 50);
+    criteria.push({ metric: 'feelingArcScore', op: '>=', value: Math.min(80, arcScore + 5), label: 'Feeling arc score improves by at least 5 without losing setup confidence.' });
+    criteria.push({ metric: 'firstAliveTurn', op: '<=', value: Math.max(1, number(feelingReport?.arc?.firstAliveTurn, 4) - 1), label: 'First alive moment arrives earlier or stays in the opening turns.' });
+    criteria.push({ metric: 'strongestFriction', op: '<', value: Math.max(35, number(feelingReport?.arc?.strongestFrictionMoment?.frictionScore, 65) - 8), label: 'Strongest input friction spike drops meaningfully.' });
   } else {
     criteria.push({ metric: 'oracleWeightedScore', op: '>=', value: number(timeMachine.latest?.oracle?.weightedScore, 55) + 5, label: 'Oracle weighted score rises by at least 5.' });
     criteria.push({ metric: weakness.metric || 'weakestMetric', op: '>=', value: 60, label: `${weakness.metric || 'Weakest metric'} reaches 60 or better.` });
@@ -412,15 +464,17 @@ export function buildScenarioTutorLesson({ scenarioId, evidence = null, memory =
   const scenario = findScenario(store, id) || asArray(loadedMemory.scenarios).find((item) => item.scenarioId === id) || { id, scenarioId: id, name: id };
   const loadedTimeMachine = timeMachine || buildScenarioTimeMachine({ scenarioId: id, memory: loadedMemory, includeRaw: true });
   const loadedLabEntry = labEntry || latestLabEntryForScenario(id);
-  const weakness = detectPrimaryWeakness({ scenario, timeMachine: loadedTimeMachine, labEntry: loadedLabEntry, memory: loadedMemory });
+  const feelingReport = latestFeelingForScenario(id);
+  const weakness = detectPrimaryWeakness({ scenario, timeMachine: loadedTimeMachine, labEntry: loadedLabEntry, memory: loadedMemory, feelingReport });
   const primaryWeakness = weakness.primary;
   const commands = commandsForLesson({ scenarioId: id, weakness: primaryWeakness, timeMachine: loadedTimeMachine });
-  const successCriteria = successCriteriaForLesson({ weakness: primaryWeakness, timeMachine: loadedTimeMachine, labEntry: loadedLabEntry });
+  const successCriteria = successCriteriaForLesson({ weakness: primaryWeakness, timeMachine: loadedTimeMachine, labEntry: loadedLabEntry, feelingReport });
   const steps = buildLessonSteps({ scenarioId: id, weakness: primaryWeakness, commands, criteria: successCriteria });
   const citations = dedupeCitations([
     ...asArray(loadedTimeMachine.citations),
     ...asArray(loadedTimeMachine.latest?.citation ? [loadedTimeMachine.latest.citation] : []),
     ...asArray(loadedLabEntry?.citations),
+    ...asArray(feelingReport?.citations),
     ...asArray(primaryWeakness.recommendation?.citations),
   ]);
   const lesson = {
@@ -456,6 +510,10 @@ export function buildScenarioTutorLesson({ scenarioId, evidence = null, memory =
       weakestMetric: loadedTimeMachine.latest?.oracle?.weakestMetric,
       setupFidelity: loadedTimeMachine.latest?.setup?.fidelity,
       labReadiness: loadedLabEntry?.playtestReadiness?.status,
+      feelingArcScore: feelingReport?.arc?.arcScore || loadedTimeMachine.latest?.feeling?.arcScore,
+      feelingArcShape: feelingReport?.arc?.arcShape || loadedTimeMachine.latest?.feeling?.arcShape,
+      firstAliveTurn: feelingReport?.arc?.firstAliveTurn || loadedTimeMachine.latest?.feeling?.firstAliveTurn,
+      firstFlatTurn: feelingReport?.arc?.firstFlatTurn || loadedTimeMachine.latest?.feeling?.firstFlatTurn,
     }),
     citations,
   };

@@ -1,6 +1,6 @@
 # Playable Design Memory
 
-Playable Design Memory is the project-level evidence layer for gameplay tuning. It reads the exact-engine simulator outputs and turns them into durable memory: what scenarios exist, what the Oracle said, which setup assumptions were enforced, what Autopilot tried, what auto-tune accepted or rejected, and what should be investigated next.
+Playable Design Memory is the project-level evidence layer for gameplay tuning. It reads the exact-engine simulator outputs and turns them into durable memory: what scenarios exist, what the Oracle said, which setup assumptions were enforced, what Autopilot tried, which Player Feeling Black Box arcs were detected, what auto-tune accepted or rejected, and what should be investigated next.
 
 It does not run a second game model. It only summarizes local reports already produced by the simulator toolchain.
 
@@ -28,6 +28,7 @@ Memory scans:
 - `reports/simulator/oracle/**`
 - `reports/simulator/setup-forge/**`
 - `reports/simulator/autopilot/**`
+- `reports/simulator/feeling-black-box/**`
 - `reports/simulator/experiments/**`
 - `reports/simulator/tuning-ledger.json`
 
@@ -85,6 +86,17 @@ npm run lab:latest -- --id=escape-pressure-4p --markdown
 ```
 
 Use the notebook when the question is "what do we believe now, what decision did we make, and what should we run next?"
+
+## Player Feeling Black Box
+
+Player Feeling Black Box reports become memory events with arc score, arc shape, first alive turn, first flat turn, strongest agency, strongest friction, labels, warnings, and the recommended feeling experiment:
+
+```bash
+npm run feel:scenario -- --id=escape-pressure-4p
+npm run memory:build
+```
+
+Use it when the question is "did touching controls make the board feel alive, and where did that feeling break?"
 
 ## Scenario Self-Driving Tutor
 

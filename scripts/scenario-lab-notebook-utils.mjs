@@ -13,6 +13,9 @@ import {
   loadTimeMachineMemory,
 } from './scenario-time-machine-utils.mjs';
 import {
+  feelingPaths,
+} from './player-feeling-black-box-utils.mjs';
+import {
   findScenario,
   loadScenarioStore,
   readJson,
@@ -135,6 +138,7 @@ export function loadLabMemory({ refreshMemory = false, includeRaw = true } = {})
 
 export function evidenceSummaryForScenario({ timeMachine = {}, memory = null, scenarioId = '' } = {}) {
   const latest = timeMachine.latest || null;
+  const latestFeeling = latest?.feeling || [...asArray(timeMachine.timeline)].reverse().find((point) => point.feeling)?.feeling;
   const sources = sourceTypesIn(timeMachine);
   const memoryQuery = timeMachine.memoryQuery || (memory ? answerMemoryQuery(memory, `what should we try next for ${scenarioId}?`, { limit: 4 }) : null);
   return compact({
@@ -154,6 +158,12 @@ export function evidenceSummaryForScenario({ timeMachine = {}, memory = null, sc
     weakestMetric: latest?.oracle?.weakestMetric || timeMachine.latest?.simulator?.topIssue,
     hasSimulatorEvidence: sources.has('simulatorReport'),
     hasOracleEvidence: sources.has('oracleReport'),
+    feelingArcScore: latestFeeling?.arcScore,
+    feelingArcShape: latestFeeling?.arcShape,
+    firstAliveTurn: latestFeeling?.firstAliveTurn,
+    firstFlatTurn: latestFeeling?.firstFlatTurn,
+    strongestFriction: latestFeeling?.strongestFriction,
+    hasFeelingEvidence: sources.has('feelingReport') || Boolean(latestFeeling),
     recommendation: timeMachine.recommendation || memoryQuery?.recommendedNextAction || null,
     citationCount: asArray(timeMachine.citations).length + asArray(memoryQuery?.citations).length,
   });
@@ -162,23 +172,26 @@ export function evidenceSummaryForScenario({ timeMachine = {}, memory = null, sc
 export function latestLearningFromEvidence({ timeMachine = {}, evidence = null } = {}) {
   const summary = evidence || evidenceSummaryForScenario({ timeMachine });
   const trend = summary.trend || 'insufficient-evidence';
+  const feelingClause = summary.feelingArcScore !== undefined
+    ? ` Feeling arc ${summary.feelingArcShape || 'unknown'} scored ${summary.feelingArcScore}; first alive turn ${summary.firstAliveTurn ?? 'none'}, first flat turn ${summary.firstFlatTurn ?? 'none'}.`
+    : '';
   if ((summary.blockedSetupFields || []).length > 0 || number(summary.setupFidelity, 1) < 0.4) {
-    return `The latest evidence is constrained by setup fidelity; blocked fields are ${(summary.blockedSetupFields || []).join(', ') || 'setup fidelity below threshold'}.`;
+    return `The latest evidence is constrained by setup fidelity; blocked fields are ${(summary.blockedSetupFields || []).join(', ') || 'setup fidelity below threshold'}.${feelingClause}`;
   }
   if (!summary.hasSimulatorEvidence || !summary.hasOracleEvidence) {
-    return 'The scenario still needs a paired simulator and Oracle pass before the notebook can make a strong gameplay claim.';
+    return `The scenario still needs a paired simulator and Oracle pass before the notebook can make a strong gameplay claim.${feelingClause}`;
   }
   if (trend === 'improving') {
-    return `The scenario is improving; latest health is ${summary.latestHealth ?? 'unknown'} and best known health is ${summary.bestHealth ?? 'unknown'}.`;
+    return `The scenario is improving; latest health is ${summary.latestHealth ?? 'unknown'} and best known health is ${summary.bestHealth ?? 'unknown'}.${feelingClause}`;
   }
   if (trend === 'regressing') {
-    return `The latest run regressed; latest health is ${summary.latestHealth ?? 'unknown'} versus last good ${summary.lastGoodHealth ?? 'unknown'}.`;
+    return `The latest run regressed; latest health is ${summary.latestHealth ?? 'unknown'} versus last good ${summary.lastGoodHealth ?? 'unknown'}.${feelingClause}`;
   }
   if (trend === 'stable') {
-    return `The scenario is stable around health ${summary.latestHealth ?? 'unknown'}; the next useful work is ${summary.recommendation?.title || 'fresh evidence capture'}.`;
+    return `The scenario is stable around health ${summary.latestHealth ?? 'unknown'}; the next useful work is ${summary.recommendation?.title || 'fresh evidence capture'}.${feelingClause}`;
   }
-  if (trend === 'blocked') return 'The scenario is blocked by evidence quality or failed gates and should not be treated as tuned yet.';
-  return 'The scenario has too little evidence history for a reliable design conclusion.';
+  if (trend === 'blocked') return `The scenario is blocked by evidence quality or failed gates and should not be treated as tuned yet.${feelingClause}`;
+  return `The scenario has too little evidence history for a reliable design conclusion.${feelingClause}`;
 }
 
 export function unresolvedAssumptionsFromEvidence({ scenario = {}, memory = null, timeMachine = {}, evidence = null } = {}) {
@@ -304,12 +317,13 @@ export function beliefFromEvidence({ scenario = {}, timeMachine = {}, evidence =
   return `${name} is probably playable with caveats; the next run should focus on ${summary.weakestMetric || 'the weakest evidence dimension'}.`;
 }
 
-export function citationsForEntry({ timeMachine = {}, memoryQuery = null, limit = 12 } = {}) {
+export function citationsForEntry({ timeMachine = {}, memoryQuery = null, feelingReport = null, limit = 12 } = {}) {
   const citations = [
     ...asArray(timeMachine.citations),
     ...asArray(timeMachine.recommendation?.citations),
     ...asArray(memoryQuery?.citations),
     ...asArray(timeMachine.timeline).slice(-4).map((point) => point.citation).filter(Boolean),
+    ...asArray(feelingReport?.citations),
   ];
   const seen = new Set();
   return citations.filter((citation) => {
@@ -335,7 +349,16 @@ export function generateAutoSummaryEntry({
   const memoryScenario = asArray(loadedMemory.scenarios).find((item) => item.scenarioId === id);
   const scenario = findScenario(store, id) || memoryScenario || { id, name: id };
   const loadedTimeMachine = timeMachine || buildScenarioTimeMachine({ scenarioId: id, memory: loadedMemory, includeRaw: true });
+  const feelingReport = readJson(feelingPaths(id).latest, null);
   const evidence = evidenceSummaryForScenario({ timeMachine: loadedTimeMachine, memory: loadedMemory, scenarioId: id });
+  if (feelingReport?.arc && evidence.feelingArcScore === undefined) {
+    evidence.feelingArcScore = feelingReport.arc.arcScore;
+    evidence.feelingArcShape = feelingReport.arc.arcShape;
+    evidence.firstAliveTurn = feelingReport.arc.firstAliveTurn;
+    evidence.firstFlatTurn = feelingReport.arc.firstFlatTurn;
+    evidence.strongestFriction = feelingReport.arc.strongestFrictionMoment?.frictionScore;
+    evidence.hasFeelingEvidence = true;
+  }
   evidence.scenarioId = id;
   const memoryQuery = loadedTimeMachine.memoryQuery || answerMemoryQuery(loadedMemory, `what should we try next for ${id}?`, { limit: 4 });
   const unresolvedAssumptions = unresolvedAssumptionsFromEvidence({ scenario, memory: loadedMemory, timeMachine: loadedTimeMachine, evidence });
@@ -374,7 +397,7 @@ export function generateAutoSummaryEntry({
       command: recommendation.command || `npm run lab:entry -- --id=${id} --refresh-memory`,
       reason: recommendation.reason || 'Notebook evidence needs another pass.',
     },
-    citations: citationsForEntry({ timeMachine: loadedTimeMachine, memoryQuery }),
+    citations: citationsForEntry({ timeMachine: loadedTimeMachine, memoryQuery, feelingReport }),
     timelineReferences: asArray(loadedTimeMachine.timeline).slice(-6).map((point) => compact({
       id: point.id,
       generatedAt: point.generatedAt,

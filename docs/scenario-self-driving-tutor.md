@@ -39,6 +39,7 @@ npm run tutor:doctor -- --markdown
 - Playable Design Memory
 - Scenario Time Machine
 - Scenario Lab Notebook
+- Player Feeling Black Box
 - Scenario definitions
 - Existing simulator, Oracle, Setup Forge, Autopilot, and auto-tune evidence through Memory
 
@@ -63,5 +64,7 @@ Each tutor lesson contains:
 - blockers
 - citations
 - graduation status
+
+When a Player Feeling Black Box report exists, lessons can target late first-alive turns, flat arcs, panic loops, and friction spikes. The verification chain includes `npm run feel:scenario` so the lesson can prove that touching controls made the board feel more alive.
 
 The tutor never edits balance or scenario files. It recommends and records learning work; Autopilot, scenario tools, and humans still make changes intentionally.

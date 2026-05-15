@@ -45,6 +45,7 @@ npm run lab:doctor -- --markdown
 - Scenario definitions from `simulator.scenarios.json`
 - Playable Design Memory evidence from simulator, Oracle, Setup Forge, Autopilot, and auto-tune reports
 - Scenario Time Machine trend reports
+- Player Feeling Black Box reports
 - Prior notebook entries and decisions
 
 ## What It Writes
@@ -58,6 +59,17 @@ npm run lab:doctor -- --markdown
 - public UI copies under `app/public/simulator/lab-notebook/`
 
 The `/simulator` workbench reads the public copies and shows the latest notebook entry for the current scenario.
+
+## Player Feeling Black Box
+
+Notebook entries include feeling evidence when a black-box report exists for the scenario:
+
+```sh
+npm run feel:scenario -- --id=escape-pressure-4p
+npm run lab:entry -- --id=escape-pressure-4p
+```
+
+The entry records arc score, arc shape, first alive turn, first flat turn, and strongest friction in the evidence summary. Latest learning text calls out the felt-control arc alongside health and readiness.
 
 ## Scenario Self-Driving Tutor
 

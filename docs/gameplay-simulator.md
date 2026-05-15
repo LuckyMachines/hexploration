@@ -235,6 +235,21 @@ It writes `reports/simulator/lab-notebook/<scenario-id>/latest-entry.json` and `
 
 See [scenario-lab-notebook.md](scenario-lab-notebook.md) for entry types, decisions, readiness labels, and output paths.
 
+## Player Feeling Black Box
+
+Player Feeling Black Box turns exact-engine turn evidence into a felt-control arc:
+
+```bash
+npm run feel:latest
+npm run feel:scenario -- --id=escape-pressure-4p
+npm run feel:scenario -- --id=escape-pressure-4p --markdown
+npm run feel:doctor
+```
+
+It writes `reports/simulator/feeling-black-box/<scenario-id>/latest-report.json` and `app/public/simulator/feeling-black-box/<scenario-id>/latest-report.json`, which the `/simulator` workbench displays in the Player Feeling Black Box panel. Memory, Time Machine, Lab Notebook, and Tutor consume these reports so input feel can influence recommendations.
+
+See [player-feeling-black-box.md](player-feeling-black-box.md) for labels, arc scoring, outputs, and commands.
+
 ## Scenario Self-Driving Tutor
 
 Scenario Self-Driving Tutor turns evidence into an ordered gameplay curriculum:

@@ -142,6 +142,18 @@ export function timelinePointFromEvent(event = {}) {
       recommendation: evidence.recommendation,
       dryRun: metrics.dryRun,
     }) : undefined,
+    feeling: event.type === 'feelingReport' ? compact({
+      arcScore: metrics.arcScore,
+      arcShape: metrics.arcShape,
+      firstAliveTurn: metrics.firstAliveTurn,
+      firstFlatTurn: metrics.firstFlatTurn,
+      bestMomentLabel: metrics.bestMomentLabel,
+      worstMomentLabel: metrics.worstMomentLabel,
+      strongestAgency: metrics.strongestAgency,
+      strongestFriction: metrics.strongestFriction,
+      recommendation: evidence.recommendation?.title,
+      warnings: asArray(evidence.warnings),
+    }) : undefined,
     tags: event.tags || [],
     systems: event.systems || [],
     citation: citationForEvent(event),
@@ -164,6 +176,10 @@ export function healthForPoint(point = {}) {
   if (point.simulator?.lifeScore !== undefined) {
     score = score * 0.75 + number(point.simulator.lifeScore) * 0.25;
     reasons.push(`simulator life ${Math.round(number(point.simulator.lifeScore))}`);
+  }
+  if (point.feeling?.arcScore !== undefined) {
+    score = score * 0.72 + number(point.feeling.arcScore) * 0.28;
+    reasons.push(`feeling arc ${Math.round(number(point.feeling.arcScore))}`);
   }
   const confidence = point.oracle?.confidence ?? point.autopilot?.confidence;
   if (confidence !== undefined) {
@@ -227,6 +243,7 @@ export function comparePoints(current = null, baseline = null) {
       setupFidelity: number(current.setup?.fidelity, NaN) - number(baseline.setup?.fidelity, NaN),
       lifeScore: number(current.simulator?.lifeScore, NaN) - number(baseline.simulator?.lifeScore, NaN),
       flatTurnRate: number(current.simulator?.flatTurnRate, NaN) - number(baseline.simulator?.flatTurnRate, NaN),
+      feelingArcScore: number(current.feeling?.arcScore, NaN) - number(baseline.feeling?.arcScore, NaN),
     },
     summary: summarizeDelta(current, baseline),
     citations: [baseline.citation, current.citation].filter(Boolean),
@@ -370,6 +387,18 @@ export function recommendationForTimeline({ scenarioId, timeline = [], trend = '
       citations: [latest.citation].filter(Boolean),
     };
   }
+  const latestFeeling = latest.feeling || [...timeline].reverse().find((point) => point.feeling)?.feeling;
+  const latestFeelingCitation = latest.feeling ? latest.citation : [...timeline].reverse().find((point) => point.feeling)?.citation;
+  if (latestFeeling && number(latestFeeling.arcScore, 100) < 55) {
+    return {
+      priority: 'medium',
+      type: 'feeling',
+      title: `Improve the felt control arc for ${scenarioId}`,
+      command: `npm run feel:scenario -- --id=${scenarioId} --markdown`,
+      reason: `Latest feeling arc is ${latestFeeling.arcShape || 'unknown'} at score ${latestFeeling.arcScore}.`,
+      citations: [latestFeelingCitation].filter(Boolean),
+    };
+  }
   const weak = latest.oracle?.weakestMetric || timeline.findLast?.((point) => point.oracle?.weakestMetric)?.oracle?.weakestMetric;
   if (weak) {
     return {
@@ -468,6 +497,7 @@ function publicTimelinePoint(point) {
     setup: point.setup,
     autopilot: point.autopilot,
     autoTune: point.autoTune,
+    feeling: point.feeling,
     citation: point.citation,
   });
 }
