@@ -42,6 +42,15 @@
     "oracle:doctor": "node scripts/gameplay-oracle.mjs doctor",
     "oracle:ci": "node scripts/gameplay-oracle.mjs ci",
     "oracle:test": "node --test scripts/gameplay-oracle-utils.test.mjs",
+    "setup:forge": "node scripts/scenario-setup-forge.mjs forge",
+    "setup:validate": "node scripts/scenario-setup-forge.mjs validate",
+    "setup:doctor": "node scripts/scenario-setup-forge.mjs doctor",
+    "setup:matrix": "node scripts/scenario-setup-forge.mjs matrix",
+    "setup:explain": "node scripts/scenario-setup-forge.mjs explain",
+    "setup:author": "node scripts/scenario-setup-forge.mjs author",
+    "setup:variant": "node scripts/scenario-setup-forge.mjs variant",
+    "setup:backlog": "node scripts/scenario-setup-forge.mjs backlog",
+    "setup:test": "node --test scripts/setup-forge-utils.test.mjs",
     "test:e2e:anvil": "node scripts/run-anvil-e2e.mjs"
   },
   "repository": {

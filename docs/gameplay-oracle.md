@@ -27,9 +27,11 @@ Run a scenario through the same engine first:
 npm run oracle:scenario -- --id=escape-pressure-4p --run
 ```
 
+When a scenario has a `setupForge` block, `--run` applies the supported setup fields before measured turns begin and embeds setup evidence in the Oracle report.
+
 Useful options:
 
-- `--gate`: exits non-zero if Oracle regression gates fail.
+- `--gate`: exits non-zero if Oracle regression gates fail, including unmet required setup levels.
 - `--baseline=<path>`: compares against a prior Oracle JSON report.
 - `--markdown`: prints Markdown to stdout.
 - `--next-only`: prints only the smallest next experiment.
@@ -47,6 +49,8 @@ Useful options:
 - `reports/simulator/scenarios/<scenario-id>/latest-oracle.json`
 - `reports/simulator/scenarios/<scenario-id>/latest-oracle.md`
 - `app/public/simulator/oracle/latest-oracle.json`
+
+Oracle reports include a `setup` object with the applied level, required level, applied/skipped/failed counts, and critical skipped fields.
 
 ## Scores
 
@@ -84,3 +88,5 @@ The Oracle scores ten experience dimensions from `0-100`:
 ## Limitations
 
 The Oracle is a design assistant, not perfect truth. Its confidence drops when batch size is low, only one strategy was run, scenario setup assumptions are not engine-enforced, or telemetry is missing. Unsupported assumptions are reported explicitly rather than treated as proven facts.
+
+Setup confidence is intentionally conservative: exact Setup Forge application can raise confidence, while skipped critical fields or an unmet required setup level lower confidence and can turn an otherwise useful readout into a blocked verdict.

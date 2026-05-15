@@ -49,6 +49,10 @@ const SAMPLE_REPORT = {
   autoTune: null,
   scenarioVerdict: null,
   scenarioDefinition: null,
+  setupForge: null,
+  setupApplication: null,
+  setupLevel: 'metadata',
+  setupPreludeTurns: [],
   oracle: null,
 };
 
@@ -493,6 +497,172 @@ function AutoTunePanel({ report }) {
   );
 }
 
+function setupTone(level) {
+  if (level === 'exact') return 'green';
+  if (level === 'partial') return 'gold';
+  if (level === 'blocked') return 'red';
+  return 'blue';
+}
+
+function SetupForgePanel({ report = {} }) {
+  const setupForge = report.setupForge;
+  const application = report.setupApplication || {};
+  const hasSetup = Boolean(setupForge || application.support?.length || application.applied?.length || application.skipped?.length);
+  const level = report.setupLevel || application.level || setupForge?.requiredSetupLevel || 'metadata';
+  const support = application.support || [];
+  const applied = application.applied || [];
+  const skipped = application.skipped || [];
+  const failed = application.failed || [];
+  const criticalSkipped = skipped.filter((item) => item.critical || /landing|artifact|stat|location/i.test(`${item.field || ''} ${item.label || ''}`));
+  const warnings = application.warnings || [];
+  const errors = application.errors || [];
+  const diff = report.oracle?.evidence?.setupDiff || application.diff || null;
+  const preludeTurns = report.setupPreludeTurns || [];
+
+  if (!hasSetup) {
+    return (
+      <section className="mt-4 rounded border border-exp-border bg-exp-panel p-4">
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div>
+            <h2 className="font-mono text-xs uppercase tracking-[0.3em] text-exp-text-dim">
+              Scenario Setup Forge
+            </h2>
+            <p className="mt-1 font-mono text-xs leading-relaxed text-exp-text-dim">
+              Setup Forge turns authored starting conditions into exact contract writes where the deployed engine exposes safe setup hooks.
+            </p>
+          </div>
+          <span className="rounded border border-blueprint/35 bg-blueprint/10 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.2em] text-blueprint">
+            Metadata only
+          </span>
+        </div>
+        <pre className="mt-3 overflow-x-auto rounded border border-exp-border bg-exp-dark/60 p-3 font-mono text-[11px] text-compass-bright">
+          {`npm run setup:explain -- --id=escape-pressure-4p\nnpm run scenario:run -- --id=escape-pressure-4p --setup-mode=best-effort`}
+        </pre>
+      </section>
+    );
+  }
+
+  const requestedPlayers = setupForge?.players || [];
+  const board = setupForge?.board || {};
+
+  return (
+    <section className="mt-4 rounded border border-exp-border bg-exp-panel p-4">
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <h2 className="font-mono text-xs uppercase tracking-[0.3em] text-exp-text-dim">
+            Scenario Setup Forge
+          </h2>
+          <p className="mt-1 font-mono text-xs leading-relaxed text-exp-text-dim">
+            Contract-applied starting state, skipped setup claims, and the exactness level the Oracle used for this report.
+          </p>
+        </div>
+        <div className={`rounded border px-3 py-2 text-right ${
+          setupTone(level) === 'green'
+            ? 'border-oxide-green/35 bg-oxide-green/10 text-oxide-green'
+            : setupTone(level) === 'red'
+              ? 'border-signal-red/35 bg-signal-red/10 text-signal-red'
+              : setupTone(level) === 'gold'
+                ? 'border-compass/35 bg-compass/10 text-compass-bright'
+                : 'border-blueprint/35 bg-blueprint/10 text-blueprint'
+        }`}>
+          <p className="font-mono text-[10px] uppercase tracking-[0.2em]">
+            {level}
+          </p>
+          <p className="mt-1 font-mono text-[11px] uppercase tracking-[0.16em]">
+            required {setupForge?.requiredSetupLevel || application.requiredSetupLevel || 'metadata'}
+          </p>
+        </div>
+      </div>
+
+      <div className="mt-3 grid gap-3 md:grid-cols-4">
+        <Metric label="Applied" value={applied.length} tone="green" />
+        <Metric label="Skipped" value={skipped.length} tone={skipped.length ? 'gold' : 'green'} />
+        <Metric label="Failed" value={failed.length} tone={failed.length ? 'red' : 'green'} />
+        <Metric label="Prelude" value={preludeTurns.length || setupForge?.scriptedPrelude?.turns || 0} tone="blue" />
+      </div>
+
+      <div className="mt-3 grid gap-3 lg:grid-cols-[minmax(0,1fr)_minmax(300px,0.8fr)]">
+        <div className="rounded border border-exp-border/60 bg-exp-dark/35 px-3 py-2">
+          <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-exp-text-dim">
+            Requested setup
+          </p>
+          <div className="mt-2 grid gap-2 md:grid-cols-2">
+            {requestedPlayers.length > 0 ? requestedPlayers.map((player) => (
+              <div key={player.playerId || player.playerIndex} className="rounded border border-exp-border/50 px-2 py-2">
+                <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-compass-bright">
+                  P{player.playerId || player.playerIndex + 1}
+                </p>
+                <p className="mt-1 font-mono text-[11px] text-exp-text-dim">
+                  Stats {player.stats ? `${player.stats.movement}/${player.stats.agility}/${player.stats.dexterity}` : 'default'} / loc {player.location || 'start'}
+                </p>
+                <p className="mt-1 font-mono text-[11px] text-exp-text-dim">
+                  Items {(player.inventory || []).join(', ') || 'none'} / artifacts {(player.artifacts || []).join(', ') || 'none'}
+                </p>
+              </div>
+            )) : (
+              <p className="font-mono text-xs text-exp-text-dim">No player setup requested.</p>
+            )}
+          </div>
+          <p className="mt-2 font-mono text-[11px] leading-relaxed text-exp-text-dim">
+            Revealed {(board.revealedZones || []).join(', ') || 'none'} / terrain {Object.keys(board.terrain || {}).length} / landing {board.landingZone || 'engine default'} / camps {(board.campsites || []).join(', ') || 'none'}
+          </p>
+        </div>
+
+        <div className="rounded border border-exp-border/60 bg-exp-dark/35 px-3 py-2">
+          <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-exp-text-dim">
+            Support matrix
+          </p>
+          <div className="mt-2 space-y-1">
+            {support.length > 0 ? support.slice(0, 8).map((field) => (
+              <div key={`${field.key}-${field.label}`} className="flex items-center justify-between gap-2 font-mono text-[11px]">
+                <span className="text-exp-text">{field.label || field.key}</span>
+                <span className={field.exact ? 'text-oxide-green' : field.status === 'contractBlocked' ? 'text-signal-red' : 'text-compass-bright'}>
+                  {field.exact ? 'exact' : field.status}
+                </span>
+              </div>
+            )) : (
+              <p className="font-mono text-xs text-exp-text-dim">No setup fields requested.</p>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {(criticalSkipped.length > 0 || failed.length > 0 || warnings.length > 0 || errors.length > 0) && (
+        <div className="mt-3 grid gap-3 lg:grid-cols-2">
+          <div className="rounded border border-compass/30 bg-compass/5 px-3 py-2">
+            <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-compass">
+              Skipped or blocked
+            </p>
+            <div className="mt-2 space-y-1">
+              {[...criticalSkipped, ...failed].slice(0, 6).map((item, index) => (
+                <p key={`${item.field}-${index}`} className="font-mono text-[11px] leading-relaxed text-exp-text-dim">
+                  {item.label || item.field}: {item.reason || item.error || item.status}
+                </p>
+              ))}
+              {criticalSkipped.length === 0 && failed.length === 0 && warnings.slice(0, 3).map((warning) => (
+                <p key={warning} className="font-mono text-[11px] leading-relaxed text-exp-text-dim">{warning}</p>
+              ))}
+            </div>
+          </div>
+          <div className="rounded border border-signal-red/25 bg-signal-red/5 px-3 py-2">
+            <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-signal-red">
+              Gate evidence
+            </p>
+            <p className="mt-2 font-mono text-[11px] leading-relaxed text-exp-text-dim">
+              {(errors || []).concat(warnings || []).slice(0, 4).join(' / ') || 'No setup gate warnings.'}
+            </p>
+            {diff?.mismatches?.length > 0 && (
+              <p className="mt-1 font-mono text-[11px] leading-relaxed text-compass-bright">
+                Mismatches: {diff.mismatches.slice(0, 3).map((item) => item.label || item.field).join(', ')}
+              </p>
+            )}
+          </div>
+        </div>
+      )}
+    </section>
+  );
+}
+
 function OraclePanel({ oracle, history = [] }) {
   if (!oracle) {
     return (
@@ -710,7 +880,7 @@ function ScenarioBrowser({ scenarios = [], verdict, oracle }) {
             </div>
             {oracle?.scenarioId === scenario.id && (
               <p className="mt-1 font-mono text-[11px] uppercase tracking-[0.16em] text-oxide-green">
-                Oracle: {oracle.oracleVerdict} / score {oracle.weightedScore} / next {oracle.smallestNextExperiment?.title || 'none'}
+                Oracle: {oracle.oracleVerdict} / score {oracle.weightedScore} / setup {oracle.setup?.level || 'metadata'} / next {oracle.smallestNextExperiment?.title || 'none'}
               </p>
             )}
             <p className="mt-1 font-mono text-xs leading-relaxed text-exp-text">
@@ -728,6 +898,9 @@ function ScenarioBrowser({ scenarios = [], verdict, oracle }) {
             </p>
             <p className="mt-1 font-mono text-[11px] leading-relaxed text-exp-text-dim">
               Assumptions: {(scenario.assumptions || []).join(' / ') || 'none'}
+            </p>
+            <p className="mt-1 font-mono text-[11px] leading-relaxed text-blueprint">
+              Setup: {scenario.setupLevel || 'metadata'} / {(scenario.setupClaims || []).join(' / ') || 'no setup claims'}
             </p>
             <pre className="mt-2 overflow-x-auto rounded border border-exp-border/60 bg-exp-dark/50 p-2 font-mono text-[10px] text-compass-bright">
               {scenario.command}
@@ -1162,7 +1335,7 @@ export default function SimulatorPage() {
   const tuning = report.tuning || SAMPLE_REPORT.tuning;
   const funDebugger = report.funDebugger || SAMPLE_REPORT.funDebugger;
   const oracle = oracleReport || report.oracle || SAMPLE_REPORT.oracle;
-  const command = `node scripts/gameplay-simulator.mjs --scenario=benchmark --batch=3 --note="first pass" --hypothesis="movement should reveal faster"`;
+  const command = `node scripts/gameplay-simulator.mjs --scenario=benchmark --batch=3 --setup-mode=best-effort --note="first pass" --hypothesis="movement should reveal faster"`;
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-6">
@@ -1264,6 +1437,7 @@ export default function SimulatorPage() {
 
       <InsightPanel aggregate={aggregate} summary={summary} />
       <FunDebuggerPanel funDebugger={funDebugger} />
+      <SetupForgePanel report={report} />
       <OraclePanel oracle={oracle} history={oracleHistory} />
       <AutoTunePanel report={autoTuneReport} />
       <ScenarioBrowser scenarios={SCENARIO_CATALOG} verdict={report.scenarioVerdict} oracle={oracle} />

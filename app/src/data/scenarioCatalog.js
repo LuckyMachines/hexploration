@@ -7,7 +7,9 @@ export const SCENARIO_CATALOG = [
     turns: 12,
     strategies: ['dig', 'balanced', 'risky'],
     designQuestion: 'Does artifact hunting produce payoff before the run goes flat?',
-    assumptions: ['playerStats: not enforced yet'],
+    assumptions: ['playerStats: exact setup', 'revealedZones: exact setup', 'landingZone: contract-blocked'],
+    setupLevel: 'partial',
+    setupClaims: ['stats', 'inventory', 'terrain', 'reveals'],
     command: 'npm run scenario:run -- --id=solo-artifact-hunt',
   },
   {
@@ -18,7 +20,9 @@ export const SCENARIO_CATALOG = [
     turns: 10,
     strategies: ['balanced', 'rest', 'move', 'risky'],
     designQuestion: 'Does escape pressure create interesting cooperation instead of pure panic?',
-    assumptions: ['playerStats: not enforced yet', 'artifactsHeld: not enforced yet', 'landingRevealed: observed only'],
+    assumptions: ['playerStats: exact setup', 'artifactsHeld: exact setup', 'landingZone: contract-blocked'],
+    setupLevel: 'partial',
+    setupClaims: ['low stats', 'artifact holder', 'spread positions', 'campsite', 'prelude'],
     command: 'npm run scenario:run -- --id=escape-pressure-4p',
   },
 ];

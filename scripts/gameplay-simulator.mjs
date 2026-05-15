@@ -39,6 +39,13 @@ import {
   readOracleHistory,
   writeOracleReport,
 } from './gameplay-oracle-utils.mjs';
+import {
+  applySetupForge,
+  compareRequestedToActualSetup,
+  normalizeSetupForge,
+  setupApplicationLevel,
+  writeSetupReport,
+} from './setup-forge-utils.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = resolve(__dirname, '..');
@@ -121,6 +128,8 @@ const config = {
   designQuestion: String(arg('design-question', '')),
   tags: String(arg('tags', '')).split(',').map((value) => value.trim()).filter(Boolean),
   initialAssumptionMode: String(arg('initial-assumption-mode', 'metadata')),
+  useSetupForge: boolArg('setup-forge', false),
+  setupMode: String(arg('setup-mode', 'best-effort')),
   scenarioDefinition,
   baseline: arg('baseline', null),
   saveBaseline: boolArg('save-baseline', false),
@@ -313,9 +322,13 @@ function readBroadcastAddresses() {
   if (!existsSync(broadcastLatest)) return {};
   const json = readJson(broadcastLatest);
   const byName = {};
+  const gameTokens = [];
   for (const tx of json.transactions || []) {
     if (tx.contractName && tx.contractAddress) byName[tx.contractName] = tx.contractAddress;
+    if (tx.contractName === 'GameToken' && tx.contractAddress) gameTokens.push(tx.contractAddress);
   }
+  if (gameTokens[0]) byName.DAY_NIGHT_TOKEN = gameTokens[0];
+  if (gameTokens[3]) byName.ITEM_TOKEN = gameTokens[3];
   return byName;
 }
 
@@ -337,6 +350,10 @@ function loadAddresses() {
     GAME_SETUP: env.VITE_GAME_SETUP_ADDRESS || broadcast.GameSetup,
     QUEUE: env.VITE_GAME_QUEUE_ADDRESS || broadcast.XenovoyaQueue,
     GAMEPLAY: broadcast.XenovoyaGameplay || env.GAMEPLAY,
+    CHARACTER_CARD: env.VITE_CHARACTER_CARD_ADDRESS || broadcast.CharacterCard,
+    TOKEN_INVENTORY: env.VITE_TOKEN_INVENTORY_ADDRESS || broadcast.TokenInventory,
+    ITEM_TOKEN: env.VITE_ITEM_TOKEN_ADDRESS || broadcast.ITEM_TOKEN,
+    DAY_NIGHT_TOKEN: env.VITE_DAY_NIGHT_TOKEN_ADDRESS || broadcast.DAY_NIGHT_TOKEN,
   };
 
   for (const key of ['BOARD', 'CONTROLLER', 'GAME_SUMMARY', 'PLAYER_SUMMARY', 'GAME_REGISTRY', 'GAME_SETUP', 'QUEUE', 'GAMEPLAY']) {
@@ -1779,7 +1796,61 @@ async function runSimulation(addresses, runConfig) {
   if (seats.length === 0) throw new Error('No simulator seats registered.');
 
   await progressEngine(addresses);
+  const setupForge = runConfig.useSetupForge && runConfig.scenarioDefinition?.setupForge
+    ? normalizeSetupForge(runConfig.scenarioDefinition.setupForge, runConfig.scenarioDefinition)
+    : null;
+  let setupApplication = null;
+  if (setupForge) {
+    setupApplication = await applySetupForge({
+      writeContract,
+      readContract,
+    }, {
+      addresses,
+      gameId,
+      seats,
+      scenario: runConfig.scenarioDefinition,
+      deployerWallet,
+      deployerAddress: deployer.address,
+    }, setupForge, {
+      mode: runConfig.setupMode,
+    });
+  }
+  const preludeTurns = [];
+  if (setupForge?.scriptedPrelude?.turns > 0) {
+    const preludeStrategies = setupForge.scriptedPrelude.strategies?.length > 0 ? setupForge.scriptedPrelude.strategies : [runConfig.strategy];
+    for (let preludeIndex = 0; preludeIndex < setupForge.scriptedPrelude.turns; preludeIndex += 1) {
+      const preludeConfig = {
+        ...runConfig,
+        strategy: preludeStrategies[preludeIndex % preludeStrategies.length] || runConfig.strategy,
+        seed: `${runConfig.seed}:prelude:${preludeIndex + 1}`,
+      };
+      await progressEngine(addresses);
+      const queueId = await currentQueueId(addresses, gameId);
+      const queuePhase = await getPhase(addresses, queueId);
+      const before = await snapshot(addresses, gameId, seats, `setup-prelude-${preludeIndex + 1}-before`);
+      if (queuePhase === PROCESSING_PHASE.SUBMISSION) {
+        const submissions = await submitTurnActions(addresses, gameId, queueId, preludeIndex + 1, seats, before, preludeConfig);
+        const progressCount = await progressEngine(addresses);
+        const after = await snapshot(addresses, gameId, seats, `setup-prelude-${preludeIndex + 1}-after`);
+        preludeTurns.push({ turn: preludeIndex + 1, queueId, submissions, progressCount, before, after, setupPrelude: true });
+      } else {
+        const after = await snapshot(addresses, gameId, seats, `setup-prelude-${preludeIndex + 1}-after`);
+        preludeTurns.push({ turn: preludeIndex + 1, queueId, skipped: true, reason: `Queue phase is ${PHASE_LABEL[queuePhase] || 'not ready for submission'}`, before, after, setupPrelude: true });
+      }
+    }
+    if (setupApplication) {
+      setupApplication.prelude = {
+        turns: preludeTurns.length,
+        strategies: preludeStrategies,
+        discardPreludeFromMetrics: setupForge.scriptedPrelude.discardPreludeFromMetrics,
+      };
+    }
+  }
   const initial = await snapshot(addresses, gameId, seats, 'initial');
+  if (setupForge && setupApplication) {
+    setupApplication.actualDiff = compareRequestedToActualSetup(setupForge, initial);
+    setupApplication.setupLevel = setupApplicationLevel(setupApplication);
+  }
   const report = {
     schemaVersion: 1,
     generatedAt: new Date().toISOString(),
@@ -1790,6 +1861,10 @@ async function runSimulation(addresses, runConfig) {
     gameId,
     players: seats.map((seat) => ({ playerId: seat.playerId, address: seat.account.address })),
     initial,
+    setupForge,
+    setupApplication,
+    setupLevel: setupApplication?.setupLevel || (setupForge ? 'metadata' : 'none'),
+    setupPreludeTurns: preludeTurns,
     turns: [],
   };
 
@@ -1905,6 +1980,17 @@ async function main() {
   if (oracleTask) report.tasks = [oracleTask, ...report.tasks].slice(0, 12);
 
   const paths = await writeReport(report);
+  if (report.setupForge || report.setupApplication) {
+    const setupPaths = writeSetupReport({
+      generatedAt: report.generatedAt,
+      scenarioId: report.scenarioDefinition?.id || report.config?.scenario,
+      setupForge: report.setupForge,
+      setupApplication: report.setupApplication,
+      setupLevel: report.setupLevel,
+    }, report.scenarioDefinition?.id || null);
+    paths.setupLatestPath = setupPaths.latest;
+    paths.setupPublicPath = setupPaths.publicLatest;
+  }
   const oraclePaths = writeOracleReport(report.oracle, { scenarioId: null, markdown: true });
   if (report.scenarioDefinition?.id) writeOracleReport(report.oracle, { scenarioId: report.scenarioDefinition.id, markdown: true });
   paths.oracleLatestPath = oraclePaths.latest;

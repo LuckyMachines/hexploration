@@ -202,6 +202,64 @@ function initialAssumptionsFromText(text) {
   return assumptions;
 }
 
+function setupForgeFromText(text, tags, players) {
+  const lower = text.toLowerCase();
+  const exhausted = lower.match(/(\d+|one|two|three|four)\s+exhausted/);
+  const exhaustedCount = exhausted ? ({ one: 1, two: 2, three: 3, four: 4 }[exhausted[1]] || Number(exhausted[1]) || 1) : /(exhausted|weak|injured|low stat)/.test(lower) ? 1 : 0;
+  const setupPlayers = [];
+  for (let index = 0; index < Math.min(players, exhaustedCount); index += 1) {
+    setupPlayers.push({
+      playerIndex: index,
+      stats: { movement: 1, agility: 1, dexterity: 1 },
+      critical: true,
+      notes: 'Parsed exhausted player setup.',
+    });
+  }
+  if (/artifact/.test(lower) && /(has|with|holding|one artifact)/.test(lower)) {
+    const targetIndex = Math.min(players - 1, setupPlayers.length > 0 ? 1 : 0);
+    const existing = setupPlayers.find((player) => player.playerIndex === targetIndex) || { playerIndex: targetIndex };
+    existing.artifacts = ['Engraved Tablet'];
+    existing.critical = true;
+    if (!setupPlayers.includes(existing)) setupPlayers.push(existing);
+  }
+  if (/(separated|split|spread out)/.test(lower)) {
+    for (let index = 0; index < players; index += 1) {
+      const existing = setupPlayers.find((player) => player.playerIndex === index) || { playerIndex: index };
+      existing.location = ['0,0', '1,0', '0,1', '1,1'][index] || '0,0';
+      if (!setupPlayers.includes(existing)) setupPlayers.push(existing);
+    }
+  }
+  const dayMatch = lower.match(/day\s+(\d+)/);
+  const landing = /landing.*revealed|revealed.*landing|landing.*relevance|escape/.test(lower);
+  return {
+    schemaVersion: 1,
+    requiredSetupLevel: tags.includes('escape') || tags.includes('cooperation') || tags.includes('artifact') ? 'partial' : 'metadata',
+    players: setupPlayers,
+    board: {
+      revealedZones: landing ? ['0,0', '1,0', '1,1'] : [],
+      terrain: landing ? { '0,0': 'LandingSite', '1,0': 'Jungle', '1,1': 'Plains' } : {},
+      landingZone: landing ? '0,0' : '',
+      campsites: /camp|campsite/.test(lower) ? ['1,0'] : [],
+    },
+    time: {
+      day: dayMatch ? Number(dayMatch[1]) : null,
+      phase: /night/.test(lower) ? 'Night' : /day/.test(lower) ? 'Day' : '',
+    },
+    pressure: {
+      strategies: tags.includes('escape') ? ['risky', 'move'] : tags.includes('artifact') ? ['dig'] : [],
+      escapePressure: tags.includes('escape'),
+      lowStatPressure: exhaustedCount > 0 || tags.includes('survival'),
+      notes: text,
+    },
+    scriptedPrelude: {
+      turns: /pressure|day\s+[2-9]/.test(lower) ? 1 : 0,
+      strategies: tags.includes('escape') ? ['risky'] : ['balanced'],
+      discardPreludeFromMetrics: true,
+    },
+    notes: text,
+  };
+}
+
 export function parseScenarioIntent(text, overrides = {}) {
   const source = String(text || '').trim();
   const lower = source.toLowerCase();
@@ -243,6 +301,7 @@ export function parseScenarioIntent(text, overrides = {}) {
       related: [],
     },
     packs: tags.filter((tag) => ['exploration', 'artifact', 'escape', 'cooperation'].includes(tag)),
+    setupForge: overrides.setupForge || setupForgeFromText(source, tags, players),
     createdAt: now(),
     updatedAt: now(),
     archived: false,
@@ -286,6 +345,8 @@ export function normalizeScenario(scenario) {
     ladder: scenario.ladder || { prerequisites: [], easier: [], harder: [], related: [] },
     packs: scenario.packs || tags.filter((tag) => ['exploration', 'artifact', 'escape', 'cooperation'].includes(tag)),
     importance: scenario.importance || (tags.includes('artifact') || tags.includes('escape') || tags.includes('cooperation') ? 'core' : 'supporting'),
+    requiredSetupLevel: scenario.requiredSetupLevel || (tags.includes('artifact') || tags.includes('escape') || tags.includes('cooperation') ? 'partial' : 'metadata'),
+    setupForge: scenario.setupForge || null,
     oracleGoals: scenario.oracleGoals || {},
     createdAt: scenario.createdAt || now(),
     updatedAt: now(),
@@ -310,11 +371,30 @@ export function validateScenario(scenario, allScenarios = []) {
   const duplicates = allScenarios.filter((item) => item.id === scenario.id);
   if (duplicates.length > 1) errors.push(`duplicate id: ${scenario.id}`);
   for (const assumption of scenario.initialState?.assumptions || []) {
-    if (assumption.support === 'notYetSupported' || assumption.mode === 'notYetSupported') {
+    if ((assumption.support === 'notYetSupported' || assumption.mode === 'notYetSupported') && !assumptionCoveredBySetup(assumption, scenario)) {
       warnings.push(`${assumption.key} is stored as an assumption; not enforced by setup yet`);
     }
   }
+  if ((scenario.initialState?.assumptions || []).length > 0 && !scenario.setupForge) {
+    warnings.push('initial assumptions exist without setupForge fields');
+  }
+  if (scenario.requiredSetupLevel && !['metadata', 'partial', 'exact'].includes(scenario.requiredSetupLevel)) {
+    errors.push(`invalid requiredSetupLevel: ${scenario.requiredSetupLevel}`);
+  }
   return { ok: errors.length === 0, errors, warnings };
+}
+
+function assumptionCoveredBySetup(assumption = {}, scenario = {}) {
+  const setup = scenario.setupForge || {};
+  const players = setup.players || [];
+  const board = setup.board || {};
+  if (assumption.key === 'playerStats') return players.some((player) => player.stats);
+  if (assumption.key === 'artifactsHeld') return players.some((player) => player.artifacts?.length);
+  if (assumption.key === 'landingRevealed') return Boolean(board.landingZone || board.revealedZones?.length);
+  if (assumption.key === 'campsites') return Boolean(board.campsites?.length);
+  if (assumption.key === 'queuePhase') return Boolean(setup.time?.queuePhase);
+  if (assumption.key === 'dayNumber') return Boolean(setup.time?.day);
+  return Boolean(setup.setupId);
 }
 
 export function validateStore(store) {
@@ -342,6 +422,10 @@ export function compileScenarioArgs(scenario, extra = {}) {
   ];
   if (extra.quiet) args.push('--quiet');
   if (extra.balance) args.push(`--balance=${extra.balance}`);
+  if (normalized.setupForge && extra.setupForge !== false) {
+    args.push('--setup-forge');
+    args.push(`--setup-mode=${extra.setupMode || normalized.setupForge.modeHint || 'best-effort'}`);
+  }
   return args;
 }
 
@@ -400,7 +484,13 @@ export function evaluateScenarioReport(report, scenario) {
   const failureResults = (scenario.failureSignals || []).map((signal) => evaluateCheck(report, signal));
   const triggeredFailures = failureResults.filter((result) => result.pass);
   const passedTargets = targetResults.filter((result) => result.pass);
-  const unsupported = (scenario.initialState?.assumptions || []).filter((assumption) => assumption.support === 'notYetSupported' || assumption.mode === 'notYetSupported');
+  const setupLevel = report.setupLevel || report.oracle?.setup?.level || 'metadata';
+  const requiredSetupLevel = scenario.requiredSetupLevel || scenario.setupForge?.requiredSetupLevel || 'metadata';
+  const setupWasTooWeak = requiredSetupLevel !== 'metadata' && setupLevel === 'metadata';
+  const unsupported = (scenario.initialState?.assumptions || []).filter((assumption) => {
+    if (!(assumption.support === 'notYetSupported' || assumption.mode === 'notYetSupported')) return false;
+    return setupWasTooWeak || !assumptionCoveredBySetup(assumption, scenario);
+  });
   let verdict = 'answered';
   const reasons = [];
   if (triggeredFailures.length > 0) {

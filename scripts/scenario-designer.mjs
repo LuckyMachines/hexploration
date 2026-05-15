@@ -140,6 +140,8 @@ function runScenario(store) {
     scenarioFile: scenarioStorePath,
     quiet: boolArg('quiet', false),
     balance: arg('balance', undefined),
+    setupForge: !boolArg('no-setup-forge', false),
+    setupMode: arg('setup-mode', 'best-effort'),
   });
   if (result.status !== 0) {
     if (result.error) console.error(result.error.message);
@@ -157,7 +159,7 @@ function runPack(store) {
   for (const scenarioId of pack.scenarioIds || []) {
     const scenario = findScenario(store, scenarioId);
     if (!scenario) continue;
-    const result = runSimulatorForScenario(scenario, { scenarioFile: scenarioStorePath, quiet: true });
+    const result = runSimulatorForScenario(scenario, { scenarioFile: scenarioStorePath, quiet: true, setupForge: true, setupMode: arg('setup-mode', 'best-effort') });
     results.push({
       scenarioId,
       ok: result.status === 0,

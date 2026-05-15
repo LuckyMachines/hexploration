@@ -56,6 +56,43 @@
       },
       "packs": ["artifacts"],
       "importance": "core",
+      "requiredSetupLevel": "partial",
+      "setupForge": {
+        "schemaVersion": 1,
+        "requiredSetupLevel": "partial",
+        "players": [
+          {
+            "playerIndex": 0,
+            "stats": { "movement": 2, "agility": 2, "dexterity": 2 },
+            "inventory": ["Gryroscopic Drill"],
+            "critical": true,
+            "notes": "Creates low but playable stat pressure for artifact hunting."
+          }
+        ],
+        "board": {
+          "revealedZones": ["0,0", "1,0"],
+          "terrain": {
+            "0,0": "LandingSite",
+            "1,0": "Jungle"
+          },
+          "landingZone": "0,0",
+          "campsites": []
+        },
+        "time": {
+          "day": 1,
+          "phase": "Day"
+        },
+        "pressure": {
+          "strategies": ["dig", "balanced", "risky"],
+          "lowStatPressure": true,
+          "notes": "Dig-focused setup should make artifact payoff observable early."
+        },
+        "scriptedPrelude": {
+          "turns": 0,
+          "strategies": ["dig"],
+          "discardPreludeFromMetrics": true
+        }
+      },
       "oracleGoals": {
         "weights": {
           "agency": 1.35,
@@ -142,6 +179,66 @@
       },
       "packs": ["escape", "cooperation"],
       "importance": "core",
+      "requiredSetupLevel": "partial",
+      "setupForge": {
+        "schemaVersion": 1,
+        "requiredSetupLevel": "partial",
+        "players": [
+          {
+            "playerIndex": 0,
+            "stats": { "movement": 1, "agility": 1, "dexterity": 1 },
+            "critical": true,
+            "notes": "First exhausted player."
+          },
+          {
+            "playerIndex": 1,
+            "stats": { "movement": 1, "agility": 1, "dexterity": 1 },
+            "artifacts": ["Engraved Tablet"],
+            "critical": true,
+            "notes": "Second exhausted player and artifact pressure holder."
+          },
+          {
+            "playerIndex": 2,
+            "location": "1,0",
+            "critical": false,
+            "notes": "Separated enough to test cooperation readability."
+          },
+          {
+            "playerIndex": 3,
+            "location": "1,1",
+            "critical": false,
+            "notes": "Separated enough to test cooperation readability."
+          }
+        ],
+        "board": {
+          "revealedZones": ["0,0", "1,0", "1,1", "2,1"],
+          "terrain": {
+            "0,0": "LandingSite",
+            "1,0": "Jungle",
+            "1,1": "Plains",
+            "2,1": "Jungle"
+          },
+          "landingZone": "0,0",
+          "campsites": ["1,0"]
+        },
+        "time": {
+          "day": 3,
+          "phase": "Day",
+          "queuePhase": "Submission"
+        },
+        "pressure": {
+          "strategies": ["balanced", "rest", "move", "risky"],
+          "escapePressure": true,
+          "lowStatPressure": true,
+          "notes": "Escape pressure should create help, recovery, and flee decisions."
+        },
+        "scriptedPrelude": {
+          "turns": 1,
+          "strategies": ["risky", "rest"],
+          "stopWhen": "artifact-or-stat-pressure",
+          "discardPreludeFromMetrics": true
+        }
+      },
       "oracleGoals": {
         "weights": {
           "readability": 1.3,

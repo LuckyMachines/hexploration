@@ -44,6 +44,7 @@ npm run sim:autotune:dry
 npm run sim:autotune
 npm run scenario:create -- "4-player escape pressure with two exhausted players and one artifact"
 npm run scenario:run -- --id=escape-pressure-4p
+npm run setup:explain -- --id=escape-pressure-4p
 npm run oracle:latest
 npm run oracle:scenario -- --id=escape-pressure-4p
 ```
@@ -98,6 +99,7 @@ The simulator now emits raw run traces plus aggregate learning data:
 - Auto-tune history in `reports/simulator/experiments/index.json`.
 - Scenario Designer definitions in `simulator.scenarios.json`.
 - Plain-English scenario creation, validation, duplication, archiving, pack running, import/export, and report verdicts.
+- Scenario Setup Forge for applying authored starting stats, items, artifacts, reveals, terrain, campsites, pressure, and prelude turns before measured turns.
 - Scenario run history in `reports/simulator/scenarios/<scenario-id>/history.json`.
 - Gameplay Oracle verdicts in `reports/simulator/oracle/latest-oracle.json` and `/simulator`.
 - Opinionated warnings in `/simulator`.
@@ -135,19 +137,20 @@ Scenario fields:
 - `tags`, `initialState.assumptions`, `targets`, `failureSignals`
 - `notes`, `ladder`, `packs`, `version`, `createdFrom`, `parentScenarioId`
 
-Current setup support:
+Scenario Setup Forge support:
 
-- `playerStats`: not yet enforced by contract setup helpers.
-- `revealedZones`: not yet enforced.
-- `artifactsHeld`: not yet enforced.
-- `landingRevealed`, `campsites`, `queuePhase`, `dayNumber`: observed only.
+- `playerStats`, `inventory`, `artifacts`, `revealedZones`, `terrain`, and `campsites` are applied through existing role-gated contract hooks when a live simulator run has a local deployment.
+- `playerLocations`, `pressure`, and `scriptedPrelude` are partially supported because they rely on post-start movement or simulator-controlled setup turns.
+- `landingZone`, `currentDay`, and `queuePhase` are contract-blocked after game start and are reported honestly as skipped.
+- `events` are observed-only design evidence, not synthetic chain mutations.
 
-The report will never claim unsupported assumptions were enforced. For example, “two exhausted players” is stored as a design assumption and approximated through strategy/targets until a dev setup hook can set starting stats directly.
+The report will never claim unsupported assumptions were enforced. For example, a scenario can ask for a specific landing zone, but the setup report will keep that as contract-blocked until the engine exposes a safe pre-start setter.
 
 Scenario reports include:
 
 - `scenarioDefinition`: the full snapshot used for that run.
 - `scenarioVerdict`: `answered`, `inconclusive`, or `failed`.
+- `setupForge`, `setupApplication`, `setupLevel`, and `setupPreludeTurns`.
 - pass/fail target checks and triggered failure signals.
 - unsupported assumptions.
 - recommended follow-up scenario variant.
@@ -157,7 +160,11 @@ Scenario outputs:
 - `reports/simulator/scenarios/<scenario-id>/latest-report.json`
 - `reports/simulator/scenarios/<scenario-id>/run-<timestamp>.json`
 - `reports/simulator/scenarios/<scenario-id>/history.json`
+- `reports/simulator/scenarios/<scenario-id>/latest-setup-report.json`
+- `reports/simulator/scenarios/<scenario-id>/setup-history.json`
 - `app/public/simulator/scenarios/<scenario-id>/latest-report.json`
+
+See [scenario-setup-forge.md](scenario-setup-forge.md) for setup authoring, support levels, and the CLI workflow.
 
 ## Gameplay Oracle
 

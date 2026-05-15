@@ -620,6 +620,30 @@ function recommendationForWeakness(weakestMetric, scenario = {}, report = {}) {
 }
 
 export function recommendSmallestExperiment(scores, scenario, report) {
+  const criticalSkipped = (report.setupApplication?.skipped || []).filter((item) => {
+    const support = (report.setupApplication?.support || []).find((field) => field.key === item.field);
+    return support?.critical;
+  });
+  if (criticalSkipped.length > 0 || (report.setupForge?.requiredSetupLevel === 'exact' && report.setupLevel !== 'exact')) {
+    const scenarioId = scenario.id || report.config?.scenario || 'scenario';
+    return {
+      primary: {
+        id: slugify(`${scenarioId}-setup-support`),
+        priority: 'high',
+        confidence: 0.82,
+        expectedMetricMovement: { confidence: '+10 to +20' },
+        verificationCommand: scenario.id
+          ? `npm run setup:validate -- --id=${scenario.id} && npm run scenario:run -- --id=${scenario.id}`
+          : 'npm run setup:doctor',
+        title: 'Unlock blocked setup support first',
+        why: 'The design question depends on critical setup fields that were skipped or not enforced, so balance tuning would be weak evidence.',
+        changeType: 'scenario-setup-support',
+        targetFiles: ['scripts/setup-forge-utils.mjs', 'contracts', 'script/DeployXenovoya.s.sol'],
+        risk: 'Adding setup hooks must stay local/dev-scoped or tightly role-gated.',
+      },
+      alternatives: [],
+    };
+  }
   const sorted = Object.entries(scores).sort(([, a], [, b]) => a.score - b.score);
   const primary = recommendationForWeakness(sorted[0]?.[0] || 'agency', scenario, report);
   const alternatives = sorted.slice(1, 4).map(([metric]) => recommendationForWeakness(metric, scenario, report));
@@ -649,6 +673,15 @@ export function computeConfidence(report, scenario = {}, telemetryGaps = []) {
   if (strategies < 2) confidence -= 0.1;
   if (unsupported.length > 0) confidence -= Math.min(0.2, unsupported.length * 0.07);
   if (telemetryGaps.length > 0) confidence -= Math.min(0.25, telemetryGaps.length * 0.06);
+  const setupLevel = report.setupLevel || report.setupApplication?.setupLevel;
+  const criticalSkipped = (report.setupApplication?.skipped || []).filter((item) => {
+    const support = (report.setupApplication?.support || []).find((field) => field.key === item.field);
+    return support?.critical;
+  });
+  if (setupLevel === 'exact') confidence += 0.08;
+  else if (setupLevel === 'partial') confidence += 0.03;
+  else if (setupLevel === 'metadata') confidence -= 0.08;
+  if (criticalSkipped.length > 0) confidence -= Math.min(0.2, criticalSkipped.length * 0.08);
   return clamp(confidence, 0.1, 0.95);
 }
 
@@ -666,6 +699,8 @@ export function evaluateRegressionGate(oracle, baselineOracle = null, gateConfig
   const gates = { ...DEFAULT_ORACLE_GATES, ...gateConfig };
   const failures = [];
   if (gates.failOnBlocked && oracle.oracleVerdict === 'blocked') failures.push('oracle verdict is blocked');
+  if (oracle.setup?.requiredSetupLevel === 'exact' && oracle.setup?.level !== 'exact') failures.push(`required exact setup ran as ${oracle.setup?.level || 'none'}`);
+  if (oracle.setup?.requiredSetupLevel === 'partial' && ['metadata', 'none', undefined].includes(oracle.setup?.level)) failures.push(`required partial setup ran as ${oracle.setup?.level || 'none'}`);
   if (oracle.weightedScore < gates.minimumWeightedScore) failures.push(`weighted score ${oracle.weightedScore} < ${gates.minimumWeightedScore}`);
   if ((oracle.experienceScores.agency?.score || 0) < gates.minimumAgency) failures.push(`agency ${oracle.experienceScores.agency.score} < ${gates.minimumAgency}`);
   if ((oracle.experienceScores.readability?.score || 0) < gates.minimumReadability) failures.push(`readability ${oracle.experienceScores.readability.score} < ${gates.minimumReadability}`);
@@ -744,6 +779,8 @@ export function evaluateOracle(inputReport, scenarioInput = null, config = {}) {
       scenarioVerdict: report.scenarioVerdict || null,
       aggregateWarnings: report.aggregate?.warnings || [],
       telemetryGaps,
+      setupApplication: report.setupApplication || null,
+      setupDiff: report.setupApplication?.actualDiff || [],
     },
     diagnosis: diagnose(scores, scenario, report),
     recommendations,
@@ -759,6 +796,17 @@ export function evaluateOracle(inputReport, scenarioInput = null, config = {}) {
       description: assumption.description,
       support: assumption.support || assumption.mode,
     })),
+    setup: {
+      level: report.setupLevel || report.setupApplication?.setupLevel || (report.setupForge ? 'metadata' : 'none'),
+      requiredSetupLevel: report.setupForge?.requiredSetupLevel || scenario.requiredSetupLevel || 'metadata',
+      applied: report.setupApplication?.applied?.length || 0,
+      skipped: report.setupApplication?.skipped?.length || 0,
+      failed: report.setupApplication?.failed?.length || 0,
+      criticalSkipped: (report.setupApplication?.skipped || []).filter((item) => {
+        const support = (report.setupApplication?.support || []).find((field) => field.key === item.field);
+        return support?.critical;
+      }).length,
+    },
     scenarioMinimumFailures: minimumFailures,
   };
   oracle.gate = evaluateRegressionGate(oracle, config.baselineOracle, config.gates || {});
@@ -799,6 +847,8 @@ export function oracleSummaryEntry(oracle, extra = {}) {
     confidence: oracle.confidence,
     weakestScore: weakest ? { metric: weakest[0], score: weakest[1].score } : null,
     strongestScore: strongest ? { metric: strongest[0], score: strongest[1].score } : null,
+    setupLevel: oracle.setup?.level || 'none',
+    requiredSetupLevel: oracle.setup?.requiredSetupLevel || 'metadata',
     smallestNextExperiment: oracle.smallestNextExperiment?.title || null,
     commonFailurePattern: extra.commonFailurePattern || null,
     reportPath: extra.reportPath || null,
