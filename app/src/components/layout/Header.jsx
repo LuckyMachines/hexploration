@@ -15,6 +15,12 @@ export default function Header({ onHelpClick }) {
           </span>
         </Link>
         <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
+          <Link to="/play" className="rounded border border-compass/30 bg-compass/5 px-2 py-1 font-mono text-[10px] uppercase tracking-[0.16em] text-compass-bright">
+            Play
+          </Link>
+          <Link to="/challenge" className="rounded border border-blueprint/30 bg-blueprint/5 px-2 py-1 font-mono text-[10px] uppercase tracking-[0.16em] text-blueprint">
+            Challenge
+          </Link>
           <HelpButton onClick={onHelpClick} />
           <ScaleControl />
           <AutomationStatus />

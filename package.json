@@ -89,6 +89,8 @@
     "feel:index": "node scripts/player-feeling-black-box.mjs index",
     "feel:doctor": "node scripts/player-feeling-black-box.mjs doctor",
     "feel:test": "node --test scripts/player-feeling-black-box-utils.test.mjs",
+    "growth:report": "node scripts/growth-report.mjs",
+    "growth:test": "node --test scripts/growth-report-utils.test.mjs",
     "test:e2e:anvil": "node scripts/run-anvil-e2e.mjs"
   },
   "repository": {

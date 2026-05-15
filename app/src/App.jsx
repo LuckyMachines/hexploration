@@ -5,6 +5,14 @@ import HomePage from './pages/HomePage';
 import GamePage from './pages/GamePage';
 import GameUILab from './pages/GameUILab';
 import SimulatorPage from './pages/SimulatorPage';
+import {
+  CreateScenarioPage,
+  DevlogPage,
+  GrowthPlayPage,
+  ProgressPage,
+  ReplayPage,
+  ScenarioGalleryPage,
+} from './pages/GrowthPage';
 import Modal from './components/shared/Modal';
 import FieldManual from './components/help/FieldManual';
 import ErrorBoundary from './components/shared/ErrorBoundary';
@@ -28,6 +36,13 @@ export default function App() {
             <Route path="/game/:gameId" element={<GamePage />} />
             <Route path="/ui-lab" element={<GameUILab />} />
             <Route path="/simulator" element={<SimulatorPage />} />
+            <Route path="/play" element={<GrowthPlayPage />} />
+            <Route path="/challenge" element={<GrowthPlayPage challenge />} />
+            <Route path="/scenarios" element={<ScenarioGalleryPage />} />
+            <Route path="/replay/:runId" element={<ReplayPage />} />
+            <Route path="/progress" element={<ProgressPage />} />
+            <Route path="/devlog" element={<DevlogPage />} />
+            <Route path="/create-scenario" element={<CreateScenarioPage />} />
           </Routes>
         </ErrorBoundary>
       </main>

@@ -250,6 +250,19 @@ It writes `reports/simulator/feeling-black-box/<scenario-id>/latest-report.json`
 
 See [player-feeling-black-box.md](player-feeling-black-box.md) for labels, arc scoring, outputs, and commands.
 
+## Public Growth Loop
+
+The public growth loop gives players shareable seeded runs:
+
+```bash
+npm run growth:report
+npm run growth:report -- --markdown
+```
+
+Open `/play` for the public run, `/challenge` for the weekly fixed seed, `/scenarios` for the gallery, `/replay/<run-id>` for replay links, `/progress` for public scenario progress, `/devlog` for readable tuning notes, and `/create-scenario` for local creator previews.
+
+See [growth-loop.md](growth-loop.md) for metrics, routes, privacy notes, and the release checklist.
+
 ## Scenario Self-Driving Tutor
 
 Scenario Self-Driving Tutor turns evidence into an ordered gameplay curriculum:
