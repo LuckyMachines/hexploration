@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { Link, useLocation, useParams } from 'react-router-dom';
 import {
   applyGrowthAction,
+  actionPreviewFor,
   availableGrowthActions,
   buildCreatorScenario,
   buildDevlogEntries,
@@ -16,6 +17,7 @@ import {
   summarizeGrowthRun,
   WEEKLY_CHALLENGE,
 } from '../lib/growthLoop';
+import { funReportText } from '../lib/funLoop';
 
 const RUNS_KEY = 'xenovoya.growth.runs';
 const EVENTS_KEY = 'xenovoya.growth.events';
@@ -101,8 +103,13 @@ function GrowthFrame({ title, eyebrow, children, actions = null }) {
 
 function BoardState({ run }) {
   const tiles = Array.from({ length: 9 }, (_, index) => index);
+  const reaction = run.fun?.lastReactionClass || '';
   return (
-    <div className="rounded border border-exp-border bg-exp-panel p-4">
+    <div className={`rounded border border-exp-border bg-exp-panel p-4 ${reaction}`}>
+      <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+        <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-exp-text-dim">Board state</p>
+        {run.fun?.modifier && <ToneBadge tone="gold">{run.fun.modifier.name}</ToneBadge>}
+      </div>
       <div className="grid grid-cols-3 gap-2">
         {tiles.map((tile) => {
           const active = tile === Math.max(0, Math.min(8, 8 - run.state.distance * 2));
@@ -124,6 +131,55 @@ function BoardState({ run }) {
         <Metric label="Danger" value={run.state.danger} tone={run.state.danger > 70 ? 'red' : run.state.danger > 42 ? 'gold' : 'blue'} />
         <Metric label="Distance" value={run.state.distance} tone={run.state.distance <= 1 ? 'green' : 'blue'} />
       </div>
+      <div className="mt-3 flex flex-wrap gap-1">
+        {(run.fun?.roles || []).map((role) => <ToneBadge key={role.id}>{role.name}</ToneBadge>)}
+      </div>
+    </div>
+  );
+}
+
+function ActionPreview({ preview }) {
+  if (!preview) return null;
+  return (
+    <div className="mt-3 rounded border border-blueprint/30 bg-blueprint/5 px-3 py-2">
+      <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-blueprint">Action preview / {preview.intent}</p>
+      <div className="mt-2 grid gap-2 sm:grid-cols-2">
+        <p className="font-mono text-[11px] leading-relaxed text-exp-text-dim">Upside: {preview.upside}</p>
+        <p className="font-mono text-[11px] leading-relaxed text-exp-text-dim">Risk: {preview.risk}</p>
+      </div>
+      <p className="mt-2 font-mono text-xs leading-relaxed text-exp-text">{preview.line}</p>
+      {(preview.roleHook || preview.dangerHook || preview.digHook) && (
+        <p className="mt-1 font-mono text-[11px] leading-relaxed text-compass-bright">
+          {[preview.roleHook, preview.dangerHook, preview.digHook].filter(Boolean).join(' / ')}
+        </p>
+      )}
+    </div>
+  );
+}
+
+function FunReport({ run, compact = false }) {
+  const summary = summarizeGrowthRun(run);
+  const quality = summary.funQuality || {};
+  return (
+    <div className="rounded border border-oxide-green/25 bg-oxide-green/5 px-3 py-2">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-oxide-green">Fun Report</p>
+        <ToneBadge tone={quality.funVerdict === 'share-worthy' ? 'green' : quality.funVerdict === 'flat' ? 'red' : 'gold'}>{quality.funVerdict || 'unplayed'}</ToneBadge>
+      </div>
+      <p className="mt-2 font-mono text-xs leading-relaxed text-exp-text">{funReportText(quality)}</p>
+      {!compact && (
+        <div className="mt-3 grid gap-2 sm:grid-cols-3">
+          <Metric label="First alive" value={quality.firstAliveTurn ?? 'none'} tone={quality.gates?.firstAlive ? 'green' : 'gold'} />
+          <Metric label="Payoffs" value={quality.payoffMoments ?? 0} tone={quality.gates?.payoff ? 'green' : 'red'} />
+          <Metric label="Pressure" value={quality.pressureSpikes ?? 0} tone={quality.gates?.pressure ? 'gold' : 'blue'} />
+          <Metric label="Recovery" value={quality.recoveryMoments ?? 0} tone={quality.gates?.recovery ? 'green' : 'gold'} />
+          <Metric label="Flat streak" value={quality.longestFlatStreak ?? 0} tone={quality.gates?.flatStreak ? 'green' : 'red'} />
+          <Metric label="Share moment" value={quality.shareWorthyMoment?.momentTitle || quality.shareWorthyMoment?.feelingLabel || 'none'} tone={quality.gates?.shareWorthy ? 'green' : 'gold'} />
+        </div>
+      )}
+      {quality.recommendations?.length > 0 && (
+        <p className="mt-2 font-mono text-[11px] leading-relaxed text-compass-bright">Next fun fix: {quality.recommendations[0]}</p>
+      )}
     </div>
   );
 }
@@ -133,13 +189,20 @@ function ShareCard({ run }) {
   return (
     <div className="rounded border border-compass/30 bg-compass/5 p-4">
       <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-compass">Share card</p>
-      <h2 className="mt-2 font-display text-xl uppercase tracking-[0.12em] text-exp-text">{summary.scenarioName}</h2>
+      <h2 className="mt-2 font-display text-xl uppercase tracking-[0.12em] text-exp-text">{summary.runTitle || summary.scenarioName}</h2>
       <div className="mt-3 grid gap-2 sm:grid-cols-4">
         <Metric label="Outcome" value={summary.outcome} tone={summary.outcome === 'escaped' ? 'green' : 'gold'} />
         <Metric label="Artifacts" value={summary.artifacts} tone="green" />
         <Metric label="Arc" value={`${summary.arcShape} ${summary.arcScore}`} tone={summary.arcScore >= 65 ? 'green' : 'gold'} />
         <Metric label="Seed" value={summary.seed} tone="blue" />
       </div>
+      {summary.artifactNames?.length > 0 && (
+        <p className="mt-2 font-mono text-[11px] leading-relaxed text-compass-bright">Artifacts: {summary.artifactNames.join(', ')}</p>
+      )}
+      {summary.badges?.length > 0 && (
+        <div className="mt-2 flex flex-wrap gap-1">{summary.badges.map((badge) => <ToneBadge key={badge} tone="green">{badge}</ToneBadge>)}</div>
+      )}
+      {summary.bestBark && <p className="mt-2 font-mono text-xs leading-relaxed text-exp-text">{summary.bestBark}</p>}
       <p className="mt-3 font-mono text-xs leading-relaxed text-exp-text">{shareTextForRun(run)}</p>
     </div>
   );
@@ -149,16 +212,20 @@ export function GrowthPlayPage({ challenge = false }) {
   const query = useQuery();
   const scenarioId = challenge ? WEEKLY_CHALLENGE.scenarioId : query.get('scenario') || 'solo-artifact-hunt';
   const seed = challenge ? WEEKLY_CHALLENGE.seed : query.get('seed') || null;
+  const mode = query.get('mode') || (String(seed || '').includes('rival') ? 'rival' : 'standard');
   const [run, setRun] = useState(() => {
-    const created = createGrowthRun({ scenarioId, seed });
+    const created = createGrowthRun({ scenarioId, seed, mode, challenge });
     recordEvent('run_started', { scenarioId: created.scenario.id, seed: created.seed, challenge });
     return created;
   });
   const [shareVisible, setShareVisible] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [selectedAction, setSelectedAction] = useState('move');
   const runs = loadJson(RUNS_KEY, []);
   const leaderboard = rankChallengeRuns(runs);
   const summary = summarizeGrowthRun(run);
+  const preview = actionPreviewFor(run, selectedAction);
+  const latestMoment = [...run.timeline].reverse().find((event) => event.momentType || event.comebackLabel);
 
   function act(action) {
     const next = applyGrowthAction(run, action);
@@ -191,15 +258,16 @@ export function GrowthPlayPage({ challenge = false }) {
             <ToneBadge tone={run.completed ? 'green' : 'blue'}>{run.completed ? summary.outcome : `Turn ${run.turn + 1}/${run.scenario.maxTurns}`}</ToneBadge>
           </div>
           <div className="mt-3 grid gap-2 sm:grid-cols-4">
-            <Metric label="Artifacts" value={run.state.artifacts} tone="green" />
+            <Metric label="Artifacts" value={summary.artifacts} tone="green" />
             <Metric label="Saved" value={run.state.savedPlayers} tone="blue" />
             <Metric label="Arc score" value={summary.arcScore} tone={summary.arcScore >= 65 ? 'green' : 'gold'} />
             <Metric label="Feeling" value={summary.arcShape} tone="gold" />
           </div>
+          {!run.completed && <ActionPreview preview={preview} />}
           {!run.completed ? (
             <div className="mt-4 grid gap-2 sm:grid-cols-3">
               {availableGrowthActions(run).map((action) => (
-                <button key={action.id} type="button" onClick={() => act(action.id)} className="rounded border border-exp-border bg-exp-dark/60 px-3 py-3 text-left font-mono text-xs uppercase tracking-[0.16em] text-exp-text hover:border-compass/50 hover:text-compass-bright">
+                <button key={action.id} type="button" onMouseEnter={() => setSelectedAction(action.id)} onFocus={() => setSelectedAction(action.id)} onClick={() => act(action.id)} className={`rounded border bg-exp-dark/60 px-3 py-3 text-left font-mono text-xs uppercase tracking-[0.16em] hover:border-compass/50 hover:text-compass-bright ${selectedAction === action.id ? 'border-compass/60 text-compass-bright' : 'border-exp-border text-exp-text'}`}>
                   {action.label}
                 </button>
               ))}
@@ -220,18 +288,27 @@ export function GrowthPlayPage({ challenge = false }) {
               </div>
             </div>
           )}
+          {latestMoment && (
+            <div className="mt-3 rounded border border-compass/30 bg-compass/5 px-3 py-2">
+              <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-compass">{latestMoment.momentTitle || latestMoment.comebackLabel}</p>
+              <p className="mt-1 font-mono text-xs leading-relaxed text-exp-text">{latestMoment.bark}</p>
+              <p className="mt-1 font-mono text-[11px] text-exp-text-dim">pulse {latestMoment.lifePulse} / agency {latestMoment.agencyScore} / friction {latestMoment.frictionScore}</p>
+            </div>
+          )}
           {run.timeline.length > 0 && (
             <div className="mt-4 space-y-2">
               {run.timeline.slice(-4).map((event) => (
                 <div key={event.turn} className="rounded border border-exp-border/60 bg-exp-dark/35 px-3 py-2">
                   <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-compass-bright">Turn {event.turn} / {event.feelingLabel}</p>
                   <p className="mt-1 font-mono text-[11px] leading-relaxed text-exp-text-dim">{event.text}</p>
+                  <p className="mt-1 font-mono text-[11px] leading-relaxed text-exp-text">{event.bark}</p>
                 </div>
               ))}
             </div>
           )}
         </section>
       </div>
+      <div className="mt-4"><FunReport run={run} /></div>
       {shareVisible && <div className="mt-4"><ShareCard run={run} /></div>}
       {challenge && (
         <section className="mt-4 rounded border border-exp-border bg-exp-panel p-4">
@@ -280,8 +357,10 @@ export function ScenarioGalleryPage() {
 
 export function ReplayPage() {
   const { runId } = useParams();
+  const query = useQuery();
   const run = decodeRun(runId);
   const summary = run ? summarizeGrowthRun(run) : null;
+  const selectedTurn = Number(query.get('turn') || 0);
   if (!run) {
     return (
       <GrowthFrame title="Replay unavailable" eyebrow="The replay link could not be decoded">
@@ -292,15 +371,25 @@ export function ReplayPage() {
   return (
     <GrowthFrame title={`Replay: ${run.scenario.name}`} eyebrow={`${summary.outcome} / seed ${run.seed}`}>
       <div className="grid gap-4 lg:grid-cols-[360px_minmax(0,1fr)]">
-        <ShareCard run={run} />
+        <div className="space-y-3">
+          <ShareCard run={run} />
+          <FunReport run={run} compact />
+        </div>
         <section className="rounded border border-exp-border bg-exp-panel p-4">
           <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-exp-text-dim">Turn replay</p>
+          <p className="mt-2 font-mono text-xs leading-relaxed text-exp-text">{summary.epilogue}</p>
           <div className="mt-3 space-y-2">
             {run.timeline.map((event) => (
-              <div key={event.turn} className="rounded border border-exp-border/60 bg-exp-dark/35 px-3 py-2">
+              <div key={event.turn} className={`rounded border px-3 py-2 ${selectedTurn === event.turn ? 'border-compass/60 bg-compass/10' : 'border-exp-border/60 bg-exp-dark/35'}`}>
                 <p className="font-mono text-xs uppercase tracking-[0.16em] text-compass-bright">Turn {event.turn}: {event.label} / {event.feelingLabel}</p>
                 <p className="mt-1 font-mono text-[11px] leading-relaxed text-exp-text">{event.text}</p>
+                <p className="mt-1 font-mono text-[11px] leading-relaxed text-exp-text-dim">{event.bark}</p>
                 <p className="mt-1 font-mono text-[10px] text-exp-text-dim">pulse {event.lifePulse} / agency {event.agencyScore} / friction {event.frictionScore}</p>
+                {(event.momentType || event.comebackLabel) && (
+                  <button type="button" onClick={() => navigator.clipboard?.writeText(`${window.location.origin}/replay/${runId}?turn=${event.turn}`)} className="mt-2 rounded border border-blueprint/35 bg-blueprint/10 px-2 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-blueprint">
+                    Copy moment link
+                  </button>
+                )}
               </div>
             ))}
           </div>
@@ -325,6 +414,7 @@ export function ProgressPage() {
               <Metric label="Arc" value={item.latestArcScore ?? 'n/a'} tone="gold" />
               <Metric label="Trend" value={item.trend} tone="blue" />
             </div>
+            {item.latestRun && <div className="mt-3"><FunReport run={item.latestRun} compact /></div>}
             <p className="mt-3 font-mono text-[11px] leading-relaxed text-exp-text-dim">{item.nextExperiment}</p>
           </article>
         ))}

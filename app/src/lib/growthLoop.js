@@ -112,16 +112,19 @@ export function availableGrowthActions(run) {
   return Object.entries(ACTIONS).map(([id, action]) => ({ id, label: action.label }));
 }
 
-export function createGrowthRun({ scenarioId = WEEKLY_CHALLENGE.scenarioId, seed = null } = {}) {
+export function createGrowthRun({ scenarioId = WEEKLY_CHALLENGE.scenarioId, seed = null, mode = 'standard', challenge = false } = {}) {
   const scenario = scenarioById(scenarioId);
   const runSeed = seed || `${scenario.id}-${Date.now().toString(36)}`;
+  const fun = initialFunState({ scenario, seed: runSeed, mode, challenge });
+  const state = applyModifierToState({ ...scenario.start, artifacts: fun.artifacts, escaped: false }, fun.modifier);
   return {
     schemaVersion: 1,
     id: hash(`${scenario.id}|${runSeed}`).toString(36),
     scenario,
     seed: runSeed,
     turn: 0,
-    state: { ...scenario.start, escaped: false },
+    state,
+    fun,
     timeline: [],
     completed: false,
     outcome: 'in-progress',
@@ -136,15 +139,16 @@ export function applyGrowthAction(run, actionId) {
   const before = { ...run.state };
   const luck = roll(run.seed, nextTurn, action);
   const spike = roll(run.seed, nextTurn, action, 'danger');
-  const delta = { morale: -3, danger: 4, artifacts: 0, revealed: 0, distance: 0, savedPlayers: 0 };
+  let delta = { morale: -3, danger: 4, artifacts: 0, revealed: 0, distance: 0, savedPlayers: 0 };
+  const digStreak = action === 'dig' ? Number(run.fun?.digStreak || 0) + 1 : 0;
 
   if (action === 'move') {
     delta.distance = luck > 0.18 ? -1 : 0;
     delta.revealed = luck > 0.56 ? 1 : 0;
     delta.danger += spike > 0.72 ? 8 : -2;
   } else if (action === 'dig') {
-    delta.artifacts = luck > 0.42 ? 1 : 0;
-    delta.danger += 10;
+    delta.artifacts = luck > Math.max(0.2, 0.46 - digStreak * 0.08) ? 1 : 0;
+    delta.danger += 8 + digStreak * 4;
     delta.morale += delta.artifacts ? 8 : -5;
   } else if (action === 'rest') {
     delta.morale += 16;
@@ -162,21 +166,40 @@ export function applyGrowthAction(run, actionId) {
     delta.danger -= 1;
     delta.morale += 2;
   }
+  delta = roleDelta(run, action, delta);
+  delta = comebackDelta(run, action, delta);
+  const eventCard = secondaryEventFor(run, action);
+  delta = applyEventEffect(delta, eventCard);
+  const finalTurn = nextTurn >= run.scenario.maxTurns;
+  const flatLikely = delta.distance === 0 && delta.artifacts === 0 && delta.revealed === 0 && delta.savedPlayers === 0 && !['rest', 'help'].includes(action);
+  if (finalTurn && flatLikely) {
+    delta.revealed += 1;
+    if (action === 'flee' || action === 'move') delta.distance -= 1;
+  }
 
+  const beforeArtifacts = Array.isArray(before.artifacts) ? before.artifacts : [];
+  const discoveredArtifact = delta.artifacts > 0 ? artifactFor(run.seed, nextTurn) : null;
   const after = {
     ...before,
     morale: clamp(before.morale + delta.morale),
     danger: clamp(before.danger + delta.danger),
-    artifacts: Math.max(0, before.artifacts + delta.artifacts),
+    artifacts: discoveredArtifact ? [...beforeArtifacts, discoveredArtifact] : beforeArtifacts,
     revealed: Math.max(0, before.revealed + delta.revealed),
     distance: Math.max(0, before.distance + delta.distance),
     savedPlayers: Math.min(run.scenario.players, before.savedPlayers + delta.savedPlayers),
   };
-  after.escaped = after.distance <= 0 && (after.artifacts > 0 || action === 'flee');
+  after.escaped = after.distance <= 0 && (after.artifacts.length > 0 || action === 'flee');
 
-  const agencyScore = clamp(ACTIONS[action].agency + Math.max(0, -delta.distance) * 12 + delta.artifacts * 18 + delta.revealed * 8 + delta.savedPlayers * 10 + 30);
-  const frictionScore = clamp(ACTIONS[action].friction + (delta.distance === 0 && action === 'move' ? 18 : 0) + (delta.artifacts === 0 && action === 'dig' ? 14 : 0) + Math.max(0, after.danger - 70));
+  const fleeOutcome = fleeOutcomeFor(run, after, action);
+  const agencyScore = clamp(ACTIONS[action].agency + Math.max(0, -delta.distance) * 12 + delta.artifacts * 18 + delta.revealed * 8 + delta.savedPlayers * 10 + 30 + (eventCard ? 6 : 0));
+  const frictionScore = clamp(ACTIONS[action].friction + (delta.friction || 0) + (delta.distance === 0 && action === 'move' ? 18 : 0) + (delta.artifacts === 0 && action === 'dig' ? 14 : 0) + Math.max(0, after.danger - 70));
   const lifePulse = clamp(ACTIONS[action].pulse + agencyScore * 0.42 + after.morale * 0.22 - frictionScore * 0.26 + (after.escaped ? 24 : 0));
+  const feelingLabel = eventCard?.feelingBias || feelingFor({ action, state: after, delta, pulse: lifePulse, friction: frictionScore });
+  const moment = momentForEvent({ action, feelingLabel, after, eventCard, fleeOutcome });
+  const comebackLabel = (before.morale <= 35 && ['rest', 'help'].includes(action)) ? 'clutch-rest'
+    : (before.danger >= 70 && action === 'help') ? 'team-save'
+      : (finalTurn && action === 'flee' && after.distance <= 1) ? 'desperate-flee'
+        : null;
   const event = {
     turn: nextTurn,
     action,
@@ -187,23 +210,46 @@ export function applyGrowthAction(run, actionId) {
     agencyScore,
     frictionScore,
     lifePulse,
-    feelingLabel: feelingFor({ action, state: after, delta, pulse: lifePulse, friction: frictionScore }),
-    text: eventText(action, delta, after),
+    feelingLabel,
+    reactionClass: reactionClassFor(action, feelingLabel),
+    bark: barkFor({ seed: run.seed, turn: nextTurn, action, feelingLabel, outcome: after.escaped ? 'escaped' : '' }),
+    momentType: moment?.type || null,
+    momentTitle: moment?.title || null,
+    eventCard,
+    comebackLabel,
+    fleeOutcome,
+    discoveredArtifact,
+    text: eventText(action, delta, after, { eventCard, discoveredArtifact, fleeOutcome }),
+  };
+  const nextFun = {
+    ...(run.fun || {}),
+    digStreak,
+    maxDigStreak: Math.max(Number(run.fun?.maxDigStreak || 0), digStreak),
+    lastReactionClass: event.reactionClass,
   };
   const next = {
     ...run,
     turn: nextTurn,
     state: after,
+    fun: nextFun,
     timeline: [...run.timeline, event],
   };
   next.outcome = outcomeFor(next);
   next.completed = next.outcome !== 'in-progress';
-  if (next.completed) next.completedAt = new Date().toISOString();
+  if (next.completed) {
+    next.completedAt = new Date().toISOString();
+    const summary = summarizeGrowthRun(next);
+    next.summary = summary;
+    next.fun = { ...next.fun, personalBests: personalBestsAfter([next]) };
+  }
   return next;
 }
 
-function eventText(action, delta, after) {
+function eventText(action, delta, after, { eventCard = null, discoveredArtifact = null, fleeOutcome = null } = {}) {
+  if (eventCard) return `${eventCard.title}: ${eventCard.text}`;
   if (action === 'flee' && after.escaped) return 'The escape route snaps into focus and the crew reaches the landing site.';
+  if (action === 'flee' && fleeOutcome) return `Flee result: ${fleeOutcome}. The route is close enough to remember.`;
+  if (action === 'dig' && discoveredArtifact) return `The dig finds the ${discoveredArtifact.name}: ${discoveredArtifact.hook}`;
   if (action === 'dig' && delta.artifacts > 0) return 'The dig hits something real: an artifact comes up before the danger can swallow the turn.';
   if (action === 'rest') return 'The crew catches breath, and the next decision has room to matter.';
   if (action === 'help' && delta.savedPlayers > 0) return 'A teammate gets pulled back into the run.';
@@ -225,7 +271,7 @@ export function summarizeGrowthRun(run) {
   const averageFriction = timeline.length ? timeline.reduce((sum, event) => sum + event.frictionScore, 0) / timeline.length : 0;
   const firstAlive = timeline.find((event) => event.feelingLabel === 'alive' || event.lifePulse >= 60);
   const firstFlat = timeline.find((event) => event.feelingLabel === 'flat' || event.lifePulse <= 32);
-  const payoffCount = timeline.filter((event) => ['payoff', 'surprise'].includes(event.feelingLabel)).length;
+  const payoffCount = timeline.filter((event) => ['payoff', 'surprise'].includes(event.feelingLabel) || event.momentType === 'payoff').length;
   const recoveryCount = timeline.filter((event) => event.feelingLabel === 'recovery').length;
   const arcScore = clamp(averagePulse * 0.52 + averageAgency * 0.25 + (100 - averageFriction) * 0.23 + payoffCount * 4 + recoveryCount * 3 + (firstAlive && firstAlive.turn <= 2 ? 8 : 0));
   const startPulse = timeline.slice(0, 2).reduce((sum, event) => sum + event.lifePulse, 0) / Math.max(1, Math.min(2, timeline.length));
@@ -241,7 +287,9 @@ export function summarizeGrowthRun(run) {
           : endPulse < startPulse - 8
             ? 'falling'
             : 'steady-pressure';
-  return {
+  const quality = funQualityForRun(run);
+  const artifactNames = publicArtifactNames(run);
+  const base = {
     scenarioId: run.scenario.id,
     scenarioName: run.scenario.name,
     seed: run.seed,
@@ -249,7 +297,8 @@ export function summarizeGrowthRun(run) {
     completed: run.completed,
     turns: run.turn,
     maxTurns: run.scenario.maxTurns,
-    artifacts: run.state.artifacts,
+    artifacts: artifactNames.length,
+    artifactNames,
     savedPlayers: run.state.savedPlayers,
     morale: run.state.morale,
     danger: run.state.danger,
@@ -260,13 +309,25 @@ export function summarizeGrowthRun(run) {
     arcScore,
     arcShape,
     challengeScore: scoreChallengeRun(run),
+    funQuality: quality,
+  };
+  const title = runTitleFor({ run, summary: base, quality });
+  const badges = badgesForRun(run, base, quality);
+  return {
+    ...base,
+    runTitle: title,
+    badges,
+    bestBark: quality.shareWorthyMoment?.bark || bestMoment?.bark || null,
+    epilogue: epilogueForRun(run, quality),
   };
 }
 
 export function shareTextForRun(run) {
   const summary = summarizeGrowthRun(run);
   const verb = summary.outcome === 'escaped' ? 'escaped' : summary.outcome === 'collapsed' ? 'collapsed' : 'survived';
-  return `I ${verb} ${summary.scenarioName} with ${summary.artifacts} artifact(s), arc ${summary.arcShape} ${summary.arcScore}, seed ${summary.seed}. Can you beat this run?`;
+  const badge = summary.badges?.[0] ? ` Badge: ${summary.badges[0]}.` : '';
+  const artifacts = summary.artifactNames?.length ? ` Found ${summary.artifactNames.join(', ')}.` : '';
+  return `${summary.runTitle}: I ${verb} ${summary.scenarioName} with ${summary.artifacts} artifact(s), arc ${summary.arcShape} ${summary.arcScore}, seed ${summary.seed}.${artifacts}${badge} Can you beat this run?`;
 }
 
 export function encodeRun(run) {
@@ -294,8 +355,9 @@ export function replayPathForRun(run) {
 
 export function scoreChallengeRun(run) {
   const escaped = run.state.escaped ? 1000 : 0;
+  const artifacts = Array.isArray(run.state.artifacts) ? run.state.artifacts.length : Number(run.state.artifacts || 0);
   return escaped
-    + run.state.artifacts * 140
+    + artifacts * 140
     + run.state.savedPlayers * 90
     + Math.max(0, run.scenario.maxTurns - run.turn) * 35
     + run.state.morale
@@ -333,6 +395,7 @@ export function buildPublicProgress({ runs = [], feelingIndex = null, timeMachin
       completionRate: scenarioRuns.length ? completed.length / scenarioRuns.length : 0,
       latestArcScore: latestRun ? summarizeGrowthRun(latestRun).arcScore : feeling?.arcScore,
       latestArcShape: latestRun ? summarizeGrowthRun(latestRun).arcShape : feeling?.arcShape,
+      latestRun,
       latestHealth: timeMachine?.latestHealth,
       trend: timeMachine?.trend || (completed.length > 0 ? 'local-evidence' : 'needs-runs'),
       nextExperiment: feeling?.recommendation?.title || timeMachine?.recommendation?.title || 'Capture a completed public run.',
@@ -367,3 +430,25 @@ export function buildCreatorScenario({ prompt = '', players = 1, desiredFeeling 
     playPath: `/play?scenario=solo-artifact-hunt&seed=${id}`,
   };
 }
+
+export { actionPreviewFor };
+import {
+  actionPreviewFor,
+  applyEventEffect,
+  applyModifierToState,
+  artifactFor,
+  badgesForRun,
+  barkFor,
+  comebackDelta,
+  epilogueForRun,
+  fleeOutcomeFor,
+  funQualityForRun,
+  initialFunState,
+  momentForEvent,
+  personalBestsAfter,
+  publicArtifactNames,
+  reactionClassFor,
+  roleDelta,
+  runTitleFor,
+  secondaryEventFor,
+} from './funLoop';

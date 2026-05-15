@@ -3,6 +3,8 @@ import { test, expect } from '@playwright/test';
 test('public play loop completes and exposes sharing', async ({ page }) => {
   await page.goto('/play?scenario=solo-artifact-hunt&seed=e2e-growth', { waitUntil: 'domcontentloaded' });
   await expect(page.getByRole('heading', { name: /Solo Artifact Hunt/i })).toBeVisible();
+  await expect(page.getByText(/Action preview/i)).toBeVisible();
+  await expect(page.getByText(/Fun Report/i)).toBeVisible();
 
   for (const label of ['Move', 'Dig', 'Move', 'Flee', 'Flee', 'Rest']) {
     const button = page.getByRole('button', { name: new RegExp(label, 'i') });
@@ -12,12 +14,14 @@ test('public play loop completes and exposes sharing', async ({ page }) => {
   await expect(page.getByText(/Generate share card|Share copied/i)).toBeVisible();
   await page.getByRole('button', { name: /Generate share card/i }).click();
   await expect(page.getByText(/Share card/i)).toBeVisible();
+  await expect(page.getByText(/Can you beat this run/i).first()).toBeVisible();
   await expect(page.getByRole('link', { name: /Replay run/i })).toBeVisible();
 });
 
 test('growth public routes render', async ({ page }) => {
   await page.goto('/challenge', { waitUntil: 'domcontentloaded' });
   await expect(page.getByRole('heading', { name: /Weekly Challenge/i })).toBeVisible();
+  await expect(page.getByText(/Heavy Fog|Low Morale|Extra Relic|Damaged Route|Calm Start|Storm Season/i)).toBeVisible();
 
   await page.goto('/scenarios', { waitUntil: 'domcontentloaded' });
   await expect(page.getByRole('heading', { name: /Scenario Gallery/i })).toBeVisible();

@@ -219,6 +219,49 @@ body {
   50% { filter: drop-shadow(0 0 7px rgba(232, 200, 96, 0.4)); }
 }
 
+@keyframes fun-route-pulse {
+  0%, 100% { box-shadow: 0 0 0 rgba(232, 200, 96, 0); transform: translateY(0); }
+  45% { box-shadow: 0 0 18px rgba(232, 200, 96, 0.28); transform: translateY(-1px); }
+}
+
+@keyframes fun-danger-shake {
+  0%, 100% { transform: translateX(0); border-color: rgba(212, 64, 64, 0.35); }
+  25% { transform: translateX(-2px); border-color: rgba(212, 64, 64, 0.8); }
+  60% { transform: translateX(2px); }
+}
+
+@keyframes fun-recovery-glow {
+  0%, 100% { box-shadow: 0 0 0 rgba(64, 160, 128, 0); }
+  50% { box-shadow: 0 0 18px rgba(64, 160, 128, 0.28); }
+}
+
+@keyframes fun-scan-sweep {
+  0% { filter: brightness(0.92) saturate(0.9); }
+  50% { filter: brightness(1.25) saturate(1.18); }
+  100% { filter: brightness(1) saturate(1); }
+}
+
+.fun-react-move,
+.fun-react-flee,
+.fun-react-payoff {
+  animation: fun-route-pulse 680ms ease-out;
+}
+
+.fun-react-dig,
+.fun-react-panic {
+  animation: fun-danger-shake 520ms ease-out;
+}
+
+.fun-react-rest,
+.fun-react-help,
+.fun-react-recovery {
+  animation: fun-recovery-glow 760ms ease-out;
+}
+
+.fun-react-inspect {
+  animation: fun-scan-sweep 700ms ease-out;
+}
+
 @keyframes alive-risk-redline {
   0%, 100% { filter: brightness(1); }
   50% { filter: brightness(1.22) drop-shadow(0 0 8px rgba(212, 64, 64, 0.35)); }

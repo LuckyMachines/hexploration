@@ -91,6 +91,8 @@
     "feel:test": "node --test scripts/player-feeling-black-box-utils.test.mjs",
     "growth:report": "node scripts/growth-report.mjs",
     "growth:test": "node --test scripts/growth-report-utils.test.mjs",
+    "fun:report": "node scripts/fun-report.mjs",
+    "fun:test": "node --test scripts/fun-report-utils.test.mjs",
     "test:e2e:anvil": "node scripts/run-anvil-e2e.mjs"
   },
   "repository": {

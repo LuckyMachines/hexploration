@@ -263,6 +263,19 @@ Open `/play` for the public run, `/challenge` for the weekly fixed seed, `/scena
 
 See [growth-loop.md](growth-loop.md) for metrics, routes, privacy notes, and the release checklist.
 
+## Fun-First Public Runs
+
+The fun-first layer adds previews, character barks, board reactions, artifacts, player roles, event cards, comeback valves, dramatic flee outcomes, run titles, badges, personal bests, and Fun Report gates:
+
+```bash
+npm run fun:report
+npm run fun:report -- --markdown
+```
+
+The public routes show Fun Report blocks after runs and during replay. Generated reports are written under ignored `reports/fun/` and `app/public/fun/` folders.
+
+See [fun-loop.md](fun-loop.md) for quality gates and public-facing fun systems.
+
 ## Scenario Self-Driving Tutor
 
 Scenario Self-Driving Tutor turns evidence into an ordered gameplay curriculum:
