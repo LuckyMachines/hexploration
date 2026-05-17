@@ -69,9 +69,13 @@ export function readJson(path, fallback = null) {
   return JSON.parse(readFileSync(path, 'utf8'));
 }
 
+function jsonReplacer(_, value) {
+  return typeof value === 'bigint' ? value.toString() : value;
+}
+
 export function writeJson(path, value) {
   mkdirSync(dirname(path), { recursive: true });
-  writeFileSync(path, `${JSON.stringify(value, null, 2)}\n`);
+  writeFileSync(path, `${JSON.stringify(value, jsonReplacer, 2)}\n`);
 }
 
 export function slugify(value) {

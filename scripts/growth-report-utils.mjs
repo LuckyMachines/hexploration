@@ -56,11 +56,15 @@ export function buildGrowthReport({ events = [], feelingIndex = null, timeMachin
   const created = events.filter((event) => event.type === 'scenario_created');
   const scenarioCounts = countBy([...starts, ...completions], (event) => event.scenarioId);
   const completionByScenario = countBy(completions, (event) => event.scenarioId);
+  const shareByScenario = countBy(shares, (event) => event.scenarioId);
+  const replayByScenario = countBy(replays, (event) => event.scenarioId);
   const topScenarios = Object.entries(scenarioCounts)
     .map(([scenarioId, count]) => ({
       scenarioId,
       startsOrEvidence: count,
       completions: completionByScenario[scenarioId] || 0,
+      shareEvents: shareByScenario[scenarioId] || 0,
+      replayOpens: replayByScenario[scenarioId] || 0,
       completionRate: pct(completionByScenario[scenarioId] || 0, starts.filter((event) => event.scenarioId === scenarioId).length),
       arcScore: feelingIndex?.scenarios?.find((item) => item.scenarioId === scenarioId)?.arcScore,
       trend: timeMachineIndex?.scenarios?.find((item) => item.scenarioId === scenarioId)?.trend,

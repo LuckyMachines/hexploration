@@ -21,14 +21,17 @@ The north-star metric is shared completed runs per week. Supporting signals are 
 
 ```sh
 npm run growth:report
+npm run growth:capture -- --scenario=escape-pressure-4p --seed=featured-ready-escape
 npm run growth:report -- --markdown
 npm run growth:test
+npm run growth:capture:test
 ```
 
 The report reads generated tuning artifacts when present and can also analyze an explicit analytics file:
 
 ```sh
 npm run growth:report -- --events=reports/growth/events.json --markdown
+npm run growth:report -- --events=reports/growth/local-events.json --markdown
 ```
 
 ## Release Checklist
@@ -38,8 +41,9 @@ npm run growth:report -- --events=reports/growth/events.json --markdown
 3. Confirm `/play` completes a run.
 4. Confirm result share text and replay link render.
 5. Confirm `/challenge`, `/scenarios`, `/progress`, `/devlog`, and `/create-scenario` render.
-6. Run `npm run growth:report`.
-7. Run unit and browser smoke tests.
+6. Capture the local public event stream with `npm run growth:capture -- --scenario=escape-pressure-4p --seed=featured-ready-escape`.
+7. Run `npm run growth:report -- --events=reports/growth/local-events.json`.
+8. Run unit and browser smoke tests.
 
 ## Privacy
 

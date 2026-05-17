@@ -81,6 +81,14 @@ function actionList(submissions = []) {
   return asArray(submissions).map((submission) => submission.action).filter(Boolean);
 }
 
+function acceptedSubmissionCount(event = {}) {
+  return asArray(event.submissions).filter((submission) => submission.action && !submission.error && !submission.skipped).length;
+}
+
+function hasEnginePulse(event = {}) {
+  return acceptedSubmissionCount(event) > 0 && number(event.progressCount) > 0;
+}
+
 function scenarioIdForReport(report = {}) {
   return slugify(
     report.scenarioId
@@ -216,6 +224,8 @@ export function normalizeTurnEvidence(report = {}, { sourcePath = '' } = {}) {
         invalidAttempts: submissions.reduce((sum, submission) => sum + number(submission.invalidAttempts), 0),
         errors: submissions.filter((submission) => submission.error),
         validChoiceCount: Math.max(0, ...submissions.map((submission) => number(submission.validChoiceCount))),
+        progressCount: number(turn.progressCount),
+        acceptedSubmissions: submissions.filter((submission) => submission.action && !submission.error && !submission.skipped).length,
         analysis: turn.analysis || {},
         funDebugger: turn.analysis?.funDebugger || {},
         scenarioId: meta.scenarioId,
@@ -270,8 +280,12 @@ function intensityFor(weight, event = {}) {
 
 export function computeTurnAgencyScore(event = {}) {
   const diff = event.diff || {};
+  const accepted = acceptedSubmissionCount(event);
+  const enginePulse = hasEnginePulse(event);
   let score = 35;
-  if (event.valid) score += 12;
+  if (event.valid || accepted > 0) score += 12;
+  score += Math.min(20, accepted * 4);
+  if (enginePulse) score += 16;
   if (diff.locationChanges > 0) score += 14;
   if (diff.revealedDelta > 0) score += 16;
   if (diff.artifactDelta > 0) score += 20;
@@ -280,20 +294,23 @@ export function computeTurnAgencyScore(event = {}) {
   if (event.validChoiceCount > 1) score += 8;
   if (event.actions?.includes('Help')) score += 10;
   if (event.invalidAttempts > 0) score -= Math.min(20, event.invalidAttempts * 6);
-  if (!event.valid) score -= 20;
-  if (!diff.locationChanges && !diff.revealedDelta && !diff.artifactDelta && !diff.statDelta && !diff.cardDraws) score -= 16;
+  if (!event.valid && accepted === 0) score -= 20;
+  if (!diff.locationChanges && !diff.revealedDelta && !diff.artifactDelta && !diff.statDelta && !diff.cardDraws && !enginePulse) score -= 16;
   if (event.skipped) score -= 22;
   return Math.round(clamp(score));
 }
 
 export function computeTurnFrictionScore(event = {}) {
   const diff = event.diff || {};
+  const accepted = acceptedSubmissionCount(event);
+  const enginePulse = hasEnginePulse(event);
   let score = 12;
   score += Math.min(35, number(event.invalidAttempts) * 10);
   score += asArray(event.errors).length * 22;
-  if (!event.valid) score += 24;
+  if (!event.valid && accepted === 0) score += 24;
+  if (enginePulse) score -= 10;
   if (event.skipped) score += 22;
-  if (!diff.locationChanges && !diff.revealedDelta && !diff.artifactDelta && !diff.statDelta && !diff.cardDraws) score += 18;
+  if (!diff.locationChanges && !diff.revealedDelta && !diff.artifactDelta && !diff.statDelta && !diff.cardDraws && !enginePulse) score += 18;
   if (event.actions?.includes('Move') && diff.locationChanges <= 0 && diff.revealedDelta <= 0) score += 14;
   if (event.actions?.includes('Dig') && diff.artifactDelta <= 0) score += 10;
   if (event.validChoiceCount === 1) score += 8;
@@ -304,7 +321,9 @@ export function computeTurnLifePulse(event = {}) {
   const diff = event.diff || {};
   const agency = event.agencyScore ?? computeTurnAgencyScore(event);
   const friction = event.frictionScore ?? computeTurnFrictionScore(event);
+  const enginePulse = hasEnginePulse(event);
   let pulse = 30 + agency * 0.45 - friction * 0.35;
+  if (enginePulse) pulse += 18;
   if (diff.artifactDelta > 0) pulse += 18;
   if (diff.revealedDelta > 0) pulse += 12;
   if (diff.locationChanges > 0) pulse += 8;
@@ -312,6 +331,7 @@ export function computeTurnLifePulse(event = {}) {
   if (diff.statDelta < 0) pulse += Math.min(10, Math.abs(diff.statDelta) * 2);
   if (diff.zeroStatDelta > 0) pulse -= 16;
   if (diff.cardDraws > 0) pulse += 8;
+  if (acceptedSubmissionCount(event) >= 3) pulse += 8;
   if (event.skipped) pulse -= 18;
   return Math.round(clamp(pulse));
 }
@@ -321,6 +341,7 @@ export function scoreFeelingConfidence(event = {}) {
   const diff = event.diff || {};
   if (event.before && event.after) confidence += 0.2;
   if (asArray(event.submissions).length > 0) confidence += 0.12;
+  if (hasEnginePulse(event)) confidence += 0.08;
   if (event.action && event.action !== 'Idle') confidence += 0.08;
   if (diff.locationChanges || diff.revealedDelta || diff.artifactDelta || diff.statDelta || diff.cardDraws) confidence += 0.15;
   if (event.funDebugger?.classification) confidence += 0.08;
@@ -334,7 +355,9 @@ export function controlFeelNote(event = {}) {
   const action = event.action || 'Idle';
   const diff = event.diff || {};
   if (event.skipped) return 'No input state: waiting became the feeling.';
+  if (hasEnginePulse(event) && asArray(event.errors).length > 0) return 'Some input was rejected, but accepted actions advanced the turn.';
   if (!event.valid || asArray(event.errors).length > 0) return 'Input was rejected, causing friction.';
+  if (hasEnginePulse(event)) return 'Accepted input advanced the engine turn.';
   if (action.includes('Move') && (diff.locationChanges > 0 || diff.revealedDelta > 0)) return 'Pressing move changed the board.';
   if (action.includes('Move')) return 'Pressing move produced little visible board feedback.';
   if (action.includes('Dig') && diff.artifactDelta > 0) return 'Pressing dig produced artifact payoff.';
@@ -354,18 +377,23 @@ export function classifyFeelingEvent(turnEvidence = {}, { report = {} } = {}) {
   event.lifePulse = computeTurnLifePulse(event);
   const diff = event.diff || {};
   const labels = [];
-  const meaningfulDelta = diff.locationChanges > 0 || diff.revealedDelta > 0 || diff.artifactDelta > 0 || diff.statDelta !== 0 || diff.cardDraws > 0;
-  if (meaningfulDelta && event.valid) labels.push(candidate('alive', 62 + event.agencyScore * 0.25, 'Valid input changed meaningful state.', ['input', 'state']));
+  const enginePulse = hasEnginePulse(event);
+  const positiveDelta = diff.locationChanges > 0 || diff.revealedDelta > 0 || diff.artifactDelta > 0 || diff.statDelta > 0 || diff.cardDraws > 0;
+  const meaningfulDelta = positiveDelta || diff.statDelta !== 0 || enginePulse;
+  if ((positiveDelta || enginePulse) && (event.valid || acceptedSubmissionCount(event) > 0)) {
+    const pressurePenalty = diff.statDelta < 0 || event.invalidAttempts > 0 || asArray(event.errors).length > 0 ? 16 : 0;
+    labels.push(candidate('alive', 62 + event.agencyScore * 0.25 + (enginePulse ? 18 : 0) - pressurePenalty, enginePulse ? 'Accepted input advanced the exact engine turn.' : 'Valid input changed meaningful state.', ['input', 'state']));
+  }
   if (diff.revealedDelta > 0 || diff.cardDraws > 0) labels.push(candidate('surprise', 50 + diff.revealedDelta * 8 + diff.cardDraws * 8, 'The turn revealed new information or surfaced an event.', ['discovery']));
-  if (diff.artifactDelta > 0 || event.actions?.includes('Flee')) labels.push(candidate('payoff', 92 + Math.max(0, diff.artifactDelta) * 8, 'The turn produced artifact or escape payoff.', ['reward']));
+  if (diff.artifactDelta > 0 || event.actions?.includes('Flee')) labels.push(candidate('payoff', 92 + Math.max(0, diff.artifactDelta) * 8 + (enginePulse ? 8 : 0), 'The turn produced artifact or escape payoff.', ['reward']));
   if (diff.statDelta > 0 || event.actions?.includes('Rest') || event.actions?.includes('Help')) labels.push(candidate('recovery', 80 + Math.max(0, diff.statDelta) * 5, 'The turn created recovery or support.', ['recovery']));
   if (diff.statDelta > 0 || diff.revealedDelta > 0 || diff.locationChanges > 0) labels.push(candidate('hopeful', 48, 'The turn opened a future opportunity.', ['future-choice']));
   if (diff.zeroStatPlayers > 0 || diff.statDelta <= -4 || event.actions?.includes('Flee')) labels.push(candidate('tense', 58 + Math.abs(Math.min(0, diff.statDelta)) * 3, 'Pressure increased around survival or escape.', ['pressure']));
   if (diff.zeroStatDelta > 0 || diff.statDelta <= -6) labels.push(candidate('panic', 70 + diff.zeroStatDelta * 10, 'Survival deteriorated sharply.', ['survival']));
-  if (event.invalidAttempts > 0 || asArray(event.errors).length > 0) labels.push(candidate('confusing', 68 + event.invalidAttempts * 5, 'The turn contained invalid or failed input.', ['readability']));
-  if (!event.valid || event.invalidAttempts > 0 || asArray(event.errors).length > 0) labels.push(candidate('friction', 72 + event.frictionScore * 0.2, 'The intended action was blocked or unclear.', ['action-validity']));
+  if (event.invalidAttempts > 0 || asArray(event.errors).length > 0) labels.push(candidate('confusing', 58 + event.invalidAttempts * 5 - (enginePulse ? 14 : 0), 'The turn contained invalid or failed input.', ['readability']));
+  if (!event.valid || event.invalidAttempts > 0 || asArray(event.errors).length > 0) labels.push(candidate('friction', 62 + event.frictionScore * 0.2 - (enginePulse ? 12 : 0), 'The intended action was blocked or unclear.', ['action-validity']));
   if (!meaningfulDelta && event.valid && !event.skipped) labels.push(candidate('flat', 60 + event.frictionScore * 0.2, 'The turn produced no meaningful visible state delta.', ['pacing']));
-  if (event.skipped || (!event.valid && event.invalidAttempts >= 2) || (event.validChoiceCount === 1 && !meaningfulDelta)) labels.push(candidate('dead-end', 64, 'The player had little useful agency.', ['agency']));
+  if (event.skipped || (!enginePulse && !event.valid && event.invalidAttempts >= 2) || (event.validChoiceCount === 1 && !meaningfulDelta)) labels.push(candidate('dead-end', 64, 'The player had little useful agency.', ['agency']));
   if (setupDoubt(report, event)) labels.push(candidate('setup-doubt', 52, 'Scenario confidence depends on unsupported setup evidence.', ['setup']));
   const primary = choosePrimary(labels);
   const secondary = labels.filter((item) => item.label !== primary.label).sort((a, b) => b.weight - a.weight).slice(0, 4);
@@ -618,9 +646,16 @@ export function buildFeelingIndex({ reports = null } = {}) {
     const existing = byScenario.get(entry.scenarioId);
     const existingTime = timestamp(existing?.generatedAt);
     const entryTime = timestamp(entry.generatedAt);
+    const entryIsScenarioLatest = /reports\/simulator\/scenarios\/[^/]+\/latest-report\.json$/.test(entry.sourcePath || '');
+    const existingIsScenarioLatest = /reports\/simulator\/scenarios\/[^/]+\/latest-report\.json$/.test(existing?.sourcePath || '');
     const entryIsScenarioReport = /reports\/simulator\/scenarios\//.test(entry.sourcePath || '');
     const existingIsScenarioReport = /reports\/simulator\/scenarios\//.test(existing?.sourcePath || '');
-    if (!existing || entryTime > existingTime || (entryTime === existingTime && entryIsScenarioReport && !existingIsScenarioReport)) {
+    if (
+      !existing
+      || (entryIsScenarioLatest && !existingIsScenarioLatest)
+      || (!existingIsScenarioLatest && entryTime > existingTime)
+      || (!existingIsScenarioLatest && entryTime === existingTime && entryIsScenarioReport && !existingIsScenarioReport)
+    ) {
       byScenario.set(entry.scenarioId, entry);
     }
   }

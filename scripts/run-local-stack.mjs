@@ -161,12 +161,15 @@ async function readBroadcastAddresses() {
 
   const byName = {};
   const cardDecks = [];
+  const gameTokens = [];
 
   for (const tx of json.transactions || []) {
     if (!tx.contractName || !tx.contractAddress) continue;
 
     if (tx.contractName === 'CardDeck') {
       cardDecks.push(tx.contractAddress);
+    } else if (tx.contractName === 'GameToken') {
+      gameTokens.push(tx.contractAddress);
     } else {
       byName[tx.contractName] = tx.contractAddress;
     }
@@ -182,6 +185,11 @@ async function readBroadcastAddresses() {
   for (let i = 0; i < DECK_KEYS.length; i++) {
     if (!cardDecks[i]) throw new Error(`Missing CardDeck #${i} (${DECK_KEYS[i]}) in broadcast`);
     deckAddrs[DECK_KEYS[i]] = cardDecks[i];
+  }
+  const TOKEN_KEYS = ['DAY_NIGHT_TOKEN', 'DISASTER_TOKEN', 'ENEMY_TOKEN', 'ITEM_TOKEN', 'PLAYER_STATUS_TOKEN', 'RELIC_TOKEN'];
+  for (let i = 0; i < TOKEN_KEYS.length; i++) {
+    if (!gameTokens[i]) throw new Error(`Missing GameToken #${i} (${TOKEN_KEYS[i]}) in broadcast`);
+    byName[TOKEN_KEYS[i]] = gameTokens[i];
   }
 
   // Worker addresses
@@ -202,6 +210,9 @@ async function readBroadcastAddresses() {
     VITE_GAME_REGISTRY_ADDRESS: byName.GameRegistry,
     VITE_GAME_QUEUE_ADDRESS: byName.XenovoyaQueue,
     VITE_GAME_SETUP_ADDRESS: byName.GameSetup,
+    VITE_PLAYER_REGISTRY_ADDRESS: byName.PlayerRegistry,
+    VITE_CHARACTER_CARD_ADDRESS: byName.CharacterCard,
+    VITE_TOKEN_INVENTORY_ADDRESS: byName.TokenInventory,
   };
 
   // Validate nothing is missing
@@ -228,6 +239,98 @@ const controllerAbi = [
   },
 ];
 
+const accessControlAbi = [
+  {
+    type: 'function',
+    stateMutability: 'view',
+    name: 'VERIFIED_CONTROLLER_ROLE',
+    inputs: [],
+    outputs: [{ type: 'bytes32' }],
+  },
+  {
+    type: 'function',
+    stateMutability: 'view',
+    name: 'hasRole',
+    inputs: [
+      { name: 'role', type: 'bytes32' },
+      { name: 'account', type: 'address' },
+    ],
+    outputs: [{ type: 'bool' }],
+  },
+  {
+    type: 'function',
+    stateMutability: 'nonpayable',
+    name: 'addVerifiedController',
+    inputs: [{ name: 'vcAddress', type: 'address' }],
+    outputs: [],
+  },
+];
+
+const gameRegistryAbi = [
+  {
+    type: 'function',
+    stateMutability: 'view',
+    name: 'GAME_BOARD_ROLE',
+    inputs: [],
+    outputs: [{ type: 'bytes32' }],
+  },
+  {
+    type: 'function',
+    stateMutability: 'view',
+    name: 'hasRole',
+    inputs: [
+      { name: 'role', type: 'bytes32' },
+      { name: 'account', type: 'address' },
+    ],
+    outputs: [{ type: 'bool' }],
+  },
+  {
+    type: 'function',
+    stateMutability: 'nonpayable',
+    name: 'addGameBoard',
+    inputs: [{ name: 'gameBoardAddress', type: 'address' }],
+    outputs: [],
+  },
+];
+
+const localWiringAbi = [
+  { type: 'function', stateMutability: 'nonpayable', name: 'addGameBoard', inputs: [{ name: 'gameBoardAddress', type: 'address' }], outputs: [] },
+  { type: 'function', stateMutability: 'nonpayable', name: 'addVerifiedController', inputs: [{ name: 'vcAddress', type: 'address' }], outputs: [] },
+  { type: 'function', stateMutability: 'nonpayable', name: 'addFactory', inputs: [{ name: 'factoryAddress', type: 'address' }], outputs: [] },
+  { type: 'function', stateMutability: 'nonpayable', name: 'setCharacterCard', inputs: [{ name: 'characterCardAddress', type: 'address' }], outputs: [] },
+  { type: 'function', stateMutability: 'nonpayable', name: 'setTokenInventory', inputs: [{ name: 'tokenInventoryAddress', type: 'address' }], outputs: [] },
+  { type: 'function', stateMutability: 'nonpayable', name: 'setGameplayQueue', inputs: [{ name: 'gameplayQueueAddress', type: 'address' }], outputs: [] },
+  { type: 'function', stateMutability: 'nonpayable', name: 'setPlayerRegistry', inputs: [{ name: 'playerRegistryAddress', type: 'address' }], outputs: [] },
+  { type: 'function', stateMutability: 'nonpayable', name: 'addGameBoard', inputs: [{ name: 'gameBoardAddress', type: 'address' }], outputs: [] },
+  {
+    type: 'function',
+    stateMutability: 'nonpayable',
+    name: 'setTokenAddresses',
+    inputs: [
+      { name: 'dayNightTokenAddress', type: 'address' },
+      { name: 'disasterTokenAddress', type: 'address' },
+      { name: 'enemyTokenAddress', type: 'address' },
+      { name: 'itemTokenAddress', type: 'address' },
+      { name: 'playerStatusTokenAddress', type: 'address' },
+      { name: 'relicTokenAddress', type: 'address' },
+    ],
+    outputs: [],
+  },
+  { type: 'function', stateMutability: 'nonpayable', name: 'addController', inputs: [{ name: 'controllerAddress', type: 'address' }], outputs: [] },
+  { type: 'function', stateMutability: 'nonpayable', name: 'setGameEvents', inputs: [{ name: 'gameEventsAddress', type: 'address' }], outputs: [] },
+  { type: 'function', stateMutability: 'nonpayable', name: 'setGameStateUpdate', inputs: [{ name: 'gameStateUpdateAddress', type: 'address' }], outputs: [] },
+  { type: 'function', stateMutability: 'nonpayable', name: 'setGameSetup', inputs: [{ name: 'gameSetupAddress', type: 'address' }], outputs: [] },
+  { type: 'function', stateMutability: 'nonpayable', name: 'setQueue', inputs: [{ name: 'queueContract', type: 'address' }], outputs: [] },
+  { type: 'function', stateMutability: 'nonpayable', name: 'setGameEvents', inputs: [{ name: 'gameEventsAddress', type: 'address' }], outputs: [] },
+  { type: 'function', stateMutability: 'nonpayable', name: 'setQueue', inputs: [{ name: 'queueContract', type: 'address' }], outputs: [] },
+  { type: 'function', stateMutability: 'nonpayable', name: 'setGameStateUpdate', inputs: [{ name: 'gameStateUpdateAddress', type: 'address' }], outputs: [] },
+  { type: 'function', stateMutability: 'nonpayable', name: 'setGameEvents', inputs: [{ name: 'gameEventsAddress', type: 'address' }], outputs: [] },
+  { type: 'function', stateMutability: 'nonpayable', name: 'setQueue', inputs: [{ name: 'queueContract', type: 'address' }], outputs: [] },
+  { type: 'function', stateMutability: 'nonpayable', name: 'addEventSender', inputs: [{ name: 'eventSenderAddress', type: 'address' }], outputs: [] },
+  { type: 'function', stateMutability: 'nonpayable', name: 'setPlayerSummary', inputs: [{ name: 'playerSummaryAddress', type: 'address' }], outputs: [] },
+  { type: 'function', stateMutability: 'nonpayable', name: 'setPlayZoneSummary', inputs: [{ name: 'playZoneSummaryAddress', type: 'address' }], outputs: [] },
+];
+
 async function seedOpenGame(appAddrs, totalPlayers) {
   const account = privateKeyToAccount(ANVIL_PK);
   const transport = http(RPC_URL);
@@ -245,6 +348,162 @@ async function seedOpenGame(appAddrs, totalPlayers) {
     ],
   });
   await publicClient.waitForTransactionReceipt({ hash });
+}
+
+async function ensureVerifiedController({ contract, controller, label }) {
+  const account = privateKeyToAccount(ANVIL_PK);
+  const transport = http(RPC_URL);
+  const walletClient = createWalletClient({ account, chain: foundry, transport });
+  const publicClient = createPublicClient({ chain: foundry, transport });
+  const role = await publicClient.readContract({
+    address: contract,
+    abi: accessControlAbi,
+    functionName: 'VERIFIED_CONTROLLER_ROLE',
+    args: [],
+  });
+  const hasRole = await publicClient.readContract({
+    address: contract,
+    abi: accessControlAbi,
+    functionName: 'hasRole',
+    args: [role, controller],
+  });
+  if (hasRole) return false;
+  const hash = await walletClient.writeContract({
+    address: contract,
+    abi: accessControlAbi,
+    functionName: 'addVerifiedController',
+    args: [controller],
+  });
+  await publicClient.waitForTransactionReceipt({ hash });
+  log(`Granted ${label} verified-controller role to ${controller}.`);
+  return true;
+}
+
+async function ensureLocalWiring({ appAddrs, deckAddrs, byName }) {
+  const account = privateKeyToAccount(ANVIL_PK);
+  const transport = http(RPC_URL);
+  const walletClient = createWalletClient({ account, chain: foundry, transport });
+  const publicClient = createPublicClient({ chain: foundry, transport });
+
+  async function write(address, functionName, args = []) {
+    const hash = await walletClient.writeContract({
+      address,
+      abi: localWiringAbi,
+      functionName,
+      args,
+    });
+    await publicClient.waitForTransactionReceipt({ hash });
+  }
+
+  const boardRole = await publicClient.readContract({
+    address: appAddrs.VITE_GAME_REGISTRY_ADDRESS,
+    abi: gameRegistryAbi,
+    functionName: 'GAME_BOARD_ROLE',
+    args: [],
+  });
+  const registryHasBoard = await publicClient.readContract({
+    address: appAddrs.VITE_GAME_REGISTRY_ADDRESS,
+    abi: gameRegistryAbi,
+    functionName: 'hasRole',
+    args: [boardRole, appAddrs.VITE_BOARD_ADDRESS],
+  });
+  if (!registryHasBoard) {
+    const hash = await walletClient.writeContract({
+      address: appAddrs.VITE_GAME_REGISTRY_ADDRESS,
+      abi: gameRegistryAbi,
+      functionName: 'addGameBoard',
+      args: [appAddrs.VITE_BOARD_ADDRESS],
+    });
+    await publicClient.waitForTransactionReceipt({ hash });
+    log(`Granted game-registry board role to ${appAddrs.VITE_BOARD_ADDRESS}.`);
+  }
+
+  await write(appAddrs.VITE_BOARD_ADDRESS, 'setCharacterCard', [appAddrs.VITE_CHARACTER_CARD_ADDRESS]);
+  await write(appAddrs.VITE_BOARD_ADDRESS, 'setTokenInventory', [appAddrs.VITE_TOKEN_INVENTORY_ADDRESS]);
+  await write(appAddrs.VITE_BOARD_ADDRESS, 'setGameplayQueue', [appAddrs.VITE_GAME_QUEUE_ADDRESS]);
+  await write(appAddrs.VITE_BOARD_ADDRESS, 'setPlayerRegistry', [appAddrs.VITE_PLAYER_REGISTRY_ADDRESS]);
+  await write(appAddrs.VITE_BOARD_ADDRESS, 'addFactory', [account.address]);
+  for (const controller of [
+    appAddrs.VITE_CONTROLLER_ADDRESS,
+    byName.XenovoyaGameplay,
+    byName.XenovoyaStateUpdate,
+    appAddrs.VITE_GAME_SETUP_ADDRESS,
+  ]) {
+    await write(appAddrs.VITE_BOARD_ADDRESS, 'addVerifiedController', [controller]);
+  }
+
+  await write(byName.XenovoyaZone, 'addGameBoard', [appAddrs.VITE_BOARD_ADDRESS]);
+  await write(appAddrs.VITE_TOKEN_INVENTORY_ADDRESS, 'setTokenAddresses', [
+    byName.DAY_NIGHT_TOKEN,
+    byName.DISASTER_TOKEN,
+    byName.ENEMY_TOKEN,
+    byName.ITEM_TOKEN,
+    byName.PLAYER_STATUS_TOKEN,
+    byName.RELIC_TOKEN,
+  ]);
+  for (const token of [
+    byName.DAY_NIGHT_TOKEN,
+    byName.DISASTER_TOKEN,
+    byName.ENEMY_TOKEN,
+    byName.ITEM_TOKEN,
+    byName.PLAYER_STATUS_TOKEN,
+    byName.RELIC_TOKEN,
+  ]) {
+    await write(token, 'addController', [appAddrs.VITE_TOKEN_INVENTORY_ADDRESS]);
+    await write(token, 'addController', [appAddrs.VITE_GAME_SETUP_ADDRESS]);
+  }
+
+  await write(appAddrs.VITE_CONTROLLER_ADDRESS, 'setGameEvents', [byName.GameEvents]);
+  await write(appAddrs.VITE_CONTROLLER_ADDRESS, 'setGameStateUpdate', [byName.XenovoyaStateUpdate]);
+  await write(appAddrs.VITE_CONTROLLER_ADDRESS, 'setGameSetup', [appAddrs.VITE_GAME_SETUP_ADDRESS]);
+  await write(appAddrs.VITE_CONTROLLER_ADDRESS, 'addVerifiedController', [account.address]);
+
+  await write(appAddrs.VITE_GAME_QUEUE_ADDRESS, 'addVerifiedController', [appAddrs.VITE_CONTROLLER_ADDRESS]);
+  await write(appAddrs.VITE_GAME_QUEUE_ADDRESS, 'addVerifiedController', [appAddrs.VITE_GAME_SETUP_ADDRESS]);
+  await write(appAddrs.VITE_GAME_QUEUE_ADDRESS, 'setGameEvents', [byName.GameEvents]);
+
+  await write(byName.XenovoyaGameplay, 'addVerifiedController', [appAddrs.VITE_CONTROLLER_ADDRESS]);
+  await write(byName.XenovoyaGameplay, 'setQueue', [appAddrs.VITE_GAME_QUEUE_ADDRESS]);
+  await write(byName.XenovoyaGameplay, 'setGameStateUpdate', [byName.XenovoyaStateUpdate]);
+
+  await write(byName.XenovoyaStateUpdate, 'addVerifiedController', [byName.XenovoyaGameplay]);
+  await write(byName.XenovoyaStateUpdate, 'setGameEvents', [byName.GameEvents]);
+
+  await write(appAddrs.VITE_GAME_SETUP_ADDRESS, 'addVerifiedController', [appAddrs.VITE_CONTROLLER_ADDRESS]);
+  await write(appAddrs.VITE_GAME_SETUP_ADDRESS, 'setGameEvents', [byName.GameEvents]);
+
+  await write(byName.RollDraw, 'setQueue', [appAddrs.VITE_GAME_QUEUE_ADDRESS]);
+  await write(byName.RelicManagement, 'addVerifiedController', [byName.XenovoyaStateUpdate]);
+
+  for (const controller of [
+    appAddrs.VITE_CONTROLLER_ADDRESS,
+    byName.XenovoyaGameplay,
+    byName.XenovoyaStateUpdate,
+    appAddrs.VITE_GAME_SETUP_ADDRESS,
+  ]) {
+    await write(appAddrs.VITE_CHARACTER_CARD_ADDRESS, 'addVerifiedController', [controller]);
+  }
+
+  for (const sender of [
+    appAddrs.VITE_CONTROLLER_ADDRESS,
+    appAddrs.VITE_GAME_QUEUE_ADDRESS,
+    byName.XenovoyaStateUpdate,
+    appAddrs.VITE_GAME_SETUP_ADDRESS,
+    byName.XenovoyaGameplay,
+  ]) {
+    await write(byName.GameEvents, 'addEventSender', [sender]);
+  }
+
+  await write(byName.GameSummary, 'setPlayerSummary', [byName.PlayerSummary]);
+  await write(byName.GameSummary, 'setPlayZoneSummary', [byName.PlayZoneSummary]);
+
+  await ensureVerifiedController({
+    contract: appAddrs.VITE_BOARD_ADDRESS,
+    controller: appAddrs.VITE_CONTROLLER_ADDRESS,
+    label: 'board',
+  });
+
+  log('Local contract wiring verified.');
 }
 
 // ── Write app .env.local ─────────────────────────────────────────────
@@ -332,8 +591,11 @@ async function main() {
   log('Contracts deployed.');
 
   // 5. Extract addresses
-  const { workerAddrs, appAddrs, deckAddrs } = await readBroadcastAddresses();
+  const { workerAddrs, appAddrs, deckAddrs, byName } = await readBroadcastAddresses();
   log('Addresses extracted from broadcast.');
+
+  // 5b. Confirm required local roles before any seeded game creation.
+  await ensureLocalWiring({ appAddrs, deckAddrs, byName });
 
   // 6. Populate card decks sequentially to avoid nonce collisions on Anvil.
   log('Populating card decks...');

@@ -96,7 +96,9 @@
     "bridge:doctor": "node scripts/scenario-evidence-bridge.mjs doctor",
     "bridge:test": "node --test scripts/scenario-evidence-bridge-utils.test.mjs",
     "growth:report": "node scripts/growth-report.mjs",
+    "growth:capture": "node scripts/growth-event-capture.mjs",
     "growth:test": "node --test scripts/growth-report-utils.test.mjs",
+    "growth:capture:test": "node --test scripts/growth-event-capture-utils.test.mjs",
     "fun:report": "node scripts/fun-report.mjs",
     "fun:test": "node --test scripts/fun-report-utils.test.mjs",
     "test:e2e:anvil": "node scripts/run-anvil-e2e.mjs"

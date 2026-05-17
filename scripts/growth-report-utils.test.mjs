@@ -23,6 +23,8 @@ test('builds growth metrics and next experiment from events', () => {
   assert.equal(report.metrics.runStarts, 1);
   assert.equal(report.metrics.runCompletions, 1);
   assert.equal(report.metrics.shareEvents, 1);
+  assert.equal(report.topScenarios[0].shareEvents, 1);
+  assert.equal(report.topScenarios[0].replayOpens, 1);
   assert.equal(report.nextExperiment.type, 'feeling');
   assert.match(markdownForGrowthReport(report), /Growth Report/);
 });
