@@ -12,9 +12,11 @@ app/dist/
 app/test-results/
 app/public/fun/
 app/public/growth/
+app/public/bridge/
 app/public/simulator/
 captures/
 gameplay-debug.png
 reports/fun/
 reports/growth/
+reports/bridge/
 reports/simulator/

@@ -51,6 +51,7 @@ npm run oracle:scenario -- --id=escape-pressure-4p
 npm run memory:build
 npm run memory:query -- "what do we know about escape pressure?"
 npm run time-machine:scenario -- --id=escape-pressure-4p
+npm run bridge:build -- --markdown
 ```
 
 Scenario runs use the same active Anvil deployment as `npm run sim:*`; keep `npm run local:solo` running or pass `--rpc=<url>` to target another local engine.
@@ -109,6 +110,7 @@ The simulator now emits raw run traces plus aggregate learning data:
 - Scenario Time Machine for comparing each scenario's evidence over time and finding best, latest, last-good, and regressed versions.
 - Scenario Lab Notebook for recording scenario learning, current belief, decisions, unresolved assumptions, readiness, and next experiments.
 - Scenario Self-Driving Tutor for ranking the next gameplay lesson, command chain, and success criteria.
+- Scenario Evidence Bridge for turning simulator-family readiness into public route featured/challenge choices.
 - Scenario run history in `reports/simulator/scenarios/<scenario-id>/history.json`.
 - Gameplay Oracle verdicts in `reports/simulator/oracle/latest-oracle.json` and `/simulator`.
 - Opinionated warnings in `/simulator`.
@@ -275,6 +277,20 @@ npm run fun:report -- --markdown
 The public routes show Fun Report blocks after runs and during replay. Generated reports are written under ignored `reports/fun/` and `app/public/fun/` folders.
 
 See [fun-loop.md](fun-loop.md) for quality gates and public-facing fun systems.
+
+## Scenario Evidence Bridge
+
+Scenario Evidence Bridge turns simulator-family reports into public readiness JSON:
+
+```bash
+npm run bridge:build
+npm run bridge:scenario -- --id=solo-artifact-hunt
+npm run bridge:doctor
+```
+
+It writes ignored outputs under `reports/bridge/` and `app/public/bridge/`. The public growth routes use those files to choose a featured scenario, choose a challenge scenario, show readiness badges, cite evidence, and expose the next useful tuning command.
+
+See [scenario-evidence-bridge.md](scenario-evidence-bridge.md) for the schema, verdicts, and route behavior.
 
 ## Scenario Self-Driving Tutor
 

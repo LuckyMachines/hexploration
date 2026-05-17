@@ -1,5 +1,16 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link, useLocation, useParams } from 'react-router-dom';
+import {
+  bridgeDevlogEntries,
+  fetchBridgeReport,
+  mergeReadinessIntoProgress,
+  publicVerdictLabel,
+  readinessForScenario,
+  readinessTone,
+  scenarioRouteFromBridge,
+  selectChallengeScenario,
+  selectFeaturedScenario,
+} from '../lib/bridgeData';
 import {
   applyGrowthAction,
   actionPreviewFor,
@@ -52,6 +63,18 @@ function useQuery() {
   return useMemo(() => new URLSearchParams(location.search), [location.search]);
 }
 
+function useBridgeReport() {
+  const [bridgeReport, setBridgeReport] = useState(null);
+  useEffect(() => {
+    let active = true;
+    fetchBridgeReport().then((report) => {
+      if (active) setBridgeReport(report);
+    });
+    return () => { active = false; };
+  }, []);
+  return bridgeReport;
+}
+
 function ToneBadge({ children, tone = 'blue' }) {
   const colors = tone === 'green'
     ? 'border-oxide-green/35 bg-oxide-green/10 text-oxide-green'
@@ -61,6 +84,44 @@ function ToneBadge({ children, tone = 'blue' }) {
         ? 'border-compass/35 bg-compass/10 text-compass-bright'
         : 'border-blueprint/35 bg-blueprint/10 text-blueprint';
   return <span className={`rounded border px-2 py-1 font-mono text-[10px] uppercase tracking-[0.16em] ${colors}`}>{children}</span>;
+}
+
+function BridgeReadinessBadge({ readiness }) {
+  if (!readiness) return <ToneBadge>Evidence pending</ToneBadge>;
+  return (
+    <ToneBadge tone={readinessTone(readiness.gateVerdict)}>
+      {publicVerdictLabel(readiness.gateVerdict)} {readiness.readinessScore ?? 0}
+    </ToneBadge>
+  );
+}
+
+function EvidenceCitationsList({ readiness }) {
+  const citations = [
+    readiness?.evidence?.feeling?.sourcePath ? `Feeling: ${readiness.evidence.feeling.sourcePath}` : null,
+    readiness?.evidence?.timeMachine?.latestGeneratedAt ? `Time Machine: ${readiness.evidence.timeMachine.trend || 'unknown'} at ${readiness.evidence.timeMachine.latestGeneratedAt}` : null,
+    readiness?.evidence?.lab?.readiness?.status ? `Lab: ${readiness.evidence.lab.readiness.status}` : null,
+  ].filter(Boolean);
+  if (citations.length === 0) return null;
+  return (
+    <div className="mt-3 rounded border border-exp-border/60 bg-exp-dark/35 px-3 py-2">
+      <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-exp-text-dim">Evidence</p>
+      <div className="mt-2 space-y-1">
+        {citations.map((citation) => <p key={citation} className="font-mono text-[11px] leading-relaxed text-exp-text-dim">{citation}</p>)}
+      </div>
+    </div>
+  );
+}
+
+function NextFixCommand({ readiness }) {
+  if (!readiness?.nextFix) return null;
+  return (
+    <details className="mt-3 rounded border border-compass/25 bg-compass/5 px-3 py-2">
+      <summary className="cursor-pointer font-mono text-[10px] uppercase tracking-[0.22em] text-compass">Next evidence fix</summary>
+      <p className="mt-2 font-mono text-xs leading-relaxed text-exp-text">{readiness.nextFix.title}</p>
+      <p className="mt-1 font-mono text-[11px] leading-relaxed text-exp-text-dim">{readiness.nextFix.reason}</p>
+      <code className="mt-2 block overflow-x-auto rounded border border-exp-border/60 bg-exp-dark/60 px-2 py-2 font-mono text-[11px] text-compass-bright">{readiness.nextFix.command}</code>
+    </details>
+  );
 }
 
 function Metric({ label, value, tone = 'blue' }) {
@@ -210,8 +271,12 @@ function ShareCard({ run }) {
 
 export function GrowthPlayPage({ challenge = false }) {
   const query = useQuery();
-  const scenarioId = challenge ? WEEKLY_CHALLENGE.scenarioId : query.get('scenario') || 'solo-artifact-hunt';
-  const seed = challenge ? WEEKLY_CHALLENGE.seed : query.get('seed') || null;
+  const bridgeReport = useBridgeReport();
+  const bridgedChoice = challenge ? selectChallengeScenario(bridgeReport) : selectFeaturedScenario(bridgeReport);
+  const manualScenarioId = query.get('scenario');
+  const manualSeed = query.get('seed');
+  const scenarioId = challenge ? manualScenarioId || WEEKLY_CHALLENGE.scenarioId : manualScenarioId || 'solo-artifact-hunt';
+  const seed = challenge ? manualSeed || WEEKLY_CHALLENGE.seed : manualSeed || null;
   const mode = query.get('mode') || (String(seed || '').includes('rival') ? 'rival' : 'standard');
   const [run, setRun] = useState(() => {
     const created = createGrowthRun({ scenarioId, seed, mode, challenge });
@@ -222,10 +287,19 @@ export function GrowthPlayPage({ challenge = false }) {
   const [copied, setCopied] = useState(false);
   const [selectedAction, setSelectedAction] = useState('move');
   const runs = loadJson(RUNS_KEY, []);
-  const leaderboard = rankChallengeRuns(runs);
+  const bridgeReadiness = readinessForScenario(bridgeReport, run.scenario.id) || (bridgedChoice?.scenarioId === run.scenario.id ? bridgedChoice : null);
+  const leaderboard = rankChallengeRuns(runs, run.scenario.id);
   const summary = summarizeGrowthRun(run);
   const preview = actionPreviewFor(run, selectedAction);
   const latestMoment = [...run.timeline].reverse().find((event) => event.momentType || event.comebackLabel);
+
+  useEffect(() => {
+    if (!bridgedChoice?.scenarioId || manualScenarioId || run.turn > 0 || run.timeline.length > 0 || run.scenario.id === bridgedChoice.scenarioId) return;
+    const nextSeed = challenge ? bridgedChoice.challengeSeed || WEEKLY_CHALLENGE.seed : manualSeed || null;
+    const created = createGrowthRun({ scenarioId: bridgedChoice.scenarioId, seed: nextSeed, mode, challenge });
+    setRun(created);
+    recordEvent('run_started', { scenarioId: created.scenario.id, seed: created.seed, challenge, bridgeVerdict: bridgedChoice.gateVerdict });
+  }, [bridgedChoice, challenge, manualScenarioId, manualSeed, mode, run.scenario.id, run.timeline.length, run.turn]);
 
   function act(action) {
     const next = applyGrowthAction(run, action);
@@ -246,7 +320,7 @@ export function GrowthPlayPage({ challenge = false }) {
   }
 
   return (
-    <GrowthFrame title={challenge ? WEEKLY_CHALLENGE.title : run.scenario.name} eyebrow={challenge ? WEEKLY_CHALLENGE.tagline : run.scenario.hook}>
+    <GrowthFrame title={challenge ? `Challenge: ${run.scenario.name}` : run.scenario.name} eyebrow={challenge ? WEEKLY_CHALLENGE.tagline : run.scenario.hook}>
       <div className="grid gap-4 lg:grid-cols-[minmax(0,0.9fr)_minmax(360px,1.1fr)]">
         <BoardState run={run} />
         <section className="rounded border border-exp-border bg-exp-panel p-4">
@@ -255,8 +329,14 @@ export function GrowthPlayPage({ challenge = false }) {
               <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-exp-text-dim">Public run</p>
               <p className="mt-1 font-mono text-xs leading-relaxed text-exp-text">{run.scenario.premise}</p>
             </div>
-            <ToneBadge tone={run.completed ? 'green' : 'blue'}>{run.completed ? summary.outcome : `Turn ${run.turn + 1}/${run.scenario.maxTurns}`}</ToneBadge>
+            <div className="flex flex-wrap gap-2">
+              <BridgeReadinessBadge readiness={bridgeReadiness} />
+              <ToneBadge tone={run.completed ? 'green' : 'blue'}>{run.completed ? summary.outcome : `Turn ${run.turn + 1}/${run.scenario.maxTurns}`}</ToneBadge>
+            </div>
           </div>
+          {bridgeReadiness?.blockers?.length > 0 && (
+            <p className="mt-2 font-mono text-[11px] leading-relaxed text-compass-bright">{bridgeReadiness.blockers[0].message}</p>
+          )}
           <div className="mt-3 grid gap-2 sm:grid-cols-4">
             <Metric label="Artifacts" value={summary.artifacts} tone="green" />
             <Metric label="Saved" value={run.state.savedPlayers} tone="blue" />
@@ -306,6 +386,8 @@ export function GrowthPlayPage({ challenge = false }) {
               ))}
             </div>
           )}
+          <EvidenceCitationsList readiness={bridgeReadiness} />
+          <NextFixCommand readiness={bridgeReadiness} />
         </section>
       </div>
       <div className="mt-4"><FunReport run={run} /></div>
@@ -332,20 +414,36 @@ export function GrowthPlayPage({ challenge = false }) {
 }
 
 export function ScenarioGalleryPage() {
+  const bridgeReport = useBridgeReport();
+  const [filter, setFilter] = useState('all');
+  const rows = GROWTH_SCENARIOS.map((scenario) => ({
+    ...scenario,
+    readiness: readinessForScenario(bridgeReport, scenario.id),
+  })).sort((a, b) => (b.readiness?.readinessScore || 0) - (a.readiness?.readinessScore || 0) || a.name.localeCompare(b.name));
+  const filteredRows = filter === 'all' ? rows : rows.filter((scenario) => scenario.readiness?.gateVerdict === filter || (!scenario.readiness && filter === 'missing-evidence'));
   return (
     <GrowthFrame title="Scenario Gallery" eyebrow="Choose a public seedable run">
+      <div className="mb-3 flex flex-wrap gap-2">
+        {['all', 'featured-ready', 'playable-with-caveats', 'needs-fun-work', 'missing-evidence'].map((item) => (
+          <button key={item} type="button" onClick={() => setFilter(item)} className={`rounded border px-3 py-2 font-mono text-[10px] uppercase tracking-[0.16em] ${filter === item ? 'border-compass/60 bg-compass/10 text-compass-bright' : 'border-exp-border bg-exp-panel text-exp-text-dim'}`}>
+            {item === 'all' ? 'All' : publicVerdictLabel(item)}
+          </button>
+        ))}
+      </div>
       <div className="grid gap-3 lg:grid-cols-3">
-        {GROWTH_SCENARIOS.map((scenario) => (
+        {filteredRows.map((scenario) => (
           <article key={scenario.id} className="rounded border border-exp-border bg-exp-panel p-4">
             <div className="flex items-start justify-between gap-2">
               <h2 className="font-mono text-sm uppercase tracking-[0.16em] text-exp-text">{scenario.name}</h2>
-              <ToneBadge tone="gold">{scenario.difficulty}</ToneBadge>
+              <BridgeReadinessBadge readiness={scenario.readiness} />
             </div>
             <p className="mt-2 font-mono text-xs leading-relaxed text-exp-text-dim">{scenario.hook}</p>
             <div className="mt-3 flex flex-wrap gap-1">
+              <ToneBadge tone="gold">{scenario.difficulty}</ToneBadge>
               {scenario.tags.map((tag) => <ToneBadge key={tag}>{tag}</ToneBadge>)}
             </div>
-            <Link to={`/play?scenario=${scenario.id}`} className="mt-4 inline-flex rounded border border-compass/40 bg-compass/10 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.16em] text-compass-bright">
+            <NextFixCommand readiness={scenario.readiness} />
+            <Link to={scenarioRouteFromBridge(scenario.readiness, `/play?scenario=${scenario.id}`)} className="mt-4 inline-flex rounded border border-compass/40 bg-compass/10 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.16em] text-compass-bright">
               Play scenario
             </Link>
           </article>
@@ -401,7 +499,8 @@ export function ReplayPage() {
 
 export function ProgressPage() {
   const runs = loadJson(RUNS_KEY, []);
-  const progress = buildPublicProgress({ runs });
+  const bridgeReport = useBridgeReport();
+  const progress = mergeReadinessIntoProgress(buildPublicProgress({ runs }), bridgeReport);
   return (
     <GrowthFrame title="Scenario Progress" eyebrow="Public growth dashboard">
       <div className="grid gap-3 lg:grid-cols-3">
@@ -413,7 +512,9 @@ export function ProgressPage() {
               <Metric label="Complete" value={`${Math.round(item.completionRate * 100)}%`} tone="green" />
               <Metric label="Arc" value={item.latestArcScore ?? 'n/a'} tone="gold" />
               <Metric label="Trend" value={item.trend} tone="blue" />
+              <Metric label="Ready" value={item.bridgeReadiness?.readinessScore ?? 'n/a'} tone={readinessTone(item.bridgeReadiness?.gateVerdict)} />
             </div>
+            <div className="mt-3"><BridgeReadinessBadge readiness={item.bridgeReadiness} /></div>
             {item.latestRun && <div className="mt-3"><FunReport run={item.latestRun} compact /></div>}
             <p className="mt-3 font-mono text-[11px] leading-relaxed text-exp-text-dim">{item.nextExperiment}</p>
           </article>
@@ -424,7 +525,8 @@ export function ProgressPage() {
 }
 
 export function DevlogPage() {
-  const entries = buildDevlogEntries(buildPublicProgress({ runs: loadJson(RUNS_KEY, []) }));
+  const bridgeReport = useBridgeReport();
+  const entries = [...bridgeDevlogEntries(bridgeReport), ...buildDevlogEntries(buildPublicProgress({ runs: loadJson(RUNS_KEY, []) }))];
   return (
     <GrowthFrame title="Design Devlog" eyebrow="Evidence translated into readable updates">
       <div className="space-y-3">
@@ -433,6 +535,7 @@ export function DevlogPage() {
             <h2 className="font-mono text-sm uppercase tracking-[0.16em] text-exp-text">{entry.title}</h2>
             <p className="mt-2 font-mono text-xs leading-relaxed text-exp-text-dim">{entry.body}</p>
             <p className="mt-2 font-mono text-[11px] text-compass-bright">Next: {entry.next}</p>
+            {entry.command && <code className="mt-2 block overflow-x-auto rounded border border-exp-border/60 bg-exp-dark/60 px-2 py-2 font-mono text-[11px] text-exp-text-dim">{entry.command}</code>}
           </article>
         ))}
       </div>
@@ -470,6 +573,11 @@ export function CreateScenarioPage() {
             <button type="button" onClick={publish} className="rounded border border-compass/40 bg-compass/10 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.16em] text-compass-bright">Publish locally</button>
             <Link to={preview.playPath} className="rounded border border-blueprint/40 bg-blueprint/10 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.16em] text-blueprint">Test scenario</Link>
           </div>
+          <details className="mt-4 rounded border border-exp-border/60 bg-exp-dark/35 px-3 py-2">
+            <summary className="cursor-pointer font-mono text-[10px] uppercase tracking-[0.22em] text-exp-text-dim">Evidence requirements</summary>
+            <p className="mt-2 font-mono text-xs leading-relaxed text-exp-text">A created scenario becomes promotable after same-engine runs, feeling evidence, and bridge readiness agree that it is playable.</p>
+            <code className="mt-2 block overflow-x-auto rounded border border-exp-border/60 bg-exp-dark/60 px-2 py-2 font-mono text-[11px] text-compass-bright">npm run bridge:scenario -- --id={preview.id}</code>
+          </details>
         </section>
       </div>
     </GrowthFrame>

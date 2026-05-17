@@ -364,9 +364,9 @@ export function scoreChallengeRun(run) {
     - run.state.danger;
 }
 
-export function rankChallengeRuns(runs = []) {
+export function rankChallengeRuns(runs = [], scenarioId = WEEKLY_CHALLENGE.scenarioId) {
   return [...runs]
-    .filter((run) => run?.scenario?.id === WEEKLY_CHALLENGE.scenarioId && run.completed)
+    .filter((run) => run?.scenario?.id === scenarioId && run.completed)
     .sort((a, b) => scoreChallengeRun(b) - scoreChallengeRun(a));
 }
 
