@@ -194,15 +194,15 @@ export default function ActionPanel({
   return (
     <div className="border border-exp-border rounded bg-exp-surface shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]">
       <div className="border-b border-exp-border px-4 py-3 flex flex-wrap items-center justify-between gap-3">
-        <div>
+        <div className="min-w-0">
           <h3 className="font-display text-xs tracking-[0.25em] text-exp-text-dim uppercase">
             Action Console
           </h3>
-          <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.3em] text-exp-text-dim">
-            Route movement, camp setup, digging, rest, help, or escape from the tablet.
+          <p className="mt-1 font-mono text-[11px] leading-relaxed text-exp-text-dim">
+            Pick one action, review it, then submit.
           </p>
         </div>
-        <span className={`font-mono text-xs uppercase tracking-[0.25em] border rounded px-2.5 py-1 ${
+        <span className={`shrink-0 font-mono text-xs uppercase tracking-[0.18em] border rounded px-2.5 py-1 ${
           isSpectator
             ? 'text-exp-text-dim border-exp-border bg-exp-dark/40'
             : isPending || isConfirming
@@ -246,53 +246,6 @@ export default function ActionPanel({
       </div>
 
       <div className="px-4 pt-3">
-        <div className="grid gap-2 md:grid-cols-3">
-          <div className={`rounded border px-3 py-2 ${
-            condition.tone === 'red'
-              ? 'border-signal-red/35 bg-signal-red/5'
-              : condition.tone === 'gold'
-                ? 'border-compass/35 bg-compass/5'
-                : 'border-blueprint/30 bg-blueprint/5'
-          }`}>
-            <p className="font-mono text-[10px] uppercase tracking-[0.26em] text-exp-text-dim">
-              Condition
-            </p>
-            <p className="mt-1 font-mono text-xs uppercase tracking-[0.16em] text-exp-text">
-              {condition.label}
-            </p>
-            <p className="mt-1 font-mono text-[11px] leading-relaxed text-exp-text-dim">
-              {condition.detail}
-            </p>
-          </div>
-          <div className={`rounded border px-3 py-2 ${
-            actionStake.tone === 'red'
-              ? 'border-signal-red/35 bg-signal-red/5'
-              : actionStake.tone === 'gold'
-                ? 'border-compass/35 bg-compass/5'
-                : 'border-blueprint/30 bg-blueprint/5'
-          }`}>
-            <p className="font-mono text-[10px] uppercase tracking-[0.26em] text-exp-text-dim">
-              Stakes
-            </p>
-            <p className="mt-1 font-mono text-xs uppercase tracking-[0.16em] text-exp-text">
-              {actionStake.band}
-            </p>
-            <p className="mt-1 font-mono text-[11px] leading-relaxed text-exp-text-dim">
-              {actionStake.risk}
-            </p>
-          </div>
-          <div className="rounded border border-exp-border/60 bg-exp-dark/35 px-3 py-2">
-            <p className="font-mono text-[10px] uppercase tracking-[0.26em] text-exp-text-dim">
-              Required
-            </p>
-            <p className="mt-1 font-mono text-xs leading-relaxed text-exp-text">
-              {actionStake.requirement}
-            </p>
-          </div>
-        </div>
-      </div>
-
-      <div className="px-4 pt-3">
         <div className="rounded border border-exp-border/60 bg-exp-dark/35 px-3 py-2">
           <div className="flex flex-wrap items-start justify-between gap-2">
             <div>
@@ -325,37 +278,89 @@ export default function ActionPanel({
         </div>
       </div>
 
-      {funTelemetry && (
-        <div className="px-4 pt-3">
-          <div className="grid gap-2 md:grid-cols-[1fr_auto]">
-            <div className="rounded border border-compass/25 bg-compass/5 px-3 py-2">
-              <p className="font-mono text-[10px] uppercase tracking-[0.26em] text-compass">
-                {funTelemetry.preview.label}
-              </p>
-              <p className="mt-1 font-mono text-xs text-exp-text">
-                {funTelemetry.preview.body}
-              </p>
-              <p className="mt-1 font-mono text-[11px] text-exp-text-dim">
-                "{funTelemetry.bark.line}"
-              </p>
-            </div>
-            <div className={`rounded border px-3 py-2 ${
-              funTelemetry.risk.level === 'redline'
-                ? 'alive-risk-redline border-signal-red/40 bg-signal-red/10 text-signal-red'
-                : funTelemetry.risk.level === 'hot'
-                  ? 'border-compass/40 bg-compass/10 text-compass-bright'
-                  : 'border-oxide-green/35 bg-oxide-green/10 text-oxide-green'
-            }`}>
-              <p className="font-mono text-[10px] uppercase tracking-[0.24em] opacity-70">
-                Tension
-              </p>
-              <p className="mt-1 font-mono text-xs uppercase tracking-[0.18em]">
-                {funTelemetry.risk.label} {funTelemetry.risk.score}
-              </p>
-            </div>
+      <details className="mx-4 mt-3 rounded border border-exp-border/60 bg-exp-dark/25 px-3 py-2">
+        <summary className="cursor-pointer list-none flex items-center justify-between gap-3">
+          <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-exp-text-dim">
+            Action context
+          </span>
+          <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-compass-bright">
+            Details
+          </span>
+        </summary>
+        <div className="mt-3 grid gap-2 md:grid-cols-3">
+          <div className={`rounded border px-3 py-2 ${
+            condition.tone === 'red'
+              ? 'border-signal-red/35 bg-signal-red/5'
+              : condition.tone === 'gold'
+                ? 'border-compass/35 bg-compass/5'
+                : 'border-blueprint/30 bg-blueprint/5'
+          }`}>
+            <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-exp-text-dim">
+              Condition
+            </p>
+            <p className="mt-1 font-mono text-xs uppercase tracking-[0.12em] text-exp-text">
+              {condition.label}
+            </p>
+            <p className="mt-1 font-mono text-[11px] leading-relaxed text-exp-text-dim">
+              {condition.detail}
+            </p>
           </div>
+          <div className={`rounded border px-3 py-2 ${
+            actionStake.tone === 'red'
+              ? 'border-signal-red/35 bg-signal-red/5'
+              : actionStake.tone === 'gold'
+                ? 'border-compass/35 bg-compass/5'
+                : 'border-blueprint/30 bg-blueprint/5'
+          }`}>
+            <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-exp-text-dim">
+              Stakes
+            </p>
+            <p className="mt-1 font-mono text-xs uppercase tracking-[0.12em] text-exp-text">
+              {actionStake.band}
+            </p>
+            <p className="mt-1 font-mono text-[11px] leading-relaxed text-exp-text-dim">
+              {actionStake.risk}
+            </p>
+          </div>
+          <div className="rounded border border-exp-border/60 bg-exp-dark/35 px-3 py-2">
+            <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-exp-text-dim">
+              Required
+            </p>
+            <p className="mt-1 font-mono text-xs leading-relaxed text-exp-text">
+              {actionStake.requirement}
+            </p>
+          </div>
+          {funTelemetry && (
+            <div className="md:col-span-3 grid gap-2 md:grid-cols-[1fr_auto]">
+              <div className="rounded border border-compass/25 bg-compass/5 px-3 py-2">
+                <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-compass">
+                  {funTelemetry.preview.label}
+                </p>
+                <p className="mt-1 font-mono text-xs text-exp-text">
+                  {funTelemetry.preview.body}
+                </p>
+                <p className="mt-1 font-mono text-[11px] text-exp-text-dim">
+                  "{funTelemetry.bark.line}"
+                </p>
+              </div>
+              <div className={`rounded border px-3 py-2 ${
+                funTelemetry.risk.level === 'redline'
+                  ? 'alive-risk-redline border-signal-red/40 bg-signal-red/10 text-signal-red'
+                  : funTelemetry.risk.level === 'hot'
+                    ? 'border-compass/40 bg-compass/10 text-compass-bright'
+                    : 'border-oxide-green/35 bg-oxide-green/10 text-oxide-green'
+              }`}>
+                <p className="font-mono text-[10px] uppercase tracking-[0.18em] opacity-70">
+                  Tension
+                </p>
+                <p className="mt-1 font-mono text-xs uppercase tracking-[0.14em]">
+                  {funTelemetry.risk.label} {funTelemetry.risk.score}
+                </p>
+              </div>
+            </div>
+          )}
         </div>
-      )}
+      </details>
 
       <div
         className="grid grid-flow-col auto-cols-[minmax(4.8rem,1fr)] gap-1 px-4 pt-3 pb-2 border-b border-exp-border/50 overflow-x-auto"
@@ -459,17 +464,27 @@ export default function ActionPanel({
         )}
       </div>
 
-      <div className="px-4 pb-4">
-        <ActionSimulator
-          activeTab={activeTab}
-          movement={movement}
-          currentLocation={currentLocation}
-          path={movePath}
-          hasCampsiteKit={activeInv?.campsite ?? false}
-          hasSubmitted={hasSubmitted}
-          isSpectator={isSpectator}
-        />
-      </div>
+      <details className="mx-4 mb-4 rounded border border-exp-border/60 bg-exp-dark/25 px-3 py-2">
+        <summary className="cursor-pointer list-none flex items-center justify-between gap-3">
+          <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-exp-text-dim">
+            Outcome preview
+          </span>
+          <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-compass-bright">
+            Details
+          </span>
+        </summary>
+        <div className="mt-3">
+          <ActionSimulator
+            activeTab={activeTab}
+            movement={movement}
+            currentLocation={currentLocation}
+            path={movePath}
+            hasCampsiteKit={activeInv?.campsite ?? false}
+            hasSubmitted={hasSubmitted}
+            isSpectator={isSpectator}
+          />
+        </div>
+      </details>
 
       {(hash || isPending || error) && (
         <div className="px-4 pb-4">

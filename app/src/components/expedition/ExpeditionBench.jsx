@@ -170,19 +170,16 @@ export default function ExpeditionBench() {
   );
 
   return (
-    <div className="space-y-4">
-      <div className="rounded border border-exp-border bg-exp-panel/80 px-4 py-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]">
-        <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+    <div className="space-y-5">
+      <div className="rounded border border-exp-border bg-exp-panel/70 px-4 py-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]">
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
           <DayNightBadge phase={phase} />
           <PhaseIndicator currentPhase={queueTelemetry.phase} />
           <DayCounter gameId={view.gameId} />
-          <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-exp-text-dim">
-            {phase || 'Unknown'}
-          </span>
-          <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-exp-text-dim">
+          <span className="rounded border border-exp-border/60 bg-exp-dark/30 px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.18em] text-exp-text-dim">
             {queueLabel}
           </span>
-          <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-exp-text-dim">
+          <span className="rounded border border-exp-border/60 bg-exp-dark/30 px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.18em] text-exp-text-dim">
             {enrichedPlayers.length} aboard
           </span>
           {debugEnabled && (
@@ -196,49 +193,21 @@ export default function ExpeditionBench() {
           )}
           <ShareGameLink />
         </div>
-        <p className="mt-2 font-mono text-[11px] text-exp-text-dim">
-          {queueDetail}
-        </p>
       </div>
 
-      <MissionStatus
-        turnState={turnState}
-        movePathLength={movePath.length}
-        moveValidation={moveValidation}
-        crewCount={enrichedPlayers.length}
-      />
-      <GuidedFirstTurn
-        isSpectator={isSpectator}
-        hasSubmitted={hasSubmitted}
-        movePathLength={movePath.length}
-        turnState={turnState}
-      />
-      <UXStatusPanel
-        guidance={turnGuidance}
-        suggestion={suggestion}
-        onSuggestion={() => suggestion.action && setActiveTab(suggestion.action)}
-      />
-      <FunStatusPanel telemetry={funTelemetry} />
-      <TurnReadinessStrip
-        players={enrichedPlayers}
-        readinessByPlayerID={readinessByPlayerID}
-        currentPlayerIndex={currentPlayerIndex}
-        turnState={turnState}
-      />
-
-      <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(300px,0.9fr)] 2xl:grid-cols-[minmax(0,760px)_minmax(360px,1fr)]">
-        <div className="min-w-0 border border-exp-border rounded bg-exp-panel p-2 sm:p-4 min-h-[360px] sm:min-h-[520px] overflow-hidden shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]">
+      <div className="grid gap-5 lg:grid-cols-[minmax(0,1.35fr)_minmax(280px,0.55fr)] 2xl:grid-cols-[minmax(0,980px)_minmax(320px,0.42fr)]">
+        <div className="min-w-0 border border-exp-border rounded bg-exp-panel p-2 sm:p-4 min-h-[420px] sm:min-h-[620px] overflow-hidden shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]">
           <div className="mb-3 flex flex-wrap items-end justify-between gap-3 border-b border-exp-border/50 pb-2">
             <div>
               <p className="font-mono text-[10px] uppercase tracking-[0.35em] text-exp-text-dim">
                 Survey board
               </p>
-              <p className="mt-1 font-mono text-xs text-exp-text-dim">
-                Trace revealed tiles to plan movement. Fogged cells stay locked.
+              <p className="mt-1 max-w-xl font-mono text-xs leading-relaxed text-exp-text-dim">
+                {turnGuidance.body || queueDetail}
               </p>
             </div>
             {location && (
-              <div className="flex flex-wrap items-center gap-2 rounded border border-exp-border/60 bg-exp-dark/40 px-3 py-2">
+              <div className="flex flex-wrap items-center gap-2 rounded border border-exp-border/60 bg-exp-dark/35 px-3 py-2">
                 <div>
                   <p className="font-mono text-[10px] uppercase tracking-[0.35em] text-exp-text-dim">
                     Current location
@@ -284,8 +253,8 @@ export default function ExpeditionBench() {
           </ErrorBoundary>
         </div>
 
-        <div className="min-w-0 space-y-3 max-h-[340px] lg:max-h-[620px] 2xl:max-h-[min(720px,calc(100svh-13rem))] overflow-y-auto">
-          <h3 className="font-mono text-xs tracking-[0.3em] text-exp-text-dim uppercase sticky top-0 bg-exp-dark py-1">
+        <div className="min-w-0 space-y-3 max-h-[320px] lg:max-h-[min(620px,calc(100svh-11rem))] overflow-y-auto pr-1">
+          <h3 className="font-mono text-xs tracking-[0.24em] text-exp-text-dim uppercase sticky top-0 bg-exp-dark py-2">
             Expedition Crew
           </h3>
           {enrichedPlayers.length === 0 && (
@@ -315,6 +284,50 @@ export default function ExpeditionBench() {
           ))}
         </div>
       </div>
+
+      <details className="group rounded border border-exp-border/70 bg-exp-panel/45 px-4 py-3">
+        <summary className="cursor-pointer list-none flex items-center justify-between gap-3">
+          <div className="min-w-0">
+            <h3 className="font-mono text-xs tracking-[0.24em] text-exp-text-dim uppercase">
+              Turn briefing
+            </h3>
+            <p className="mt-1 font-mono text-[11px] leading-relaxed text-exp-text-dim">
+              Mission state, suggestions, readiness, and mood details.
+            </p>
+          </div>
+          <span className="shrink-0 font-mono text-[10px] uppercase tracking-[0.2em] text-compass-bright border border-compass/30 rounded px-2 py-1 bg-compass/5">
+            Details
+          </span>
+        </summary>
+        <div className="mt-4 grid gap-3 xl:grid-cols-2">
+          <MissionStatus
+            turnState={turnState}
+            movePathLength={movePath.length}
+            moveValidation={moveValidation}
+            crewCount={enrichedPlayers.length}
+          />
+          <GuidedFirstTurn
+            isSpectator={isSpectator}
+            hasSubmitted={hasSubmitted}
+            movePathLength={movePath.length}
+            turnState={turnState}
+          />
+          <UXStatusPanel
+            guidance={turnGuidance}
+            suggestion={suggestion}
+            onSuggestion={() => suggestion.action && setActiveTab(suggestion.action)}
+          />
+          <FunStatusPanel telemetry={funTelemetry} />
+          <div className="xl:col-span-2">
+            <TurnReadinessStrip
+              players={enrichedPlayers}
+              readinessByPlayerID={readinessByPlayerID}
+              currentPlayerIndex={currentPlayerIndex}
+              turnState={turnState}
+            />
+          </div>
+        </div>
+      </details>
 
       <UserPreferencesPanel />
 

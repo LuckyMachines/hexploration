@@ -540,6 +540,17 @@ export default function BoardPresence({
   companionLocations = [],
   controlFeel = {},
 }) {
+  const hasRouteIntent = path.length > 0 || previewPath.length > 0;
+  const activeInput = controlFeel.inputCadence && controlFeel.inputCadence !== 'idle';
+  const urgentMoment = controlFeel.risk?.level === 'redline' || controlFeel.routeStatus?.isValid === false;
+  const showIntentCursor = Boolean(
+    intentAlias
+    && (intentAlias !== currentLocation || hasRouteIntent || inputMode === 'pad' || invalidPulse || urgentMoment),
+  );
+  const showDenseReadouts = Boolean(!isObserving && (hasRouteIntent || urgentMoment || isResolving));
+  const showExpressiveText = Boolean(!isObserving && (activeInput || hasSubmitted || isResolving || urgentMoment));
+  const showInputReadout = Boolean(inputMode === 'pad' && (activeInput || hasRouteIntent));
+
   return (
     <g pointerEvents="none">
       <CompanionAwareness currentLocation={currentLocation} intentAlias={intentAlias} companionLocations={companionLocations} />
@@ -554,15 +565,17 @@ export default function BoardPresence({
         path={path}
         controlFeel={controlFeel}
       />
-      <IntentCursor
-        intentAlias={intentAlias}
-        intentTile={intentTile}
-        currentLocation={currentLocation}
-        activeAction={activeAction}
-        invalidPulse={invalidPulse}
-        isObserving={isObserving}
-        inputMode={inputMode}
-      />
+      {showIntentCursor && (
+        <IntentCursor
+          intentAlias={intentAlias}
+          intentTile={intentTile}
+          currentLocation={currentLocation}
+          activeAction={activeAction}
+          invalidPulse={invalidPulse}
+          isObserving={isObserving}
+          inputMode={inputMode}
+        />
+      )}
       <LivingExplorer
         currentLocation={currentLocation}
         intentAlias={intentAlias}
@@ -574,27 +587,31 @@ export default function BoardPresence({
         currentPlayerIndex={currentPlayerIndex}
         controlFeel={controlFeel}
       />
-      <ExplorerBark currentLocation={currentLocation} controlFeel={controlFeel} />
-      <MomentRibbon currentLocation={currentLocation} controlFeel={controlFeel} />
-      <ConsequencePips
-        currentLocation={currentLocation}
-        movement={movement}
-        path={path}
-        previewPath={previewPath}
-        stats={stats}
-        controlFeel={controlFeel}
-      />
-      <RouteMeter currentLocation={currentLocation} controlFeel={controlFeel} />
+      {showExpressiveText && <ExplorerBark currentLocation={currentLocation} controlFeel={controlFeel} />}
+      {showExpressiveText && <MomentRibbon currentLocation={currentLocation} controlFeel={controlFeel} />}
+      {showDenseReadouts && (
+        <ConsequencePips
+          currentLocation={currentLocation}
+          movement={movement}
+          path={path}
+          previewPath={previewPath}
+          stats={stats}
+          controlFeel={controlFeel}
+        />
+      )}
+      {showDenseReadouts && <RouteMeter currentLocation={currentLocation} controlFeel={controlFeel} />}
       <LanternPing currentLocation={currentLocation} lanternPing={controlFeel.lanternPing} inputMode={inputMode} />
-      <InputReadout currentLocation={currentLocation} controlFeel={controlFeel} />
-      <ActionTelemetry
-        currentLocation={currentLocation}
-        intentAlias={intentAlias}
-        path={path}
-        activeAction={activeAction}
-        hasSubmitted={hasSubmitted}
-        isResolving={isResolving}
-      />
+      {showInputReadout && <InputReadout currentLocation={currentLocation} controlFeel={controlFeel} />}
+      {showDenseReadouts && (
+        <ActionTelemetry
+          currentLocation={currentLocation}
+          intentAlias={intentAlias}
+          path={path}
+          activeAction={activeAction}
+          hasSubmitted={hasSubmitted}
+          isResolving={isResolving}
+        />
+      )}
     </g>
   );
 }
