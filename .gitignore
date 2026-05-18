@@ -15,6 +15,7 @@ app/public/growth/
 app/public/bridge/
 app/public/local-stack/
 app/public/simulator/
+app/public/verification/
 captures/
 gameplay-debug.png
 reports/fun/
@@ -23,3 +24,4 @@ reports/bridge/
 reports/local-stack/
 reports/simulator/
 reports/ui-density/
+reports/verification/
