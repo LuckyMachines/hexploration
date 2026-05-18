@@ -1,6 +1,7 @@
 import { Action, ACTION_LABELS, TILE_COLORS, TILE_LABELS, Tile } from '../../lib/constants';
 import { getActionMeta } from '../../lib/actionMeta';
 import { aliasToPixel } from '../../lib/hexmath';
+import { overlayVisibilityFromDensity } from '../../lib/interfaceDensity';
 
 const ACTION_LEAN = {
   [Action.MOVE]: 4,
@@ -539,17 +540,26 @@ export default function BoardPresence({
   stats = {},
   companionLocations = [],
   controlFeel = {},
+  interfaceDensity,
 }) {
-  const hasRouteIntent = path.length > 0 || previewPath.length > 0;
-  const activeInput = controlFeel.inputCadence && controlFeel.inputCadence !== 'idle';
-  const urgentMoment = controlFeel.risk?.level === 'redline' || controlFeel.routeStatus?.isValid === false;
-  const showIntentCursor = Boolean(
-    intentAlias
-    && (intentAlias !== currentLocation || hasRouteIntent || inputMode === 'pad' || invalidPulse || urgentMoment),
-  );
-  const showDenseReadouts = Boolean(!isObserving && (hasRouteIntent || urgentMoment || isResolving));
-  const showExpressiveText = Boolean(!isObserving && (activeInput || hasSubmitted || isResolving || urgentMoment));
-  const showInputReadout = Boolean(inputMode === 'pad' && (activeInput || hasRouteIntent));
+  const fallbackDensity = {
+    level: controlFeel.risk?.level === 'redline' || controlFeel.routeStatus?.isValid === false
+      ? 'high-alert'
+      : path.length > 0 || previewPath.length > 0 || isResolving
+        ? 'focused'
+        : 'quiet',
+    hasRouteIntent: path.length > 0 || previewPath.length > 0,
+    activeInput: Boolean(controlFeel.inputCadence && controlFeel.inputCadence !== 'idle'),
+  };
+  const overlay = overlayVisibilityFromDensity({
+    density: interfaceDensity || fallbackDensity,
+    inputMode,
+    intentAlias,
+    currentLocation,
+    invalidPulse,
+    isObserving,
+    hasSubmitted,
+  });
 
   return (
     <g pointerEvents="none">
@@ -565,7 +575,7 @@ export default function BoardPresence({
         path={path}
         controlFeel={controlFeel}
       />
-      {showIntentCursor && (
+      {overlay.intentCursor && (
         <IntentCursor
           intentAlias={intentAlias}
           intentTile={intentTile}
@@ -587,9 +597,9 @@ export default function BoardPresence({
         currentPlayerIndex={currentPlayerIndex}
         controlFeel={controlFeel}
       />
-      {showExpressiveText && <ExplorerBark currentLocation={currentLocation} controlFeel={controlFeel} />}
-      {showExpressiveText && <MomentRibbon currentLocation={currentLocation} controlFeel={controlFeel} />}
-      {showDenseReadouts && (
+      {overlay.expressiveText && <ExplorerBark currentLocation={currentLocation} controlFeel={controlFeel} />}
+      {overlay.expressiveText && <MomentRibbon currentLocation={currentLocation} controlFeel={controlFeel} />}
+      {overlay.denseReadouts && (
         <ConsequencePips
           currentLocation={currentLocation}
           movement={movement}
@@ -599,10 +609,10 @@ export default function BoardPresence({
           controlFeel={controlFeel}
         />
       )}
-      {showDenseReadouts && <RouteMeter currentLocation={currentLocation} controlFeel={controlFeel} />}
+      {overlay.denseReadouts && <RouteMeter currentLocation={currentLocation} controlFeel={controlFeel} />}
       <LanternPing currentLocation={currentLocation} lanternPing={controlFeel.lanternPing} inputMode={inputMode} />
-      {showInputReadout && <InputReadout currentLocation={currentLocation} controlFeel={controlFeel} />}
-      {showDenseReadouts && (
+      {overlay.inputReadout && <InputReadout currentLocation={currentLocation} controlFeel={controlFeel} />}
+      {overlay.denseReadouts && (
         <ActionTelemetry
           currentLocation={currentLocation}
           intentAlias={intentAlias}

@@ -16,6 +16,7 @@ import TxStatus from '../shared/TxStatus';
 import ActionSimulator from './ActionSimulator';
 import SubmitConfirmation from './SubmitConfirmation';
 import ReceiptDrawer from './ReceiptDrawer';
+import { useUserPreferences } from '../../hooks/useUserPreferences';
 
 const TABS = [
   Action.MOVE,
@@ -62,6 +63,7 @@ export default function ActionPanel({
   boardInput,
   turnState,
   funTelemetry,
+  interfaceDensity,
 }) {
   const [localActiveTab, setLocalActiveTab] = useState(Action.MOVE);
   const [pendingSubmission, setPendingSubmission] = useState(null);
@@ -70,6 +72,7 @@ export default function ActionPanel({
   const activeTab = controlledActiveTab ?? localActiveTab;
   const { submitAction, hash, isPending, isConfirming, isSuccess, error } = useGameActions();
   const { active: activeInv } = usePlayerInventory(gameId, playerID);
+  const { preferences, setPreference } = useUserPreferences();
 
   const hasChainSubmission = currentAction && currentAction !== '' && currentAction !== 'Idle';
   const hasSubmitted = Boolean(optimisticSubmitted || hasChainSubmission);
@@ -103,6 +106,16 @@ export default function ActionPanel({
   const suggestion = getBestActionSuggestion({ activeTab, ...actionContext });
   const actionStake = getActionStake(activeTab, { ...actionContext, stats });
   const condition = conditionForStats(stats);
+  const actionContextOpen = Boolean(
+    preferences.showExtraDetail
+    || preferences.actionDetailsOpen
+    || interfaceDensity?.details?.actionContextOpen,
+  );
+  const outcomePreviewOpen = Boolean(
+    preferences.showExtraDetail
+    || preferences.outcomePreviewOpen
+    || interfaceDensity?.details?.outcomePreviewOpen,
+  );
 
   useEffect(() => {
     emitFeedbackEvent({
@@ -192,7 +205,7 @@ export default function ActionPanel({
   };
 
   return (
-    <div className="border border-exp-border rounded bg-exp-surface shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]">
+    <div className={`border border-exp-border rounded bg-exp-surface shadow-[inset_0_1px_0_rgba(255,255,255,0.03)] ${interfaceDensity?.className || ''}`} data-density={interfaceDensity?.level || 'quiet'}>
       <div className="border-b border-exp-border px-4 py-3 flex flex-wrap items-center justify-between gap-3">
         <div className="min-w-0">
           <h3 className="font-display text-xs tracking-[0.25em] text-exp-text-dim uppercase">
@@ -278,7 +291,11 @@ export default function ActionPanel({
         </div>
       </div>
 
-      <details className="mx-4 mt-3 rounded border border-exp-border/60 bg-exp-dark/25 px-3 py-2">
+      <details
+        className="mx-4 mt-3 rounded border border-exp-border/60 bg-exp-dark/25 px-3 py-2"
+        open={actionContextOpen}
+        onToggle={(event) => setPreference('actionDetailsOpen', event.currentTarget.open)}
+      >
         <summary className="cursor-pointer list-none flex items-center justify-between gap-3">
           <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-exp-text-dim">
             Action context
@@ -464,7 +481,11 @@ export default function ActionPanel({
         )}
       </div>
 
-      <details className="mx-4 mb-4 rounded border border-exp-border/60 bg-exp-dark/25 px-3 py-2">
+      <details
+        className="mx-4 mb-4 rounded border border-exp-border/60 bg-exp-dark/25 px-3 py-2"
+        open={outcomePreviewOpen}
+        onToggle={(event) => setPreference('outcomePreviewOpen', event.currentTarget.open)}
+      >
         <summary className="cursor-pointer list-none flex items-center justify-between gap-3">
           <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-exp-text-dim">
             Outcome preview

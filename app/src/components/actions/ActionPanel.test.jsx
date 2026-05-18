@@ -25,6 +25,7 @@ vi.mock('../../hooks/usePlayerInventory', () => ({
 describe('ActionPanel', () => {
   beforeEach(() => {
     submitActionMock.mockReset();
+    window.localStorage.clear();
   });
 
   it('does not treat Idle as submitted and allows move submission', async () => {
@@ -116,5 +117,23 @@ describe('ActionPanel', () => {
     await user.click(screen.getByTitle(/Trace a reachable path across revealed adjacent tiles\. Press 1\./i));
     await user.click(screen.getByRole('button', { name: /Undo Step/i }));
     expect(onMoveBacktrack).toHaveBeenCalledTimes(1);
+  });
+
+  it('keeps secondary action details collapsed by default', () => {
+    render(
+      <ActionPanel
+        gameId="1"
+        playerID={1}
+        currentLocation="0,0"
+        currentAction="Idle"
+        movement={2}
+        movePath={[]}
+        interfaceDensity={{ level: 'quiet', details: {} }}
+      />,
+    );
+
+    expect(screen.getByText(/Action context/i).closest('details')).not.toHaveAttribute('open');
+    expect(screen.getByText(/Outcome preview/i).closest('details')).not.toHaveAttribute('open');
+    expect(screen.getByRole('button', { name: /Submit Move/i })).toBeDisabled();
   });
 });

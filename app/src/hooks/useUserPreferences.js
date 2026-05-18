@@ -6,6 +6,10 @@ const DEFAULT_PREFS = {
   compactMode: false,
   largerBoard: false,
   showTelemetry: true,
+  showExtraDetail: false,
+  compactHud: false,
+  actionDetailsOpen: false,
+  outcomePreviewOpen: false,
 };
 
 export function useUserPreferences() {
@@ -27,6 +31,7 @@ export function useUserPreferences() {
     document.documentElement.classList.toggle('ux-reduced-motion', preferences.reducedMotion);
     document.documentElement.classList.toggle('ux-compact', preferences.compactMode);
     document.documentElement.classList.toggle('ux-large-board', preferences.largerBoard);
+    document.documentElement.classList.toggle('ux-compact-hud', preferences.compactHud);
   }, [preferences]);
 
   const setPreference = (key, value) => {
@@ -37,4 +42,3 @@ export function useUserPreferences() {
 
   return { preferences, setPreference, resetPreferences };
 }
-

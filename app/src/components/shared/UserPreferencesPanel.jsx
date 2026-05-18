@@ -5,6 +5,8 @@ const OPTIONS = [
   ['compactMode', 'Compact mode'],
   ['largerBoard', 'Larger board'],
   ['showTelemetry', 'Show telemetry'],
+  ['showExtraDetail', 'Open details'],
+  ['compactHud', 'Compact HUD'],
 ];
 
 export default function UserPreferencesPanel() {
@@ -41,4 +43,3 @@ export default function UserPreferencesPanel() {
     </details>
   );
 }
-

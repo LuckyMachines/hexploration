@@ -83,6 +83,56 @@ body {
   max-width: min(100%, 980px, 84svh) !important;
 }
 
+.ux-compact-hud [data-density] .game-optional-detail {
+  display: none;
+}
+
+.game-readable-text {
+  overflow-wrap: anywhere;
+  word-break: normal;
+  line-height: 1.55;
+}
+
+.game-mono-label {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+}
+
+.game-compact-badge {
+  border-radius: 0.25rem;
+  border: 1px solid color-mix(in srgb, var(--color-exp-border) 70%, transparent);
+  padding: 0.25rem 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+}
+
+.game-quiet-panel {
+  border-radius: 0.25rem;
+  border: 1px solid color-mix(in srgb, var(--color-exp-border) 72%, transparent);
+  background: color-mix(in srgb, var(--color-exp-panel) 62%, transparent);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.025);
+}
+
+.game-detail-drawer {
+  border-radius: 0.25rem;
+  border: 1px solid color-mix(in srgb, var(--color-exp-border) 70%, transparent);
+  background: color-mix(in srgb, var(--color-exp-dark) 76%, transparent);
+}
+
+.ui-density-quiet .alive-bark-bubble,
+.ui-density-quiet .alive-moment-ribbon {
+  opacity: 0.82;
+}
+
+.ui-density-high-alert {
+  --density-accent: var(--color-signal-red);
+}
+
 .ux-reduced-motion *,
 .ux-reduced-motion *::before,
 .ux-reduced-motion *::after {

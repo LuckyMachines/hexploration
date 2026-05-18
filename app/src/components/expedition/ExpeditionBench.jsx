@@ -27,6 +27,7 @@ import { buildRouteStatus } from '../../lib/routeStatus';
 import { getAdjacent, parseAlias } from '../../lib/hexmath';
 import { getBestActionSuggestion, getTurnGuidance } from '../../lib/uxGuidance';
 import { buildFunTelemetry } from '../../lib/funTelemetry';
+import { useInterfaceDensity } from '../../lib/interfaceDensity';
 import { useUserPreferences } from '../../hooks/useUserPreferences';
 
 export default function ExpeditionBench() {
@@ -168,9 +169,19 @@ export default function ExpeditionBench() {
       turnState,
     ],
   );
+  const interfaceDensity = useInterfaceDensity({
+    turnState,
+    routeStatus,
+    movePath,
+    boardInput,
+    funTelemetry,
+    hasSubmitted,
+    isSpectator,
+    preferences,
+  });
 
   return (
-    <div className="space-y-5">
+    <div className={`space-y-5 ${interfaceDensity.className}`} data-density={interfaceDensity.level}>
       <div className="rounded border border-exp-border bg-exp-panel/70 px-4 py-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]">
         <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
           <DayNightBadge phase={phase} />
@@ -246,6 +257,7 @@ export default function ExpeditionBench() {
               activeInventory={activeInventory}
               turnState={turnState}
               funTelemetry={funTelemetry}
+              interfaceDensity={interfaceDensity}
               focusedPlayerID={focusedPlayerID}
               onPlayerFocus={setFocusedPlayerID}
               onInputSnapshot={setBoardInput}
@@ -285,7 +297,7 @@ export default function ExpeditionBench() {
         </div>
       </div>
 
-      <details className="group rounded border border-exp-border/70 bg-exp-panel/45 px-4 py-3">
+      <details className="group rounded border border-exp-border/70 bg-exp-panel/45 px-4 py-3" open={interfaceDensity.details.turnBriefingOpen}>
         <summary className="cursor-pointer list-none flex items-center justify-between gap-3">
           <div className="min-w-0">
             <h3 className="font-mono text-xs tracking-[0.24em] text-exp-text-dim uppercase">
@@ -380,6 +392,7 @@ export default function ExpeditionBench() {
             boardInput={boardInput}
             turnState={turnState}
             funTelemetry={funTelemetry}
+            interfaceDensity={interfaceDensity}
           />
         </ErrorBoundary>
       )}

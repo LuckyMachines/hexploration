@@ -51,6 +51,7 @@ export default function HexGrid({
   activeInventory = {},
   turnState,
   funTelemetry,
+  interfaceDensity,
   focusedPlayerID,
   onPlayerFocus,
   onInputSnapshot,
@@ -390,6 +391,7 @@ export default function HexGrid({
               stats={stats}
               companionLocations={companionLocations}
               controlFeel={controlFeel}
+              interfaceDensity={interfaceDensity}
             />
 
             {Object.entries(playerLocationMap).map(([zone, playerIndices]) =>

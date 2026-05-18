@@ -104,6 +104,7 @@
     "growth:capture:test": "node --test scripts/growth-event-capture-utils.test.mjs",
     "fun:report": "node scripts/fun-report.mjs",
     "fun:test": "node --test scripts/fun-report-utils.test.mjs",
+    "ui:density": "node scripts/game-ui-density-report.mjs",
     "test:e2e:anvil": "node scripts/run-anvil-e2e.mjs"
   },
   "repository": {
