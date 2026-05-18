@@ -159,7 +159,7 @@ test('generates a full auto-summary entry with citations and next action', () =>
   });
   assert.equal(entry.entryType, 'auto-summary');
   assert.equal(entry.beliefBefore, 'Prior belief.');
-  assert.equal(entry.playtestReadiness.status, 'ready-with-caveats');
+  assert.equal(entry.playtestReadiness.status, 'ready');
   assert.equal(entry.nextAction.command, 'npm run autopilot:scenario -- --id=escape-pressure-4p --mode=single-pass');
   assert.ok(entry.citations.length > 0);
   assert.ok(markdownForLabEntry(entry).includes('Scenario Lab Notebook'));

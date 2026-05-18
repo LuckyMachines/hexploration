@@ -624,7 +624,11 @@ export function recommendSmallestExperiment(scores, scenario, report) {
     const support = (report.setupApplication?.support || []).find((field) => field.key === item.field);
     return support?.critical;
   });
-  if (criticalSkipped.length > 0 || (report.setupForge?.requiredSetupLevel === 'exact' && report.setupLevel !== 'exact')) {
+  const criticalFailed = (report.setupApplication?.failed || []).filter((item) => {
+    const support = (report.setupApplication?.support || []).find((field) => field.key === item.field);
+    return support?.critical;
+  });
+  if (criticalSkipped.length > 0 || criticalFailed.length > 0 || (report.setupForge?.requiredSetupLevel === 'exact' && report.setupLevel !== 'exact')) {
     const scenarioId = scenario.id || report.config?.scenario || 'scenario';
     return {
       primary: {
@@ -678,10 +682,15 @@ export function computeConfidence(report, scenario = {}, telemetryGaps = []) {
     const support = (report.setupApplication?.support || []).find((field) => field.key === item.field);
     return support?.critical;
   });
+  const criticalFailed = (report.setupApplication?.failed || []).filter((item) => {
+    const support = (report.setupApplication?.support || []).find((field) => field.key === item.field);
+    return support?.critical;
+  });
   if (setupLevel === 'exact') confidence += 0.08;
   else if (setupLevel === 'partial') confidence += 0.03;
   else if (setupLevel === 'metadata') confidence -= 0.08;
   if (criticalSkipped.length > 0) confidence -= Math.min(0.2, criticalSkipped.length * 0.08);
+  if (criticalFailed.length > 0) confidence -= Math.min(0.24, criticalFailed.length * 0.1);
   return clamp(confidence, 0.1, 0.95);
 }
 
@@ -803,6 +812,10 @@ export function evaluateOracle(inputReport, scenarioInput = null, config = {}) {
       skipped: report.setupApplication?.skipped?.length || 0,
       failed: report.setupApplication?.failed?.length || 0,
       criticalSkipped: (report.setupApplication?.skipped || []).filter((item) => {
+        const support = (report.setupApplication?.support || []).find((field) => field.key === item.field);
+        return support?.critical;
+      }).length,
+      criticalFailed: (report.setupApplication?.failed || []).filter((item) => {
         const support = (report.setupApplication?.support || []).find((field) => field.key === item.field);
         return support?.critical;
       }).length,

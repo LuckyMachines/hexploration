@@ -355,10 +355,10 @@ export function classifyMemorySource(path, source) {
   if (source?.blackBoxVersion || normalizedPath.includes('/feeling-black-box/')) return 'feelingReport';
   if (source?.oracleVersion || source?.experienceScores || source?.oracleVerdict) return 'oracleReport';
   if (source?.autopilotVersion || source?.candidateChanges || normalizedPath.includes('/autopilot/')) return 'autopilotReport';
+  if (source?.aggregate || source?.funDebugger || source?.scenarioVerdict || source?.turns || source?.runs) return 'simulatorReport';
   if (source?.setupForgeVersion || source?.setupApplication || normalizedPath.includes('setup-forge') || normalizedPath.endsWith('latest-setup-report.json')) return 'setupReport';
   if (normalizedPath.includes('/experiments/') || source?.winner || source?.ranked || source?.results || source?.candidates) return 'autoTuneReport';
   if (normalizedPath.endsWith('tuning-ledger.json')) return 'tuningLedger';
-  if (source?.aggregate || source?.funDebugger || source?.scenarioVerdict || source?.turns || source?.runs) return 'simulatorReport';
   return 'unknown';
 }
 

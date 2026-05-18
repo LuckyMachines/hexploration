@@ -138,6 +138,9 @@ export function loadLabMemory({ refreshMemory = false, includeRaw = true } = {})
 
 export function evidenceSummaryForScenario({ timeMachine = {}, memory = null, scenarioId = '' } = {}) {
   const latest = timeMachine.latest || null;
+  const timeline = asArray(timeMachine.timeline);
+  const latestOracle = latest?.oracle ? latest : [...timeline].reverse().find((point) => point.oracle);
+  const latestSetup = latest?.setup ? latest : [...timeline].reverse().find((point) => point.setup);
   const latestFeeling = latest?.feeling || [...asArray(timeMachine.timeline)].reverse().find((point) => point.feeling)?.feeling;
   const sources = sourceTypesIn(timeMachine);
   const memoryQuery = timeMachine.memoryQuery || (memory ? answerMemoryQuery(memory, `what should we try next for ${scenarioId}?`, { limit: 4 }) : null);
@@ -150,12 +153,12 @@ export function evidenceSummaryForScenario({ timeMachine = {}, memory = null, sc
     lastGoodHealth: timeMachine.lastGood?.health?.score,
     latestSourceType: latest?.sourceType,
     latestGeneratedAt: latest?.generatedAt,
-    setupFidelity: latest?.setup?.fidelity,
-    blockedSetupFields: asArray(latest?.setup?.blockedFields),
-    oracleScore: latest?.oracle?.weightedScore,
-    oracleVerdict: latest?.oracle?.verdict,
-    oracleConfidence: latest?.oracle?.confidence,
-    weakestMetric: latest?.oracle?.weakestMetric || timeMachine.latest?.simulator?.topIssue,
+    setupFidelity: latestSetup?.setup?.fidelity,
+    blockedSetupFields: asArray(latestSetup?.setup?.blockedFields),
+    oracleScore: latestOracle?.oracle?.weightedScore,
+    oracleVerdict: latestOracle?.oracle?.verdict,
+    oracleConfidence: latestOracle?.oracle?.confidence,
+    weakestMetric: latestOracle?.oracle?.weakestMetric || timeMachine.latest?.simulator?.topIssue,
     hasSimulatorEvidence: sources.has('simulatorReport'),
     hasOracleEvidence: sources.has('oracleReport'),
     feelingArcScore: latestFeeling?.arcScore,
@@ -240,6 +243,7 @@ export function unresolvedAssumptionsFromEvidence({ scenario = {}, memory = null
     });
   }
   for (const question of asArray(memory?.openQuestions).filter((item) => item.scenarioId === summary.scenarioId || item.scenarioId === scenario.id || item.scenarioId === scenario.scenarioId).slice(0, 4)) {
+    if (question.type === 'setup-blocked' && asArray(summary.blockedSetupFields).length === 0) continue;
     assumptions.push({
       key: question.type || question.question,
       title: question.question,

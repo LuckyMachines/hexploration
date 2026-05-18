@@ -13,14 +13,14 @@ export const ALLOWED_STRATEGIES = ['balanced', 'risky', 'dig', 'move', 'rest', '
 export const SUPPORTED_TAGS = ['solo', 'multiplayer', 'cooperation', 'escape', 'artifact', 'exploration', 'survival', 'chaos', 'benchmark', 'regression', 'smoke'];
 
 export const SETUP_SUPPORT = {
-  playerStats: 'notYetSupported',
-  revealedZones: 'notYetSupported',
-  artifactsHeld: 'notYetSupported',
-  landingRevealed: 'observedOnly',
-  campsites: 'observedOnly',
-  inventory: 'notYetSupported',
+  playerStats: 'exact',
+  revealedZones: 'exact',
+  artifactsHeld: 'exact',
+  landingRevealed: 'exact',
+  campsites: 'exact',
+  inventory: 'exact',
   queuePhase: 'observedOnly',
-  dayNumber: 'observedOnly',
+  dayNumber: 'partial',
 };
 
 export const TARGET_PRESETS = {

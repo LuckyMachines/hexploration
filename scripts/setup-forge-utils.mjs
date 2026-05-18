@@ -31,11 +31,11 @@ export const SETUP_SUPPORT_MATRIX = {
   revealedZones: { status: SETUP_STATUS.SUPPORTED, exact: true, hook: 'XenovoyaBoard.enableZone' },
   terrain: { status: SETUP_STATUS.SUPPORTED, exact: true, hook: 'XenovoyaBoard.enableZone with tile enum' },
   campsites: { status: SETUP_STATUS.SUPPORTED, exact: true, hook: 'ITEM_TOKEN.mint plus transferToZone' },
-  playerLocations: { status: SETUP_STATUS.PARTIAL, exact: false, hook: 'XenovoyaBoard.moveThroughPath after start' },
-  landingZone: { status: SETUP_STATUS.CONTRACT_BLOCKED, exact: false, hook: 'Initial play zone is selected during setup; post-start mutation is unsafe' },
-  currentDay: { status: SETUP_STATUS.CONTRACT_BLOCKED, exact: false, hook: 'Day derives from queue history length' },
-  phase: { status: SETUP_STATUS.PARTIAL, exact: false, hook: 'DAY_NIGHT_TOKEN balance can be flipped, but queue history is unchanged' },
-  queuePhase: { status: SETUP_STATUS.CONTRACT_BLOCKED, exact: false, hook: 'Queue phase has no safe public setup setter' },
+  playerLocations: { status: SETUP_STATUS.SUPPORTED, exact: true, hook: 'XenovoyaBoard.moveThroughPath before measured turns' },
+  landingZone: { status: SETUP_STATUS.SUPPORTED, exact: true, hook: 'XenovoyaBoard.enableZone with LandingSite tile before measured turns' },
+  currentDay: { status: SETUP_STATUS.PARTIAL, exact: false, hook: 'Deterministic setup prelude advances day before measured turns' },
+  phase: { status: SETUP_STATUS.OBSERVED, exact: false, hook: 'Verified from GameSummary currentPhase before measured turns' },
+  queuePhase: { status: SETUP_STATUS.OBSERVED, exact: false, hook: 'Verified from queue currentPhase before measured turns' },
   pressure: { status: SETUP_STATUS.SUPPORTED, exact: false, hook: 'Simulator strategy and balance pressure' },
   scriptedPrelude: { status: SETUP_STATUS.SUPPORTED, exact: false, hook: 'Run setup turns before measured turns' },
   events: { status: SETUP_STATUS.OBSERVED, exact: false, hook: 'Events can be described; synthetic event mutation is not used' },
@@ -90,6 +90,15 @@ function now() {
 
 function clone(value) {
   return JSON.parse(JSON.stringify(value || {}));
+}
+
+function asArray(value) {
+  return Array.isArray(value) ? value : [];
+}
+
+function number(value, fallback = 0) {
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed : fallback;
 }
 
 function clamp(value, min, max) {
@@ -449,17 +458,19 @@ export async function applySetupForge(adapter, context, setupForgeInput = {}, op
     }
   }
   const zones = new Set([...(setupForge.board.revealedZones || []), ...Object.keys(setupForge.board.terrain || {})]);
+  if (setupForge.board.landingZone) zones.add(setupForge.board.landingZone);
   for (const alias of zones) {
     try {
-      const tile = TILE_ENUM[setupForge.board.terrain[alias] || 'Jungle'];
+      const tileName = setupForge.board.terrain[alias] || (alias === setupForge.board.landingZone ? 'LandingSite' : 'Jungle');
+      const tile = TILE_ENUM[tileName];
       const hash = await safeWrite(adapter, context.deployerWallet, context.addresses.BOARD, SETUP_ABIS.board, 'enableZone', [alias, tile, gameId]);
-      application.applied.push(applied('revealedZones', { alias, tile: setupForge.board.terrain[alias] || 'Jungle', hash }));
+      application.applied.push(applied('revealedZones', { alias, tile: tileName, hash }));
+      if (alias === setupForge.board.landingZone) {
+        application.applied.push(applied('landingZone', { alias, tile: tileName, label: 'landing zone', hash }));
+      }
     } catch (error) {
       application.failed.push(failed('revealedZones', error, { alias }));
     }
-  }
-  if (setupForge.board.landingZone) {
-    application.skipped.push(skipped('landingZone', SETUP_SUPPORT_MATRIX.landingZone.hook, { alias: setupForge.board.landingZone }));
   }
   for (const alias of setupForge.board.campsites || []) {
     if (!context.addresses.ITEM_TOKEN || !context.addresses.BOARD) {
@@ -475,9 +486,6 @@ export async function applySetupForge(adapter, context, setupForgeInput = {}, op
       application.failed.push(failed('campsites', error, { alias }));
     }
   }
-  if (setupForge.time.day) application.skipped.push(skipped('currentDay', SETUP_SUPPORT_MATRIX.currentDay.hook, { day: setupForge.time.day }));
-  if (setupForge.time.queuePhase) application.skipped.push(skipped('queuePhase', SETUP_SUPPORT_MATRIX.queuePhase.hook, { queuePhase: setupForge.time.queuePhase }));
-  if (setupForge.time.phase) application.skipped.push(skipped('phase', SETUP_SUPPORT_MATRIX.phase.hook, { phase: setupForge.time.phase }));
   return application;
 }
 
@@ -496,12 +504,31 @@ export function compareRequestedToActualSetup(setupForge = {}, snapshot = {}) {
       diff.push({ field: 'playerStats', playerId: player.playerId, requested: player.stats, actual: actualStats, pass });
     }
     if (player.location) diff.push({ field: 'playerLocations', playerId: player.playerId, requested: player.location, actual: actual.location, pass: actual.location === player.location });
-    for (const artifact of player.artifacts || []) diff.push({ field: 'artifacts', playerId: player.playerId, requested: artifact, actual: actual.artifacts || [], pass: (actual.artifacts || []).includes(artifact) });
+    const activeInventory = actual.inventory || {};
+    const actualArtifacts = [
+      ...asArray(actual.artifacts),
+      activeInventory.artifact,
+      activeInventory.relic,
+    ].filter(Boolean);
+    for (const artifact of player.artifacts || []) diff.push({ field: 'artifacts', playerId: player.playerId, requested: artifact, actual: actualArtifacts, pass: actualArtifacts.includes(artifact) });
+    const actualInventory = [activeInventory.leftHandItem, activeInventory.rightHandItem].filter(Boolean);
+    for (const item of player.inventory || []) diff.push({ field: 'inventory', playerId: player.playerId, requested: item, actual: actualInventory, pass: actualInventory.includes(item) });
   }
   const activeZones = snapshot.activeZones?.zones || snapshot.activeZones?.aliases || [];
   for (const alias of setupForge.board?.revealedZones || []) {
     diff.push({ field: 'revealedZones', requested: alias, actual: activeZones, pass: activeZones.includes(alias) });
   }
+  if (setupForge.board?.landingZone) {
+    diff.push({ field: 'landingZone', requested: setupForge.board.landingZone, actual: activeZones, pass: activeZones.includes(setupForge.board.landingZone) });
+  }
+  for (const alias of setupForge.board?.campsites || []) {
+    const campsiteIndex = activeZones.indexOf(alias);
+    const hasCampsite = campsiteIndex >= 0 && Boolean(snapshot.activeZones?.campsites?.[campsiteIndex]);
+    diff.push({ field: 'campsites', requested: alias, actual: snapshot.activeZones?.campsites || [], pass: hasCampsite });
+  }
+  if (setupForge.time?.day) diff.push({ field: 'currentDay', requested: setupForge.time.day, actual: snapshot.day, pass: number(snapshot.day) >= number(setupForge.time.day) });
+  if (setupForge.time?.phase) diff.push({ field: 'phase', requested: setupForge.time.phase, actual: snapshot.phase, pass: snapshot.phase === setupForge.time.phase });
+  if (setupForge.time?.queuePhase) diff.push({ field: 'queuePhase', requested: setupForge.time.queuePhase, actual: snapshot.queuePhase, pass: snapshot.queuePhase === setupForge.time.queuePhase });
   return diff;
 }
 
@@ -509,6 +536,9 @@ export function setupApplicationLevel(application = {}) {
   const critical = (application.support || []).filter((field) => field.critical);
   const appliedCritical = critical.filter((field) => (application.applied || []).some((item) => setupEntryMatchesField(item, field)));
   if ((application.errors || []).length > 0 || (application.failed || []).length > 0) return 'blocked';
+  const failedActual = (application.actualDiff || []).filter((entry) => entry.pass === false);
+  if (failedActual.some((entry) => critical.some((field) => field.key === entry.field))) return 'blocked';
+  if (failedActual.length > 0) return 'partial';
   if ((application.applied || []).length === 0) return 'metadata';
   if (critical.length > 0 && appliedCritical.length < critical.length) return 'partial';
   return (application.skipped || []).length > 0 ? 'partial' : 'exact';

@@ -43,8 +43,89 @@ function positional() {
   return rest.filter((value) => !value.startsWith('--')).join(' ').trim();
 }
 
+function markdownForValue(value) {
+  if (Array.isArray(value?.scenarios) && Array.isArray(value?.supportBacklog)) {
+    const rows = value.scenarios.map((scenario) => (
+      `| ${scenario.id} | ${scenario.requiredSetupLevel} | ${Math.round((scenario.assumptionCoverage || 0) * 100)}% | ${Math.round((scenario.enforceableCoverage || 0) * 100)}% | ${(scenario.blockedFields || []).join(', ') || 'none'} |`
+    )).join('\n') || '| none | n/a | n/a | n/a | none |';
+    const backlog = (value.supportBacklog || []).map((item) => `- ${item.field}: ${item.title} (${item.count})`).join('\n') || '- None';
+    return `# Setup Forge Doctor
+
+Generated: ${value.generatedAt || new Date().toISOString()}
+
+## Scenarios
+
+| Scenario | Required | Assumptions | Enforceable | Blocked |
+| --- | --- | ---: | ---: | --- |
+${rows}
+
+## Backlog
+
+${backlog}
+`;
+  }
+  if (Array.isArray(value?.exact) || Array.isArray(value?.partial) || Array.isArray(value?.blocked)) {
+    const exact = (value.exact || []).map((item) => `- ${item}`).join('\n') || '- None';
+    const partial = (value.partial || []).map((item) => `- ${item}`).join('\n') || '- None';
+    const blocked = (value.blocked || []).map((item) => `- ${item}`).join('\n') || '- None';
+    return `# Setup Forge Explanation
+
+Generated: ${value.generatedAt || new Date().toISOString()}
+
+Scenario: ${value.scenarioId || 'custom'}
+
+Mode: ${value.mode || 'best-effort'}
+
+## Exact
+
+${exact}
+
+## Partial Or Observed
+
+${partial}
+
+## Blocked
+
+${blocked}
+
+## Coverage
+
+- Assumptions: ${Math.round((value.coverage?.assumptionCoverage || 0) * 100)}%
+- Enforceable: ${Math.round((value.coverage?.enforceableCoverage || 0) * 100)}%
+`;
+  }
+  if (value?.validation) {
+    const support = (value.validation.support || []).map((field) => `| ${field.label} | ${field.status} | ${field.exact ? 'yes' : 'no'} | ${field.hook} |`).join('\n') || '| none | none | no | |';
+    const warnings = (value.validation.warnings || []).map((warning) => `- ${warning}`).join('\n') || '- None';
+    const errors = (value.validation.errors || []).map((error) => `- ${error}`).join('\n') || '- None';
+    return `# Setup Forge Validation
+
+Generated: ${value.generatedAt || new Date().toISOString()}
+
+Scenario: ${value.scenarioId || 'custom'}
+
+Mode: ${value.mode || 'best-effort'}
+
+Valid: ${value.validation.ok ? 'yes' : 'no'}
+
+| Field | Status | Exact | Hook |
+| --- | --- | --- | --- |
+${support}
+
+## Warnings
+
+${warnings}
+
+## Errors
+
+${errors}
+`;
+  }
+  return markdownForSetupReport(value);
+}
+
 function print(value) {
-  if (boolArg('markdown', false)) console.log(markdownForSetupReport(value));
+  if (boolArg('markdown', false)) console.log(markdownForValue(value));
   else if (typeof value === 'string') console.log(value);
   else console.log(JSON.stringify(value, null, 2));
 }

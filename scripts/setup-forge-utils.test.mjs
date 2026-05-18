@@ -101,11 +101,11 @@ test('normalizes setup forge fields', () => {
   assert.ok(setup.setupId.startsWith('escape-pressure-4p-'));
 });
 
-test('validates strict blocked fields', () => {
+test('validates exact landing setup through revealed zone support', () => {
   const setup = normalizeSetupForge({ board: { landingZone: '0,0' } }, scenario());
   const result = validateSetupForge(setup, scenario(), 'strict');
-  assert.equal(result.ok, false);
-  assert.ok(result.errors.some((error) => error.includes('landing')));
+  assert.equal(result.ok, true);
+  assert.equal(result.support.find((field) => field.key === 'landingZone').exact, true);
 });
 
 test('parses setup intent from plain English', () => {
@@ -129,10 +129,24 @@ test('dry-run application skips without touching chain', async () => {
 test('compares requested setup to actual snapshot', () => {
   const setup = normalizeSetupForge({ players: [{ playerIndex: 0, stats: { movement: 1, agility: 1, dexterity: 1 }, location: '1,0', artifacts: ['Engraved Tablet'] }] }, scenario());
   const diff = compareRequestedToActualSetup(setup, {
-    players: [{ playerId: 1, stats: { movement: 1, agility: 1, dexterity: 1 }, location: '1,0', artifacts: ['Engraved Tablet'] }],
+    players: [{ playerId: 1, stats: { movement: 1, agility: 1, dexterity: 1 }, location: '1,0', inventory: { artifact: 'Engraved Tablet' }, artifacts: [] }],
     activeZones: { zones: ['1,0'] },
   });
   assert.ok(diff.every((entry) => entry.pass !== false));
+});
+
+test('setup level reflects actual critical verification failures', () => {
+  const setup = normalizeSetupForge({ players: [{ playerIndex: 0, stats: { movement: 1, agility: 1, dexterity: 1 }, critical: true }] }, scenario());
+  const validation = validateSetupForge(setup, scenario(), 'best-effort');
+  const application = {
+    support: validation.support,
+    applied: [{ field: 'playerStats', label: 'P1 stats', status: 'applied' }],
+    skipped: [],
+    failed: [],
+    errors: [],
+    actualDiff: [{ field: 'playerStats', playerId: 1, pass: false }],
+  };
+  assert.equal(setupApplicationLevel(application), 'blocked');
 });
 
 test('computes setup coverage and backlog', () => {
@@ -143,7 +157,7 @@ test('computes setup coverage and backlog', () => {
   assert.equal(backlog[0].field, 'landingZone');
 });
 
-test('Oracle reacts to skipped critical setup', () => {
+test('Oracle reacts to blocked critical setup', () => {
   const setup = normalizeSetupForge({ board: { landingZone: '0,0' } }, scenario());
   const validation = validateSetupForge(setup, scenario(), 'best-effort');
   const application = {
@@ -152,8 +166,8 @@ test('Oracle reacts to skipped critical setup', () => {
     requiredSetupLevel: 'partial',
     support: validation.support,
     applied: [],
-    skipped: [{ field: 'landingZone', status: 'skipped', reason: 'blocked' }],
-    failed: [],
+    skipped: [],
+    failed: [{ field: 'landingZone', status: 'failed', error: 'zone not active' }],
     warnings: validation.warnings,
     errors: [],
     setupLevel: 'metadata',

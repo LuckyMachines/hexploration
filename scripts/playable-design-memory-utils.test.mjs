@@ -67,6 +67,7 @@ function simulator() {
   return {
     generatedAt: '2026-05-15T00:05:00.000Z',
     config: { scenario: 'escape-pressure-4p' },
+    setupApplication: { applied: [{ field: 'playerStats' }], skipped: [], failed: [] },
     aggregate: { runs: 2, averages: { invalidAttempts: 1, zeroStatPlayers: 0, artifacts: 0.5, revealedZones: 2 }, warnings: [] },
     funDebugger: { averageLifeScore: 61, flatTurnRate: 0.12, aliveTurnRate: 0.82, topIssue: { key: 'readability', label: 'Readability drag' } },
     scenarioVerdict: { verdict: 'inconclusive', targets: [{ metric: 'helpActions', pass: false, label: 'Help action count' }], failureSignals: [] },
@@ -108,6 +109,7 @@ function autopilot(accepted = false) {
 test('classifies and normalizes memory sources', () => {
   assert.equal(classifyMemorySource('reports/simulator/oracle/latest-oracle.json', oracle()), 'oracleReport');
   assert.equal(classifyMemorySource('reports/simulator/scenarios/escape/latest-report.json', simulator()), 'simulatorReport');
+  assert.equal(classifyMemorySource('reports/simulator/scenarios/escape/latest-setup-report.json', setup()), 'setupReport');
   const event = normalizeMemorySource({ path: 'reports/simulator/oracle/latest-oracle.json', source: oracle() });
   assert.equal(event.type, 'oracleReport');
   assert.equal(event.scenarioId, 'escape-pressure-4p');

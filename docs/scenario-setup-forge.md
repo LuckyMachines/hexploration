@@ -1,6 +1,6 @@
 # Scenario Setup Forge
 
-Scenario Setup Forge turns authored scenario starting conditions into an auditable setup pass before measured simulator turns begin. It uses the same deployed local contracts as the simulator and records exactly which setup claims were applied, skipped, blocked, or only treated as metadata.
+Scenario Setup Forge turns authored scenario starting conditions into an auditable setup pass before measured simulator turns begin. It uses the same deployed local contracts as the simulator and records exactly which setup claims were applied, verified, skipped, blocked, or only treated as metadata.
 
 ## Commands
 
@@ -44,12 +44,13 @@ Scenarios can declare `requiredSetupLevel` as `metadata`, `partial`, or `exact`.
 | Revealed zones | Exact | `XenovoyaBoard.enableZone` |
 | Terrain | Exact | `XenovoyaBoard.enableZone` with tile enum |
 | Campsites | Exact | item token mint plus `transferToZone` |
-| Player locations | Partial | `XenovoyaBoard.moveThroughPath` after game start |
+| Player locations | Exact | `XenovoyaBoard.moveThroughPath` before measured turns |
 | Pressure | Supported | simulator strategy and balance pressure |
-| Scripted prelude | Supported | setup turns run before measured turns |
-| Landing zone | Contract-blocked | initial play zone is selected during setup |
-| Current day | Contract-blocked | day derives from queue history |
-| Queue phase | Contract-blocked | no safe public setter |
+| Scripted prelude | Supported | setup turns run before measured turns and are excluded from measured metrics |
+| Landing zone | Exact | `XenovoyaBoard.enableZone` with `LandingSite` tile before measured turns |
+| Current day | Partial | deterministic setup prelude advances day before measured turns |
+| Phase | Observed only | verified from `GameSummary.currentPhase` before measured turns |
+| Queue phase | Observed only | verified from queue `currentPhase` before measured turns |
 | Events | Observed only | described as evidence, not synthetically mutated |
 
 ## Reports
@@ -76,7 +77,7 @@ Add or edit a scenario in `simulator.scenarios.json`:
 
 ```json
 {
-  "requiredSetupLevel": "partial",
+  "requiredSetupLevel": "exact",
   "setupForge": {
     "modeHint": "best-effort",
     "players": [

@@ -19,17 +19,17 @@
           {
             "key": "playerStats",
             "description": "pressure around low stats is intended",
-            "support": "notYetSupported",
-            "mode": "notYetSupported"
+            "support": "exact",
+            "mode": "exact"
           }
         ],
         "support": {
-          "playerStats": "notYetSupported",
-          "revealedZones": "notYetSupported",
-          "artifactsHeld": "notYetSupported",
-          "landingRevealed": "observedOnly",
-          "campsites": "observedOnly",
-          "inventory": "notYetSupported",
+          "playerStats": "exact",
+          "revealedZones": "exact",
+          "artifactsHeld": "exact",
+          "landingRevealed": "exact",
+          "campsites": "exact",
+          "inventory": "exact",
           "queuePhase": "observedOnly",
           "dayNumber": "observedOnly"
         }
@@ -56,10 +56,10 @@
       },
       "packs": ["artifacts"],
       "importance": "core",
-      "requiredSetupLevel": "partial",
+      "requiredSetupLevel": "exact",
       "setupForge": {
         "schemaVersion": 1,
-        "requiredSetupLevel": "partial",
+        "requiredSetupLevel": "exact",
         "players": [
           {
             "playerIndex": 0,
@@ -127,29 +127,29 @@
           {
             "key": "playerStats",
             "description": "two exhausted players",
-            "support": "notYetSupported",
-            "mode": "notYetSupported"
+            "support": "exact",
+            "mode": "exact"
           },
           {
             "key": "artifactsHeld",
             "description": "one player has an artifact",
-            "support": "notYetSupported",
-            "mode": "notYetSupported"
+            "support": "exact",
+            "mode": "exact"
           },
           {
             "key": "landingRevealed",
             "description": "landing zone is revealed or strategically relevant",
-            "support": "observedOnly",
-            "mode": "observedOnly"
+            "support": "exact",
+            "mode": "exact"
           }
         ],
         "support": {
-          "playerStats": "notYetSupported",
-          "revealedZones": "notYetSupported",
-          "artifactsHeld": "notYetSupported",
-          "landingRevealed": "observedOnly",
-          "campsites": "observedOnly",
-          "inventory": "notYetSupported",
+          "playerStats": "exact",
+          "revealedZones": "exact",
+          "artifactsHeld": "exact",
+          "landingRevealed": "exact",
+          "campsites": "exact",
+          "inventory": "exact",
           "queuePhase": "observedOnly",
           "dayNumber": "observedOnly"
         }
@@ -179,10 +179,10 @@
       },
       "packs": ["escape", "cooperation"],
       "importance": "core",
-      "requiredSetupLevel": "partial",
+      "requiredSetupLevel": "exact",
       "setupForge": {
         "schemaVersion": 1,
-        "requiredSetupLevel": "partial",
+        "requiredSetupLevel": "exact",
         "players": [
           {
             "playerIndex": 0,

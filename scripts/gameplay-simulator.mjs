@@ -1816,9 +1816,13 @@ async function runSimulation(addresses, runConfig) {
     });
   }
   const preludeTurns = [];
-  if (setupForge?.scriptedPrelude?.turns > 0) {
+  const requestedPreludeTurns = Math.max(
+    setupForge?.scriptedPrelude?.turns || 0,
+    setupForge?.time?.day ? Math.max(0, Number(setupForge.time.day) - 1) : 0,
+  );
+  if (requestedPreludeTurns > 0) {
     const preludeStrategies = setupForge.scriptedPrelude.strategies?.length > 0 ? setupForge.scriptedPrelude.strategies : [runConfig.strategy];
-    for (let preludeIndex = 0; preludeIndex < setupForge.scriptedPrelude.turns; preludeIndex += 1) {
+    for (let preludeIndex = 0; preludeIndex < requestedPreludeTurns; preludeIndex += 1) {
       const preludeConfig = {
         ...runConfig,
         strategy: preludeStrategies[preludeIndex % preludeStrategies.length] || runConfig.strategy,
@@ -1841,6 +1845,8 @@ async function runSimulation(addresses, runConfig) {
     if (setupApplication) {
       setupApplication.prelude = {
         turns: preludeTurns.length,
+        requestedTurns: setupForge.scriptedPrelude.turns,
+        targetDay: setupForge.time?.day || null,
         strategies: preludeStrategies,
         discardPreludeFromMetrics: setupForge.scriptedPrelude.discardPreludeFromMetrics,
       };
