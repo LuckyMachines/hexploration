@@ -1,6 +1,7 @@
 import { lazy, Suspense, useState } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Header from './components/layout/Header';
+import Footer from './components/layout/Footer';
 import Modal from './components/shared/Modal';
 import SeoHead from './components/shared/SeoHead';
 import Spinner from './components/shared/Spinner';
@@ -63,6 +64,7 @@ export default function App() {
           </Suspense>
         </ErrorBoundary>
       </main>
+      <Footer />
       <Modal
         isOpen={isHelpOpen}
         onClose={() => setIsHelpOpen(false)}

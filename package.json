@@ -106,6 +106,7 @@
     "seo:generate": "node scripts/generate-seo-artifacts.mjs",
     "seo:test": "node --test app/src/lib/seoMeta.test.js",
     "seo:doctor": "node scripts/generate-seo-artifacts.mjs --doctor",
+    "marketing:doctor": "node scripts/marketing-readiness.mjs --strict",
     "fun:report": "node scripts/fun-report.mjs",
     "fun:test": "node --test scripts/fun-report-utils.test.mjs",
     "ui:density": "node scripts/game-ui-density-report.mjs",

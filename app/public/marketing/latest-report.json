@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-05-18T22:33:16.375Z",
+  "ok": true,
+  "score": 100,
+  "grade": "A",
+  "nextAction": {
+    "title": "Keep homepage proof fresh with latest scenarios and generated SEO artifacts",
+    "command": "npm run marketing:doctor"
+  }
+}
