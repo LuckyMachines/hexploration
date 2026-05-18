@@ -13,10 +13,12 @@ app/test-results/
 app/public/fun/
 app/public/growth/
 app/public/bridge/
+app/public/local-stack/
 app/public/simulator/
 captures/
 gameplay-debug.png
 reports/fun/
 reports/growth/
 reports/bridge/
+reports/local-stack/
 reports/simulator/

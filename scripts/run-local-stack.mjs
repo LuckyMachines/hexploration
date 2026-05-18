@@ -17,6 +17,8 @@
  *   --players=N                  # override player count (1..4)
  *   --no-bots                    # multi mode but don't register bots
  *                                  (you bring your own keys)
+ *   --no-worker                  # skip the automation worker
+ *   --no-vite                    # skip the frontend dev server
  *   ANVIL_PORT=8545 ...          # change anvil port (default 9955)
  */
 import { spawn } from 'child_process';
@@ -31,6 +33,11 @@ import {
 } from 'viem';
 import { foundry } from 'viem/chains';
 import { privateKeyToAccount } from 'viem/accounts';
+import {
+  buildLocalStackHealth,
+  markdownForLocalStackHealth,
+  writeLocalStackHealthReports,
+} from './local-stack-doctor-utils.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -72,8 +79,14 @@ const defaultPlayers = mode === 'solo' ? 1 : mode === 'multi' ? 2 : 2;
 const players = Math.max(1, Math.min(4, Number(flagVal('players', defaultPlayers))));
 const wantBots = mode === 'multi' && !flag('no-bots');
 const botCount = wantBots ? Math.max(0, players - 1) : 0;
+const skipWorker = !!flag('no-worker');
+const skipVite = !!flag('no-vite');
+const deployTimeoutMs = Number(process.env.LOCAL_STACK_DEPLOY_TIMEOUT_MS) || 180_000;
+const commandTimeoutMs = Number(process.env.LOCAL_STACK_COMMAND_TIMEOUT_MS) || 120_000;
+const readinessTimeoutMs = Number(process.env.LOCAL_STACK_READINESS_TIMEOUT_MS) || 30_000;
 
 const children = [];
+const bootSteps = [];
 
 // ── Helpers ──────────────────────────────────────────────────────────
 
@@ -126,6 +139,8 @@ async function waitForRpc(rpcUrl, timeoutMs = 25_000) {
 function runCommand(command, args, options = {}) {
   const defaultShell = command.toLowerCase().endsWith('.cmd');
   return new Promise((resolve, reject) => {
+    let settled = false;
+    let timeout;
     const child = spawn(command, args, {
       cwd: options.cwd ?? repoRoot,
       env: { ...process.env, ...(options.env || {}) },
@@ -133,10 +148,27 @@ function runCommand(command, args, options = {}) {
       stdio: options.stdio ?? 'inherit',
     });
 
-    child.on('error', reject);
+    function settle(error) {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timeout);
+      if (error) reject(error);
+      else resolve();
+    }
+
+    if (options.timeoutMs) {
+      timeout = setTimeout(() => {
+        try {
+          child.kill('SIGTERM');
+        } catch {}
+        settle(new Error(`${command} ${args.join(' ')} timed out after ${options.timeoutMs}ms`));
+      }, options.timeoutMs);
+    }
+
+    child.on('error', settle);
     child.on('exit', (code) => {
-      if (code === 0) resolve();
-      else reject(new Error(`${command} ${args.join(' ')} exited with code ${code}`));
+      if (code === 0) settle();
+      else settle(new Error(`${command} ${args.join(' ')} exited with code ${code}`));
     });
   });
 }
@@ -149,8 +181,61 @@ function spawnChild(command, args, options = {}) {
     shell: options.shell ?? defaultShell,
     stdio: options.stdio ?? 'inherit',
   });
+  child.localStackLabel = options.label || path.basename(command);
+  child.localStackCommand = `${command} ${args.join(' ')}`;
   children.push(child);
   return child;
+}
+
+function childProcessesSummary() {
+  return children.map((child) => ({
+    label: child.localStackLabel || 'process',
+    command: child.localStackCommand || 'unknown',
+    pid: child.pid,
+    killed: child.killed,
+    exitCode: child.exitCode,
+  }));
+}
+
+async function withStepTimeout(label, timeoutMs, fn) {
+  let timer;
+  try {
+    return await Promise.race([
+      fn(),
+      new Promise((_, reject) => {
+        timer = setTimeout(() => reject(new Error(`${label} timed out after ${timeoutMs}ms`)), timeoutMs);
+      }),
+    ]);
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+async function runBootStep(id, label, timeoutMs, fn) {
+  const step = {
+    id,
+    label,
+    status: 'running',
+    startedAt: new Date().toISOString(),
+    durationMs: 0,
+  };
+  bootSteps.push(step);
+  const start = Date.now();
+  log(`${label}...`);
+  try {
+    const result = await withStepTimeout(label, timeoutMs, fn);
+    step.status = 'pass';
+    step.finishedAt = new Date().toISOString();
+    step.durationMs = Date.now() - start;
+    log(`${label} complete (${step.durationMs}ms).`);
+    return result;
+  } catch (error) {
+    step.status = 'fail';
+    step.finishedAt = new Date().toISOString();
+    step.durationMs = Date.now() - start;
+    step.error = error.message;
+    throw error;
+  }
 }
 
 // ── Address extraction ───────────────────────────────────────────────
@@ -550,19 +635,17 @@ process.on('SIGTERM', () => {
 // ── Main ─────────────────────────────────────────────────────────────
 
 async function main() {
-  // 1. Check port
-  if (!(await isPortAvailable(ANVIL_PORT))) {
-    console.error(`ERROR: Port ${ANVIL_PORT} is already in use. Set ANVIL_PORT env var or free the port.`);
-    process.exit(1);
-  }
+  await runBootStep('port', 'Check Anvil port', 5_000, async () => {
+    if (!(await isPortAvailable(ANVIL_PORT))) {
+      throw new Error(`Port ${ANVIL_PORT} is already in use. Set ANVIL_PORT env var or free the port.`);
+    }
+  });
 
-  // 2. Start Anvil
-  log(`Starting Anvil on port ${ANVIL_PORT}...`);
-  const anvil = spawnChild(resolveFoundryBinary('anvil'), [
+  const anvil = await runBootStep('anvil.start', `Start Anvil on port ${ANVIL_PORT}`, 10_000, async () => spawnChild(resolveFoundryBinary('anvil'), [
     '--host', '127.0.0.1',
     '--port', String(ANVIL_PORT),
     '--chain-id', '31337',
-  ], { shell: false, stdio: 'inherit' });
+  ], { shell: false, stdio: 'inherit', label: 'anvil' }));
 
   anvil.on('exit', (code) => {
     if (!shuttingDown) {
@@ -572,14 +655,9 @@ async function main() {
     }
   });
 
-  // 3. Wait for RPC readiness
-  log('Waiting for Anvil RPC...');
-  await waitForRpc(RPC_URL);
-  log('Anvil is ready.');
+  await runBootStep('anvil.rpc', 'Wait for Anvil RPC', 25_000, async () => waitForRpc(RPC_URL));
 
-  // 4. Deploy contracts
-  log('Deploying contracts (forge script)...');
-  await runCommand(resolveFoundryBinary('forge'), [
+  await runBootStep('contracts.deploy', 'Deploy contracts with forge', deployTimeoutMs, async () => runCommand(resolveFoundryBinary('forge'), [
     'script',
     'script/DeployXenovoya.s.sol',
     '--rpc-url', RPC_URL,
@@ -587,22 +665,27 @@ async function main() {
     '--non-interactive',
   ], {
     env: { PRIVATE_KEY: ANVIL_PK },
-  });
-  log('Contracts deployed.');
+    timeoutMs: deployTimeoutMs,
+  }));
 
-  // 5. Extract addresses
-  const { workerAddrs, appAddrs, deckAddrs, byName } = await readBroadcastAddresses();
-  log('Addresses extracted from broadcast.');
+  const { workerAddrs, appAddrs, deckAddrs, byName } = await runBootStep(
+    'contracts.addresses',
+    'Extract broadcast addresses',
+    10_000,
+    readBroadcastAddresses,
+  );
 
-  // 5b. Confirm required local roles before any seeded game creation.
-  await ensureLocalWiring({ appAddrs, deckAddrs, byName });
+  await runBootStep(
+    'contracts.wiring',
+    'Verify local contract wiring',
+    commandTimeoutMs,
+    async () => ensureLocalWiring({ appAddrs, deckAddrs, byName }),
+  );
 
-  // 6. Populate card decks sequentially to avoid nonce collisions on Anvil.
-  log('Populating card decks...');
   const deckDeployments = JSON.stringify(deckAddrs);
   const deckNames = ['EVENT', 'AMBUSH', 'TREASURE', 'LAND', 'RELIC'];
   for (const name of deckNames) {
-    await runCommand('node', ['scripts/populate-decks.mjs'], {
+    await runBootStep(`decks.${name.toLowerCase()}`, `Populate ${name} deck`, commandTimeoutMs, async () => runCommand('node', ['scripts/populate-decks.mjs'], {
       env: {
         CHAIN: 'foundry',
         RPC_URL,
@@ -610,58 +693,108 @@ async function main() {
         DEPLOYMENTS_JSON: deckDeployments,
         DECK_FILTER: name,
       },
-    });
+      timeoutMs: commandTimeoutMs,
+    }));
   }
-  log('Card decks populated.');
 
-  // 7. Seed an open survey at the chosen player count
-  log(`Seeding open survey (mode=${mode}, players=${players})...`);
-  await seedOpenGame(appAddrs, players);
-  log('Survey seeded.');
+  await runBootStep(
+    'game.seed',
+    `Seed open survey (mode=${mode}, players=${players})`,
+    commandTimeoutMs,
+    async () => seedOpenGame(appAddrs, players),
+  );
 
   // 8. Write app/.env.local — must happen before bot scripts run because
   // register-bots reads VITE_* addresses from this file.
-  await writeAppEnvLocal(appAddrs);
+  await runBootStep(
+    'app.env',
+    'Write app local environment',
+    10_000,
+    async () => writeAppEnvLocal(appAddrs),
+  );
 
   // 8b. Register bot players for multi mode.
   if (botCount > 0) {
-    log(`Registering ${botCount} bot player(s)...`);
-    await runCommand('node', ['scripts/register-bots.mjs', `--count=${botCount}`], {
+    await runBootStep('bots.register', `Register ${botCount} bot player(s)`, commandTimeoutMs, async () => runCommand('node', ['scripts/register-bots.mjs', `--count=${botCount}`], {
       stdio: 'inherit',
-    });
+      timeoutMs: commandTimeoutMs,
+    }));
+  } else if (flag('no-bots')) {
+    log('Bot registration skipped (--no-bots).');
   }
 
-  // 9. Spawn the VRF + loop worker (handles mock VRF fulfilment automatically).
-  log('Starting automation worker...');
-  const workerDeployments = JSON.stringify(workerAddrs);
-  spawnChild('node', ['scripts/xenovoya-worker.mjs'], {
-    env: {
-      CHAIN: 'foundry',
-      RPC_URL,
-      PRIVATE_KEY: ANVIL_PK,
-      DEPLOYMENTS_JSON: workerDeployments,
-      POLL_INTERVAL_MS: '2000',
+  let latestHealthPaths;
+  const healthOptions = () => ({
+    rpcUrl: RPC_URL,
+    appAddrs,
+    byName,
+    mode,
+    players,
+    flags: {
+      skipWorker,
+      skipVite,
+      wantBots,
+      botCount,
     },
+    bootSteps,
+    childProcesses: childProcessesSummary(),
+    timeoutMs: readinessTimeoutMs,
   });
+
+  await runBootStep('readiness.gate', 'Run local stack readiness gate', readinessTimeoutMs + 5_000, async () => {
+    const report = await buildLocalStackHealth(healthOptions());
+    latestHealthPaths = await writeLocalStackHealthReports(report);
+    if (!report.ok) {
+      console.error(markdownForLocalStackHealth(report));
+      throw new Error(`Readiness gate failed; see ${latestHealthPaths.reportJsonPath}`);
+    }
+  });
+
+  const workerDeployments = JSON.stringify(workerAddrs);
+  if (!skipWorker) {
+    await runBootStep('worker.start', 'Start automation worker', 10_000, async () => spawnChild('node', ['scripts/xenovoya-worker.mjs'], {
+      env: {
+        CHAIN: 'foundry',
+        RPC_URL,
+        PRIVATE_KEY: ANVIL_PK,
+        DEPLOYMENTS_JSON: workerDeployments,
+        POLL_INTERVAL_MS: '2000',
+      },
+      label: 'xenovoya-worker',
+    }));
+  } else {
+    log('Automation worker skipped (--no-worker).');
+  }
 
   // 9b. Auto-bot daemon — submits IDLE on bots' turns so the game advances
   // without human intervention. Only useful when bots are registered.
   if (botCount > 0) {
-    log('Starting auto-bot daemon...');
-    spawnChild('node', ['scripts/auto-bots.mjs'], {
+    await runBootStep('bots.auto.start', 'Start auto-bot daemon', 10_000, async () => spawnChild('node', ['scripts/auto-bots.mjs'], {
       env: {
         RPC_URL,
         POLL_INTERVAL_MS: '2000',
       },
-    });
+      label: 'auto-bots',
+    }));
   }
 
   // 10. Spawn Vite dev server
-  log('Starting Vite dev server...');
-  spawnChild(resolveShellBinary('npm'), ['run', 'dev'], {
-    cwd: appDir,
-    stdio: 'inherit',
-  });
+  if (!skipVite) {
+    await runBootStep('vite.start', 'Start Vite dev server', 10_000, async () => spawnChild(resolveShellBinary('npm'), ['run', 'dev'], {
+      cwd: appDir,
+      stdio: 'inherit',
+      label: 'vite',
+    }));
+  } else {
+    log('Vite dev server skipped (--no-vite).');
+  }
+
+  const finalHealthReport = await buildLocalStackHealth(healthOptions());
+  latestHealthPaths = await writeLocalStackHealthReports(finalHealthReport);
+  if (!finalHealthReport.ok) {
+    console.error(markdownForLocalStackHealth(finalHealthReport));
+    throw new Error(`Final health check failed; see ${latestHealthPaths.reportJsonPath}`);
+  }
 
   // 11. Print status banner
   const modeLine =
@@ -677,7 +810,10 @@ async function main() {
   console.log(`  Mode:       ${modeLine}`);
   console.log(`  Anvil RPC:  ${RPC_URL}`);
   console.log(`  Chain ID:   31337`);
-  console.log(`  Frontend:   http://localhost:5502`);
+  console.log(`  Frontend:   ${skipVite ? 'Skipped (--no-vite)' : 'http://localhost:5502'}`);
+  console.log(`  Worker:     ${skipWorker ? 'Skipped (--no-worker)' : 'Running'}`);
+  console.log(`  Health:     ${latestHealthPaths.reportJsonPath}`);
+  console.log(`  Sentinel:   local-stack-ready`);
   console.log(`  Private Key (Anvil #0):`);
   console.log(`    ${ANVIL_PK}`);
   console.log();
@@ -691,6 +827,7 @@ async function main() {
     console.log(`  rounds resolve while you play a single seat.`);
   }
   console.log('='.repeat(60));
+  console.log('  local-stack-ready');
   console.log('  Press Ctrl+C to stop all processes.');
   console.log('='.repeat(60) + '\n');
 
