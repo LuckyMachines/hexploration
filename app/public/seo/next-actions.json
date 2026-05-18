@@ -1,0 +1,8 @@
+[
+  {
+    "priority": "ready",
+    "title": "Keep discovery artifacts fresh",
+    "reason": "The public route graph, sitemap, social previews, and metadata are passing.",
+    "command": "npm run growth:seo"
+  }
+]

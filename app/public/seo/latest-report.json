@@ -1,0 +1,329 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-05-18T18:20:34.672Z",
+  "ok": true,
+  "strict": true,
+  "site": {
+    "name": "Xenovoya",
+    "url": "https://xenovoya.luckymachines.com",
+    "canonicalHome": "https://xenovoya.luckymachines.com"
+  },
+  "routes": {
+    "total": 16,
+    "public": 16,
+    "byType": {
+      "home": 1,
+      "simulator": 1,
+      "play": 1,
+      "challenge": 1,
+      "scenario-index": 1,
+      "progress": 1,
+      "devlog": 1,
+      "creator": 1,
+      "scenario": 3,
+      "topic": 5
+    }
+  },
+  "routeSummaries": [
+    {
+      "path": "/",
+      "type": "home",
+      "ok": true,
+      "errors": 0,
+      "warnings": 0,
+      "title": "Xenovoya",
+      "description": "Play and tune Xenovoya, a turn-based expedition board game about artifacts, escape pressure, and living board-state decisions.",
+      "canonicalUrl": "https://xenovoya.luckymachines.com"
+    },
+    {
+      "path": "/simulator",
+      "type": "simulator",
+      "ok": true,
+      "errors": 0,
+      "warnings": 0,
+      "title": "Gameplay Simulator | Xenovoya",
+      "description": "Use the same engine as the game to run scenarios, compare outcomes, and tune Xenovoya without a separate rules clone.",
+      "canonicalUrl": "https://xenovoya.luckymachines.com/simulator"
+    },
+    {
+      "path": "/play",
+      "type": "play",
+      "ok": true,
+      "errors": 0,
+      "warnings": 0,
+      "title": "Play Xenovoya | Xenovoya",
+      "description": "Start a seedable public Xenovoya run and see if the expedition can find artifacts, recover, and escape.",
+      "canonicalUrl": "https://xenovoya.luckymachines.com/play"
+    },
+    {
+      "path": "/challenge",
+      "type": "challenge",
+      "ok": true,
+      "errors": 0,
+      "warnings": 0,
+      "title": "Weekly Challenge: Desperate Lift-Off | Xenovoya",
+      "description": "Can your crew escape with the artifact before the route collapses?",
+      "canonicalUrl": "https://xenovoya.luckymachines.com/challenge"
+    },
+    {
+      "path": "/scenarios",
+      "type": "scenario-index",
+      "ok": true,
+      "errors": 0,
+      "warnings": 0,
+      "title": "Scenario Gallery | Xenovoya",
+      "description": "Browse Xenovoya scenarios by pressure, difficulty, player count, and public readiness.",
+      "canonicalUrl": "https://xenovoya.luckymachines.com/scenarios"
+    },
+    {
+      "path": "/progress",
+      "type": "progress",
+      "ok": true,
+      "errors": 0,
+      "warnings": 0,
+      "title": "Scenario Progress | Xenovoya",
+      "description": "Review public scenario progress, completion trends, and evidence-backed next experiments.",
+      "canonicalUrl": "https://xenovoya.luckymachines.com/progress"
+    },
+    {
+      "path": "/devlog",
+      "type": "devlog",
+      "ok": true,
+      "errors": 0,
+      "warnings": 0,
+      "title": "Design Devlog | Xenovoya",
+      "description": "Read automated Xenovoya design updates distilled from scenario evidence, simulator reports, and growth data.",
+      "canonicalUrl": "https://xenovoya.luckymachines.com/devlog"
+    },
+    {
+      "path": "/create-scenario",
+      "type": "creator",
+      "ok": true,
+      "errors": 0,
+      "warnings": 0,
+      "title": "Create A Scenario | Xenovoya",
+      "description": "Draft a local Xenovoya scenario, tune its desired feeling, and test it as a playable run.",
+      "canonicalUrl": "https://xenovoya.luckymachines.com/create-scenario"
+    },
+    {
+      "path": "/scenarios/escape-pressure-4p",
+      "type": "scenario",
+      "ok": true,
+      "errors": 0,
+      "warnings": 0,
+      "title": "Escape Pressure 4P | Xenovoya",
+      "description": "Get the artifact holder out while the crew keeps each other moving.",
+      "canonicalUrl": "https://xenovoya.luckymachines.com/scenarios/escape-pressure-4p"
+    },
+    {
+      "path": "/scenarios/solo-artifact-hunt",
+      "type": "scenario",
+      "ok": true,
+      "errors": 0,
+      "warnings": 0,
+      "title": "Solo Artifact Hunt | Xenovoya",
+      "description": "Find one artifact and escape before fatigue turns the board flat.",
+      "canonicalUrl": "https://xenovoya.luckymachines.com/scenarios/solo-artifact-hunt"
+    },
+    {
+      "path": "/scenarios/low-stat-recovery",
+      "type": "scenario",
+      "ok": true,
+      "errors": 0,
+      "warnings": 0,
+      "title": "Low Stat Recovery | Xenovoya",
+      "description": "Stabilize the crew, reveal a route, then leave with at least one recovery moment.",
+      "canonicalUrl": "https://xenovoya.luckymachines.com/scenarios/low-stat-recovery"
+    },
+    {
+      "path": "/topics/turn-based-board-game",
+      "type": "topic",
+      "ok": true,
+      "errors": 0,
+      "warnings": 0,
+      "title": "Turn-Based Board Game | Xenovoya",
+      "description": "Turn-based board game scenarios where every action changes pressure, route shape, and recovery chances.",
+      "canonicalUrl": "https://xenovoya.luckymachines.com/topics/turn-based-board-game"
+    },
+    {
+      "path": "/topics/survival-expedition",
+      "type": "topic",
+      "ok": true,
+      "errors": 0,
+      "warnings": 0,
+      "title": "Survival Expedition | Xenovoya",
+      "description": "Expedition scenarios about morale, danger, fatigue, and extracting value before the board closes in.",
+      "canonicalUrl": "https://xenovoya.luckymachines.com/topics/survival-expedition"
+    },
+    {
+      "path": "/topics/artifact-hunt",
+      "type": "topic",
+      "ok": true,
+      "errors": 0,
+      "warnings": 0,
+      "title": "Artifact Hunt | Xenovoya",
+      "description": "Relic-hunting scenarios where digging creates payoff, risk, and memorable escape stories.",
+      "canonicalUrl": "https://xenovoya.luckymachines.com/topics/artifact-hunt"
+    },
+    {
+      "path": "/topics/co-op-escape",
+      "type": "topic",
+      "ok": true,
+      "errors": 0,
+      "warnings": 0,
+      "title": "Co-Op Escape | Xenovoya",
+      "description": "Cooperative escape scenarios built around helping, routing, and keeping the artifact holder alive.",
+      "canonicalUrl": "https://xenovoya.luckymachines.com/topics/co-op-escape"
+    },
+    {
+      "path": "/topics/same-engine-simulator",
+      "type": "topic",
+      "ok": true,
+      "errors": 0,
+      "warnings": 0,
+      "title": "Same-Engine Simulator | Xenovoya",
+      "description": "Scenario tuning and outcome learning powered by the same contract engine as playable Xenovoya.",
+      "canonicalUrl": "https://xenovoya.luckymachines.com/topics/same-engine-simulator"
+    }
+  ],
+  "socialPreview": [
+    {
+      "path": "/",
+      "title": "Xenovoya",
+      "url": "https://xenovoya.luckymachines.com",
+      "image": "https://xenovoya.luckymachines.com/seo/xenovoya-share-card.svg",
+      "ok": true,
+      "missing": []
+    },
+    {
+      "path": "/simulator",
+      "title": "Gameplay Simulator | Xenovoya",
+      "url": "https://xenovoya.luckymachines.com/simulator",
+      "image": "https://xenovoya.luckymachines.com/seo/xenovoya-share-card.svg",
+      "ok": true,
+      "missing": []
+    },
+    {
+      "path": "/play",
+      "title": "Play Xenovoya | Xenovoya",
+      "url": "https://xenovoya.luckymachines.com/play",
+      "image": "https://xenovoya.luckymachines.com/seo/xenovoya-share-card.svg",
+      "ok": true,
+      "missing": []
+    },
+    {
+      "path": "/challenge",
+      "title": "Weekly Challenge: Desperate Lift-Off | Xenovoya",
+      "url": "https://xenovoya.luckymachines.com/challenge",
+      "image": "https://xenovoya.luckymachines.com/seo/xenovoya-share-card.svg",
+      "ok": true,
+      "missing": []
+    },
+    {
+      "path": "/scenarios",
+      "title": "Scenario Gallery | Xenovoya",
+      "url": "https://xenovoya.luckymachines.com/scenarios",
+      "image": "https://xenovoya.luckymachines.com/seo/xenovoya-share-card.svg",
+      "ok": true,
+      "missing": []
+    },
+    {
+      "path": "/progress",
+      "title": "Scenario Progress | Xenovoya",
+      "url": "https://xenovoya.luckymachines.com/progress",
+      "image": "https://xenovoya.luckymachines.com/seo/xenovoya-share-card.svg",
+      "ok": true,
+      "missing": []
+    },
+    {
+      "path": "/devlog",
+      "title": "Design Devlog | Xenovoya",
+      "url": "https://xenovoya.luckymachines.com/devlog",
+      "image": "https://xenovoya.luckymachines.com/seo/xenovoya-share-card.svg",
+      "ok": true,
+      "missing": []
+    },
+    {
+      "path": "/create-scenario",
+      "title": "Create A Scenario | Xenovoya",
+      "url": "https://xenovoya.luckymachines.com/create-scenario",
+      "image": "https://xenovoya.luckymachines.com/seo/xenovoya-share-card.svg",
+      "ok": true,
+      "missing": []
+    },
+    {
+      "path": "/scenarios/escape-pressure-4p",
+      "title": "Escape Pressure 4P | Xenovoya",
+      "url": "https://xenovoya.luckymachines.com/scenarios/escape-pressure-4p",
+      "image": "https://xenovoya.luckymachines.com/seo/xenovoya-share-card.svg",
+      "ok": true,
+      "missing": []
+    },
+    {
+      "path": "/scenarios/solo-artifact-hunt",
+      "title": "Solo Artifact Hunt | Xenovoya",
+      "url": "https://xenovoya.luckymachines.com/scenarios/solo-artifact-hunt",
+      "image": "https://xenovoya.luckymachines.com/seo/xenovoya-share-card.svg",
+      "ok": true,
+      "missing": []
+    },
+    {
+      "path": "/scenarios/low-stat-recovery",
+      "title": "Low Stat Recovery | Xenovoya",
+      "url": "https://xenovoya.luckymachines.com/scenarios/low-stat-recovery",
+      "image": "https://xenovoya.luckymachines.com/seo/xenovoya-share-card.svg",
+      "ok": true,
+      "missing": []
+    },
+    {
+      "path": "/topics/turn-based-board-game",
+      "title": "Turn-Based Board Game | Xenovoya",
+      "url": "https://xenovoya.luckymachines.com/topics/turn-based-board-game",
+      "image": "https://xenovoya.luckymachines.com/seo/xenovoya-share-card.svg",
+      "ok": true,
+      "missing": []
+    },
+    {
+      "path": "/topics/survival-expedition",
+      "title": "Survival Expedition | Xenovoya",
+      "url": "https://xenovoya.luckymachines.com/topics/survival-expedition",
+      "image": "https://xenovoya.luckymachines.com/seo/xenovoya-share-card.svg",
+      "ok": true,
+      "missing": []
+    },
+    {
+      "path": "/topics/artifact-hunt",
+      "title": "Artifact Hunt | Xenovoya",
+      "url": "https://xenovoya.luckymachines.com/topics/artifact-hunt",
+      "image": "https://xenovoya.luckymachines.com/seo/xenovoya-share-card.svg",
+      "ok": true,
+      "missing": []
+    },
+    {
+      "path": "/topics/co-op-escape",
+      "title": "Co-Op Escape | Xenovoya",
+      "url": "https://xenovoya.luckymachines.com/topics/co-op-escape",
+      "image": "https://xenovoya.luckymachines.com/seo/xenovoya-share-card.svg",
+      "ok": true,
+      "missing": []
+    },
+    {
+      "path": "/topics/same-engine-simulator",
+      "title": "Same-Engine Simulator | Xenovoya",
+      "url": "https://xenovoya.luckymachines.com/topics/same-engine-simulator",
+      "image": "https://xenovoya.luckymachines.com/seo/xenovoya-share-card.svg",
+      "ok": true,
+      "missing": []
+    }
+  ],
+  "failures": [],
+  "warnings": [],
+  "nextActions": [
+    {
+      "priority": "ready",
+      "title": "Keep discovery artifacts fresh",
+      "reason": "The public route graph, sitemap, social previews, and metadata are passing.",
+      "command": "npm run growth:seo"
+    }
+  ]
+}

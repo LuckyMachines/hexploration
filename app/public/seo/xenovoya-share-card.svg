@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">Xenovoya</title>
+  <desc id="desc">A stylized expedition board game share card.</desc>
+  <rect width="1200" height="630" fill="#101820"/>
+  <rect x="72" y="72" width="1056" height="486" rx="28" fill="#162331" stroke="#d6a94a" stroke-width="3"/>
+  <g transform="translate(156 124)">
+    <path d="M140 0 260 70 260 210 140 280 20 210 20 70Z" fill="#203449" stroke="#7fb3d5" stroke-width="4"/>
+    <path d="M410 40 530 110 530 250 410 320 290 250 290 110Z" fill="#1f463d" stroke="#65c18c" stroke-width="4"/>
+    <path d="M275 210 395 280 395 420 275 490 155 420 155 280Z" fill="#4a2b31" stroke="#e15d4f" stroke-width="4"/>
+    <circle cx="140" cy="142" r="30" fill="#d6a94a"/>
+    <circle cx="410" cy="182" r="22" fill="#e9efe7"/>
+    <path d="M272 342 320 312 366 346 352 398 292 398Z" fill="#d6a94a"/>
+  </g>
+  <text x="720" y="216" fill="#e9efe7" font-family="Arial, sans-serif" font-size="76" font-weight="700" letter-spacing="4">XENOVOYA</text>
+  <text x="720" y="292" fill="#d6a94a" font-family="Arial, sans-serif" font-size="28" letter-spacing="3">TURN-BASED EXPEDITION BOARD GAME</text>
+  <text x="720" y="360" fill="#b8c7d4" font-family="Arial, sans-serif" font-size="28">Explore. Recover. Find artifacts. Escape.</text>
+  <text x="720" y="410" fill="#b8c7d4" font-family="Arial, sans-serif" font-size="24">Scenario tuning and public challenges powered by the same game engine.</text>
+</svg>

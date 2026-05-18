@@ -8,12 +8,15 @@ import SimulatorPage from './pages/SimulatorPage';
 import {
   CreateScenarioPage,
   DevlogPage,
+  DiscoveryTopicPage,
   GrowthPlayPage,
   ProgressPage,
   ReplayPage,
+  ScenarioDetailPage,
   ScenarioGalleryPage,
 } from './pages/GrowthPage';
 import Modal from './components/shared/Modal';
+import SeoHead from './components/shared/SeoHead';
 import FieldManual from './components/help/FieldManual';
 import ErrorBoundary from './components/shared/ErrorBoundary';
 import PseudoLocale from './components/shared/PseudoLocale';
@@ -27,6 +30,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen flex flex-col">
+      <SeoHead />
       <PseudoLocale />
       <Header onHelpClick={() => setIsHelpOpen(true)} />
       <main className="flex-1">
@@ -39,6 +43,8 @@ export default function App() {
             <Route path="/play" element={<GrowthPlayPage />} />
             <Route path="/challenge" element={<GrowthPlayPage challenge />} />
             <Route path="/scenarios" element={<ScenarioGalleryPage />} />
+            <Route path="/scenarios/:scenarioId" element={<ScenarioDetailPage />} />
+            <Route path="/topics/:topicId" element={<DiscoveryTopicPage />} />
             <Route path="/replay/:runId" element={<ReplayPage />} />
             <Route path="/progress" element={<ProgressPage />} />
             <Route path="/devlog" element={<DevlogPage />} />

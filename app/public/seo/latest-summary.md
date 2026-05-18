@@ -1,0 +1,43 @@
+# SEO Growth Discovery Report
+
+Generated: 2026-05-18T18:20:34.672Z
+
+Status: pass
+
+## Routes
+
+- Total: 16
+- Public: 16
+- Scenario: 3
+- Topic: 5
+
+| Path | Type | Status | Warnings |
+| --- | --- | --- | --- |
+| / | home | pass | 0 |
+| /simulator | simulator | pass | 0 |
+| /play | play | pass | 0 |
+| /challenge | challenge | pass | 0 |
+| /scenarios | scenario-index | pass | 0 |
+| /progress | progress | pass | 0 |
+| /devlog | devlog | pass | 0 |
+| /create-scenario | creator | pass | 0 |
+| /scenarios/escape-pressure-4p | scenario | pass | 0 |
+| /scenarios/solo-artifact-hunt | scenario | pass | 0 |
+| /scenarios/low-stat-recovery | scenario | pass | 0 |
+| /topics/turn-based-board-game | topic | pass | 0 |
+| /topics/survival-expedition | topic | pass | 0 |
+| /topics/artifact-hunt | topic | pass | 0 |
+| /topics/co-op-escape | topic | pass | 0 |
+| /topics/same-engine-simulator | topic | pass | 0 |
+
+## Failures
+
+- None.
+
+## Warnings
+
+- None.
+
+## Next Actions
+
+- ready: Keep discovery artifacts fresh - The public route graph, sitemap, social previews, and metadata are passing. (`npm run growth:seo`)

@@ -451,4 +451,4 @@ import {
   roleDelta,
   runTitleFor,
   secondaryEventFor,
-} from './funLoop';
+} from './funLoop.js';

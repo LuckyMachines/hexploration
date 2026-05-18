@@ -1,0 +1,1282 @@
+{
+  "/": {
+    "schemaVersion": 1,
+    "routePath": "/",
+    "routeType": "home",
+    "title": "Xenovoya",
+    "description": "Play and tune Xenovoya, a turn-based expedition board game about artifacts, escape pressure, and living board-state decisions.",
+    "canonicalUrl": "https://xenovoya.luckymachines.com",
+    "robots": "index,follow,max-image-preview:large",
+    "openGraph": {
+      "type": "website",
+      "siteName": "Xenovoya",
+      "title": "Xenovoya",
+      "description": "Play and tune Xenovoya, a turn-based expedition board game about artifacts, escape pressure, and living board-state decisions.",
+      "url": "https://xenovoya.luckymachines.com",
+      "image": "https://xenovoya.luckymachines.com/seo/xenovoya-share-card.svg",
+      "locale": "en_US"
+    },
+    "twitter": {
+      "card": "summary_large_image",
+      "title": "Xenovoya",
+      "description": "Play and tune Xenovoya, a turn-based expedition board game about artifacts, escape pressure, and living board-state decisions.",
+      "image": "https://xenovoya.luckymachines.com/seo/xenovoya-share-card.svg"
+    },
+    "jsonLd": [
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Xenovoya",
+        "url": "https://xenovoya.luckymachines.com",
+        "description": "A turn-based expedition board game about tense exploration, artifacts, escape pressure, and same-engine scenario tuning."
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "VideoGame",
+        "name": "Xenovoya",
+        "url": "https://xenovoya.luckymachines.com",
+        "description": "A turn-based expedition board game about tense exploration, artifacts, escape pressure, and same-engine scenario tuning.",
+        "genre": [
+          "Turn-based strategy",
+          "Board game",
+          "Exploration"
+        ],
+        "gamePlatform": "Web browser",
+        "applicationCategory": "Game"
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "name": "Xenovoya",
+        "url": "https://xenovoya.luckymachines.com",
+        "description": "Play and tune Xenovoya, a turn-based expedition board game about artifacts, escape pressure, and living board-state decisions.",
+        "isPartOf": {
+          "@type": "WebSite",
+          "name": "Xenovoya",
+          "url": "https://xenovoya.luckymachines.com"
+        }
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Xenovoya",
+            "item": "https://xenovoya.luckymachines.com"
+          }
+        ]
+      }
+    ]
+  },
+  "/simulator": {
+    "schemaVersion": 1,
+    "routePath": "/simulator",
+    "routeType": "simulator",
+    "title": "Gameplay Simulator | Xenovoya",
+    "description": "Use the same engine as the game to run scenarios, compare outcomes, and tune Xenovoya without a separate rules clone.",
+    "canonicalUrl": "https://xenovoya.luckymachines.com/simulator",
+    "robots": "index,follow,max-image-preview:large",
+    "openGraph": {
+      "type": "website",
+      "siteName": "Xenovoya",
+      "title": "Gameplay Simulator | Xenovoya",
+      "description": "Use the same engine as the game to run scenarios, compare outcomes, and tune Xenovoya without a separate rules clone.",
+      "url": "https://xenovoya.luckymachines.com/simulator",
+      "image": "https://xenovoya.luckymachines.com/seo/xenovoya-share-card.svg",
+      "locale": "en_US"
+    },
+    "twitter": {
+      "card": "summary_large_image",
+      "title": "Gameplay Simulator | Xenovoya",
+      "description": "Use the same engine as the game to run scenarios, compare outcomes, and tune Xenovoya without a separate rules clone.",
+      "image": "https://xenovoya.luckymachines.com/seo/xenovoya-share-card.svg"
+    },
+    "jsonLd": [
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Xenovoya",
+        "url": "https://xenovoya.luckymachines.com",
+        "description": "A turn-based expedition board game about tense exploration, artifacts, escape pressure, and same-engine scenario tuning."
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "VideoGame",
+        "name": "Xenovoya",
+        "url": "https://xenovoya.luckymachines.com",
+        "description": "A turn-based expedition board game about tense exploration, artifacts, escape pressure, and same-engine scenario tuning.",
+        "genre": [
+          "Turn-based strategy",
+          "Board game",
+          "Exploration"
+        ],
+        "gamePlatform": "Web browser",
+        "applicationCategory": "Game"
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "name": "Gameplay Simulator | Xenovoya",
+        "url": "https://xenovoya.luckymachines.com/simulator",
+        "description": "Use the same engine as the game to run scenarios, compare outcomes, and tune Xenovoya without a separate rules clone.",
+        "isPartOf": {
+          "@type": "WebSite",
+          "name": "Xenovoya",
+          "url": "https://xenovoya.luckymachines.com"
+        }
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Xenovoya",
+            "item": "https://xenovoya.luckymachines.com"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Simulator",
+            "item": "https://xenovoya.luckymachines.com/simulator"
+          }
+        ]
+      }
+    ]
+  },
+  "/play": {
+    "schemaVersion": 1,
+    "routePath": "/play",
+    "routeType": "play",
+    "title": "Play Xenovoya | Xenovoya",
+    "description": "Start a seedable public Xenovoya run and see if the expedition can find artifacts, recover, and escape.",
+    "canonicalUrl": "https://xenovoya.luckymachines.com/play",
+    "robots": "index,follow,max-image-preview:large",
+    "openGraph": {
+      "type": "website",
+      "siteName": "Xenovoya",
+      "title": "Play Xenovoya | Xenovoya",
+      "description": "Start a seedable public Xenovoya run and see if the expedition can find artifacts, recover, and escape.",
+      "url": "https://xenovoya.luckymachines.com/play",
+      "image": "https://xenovoya.luckymachines.com/seo/xenovoya-share-card.svg",
+      "locale": "en_US"
+    },
+    "twitter": {
+      "card": "summary_large_image",
+      "title": "Play Xenovoya | Xenovoya",
+      "description": "Start a seedable public Xenovoya run and see if the expedition can find artifacts, recover, and escape.",
+      "image": "https://xenovoya.luckymachines.com/seo/xenovoya-share-card.svg"
+    },
+    "jsonLd": [
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Xenovoya",
+        "url": "https://xenovoya.luckymachines.com",
+        "description": "A turn-based expedition board game about tense exploration, artifacts, escape pressure, and same-engine scenario tuning."
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "VideoGame",
+        "name": "Xenovoya",
+        "url": "https://xenovoya.luckymachines.com",
+        "description": "A turn-based expedition board game about tense exploration, artifacts, escape pressure, and same-engine scenario tuning.",
+        "genre": [
+          "Turn-based strategy",
+          "Board game",
+          "Exploration"
+        ],
+        "gamePlatform": "Web browser",
+        "applicationCategory": "Game"
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "name": "Play Xenovoya | Xenovoya",
+        "url": "https://xenovoya.luckymachines.com/play",
+        "description": "Start a seedable public Xenovoya run and see if the expedition can find artifacts, recover, and escape.",
+        "isPartOf": {
+          "@type": "WebSite",
+          "name": "Xenovoya",
+          "url": "https://xenovoya.luckymachines.com"
+        }
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Xenovoya",
+            "item": "https://xenovoya.luckymachines.com"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Play",
+            "item": "https://xenovoya.luckymachines.com/play"
+          }
+        ]
+      }
+    ]
+  },
+  "/challenge": {
+    "schemaVersion": 1,
+    "routePath": "/challenge",
+    "routeType": "challenge",
+    "title": "Weekly Challenge: Desperate Lift-Off | Xenovoya",
+    "description": "Can your crew escape with the artifact before the route collapses?",
+    "canonicalUrl": "https://xenovoya.luckymachines.com/challenge",
+    "robots": "index,follow,max-image-preview:large",
+    "openGraph": {
+      "type": "website",
+      "siteName": "Xenovoya",
+      "title": "Weekly Challenge: Desperate Lift-Off | Xenovoya",
+      "description": "Can your crew escape with the artifact before the route collapses?",
+      "url": "https://xenovoya.luckymachines.com/challenge",
+      "image": "https://xenovoya.luckymachines.com/seo/xenovoya-share-card.svg",
+      "locale": "en_US"
+    },
+    "twitter": {
+      "card": "summary_large_image",
+      "title": "Weekly Challenge: Desperate Lift-Off | Xenovoya",
+      "description": "Can your crew escape with the artifact before the route collapses?",
+      "image": "https://xenovoya.luckymachines.com/seo/xenovoya-share-card.svg"
+    },
+    "jsonLd": [
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Xenovoya",
+        "url": "https://xenovoya.luckymachines.com",
+        "description": "A turn-based expedition board game about tense exploration, artifacts, escape pressure, and same-engine scenario tuning."
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "VideoGame",
+        "name": "Xenovoya",
+        "url": "https://xenovoya.luckymachines.com",
+        "description": "A turn-based expedition board game about tense exploration, artifacts, escape pressure, and same-engine scenario tuning.",
+        "genre": [
+          "Turn-based strategy",
+          "Board game",
+          "Exploration"
+        ],
+        "gamePlatform": "Web browser",
+        "applicationCategory": "Game"
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "name": "Weekly Challenge: Desperate Lift-Off | Xenovoya",
+        "url": "https://xenovoya.luckymachines.com/challenge",
+        "description": "Can your crew escape with the artifact before the route collapses?",
+        "isPartOf": {
+          "@type": "WebSite",
+          "name": "Xenovoya",
+          "url": "https://xenovoya.luckymachines.com"
+        }
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Xenovoya",
+            "item": "https://xenovoya.luckymachines.com"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Challenge",
+            "item": "https://xenovoya.luckymachines.com/challenge"
+          }
+        ]
+      }
+    ]
+  },
+  "/scenarios": {
+    "schemaVersion": 1,
+    "routePath": "/scenarios",
+    "routeType": "scenario-index",
+    "title": "Scenario Gallery | Xenovoya",
+    "description": "Browse Xenovoya scenarios by pressure, difficulty, player count, and public readiness.",
+    "canonicalUrl": "https://xenovoya.luckymachines.com/scenarios",
+    "robots": "index,follow,max-image-preview:large",
+    "openGraph": {
+      "type": "website",
+      "siteName": "Xenovoya",
+      "title": "Scenario Gallery | Xenovoya",
+      "description": "Browse Xenovoya scenarios by pressure, difficulty, player count, and public readiness.",
+      "url": "https://xenovoya.luckymachines.com/scenarios",
+      "image": "https://xenovoya.luckymachines.com/seo/xenovoya-share-card.svg",
+      "locale": "en_US"
+    },
+    "twitter": {
+      "card": "summary_large_image",
+      "title": "Scenario Gallery | Xenovoya",
+      "description": "Browse Xenovoya scenarios by pressure, difficulty, player count, and public readiness.",
+      "image": "https://xenovoya.luckymachines.com/seo/xenovoya-share-card.svg"
+    },
+    "jsonLd": [
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Xenovoya",
+        "url": "https://xenovoya.luckymachines.com",
+        "description": "A turn-based expedition board game about tense exploration, artifacts, escape pressure, and same-engine scenario tuning."
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "VideoGame",
+        "name": "Xenovoya",
+        "url": "https://xenovoya.luckymachines.com",
+        "description": "A turn-based expedition board game about tense exploration, artifacts, escape pressure, and same-engine scenario tuning.",
+        "genre": [
+          "Turn-based strategy",
+          "Board game",
+          "Exploration"
+        ],
+        "gamePlatform": "Web browser",
+        "applicationCategory": "Game"
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "name": "Scenario Gallery | Xenovoya",
+        "url": "https://xenovoya.luckymachines.com/scenarios",
+        "description": "Browse Xenovoya scenarios by pressure, difficulty, player count, and public readiness.",
+        "isPartOf": {
+          "@type": "WebSite",
+          "name": "Xenovoya",
+          "url": "https://xenovoya.luckymachines.com"
+        }
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Xenovoya",
+            "item": "https://xenovoya.luckymachines.com"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Scenarios",
+            "item": "https://xenovoya.luckymachines.com/scenarios"
+          }
+        ]
+      }
+    ]
+  },
+  "/progress": {
+    "schemaVersion": 1,
+    "routePath": "/progress",
+    "routeType": "progress",
+    "title": "Scenario Progress | Xenovoya",
+    "description": "Review public scenario progress, completion trends, and evidence-backed next experiments.",
+    "canonicalUrl": "https://xenovoya.luckymachines.com/progress",
+    "robots": "index,follow,max-image-preview:large",
+    "openGraph": {
+      "type": "website",
+      "siteName": "Xenovoya",
+      "title": "Scenario Progress | Xenovoya",
+      "description": "Review public scenario progress, completion trends, and evidence-backed next experiments.",
+      "url": "https://xenovoya.luckymachines.com/progress",
+      "image": "https://xenovoya.luckymachines.com/seo/xenovoya-share-card.svg",
+      "locale": "en_US"
+    },
+    "twitter": {
+      "card": "summary_large_image",
+      "title": "Scenario Progress | Xenovoya",
+      "description": "Review public scenario progress, completion trends, and evidence-backed next experiments.",
+      "image": "https://xenovoya.luckymachines.com/seo/xenovoya-share-card.svg"
+    },
+    "jsonLd": [
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Xenovoya",
+        "url": "https://xenovoya.luckymachines.com",
+        "description": "A turn-based expedition board game about tense exploration, artifacts, escape pressure, and same-engine scenario tuning."
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "VideoGame",
+        "name": "Xenovoya",
+        "url": "https://xenovoya.luckymachines.com",
+        "description": "A turn-based expedition board game about tense exploration, artifacts, escape pressure, and same-engine scenario tuning.",
+        "genre": [
+          "Turn-based strategy",
+          "Board game",
+          "Exploration"
+        ],
+        "gamePlatform": "Web browser",
+        "applicationCategory": "Game"
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "name": "Scenario Progress | Xenovoya",
+        "url": "https://xenovoya.luckymachines.com/progress",
+        "description": "Review public scenario progress, completion trends, and evidence-backed next experiments.",
+        "isPartOf": {
+          "@type": "WebSite",
+          "name": "Xenovoya",
+          "url": "https://xenovoya.luckymachines.com"
+        }
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Xenovoya",
+            "item": "https://xenovoya.luckymachines.com"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Progress",
+            "item": "https://xenovoya.luckymachines.com/progress"
+          }
+        ]
+      }
+    ]
+  },
+  "/devlog": {
+    "schemaVersion": 1,
+    "routePath": "/devlog",
+    "routeType": "devlog",
+    "title": "Design Devlog | Xenovoya",
+    "description": "Read automated Xenovoya design updates distilled from scenario evidence, simulator reports, and growth data.",
+    "canonicalUrl": "https://xenovoya.luckymachines.com/devlog",
+    "robots": "index,follow,max-image-preview:large",
+    "openGraph": {
+      "type": "website",
+      "siteName": "Xenovoya",
+      "title": "Design Devlog | Xenovoya",
+      "description": "Read automated Xenovoya design updates distilled from scenario evidence, simulator reports, and growth data.",
+      "url": "https://xenovoya.luckymachines.com/devlog",
+      "image": "https://xenovoya.luckymachines.com/seo/xenovoya-share-card.svg",
+      "locale": "en_US"
+    },
+    "twitter": {
+      "card": "summary_large_image",
+      "title": "Design Devlog | Xenovoya",
+      "description": "Read automated Xenovoya design updates distilled from scenario evidence, simulator reports, and growth data.",
+      "image": "https://xenovoya.luckymachines.com/seo/xenovoya-share-card.svg"
+    },
+    "jsonLd": [
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Xenovoya",
+        "url": "https://xenovoya.luckymachines.com",
+        "description": "A turn-based expedition board game about tense exploration, artifacts, escape pressure, and same-engine scenario tuning."
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "VideoGame",
+        "name": "Xenovoya",
+        "url": "https://xenovoya.luckymachines.com",
+        "description": "A turn-based expedition board game about tense exploration, artifacts, escape pressure, and same-engine scenario tuning.",
+        "genre": [
+          "Turn-based strategy",
+          "Board game",
+          "Exploration"
+        ],
+        "gamePlatform": "Web browser",
+        "applicationCategory": "Game"
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "Blog",
+        "name": "Design Devlog | Xenovoya",
+        "url": "https://xenovoya.luckymachines.com/devlog",
+        "description": "Read automated Xenovoya design updates distilled from scenario evidence, simulator reports, and growth data.",
+        "isPartOf": {
+          "@type": "WebSite",
+          "name": "Xenovoya",
+          "url": "https://xenovoya.luckymachines.com"
+        }
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Xenovoya",
+            "item": "https://xenovoya.luckymachines.com"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Devlog",
+            "item": "https://xenovoya.luckymachines.com/devlog"
+          }
+        ]
+      }
+    ]
+  },
+  "/create-scenario": {
+    "schemaVersion": 1,
+    "routePath": "/create-scenario",
+    "routeType": "creator",
+    "title": "Create A Scenario | Xenovoya",
+    "description": "Draft a local Xenovoya scenario, tune its desired feeling, and test it as a playable run.",
+    "canonicalUrl": "https://xenovoya.luckymachines.com/create-scenario",
+    "robots": "index,follow,max-image-preview:large",
+    "openGraph": {
+      "type": "website",
+      "siteName": "Xenovoya",
+      "title": "Create A Scenario | Xenovoya",
+      "description": "Draft a local Xenovoya scenario, tune its desired feeling, and test it as a playable run.",
+      "url": "https://xenovoya.luckymachines.com/create-scenario",
+      "image": "https://xenovoya.luckymachines.com/seo/xenovoya-share-card.svg",
+      "locale": "en_US"
+    },
+    "twitter": {
+      "card": "summary_large_image",
+      "title": "Create A Scenario | Xenovoya",
+      "description": "Draft a local Xenovoya scenario, tune its desired feeling, and test it as a playable run.",
+      "image": "https://xenovoya.luckymachines.com/seo/xenovoya-share-card.svg"
+    },
+    "jsonLd": [
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Xenovoya",
+        "url": "https://xenovoya.luckymachines.com",
+        "description": "A turn-based expedition board game about tense exploration, artifacts, escape pressure, and same-engine scenario tuning."
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "VideoGame",
+        "name": "Xenovoya",
+        "url": "https://xenovoya.luckymachines.com",
+        "description": "A turn-based expedition board game about tense exploration, artifacts, escape pressure, and same-engine scenario tuning.",
+        "genre": [
+          "Turn-based strategy",
+          "Board game",
+          "Exploration"
+        ],
+        "gamePlatform": "Web browser",
+        "applicationCategory": "Game"
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "name": "Create A Scenario | Xenovoya",
+        "url": "https://xenovoya.luckymachines.com/create-scenario",
+        "description": "Draft a local Xenovoya scenario, tune its desired feeling, and test it as a playable run.",
+        "isPartOf": {
+          "@type": "WebSite",
+          "name": "Xenovoya",
+          "url": "https://xenovoya.luckymachines.com"
+        }
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Xenovoya",
+            "item": "https://xenovoya.luckymachines.com"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Create Scenario",
+            "item": "https://xenovoya.luckymachines.com/create-scenario"
+          }
+        ]
+      }
+    ]
+  },
+  "/scenarios/escape-pressure-4p": {
+    "schemaVersion": 1,
+    "routePath": "/scenarios/escape-pressure-4p",
+    "routeType": "scenario",
+    "title": "Escape Pressure 4P | Xenovoya",
+    "description": "Get the artifact holder out while the crew keeps each other moving.",
+    "canonicalUrl": "https://xenovoya.luckymachines.com/scenarios/escape-pressure-4p",
+    "robots": "index,follow,max-image-preview:large",
+    "openGraph": {
+      "type": "article",
+      "siteName": "Xenovoya",
+      "title": "Escape Pressure 4P | Xenovoya",
+      "description": "Get the artifact holder out while the crew keeps each other moving.",
+      "url": "https://xenovoya.luckymachines.com/scenarios/escape-pressure-4p",
+      "image": "https://xenovoya.luckymachines.com/seo/xenovoya-share-card.svg",
+      "locale": "en_US"
+    },
+    "twitter": {
+      "card": "summary_large_image",
+      "title": "Escape Pressure 4P | Xenovoya",
+      "description": "Get the artifact holder out while the crew keeps each other moving.",
+      "image": "https://xenovoya.luckymachines.com/seo/xenovoya-share-card.svg"
+    },
+    "jsonLd": [
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Xenovoya",
+        "url": "https://xenovoya.luckymachines.com",
+        "description": "A turn-based expedition board game about tense exploration, artifacts, escape pressure, and same-engine scenario tuning."
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "VideoGame",
+        "name": "Xenovoya",
+        "url": "https://xenovoya.luckymachines.com",
+        "description": "A turn-based expedition board game about tense exploration, artifacts, escape pressure, and same-engine scenario tuning.",
+        "genre": [
+          "Turn-based strategy",
+          "Board game",
+          "Exploration"
+        ],
+        "gamePlatform": "Web browser",
+        "applicationCategory": "Game"
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "Game",
+        "name": "Escape Pressure 4P | Xenovoya",
+        "url": "https://xenovoya.luckymachines.com/scenarios/escape-pressure-4p",
+        "description": "Get the artifact holder out while the crew keeps each other moving.",
+        "isPartOf": {
+          "@type": "WebSite",
+          "name": "Xenovoya",
+          "url": "https://xenovoya.luckymachines.com"
+        },
+        "gameItem": "Escape Pressure 4P",
+        "keywords": "co-op, escape, survival, pressure, multiplayer, cooperation"
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Xenovoya",
+            "item": "https://xenovoya.luckymachines.com"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Scenarios",
+            "item": "https://xenovoya.luckymachines.com/scenarios"
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "name": "Escape Pressure 4p",
+            "item": "https://xenovoya.luckymachines.com/scenarios/escape-pressure-4p"
+          }
+        ]
+      }
+    ]
+  },
+  "/scenarios/solo-artifact-hunt": {
+    "schemaVersion": 1,
+    "routePath": "/scenarios/solo-artifact-hunt",
+    "routeType": "scenario",
+    "title": "Solo Artifact Hunt | Xenovoya",
+    "description": "Find one artifact and escape before fatigue turns the board flat.",
+    "canonicalUrl": "https://xenovoya.luckymachines.com/scenarios/solo-artifact-hunt",
+    "robots": "index,follow,max-image-preview:large",
+    "openGraph": {
+      "type": "article",
+      "siteName": "Xenovoya",
+      "title": "Solo Artifact Hunt | Xenovoya",
+      "description": "Find one artifact and escape before fatigue turns the board flat.",
+      "url": "https://xenovoya.luckymachines.com/scenarios/solo-artifact-hunt",
+      "image": "https://xenovoya.luckymachines.com/seo/xenovoya-share-card.svg",
+      "locale": "en_US"
+    },
+    "twitter": {
+      "card": "summary_large_image",
+      "title": "Solo Artifact Hunt | Xenovoya",
+      "description": "Find one artifact and escape before fatigue turns the board flat.",
+      "image": "https://xenovoya.luckymachines.com/seo/xenovoya-share-card.svg"
+    },
+    "jsonLd": [
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Xenovoya",
+        "url": "https://xenovoya.luckymachines.com",
+        "description": "A turn-based expedition board game about tense exploration, artifacts, escape pressure, and same-engine scenario tuning."
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "VideoGame",
+        "name": "Xenovoya",
+        "url": "https://xenovoya.luckymachines.com",
+        "description": "A turn-based expedition board game about tense exploration, artifacts, escape pressure, and same-engine scenario tuning.",
+        "genre": [
+          "Turn-based strategy",
+          "Board game",
+          "Exploration"
+        ],
+        "gamePlatform": "Web browser",
+        "applicationCategory": "Game"
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "Game",
+        "name": "Solo Artifact Hunt | Xenovoya",
+        "url": "https://xenovoya.luckymachines.com/scenarios/solo-artifact-hunt",
+        "description": "Find one artifact and escape before fatigue turns the board flat.",
+        "isPartOf": {
+          "@type": "WebSite",
+          "name": "Xenovoya",
+          "url": "https://xenovoya.luckymachines.com"
+        },
+        "gameItem": "Solo Artifact Hunt",
+        "keywords": "solo, artifact, survival, beginner"
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Xenovoya",
+            "item": "https://xenovoya.luckymachines.com"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Scenarios",
+            "item": "https://xenovoya.luckymachines.com/scenarios"
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "name": "Solo Artifact Hunt",
+            "item": "https://xenovoya.luckymachines.com/scenarios/solo-artifact-hunt"
+          }
+        ]
+      }
+    ]
+  },
+  "/scenarios/low-stat-recovery": {
+    "schemaVersion": 1,
+    "routePath": "/scenarios/low-stat-recovery",
+    "routeType": "scenario",
+    "title": "Low Stat Recovery | Xenovoya",
+    "description": "Stabilize the crew, reveal a route, then leave with at least one recovery moment.",
+    "canonicalUrl": "https://xenovoya.luckymachines.com/scenarios/low-stat-recovery",
+    "robots": "index,follow,max-image-preview:large",
+    "openGraph": {
+      "type": "article",
+      "siteName": "Xenovoya",
+      "title": "Low Stat Recovery | Xenovoya",
+      "description": "Stabilize the crew, reveal a route, then leave with at least one recovery moment.",
+      "url": "https://xenovoya.luckymachines.com/scenarios/low-stat-recovery",
+      "image": "https://xenovoya.luckymachines.com/seo/xenovoya-share-card.svg",
+      "locale": "en_US"
+    },
+    "twitter": {
+      "card": "summary_large_image",
+      "title": "Low Stat Recovery | Xenovoya",
+      "description": "Stabilize the crew, reveal a route, then leave with at least one recovery moment.",
+      "image": "https://xenovoya.luckymachines.com/seo/xenovoya-share-card.svg"
+    },
+    "jsonLd": [
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Xenovoya",
+        "url": "https://xenovoya.luckymachines.com",
+        "description": "A turn-based expedition board game about tense exploration, artifacts, escape pressure, and same-engine scenario tuning."
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "VideoGame",
+        "name": "Xenovoya",
+        "url": "https://xenovoya.luckymachines.com",
+        "description": "A turn-based expedition board game about tense exploration, artifacts, escape pressure, and same-engine scenario tuning.",
+        "genre": [
+          "Turn-based strategy",
+          "Board game",
+          "Exploration"
+        ],
+        "gamePlatform": "Web browser",
+        "applicationCategory": "Game"
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "Game",
+        "name": "Low Stat Recovery | Xenovoya",
+        "url": "https://xenovoya.luckymachines.com/scenarios/low-stat-recovery",
+        "description": "Stabilize the crew, reveal a route, then leave with at least one recovery moment.",
+        "isPartOf": {
+          "@type": "WebSite",
+          "name": "Xenovoya",
+          "url": "https://xenovoya.luckymachines.com"
+        },
+        "gameItem": "Low Stat Recovery",
+        "keywords": "co-op, recovery, survival"
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Xenovoya",
+            "item": "https://xenovoya.luckymachines.com"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Scenarios",
+            "item": "https://xenovoya.luckymachines.com/scenarios"
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "name": "Low Stat Recovery",
+            "item": "https://xenovoya.luckymachines.com/scenarios/low-stat-recovery"
+          }
+        ]
+      }
+    ]
+  },
+  "/topics/turn-based-board-game": {
+    "schemaVersion": 1,
+    "routePath": "/topics/turn-based-board-game",
+    "routeType": "topic",
+    "title": "Turn-Based Board Game | Xenovoya",
+    "description": "Turn-based board game scenarios where every action changes pressure, route shape, and recovery chances.",
+    "canonicalUrl": "https://xenovoya.luckymachines.com/topics/turn-based-board-game",
+    "robots": "index,follow,max-image-preview:large",
+    "openGraph": {
+      "type": "website",
+      "siteName": "Xenovoya",
+      "title": "Turn-Based Board Game | Xenovoya",
+      "description": "Turn-based board game scenarios where every action changes pressure, route shape, and recovery chances.",
+      "url": "https://xenovoya.luckymachines.com/topics/turn-based-board-game",
+      "image": "https://xenovoya.luckymachines.com/seo/xenovoya-share-card.svg",
+      "locale": "en_US"
+    },
+    "twitter": {
+      "card": "summary_large_image",
+      "title": "Turn-Based Board Game | Xenovoya",
+      "description": "Turn-based board game scenarios where every action changes pressure, route shape, and recovery chances.",
+      "image": "https://xenovoya.luckymachines.com/seo/xenovoya-share-card.svg"
+    },
+    "jsonLd": [
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Xenovoya",
+        "url": "https://xenovoya.luckymachines.com",
+        "description": "A turn-based expedition board game about tense exploration, artifacts, escape pressure, and same-engine scenario tuning."
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "VideoGame",
+        "name": "Xenovoya",
+        "url": "https://xenovoya.luckymachines.com",
+        "description": "A turn-based expedition board game about tense exploration, artifacts, escape pressure, and same-engine scenario tuning.",
+        "genre": [
+          "Turn-based strategy",
+          "Board game",
+          "Exploration"
+        ],
+        "gamePlatform": "Web browser",
+        "applicationCategory": "Game"
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "name": "Turn-Based Board Game | Xenovoya",
+        "url": "https://xenovoya.luckymachines.com/topics/turn-based-board-game",
+        "description": "Turn-based board game scenarios where every action changes pressure, route shape, and recovery chances.",
+        "isPartOf": {
+          "@type": "WebSite",
+          "name": "Xenovoya",
+          "url": "https://xenovoya.luckymachines.com"
+        }
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Xenovoya",
+            "item": "https://xenovoya.luckymachines.com"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Topics",
+            "item": "https://xenovoya.luckymachines.com/topics"
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "name": "Turn Based Board Game",
+            "item": "https://xenovoya.luckymachines.com/topics/turn-based-board-game"
+          }
+        ]
+      }
+    ]
+  },
+  "/topics/survival-expedition": {
+    "schemaVersion": 1,
+    "routePath": "/topics/survival-expedition",
+    "routeType": "topic",
+    "title": "Survival Expedition | Xenovoya",
+    "description": "Expedition scenarios about morale, danger, fatigue, and extracting value before the board closes in.",
+    "canonicalUrl": "https://xenovoya.luckymachines.com/topics/survival-expedition",
+    "robots": "index,follow,max-image-preview:large",
+    "openGraph": {
+      "type": "website",
+      "siteName": "Xenovoya",
+      "title": "Survival Expedition | Xenovoya",
+      "description": "Expedition scenarios about morale, danger, fatigue, and extracting value before the board closes in.",
+      "url": "https://xenovoya.luckymachines.com/topics/survival-expedition",
+      "image": "https://xenovoya.luckymachines.com/seo/xenovoya-share-card.svg",
+      "locale": "en_US"
+    },
+    "twitter": {
+      "card": "summary_large_image",
+      "title": "Survival Expedition | Xenovoya",
+      "description": "Expedition scenarios about morale, danger, fatigue, and extracting value before the board closes in.",
+      "image": "https://xenovoya.luckymachines.com/seo/xenovoya-share-card.svg"
+    },
+    "jsonLd": [
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Xenovoya",
+        "url": "https://xenovoya.luckymachines.com",
+        "description": "A turn-based expedition board game about tense exploration, artifacts, escape pressure, and same-engine scenario tuning."
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "VideoGame",
+        "name": "Xenovoya",
+        "url": "https://xenovoya.luckymachines.com",
+        "description": "A turn-based expedition board game about tense exploration, artifacts, escape pressure, and same-engine scenario tuning.",
+        "genre": [
+          "Turn-based strategy",
+          "Board game",
+          "Exploration"
+        ],
+        "gamePlatform": "Web browser",
+        "applicationCategory": "Game"
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "name": "Survival Expedition | Xenovoya",
+        "url": "https://xenovoya.luckymachines.com/topics/survival-expedition",
+        "description": "Expedition scenarios about morale, danger, fatigue, and extracting value before the board closes in.",
+        "isPartOf": {
+          "@type": "WebSite",
+          "name": "Xenovoya",
+          "url": "https://xenovoya.luckymachines.com"
+        }
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Xenovoya",
+            "item": "https://xenovoya.luckymachines.com"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Topics",
+            "item": "https://xenovoya.luckymachines.com/topics"
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "name": "Survival Expedition",
+            "item": "https://xenovoya.luckymachines.com/topics/survival-expedition"
+          }
+        ]
+      }
+    ]
+  },
+  "/topics/artifact-hunt": {
+    "schemaVersion": 1,
+    "routePath": "/topics/artifact-hunt",
+    "routeType": "topic",
+    "title": "Artifact Hunt | Xenovoya",
+    "description": "Relic-hunting scenarios where digging creates payoff, risk, and memorable escape stories.",
+    "canonicalUrl": "https://xenovoya.luckymachines.com/topics/artifact-hunt",
+    "robots": "index,follow,max-image-preview:large",
+    "openGraph": {
+      "type": "website",
+      "siteName": "Xenovoya",
+      "title": "Artifact Hunt | Xenovoya",
+      "description": "Relic-hunting scenarios where digging creates payoff, risk, and memorable escape stories.",
+      "url": "https://xenovoya.luckymachines.com/topics/artifact-hunt",
+      "image": "https://xenovoya.luckymachines.com/seo/xenovoya-share-card.svg",
+      "locale": "en_US"
+    },
+    "twitter": {
+      "card": "summary_large_image",
+      "title": "Artifact Hunt | Xenovoya",
+      "description": "Relic-hunting scenarios where digging creates payoff, risk, and memorable escape stories.",
+      "image": "https://xenovoya.luckymachines.com/seo/xenovoya-share-card.svg"
+    },
+    "jsonLd": [
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Xenovoya",
+        "url": "https://xenovoya.luckymachines.com",
+        "description": "A turn-based expedition board game about tense exploration, artifacts, escape pressure, and same-engine scenario tuning."
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "VideoGame",
+        "name": "Xenovoya",
+        "url": "https://xenovoya.luckymachines.com",
+        "description": "A turn-based expedition board game about tense exploration, artifacts, escape pressure, and same-engine scenario tuning.",
+        "genre": [
+          "Turn-based strategy",
+          "Board game",
+          "Exploration"
+        ],
+        "gamePlatform": "Web browser",
+        "applicationCategory": "Game"
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "name": "Artifact Hunt | Xenovoya",
+        "url": "https://xenovoya.luckymachines.com/topics/artifact-hunt",
+        "description": "Relic-hunting scenarios where digging creates payoff, risk, and memorable escape stories.",
+        "isPartOf": {
+          "@type": "WebSite",
+          "name": "Xenovoya",
+          "url": "https://xenovoya.luckymachines.com"
+        }
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Xenovoya",
+            "item": "https://xenovoya.luckymachines.com"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Topics",
+            "item": "https://xenovoya.luckymachines.com/topics"
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "name": "Artifact Hunt",
+            "item": "https://xenovoya.luckymachines.com/topics/artifact-hunt"
+          }
+        ]
+      }
+    ]
+  },
+  "/topics/co-op-escape": {
+    "schemaVersion": 1,
+    "routePath": "/topics/co-op-escape",
+    "routeType": "topic",
+    "title": "Co-Op Escape | Xenovoya",
+    "description": "Cooperative escape scenarios built around helping, routing, and keeping the artifact holder alive.",
+    "canonicalUrl": "https://xenovoya.luckymachines.com/topics/co-op-escape",
+    "robots": "index,follow,max-image-preview:large",
+    "openGraph": {
+      "type": "website",
+      "siteName": "Xenovoya",
+      "title": "Co-Op Escape | Xenovoya",
+      "description": "Cooperative escape scenarios built around helping, routing, and keeping the artifact holder alive.",
+      "url": "https://xenovoya.luckymachines.com/topics/co-op-escape",
+      "image": "https://xenovoya.luckymachines.com/seo/xenovoya-share-card.svg",
+      "locale": "en_US"
+    },
+    "twitter": {
+      "card": "summary_large_image",
+      "title": "Co-Op Escape | Xenovoya",
+      "description": "Cooperative escape scenarios built around helping, routing, and keeping the artifact holder alive.",
+      "image": "https://xenovoya.luckymachines.com/seo/xenovoya-share-card.svg"
+    },
+    "jsonLd": [
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Xenovoya",
+        "url": "https://xenovoya.luckymachines.com",
+        "description": "A turn-based expedition board game about tense exploration, artifacts, escape pressure, and same-engine scenario tuning."
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "VideoGame",
+        "name": "Xenovoya",
+        "url": "https://xenovoya.luckymachines.com",
+        "description": "A turn-based expedition board game about tense exploration, artifacts, escape pressure, and same-engine scenario tuning.",
+        "genre": [
+          "Turn-based strategy",
+          "Board game",
+          "Exploration"
+        ],
+        "gamePlatform": "Web browser",
+        "applicationCategory": "Game"
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "name": "Co-Op Escape | Xenovoya",
+        "url": "https://xenovoya.luckymachines.com/topics/co-op-escape",
+        "description": "Cooperative escape scenarios built around helping, routing, and keeping the artifact holder alive.",
+        "isPartOf": {
+          "@type": "WebSite",
+          "name": "Xenovoya",
+          "url": "https://xenovoya.luckymachines.com"
+        }
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Xenovoya",
+            "item": "https://xenovoya.luckymachines.com"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Topics",
+            "item": "https://xenovoya.luckymachines.com/topics"
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "name": "Co Op Escape",
+            "item": "https://xenovoya.luckymachines.com/topics/co-op-escape"
+          }
+        ]
+      }
+    ]
+  },
+  "/topics/same-engine-simulator": {
+    "schemaVersion": 1,
+    "routePath": "/topics/same-engine-simulator",
+    "routeType": "topic",
+    "title": "Same-Engine Simulator | Xenovoya",
+    "description": "Scenario tuning and outcome learning powered by the same contract engine as playable Xenovoya.",
+    "canonicalUrl": "https://xenovoya.luckymachines.com/topics/same-engine-simulator",
+    "robots": "index,follow,max-image-preview:large",
+    "openGraph": {
+      "type": "website",
+      "siteName": "Xenovoya",
+      "title": "Same-Engine Simulator | Xenovoya",
+      "description": "Scenario tuning and outcome learning powered by the same contract engine as playable Xenovoya.",
+      "url": "https://xenovoya.luckymachines.com/topics/same-engine-simulator",
+      "image": "https://xenovoya.luckymachines.com/seo/xenovoya-share-card.svg",
+      "locale": "en_US"
+    },
+    "twitter": {
+      "card": "summary_large_image",
+      "title": "Same-Engine Simulator | Xenovoya",
+      "description": "Scenario tuning and outcome learning powered by the same contract engine as playable Xenovoya.",
+      "image": "https://xenovoya.luckymachines.com/seo/xenovoya-share-card.svg"
+    },
+    "jsonLd": [
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Xenovoya",
+        "url": "https://xenovoya.luckymachines.com",
+        "description": "A turn-based expedition board game about tense exploration, artifacts, escape pressure, and same-engine scenario tuning."
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "VideoGame",
+        "name": "Xenovoya",
+        "url": "https://xenovoya.luckymachines.com",
+        "description": "A turn-based expedition board game about tense exploration, artifacts, escape pressure, and same-engine scenario tuning.",
+        "genre": [
+          "Turn-based strategy",
+          "Board game",
+          "Exploration"
+        ],
+        "gamePlatform": "Web browser",
+        "applicationCategory": "Game"
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "name": "Same-Engine Simulator | Xenovoya",
+        "url": "https://xenovoya.luckymachines.com/topics/same-engine-simulator",
+        "description": "Scenario tuning and outcome learning powered by the same contract engine as playable Xenovoya.",
+        "isPartOf": {
+          "@type": "WebSite",
+          "name": "Xenovoya",
+          "url": "https://xenovoya.luckymachines.com"
+        }
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Xenovoya",
+            "item": "https://xenovoya.luckymachines.com"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Topics",
+            "item": "https://xenovoya.luckymachines.com/topics"
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "name": "Same Engine Simulator",
+            "item": "https://xenovoya.luckymachines.com/topics/same-engine-simulator"
+          }
+        ]
+      }
+    ]
+  }
+}

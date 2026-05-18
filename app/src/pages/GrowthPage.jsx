@@ -29,6 +29,14 @@ import {
   WEEKLY_CHALLENGE,
 } from '../lib/growthLoop';
 import { funReportText } from '../lib/funLoop';
+import {
+  DISCOVERY_TOPICS,
+  relatedScenariosFor,
+  relatedTopicsForScenario,
+  scenarioForId,
+  scenariosForTopic,
+  topicForId,
+} from '../lib/publicRoutes';
 
 const RUNS_KEY = 'xenovoya.growth.runs';
 const EVENTS_KEY = 'xenovoya.growth.events';
@@ -446,8 +454,137 @@ export function ScenarioGalleryPage() {
             <Link to={scenarioRouteFromBridge(scenario.readiness, `/play?scenario=${scenario.id}`)} className="mt-4 inline-flex rounded border border-compass/40 bg-compass/10 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.16em] text-compass-bright">
               Play scenario
             </Link>
+            <Link to={`/scenarios/${scenario.id}`} className="ml-2 mt-4 inline-flex rounded border border-blueprint/40 bg-blueprint/10 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.16em] text-blueprint">
+              Details
+            </Link>
           </article>
         ))}
+      </div>
+      <section className="mt-5 rounded border border-exp-border bg-exp-panel p-4">
+        <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-exp-text-dim">Discovery Topics</p>
+        <div className="mt-3 grid gap-2 md:grid-cols-2 xl:grid-cols-5">
+          {DISCOVERY_TOPICS.map((topic) => (
+            <Link key={topic.id} to={`/topics/${topic.id}`} className="rounded border border-exp-border/60 bg-exp-dark/35 px-3 py-2 hover:border-compass/50">
+              <p className="font-mono text-xs uppercase tracking-[0.16em] text-exp-text">{topic.name}</p>
+              <p className="mt-1 font-mono text-[11px] leading-relaxed text-exp-text-dim">{topic.description}</p>
+            </Link>
+          ))}
+        </div>
+      </section>
+    </GrowthFrame>
+  );
+}
+
+export function ScenarioDetailPage() {
+  const { scenarioId } = useParams();
+  const bridgeReport = useBridgeReport();
+  const scenario = scenarioForId(scenarioId);
+  if (!scenario) {
+    return (
+      <GrowthFrame title="Scenario Not Found" eyebrow="No public scenario matches that route">
+        <Link to="/scenarios" className="font-mono text-compass-bright">Browse scenario gallery</Link>
+      </GrowthFrame>
+    );
+  }
+  const readiness = readinessForScenario(bridgeReport, scenario.id);
+  const relatedScenarios = relatedScenariosFor(scenario.id);
+  const relatedTopics = relatedTopicsForScenario(scenario.id);
+  return (
+    <GrowthFrame title={scenario.name} eyebrow={scenario.hook || 'Playable scenario'}>
+      <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_340px]">
+        <section className="rounded border border-exp-border bg-exp-panel p-4">
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-exp-text-dim">Scenario Brief</p>
+              <p className="mt-2 max-w-3xl font-mono text-sm leading-relaxed text-exp-text">{scenario.premise || scenario.description || scenario.hook}</p>
+            </div>
+            <BridgeReadinessBadge readiness={readiness} />
+          </div>
+          <div className="mt-4 grid gap-2 sm:grid-cols-4">
+            <Metric label="Players" value={scenario.players} tone="blue" />
+            <Metric label="Turns" value={scenario.maxTurns || scenario.turns || 'n/a'} tone="gold" />
+            <Metric label="Difficulty" value={scenario.difficulty || 'tuned'} tone="neutral" />
+            <Metric label="Target Arc" value={scenario.targetArcScore ?? 'n/a'} tone="green" />
+          </div>
+          <div className="mt-4 flex flex-wrap gap-1">
+            {(scenario.tags || []).map((tag) => <ToneBadge key={tag}>{tag}</ToneBadge>)}
+          </div>
+          {scenario.designQuestion && (
+            <div className="mt-4 rounded border border-blueprint/30 bg-blueprint/5 px-3 py-2">
+              <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-blueprint">Design Question</p>
+              <p className="mt-1 font-mono text-xs leading-relaxed text-exp-text">{scenario.designQuestion}</p>
+            </div>
+          )}
+          <div className="mt-4 flex flex-wrap gap-2">
+            <Link to={scenario.playPath} className="rounded border border-compass/40 bg-compass/10 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.16em] text-compass-bright">Play scenario</Link>
+            <Link to={scenario.challengePath} className="rounded border border-blueprint/40 bg-blueprint/10 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.16em] text-blueprint">Challenge seed</Link>
+            <Link to="/simulator" className="rounded border border-exp-border bg-exp-dark/60 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.16em] text-exp-text-dim">Open simulator</Link>
+          </div>
+          <EvidenceCitationsList readiness={readiness} />
+          <NextFixCommand readiness={readiness} />
+        </section>
+        <aside className="space-y-3">
+          <section className="rounded border border-exp-border bg-exp-panel p-4">
+            <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-exp-text-dim">Related Scenarios</p>
+            <div className="mt-3 space-y-2">
+              {relatedScenarios.map((item) => (
+                <Link key={item.id} to={item.canonicalPath} className="block rounded border border-exp-border/60 bg-exp-dark/35 px-3 py-2 hover:border-compass/50">
+                  <p className="font-mono text-xs uppercase tracking-[0.16em] text-exp-text">{item.name}</p>
+                  <p className="mt-1 font-mono text-[11px] leading-relaxed text-exp-text-dim">{item.hook}</p>
+                </Link>
+              ))}
+            </div>
+          </section>
+          <section className="rounded border border-exp-border bg-exp-panel p-4">
+            <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-exp-text-dim">Discovery Topics</p>
+            <div className="mt-3 flex flex-wrap gap-2">
+              {relatedTopics.map((topic) => (
+                <Link key={topic.id} to={`/topics/${topic.id}`} className="rounded border border-blueprint/35 bg-blueprint/10 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.16em] text-blueprint">{topic.name}</Link>
+              ))}
+            </div>
+          </section>
+        </aside>
+      </div>
+    </GrowthFrame>
+  );
+}
+
+export function DiscoveryTopicPage() {
+  const { topicId } = useParams();
+  const topic = topicForId(topicId);
+  const scenarios = scenariosForTopic(topicId);
+  if (!topic) {
+    return (
+      <GrowthFrame title="Topic Not Found" eyebrow="No public discovery topic matches that route">
+        <Link to="/scenarios" className="font-mono text-compass-bright">Browse scenario gallery</Link>
+      </GrowthFrame>
+    );
+  }
+  return (
+    <GrowthFrame title={topic.name} eyebrow="Discovery topic">
+      <section className="rounded border border-exp-border bg-exp-panel p-4">
+        <p className="max-w-3xl font-mono text-sm leading-relaxed text-exp-text">{topic.description}</p>
+        <div className="mt-3 flex flex-wrap gap-1">
+          {topic.tags.map((tag) => <ToneBadge key={tag}>{tag}</ToneBadge>)}
+        </div>
+      </section>
+      <div className="mt-4 grid gap-3 lg:grid-cols-3">
+        {scenarios.map((scenario) => (
+          <article key={scenario.id} className="rounded border border-exp-border bg-exp-panel p-4">
+            <h2 className="font-mono text-sm uppercase tracking-[0.16em] text-exp-text">{scenario.name}</h2>
+            <p className="mt-2 font-mono text-xs leading-relaxed text-exp-text-dim">{scenario.hook || scenario.description}</p>
+            <div className="mt-3 flex flex-wrap gap-1">
+              {(scenario.tags || []).slice(0, 5).map((tag) => <ToneBadge key={tag}>{tag}</ToneBadge>)}
+            </div>
+            <div className="mt-4 flex flex-wrap gap-2">
+              <Link to={scenario.canonicalPath} className="rounded border border-blueprint/40 bg-blueprint/10 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.16em] text-blueprint">Details</Link>
+              <Link to={scenario.playPath} className="rounded border border-compass/40 bg-compass/10 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.16em] text-compass-bright">Play</Link>
+            </div>
+          </article>
+        ))}
+        {scenarios.length === 0 && (
+          <p className="font-mono text-xs text-exp-text-dim">No scenario is mapped to this topic yet.</p>
+        )}
       </div>
     </GrowthFrame>
   );
