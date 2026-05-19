@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-05-18T18:20:34.672Z",
+  "generatedAt": "2026-05-19T05:44:23.346Z",
   "status": "pass",
   "routes": {
-    "total": 16,
-    "public": 16,
+    "total": 17,
+    "public": 17,
     "byType": {
       "home": 1,
       "simulator": 1,
@@ -13,6 +13,7 @@
       "scenario-index": 1,
       "progress": 1,
       "devlog": 1,
+      "design-system": 1,
       "creator": 1,
       "scenario": 3,
       "topic": 5

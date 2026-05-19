@@ -14,6 +14,7 @@ export default function Header({ onHelpClick }) {
     ['/scenarios', 'Scenarios'],
     ['/challenge', 'Challenge'],
     ['/devlog', 'Devlog'],
+    ['/design-system', 'Design'],
     ['/simulator', 'Simulator'],
   ];
 

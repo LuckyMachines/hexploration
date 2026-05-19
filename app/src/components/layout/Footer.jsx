@@ -6,6 +6,7 @@ export default function Footer() {
   const links = [
     ['/scenarios', 'Scenarios'],
     ['/challenge', 'Challenge'],
+    ['/design-system', 'Design'],
     ['/simulator', 'Simulator'],
     ['/devlog', 'Devlog'],
     ['/progress', 'Progress'],

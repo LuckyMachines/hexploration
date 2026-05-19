@@ -2,97 +2,103 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://xenovoya.luckymachines.com</loc>
-    <lastmod>2026-05-18T18:20:34.672Z</lastmod>
+    <lastmod>2026-05-19T05:44:23.346Z</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.00</priority>
   </url>
   <url>
     <loc>https://xenovoya.luckymachines.com/simulator</loc>
-    <lastmod>2026-05-18T18:20:34.672Z</lastmod>
+    <lastmod>2026-05-19T05:44:23.346Z</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.86</priority>
   </url>
   <url>
     <loc>https://xenovoya.luckymachines.com/play</loc>
-    <lastmod>2026-05-18T18:20:34.672Z</lastmod>
+    <lastmod>2026-05-19T05:44:23.346Z</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.92</priority>
   </url>
   <url>
     <loc>https://xenovoya.luckymachines.com/challenge</loc>
-    <lastmod>2026-05-18T18:20:34.672Z</lastmod>
+    <lastmod>2026-05-19T05:44:23.346Z</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.90</priority>
   </url>
   <url>
     <loc>https://xenovoya.luckymachines.com/scenarios</loc>
-    <lastmod>2026-05-18T18:20:34.672Z</lastmod>
+    <lastmod>2026-05-19T05:44:23.346Z</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.88</priority>
   </url>
   <url>
     <loc>https://xenovoya.luckymachines.com/progress</loc>
-    <lastmod>2026-05-18T18:20:34.672Z</lastmod>
+    <lastmod>2026-05-19T05:44:23.346Z</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.74</priority>
   </url>
   <url>
     <loc>https://xenovoya.luckymachines.com/devlog</loc>
-    <lastmod>2026-05-18T18:20:34.672Z</lastmod>
+    <lastmod>2026-05-19T05:44:23.346Z</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
+    <loc>https://xenovoya.luckymachines.com/design-system</loc>
+    <lastmod>2026-05-19T05:44:23.346Z</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.64</priority>
+  </url>
+  <url>
     <loc>https://xenovoya.luckymachines.com/create-scenario</loc>
-    <lastmod>2026-05-18T18:20:34.672Z</lastmod>
+    <lastmod>2026-05-19T05:44:23.346Z</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.66</priority>
   </url>
   <url>
     <loc>https://xenovoya.luckymachines.com/scenarios/escape-pressure-4p</loc>
-    <lastmod>2026-05-18T18:20:34.672Z</lastmod>
+    <lastmod>2026-05-19T05:44:23.346Z</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.86</priority>
   </url>
   <url>
     <loc>https://xenovoya.luckymachines.com/scenarios/solo-artifact-hunt</loc>
-    <lastmod>2026-05-18T18:20:34.672Z</lastmod>
+    <lastmod>2026-05-19T05:44:23.346Z</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.78</priority>
   </url>
   <url>
     <loc>https://xenovoya.luckymachines.com/scenarios/low-stat-recovery</loc>
-    <lastmod>2026-05-18T18:20:34.672Z</lastmod>
+    <lastmod>2026-05-19T05:44:23.346Z</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.78</priority>
   </url>
   <url>
     <loc>https://xenovoya.luckymachines.com/topics/turn-based-board-game</loc>
-    <lastmod>2026-05-18T18:20:34.672Z</lastmod>
+    <lastmod>2026-05-19T05:44:23.346Z</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.68</priority>
   </url>
   <url>
     <loc>https://xenovoya.luckymachines.com/topics/survival-expedition</loc>
-    <lastmod>2026-05-18T18:20:34.672Z</lastmod>
+    <lastmod>2026-05-19T05:44:23.346Z</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.68</priority>
   </url>
   <url>
     <loc>https://xenovoya.luckymachines.com/topics/artifact-hunt</loc>
-    <lastmod>2026-05-18T18:20:34.672Z</lastmod>
+    <lastmod>2026-05-19T05:44:23.346Z</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.68</priority>
   </url>
   <url>
     <loc>https://xenovoya.luckymachines.com/topics/co-op-escape</loc>
-    <lastmod>2026-05-18T18:20:34.672Z</lastmod>
+    <lastmod>2026-05-19T05:44:23.346Z</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.68</priority>
   </url>
   <url>
     <loc>https://xenovoya.luckymachines.com/topics/same-engine-simulator</loc>
-    <lastmod>2026-05-18T18:20:34.672Z</lastmod>
+    <lastmod>2026-05-19T05:44:23.346Z</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.68</priority>
   </url>

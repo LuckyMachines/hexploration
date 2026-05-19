@@ -98,6 +98,14 @@ const STATIC_ROUTES = [
     changefreq: 'weekly',
   },
   {
+    path: '/design-system',
+    type: 'design-system',
+    title: 'Game UI Design System',
+    description: 'Explore the Xenovoya game UI design system for tokens, board readability, action controls, feedback states, density, and live components.',
+    priority: 0.64,
+    changefreq: 'monthly',
+  },
+  {
     path: '/create-scenario',
     type: 'creator',
     title: 'Create A Scenario',

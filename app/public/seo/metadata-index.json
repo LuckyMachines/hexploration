@@ -532,6 +532,83 @@
       }
     ]
   },
+  "/design-system": {
+    "schemaVersion": 1,
+    "routePath": "/design-system",
+    "routeType": "design-system",
+    "title": "Game UI Design System | Xenovoya",
+    "description": "Explore the Xenovoya game UI design system for tokens, board readability, action controls, feedback states, density, and live components.",
+    "canonicalUrl": "https://xenovoya.luckymachines.com/design-system",
+    "robots": "index,follow,max-image-preview:large",
+    "openGraph": {
+      "type": "website",
+      "siteName": "Xenovoya",
+      "title": "Game UI Design System | Xenovoya",
+      "description": "Explore the Xenovoya game UI design system for tokens, board readability, action controls, feedback states, density, and live components.",
+      "url": "https://xenovoya.luckymachines.com/design-system",
+      "image": "https://xenovoya.luckymachines.com/seo/xenovoya-share-card.svg",
+      "locale": "en_US"
+    },
+    "twitter": {
+      "card": "summary_large_image",
+      "title": "Game UI Design System | Xenovoya",
+      "description": "Explore the Xenovoya game UI design system for tokens, board readability, action controls, feedback states, density, and live components.",
+      "image": "https://xenovoya.luckymachines.com/seo/xenovoya-share-card.svg"
+    },
+    "jsonLd": [
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Xenovoya",
+        "url": "https://xenovoya.luckymachines.com",
+        "description": "A turn-based expedition board game about tense exploration, artifacts, escape pressure, and same-engine scenario tuning."
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "VideoGame",
+        "name": "Xenovoya",
+        "url": "https://xenovoya.luckymachines.com",
+        "description": "A turn-based expedition board game about tense exploration, artifacts, escape pressure, and same-engine scenario tuning.",
+        "genre": [
+          "Turn-based strategy",
+          "Board game",
+          "Exploration"
+        ],
+        "gamePlatform": "Web browser",
+        "applicationCategory": "Game"
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "name": "Game UI Design System | Xenovoya",
+        "url": "https://xenovoya.luckymachines.com/design-system",
+        "description": "Explore the Xenovoya game UI design system for tokens, board readability, action controls, feedback states, density, and live components.",
+        "isPartOf": {
+          "@type": "WebSite",
+          "name": "Xenovoya",
+          "url": "https://xenovoya.luckymachines.com"
+        }
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Xenovoya",
+            "item": "https://xenovoya.luckymachines.com"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Design System",
+            "item": "https://xenovoya.luckymachines.com/design-system"
+          }
+        ]
+      }
+    ]
+  },
   "/create-scenario": {
     "schemaVersion": 1,
     "routePath": "/create-scenario",

@@ -2,7 +2,7 @@
   {
     "discoverable": true,
     "noindex": false,
-    "lastmod": "2026-05-18T18:20:34.672Z",
+    "lastmod": "2026-05-19T05:44:23.346Z",
     "image": "/seo/xenovoya-share-card.svg",
     "path": "/",
     "type": "home",
@@ -14,7 +14,7 @@
   {
     "discoverable": true,
     "noindex": false,
-    "lastmod": "2026-05-18T18:20:34.672Z",
+    "lastmod": "2026-05-19T05:44:23.346Z",
     "image": "/seo/xenovoya-share-card.svg",
     "path": "/simulator",
     "type": "simulator",
@@ -26,7 +26,7 @@
   {
     "discoverable": true,
     "noindex": false,
-    "lastmod": "2026-05-18T18:20:34.672Z",
+    "lastmod": "2026-05-19T05:44:23.346Z",
     "image": "/seo/xenovoya-share-card.svg",
     "path": "/play",
     "type": "play",
@@ -38,7 +38,7 @@
   {
     "discoverable": true,
     "noindex": false,
-    "lastmod": "2026-05-18T18:20:34.672Z",
+    "lastmod": "2026-05-19T05:44:23.346Z",
     "image": "/seo/xenovoya-share-card.svg",
     "path": "/challenge",
     "type": "challenge",
@@ -50,7 +50,7 @@
   {
     "discoverable": true,
     "noindex": false,
-    "lastmod": "2026-05-18T18:20:34.672Z",
+    "lastmod": "2026-05-19T05:44:23.346Z",
     "image": "/seo/xenovoya-share-card.svg",
     "path": "/scenarios",
     "type": "scenario-index",
@@ -62,7 +62,7 @@
   {
     "discoverable": true,
     "noindex": false,
-    "lastmod": "2026-05-18T18:20:34.672Z",
+    "lastmod": "2026-05-19T05:44:23.346Z",
     "image": "/seo/xenovoya-share-card.svg",
     "path": "/progress",
     "type": "progress",
@@ -74,7 +74,7 @@
   {
     "discoverable": true,
     "noindex": false,
-    "lastmod": "2026-05-18T18:20:34.672Z",
+    "lastmod": "2026-05-19T05:44:23.346Z",
     "image": "/seo/xenovoya-share-card.svg",
     "path": "/devlog",
     "type": "devlog",
@@ -86,7 +86,19 @@
   {
     "discoverable": true,
     "noindex": false,
-    "lastmod": "2026-05-18T18:20:34.672Z",
+    "lastmod": "2026-05-19T05:44:23.346Z",
+    "image": "/seo/xenovoya-share-card.svg",
+    "path": "/design-system",
+    "type": "design-system",
+    "title": "Game UI Design System",
+    "description": "Explore the Xenovoya game UI design system for tokens, board readability, action controls, feedback states, density, and live components.",
+    "priority": 0.64,
+    "changefreq": "monthly"
+  },
+  {
+    "discoverable": true,
+    "noindex": false,
+    "lastmod": "2026-05-19T05:44:23.346Z",
     "image": "/seo/xenovoya-share-card.svg",
     "path": "/create-scenario",
     "type": "creator",
@@ -98,7 +110,7 @@
   {
     "discoverable": true,
     "noindex": false,
-    "lastmod": "2026-05-18T18:20:34.672Z",
+    "lastmod": "2026-05-19T05:44:23.346Z",
     "image": "/seo/xenovoya-share-card.svg",
     "path": "/scenarios/escape-pressure-4p",
     "type": "scenario",
@@ -126,7 +138,7 @@
   {
     "discoverable": true,
     "noindex": false,
-    "lastmod": "2026-05-18T18:20:34.672Z",
+    "lastmod": "2026-05-19T05:44:23.346Z",
     "image": "/seo/xenovoya-share-card.svg",
     "path": "/scenarios/solo-artifact-hunt",
     "type": "scenario",
@@ -152,7 +164,7 @@
   {
     "discoverable": true,
     "noindex": false,
-    "lastmod": "2026-05-18T18:20:34.672Z",
+    "lastmod": "2026-05-19T05:44:23.346Z",
     "image": "/seo/xenovoya-share-card.svg",
     "path": "/scenarios/low-stat-recovery",
     "type": "scenario",
@@ -177,7 +189,7 @@
   {
     "discoverable": true,
     "noindex": false,
-    "lastmod": "2026-05-18T18:20:34.672Z",
+    "lastmod": "2026-05-19T05:44:23.346Z",
     "image": "/seo/xenovoya-share-card.svg",
     "path": "/topics/turn-based-board-game",
     "type": "topic",
@@ -196,7 +208,7 @@
   {
     "discoverable": true,
     "noindex": false,
-    "lastmod": "2026-05-18T18:20:34.672Z",
+    "lastmod": "2026-05-19T05:44:23.346Z",
     "image": "/seo/xenovoya-share-card.svg",
     "path": "/topics/survival-expedition",
     "type": "topic",
@@ -219,7 +231,7 @@
   {
     "discoverable": true,
     "noindex": false,
-    "lastmod": "2026-05-18T18:20:34.672Z",
+    "lastmod": "2026-05-19T05:44:23.346Z",
     "image": "/seo/xenovoya-share-card.svg",
     "path": "/topics/artifact-hunt",
     "type": "topic",
@@ -240,7 +252,7 @@
   {
     "discoverable": true,
     "noindex": false,
-    "lastmod": "2026-05-18T18:20:34.672Z",
+    "lastmod": "2026-05-19T05:44:23.346Z",
     "image": "/seo/xenovoya-share-card.svg",
     "path": "/topics/co-op-escape",
     "type": "topic",
@@ -262,7 +274,7 @@
   {
     "discoverable": true,
     "noindex": false,
-    "lastmod": "2026-05-18T18:20:34.672Z",
+    "lastmod": "2026-05-19T05:44:23.346Z",
     "image": "/seo/xenovoya-share-card.svg",
     "path": "/topics/same-engine-simulator",
     "type": "topic",

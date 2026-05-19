@@ -1,13 +1,13 @@
 # SEO Growth Discovery Report
 
-Generated: 2026-05-18T18:20:34.672Z
+Generated: 2026-05-19T05:44:23.346Z
 
 Status: pass
 
 ## Routes
 
-- Total: 16
-- Public: 16
+- Total: 17
+- Public: 17
 - Scenario: 3
 - Topic: 5
 
@@ -20,6 +20,7 @@ Status: pass
 | /scenarios | scenario-index | pass | 0 |
 | /progress | progress | pass | 0 |
 | /devlog | devlog | pass | 0 |
+| /design-system | design-system | pass | 0 |
 | /create-scenario | creator | pass | 0 |
 | /scenarios/escape-pressure-4p | scenario | pass | 0 |
 | /scenarios/solo-artifact-hunt | scenario | pass | 0 |

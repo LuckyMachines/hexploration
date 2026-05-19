@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-05-18T18:20:34.672Z",
+  "generatedAt": "2026-05-19T05:44:23.346Z",
   "ok": true,
   "strict": true,
   "site": {
@@ -9,8 +9,8 @@
     "canonicalHome": "https://xenovoya.luckymachines.com"
   },
   "routes": {
-    "total": 16,
-    "public": 16,
+    "total": 17,
+    "public": 17,
     "byType": {
       "home": 1,
       "simulator": 1,
@@ -19,6 +19,7 @@
       "scenario-index": 1,
       "progress": 1,
       "devlog": 1,
+      "design-system": 1,
       "creator": 1,
       "scenario": 3,
       "topic": 5
@@ -94,6 +95,16 @@
       "title": "Design Devlog | Xenovoya",
       "description": "Read automated Xenovoya design updates distilled from scenario evidence, simulator reports, and growth data.",
       "canonicalUrl": "https://xenovoya.luckymachines.com/devlog"
+    },
+    {
+      "path": "/design-system",
+      "type": "design-system",
+      "ok": true,
+      "errors": 0,
+      "warnings": 0,
+      "title": "Game UI Design System | Xenovoya",
+      "description": "Explore the Xenovoya game UI design system for tokens, board readability, action controls, feedback states, density, and live components.",
+      "canonicalUrl": "https://xenovoya.luckymachines.com/design-system"
     },
     {
       "path": "/create-scenario",
@@ -239,6 +250,14 @@
       "path": "/devlog",
       "title": "Design Devlog | Xenovoya",
       "url": "https://xenovoya.luckymachines.com/devlog",
+      "image": "https://xenovoya.luckymachines.com/seo/xenovoya-share-card.svg",
+      "ok": true,
+      "missing": []
+    },
+    {
+      "path": "/design-system",
+      "title": "Game UI Design System | Xenovoya",
+      "url": "https://xenovoya.luckymachines.com/design-system",
       "image": "https://xenovoya.luckymachines.com/seo/xenovoya-share-card.svg",
       "ok": true,
       "missing": []

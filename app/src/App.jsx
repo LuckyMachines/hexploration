@@ -14,6 +14,7 @@ import { useUserPreferences } from './hooks/useUserPreferences';
 const HomePage = lazy(() => import('./pages/HomePage'));
 const GamePage = lazy(() => import('./pages/GamePage'));
 const GameUILab = lazy(() => import('./pages/GameUILab'));
+const DesignSystemPage = lazy(() => import('./pages/DesignSystemPage'));
 const SimulatorPage = lazy(() => import('./pages/SimulatorPage'));
 const GrowthPlayPage = lazy(() => import('./pages/GrowthPage').then((module) => ({ default: module.GrowthPlayPage })));
 const ChallengePage = lazy(() => import('./pages/GrowthPage').then((module) => ({ default: () => <module.GrowthPlayPage challenge /> })));
@@ -50,6 +51,7 @@ export default function App() {
               <Route path="/" element={<HomePage />} />
               <Route path="/game/:gameId" element={<GamePage />} />
               <Route path="/ui-lab" element={<GameUILab />} />
+              <Route path="/design-system" element={<DesignSystemPage />} />
               <Route path="/simulator" element={<SimulatorPage />} />
               <Route path="/play" element={<GrowthPlayPage />} />
               <Route path="/challenge" element={<ChallengePage />} />
