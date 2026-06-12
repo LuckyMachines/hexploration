@@ -1,5 +1,5 @@
 import { lazy, Suspense, useState } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
 import Modal from './components/shared/Modal';
@@ -16,6 +16,7 @@ const GamePage = lazy(() => import('./pages/GamePage'));
 const GameUILab = lazy(() => import('./pages/GameUILab'));
 const DesignSystemPage = lazy(() => import('./pages/DesignSystemPage'));
 const SimulatorPage = lazy(() => import('./pages/SimulatorPage'));
+const AudioAuditionPage = lazy(() => import('./pages/AudioAuditionPage'));
 const GrowthPlayPage = lazy(() => import('./pages/GrowthPage').then((module) => ({ default: module.GrowthPlayPage })));
 const ChallengePage = lazy(() => import('./pages/GrowthPage').then((module) => ({ default: () => <module.GrowthPlayPage challenge /> })));
 const ScenarioGalleryPage = lazy(() => import('./pages/GrowthPage').then((module) => ({ default: module.ScenarioGalleryPage })));
@@ -36,14 +37,15 @@ function RouteFallback() {
 
 export default function App() {
   const [isHelpOpen, setIsHelpOpen] = useState(false);
-  useFeedbackEffects();
+  const location = useLocation();
+  const audio = useFeedbackEffects(location);
   useUserPreferences();
 
   return (
     <div className="min-h-screen flex flex-col">
       <SeoHead />
       <PseudoLocale />
-      <Header onHelpClick={() => setIsHelpOpen(true)} />
+      <Header onHelpClick={() => setIsHelpOpen(true)} audio={audio} />
       <main className="flex-1">
         <ErrorBoundary>
           <Suspense fallback={<RouteFallback />}>
@@ -53,6 +55,7 @@ export default function App() {
               <Route path="/ui-lab" element={<GameUILab />} />
               <Route path="/design-system" element={<DesignSystemPage />} />
               <Route path="/simulator" element={<SimulatorPage />} />
+              <Route path="/audio-audition" element={<AudioAuditionPage />} />
               <Route path="/play" element={<GrowthPlayPage />} />
               <Route path="/challenge" element={<ChallengePage />} />
               <Route path="/scenarios" element={<ScenarioGalleryPage />} />

@@ -1,0 +1,136 @@
+{
+  "music": {
+    "generated_with": "ACE-Step 1.5",
+    "source_suite": "X:/Music_AI_JBP/music-ai-suite",
+    "lora": {
+      "path": "/app/lora_adapters/day_party_weird_lora_v1/final",
+      "scale": 0.45,
+      "hash": "12384a553eaac4def775f957efeb0bce4ec8601d06419409e2542f995921d6f6"
+    },
+    "tracks": [
+      {
+        "id": "xenovoya-title-menu",
+        "file": "/audio/music/xenovoya-title-menu.mp3",
+        "source_artifact": "shared/generated/batch_1780358824/075d806c-1ea4-bd93-21bd-4698be07039f.mp3",
+        "source_json": "shared/generated/batch_1780358824/075d806c-1ea4-bd93-21bd-4698be07039f.json",
+        "prompt": "jbpdayweird instrumental Xenovoya title menu theme, slow analog synth beacon, star-chart ambience, restrained modular arpeggio, soft tape hiss, distant metallic bells, mysterious but inviting sci-fi board game opening, no drums up front, no vocals, seamless game menu loop",
+        "seed": 6101001,
+        "duration": 45,
+        "bpm": 84,
+        "key": "E minor"
+      },
+      {
+        "id": "xenovoya-lobby-setup",
+        "file": "/audio/music/xenovoya-lobby-setup.mp3",
+        "source_artifact": "shared/generated/batch_1780358863/fbab8be1-cfd8-c5f1-451c-0e82e356f870.mp3",
+        "source_json": "shared/generated/batch_1780358863/fbab8be1-cfd8-c5f1-451c-0e82e356f870.json",
+        "prompt": "jbpdayweird instrumental Xenovoya expedition lobby setup bed, quiet hangar room tone, pulsing equipment lights, soft mallet synth, low warm bass, patient preparation groove, cooperative board game anticipation, calm but alive, no vocals, seamless loop",
+        "seed": 6101002,
+        "duration": 45,
+        "bpm": 92,
+        "key": "G minor"
+      },
+      {
+        "id": "xenovoya-expedition-calm",
+        "file": "/audio/music/xenovoya-expedition-calm.mp3",
+        "source_artifact": "shared/generated/batch_1780358910/df703bf2-30a2-57d7-1900-5547ddc4380a.mp3",
+        "source_json": "shared/generated/batch_1780358910/df703bf2-30a2-57d7-1900-5547ddc4380a.json",
+        "prompt": "jbpdayweird instrumental Xenovoya calm expedition loop, low analog synth pulse, dusty modular arpeggios, soft brushed metallic percussion, sparse sub bass, glass harmonics, hopeful compass motif, medium-low tension, playable in-game mix, no vocals, seamless loop",
+        "seed": 6101003,
+        "duration": 60,
+        "bpm": 96,
+        "key": "D minor"
+      },
+      {
+        "id": "xenovoya-expedition-danger",
+        "file": "/audio/music/xenovoya-expedition-danger.mp3",
+        "source_artifact": "shared/generated/batch_1780358952/5cba3c9e-beae-b459-aae6-19366db93bd3.mp3",
+        "source_json": "shared/generated/batch_1780358952/5cba3c9e-beae-b459-aae6-19366db93bd3.json",
+        "prompt": "jbpdayweird instrumental Xenovoya danger expedition loop, tense modular bass sequence, urgent muted toms, unstable clock pulses, metallic scrapes, warning siren harmonics, dark sci-fi survival board game pressure, energetic but not cinematic trailer, no vocals, seamless loop",
+        "seed": 6101004,
+        "duration": 60,
+        "bpm": 122,
+        "key": "F minor"
+      },
+      {
+        "id": "xenovoya-camp-recovery",
+        "file": "/audio/music/xenovoya-camp-recovery.mp3",
+        "source_artifact": "shared/generated/batch_1780358988/fcb23dc7-6ec9-ebe7-b07c-d1b54e03f2da.mp3",
+        "source_json": "shared/generated/batch_1780358988/fcb23dc7-6ec9-ebe7-b07c-d1b54e03f2da.json",
+        "prompt": "jbpdayweird instrumental Xenovoya camp recovery loop, low firelike synth crackle, soft filtered pads, gentle hand percussion, distant alien night ambience, slow restorative pulse, fragile safety after danger, no vocals, seamless loop",
+        "seed": 6101005,
+        "duration": 45,
+        "bpm": 78,
+        "key": "A minor"
+      },
+      {
+        "id": "xenovoya-relic-discovery",
+        "file": "/audio/music/xenovoya-relic-discovery.mp3",
+        "source_artifact": "shared/generated/batch_1780359020/4b6c5f64-3399-364b-3f66-2e60c42826cc.mp3",
+        "source_json": "shared/generated/batch_1780359020/4b6c5f64-3399-364b-3f66-2e60c42826cc.json",
+        "prompt": "jbpdayweird instrumental Xenovoya relic discovery music, shimmering glass harmonics, strange tuned percussion, low magnetic drone, curious ascending motif, ancient alien artifact glow, wonder with unease, sparse playable game loop, no vocals",
+        "seed": 6101006,
+        "duration": 45,
+        "bpm": 88,
+        "key": "B minor"
+      },
+      {
+        "id": "xenovoya-chain-resolving",
+        "file": "/audio/music/xenovoya-chain-resolving.mp3",
+        "source_artifact": "shared/generated/batch_1780359052/b2b9421e-55ea-1795-d485-3c69fa8afb87.mp3",
+        "source_json": "shared/generated/batch_1780359052/b2b9421e-55ea-1795-d485-3c69fa8afb87.json",
+        "prompt": "jbpdayweird instrumental Xenovoya chain resolving loop, ticking data pulses, low sequenced synth, quiet suspense, granular delay trails, mechanical oracle processing, board state waiting to reveal outcome, tense but minimal UI-friendly mix, no vocals",
+        "seed": 6101007,
+        "duration": 45,
+        "bpm": 108,
+        "key": "C minor"
+      },
+      {
+        "id": "xenovoya-victory-extraction",
+        "file": "/audio/music/xenovoya-victory-extraction.mp3",
+        "source_artifact": "shared/generated/batch_1780359086/0d1db31d-82a5-3aa1-9371-04901471ab01.mp3",
+        "source_json": "shared/generated/batch_1780359086/0d1db31d-82a5-3aa1-9371-04901471ab01.json",
+        "prompt": "jbpdayweird instrumental Xenovoya victory extraction theme, bright analog brass pads, clean arpeggiated compass motif, uplifting sci-fi board game success, steady celebratory percussion, warm major-key release, triumphant but not corny, no vocals, loopable end screen music",
+        "seed": 6101008,
+        "duration": 45,
+        "bpm": 112,
+        "key": "D major"
+      },
+      {
+        "id": "xenovoya-defeat-lost",
+        "file": "/audio/music/xenovoya-defeat-lost.mp3",
+        "source_artifact": "shared/generated/batch_1780359119/e7c5cf1e-11d7-e3de-dda1-815d5fb41749.mp3",
+        "source_json": "shared/generated/batch_1780359119/e7c5cf1e-11d7-e3de-dda1-815d5fb41749.json",
+        "prompt": "jbpdayweird instrumental Xenovoya defeat lost expedition theme, slow detuned synth elegy, faint broken beacon, sparse low percussion, distant storm noise, melancholy sci-fi survival board game failure, restrained and dignified, no vocals, loopable end screen music",
+        "seed": 6101009,
+        "duration": 45,
+        "bpm": 72,
+        "key": "D minor"
+      },
+      {
+        "id": "xenovoya-expedition-loop",
+        "file": "/audio/music/xenovoya-expedition-loop.mp3",
+        "source_artifact": "shared/generated/batch_1780226280/7b756df1-25b8-77ab-75b6-85dcf11cb599.mp3",
+        "source_json": "shared/generated/batch_1780226280/7b756df1-25b8-77ab-75b6-85dcf11cb599.json",
+        "prompt": "jbpdayweird instrumental Xenovoya expedition loop for a hex-grid sci-fi exploration game, low analog synth pulse, dusty modular arpeggios, soft metallic percussion, sparse sub bass, eerie glass harmonics, hopeful compass motif, medium tension, playable in-game UI mix, seamless loop energy, no vocals",
+        "seed": 5312026,
+        "duration": 60,
+        "bpm": 96,
+        "key": "D minor"
+      }
+    ]
+  },
+  "sfx": {
+    "source_depot": "//depot/game_audio/",
+    "files": {
+      "/audio/sfx/move.wav": "Eiravaein Works - Start Select/StartSelect,UI,set57,camera mechanics,servo,clicks clacks,meaty,operative,forward.wav",
+      "/audio/sfx/commit.wav": "Eiravaein Works - Start Select/StartSelect,UI,set17,schick,mechanical,percussive,ding,shudder,holdrelease.wav",
+      "/audio/sfx/rush.wav": "SoundMorph - Modular UI - By Richard Devine/Modular UI - Micro Gestures-021.wav",
+      "/audio/sfx/invalid.wav": "Mechanical Wave - Undoing-Computer/Hit Impact Metal Scrap Debris_UC 06.wav",
+      "/audio/sfx/tx-pending.wav": "SoundMorph - Modular UI - By Richard Devine/Modular UI - Data Transmissions-001.wav",
+      "/audio/sfx/tx-confirming.wav": "SoundMorph - Modular UI - By Richard Devine/Modular UI - Data Transmissions-001.wav",
+      "/audio/sfx/tx-success.wav": "Eiravaein Works - Start Select/StartSelect,UI,set3,pure,warm,simple,quick,tonal,deaction.wav",
+      "/audio/sfx/tx-error.wav": "Mechanical Wave - Undoing-Computer/Crush Rattle Metal Scrap Debris_UC 04.wav"
+    }
+  }
+}

@@ -106,6 +106,14 @@ const STATIC_ROUTES = [
     changefreq: 'monthly',
   },
   {
+    path: '/audio-audition',
+    type: 'audio-audition',
+    title: 'Audio Audition',
+    description: 'Audition Xenovoya music and sound effects with searchable state chips, triggers, solo playback, looping, and downloads.',
+    priority: 0.58,
+    changefreq: 'monthly',
+  },
+  {
     path: '/create-scenario',
     type: 'creator',
     title: 'Create A Scenario',

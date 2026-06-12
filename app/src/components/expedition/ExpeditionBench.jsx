@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useExpedition } from '../../contexts/ExpeditionContext';
 import { Action } from '../../lib/constants';
 import DayNightBadge from './DayNightBadge';
@@ -28,6 +28,7 @@ import { getAdjacent, parseAlias } from '../../lib/hexmath';
 import { getBestActionSuggestion, getTurnGuidance } from '../../lib/uxGuidance';
 import { buildFunTelemetry } from '../../lib/funTelemetry';
 import { useInterfaceDensity } from '../../lib/interfaceDensity';
+import { emitMusicDirectorState, trackForExpeditionState } from '../../lib/musicDirector';
 import { useUserPreferences } from '../../hooks/useUserPreferences';
 
 export default function ExpeditionBench() {
@@ -179,6 +180,22 @@ export default function ExpeditionBench() {
     isSpectator,
     preferences,
   });
+  const musicDirectorState = useMemo(
+    () => trackForExpeditionState({
+      activeTab,
+      funTelemetry,
+      hasSubmitted,
+      isSpectator,
+      movePath,
+      routeStatus,
+      turnState,
+    }),
+    [activeTab, funTelemetry, hasSubmitted, isSpectator, movePath, routeStatus, turnState],
+  );
+
+  useEffect(() => {
+    emitMusicDirectorState(musicDirectorState);
+  }, [musicDirectorState]);
 
   return (
     <div className={`space-y-5 ${interfaceDensity.className}`} data-density={interfaceDensity.level}>

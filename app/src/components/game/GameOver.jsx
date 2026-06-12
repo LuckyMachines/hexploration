@@ -1,9 +1,10 @@
 import { Link } from 'react-router-dom';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useWallet } from '../../contexts/WalletContext';
 import { useExpedition } from '../../contexts/ExpeditionContext';
 import { truncateAddress } from '../../lib/formatting';
 import { PLAYER_COLORS } from '../../lib/constants';
+import { emitMusicDirectorState, trackForGameOverOutcome } from '../../lib/musicDirector';
 
 export default function GameOver({ gameId }) {
   const { address } = useWallet();
@@ -21,6 +22,10 @@ export default function GameOver({ gameId }) {
   const lostCount = Math.max(players.length - survivorCount, 0);
   const outcomeTone = lostCount === 0 ? 'text-oxide-green' : survivorCount > 0 ? 'text-compass-bright' : 'text-signal-red';
   const reportUrl = typeof window !== 'undefined' ? window.location.href : '';
+
+  useEffect(() => {
+    emitMusicDirectorState(trackForGameOverOutcome({ lostCount, survivorCount }));
+  }, [lostCount, survivorCount]);
 
   const copyReport = async () => {
     if (!navigator.clipboard || !reportUrl) return;
