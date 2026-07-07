@@ -19,9 +19,9 @@ export default function MissionStatus({
     : turnState?.label || 'Planning';
   const body = movePathLength > 0 && turnState?.state === TurnState.PLANNING
     ? (moveValidation?.ok
-      ? 'Review the highlighted route, then submit from the Action Console.'
+      ? 'Review the highlighted route. If it reveals enough without stranding you, submit from the Action Console.'
       : moveValidation?.reason || 'Adjust the route before submitting.')
-    : turnState?.copy || 'Choose an action and preview its consequence before submitting.';
+    : turnState?.copy || 'Chart useful ground, protect the route home, and choose when to depart.';
   const toneClass = {
     gold: 'border-compass/40 bg-compass/10 text-compass-bright',
     green: 'border-oxide-green/40 bg-oxide-green/10 text-oxide-green',

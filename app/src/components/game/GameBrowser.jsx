@@ -39,7 +39,7 @@ export default function GameBrowser() {
       {/* Header bar */}
       <div className="border-b border-exp-border px-6 py-4 flex items-center justify-between">
         <h2 className="font-mono text-xs tracking-[0.3em] text-exp-text-dim uppercase">
-          Available Surveys
+          Available Expeditions
         </h2>
 
         {address && (
@@ -68,7 +68,7 @@ export default function GameBrowser() {
                   <Spinner size="w-3 h-3" /> Creating...
                 </span>
               ) : (
-                'New Survey'
+                'New Expedition'
               )}
             </button>
           </div>
@@ -95,17 +95,17 @@ export default function GameBrowser() {
             <div className="max-w-md rounded border border-exp-border/70 bg-exp-dark/35 px-4 py-3 text-center">
               <div className="flex items-center justify-center gap-2 font-mono text-[10px] uppercase tracking-[0.3em] text-compass-bright">
                 <Spinner size="w-4 h-4" />
-                Scanning surveys
+                Scanning expeditions
               </div>
               <p className="mt-2 font-mono text-xs text-exp-text-dim">
-                Live expeditions will appear here as soon as the registry responds.
+                Open expeditions will appear here when the registry responds.
               </p>
             </div>
           </div>
         ) : error ? (
           <EmptyState
             tone="red"
-            title="Failed to load surveys"
+            title="Failed to load expeditions"
             body={error?.shortMessage || error?.message || String(error)}
             action="Retry"
             onAction={refetch}
@@ -113,8 +113,8 @@ export default function GameBrowser() {
         ) : gameIDs.length === 0 ? (
           <EmptyState
             tone="gold"
-            title="No surveys found"
-            body={address ? 'Launch a new survey to seed the registry and begin exploring.' : 'Connect a wallet to create or join a survey.'}
+            title="No expeditions found"
+            body={address ? 'Launch a new expedition to seed the map, chart the unknown, and race for extraction.' : 'Connect a wallet to create or join a live Chart & Depart expedition.'}
           />
         ) : (
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">

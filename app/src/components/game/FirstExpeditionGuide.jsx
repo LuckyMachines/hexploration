@@ -84,8 +84,8 @@ export default function FirstExpeditionGuide() {
   const primaryAction = !isConnected
     ? 'Connect Wallet'
     : hasOpenGame
-      ? 'Open First Survey'
-      : 'Create Survey';
+      ? 'Enter Expedition'
+      : 'Create Expedition';
 
   const handlePrimary = () => {
     if (!isConnected) {
@@ -108,10 +108,10 @@ export default function FirstExpeditionGuide() {
               First expedition
             </p>
             <h2 className="mt-2 font-display text-2xl font-semibold uppercase tracking-[0.18em] text-exp-text">
-              Get to your first turn
+              Start your first Chart & Depart run
             </h2>
             <p className="mt-2 max-w-2xl font-mono text-xs leading-relaxed text-exp-text-dim">
-              Connect a wallet, enter an open survey, then submit one action. The tablet will show when the crew is waiting, resolving, or ready for the next move.
+              Enter an expedition, reveal useful ground, recover what you can, and keep enough route to escape. The tablet will show when the crew is planning, waiting, resolving, or ready for the next move.
             </p>
           </div>
           <button
@@ -132,22 +132,22 @@ export default function FirstExpeditionGuide() {
       <div className="grid gap-3 p-5 lg:grid-cols-3">
         <Step
           number="1"
-          title="Connect"
-          detail={address ? `Wallet ${address.slice(0, 6)}...${address.slice(-4)} is ready.` : 'Use a browser wallet to sign joins and actions.'}
+          title="Ready"
+          detail={address ? `Wallet ${address.slice(0, 6)}...${address.slice(-4)} is ready for live expedition actions.` : 'Connect when you are ready to sign joins and actions.'}
           active={!isConnected}
           complete={isConnected}
         />
         <Step
           number="2"
-          title="Enter"
-          detail={isLoading ? 'Scanning the registry for open surveys.' : hasOpenGame ? `Survey #${firstOpenGame} is open for boarding.` : 'Create a two-player survey to start the staging flow.'}
+          title="Board"
+          detail={isLoading ? 'Scanning for an expedition with room aboard.' : hasOpenGame ? `Expedition #${firstOpenGame} is open. Enter and find the route.` : 'Create an expedition to seed a new map.'}
           active={isConnected && !hasOpenGame}
           complete={isConnected && hasOpenGame}
         />
         <Step
           number="3"
-          title="Act"
-          detail="Once registered and launched, plan a move or choose camp, dig, rest, help, or flee."
+          title="First decision"
+          detail="Start by moving to reveal ground, then decide when to dig, recover, help, or flee."
           active={isConnected && hasOpenGame}
           complete={false}
         />

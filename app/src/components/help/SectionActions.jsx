@@ -11,7 +11,7 @@ const ACTIONS = [
   {
     name: 'Move',
     color: 'border-compass/40',
-    desc: 'Travel across the hex grid. Your Movement stat determines how many tiles you can traverse in a single turn. Build a path through adjacent tiles.',
+    desc: 'Travel across the hex grid to chart new ground and keep the route home alive. Your Movement stat determines how many tiles you can traverse.',
   },
   {
     name: 'Setup Camp',
@@ -26,22 +26,22 @@ const ACTIONS = [
   {
     name: 'Dig',
     color: 'border-desert/40',
-    desc: 'Search the ground at your current tile for buried artifacts and relics. Success depends on your Dexterity stat and terrain type.',
+    desc: 'Search your current tile for artifacts and relics. Digging creates payoff, but it spends time while pressure builds.',
   },
   {
     name: 'Rest',
     color: 'border-blueprint/40',
-    desc: 'Recover one stat point in a chosen attribute (Movement, Agility, or Dexterity). Best done at a campsite for maximum effect.',
+    desc: 'Recover one stat point so the crew can survive another turn, reach extraction, or risk one more reveal.',
   },
   {
     name: 'Help',
     color: 'border-compass-bright/40',
-    desc: 'Assist another player at your location by boosting one of their stats. Select a target player and the attribute to boost.',
+    desc: 'Assist another explorer so a weak teammate does not strand the expedition.',
   },
   {
     name: 'Flee',
     color: 'border-signal-red/40',
-    desc: 'Attempt to escape the planet from the landing site. Only available when you have gathered enough artifacts and relics.',
+    desc: 'Escape from the landing site when the crew has recovered enough value. This is the Depart half of the run.',
   },
 ];
 

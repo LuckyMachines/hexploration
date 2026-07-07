@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useExpedition } from '../../contexts/ExpeditionContext';
 import { Action } from '../../lib/constants';
+import { useLandingSite } from '../../hooks/useLandingSite';
 import DayNightBadge from './DayNightBadge';
 import DayCounter from './DayCounter';
 import PhaseIndicator from './PhaseIndicator';
@@ -31,12 +32,84 @@ import { useInterfaceDensity } from '../../lib/interfaceDensity';
 import { emitMusicDirectorState, trackForExpeditionState } from '../../lib/musicDirector';
 import { useUserPreferences } from '../../hooks/useUserPreferences';
 
+function approxHexDistance(a, b) {
+  const start = parseAlias(a);
+  const end = parseAlias(b);
+  if (!start || !end) return null;
+  return Math.max(Math.abs(start.col - end.col), Math.abs(start.row - end.row));
+}
+
+function ChartDepartStrip({ location, landingSite, movement, movePath, activeInventory, routeStatus, turnGuidance }) {
+  const plannedSteps = movePath.length;
+  const distanceHome = approxHexDistance(location, landingSite);
+  const hasRecoveredValue = Boolean(activeInventory?.artifact || activeInventory?.relic);
+  const atLanding = Boolean(location && landingSite && location === landingSite);
+  const departLabel = atLanding
+    ? hasRecoveredValue
+      ? 'Ready to flee'
+      : 'Landing reached'
+    : distanceHome === null
+      ? 'Find landing'
+      : `${distanceHome} from landing`;
+  const riskLabel = routeStatus?.isValid === false
+    ? 'Route blocked'
+    : movement <= 0
+      ? 'No movement'
+      : plannedSteps > 0
+        ? `${Math.max(0, movement - plannedSteps)} movement left`
+        : turnGuidance?.title || 'Choose action';
+
+  const items = [
+    {
+      label: 'Chart',
+      value: plannedSteps > 0 ? `${plannedSteps} step route` : 'Plan reveal',
+      body: 'Reveal useful ground without losing the route.',
+      tone: 'border-blueprint/35 bg-blueprint/5 text-blueprint',
+    },
+    {
+      label: 'Risk',
+      value: riskLabel,
+      body: 'Pressure rises when the crew overextends.',
+      tone: routeStatus?.isValid === false || movement <= 0
+        ? 'border-signal-red/35 bg-signal-red/5 text-signal-red'
+        : 'border-compass/35 bg-compass/5 text-compass-bright',
+    },
+    {
+      label: 'Depart',
+      value: departLabel,
+      body: hasRecoveredValue ? 'Recovered value is aboard.' : 'Recover value before the run counts.',
+      tone: atLanding && hasRecoveredValue
+        ? 'border-oxide-green/35 bg-oxide-green/5 text-oxide-green'
+        : 'border-exp-border bg-exp-dark/35 text-exp-text-dim',
+    },
+  ];
+
+  return (
+    <div className="grid gap-2 md:grid-cols-3">
+      {items.map((item) => (
+        <div key={item.label} className={`rounded border px-3 py-2 ${item.tone}`}>
+          <p className="font-mono text-[10px] uppercase tracking-[0.26em] opacity-75">
+            {item.label}
+          </p>
+          <p className="mt-1 font-mono text-xs uppercase tracking-[0.14em] text-exp-text">
+            {item.value}
+          </p>
+          <p className="mt-1 font-mono text-[11px] leading-relaxed text-exp-text-dim">
+            {item.body}
+          </p>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export default function ExpeditionBench() {
   const view = useExpedition();
   const [focusedPlayerID, setFocusedPlayerID] = useState(null);
   const [showDebug, setShowDebug] = useState(false);
   const [boardInput, setBoardInput] = useState({ inputMode: 'mouse', inputCadence: 'idle', lastInputKind: 'idle' });
   const { preferences } = useUserPreferences();
+  const { zoneAlias: landingSite } = useLandingSite(view.gameId);
   const debugEnabled = import.meta.env.DEV
     || (typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('debug'));
 
@@ -228,7 +301,7 @@ export default function ExpeditionBench() {
           <div className="mb-3 flex flex-wrap items-end justify-between gap-3 border-b border-exp-border/50 pb-2">
             <div>
               <p className="font-mono text-[10px] uppercase tracking-[0.35em] text-exp-text-dim">
-                Survey board
+                Chart board
               </p>
               <p className="mt-1 max-w-xl font-mono text-xs leading-relaxed text-exp-text-dim">
                 {turnGuidance.body || queueDetail}
@@ -334,6 +407,15 @@ export default function ExpeditionBench() {
             movePathLength={movePath.length}
             moveValidation={moveValidation}
             crewCount={enrichedPlayers.length}
+          />
+          <ChartDepartStrip
+            location={location}
+            landingSite={landingSite}
+            movement={movement}
+            movePath={movePath}
+            activeInventory={activeInventory}
+            routeStatus={routeStatus}
+            turnGuidance={turnGuidance}
           />
           <GuidedFirstTurn
             isSpectator={isSpectator}

@@ -104,7 +104,7 @@
     "growth:test": "node --test scripts/growth-report-utils.test.mjs",
     "growth:capture:test": "node --test scripts/growth-event-capture-utils.test.mjs",
     "seo:generate": "node scripts/generate-seo-artifacts.mjs",
-    "seo:test": "node --test app/src/lib/seoMeta.test.js",
+    "seo:test": "cd app && npx vitest run src/lib/seoMeta.test.js --pool=threads",
     "seo:doctor": "node scripts/generate-seo-artifacts.mjs --doctor",
     "marketing:doctor": "node scripts/marketing-readiness.mjs --strict",
     "fun:report": "node scripts/fun-report.mjs",

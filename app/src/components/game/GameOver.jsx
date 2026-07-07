@@ -40,10 +40,10 @@ export default function GameOver({ gameId }) {
       <div className="border border-exp-border rounded bg-exp-panel overflow-hidden">
         <div className="bg-exp-dark border-b border-exp-border px-4 py-2 flex items-center justify-between">
           <span className="font-display text-xs tracking-[0.3em] text-exp-text-dim uppercase">
-            Survey Report
+            Expedition Report
           </span>
           <span className="font-mono text-xs text-exp-text-dim">
-            Survey #{reportGameId}
+            Expedition #{reportGameId}
           </span>
         </div>
 
@@ -57,11 +57,11 @@ export default function GameOver({ gameId }) {
 
           <div className="relative z-10 space-y-4">
             <h2 className={`text-2xl font-display font-bold tracking-[0.3em] uppercase ${outcomeTone}`}>
-              Survey Complete
+              Expedition Complete
             </h2>
 
             <p className="font-mono text-sm text-exp-text-dim">
-              The survey has concluded. All crew have returned or been lost to the planet.
+              The expedition has concluded. All crew have returned or been lost to the planet.
             </p>
             <div className="mx-auto mt-4 grid max-w-xl gap-2 sm:grid-cols-3">
               {['Crew', 'Survived', 'Lost'].map((label, index) => {
@@ -123,7 +123,7 @@ export default function GameOver({ gameId }) {
         </div>
         <div className="border-t border-exp-border px-5 py-4 flex flex-wrap items-center justify-between gap-3">
           <p className="font-mono text-xs leading-relaxed text-exp-text-dim">
-            Share this report as the canonical record for the completed survey.
+            Share this report as the canonical record for the completed expedition.
           </p>
           <button
             onClick={copyReport}
@@ -255,7 +255,7 @@ export default function GameOver({ gameId }) {
           to="/"
           className="font-display text-xs tracking-widest uppercase text-compass hover:text-compass-bright border border-compass/30 hover:border-compass/50 rounded px-4 py-2 bg-compass/5 hover:bg-compass/10 transition-colors"
         >
-          New Survey
+          New Expedition
         </Link>
       </div>
 

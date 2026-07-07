@@ -430,7 +430,7 @@ export function ScenarioGalleryPage() {
   })).sort((a, b) => (b.readiness?.readinessScore || 0) - (a.readiness?.readinessScore || 0) || a.name.localeCompare(b.name));
   const filteredRows = filter === 'all' ? rows : rows.filter((scenario) => scenario.readiness?.gateVerdict === filter || (!scenario.readiness && filter === 'missing-evidence'));
   return (
-    <GrowthFrame title="Scenario Gallery" eyebrow="Choose a public seedable run">
+    <GrowthFrame title="Expedition Scenarios" eyebrow="Choose a public seedable run">
       <div className="mb-3 flex flex-wrap gap-2">
         {['all', 'featured-ready', 'playable-with-caveats', 'needs-fun-work', 'missing-evidence'].map((item) => (
           <button key={item} type="button" onClick={() => setFilter(item)} className={`rounded border px-3 py-2 font-mono text-[10px] uppercase tracking-[0.16em] ${filter === item ? 'border-compass/60 bg-compass/10 text-compass-bright' : 'border-exp-border bg-exp-panel text-exp-text-dim'}`}>
@@ -452,7 +452,7 @@ export function ScenarioGalleryPage() {
             </div>
             <NextFixCommand readiness={scenario.readiness} />
             <Link to={scenarioRouteFromBridge(scenario.readiness, `/play?scenario=${scenario.id}`)} className="mt-4 inline-flex rounded border border-compass/40 bg-compass/10 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.16em] text-compass-bright">
-              Play scenario
+              Start expedition
             </Link>
             <Link to={`/scenarios/${scenario.id}`} className="ml-2 mt-4 inline-flex rounded border border-blueprint/40 bg-blueprint/10 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.16em] text-blueprint">
               Details

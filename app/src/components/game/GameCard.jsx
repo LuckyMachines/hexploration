@@ -16,7 +16,7 @@ export default function GameCard({ gameId, maxPlayers, registered }) {
         {/* Top row: ID + Status badge */}
         <div className="flex items-center justify-between mb-3">
           <span className="font-mono text-sm text-compass-bright tracking-wider">
-            EXP-{String(gameId).padStart(3, '0')}
+            Expedition #{String(gameId).padStart(3, '0')}
           </span>
           <span
             className={`font-mono text-xs tracking-widest uppercase rounded px-2 py-0.5 border

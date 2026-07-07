@@ -8,21 +8,21 @@ function SectionHeader({ children }) {
 }
 
 const STEPS = [
-  'Connect your wallet and switch to the Sepolia network.',
-  'Create a new survey or join an existing one from the tablet.',
-  'Wait for all players to register. The game starts automatically.',
-  'On your turn, choose an action: Move to explore, Dig for artifacts, Rest to recover stats, or Help allies.',
-  'Submit your action on-chain. A card draw determines the outcome using VRF randomness.',
-  'Gather artifacts and relics while managing your Movement, Agility, and Dexterity stats.',
-  'Return to the landing site with enough artifacts and choose Flee to escape and win.',
+  'Enter an expedition and read the landing site.',
+  'Move to reveal useful ground without losing the route home.',
+  'Dig when the tile is worth the risk and the crew can afford the time.',
+  'Rest or help when the crew needs another chance.',
+  'Watch pressure, stats, and distance from landing as the route stretches.',
+  'Return to the landing site with enough recovered value.',
+  'Choose Flee to escape and lock in the run.',
 ];
 
 const TIPS = [
-  'Keep an eye on your stats. If Movement hits zero, you cannot move.',
-  'Setup camp before resting for better recovery odds.',
-  'Mountains are dangerous but contain rare relics worth the risk.',
-  'Coordinate with other players. The Help action can save an ally from stat depletion.',
-  'Watch the day/night cycle. Night phases bring environmental hazards.',
+  'The best run is not the deepest run; it is the deepest run that still gets home.',
+  'Keep a readable route back to landing.',
+  'Dig only when the crew can afford the time.',
+  'Rest before zero movement turns the map into a trap.',
+  'Use Help to keep a teammate from becoming the reason everyone stays too long.',
 ];
 
 export default function SectionHowTo() {

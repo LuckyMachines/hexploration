@@ -1,16 +1,16 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-05-19T05:44:23.346Z",
+  "generatedAt": "2026-07-07T04:25:43.788Z",
   "ok": true,
-  "strict": true,
+  "strict": false,
   "site": {
     "name": "Xenovoya",
     "url": "https://xenovoya.luckymachines.com",
     "canonicalHome": "https://xenovoya.luckymachines.com"
   },
   "routes": {
-    "total": 17,
-    "public": 17,
+    "total": 18,
+    "public": 18,
     "byType": {
       "home": 1,
       "simulator": 1,
@@ -20,6 +20,7 @@
       "progress": 1,
       "devlog": 1,
       "design-system": 1,
+      "audio-audition": 1,
       "creator": 1,
       "scenario": 3,
       "topic": 5
@@ -33,7 +34,7 @@
       "errors": 0,
       "warnings": 0,
       "title": "Xenovoya",
-      "description": "Play and tune Xenovoya, a turn-based expedition board game about artifacts, escape pressure, and living board-state decisions.",
+      "description": "Play Xenovoya, a Chart & Depart expedition game about mapping hostile terrain, recovering value, and escaping before the route collapses.",
       "canonicalUrl": "https://xenovoya.luckymachines.com"
     },
     {
@@ -53,7 +54,7 @@
       "errors": 0,
       "warnings": 0,
       "title": "Play Xenovoya | Xenovoya",
-      "description": "Start a seedable public Xenovoya run and see if the expedition can find artifacts, recover, and escape.",
+      "description": "Start a seedable Chart & Depart run and see if the expedition can chart useful ground, recover value, and escape alive.",
       "canonicalUrl": "https://xenovoya.luckymachines.com/play"
     },
     {
@@ -72,8 +73,8 @@
       "ok": true,
       "errors": 0,
       "warnings": 0,
-      "title": "Scenario Gallery | Xenovoya",
-      "description": "Browse Xenovoya scenarios by pressure, difficulty, player count, and public readiness.",
+      "title": "Expedition Scenarios | Xenovoya",
+      "description": "Choose Xenovoya expeditions by pressure, difficulty, player count, and escape tension.",
       "canonicalUrl": "https://xenovoya.luckymachines.com/scenarios"
     },
     {
@@ -107,13 +108,23 @@
       "canonicalUrl": "https://xenovoya.luckymachines.com/design-system"
     },
     {
+      "path": "/audio-audition",
+      "type": "audio-audition",
+      "ok": true,
+      "errors": 0,
+      "warnings": 0,
+      "title": "Audio Audition | Xenovoya",
+      "description": "Audition Xenovoya music and sound effects with searchable state chips, triggers, solo playback, looping, and downloads.",
+      "canonicalUrl": "https://xenovoya.luckymachines.com/audio-audition"
+    },
+    {
       "path": "/create-scenario",
       "type": "creator",
       "ok": true,
       "errors": 0,
       "warnings": 0,
       "title": "Create A Scenario | Xenovoya",
-      "description": "Draft a local Xenovoya scenario, tune its desired feeling, and test it as a playable run.",
+      "description": "Draft a local Xenovoya expedition, tune its desired feeling, and test it as a playable Chart & Depart run.",
       "canonicalUrl": "https://xenovoya.luckymachines.com/create-scenario"
     },
     {
@@ -152,8 +163,8 @@
       "ok": true,
       "errors": 0,
       "warnings": 0,
-      "title": "Turn-Based Board Game | Xenovoya",
-      "description": "Turn-based board game scenarios where every action changes pressure, route shape, and recovery chances.",
+      "title": "Chart & Depart Board Game | Xenovoya",
+      "description": "Chart & Depart scenarios where every action changes pressure, route shape, and the decision to leave.",
       "canonicalUrl": "https://xenovoya.luckymachines.com/topics/turn-based-board-game"
     },
     {
@@ -232,7 +243,7 @@
     },
     {
       "path": "/scenarios",
-      "title": "Scenario Gallery | Xenovoya",
+      "title": "Expedition Scenarios | Xenovoya",
       "url": "https://xenovoya.luckymachines.com/scenarios",
       "image": "https://xenovoya.luckymachines.com/seo/xenovoya-share-card.svg",
       "ok": true,
@@ -258,6 +269,14 @@
       "path": "/design-system",
       "title": "Game UI Design System | Xenovoya",
       "url": "https://xenovoya.luckymachines.com/design-system",
+      "image": "https://xenovoya.luckymachines.com/seo/xenovoya-share-card.svg",
+      "ok": true,
+      "missing": []
+    },
+    {
+      "path": "/audio-audition",
+      "title": "Audio Audition | Xenovoya",
+      "url": "https://xenovoya.luckymachines.com/audio-audition",
       "image": "https://xenovoya.luckymachines.com/seo/xenovoya-share-card.svg",
       "ok": true,
       "missing": []
@@ -296,7 +315,7 @@
     },
     {
       "path": "/topics/turn-based-board-game",
-      "title": "Turn-Based Board Game | Xenovoya",
+      "title": "Chart & Depart Board Game | Xenovoya",
       "url": "https://xenovoya.luckymachines.com/topics/turn-based-board-game",
       "image": "https://xenovoya.luckymachines.com/seo/xenovoya-share-card.svg",
       "ok": true,

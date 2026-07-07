@@ -5,7 +5,7 @@ export default function SpectatorBanner() {
         Spectator Mode
       </h3>
       <p className="font-mono text-xs text-exp-text-dim">
-        You can watch the survey live, replay events, and inspect state. Join this game from staging to submit actions.
+        You can watch the expedition live, replay events, and inspect state. Join from staging to submit actions.
       </p>
     </div>
   );

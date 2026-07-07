@@ -7,7 +7,7 @@ export const DEFAULT_SEO_CONFIG = {
   siteName: 'Xenovoya',
   siteUrl: 'https://xenovoya.luckymachines.com',
   defaultTitle: 'Xenovoya',
-  defaultDescription: 'A turn-based expedition board game about tense exploration, artifacts, escape pressure, and same-engine scenario tuning.',
+  defaultDescription: 'A Chart & Depart expedition game about mapping hostile terrain, managing crew pressure, and escaping alive.',
   defaultImage: '/seo/xenovoya-share-card.svg',
   locale: 'en_US',
   twitterCard: 'summary_large_image',

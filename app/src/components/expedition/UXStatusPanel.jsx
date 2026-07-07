@@ -13,7 +13,7 @@ export default function UXStatusPanel({ guidance, suggestion, onSuggestion }) {
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <p className="font-mono text-[10px] uppercase tracking-[0.3em]">
-            What can I do now?
+            What is the next expedition decision?
           </p>
           <h3 className="mt-1 font-display text-lg uppercase tracking-[0.12em] text-exp-text">
             {guidance.title}
@@ -42,4 +42,3 @@ export default function UXStatusPanel({ guidance, suggestion, onSuggestion }) {
     </div>
   );
 }
-

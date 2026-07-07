@@ -1,14 +1,14 @@
 # Xenovoya
 
-A turn-based expedition board game about tense exploration, artifacts, escape pressure, and same-engine scenario tuning.
+A Chart & Depart expedition game about mapping hostile terrain, managing crew pressure, and escaping alive.
 
 ## Core Pages
 
-- [Xenovoya](https://xenovoya.luckymachines.com): Play and tune Xenovoya, a turn-based expedition board game about artifacts, escape pressure, and living board-state decisions.
+- [Xenovoya](https://xenovoya.luckymachines.com): Play Xenovoya, a Chart & Depart expedition game about mapping hostile terrain, recovering value, and escaping before the route collapses.
 - [Gameplay Simulator](https://xenovoya.luckymachines.com/simulator): Use the same engine as the game to run scenarios, compare outcomes, and tune Xenovoya without a separate rules clone.
-- [Play Xenovoya](https://xenovoya.luckymachines.com/play): Start a seedable public Xenovoya run and see if the expedition can find artifacts, recover, and escape.
+- [Play Xenovoya](https://xenovoya.luckymachines.com/play): Start a seedable Chart & Depart run and see if the expedition can chart useful ground, recover value, and escape alive.
 - [Weekly Challenge: Desperate Lift-Off](https://xenovoya.luckymachines.com/challenge): Can your crew escape with the artifact before the route collapses?
-- [Scenario Gallery](https://xenovoya.luckymachines.com/scenarios): Browse Xenovoya scenarios by pressure, difficulty, player count, and public readiness.
+- [Expedition Scenarios](https://xenovoya.luckymachines.com/scenarios): Choose Xenovoya expeditions by pressure, difficulty, player count, and escape tension.
 
 ## Scenario Pages
 
@@ -18,7 +18,7 @@ A turn-based expedition board game about tense exploration, artifacts, escape pr
 
 ## Discovery Topics
 
-- [Turn-Based Board Game](https://xenovoya.luckymachines.com/topics/turn-based-board-game): Turn-based board game scenarios where every action changes pressure, route shape, and recovery chances.
+- [Chart & Depart Board Game](https://xenovoya.luckymachines.com/topics/turn-based-board-game): Chart & Depart scenarios where every action changes pressure, route shape, and the decision to leave.
 - [Survival Expedition](https://xenovoya.luckymachines.com/topics/survival-expedition): Expedition scenarios about morale, danger, fatigue, and extracting value before the board closes in.
 - [Artifact Hunt](https://xenovoya.luckymachines.com/topics/artifact-hunt): Relic-hunting scenarios where digging creates payoff, risk, and memorable escape stories.
 - [Co-Op Escape](https://xenovoya.luckymachines.com/topics/co-op-escape): Cooperative escape scenarios built around helping, routing, and keeping the artifact holder alive.

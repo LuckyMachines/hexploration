@@ -212,7 +212,7 @@ export default function ActionPanel({
             Action Console
           </h3>
           <p className="mt-1 font-mono text-[11px] leading-relaxed text-exp-text-dim">
-            Pick one action, review it, then submit.
+            Choose how far to push, recover, help, or depart this turn.
           </p>
         </div>
         <span className={`shrink-0 font-mono text-xs uppercase tracking-[0.18em] border rounded px-2.5 py-1 ${
@@ -464,8 +464,8 @@ export default function ActionPanel({
         {activeTab === Action.FLEE && (
           <div className="space-y-3">
             <p className="font-mono text-xs text-exp-text-dim">
-              Attempt to escape the planet from the landing site. You must be at the landing zone
-              and have gathered sufficient artifacts.
+              Depart from the landing site before pressure closes the route. You need to be at the
+              landing zone with enough recovered value.
             </p>
             <button
               onClick={() => requestSubmit(Action.FLEE)}

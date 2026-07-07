@@ -35,7 +35,7 @@ export function getActionExplanation(action, context = {}) {
     [Action.DIG]: 'Search your tile for discoveries, with Dexterity influencing the result.',
     [Action.REST]: 'Recover a chosen stat and stabilize for the next turn.',
     [Action.HELP]: 'Support another explorer by boosting one selected stat.',
-    [Action.FLEE]: 'Attempt escape from the landing site when the run is ready.',
+    [Action.FLEE]: 'Depart from the landing site once the crew has enough value and a route home.',
   }[action] || meta.copy;
 
   return {
@@ -60,7 +60,7 @@ export function getBestActionSuggestion({
   if (turnState?.state === TurnState.RESOLVING) return { action: null, label: 'Wait for resolution', reason: 'The queue is processing submitted actions.' };
   if (hasSubmitted) return { action: null, label: 'Wait for crew', reason: 'Your action is locked.' };
   if (movePath.length > 0 && routeStatus?.isValid) return { action: Action.MOVE, label: 'Submit planned move', reason: routeStatus.label };
-  if (movement > 0) return { action: Action.MOVE, label: 'Plan a move', reason: 'Movement is available and no action is locked yet.' };
+  if (movement > 0) return { action: Action.MOVE, label: 'Plan a move', reason: 'Movement is available. Chart new ground while the route home is still readable.' };
   if (activeInventory.campsite) return { action: Action.SETUP_CAMP, label: 'Set up camp', reason: 'A campsite kit is equipped.' };
   return { action: activeTab || Action.DIG, label: 'Pick an action', reason: 'Choose a turn action before the crew resolves.' };
 }
@@ -85,7 +85,7 @@ export function getTurnGuidance({
   const ready = readinessByPlayerID[String(playerID)] ?? false;
   return ready
     ? { title: 'Waiting on crew', body: 'You are marked ready. The remaining crew still needs to submit.', tone: 'green' }
-    : { title: 'Choose your action', body: 'Plan a move or pick another action, then review before sending the transaction.', tone: 'gold' };
+    : { title: 'Choose your action', body: 'Plan a move to chart more ground, recover if the crew is weak, dig if the payoff is worth it, or flee when the route home matters most.', tone: 'gold' };
 }
 
 export function summarizeReplayStep(step) {
@@ -94,4 +94,3 @@ export function summarizeReplayStep(step) {
   const block = step.blockNumber ? ` at block ${step.blockNumber.toString?.() || step.blockNumber}` : '';
   return `${actor}${step.name}${block}`;
 }
-

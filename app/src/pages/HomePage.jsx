@@ -7,10 +7,10 @@ import { DISCOVERY_TOPICS, allDiscoverableScenarios } from '../lib/publicRoutes'
 import { WEEKLY_CHALLENGE } from '../lib/growthLoop';
 
 const actionLoop = [
-  { verb: 'Move', detail: 'Shorten the route and reveal what the board is hiding.', tone: 'blueprint' },
-  { verb: 'Dig', detail: 'Pull artifacts out of danger and make the run worth saving.', tone: 'compass' },
-  { verb: 'Rest', detail: 'Give the crew enough breath for the next hard choice.', tone: 'oxide' },
-  { verb: 'Help', detail: 'Turn a teammate problem into a shared escape chance.', tone: 'oxide' },
+  { verb: 'Move', detail: 'Reveal new ground, extend the route, and watch how far home is getting.', tone: 'blueprint' },
+  { verb: 'Dig', detail: 'Recover artifacts and relics, but spend precious time doing it.', tone: 'compass' },
+  { verb: 'Rest', detail: 'Buy the crew enough strength for one more decision.', tone: 'oxide' },
+  { verb: 'Help', detail: 'Keep another explorer alive when their run is about to fail.', tone: 'oxide' },
   { verb: 'Flee', detail: 'Commit to the exit before pressure closes the path.', tone: 'signal' },
 ];
 
@@ -24,11 +24,11 @@ const proofMetrics = [
 const faq = [
   {
     question: 'Can I try it without a wallet?',
-    answer: 'Yes. Public scenarios and challenges are available as seedable browser runs before you touch live survey flows.',
+    answer: 'Yes. Public scenarios teach the Chart & Depart loop in the browser before you enter wallet-backed live expeditions.',
   },
   {
     question: 'Where does the on-chain part matter?',
-    answer: 'Live surveys use wallet-signed actions and contract-backed state. The public marketing path explains the game first, then routes you into live play when you are ready.',
+    answer: 'Live expeditions record submitted actions, route discoveries, and outcomes on-chain so a finished run is more than a private session.',
   },
   {
     question: 'Why is there a simulator?',
@@ -139,23 +139,23 @@ function HomeHero({ firstScenario }) {
       <HeroBoardScene />
       <div className="relative mx-auto flex min-h-[min(760px,88svh)] max-w-7xl flex-col justify-center px-4 pb-20 pt-20 sm:px-6">
         <div className="max-w-4xl">
-          <p className="font-mono text-[10px] uppercase tracking-[0.34em] text-compass-bright">Turn-based expedition board game</p>
+          <p className="font-mono text-[10px] uppercase tracking-[0.34em] text-compass-bright">Chart & Depart expedition game</p>
           <h1 className="mt-5 max-w-4xl font-display text-5xl uppercase leading-[0.95] tracking-[0.08em] text-exp-text sm:text-7xl lg:text-8xl">
             Xenovoya
           </h1>
           <p className="mt-6 max-w-2xl font-mono text-base leading-relaxed text-exp-text sm:text-lg">
-            A board game where every move, dig, rest, help, and flee should make the expedition feel alive.
+            Race to chart a hostile alien grid, recover what you can, and depart alive before the route home collapses.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Link to={firstScenario.playPath} className="rounded border border-compass/60 bg-compass/15 px-5 py-3 font-display text-sm font-semibold uppercase tracking-[0.18em] text-compass-bright hover:bg-compass/25">
-              Play a scenario
+              Start expedition
             </Link>
             <Link to="/scenarios" className="rounded border border-blueprint/50 bg-blueprint/10 px-5 py-3 font-display text-sm font-semibold uppercase tracking-[0.18em] text-blueprint hover:bg-blueprint/20">
-              Browse scenarios
+              Choose a route
             </Link>
           </div>
           <p className="mt-5 max-w-2xl font-mono text-xs leading-relaxed text-exp-text-dim">
-            Public scenarios are playable as seeded browser runs. Live surveys use wallet-signed actions after the game has made sense.
+            Start with a seedable scenario to learn the Chart & Depart loop. Live expeditions use wallet-signed actions when you are ready for contract-backed runs.
           </p>
         </div>
       </div>
@@ -186,9 +186,9 @@ export default function HomePage() {
         <div className="grid gap-8 lg:grid-cols-[minmax(0,0.88fr)_minmax(320px,0.72fr)]">
           <div>
             <SectionHeader
-              eyebrow="What you do"
-              title="One turn should already feel alive"
-              body="The fun is not only the outcome. It is the physical decision to commit, wait, recover, risk, and watch the board answer."
+              eyebrow="Chart & Depart loop"
+              title="Every turn asks how far to push"
+              body="Move to reveal the map, dig when the risk is worth it, rest before the crew breaks, help someone stay in the run, and flee when the route home matters more than one more discovery."
             />
             <div className="mt-6 grid gap-3 sm:grid-cols-5">
               {actionLoop.map((action) => (
@@ -223,8 +223,8 @@ export default function HomePage() {
           <div className="flex flex-wrap items-end justify-between gap-4">
             <SectionHeader
               eyebrow="Start here"
-              title="Featured playable scenarios"
-              body="Each scenario has a stable route, a public play link, and metadata generated from the same scenario model."
+              title="Start with a short expedition"
+              body="Each scenario teaches the same core loop: chart fast, recover value, and escape before the board turns against you."
             />
             <Link to="/challenge" className="rounded border border-compass/45 bg-compass/10 px-4 py-2 font-mono text-[10px] uppercase tracking-[0.16em] text-compass-bright">
               {WEEKLY_CHALLENGE.title}
@@ -243,15 +243,15 @@ export default function HomePage() {
           <div>
             <SectionHeader
               eyebrow="Why it is different"
-              title="Designed around living board feedback"
-              body="The game is tuned around agency, friction, payoff, recovery, pressure, and share-worthy moments instead of only win/loss."
+              title="Built around the moment you decide to leave"
+              body="The tension is not just whether you win. It is whether the crew can read the map, judge the risk, and stop exploring before the route home disappears."
             />
             <div className="mt-6 grid gap-3 sm:grid-cols-2">
               {[
-                ['Input feel', 'Controls and actions are judged by whether the controlled expedition feels responsive, even at rest.'],
-                ['Outcome learning', 'Scenario runs produce reports that point at flat turns, pressure spikes, and next experiments.'],
-                ['Readable space', 'The interface keeps the board and current action readable instead of filling every corner.'],
-                ['Shareable runs', 'Completed runs can become replayable stories with seeds, moments, and outcomes.'],
+                ['Map pressure', 'Every reveal gives the crew more information and more distance to survive.'],
+                ['Escape timing', 'Leaving too early wastes the run. Leaving too late can lose everyone.'],
+                ['Crew recovery', 'Rest and help are not filler turns; they are how the team buys another chance.'],
+                ['Replayable expeditions', 'Completed runs become readable stories with seeds, routes, moments, and outcomes.'],
               ].map(([title, detail]) => (
                 <MarketingCard key={title}>
                   <h3 className="font-mono text-sm uppercase tracking-[0.16em] text-exp-text">{title}</h3>
@@ -306,13 +306,13 @@ export default function HomePage() {
           <div>
             <SectionHeader
               eyebrow="Live game access"
-              title="Ready for live surveys when you are"
-              body="The public path explains the game first. This cockpit remains available for live wallet-backed sessions, registry status, and active games."
+              title="Take the Chart & Depart loop on-chain"
+              body="Public scenarios teach the expedition rhythm. Live expeditions turn that rhythm into wallet-signed actions, shared state, and contract-backed outcomes."
             />
             <div className="mt-6">
               <SurveyTabletFrame
                 title="Xenovoya"
-                subtitle="Live survey access after public scenario play"
+                subtitle="Chart, decide, extract, and record the run"
                 status="SURVEY READY"
               >
                 <div className="space-y-6">
@@ -327,7 +327,7 @@ export default function HomePage() {
             <MarketingCard className="border-compass/35 bg-compass/5">
               <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-compass">Playable now</p>
               <p className="mt-2 font-mono text-xs leading-relaxed text-exp-text-dim">
-                Best first run: {firstScenario.name}. It is short, seedable, and focused on artifact payoff before escape pressure takes over.
+                Best first run: {firstScenario.name}. It is short, seedable, and focused on learning when to keep charting and when to get out.
               </p>
               <Link to={firstScenario.playPath} className="mt-4 inline-flex rounded border border-compass/45 bg-compass/10 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.16em] text-compass-bright">Start best run</Link>
             </MarketingCard>

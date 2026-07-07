@@ -42,7 +42,7 @@ export default function GameLobby({ gameId }) {
       <div className="border-b border-exp-border px-6 py-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <h2 className="text-lg font-semibold tracking-[0.25em] text-compass uppercase font-display">
-            Survey Briefing
+            Expedition Briefing
           </h2>
           <span className="font-mono text-xs text-exp-text-dim bg-exp-dark/50 border border-exp-border rounded px-2 py-0.5">
             #{gameId}
@@ -57,7 +57,7 @@ export default function GameLobby({ gameId }) {
       <div className="px-6 py-5 space-y-5">
         <div>
           <h3 className="font-mono text-xs tracking-[0.3em] text-exp-text-dim uppercase mb-3">
-            Survey Crew ({players.length} enrolled)
+            Expedition Crew ({players.length} enrolled)
           </h3>
 
           {loadingPlayers ? (
@@ -68,7 +68,7 @@ export default function GameLobby({ gameId }) {
           ) : players.length === 0 ? (
             <EmptyState
               title="No crew yet"
-              body="This survey is waiting for its first explorer. Join to reserve a seat."
+              body="This expedition is waiting for its first explorer. Join to reserve a seat and start charting."
               tone="gold"
             />
           ) : (
@@ -105,7 +105,7 @@ export default function GameLobby({ gameId }) {
                   <Spinner size="w-3 h-3" /> Processing...
                 </span>
               ) : (
-                'Join Survey'
+                'Join Expedition'
               )}
             </button>
           )}
@@ -116,7 +116,7 @@ export default function GameLobby({ gameId }) {
                 Registered - waiting for all crew
               </p>
               <p className="mt-1 font-mono text-[11px] text-exp-text-dim">
-                Share the survey link with the remaining players or wait for the lobby to fill.
+                Share the expedition link with the remaining crew or wait for the lobby to fill.
               </p>
             </div>
           )}

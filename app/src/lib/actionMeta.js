@@ -17,7 +17,7 @@ export const ACTION_META = {
     tone: 'gold',
     tool: 'compass',
     stance: 'route',
-    copy: 'Trace a reachable path across revealed adjacent tiles.',
+    copy: 'Trace a reachable path that charts useful ground without losing the way home.',
   },
   [Action.SETUP_CAMP]: {
     key: 'camp',
@@ -71,7 +71,7 @@ export const ACTION_META = {
     tone: 'red',
     tool: 'flare',
     stance: 'escape',
-    copy: 'Attempt escape from the landing zone with enough discoveries.',
+    copy: 'Depart from the landing zone with enough recovered value.',
   },
 };
 

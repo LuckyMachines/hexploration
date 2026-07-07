@@ -5,11 +5,11 @@ This checklist converts the current app-first homepage into a clearer public mar
 ## Top 50 Improvements
 
 1. Add a true first-viewport marketing hero for Xenovoya.
-2. Make the headline say what it is: turn-based expedition board game.
-3. Add a one-sentence value prop focused on alive-feeling board game decisions.
+2. Make the headline say what it is: Chart & Depart expedition game.
+3. Add a one-sentence value prop focused on charting hostile terrain and departing alive.
 4. Show the actual board/game UI above the fold.
-5. Add a primary CTA: Play a Scenario.
-6. Add a secondary CTA: Browse Scenarios.
+5. Add a primary CTA: Start Expedition.
+6. Add a secondary CTA: Choose a Route.
 7. Avoid leading with wallet connection as the first user task.
 8. Add a try-without-wallet public scenario path.
 9. Add a short gameplay loop section: explore, dig, recover, escape.

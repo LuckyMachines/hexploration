@@ -23,8 +23,8 @@ export default function GamePage() {
   return (
     <div className="mx-auto w-full max-w-[100rem] px-3 py-4 sm:px-4 sm:py-8 2xl:px-6">
       <SurveyTabletFrame
-        title={parsedGameId === null ? 'Survey Tablet' : `Survey #${normalizedGameId || 'Invalid'}`}
-        subtitle="Live survey state, roster access, and mission actions"
+        title={parsedGameId === null ? 'Survey Tablet' : `Expedition #${normalizedGameId || 'Invalid'}`}
+        subtitle="Chart the grid, manage the crew, and escape alive"
         status={parsedGameId === null ? 'INVALID ID' : isConnected ? 'ONLINE' : 'LOCKED'}
       >
         <div className="space-y-5">
@@ -39,10 +39,10 @@ export default function GamePage() {
           {parsedGameId !== null && !isConnected && (
             <div className="border border-compass/30 rounded bg-exp-panel p-8 text-center space-y-4">
               <p className="font-mono text-sm text-compass tracking-wider">
-                Connect your wallet to open this survey
+                Connect your wallet to enter this expedition
               </p>
               <p className="font-mono text-xs text-exp-text-dim">
-                You need a connected wallet to register, submit actions, and interact with the game.
+                Live expeditions use wallet-signed joins and actions so the route, discoveries, and outcome can be recorded.
               </p>
               <button
                 onClick={async () => {

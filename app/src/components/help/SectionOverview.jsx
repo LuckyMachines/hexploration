@@ -12,9 +12,10 @@ export default function SectionOverview() {
     <div className="font-mono text-xs text-exp-text leading-relaxed space-y-1">
       <SectionHeader>Objective</SectionHeader>
       <p>
-        You are one of 1&ndash;4 explorers stranded on a hex-grid planet.
-        Explore tiles, gather <span className="text-compass">artifacts and relics</span>,
-        manage your stats, and find a way to escape before the planet claims you.
+        Xenovoya is a Chart &amp; Depart expedition. You are one of 1&ndash;4
+        explorers stranded on a hex-grid planet. Chart useful tiles, recover
+        <span className="text-compass"> artifacts and relics</span>, protect
+        the route home, and depart alive before the planet claims you.
       </p>
 
       <SectionHeader>Turn Flow</SectionHeader>

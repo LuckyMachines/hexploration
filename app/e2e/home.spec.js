@@ -38,9 +38,10 @@ async function readGameEnv() {
 test('home page renders core surfaces', async ({ page }) => {
   await page.goto('/', { waitUntil: 'domcontentloaded' });
 
-  await expect(page.getByRole('heading', { name: /Xenovoya/i })).toBeVisible();
+  await expect(page.getByRole('heading', { name: /^Xenovoya$/i }).first()).toBeVisible();
+  await expect(page.getByText(/Chart & Depart expedition game/i)).toBeVisible();
   await expect(page.getByText(/System Health/i)).toBeVisible();
-  await expect(page.getByText(/Available Surveys/i)).toBeVisible();
+  await expect(page.getByText(/Available Expeditions/i)).toBeVisible();
 });
 
 test('seeded anvil mode shows at least one expedition', async ({ page }) => {

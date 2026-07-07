@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 const STORAGE_KEY = 'xenovoya:first-turn-dismissed';
 
 export default function GuidedFirstTurn({ isSpectator, hasSubmitted, movePathLength, turnState }) {
-  const [dismissed, setDismissed] = useState(true);
+  const [dismissed, setDismissed] = useState(false);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -34,9 +34,9 @@ export default function GuidedFirstTurn({ isSpectator, hasSubmitted, movePathLen
 
   const steps = [
     ['1', isSpectator ? 'Register or watch' : 'Wallet ready', isSpectator ? 'This wallet is observing until registered.' : 'This wallet can submit for this explorer.'],
-    ['2', movePathLength > 0 ? 'Route drafted' : 'Choose an action', movePathLength > 0 ? 'Review the path and movement left.' : 'Move is the safest first action.'],
-    ['3', hasSubmitted ? 'Submitted' : 'Review and submit', hasSubmitted ? 'Wait for crew and queue resolution.' : 'The confirmation review appears before a transaction.'],
-    ['4', turnState?.phaseLabel || 'Resolve', 'Watch the replay and receipt after the chain responds.'],
+    ['2', movePathLength > 0 ? 'Route drafted' : 'Choose an action', movePathLength > 0 ? 'Review the path and movement left.' : 'Move to chart nearby ground while the landing route is still close.'],
+    ['3', hasSubmitted ? 'Submitted' : 'Review and submit', hasSubmitted ? 'Wait for crew and queue resolution.' : 'Review whether this action helps you chart, recover, or escape before signing.'],
+    ['4', turnState?.phaseLabel || 'Read the outcome', 'Use the result to decide whether to push deeper or start heading home.'],
   ];
 
   return (
@@ -65,4 +65,3 @@ export default function GuidedFirstTurn({ isSpectator, hasSubmitted, movePathLen
     </div>
   );
 }
-
