@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-07-07T04:25:43.788Z",
+  "generatedAt": "2026-07-08T21:39:02.137Z",
   "ok": true,
   "strict": false,
   "site": {
@@ -34,7 +34,7 @@
       "errors": 0,
       "warnings": 0,
       "title": "Xenovoya",
-      "description": "Play Xenovoya, a Chart & Depart expedition game about mapping hostile terrain, recovering value, and escaping before the route collapses.",
+      "description": "Play Xenovoya, a Chart & Depart expedition game about mapping hostile terrain, reading visible escape costs, choosing counterplay, and escaping before the.",
       "canonicalUrl": "https://xenovoya.luckymachines.com"
     },
     {
@@ -164,7 +164,7 @@
       "errors": 0,
       "warnings": 0,
       "title": "Chart & Depart Board Game | Xenovoya",
-      "description": "Chart & Depart scenarios where every action changes pressure, route shape, and the decision to leave.",
+      "description": "Chart & Depart scenarios where every action changes Depart Pressure, visible escape cost, counterplay, route shape, and the decision to leave.",
       "canonicalUrl": "https://xenovoya.luckymachines.com/topics/turn-based-board-game"
     },
     {

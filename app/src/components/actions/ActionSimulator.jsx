@@ -25,6 +25,7 @@ export default function ActionSimulator({
   hasCampsiteKit,
   hasSubmitted,
   isSpectator,
+  traitPreview,
 }) {
   const checks = [];
   const detail = getActionDetail(activeTab);
@@ -58,6 +59,14 @@ export default function ActionSimulator({
     });
   }
 
+  if (traitPreview?.trait) {
+    checks.push({
+      ok: !traitPreview.effect?.warning,
+      label: traitPreview.effect?.matched ? 'Tile trait matched' : 'Tile trait considered',
+      detail: `${traitPreview.trait.label}: ${traitPreview.body}`,
+    });
+  }
+
   const canLikelySubmit = checks.every((check) => check.ok);
 
   return (
@@ -85,7 +94,17 @@ export default function ActionSimulator({
         <p className="font-mono text-[11px] leading-relaxed text-exp-text-dim">
           <span className="text-exp-text">Requires:</span> {detail.requirement}
         </p>
+        {traitPreview?.trait && (
+          <p className="font-mono text-[11px] leading-relaxed text-exp-text-dim sm:col-span-3">
+            <span className="text-exp-text">Trait:</span> {traitPreview.trait.label} changes pressure {signed(traitPreview.effect?.pressureDelta)}, cost {signed(traitPreview.effect?.costDelta)}, route {signed(traitPreview.effect?.routeDelta)}.
+          </p>
+        )}
       </div>
     </div>
   );
+}
+
+function signed(value = 0) {
+  const number = Number(value || 0);
+  return number > 0 ? `+${number}` : String(number);
 }

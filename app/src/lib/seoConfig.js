@@ -7,7 +7,7 @@ export const DEFAULT_SEO_CONFIG = {
   siteName: 'Xenovoya',
   siteUrl: 'https://xenovoya.luckymachines.com',
   defaultTitle: 'Xenovoya',
-  defaultDescription: 'A Chart & Depart expedition game about mapping hostile terrain, managing crew pressure, and escaping alive.',
+  defaultDescription: 'A Chart & Depart expedition game about mapping hostile terrain, reading visible escape costs, choosing counterplay, and escaping alive.',
   defaultImage: '/seo/xenovoya-share-card.svg',
   locale: 'en_US',
   twitterCard: 'summary_large_image',

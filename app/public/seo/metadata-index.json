@@ -4,14 +4,14 @@
     "routePath": "/",
     "routeType": "home",
     "title": "Xenovoya",
-    "description": "Play Xenovoya, a Chart & Depart expedition game about mapping hostile terrain, recovering value, and escaping before the route collapses.",
+    "description": "Play Xenovoya, a Chart & Depart expedition game about mapping hostile terrain, reading visible escape costs, choosing counterplay, and escaping before the.",
     "canonicalUrl": "https://xenovoya.luckymachines.com",
     "robots": "index,follow,max-image-preview:large",
     "openGraph": {
       "type": "website",
       "siteName": "Xenovoya",
       "title": "Xenovoya",
-      "description": "Play Xenovoya, a Chart & Depart expedition game about mapping hostile terrain, recovering value, and escaping before the route collapses.",
+      "description": "Play Xenovoya, a Chart & Depart expedition game about mapping hostile terrain, reading visible escape costs, choosing counterplay, and escaping before the.",
       "url": "https://xenovoya.luckymachines.com",
       "image": "https://xenovoya.luckymachines.com/seo/xenovoya-share-card.svg",
       "locale": "en_US"
@@ -19,7 +19,7 @@
     "twitter": {
       "card": "summary_large_image",
       "title": "Xenovoya",
-      "description": "Play Xenovoya, a Chart & Depart expedition game about mapping hostile terrain, recovering value, and escaping before the route collapses.",
+      "description": "Play Xenovoya, a Chart & Depart expedition game about mapping hostile terrain, reading visible escape costs, choosing counterplay, and escaping before the.",
       "image": "https://xenovoya.luckymachines.com/seo/xenovoya-share-card.svg"
     },
     "jsonLd": [
@@ -28,14 +28,14 @@
         "@type": "WebSite",
         "name": "Xenovoya",
         "url": "https://xenovoya.luckymachines.com",
-        "description": "A Chart & Depart expedition game about mapping hostile terrain, managing crew pressure, and escaping alive."
+        "description": "A Chart & Depart expedition game about mapping hostile terrain, reading visible escape costs, choosing counterplay, and escaping alive."
       },
       {
         "@context": "https://schema.org",
         "@type": "VideoGame",
         "name": "Xenovoya",
         "url": "https://xenovoya.luckymachines.com",
-        "description": "A Chart & Depart expedition game about mapping hostile terrain, managing crew pressure, and escaping alive.",
+        "description": "A Chart & Depart expedition game about mapping hostile terrain, reading visible escape costs, choosing counterplay, and escaping alive.",
         "genre": [
           "Turn-based strategy",
           "Board game",
@@ -49,7 +49,7 @@
         "@type": "WebPage",
         "name": "Xenovoya",
         "url": "https://xenovoya.luckymachines.com",
-        "description": "Play Xenovoya, a Chart & Depart expedition game about mapping hostile terrain, recovering value, and escaping before the route collapses.",
+        "description": "Play Xenovoya, a Chart & Depart expedition game about mapping hostile terrain, reading visible escape costs, choosing counterplay, and escaping before the.",
         "isPartOf": {
           "@type": "WebSite",
           "name": "Xenovoya",
@@ -99,14 +99,14 @@
         "@type": "WebSite",
         "name": "Xenovoya",
         "url": "https://xenovoya.luckymachines.com",
-        "description": "A Chart & Depart expedition game about mapping hostile terrain, managing crew pressure, and escaping alive."
+        "description": "A Chart & Depart expedition game about mapping hostile terrain, reading visible escape costs, choosing counterplay, and escaping alive."
       },
       {
         "@context": "https://schema.org",
         "@type": "VideoGame",
         "name": "Xenovoya",
         "url": "https://xenovoya.luckymachines.com",
-        "description": "A Chart & Depart expedition game about mapping hostile terrain, managing crew pressure, and escaping alive.",
+        "description": "A Chart & Depart expedition game about mapping hostile terrain, reading visible escape costs, choosing counterplay, and escaping alive.",
         "genre": [
           "Turn-based strategy",
           "Board game",
@@ -176,14 +176,14 @@
         "@type": "WebSite",
         "name": "Xenovoya",
         "url": "https://xenovoya.luckymachines.com",
-        "description": "A Chart & Depart expedition game about mapping hostile terrain, managing crew pressure, and escaping alive."
+        "description": "A Chart & Depart expedition game about mapping hostile terrain, reading visible escape costs, choosing counterplay, and escaping alive."
       },
       {
         "@context": "https://schema.org",
         "@type": "VideoGame",
         "name": "Xenovoya",
         "url": "https://xenovoya.luckymachines.com",
-        "description": "A Chart & Depart expedition game about mapping hostile terrain, managing crew pressure, and escaping alive.",
+        "description": "A Chart & Depart expedition game about mapping hostile terrain, reading visible escape costs, choosing counterplay, and escaping alive.",
         "genre": [
           "Turn-based strategy",
           "Board game",
@@ -253,14 +253,14 @@
         "@type": "WebSite",
         "name": "Xenovoya",
         "url": "https://xenovoya.luckymachines.com",
-        "description": "A Chart & Depart expedition game about mapping hostile terrain, managing crew pressure, and escaping alive."
+        "description": "A Chart & Depart expedition game about mapping hostile terrain, reading visible escape costs, choosing counterplay, and escaping alive."
       },
       {
         "@context": "https://schema.org",
         "@type": "VideoGame",
         "name": "Xenovoya",
         "url": "https://xenovoya.luckymachines.com",
-        "description": "A Chart & Depart expedition game about mapping hostile terrain, managing crew pressure, and escaping alive.",
+        "description": "A Chart & Depart expedition game about mapping hostile terrain, reading visible escape costs, choosing counterplay, and escaping alive.",
         "genre": [
           "Turn-based strategy",
           "Board game",
@@ -330,14 +330,14 @@
         "@type": "WebSite",
         "name": "Xenovoya",
         "url": "https://xenovoya.luckymachines.com",
-        "description": "A Chart & Depart expedition game about mapping hostile terrain, managing crew pressure, and escaping alive."
+        "description": "A Chart & Depart expedition game about mapping hostile terrain, reading visible escape costs, choosing counterplay, and escaping alive."
       },
       {
         "@context": "https://schema.org",
         "@type": "VideoGame",
         "name": "Xenovoya",
         "url": "https://xenovoya.luckymachines.com",
-        "description": "A Chart & Depart expedition game about mapping hostile terrain, managing crew pressure, and escaping alive.",
+        "description": "A Chart & Depart expedition game about mapping hostile terrain, reading visible escape costs, choosing counterplay, and escaping alive.",
         "genre": [
           "Turn-based strategy",
           "Board game",
@@ -407,14 +407,14 @@
         "@type": "WebSite",
         "name": "Xenovoya",
         "url": "https://xenovoya.luckymachines.com",
-        "description": "A Chart & Depart expedition game about mapping hostile terrain, managing crew pressure, and escaping alive."
+        "description": "A Chart & Depart expedition game about mapping hostile terrain, reading visible escape costs, choosing counterplay, and escaping alive."
       },
       {
         "@context": "https://schema.org",
         "@type": "VideoGame",
         "name": "Xenovoya",
         "url": "https://xenovoya.luckymachines.com",
-        "description": "A Chart & Depart expedition game about mapping hostile terrain, managing crew pressure, and escaping alive.",
+        "description": "A Chart & Depart expedition game about mapping hostile terrain, reading visible escape costs, choosing counterplay, and escaping alive.",
         "genre": [
           "Turn-based strategy",
           "Board game",
@@ -484,14 +484,14 @@
         "@type": "WebSite",
         "name": "Xenovoya",
         "url": "https://xenovoya.luckymachines.com",
-        "description": "A Chart & Depart expedition game about mapping hostile terrain, managing crew pressure, and escaping alive."
+        "description": "A Chart & Depart expedition game about mapping hostile terrain, reading visible escape costs, choosing counterplay, and escaping alive."
       },
       {
         "@context": "https://schema.org",
         "@type": "VideoGame",
         "name": "Xenovoya",
         "url": "https://xenovoya.luckymachines.com",
-        "description": "A Chart & Depart expedition game about mapping hostile terrain, managing crew pressure, and escaping alive.",
+        "description": "A Chart & Depart expedition game about mapping hostile terrain, reading visible escape costs, choosing counterplay, and escaping alive.",
         "genre": [
           "Turn-based strategy",
           "Board game",
@@ -561,14 +561,14 @@
         "@type": "WebSite",
         "name": "Xenovoya",
         "url": "https://xenovoya.luckymachines.com",
-        "description": "A Chart & Depart expedition game about mapping hostile terrain, managing crew pressure, and escaping alive."
+        "description": "A Chart & Depart expedition game about mapping hostile terrain, reading visible escape costs, choosing counterplay, and escaping alive."
       },
       {
         "@context": "https://schema.org",
         "@type": "VideoGame",
         "name": "Xenovoya",
         "url": "https://xenovoya.luckymachines.com",
-        "description": "A Chart & Depart expedition game about mapping hostile terrain, managing crew pressure, and escaping alive.",
+        "description": "A Chart & Depart expedition game about mapping hostile terrain, reading visible escape costs, choosing counterplay, and escaping alive.",
         "genre": [
           "Turn-based strategy",
           "Board game",
@@ -638,14 +638,14 @@
         "@type": "WebSite",
         "name": "Xenovoya",
         "url": "https://xenovoya.luckymachines.com",
-        "description": "A Chart & Depart expedition game about mapping hostile terrain, managing crew pressure, and escaping alive."
+        "description": "A Chart & Depart expedition game about mapping hostile terrain, reading visible escape costs, choosing counterplay, and escaping alive."
       },
       {
         "@context": "https://schema.org",
         "@type": "VideoGame",
         "name": "Xenovoya",
         "url": "https://xenovoya.luckymachines.com",
-        "description": "A Chart & Depart expedition game about mapping hostile terrain, managing crew pressure, and escaping alive.",
+        "description": "A Chart & Depart expedition game about mapping hostile terrain, reading visible escape costs, choosing counterplay, and escaping alive.",
         "genre": [
           "Turn-based strategy",
           "Board game",
@@ -715,14 +715,14 @@
         "@type": "WebSite",
         "name": "Xenovoya",
         "url": "https://xenovoya.luckymachines.com",
-        "description": "A Chart & Depart expedition game about mapping hostile terrain, managing crew pressure, and escaping alive."
+        "description": "A Chart & Depart expedition game about mapping hostile terrain, reading visible escape costs, choosing counterplay, and escaping alive."
       },
       {
         "@context": "https://schema.org",
         "@type": "VideoGame",
         "name": "Xenovoya",
         "url": "https://xenovoya.luckymachines.com",
-        "description": "A Chart & Depart expedition game about mapping hostile terrain, managing crew pressure, and escaping alive.",
+        "description": "A Chart & Depart expedition game about mapping hostile terrain, reading visible escape costs, choosing counterplay, and escaping alive.",
         "genre": [
           "Turn-based strategy",
           "Board game",
@@ -792,14 +792,14 @@
         "@type": "WebSite",
         "name": "Xenovoya",
         "url": "https://xenovoya.luckymachines.com",
-        "description": "A Chart & Depart expedition game about mapping hostile terrain, managing crew pressure, and escaping alive."
+        "description": "A Chart & Depart expedition game about mapping hostile terrain, reading visible escape costs, choosing counterplay, and escaping alive."
       },
       {
         "@context": "https://schema.org",
         "@type": "VideoGame",
         "name": "Xenovoya",
         "url": "https://xenovoya.luckymachines.com",
-        "description": "A Chart & Depart expedition game about mapping hostile terrain, managing crew pressure, and escaping alive.",
+        "description": "A Chart & Depart expedition game about mapping hostile terrain, reading visible escape costs, choosing counterplay, and escaping alive.",
         "genre": [
           "Turn-based strategy",
           "Board game",
@@ -877,14 +877,14 @@
         "@type": "WebSite",
         "name": "Xenovoya",
         "url": "https://xenovoya.luckymachines.com",
-        "description": "A Chart & Depart expedition game about mapping hostile terrain, managing crew pressure, and escaping alive."
+        "description": "A Chart & Depart expedition game about mapping hostile terrain, reading visible escape costs, choosing counterplay, and escaping alive."
       },
       {
         "@context": "https://schema.org",
         "@type": "VideoGame",
         "name": "Xenovoya",
         "url": "https://xenovoya.luckymachines.com",
-        "description": "A Chart & Depart expedition game about mapping hostile terrain, managing crew pressure, and escaping alive.",
+        "description": "A Chart & Depart expedition game about mapping hostile terrain, reading visible escape costs, choosing counterplay, and escaping alive.",
         "genre": [
           "Turn-based strategy",
           "Board game",
@@ -962,14 +962,14 @@
         "@type": "WebSite",
         "name": "Xenovoya",
         "url": "https://xenovoya.luckymachines.com",
-        "description": "A Chart & Depart expedition game about mapping hostile terrain, managing crew pressure, and escaping alive."
+        "description": "A Chart & Depart expedition game about mapping hostile terrain, reading visible escape costs, choosing counterplay, and escaping alive."
       },
       {
         "@context": "https://schema.org",
         "@type": "VideoGame",
         "name": "Xenovoya",
         "url": "https://xenovoya.luckymachines.com",
-        "description": "A Chart & Depart expedition game about mapping hostile terrain, managing crew pressure, and escaping alive.",
+        "description": "A Chart & Depart expedition game about mapping hostile terrain, reading visible escape costs, choosing counterplay, and escaping alive.",
         "genre": [
           "Turn-based strategy",
           "Board game",
@@ -1023,14 +1023,14 @@
     "routePath": "/topics/turn-based-board-game",
     "routeType": "topic",
     "title": "Chart & Depart Board Game | Xenovoya",
-    "description": "Chart & Depart scenarios where every action changes pressure, route shape, and the decision to leave.",
+    "description": "Chart & Depart scenarios where every action changes Depart Pressure, visible escape cost, counterplay, route shape, and the decision to leave.",
     "canonicalUrl": "https://xenovoya.luckymachines.com/topics/turn-based-board-game",
     "robots": "index,follow,max-image-preview:large",
     "openGraph": {
       "type": "website",
       "siteName": "Xenovoya",
       "title": "Chart & Depart Board Game | Xenovoya",
-      "description": "Chart & Depart scenarios where every action changes pressure, route shape, and the decision to leave.",
+      "description": "Chart & Depart scenarios where every action changes Depart Pressure, visible escape cost, counterplay, route shape, and the decision to leave.",
       "url": "https://xenovoya.luckymachines.com/topics/turn-based-board-game",
       "image": "https://xenovoya.luckymachines.com/seo/xenovoya-share-card.svg",
       "locale": "en_US"
@@ -1038,7 +1038,7 @@
     "twitter": {
       "card": "summary_large_image",
       "title": "Chart & Depart Board Game | Xenovoya",
-      "description": "Chart & Depart scenarios where every action changes pressure, route shape, and the decision to leave.",
+      "description": "Chart & Depart scenarios where every action changes Depart Pressure, visible escape cost, counterplay, route shape, and the decision to leave.",
       "image": "https://xenovoya.luckymachines.com/seo/xenovoya-share-card.svg"
     },
     "jsonLd": [
@@ -1047,14 +1047,14 @@
         "@type": "WebSite",
         "name": "Xenovoya",
         "url": "https://xenovoya.luckymachines.com",
-        "description": "A Chart & Depart expedition game about mapping hostile terrain, managing crew pressure, and escaping alive."
+        "description": "A Chart & Depart expedition game about mapping hostile terrain, reading visible escape costs, choosing counterplay, and escaping alive."
       },
       {
         "@context": "https://schema.org",
         "@type": "VideoGame",
         "name": "Xenovoya",
         "url": "https://xenovoya.luckymachines.com",
-        "description": "A Chart & Depart expedition game about mapping hostile terrain, managing crew pressure, and escaping alive.",
+        "description": "A Chart & Depart expedition game about mapping hostile terrain, reading visible escape costs, choosing counterplay, and escaping alive.",
         "genre": [
           "Turn-based strategy",
           "Board game",
@@ -1068,7 +1068,7 @@
         "@type": "WebPage",
         "name": "Chart & Depart Board Game | Xenovoya",
         "url": "https://xenovoya.luckymachines.com/topics/turn-based-board-game",
-        "description": "Chart & Depart scenarios where every action changes pressure, route shape, and the decision to leave.",
+        "description": "Chart & Depart scenarios where every action changes Depart Pressure, visible escape cost, counterplay, route shape, and the decision to leave.",
         "isPartOf": {
           "@type": "WebSite",
           "name": "Xenovoya",
@@ -1130,14 +1130,14 @@
         "@type": "WebSite",
         "name": "Xenovoya",
         "url": "https://xenovoya.luckymachines.com",
-        "description": "A Chart & Depart expedition game about mapping hostile terrain, managing crew pressure, and escaping alive."
+        "description": "A Chart & Depart expedition game about mapping hostile terrain, reading visible escape costs, choosing counterplay, and escaping alive."
       },
       {
         "@context": "https://schema.org",
         "@type": "VideoGame",
         "name": "Xenovoya",
         "url": "https://xenovoya.luckymachines.com",
-        "description": "A Chart & Depart expedition game about mapping hostile terrain, managing crew pressure, and escaping alive.",
+        "description": "A Chart & Depart expedition game about mapping hostile terrain, reading visible escape costs, choosing counterplay, and escaping alive.",
         "genre": [
           "Turn-based strategy",
           "Board game",
@@ -1213,14 +1213,14 @@
         "@type": "WebSite",
         "name": "Xenovoya",
         "url": "https://xenovoya.luckymachines.com",
-        "description": "A Chart & Depart expedition game about mapping hostile terrain, managing crew pressure, and escaping alive."
+        "description": "A Chart & Depart expedition game about mapping hostile terrain, reading visible escape costs, choosing counterplay, and escaping alive."
       },
       {
         "@context": "https://schema.org",
         "@type": "VideoGame",
         "name": "Xenovoya",
         "url": "https://xenovoya.luckymachines.com",
-        "description": "A Chart & Depart expedition game about mapping hostile terrain, managing crew pressure, and escaping alive.",
+        "description": "A Chart & Depart expedition game about mapping hostile terrain, reading visible escape costs, choosing counterplay, and escaping alive.",
         "genre": [
           "Turn-based strategy",
           "Board game",
@@ -1296,14 +1296,14 @@
         "@type": "WebSite",
         "name": "Xenovoya",
         "url": "https://xenovoya.luckymachines.com",
-        "description": "A Chart & Depart expedition game about mapping hostile terrain, managing crew pressure, and escaping alive."
+        "description": "A Chart & Depart expedition game about mapping hostile terrain, reading visible escape costs, choosing counterplay, and escaping alive."
       },
       {
         "@context": "https://schema.org",
         "@type": "VideoGame",
         "name": "Xenovoya",
         "url": "https://xenovoya.luckymachines.com",
-        "description": "A Chart & Depart expedition game about mapping hostile terrain, managing crew pressure, and escaping alive.",
+        "description": "A Chart & Depart expedition game about mapping hostile terrain, reading visible escape costs, choosing counterplay, and escaping alive.",
         "genre": [
           "Turn-based strategy",
           "Board game",
@@ -1379,14 +1379,14 @@
         "@type": "WebSite",
         "name": "Xenovoya",
         "url": "https://xenovoya.luckymachines.com",
-        "description": "A Chart & Depart expedition game about mapping hostile terrain, managing crew pressure, and escaping alive."
+        "description": "A Chart & Depart expedition game about mapping hostile terrain, reading visible escape costs, choosing counterplay, and escaping alive."
       },
       {
         "@context": "https://schema.org",
         "@type": "VideoGame",
         "name": "Xenovoya",
         "url": "https://xenovoya.luckymachines.com",
-        "description": "A Chart & Depart expedition game about mapping hostile terrain, managing crew pressure, and escaping alive.",
+        "description": "A Chart & Depart expedition game about mapping hostile terrain, reading visible escape costs, choosing counterplay, and escaping alive.",
         "genre": [
           "Turn-based strategy",
           "Board game",

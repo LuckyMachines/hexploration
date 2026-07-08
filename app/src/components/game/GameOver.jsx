@@ -5,12 +5,16 @@ import { useExpedition } from '../../contexts/ExpeditionContext';
 import { truncateAddress } from '../../lib/formatting';
 import { PLAYER_COLORS } from '../../lib/constants';
 import { emitMusicDirectorState, trackForGameOverOutcome } from '../../lib/musicDirector';
+import { deriveDepartPressure } from '../../lib/departPressure';
+import { deriveEscapeCostPreview } from '../../lib/escapeCostPreview';
+import { useLandingSite } from '../../hooks/useLandingSite';
 
 export default function GameOver({ gameId }) {
   const { address } = useWallet();
   const expedition = useExpedition();
   const players = expedition.enrichedPlayers || [];
   const reportGameId = expedition.gameId || gameId;
+  const { zoneAlias: landingSite } = useLandingSite(reportGameId);
   const replayProof = expedition.turnReplay?.proof || [];
   const latestReplayStep = expedition.turnReplay?.latest;
   const replayGroups = Object.entries(expedition.turnReplay?.grouped || {});
@@ -22,6 +26,33 @@ export default function GameOver({ gameId }) {
   const lostCount = Math.max(players.length - survivorCount, 0);
   const outcomeTone = lostCount === 0 ? 'text-oxide-green' : survivorCount > 0 ? 'text-compass-bright' : 'text-signal-red';
   const reportUrl = typeof window !== 'undefined' ? window.location.href : '';
+  const finalPressure = useMemo(
+    () => deriveDepartPressure({
+      phase: expedition.phase,
+      stats: expedition.stats,
+      location: expedition.location,
+      landingSite,
+      activeInventory: expedition.activeInventory,
+      events: expedition.events,
+      crew: players,
+      turnState: expedition.turnState,
+    }),
+    [expedition.activeInventory, expedition.events, expedition.location, expedition.phase, expedition.stats, expedition.turnState, landingSite, players],
+  );
+  const finalEscapeCost = useMemo(
+    () => deriveEscapeCostPreview({
+      departPressure: finalPressure,
+      players,
+      activeInventory: expedition.activeInventory,
+      location: expedition.location,
+      landingSite,
+      routeStatus: {},
+      movePath: [],
+      stats: expedition.stats,
+      turnState: expedition.turnState,
+    }),
+    [expedition.activeInventory, expedition.location, expedition.stats, expedition.turnState, finalPressure, landingSite, players],
+  );
 
   useEffect(() => {
     emitMusicDirectorState(trackForGameOverOutcome({ lostCount, survivorCount }));
@@ -75,6 +106,29 @@ export default function GameOver({ gameId }) {
                 );
               })}
             </div>
+            <div className="mx-auto mt-3 grid max-w-xl gap-2 sm:grid-cols-3">
+              <div className="rounded border border-exp-border bg-exp-dark/45 px-3 py-2">
+                <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-exp-text-dim">Final Pressure</p>
+                <p className="mt-1 font-mono text-xs uppercase tracking-[0.12em] text-exp-text">
+                  {finalPressure.pressure} {finalPressure.band.label}
+                </p>
+              </div>
+              <div className="rounded border border-exp-border bg-exp-dark/45 px-3 py-2">
+                <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-exp-text-dim">Depart Timing</p>
+                <p className="mt-1 font-mono text-xs uppercase tracking-[0.12em] text-exp-text">
+                  {finalEscapeCost.reportLabel}
+                </p>
+              </div>
+              <div className="rounded border border-exp-border bg-exp-dark/45 px-3 py-2">
+                <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-exp-text-dim">Recovered Value</p>
+                <p className="mt-1 font-mono text-xs uppercase tracking-[0.12em] text-exp-text">
+                  {finalPressure.recoveredValue}
+                </p>
+              </div>
+            </div>
+            <p className="mx-auto mt-3 max-w-xl font-mono text-xs leading-relaxed text-exp-text-dim">
+              {finalEscapeCost.headline}: {finalEscapeCost.body}
+            </p>
           </div>
         </div>
       </div>

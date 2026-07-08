@@ -15,6 +15,9 @@ import UXStatusPanel from './UXStatusPanel';
 import GuidedFirstTurn from './GuidedFirstTurn';
 import FunStatusPanel from './FunStatusPanel';
 import DiscoveryJournal from './DiscoveryJournal';
+import EscapeCostPreview from './EscapeCostPreview';
+import CostReductionActions from './CostReductionActions';
+import TraitPreviewPanel from './TraitPreviewPanel';
 import HexGrid from '../board/HexGrid';
 import PlayerDossier from '../player/PlayerDossier';
 import ActionPanel from '../actions/ActionPanel';
@@ -27,30 +30,19 @@ import ShareGameLink from '../shared/ShareGameLink';
 import { buildRouteStatus } from '../../lib/routeStatus';
 import { getAdjacent, parseAlias } from '../../lib/hexmath';
 import { getBestActionSuggestion, getTurnGuidance } from '../../lib/uxGuidance';
+import { deriveDepartPressure, pressureToneClass } from '../../lib/departPressure';
+import { deriveEscapeCostPreview, escapeCostToneClass } from '../../lib/escapeCostPreview';
 import { buildFunTelemetry } from '../../lib/funTelemetry';
 import { useInterfaceDensity } from '../../lib/interfaceDensity';
 import { emitMusicDirectorState, trackForExpeditionState } from '../../lib/musicDirector';
 import { useUserPreferences } from '../../hooks/useUserPreferences';
 
-function approxHexDistance(a, b) {
-  const start = parseAlias(a);
-  const end = parseAlias(b);
-  if (!start || !end) return null;
-  return Math.max(Math.abs(start.col - end.col), Math.abs(start.row - end.row));
-}
-
-function ChartDepartStrip({ location, landingSite, movement, movePath, activeInventory, routeStatus, turnGuidance }) {
+function ChartDepartStrip({ movement, movePath, routeStatus, turnGuidance, departPressure, escapeCostPreview }) {
   const plannedSteps = movePath.length;
-  const distanceHome = approxHexDistance(location, landingSite);
-  const hasRecoveredValue = Boolean(activeInventory?.artifact || activeInventory?.relic);
-  const atLanding = Boolean(location && landingSite && location === landingSite);
-  const departLabel = atLanding
-    ? hasRecoveredValue
-      ? 'Ready to flee'
-      : 'Landing reached'
-    : distanceHome === null
-      ? 'Find landing'
-      : `${distanceHome} from landing`;
+  const distanceHome = departPressure?.currentDistanceToLanding;
+  const departLabel = departPressure?.readiness?.label || (
+    distanceHome === null ? 'Find landing' : `${distanceHome} from landing`
+  );
   const riskLabel = routeStatus?.isValid === false
     ? 'Route blocked'
     : movement <= 0
@@ -58,6 +50,8 @@ function ChartDepartStrip({ location, landingSite, movement, movePath, activeInv
       : plannedSteps > 0
         ? `${Math.max(0, movement - plannedSteps)} movement left`
         : turnGuidance?.title || 'Choose action';
+  const pressureTone = pressureToneClass(departPressure?.band);
+  const escapeCostTone = escapeCostToneClass(escapeCostPreview);
 
   const items = [
     {
@@ -67,18 +61,18 @@ function ChartDepartStrip({ location, landingSite, movement, movePath, activeInv
       tone: 'border-blueprint/35 bg-blueprint/5 text-blueprint',
     },
     {
-      label: 'Risk',
-      value: riskLabel,
-      body: 'Pressure rises when the crew overextends.',
+      label: 'Depart Pressure',
+      value: departPressure ? `${departPressure.pressure} / ${departPressure.band.label}` : riskLabel,
+      body: departPressure?.band?.copy || 'Pressure rises when the crew overextends.',
       tone: routeStatus?.isValid === false || movement <= 0
         ? 'border-signal-red/35 bg-signal-red/5 text-signal-red'
-        : 'border-compass/35 bg-compass/5 text-compass-bright',
+        : pressureTone,
     },
     {
       label: 'Depart',
-      value: departLabel,
-      body: hasRecoveredValue ? 'Recovered value is aboard.' : 'Recover value before the run counts.',
-      tone: atLanding && hasRecoveredValue
+      value: escapeCostPreview?.headline || departLabel,
+      body: escapeCostPreview?.nextDelayWarning || departPressure?.readiness?.body || 'Recover value before the run counts.',
+      tone: escapeCostPreview ? escapeCostTone : departPressure?.readiness?.canFlee
         ? 'border-oxide-green/35 bg-oxide-green/5 text-oxide-green'
         : 'border-exp-border bg-exp-dark/35 text-exp-text-dim',
     },
@@ -108,6 +102,7 @@ export default function ExpeditionBench() {
   const [focusedPlayerID, setFocusedPlayerID] = useState(null);
   const [showDebug, setShowDebug] = useState(false);
   const [boardInput, setBoardInput] = useState({ inputMode: 'mouse', inputCadence: 'idle', lastInputKind: 'idle' });
+  const [traitPreview, setTraitPreview] = useState(null);
   const { preferences } = useUserPreferences();
   const { zoneAlias: landingSite } = useLandingSite(view.gameId);
   const debugEnabled = import.meta.env.DEV
@@ -178,6 +173,40 @@ export default function ExpeditionBench() {
     }),
     [activeInventory, companionLocations, location, movePath, moveValidation, movement],
   );
+  const departPressure = useMemo(
+    () => deriveDepartPressure({
+      phase,
+      stats,
+      location,
+      landingSite,
+      activeInventory,
+      routeStatus,
+      movePath,
+      turnState,
+      events,
+      crew: enrichedPlayers,
+      tileTraitEffects: traitPreview?.effect,
+    }),
+    [activeInventory, enrichedPlayers, events, landingSite, location, movePath, phase, routeStatus, stats, traitPreview, turnState],
+  );
+  const escapeCostPreview = useMemo(
+    () => deriveEscapeCostPreview({
+      departPressure,
+      players: enrichedPlayers,
+      activeInventory,
+      location,
+      landingSite,
+      routeStatus,
+      movePath,
+      stats,
+      turnState,
+      movement,
+      activeTab,
+      tileTraitEffects: traitPreview?.effect,
+      tileTrait: traitPreview?.trait,
+    }),
+    [activeInventory, activeTab, departPressure, enrichedPlayers, landingSite, location, movePath, movement, routeStatus, stats, traitPreview, turnState],
+  );
   const hasSubmitted = action && action !== '' && action !== 'Idle';
   const turnGuidance = useMemo(
     () => getTurnGuidance({
@@ -189,8 +218,10 @@ export default function ExpeditionBench() {
       movePath,
       readinessByPlayerID,
       playerID,
+      departPressure,
+      escapeCostPreview,
     }),
-    [address, hasSubmitted, isSpectator, movePath, playerID, readinessByPlayerID, routeStatus, turnState],
+    [address, departPressure, escapeCostPreview, hasSubmitted, isSpectator, movePath, playerID, readinessByPlayerID, routeStatus, turnState],
   );
   const suggestion = useMemo(
     () => getBestActionSuggestion({
@@ -202,8 +233,10 @@ export default function ExpeditionBench() {
       routeStatus,
       activeInventory,
       turnState,
+      departPressure,
+      escapeCostPreview,
     }),
-    [activeInventory, activeTab, hasSubmitted, isSpectator, movePath, movement, routeStatus, turnState],
+    [activeInventory, activeTab, departPressure, escapeCostPreview, hasSubmitted, isSpectator, movePath, movement, routeStatus, turnState],
   );
   const funTelemetry = useMemo(
     () => buildFunTelemetry({
@@ -223,6 +256,7 @@ export default function ExpeditionBench() {
       queueTelemetry,
       readinessByPlayerID,
       playerID,
+      traitPreview,
     }),
     [
       activeInventory,
@@ -241,6 +275,7 @@ export default function ExpeditionBench() {
       routeStatus,
       stats,
       turnState,
+      traitPreview,
     ],
   );
   const interfaceDensity = useInterfaceDensity({
@@ -351,6 +386,8 @@ export default function ExpeditionBench() {
               focusedPlayerID={focusedPlayerID}
               onPlayerFocus={setFocusedPlayerID}
               onInputSnapshot={setBoardInput}
+              departPressure={departPressure}
+              onTraitPreview={setTraitPreview}
             />
           </ErrorBoundary>
         </div>
@@ -401,27 +438,38 @@ export default function ExpeditionBench() {
             Details
           </span>
         </summary>
-        <div className="mt-4 grid gap-3 xl:grid-cols-2">
+      <div className="mt-4 grid gap-3 xl:grid-cols-2">
           <MissionStatus
             turnState={turnState}
             movePathLength={movePath.length}
             moveValidation={moveValidation}
             crewCount={enrichedPlayers.length}
+            departPressure={departPressure}
+            escapeCostPreview={escapeCostPreview}
           />
           <ChartDepartStrip
-            location={location}
-            landingSite={landingSite}
             movement={movement}
             movePath={movePath}
-            activeInventory={activeInventory}
             routeStatus={routeStatus}
             turnGuidance={turnGuidance}
+            departPressure={departPressure}
+            escapeCostPreview={escapeCostPreview}
           />
           <GuidedFirstTurn
             isSpectator={isSpectator}
             hasSubmitted={hasSubmitted}
             movePathLength={movePath.length}
             turnState={turnState}
+            departPressure={departPressure}
+            escapeCostPreview={escapeCostPreview}
+          />
+          <EscapeCostPreview preview={escapeCostPreview} compact />
+          <TraitPreviewPanel preview={traitPreview} compact />
+          <CostReductionActions
+            preview={escapeCostPreview}
+            compact
+            activeAction={activeTab}
+            onAction={setActiveTab}
           />
           <UXStatusPanel
             guidance={turnGuidance}
@@ -492,6 +540,9 @@ export default function ExpeditionBench() {
             turnState={turnState}
             funTelemetry={funTelemetry}
             interfaceDensity={interfaceDensity}
+            departPressure={departPressure}
+            escapeCostPreview={escapeCostPreview}
+            traitPreview={traitPreview}
           />
         </ErrorBoundary>
       )}

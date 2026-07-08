@@ -37,6 +37,37 @@ export default function SectionOverview() {
         </li>
       </ol>
 
+      <SectionHeader>Depart Pressure</SectionHeader>
+      <p>
+        Depart Pressure measures how hard it is becoming to leave cleanly. Distance
+        from landing, recovered value, weak stats, route mistakes, and late turns
+        all push it upward. A strong run is not just more charting; it is knowing
+        when the pressure says the map has given enough.
+      </p>
+
+      <SectionHeader>Escape Cost Preview</SectionHeader>
+      <p>
+        Escape Cost Preview turns pressure into a forecast. It shows whether
+        departure looks clean, close, value-risky, crew-risky, or near route
+        collapse. It is an at-risk signal, not a guaranteed result, so use it to
+        decide what one more delay may cost.
+      </p>
+
+      <SectionHeader>Cost Reduction Actions</SectionHeader>
+      <p>
+        Every forecast has counterplay. The tablet lists the best reduction for
+        the current warning: depart now, move home, recover value, rest, help, or
+        stop digging before pressure turns the cost tier worse.
+      </p>
+
+      <SectionHeader>Tile Traits</SectionHeader>
+      <p>
+        Revealed tiles can carry traits such as Signal, Old Trail, Shelter,
+        Cache, High Ground, Echo Field, Relic Vein, or Unstable Ground. Traits
+        are route forecasts: they show what the tile tempts you to do and how
+        that choice may affect pressure, escape cost, or crew recovery.
+      </p>
+
       <SectionHeader>Stats</SectionHeader>
       <p>
         Each explorer has three stats: <span className="text-compass">Movement</span> (tiles per turn),

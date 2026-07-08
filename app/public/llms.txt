@@ -1,10 +1,10 @@
 # Xenovoya
 
-A Chart & Depart expedition game about mapping hostile terrain, managing crew pressure, and escaping alive.
+A Chart & Depart expedition game about mapping hostile terrain, reading visible escape costs, choosing counterplay, and escaping alive.
 
 ## Core Pages
 
-- [Xenovoya](https://xenovoya.luckymachines.com): Play Xenovoya, a Chart & Depart expedition game about mapping hostile terrain, recovering value, and escaping before the route collapses.
+- [Xenovoya](https://xenovoya.luckymachines.com): Play Xenovoya, a Chart & Depart expedition game about mapping hostile terrain, reading visible escape costs, choosing counterplay, and escaping before the route collapses.
 - [Gameplay Simulator](https://xenovoya.luckymachines.com/simulator): Use the same engine as the game to run scenarios, compare outcomes, and tune Xenovoya without a separate rules clone.
 - [Play Xenovoya](https://xenovoya.luckymachines.com/play): Start a seedable Chart & Depart run and see if the expedition can chart useful ground, recover value, and escape alive.
 - [Weekly Challenge: Desperate Lift-Off](https://xenovoya.luckymachines.com/challenge): Can your crew escape with the artifact before the route collapses?
@@ -18,7 +18,7 @@ A Chart & Depart expedition game about mapping hostile terrain, managing crew pr
 
 ## Discovery Topics
 
-- [Chart & Depart Board Game](https://xenovoya.luckymachines.com/topics/turn-based-board-game): Chart & Depart scenarios where every action changes pressure, route shape, and the decision to leave.
+- [Chart & Depart Board Game](https://xenovoya.luckymachines.com/topics/turn-based-board-game): Chart & Depart scenarios where every action changes Depart Pressure, visible escape cost, counterplay, route shape, and the decision to leave.
 - [Survival Expedition](https://xenovoya.luckymachines.com/topics/survival-expedition): Expedition scenarios about morale, danger, fatigue, and extracting value before the board closes in.
 - [Artifact Hunt](https://xenovoya.luckymachines.com/topics/artifact-hunt): Relic-hunting scenarios where digging creates payoff, risk, and memorable escape stories.
 - [Co-Op Escape](https://xenovoya.luckymachines.com/topics/co-op-escape): Cooperative escape scenarios built around helping, routing, and keeping the artifact holder alive.

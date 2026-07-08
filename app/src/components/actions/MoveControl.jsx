@@ -4,6 +4,7 @@ export default function MoveControl({
   path = [],
   validation,
   routeStatus,
+  traitPreview,
   blockedReason,
   onSubmit,
   onClear,
@@ -58,6 +59,33 @@ export default function MoveControl({
           </p>
         </div>
       </div>
+
+      {traitPreview?.trait && (
+        <div className={`rounded border px-3 py-2 ${
+          traitPreview.effect?.warning
+            ? 'border-signal-red/35 bg-signal-red/5'
+            : traitPreview.effect?.matched
+              ? 'border-oxide-green/35 bg-oxide-green/5'
+              : 'border-blueprint/30 bg-blueprint/5'
+        }`}>
+          <div className="flex flex-wrap items-start justify-between gap-2">
+            <div>
+              <p className="font-mono text-[10px] uppercase tracking-[0.26em] text-exp-text-dim">
+                Route trait
+              </p>
+              <p className="mt-1 font-mono text-xs uppercase tracking-[0.14em] text-exp-text">
+                {traitPreview.trait.label}
+              </p>
+            </div>
+            <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-exp-text-dim">
+              {traitPreview.preferredActionLabel}
+            </span>
+          </div>
+          <p className="mt-2 font-mono text-[11px] leading-relaxed text-exp-text-dim">
+            {traitPreview.routeNote || traitPreview.body}
+          </p>
+        </div>
+      )}
 
       <div className="rounded border border-exp-border/60 bg-exp-dark/25 px-3 py-2">
         <p className="font-mono text-[10px] uppercase tracking-[0.26em] text-exp-text-dim">

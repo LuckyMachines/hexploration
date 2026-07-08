@@ -10,9 +10,11 @@ function SectionHeader({ children }) {
 const STEPS = [
   'Enter an expedition and read the landing site.',
   'Move to reveal useful ground without losing the route home.',
+  'Read the targeted tile trait before submitting a route.',
   'Dig when the tile is worth the risk and the crew can afford the time.',
   'Rest or help when the crew needs another chance.',
-  'Watch pressure, stats, and distance from landing as the route stretches.',
+  'Watch what the next delay puts at risk as Depart Pressure rises.',
+  'When a cost appears, pick the listed reduction action unless you are choosing to gamble.',
   'Return to the landing site with enough recovered value.',
   'Choose Flee to escape and lock in the run.',
 ];
@@ -20,6 +22,10 @@ const STEPS = [
 const TIPS = [
   'The best run is not the deepest run; it is the deepest run that still gets home.',
   'Keep a readable route back to landing.',
+  'Treat tile traits as board counterplay: Signal and Old Trail can help the route, while Unstable Ground and Relic Vein make greed louder.',
+  'Stable pressure invites one more chart; closing pressure asks for a departure plan.',
+  'Escape Cost Preview is a forecast: clean, close, artifact risk, crew risk, or route collapse.',
+  'Cost Reduction Actions show the counterplay before you commit.',
   'Dig only when the crew can afford the time.',
   'Rest before zero movement turns the map into a trap.',
   'Use Help to keep a teammate from becoming the reason everyone stays too long.',

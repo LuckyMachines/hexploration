@@ -59,10 +59,10 @@ export const FUN_ROLES = [
 ];
 
 export const FUN_EVENT_CARDS = [
-  { id: 'storm-front', title: 'Storm Front', text: 'Weather slams the route sideways.', actions: ['move', 'flee'], effect: { danger: 8 }, feelingBias: 'panic', momentType: 'panic' },
-  { id: 'old-trail', title: 'Old Trail', text: 'A half-buried trail cuts the distance.', actions: ['move', 'inspect'], effect: { distance: -1, revealed: 1 }, feelingBias: 'surprise', momentType: 'clean-read' },
-  { id: 'hollow-ground', title: 'Hollow Ground', text: 'The dig opens bad air under the crew.', actions: ['dig'], effect: { danger: 10, morale: -5 }, feelingBias: 'panic', momentType: 'route-betrayal' },
-  { id: 'signal-spark', title: 'Signal Spark', text: 'A signal flashes through the fog.', actions: ['rest', 'help', 'inspect'], effect: { danger: -8, morale: 5 }, feelingBias: 'recovery', momentType: 'recovery' },
+  { id: 'storm-front', title: 'Storm Front', text: 'Weather slams the route sideways.', actions: ['move', 'flee'], effect: { danger: 8, departPressure: 8 }, feelingBias: 'panic', momentType: 'panic' },
+  { id: 'old-trail', title: 'Old Trail', text: 'A half-buried trail cuts the distance.', actions: ['move', 'inspect'], effect: { distance: -1, revealed: 1, departPressure: -5 }, feelingBias: 'surprise', momentType: 'clean-read' },
+  { id: 'hollow-ground', title: 'Hollow Ground', text: 'The dig opens bad air under the crew.', actions: ['dig'], effect: { danger: 10, morale: -5, departPressure: 6 }, feelingBias: 'panic', momentType: 'route-betrayal' },
+  { id: 'signal-spark', title: 'Signal Spark', text: 'A signal flashes through the fog.', actions: ['rest', 'help', 'inspect'], effect: { danger: -8, morale: 5, departPressure: -6 }, feelingBias: 'recovery', momentType: 'recovery' },
   { id: 'broken-strap', title: 'Broken Strap', text: 'Gear fails at the worst second.', actions: ['rest', 'flee'], effect: { morale: -8, friction: 12 }, feelingBias: 'friction', momentType: 'route-betrayal' },
   { id: 'whispering-ruins', title: 'Whispering Ruins', text: 'The ruin gives up a clue and asks for nerve.', actions: ['dig', 'inspect'], effect: { revealed: 2, danger: 3 }, feelingBias: 'surprise', momentType: 'payoff' },
   { id: 'sudden-clearing', title: 'Sudden Clearing', text: 'Fog tears open and the route feels real.', actions: ['move', 'inspect'], effect: { revealed: 1, distance: -1 }, feelingBias: 'alive', momentType: 'clean-read' },
@@ -142,10 +142,13 @@ export function initialFunState({ scenario = {}, seed = '', mode = 'standard', c
 
 export function applyModifierToState(state = {}, modifier = null) {
   if (!modifier) return state;
+  const nextPressure = clamp((state.departPressure || 0) + (modifier.effect?.departPressure || 0) + (modifier.effect?.danger || 0) * 0.5 + (modifier.effect?.distance || 0) * 6);
   return {
     ...state,
     morale: clamp((state.morale || 0) + (modifier.effect?.morale || 0)),
     danger: clamp((state.danger || 0) + (modifier.effect?.danger || 0)),
+    departPressure: nextPressure,
+    routeStability: clamp(100 - nextPressure),
     revealed: Math.max(0, (state.revealed || 0) + (modifier.effect?.revealed || 0)),
     distance: Math.max(0, (state.distance || 0) + (modifier.effect?.distance || 0)),
   };
@@ -160,7 +163,7 @@ export function actionPreviewFor(run = {}, action = 'inspect') {
     || (action === 'flee' && item.id === 'carrier')
     || (run.state?.danger >= 65 && item.id === 'guard')
   ));
-  const dangerState = run.state?.morale <= 35 || run.state?.danger >= 70 || (run.scenario?.maxTurns - run.turn <= 2 && run.state?.distance >= 2);
+  const dangerState = run.state?.morale <= 35 || run.state?.danger >= 70 || run.state?.departPressure >= 70 || (run.scenario?.maxTurns - run.turn <= 2 && run.state?.distance >= 2);
   const digStreak = action === 'dig' ? Number(run.fun?.digStreak || 0) + 1 : 0;
   return {
     action,
@@ -215,6 +218,7 @@ export function applyEventEffect(delta = {}, event = null) {
     ...delta,
     morale: (delta.morale || 0) + (event.effect?.morale || 0),
     danger: (delta.danger || 0) + (event.effect?.danger || 0),
+    departPressure: (delta.departPressure || 0) + (event.effect?.departPressure || 0),
     revealed: (delta.revealed || 0) + (event.effect?.revealed || 0),
     distance: (delta.distance || 0) + (event.effect?.distance || 0),
     friction: (delta.friction || 0) + (event.effect?.friction || 0),
@@ -223,6 +227,9 @@ export function applyEventEffect(delta = {}, event = null) {
 
 export function fleeOutcomeFor(run = {}, after = {}, action = '') {
   if (action !== 'flee') return null;
+  if ((after.departPressure || 0) >= 100) return 'route collapse';
+  if ((after.departPressure || 0) >= 85 && !after.escaped) return 'launch window missed';
+  if (after.escaped && (after.departPressure || 0) >= 75) return 'desperate escape';
   if (after.escaped && after.danger < 55) return 'clean escape';
   if (after.escaped) return 'close escape';
   if ((after.distance || 0) <= 1) return 'near miss';
@@ -278,16 +285,19 @@ export function funQualityForRun(run = {}) {
   const timeline = run.timeline || [];
   const firstAlive = timeline.find((event) => event.feelingLabel === 'alive' || event.lifePulse >= 60);
   const payoffMoments = timeline.filter((event) => ['payoff', 'surprise'].includes(event.feelingLabel) || event.momentType === 'payoff');
-  const pressureSpikes = timeline.filter((event) => event.feelingLabel === 'panic' || event.momentType === 'panic' || event.after?.danger >= 70);
+  const pressureSpikes = timeline.filter((event) => event.feelingLabel === 'panic' || event.momentType === 'panic' || event.after?.danger >= 70 || event.after?.departPressure >= 70);
   const recoveryMoments = timeline.filter((event) => event.feelingLabel === 'recovery' || event.momentType === 'recovery');
   const comebackMoments = timeline.filter((event) => event.comebackLabel);
-  const shareWorthyMoment = [...payoffMoments, ...recoveryMoments, ...pressureSpikes, ...timeline.filter((event) => event.after?.escaped)].sort((a, b) => (b.lifePulse + b.agencyScore) - (a.lifePulse + a.agencyScore))[0] || null;
+  const mitigationMoments = timeline.filter((event) => event.mitigationApplied?.matched);
+  const traitMoments = timeline.filter((event) => event.tileTrait?.matched || event.tileTrait?.warning);
+  const shareWorthyMoment = [...payoffMoments, ...recoveryMoments, ...pressureSpikes, ...mitigationMoments, ...traitMoments, ...timeline.filter((event) => event.after?.escaped)].sort((a, b) => (b.lifePulse + b.agencyScore) - (a.lifePulse + a.agencyScore))[0] || null;
   const flatStreak = longestFlatStreak(timeline);
   const gates = {
     firstAlive: Boolean(firstAlive && firstAlive.turn <= 2),
     payoff: payoffMoments.length > 0,
     pressure: pressureSpikes.length > 0,
-    recovery: recoveryMoments.length + comebackMoments.length > 0,
+    recovery: recoveryMoments.length + comebackMoments.length + mitigationMoments.length > 0,
+    traitSurprise: traitMoments.length > 0,
     flatStreak: flatStreak <= 1,
     shareWorthy: Boolean(shareWorthyMoment),
   };
@@ -298,12 +308,15 @@ export function funQualityForRun(run = {}) {
   if (!gates.payoff) recommendations.push('Add artifact, escape, or discovery payoff.');
   if (!gates.pressure) recommendations.push('Add one readable danger spike.');
   if (!gates.recovery) recommendations.push('Add a recovery valve through rest or help.');
+  if (!gates.traitSurprise) recommendations.push('Let at least one tile trait alter the turn.');
   if (!gates.flatStreak) recommendations.push('Use a clue, event card, or reveal to break flat streaks.');
   return {
     firstAliveTurn: firstAlive?.turn || null,
     payoffMoments: payoffMoments.length,
     pressureSpikes: pressureSpikes.length,
-    recoveryMoments: recoveryMoments.length + comebackMoments.length,
+    recoveryMoments: recoveryMoments.length + comebackMoments.length + mitigationMoments.length,
+    traitMoments: traitMoments.length,
+    mitigationMoments: mitigationMoments.length,
     longestFlatStreak: flatStreak,
     shareWorthyMoment,
     gates,
@@ -315,10 +328,26 @@ export function funQualityForRun(run = {}) {
 export function runTitleFor({ run = {}, summary = {}, quality = null } = {}) {
   const artifacts = asArtifactArray(run.state?.artifacts);
   const artifact = artifacts[artifacts.length - 1];
+  const escapeCost = summary.escapeCostPreview || {};
+  const mitigation = (run.timeline || []).find((event) => event.mitigationApplied?.matched)?.mitigationApplied;
+  const traitMoment = (run.timeline || []).find((event) => event.tileTrait?.matched || event.tileTrait?.warning)?.tileTrait;
+  if (traitMoment?.id === 'signal') return 'The Signal Read';
+  if (traitMoment?.id === 'old-trail') return 'The Old Trail';
+  if (traitMoment?.id === 'shelter') return 'The Shelter Save';
+  if (traitMoment?.id === 'relic-vein') return 'The Relic Vein Gamble';
+  if (traitMoment?.id === 'cache') return 'The Cache Play';
+  if (mitigation?.id === 'stabilize-route') return 'The Route Save';
+  if (mitigation?.matched) return 'The Cost Cut';
+  if (summary.outcome === 'escaped' && escapeCost.level === 'clean') return 'Clean Departure';
+  if (escapeCost.level === 'artifact-risk') return 'Artifact on the Line';
+  if (escapeCost.level === 'crew-risk') return 'Crew on the Line';
+  if (escapeCost.level === 'route-collapse') return 'Route Collapse';
   if (run.outcome === 'escaped' && summary.turns >= (summary.maxTurns || 0) - 1) return `The Turn ${summary.turns} Lift-Off`;
+  if (run.outcome === 'escaped' && (run.state?.departPressure || 0) >= 75) return 'The Redline Departure';
   if (artifact && summary.outcome === 'escaped') return `The ${artifact.name} Sprint`;
   if (quality?.shareWorthyMoment?.feelingLabel === 'recovery') return 'The Recovery Save';
   if (summary.outcome === 'collapsed') return 'The Route Won';
+  if (String(summary.outcome || '').includes('route-collapsed')) return 'The Departure Tax';
   if (summary.outcome === 'stranded-with-artifact') return 'The Greed Tax';
   return `${summary.scenarioName || 'Expedition'}: ${summary.arcShape || 'Run'}`;
 }
@@ -326,11 +355,30 @@ export function runTitleFor({ run = {}, summary = {}, quality = null } = {}) {
 export function badgesForRun(run = {}, summary = {}, quality = null) {
   const badges = [];
   if (summary.outcome === 'escaped') badges.push('First Escape');
+  if (summary.escapeCostPreview?.level === 'clean') badges.push('Clean Departure');
+  if (summary.escapeCostPreview?.level === 'artifact-risk') badges.push('Artifact on the Line');
+  if (summary.escapeCostPreview?.level === 'crew-risk') badges.push('Crew on the Line');
+  if (summary.escapeCostPreview?.level === 'route-collapse') badges.push('Route Collapse');
+  const mitigationIds = new Set((run.timeline || []).filter((event) => event.mitigationApplied?.matched).map((event) => event.mitigationApplied.id));
+  const traitIds = new Set((run.timeline || []).filter((event) => event.tileTrait?.matched || event.tileTrait?.warning).map((event) => event.tileTrait.id));
+  if (mitigationIds.size > 0) badges.push('Cost Cut');
+  if (mitigationIds.has('stabilize-route') || mitigationIds.has('return-to-landing')) badges.push('Route Stabilized');
+  if (mitigationIds.has('help-weakest') || mitigationIds.has('rest-crew') || mitigationIds.has('regroup')) badges.push('Crew Secured');
+  if (mitigationIds.has('secure-artifact') || mitigationIds.has('depart-now')) badges.push('Value Secured');
+  if (traitIds.has('signal')) badges.push('Signal Read');
+  if (traitIds.has('old-trail')) badges.push('Trail Runner');
+  if (traitIds.has('shelter')) badges.push('Shelter Save');
+  if (traitIds.has('relic-vein')) badges.push('Relic Vein Gamble');
+  if (traitIds.has('cache')) badges.push('Cache Secured');
+  if (traitIds.has('high-ground')) badges.push('High Ground Scout');
+  if (traitIds.has('echo-field')) badges.push('Echo Save');
   if (quality?.recoveryMoments > 0 && (run.state?.danger || 0) >= 55) badges.push('Clutch Recovery');
   if ((run.fun?.maxDigStreak || 0) >= 2 && asArtifactArray(run.state?.artifacts).length > 0) badges.push('Greedy Dig');
   if ((run.state?.danger || 0) <= 35 && summary.outcome === 'escaped') badges.push('Clean Run');
   if ((run.state?.savedPlayers || 0) >= (run.scenario?.players || 1) - 1 && (run.scenario?.players || 1) > 1) badges.push('Everybody Out');
   if (summary.outcome === 'escaped' && summary.turns >= (summary.maxTurns || 0)) badges.push('Last-Turn Miracle');
+  if (summary.outcome === 'escaped' && (run.state?.departPressure || 0) >= 75) badges.push('Redline Departure');
+  if (String(summary.outcome || '').includes('route-collapsed')) badges.push('Stayed Too Long');
   if (['collapsed', 'stranded-with-artifact', 'lost'].includes(summary.outcome) && quality?.shareWorthyMoment) badges.push('Disaster Worth Sharing');
   if (quality?.firstAliveTurn && quality.firstAliveTurn <= 1) badges.push('Calm Under Fog');
   if (summary.artifacts > 0 && summary.turns <= 3) badges.push('Relic Sprint');
@@ -341,6 +389,7 @@ export function badgesForRun(run = {}, summary = {}, quality = null) {
 export function epilogueForRun(run = {}, quality = null) {
   if (run.outcome === 'escaped') return 'The landing light catches the crew before the route can close.';
   if (run.outcome === 'stranded-with-artifact') return 'The relic made it into the story, but not out of the wild.';
+  if (String(run.outcome || '').includes('route-collapsed')) return 'The crew charted too long, and the way home closed around the value.';
   if (run.outcome === 'collapsed') return 'Morale broke before the map did.';
   if (quality?.shareWorthyMoment) return 'The run failed, but it left a moment worth replaying.';
   return 'The expedition ends as a warning for the next seed.';

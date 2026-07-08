@@ -20,7 +20,7 @@ export const GROWTH_SCENARIOS = [
     difficulty: 'tense',
     tags: ['co-op', 'escape', 'survival', 'pressure'],
     targetArcScore: 68,
-    start: { morale: 58, danger: 34, artifacts: 1, savedPlayers: 0, revealed: 2, distance: 4 },
+    start: { morale: 58, danger: 34, departPressure: 54, routeStability: 46, artifacts: 1, savedPlayers: 0, revealed: 2, distance: 4 },
   },
   {
     id: 'solo-artifact-hunt',
@@ -32,7 +32,7 @@ export const GROWTH_SCENARIOS = [
     difficulty: 'fast',
     tags: ['solo', 'artifact', 'survival', 'beginner'],
     targetArcScore: 64,
-    start: { morale: 64, danger: 22, artifacts: 0, savedPlayers: 0, revealed: 1, distance: 3 },
+    start: { morale: 64, danger: 22, departPressure: 28, routeStability: 72, artifacts: 0, savedPlayers: 0, revealed: 1, distance: 3 },
   },
   {
     id: 'low-stat-recovery',
@@ -44,7 +44,7 @@ export const GROWTH_SCENARIOS = [
     difficulty: 'careful',
     tags: ['co-op', 'recovery', 'survival'],
     targetArcScore: 62,
-    start: { morale: 42, danger: 30, artifacts: 0, savedPlayers: 0, revealed: 1, distance: 3 },
+    start: { morale: 42, danger: 30, departPressure: 38, routeStability: 62, artifacts: 0, savedPlayers: 0, revealed: 1, distance: 3 },
   },
 ];
 
@@ -58,6 +58,14 @@ export const WEEKLY_CHALLENGE = {
   tagline: 'Can your crew escape with the artifact before the route collapses?',
 };
 
+function pressureBandForState(value = 0) {
+  const pressure = clamp(value);
+  if (pressure >= 75) return { id: 'collapse', label: 'Collapse Risk', tone: 'red' };
+  if (pressure >= 50) return { id: 'closing', label: 'Closing Route', tone: 'orange' };
+  if (pressure >= 25) return { id: 'stretching', label: 'Stretching Route', tone: 'gold' };
+  return { id: 'stable', label: 'Stable Route', tone: 'green' };
+}
+
 const ACTIONS = {
   move: { label: 'Move', pulse: 10, agency: 16, friction: 8 },
   dig: { label: 'Dig', pulse: 14, agency: 18, friction: 14 },
@@ -65,6 +73,14 @@ const ACTIONS = {
   help: { label: 'Help', pulse: 12, agency: 14, friction: 8 },
   flee: { label: 'Flee', pulse: 18, agency: 20, friction: 16 },
   inspect: { label: 'Inspect', pulse: 7, agency: 9, friction: 5 },
+};
+
+const GROWTH_ACTION_BY_CONTRACT = {
+  [Action.MOVE]: 'move',
+  [Action.DIG]: 'dig',
+  [Action.REST]: 'rest',
+  [Action.HELP]: 'help',
+  [Action.FLEE]: 'flee',
 };
 
 function hash(value) {
@@ -90,9 +106,141 @@ function scenarioById(scenarioId) {
 
 function outcomeFor(run) {
   if (run.state.escaped) return 'escaped';
+  if (run.state.departPressure >= 100) return run.state.artifacts?.length > 0 ? 'route-collapsed-with-value' : 'route-collapsed';
   if (run.state.morale <= 0) return 'collapsed';
-  if (run.turn >= run.scenario.maxTurns) return run.state.artifacts > 0 ? 'stranded-with-artifact' : 'lost';
+  if (run.turn >= run.scenario.maxTurns) return run.state.artifacts?.length > 0 ? 'stranded-with-artifact' : 'lost';
   return 'in-progress';
+}
+
+function escapeCostForState(run = {}, state = {}) {
+  const artifacts = Array.isArray(state.artifacts) ? state.artifacts : [];
+  const pressure = clamp(state.departPressure ?? state.danger ?? 0);
+  const atLanding = Number(state.distance || 0) <= 0;
+  const hasRecoveredValue = artifacts.length > 0;
+  const canEscape = atLanding && hasRecoveredValue;
+  const band = pressureBandForState(pressure);
+  const atRiskItem = artifacts[0]?.name || '';
+  const atRiskPlayer = state.savedPlayers < (run.scenario?.players || 1)
+    ? { label: `P${Math.min((state.savedPlayers || 0) + 1, run.scenario?.players || 1)}` }
+    : null;
+
+  let level = 'not-ready';
+  if (band.id === 'collapse' && !canEscape) level = 'route-collapse';
+  else if (!canEscape) level = 'not-ready';
+  else if (band.id === 'collapse') level = atRiskPlayer ? 'crew-risk' : 'artifact-risk';
+  else if (band.id === 'closing') level = 'artifact-risk';
+  else if (band.id === 'stretching') level = 'close';
+  else level = 'clean';
+
+  const headline = {
+    clean: 'No cost projected',
+    close: 'Close escape likely',
+    'artifact-risk': atRiskItem ? `${atRiskItem} at risk` : 'Recovered value at risk',
+    'crew-risk': atRiskPlayer?.label ? `${atRiskPlayer.label} at risk` : 'Crew at risk',
+    'route-collapse': 'Route collapse projected',
+    'not-ready': 'Escape not ready',
+  }[level];
+
+  const preview = {
+    level,
+    costType: level,
+    headline,
+    label: {
+      clean: 'Clean departure',
+      close: 'Close departure',
+      'artifact-risk': 'Artifact at risk',
+      'crew-risk': 'Crew at risk',
+      'route-collapse': 'Route collapse',
+      'not-ready': 'Not ready',
+    }[level],
+    reportLabel: {
+      clean: 'Clean',
+      close: 'Close',
+      'artifact-risk': 'Costly',
+      'crew-risk': 'Costly',
+      'route-collapse': 'Collapsed',
+      'not-ready': 'Not Ready',
+    }[level],
+    atRiskItem,
+    atRiskPlayer,
+    pressure,
+    canEscape,
+  };
+  const mitigations = mitigationsForPreview(preview, {
+    movement: Math.max(0, 5 - (state.distance || 0)),
+    players: Array.from({ length: run.scenario?.players || 1 }, (_, index) => ({
+      playerID: index + 1,
+      movement: index < (state.savedPlayers || 0) ? 3 : 1,
+      agility: index < (state.savedPlayers || 0) ? 3 : 1,
+      dexterity: 2,
+      isActive: true,
+    })),
+    activeInventory: { artifact: atRiskItem },
+    departPressure: { pressure, routeStability: state.routeStability ?? clamp(100 - pressure) },
+    currentDistanceToLanding: Number(state.distance || 0),
+    hasRecoveredValue,
+  });
+  return {
+    ...preview,
+    mitigations,
+    bestMitigation: mitigations[0] || null,
+  };
+}
+
+function mitigationForAction(escapeCostPreview = {}, action = '') {
+  const mitigation = escapeCostPreview.mitigations?.find((item) => GROWTH_ACTION_BY_CONTRACT[item.action] === action) || null;
+  const severe = ['artifact-risk', 'crew-risk', 'route-collapse'].includes(escapeCostPreview.level);
+  const ignoredSevere = severe && action === 'dig' && mitigation?.id !== 'recover-value';
+  return {
+    id: mitigation?.id || null,
+    label: mitigation?.label || null,
+    matched: Boolean(mitigation?.available),
+    effect: mitigation?.effect || null,
+    ignoredSevere,
+  };
+}
+
+function contractActionForGrowth(action = '') {
+  return {
+    move: Action.MOVE,
+    dig: Action.DIG,
+    rest: Action.REST,
+    help: Action.HELP,
+    flee: Action.FLEE,
+  }[action] || Action.MOVE;
+}
+
+function growthTraitFor(run = {}, action = '', turn = 0) {
+  const candidates = [
+    TILE_TRAIT_IDS.SIGNAL,
+    TILE_TRAIT_IDS.UNSTABLE_GROUND,
+    TILE_TRAIT_IDS.CACHE,
+    TILE_TRAIT_IDS.SHELTER,
+    TILE_TRAIT_IDS.HIGH_GROUND,
+    TILE_TRAIT_IDS.OLD_TRAIL,
+    TILE_TRAIT_IDS.ECHO_FIELD,
+    TILE_TRAIT_IDS.RELIC_VEIN,
+  ].map((id) => TRAIT_DEFINITIONS[id]).filter(Boolean);
+  const trait = candidates[hash(`${run.seed}|${run.scenario?.id}|${turn}|${action}|trait`) % candidates.length];
+  const contractAction = contractActionForGrowth(action);
+  const matched = trait.preferredAction === contractAction
+    || (action === 'move' && [TILE_TRAIT_IDS.SIGNAL, TILE_TRAIT_IDS.OLD_TRAIL, TILE_TRAIT_IDS.HIGH_GROUND].includes(trait.id))
+    || (action === 'flee' && [TILE_TRAIT_IDS.SIGNAL, TILE_TRAIT_IDS.CACHE, TILE_TRAIT_IDS.OLD_TRAIL].includes(trait.id));
+  const warning = (action === 'dig' && [TILE_TRAIT_IDS.UNSTABLE_GROUND, TILE_TRAIT_IDS.RELIC_VEIN].includes(trait.id))
+    || (action === 'move' && trait.id === TILE_TRAIT_IDS.UNSTABLE_GROUND);
+  return {
+    id: trait.id,
+    label: trait.label,
+    category: trait.category,
+    preferredAction: trait.preferredAction,
+    matched,
+    warning,
+    pressureDelta: matched ? Math.min(0, trait.pressureDelta) : warning ? Math.max(4, trait.pressureDelta) : 0,
+    costDelta: matched ? Math.min(0, trait.costDelta) : warning ? Math.max(3, trait.costDelta) : 0,
+    text: warning ? `${trait.label} turns the choice into sharper pressure and escape cost.`
+      : matched ? `${trait.label} makes the action feel spatial and useful.`
+        : trait.summary,
+  };
 }
 
 function feelingFor({ action, state, delta, pulse, friction }) {
@@ -139,37 +287,61 @@ export function applyGrowthAction(run, actionId) {
   const before = { ...run.state };
   const luck = roll(run.seed, nextTurn, action);
   const spike = roll(run.seed, nextTurn, action, 'danger');
-  let delta = { morale: -3, danger: 4, artifacts: 0, revealed: 0, distance: 0, savedPlayers: 0 };
+  let delta = { morale: -3, danger: 4, departPressure: 4, artifacts: 0, revealed: 0, distance: 0, savedPlayers: 0 };
   const digStreak = action === 'dig' ? Number(run.fun?.digStreak || 0) + 1 : 0;
 
   if (action === 'move') {
     delta.distance = luck > 0.18 ? -1 : 0;
     delta.revealed = luck > 0.56 ? 1 : 0;
     delta.danger += spike > 0.72 ? 8 : -2;
+    delta.departPressure += delta.distance < 0 ? -5 : 6;
   } else if (action === 'dig') {
     delta.artifacts = luck > Math.max(0.2, 0.46 - digStreak * 0.08) ? 1 : 0;
     delta.danger += 8 + digStreak * 4;
+    delta.departPressure += 8 + digStreak * 3;
     delta.morale += delta.artifacts ? 8 : -5;
   } else if (action === 'rest') {
     delta.morale += 16;
     delta.danger -= 6;
+    delta.departPressure -= 9;
   } else if (action === 'help') {
     delta.savedPlayers = run.scenario.players > 1 && luck > 0.3 ? 1 : 0;
     delta.morale += 10 + delta.savedPlayers * 4;
     delta.danger -= 2;
+    delta.departPressure -= 6;
   } else if (action === 'flee') {
     delta.distance = luck > 0.25 ? -2 : -1;
     delta.danger += before.distance <= 1 ? -8 : 8;
-    delta.morale += before.artifacts > 0 ? 4 : -8;
+    delta.departPressure += before.distance <= 1 && before.artifacts?.length > 0 ? -16 : 8;
+    delta.morale += before.artifacts?.length > 0 ? 4 : -8;
   } else {
     delta.revealed = 1;
     delta.danger -= 1;
     delta.morale += 2;
+    delta.departPressure -= 2;
+  }
+  if ((before.departPressure || 0) >= 75 && !['rest', 'help', 'flee'].includes(action)) {
+    delta.departPressure += 5;
+    delta.danger += 3;
   }
   delta = roleDelta(run, action, delta);
   delta = comebackDelta(run, action, delta);
   const eventCard = secondaryEventFor(run, action);
   delta = applyEventEffect(delta, eventCard);
+  const tileTrait = growthTraitFor(run, action, nextTurn);
+  if (tileTrait.matched) {
+    delta.departPressure = (delta.departPressure || 0) + tileTrait.pressureDelta;
+    delta.agency = (delta.agency || 0) + 10;
+    delta.lifePulse = (delta.lifePulse || 0) + 6;
+    if (tileTrait.id === TILE_TRAIT_IDS.CACHE) delta.artifacts = Math.max(delta.artifacts || 0, action === 'dig' ? 1 : 0);
+    if (tileTrait.id === TILE_TRAIT_IDS.HIGH_GROUND) delta.revealed = (delta.revealed || 0) + 1;
+    if ([TILE_TRAIT_IDS.SHELTER, TILE_TRAIT_IDS.ECHO_FIELD].includes(tileTrait.id)) delta.morale = (delta.morale || 0) + 4;
+  }
+  if (tileTrait.warning) {
+    delta.departPressure = (delta.departPressure || 0) + tileTrait.pressureDelta;
+    delta.danger = (delta.danger || 0) + 4;
+    delta.friction = (delta.friction || 0) + 10;
+  }
   const finalTurn = nextTurn >= run.scenario.maxTurns;
   const flatLikely = delta.distance === 0 && delta.artifacts === 0 && delta.revealed === 0 && delta.savedPlayers === 0 && !['rest', 'help'].includes(action);
   if (finalTurn && flatLikely) {
@@ -183,17 +355,31 @@ export function applyGrowthAction(run, actionId) {
     ...before,
     morale: clamp(before.morale + delta.morale),
     danger: clamp(before.danger + delta.danger),
+    departPressure: clamp((before.departPressure ?? before.danger ?? 0) + delta.departPressure),
     artifacts: discoveredArtifact ? [...beforeArtifacts, discoveredArtifact] : beforeArtifacts,
     revealed: Math.max(0, before.revealed + delta.revealed),
     distance: Math.max(0, before.distance + delta.distance),
     savedPlayers: Math.min(run.scenario.players, before.savedPlayers + delta.savedPlayers),
   };
+  after.routeStability = clamp(100 - after.departPressure);
   after.escaped = after.distance <= 0 && (after.artifacts.length > 0 || action === 'flee');
 
   const fleeOutcome = fleeOutcomeFor(run, after, action);
-  const agencyScore = clamp(ACTIONS[action].agency + Math.max(0, -delta.distance) * 12 + delta.artifacts * 18 + delta.revealed * 8 + delta.savedPlayers * 10 + 30 + (eventCard ? 6 : 0));
-  const frictionScore = clamp(ACTIONS[action].friction + (delta.friction || 0) + (delta.distance === 0 && action === 'move' ? 18 : 0) + (delta.artifacts === 0 && action === 'dig' ? 14 : 0) + Math.max(0, after.danger - 70));
-  const lifePulse = clamp(ACTIONS[action].pulse + agencyScore * 0.42 + after.morale * 0.22 - frictionScore * 0.26 + (after.escaped ? 24 : 0));
+  let escapeCostPreview = escapeCostForState(run, after);
+  const mitigationApplied = mitigationForAction(escapeCostPreview, action);
+  if (mitigationApplied.matched) {
+    delta.agency = (delta.agency || 0) + 8;
+  }
+  if (mitigationApplied.ignoredSevere) {
+    after.departPressure = clamp(after.departPressure + 6);
+    after.routeStability = clamp(100 - after.departPressure);
+    delta.departPressure = (delta.departPressure || 0) + 6;
+    delta.friction = (delta.friction || 0) + 8;
+    escapeCostPreview = escapeCostForState(run, after);
+  }
+  const agencyScore = clamp(ACTIONS[action].agency + Math.max(0, -delta.distance) * 12 + delta.artifacts * 18 + delta.revealed * 8 + delta.savedPlayers * 10 + (delta.agency || 0) + 30 + (eventCard ? 6 : 0));
+  const frictionScore = clamp(ACTIONS[action].friction + (delta.friction || 0) + (delta.distance === 0 && action === 'move' ? 18 : 0) + (delta.artifacts === 0 && action === 'dig' ? 14 : 0) + Math.max(0, after.danger - 70) + Math.max(0, after.departPressure - 70) * 0.6);
+  const lifePulse = clamp(ACTIONS[action].pulse + agencyScore * 0.42 + after.morale * 0.22 - frictionScore * 0.26 + (delta.lifePulse || 0) + (after.escaped ? 24 : 0) + (after.departPressure >= 75 && action === 'flee' ? 8 : 0));
   const feelingLabel = eventCard?.feelingBias || feelingFor({ action, state: after, delta, pulse: lifePulse, friction: frictionScore });
   const moment = momentForEvent({ action, feelingLabel, after, eventCard, fleeOutcome });
   const comebackLabel = (before.morale <= 35 && ['rest', 'help'].includes(action)) ? 'clutch-rest'
@@ -216,10 +402,15 @@ export function applyGrowthAction(run, actionId) {
     momentType: moment?.type || null,
     momentTitle: moment?.title || null,
     eventCard,
+    tileTrait,
+    traitEffect: tileTrait.text,
+    traitMatchedAction: tileTrait.matched,
     comebackLabel,
     fleeOutcome,
+    escapeCostPreview: (action === 'flee' || after.departPressure >= 50) ? escapeCostPreview : null,
+    mitigationApplied,
     discoveredArtifact,
-    text: eventText(action, delta, after, { eventCard, discoveredArtifact, fleeOutcome }),
+    text: eventText(action, delta, after, { eventCard, discoveredArtifact, fleeOutcome, mitigationApplied, tileTrait }),
   };
   const nextFun = {
     ...(run.fun || {}),
@@ -245,12 +436,18 @@ export function applyGrowthAction(run, actionId) {
   return next;
 }
 
-function eventText(action, delta, after, { eventCard = null, discoveredArtifact = null, fleeOutcome = null } = {}) {
+function eventText(action, delta, after, { eventCard = null, discoveredArtifact = null, fleeOutcome = null, mitigationApplied = null, tileTrait = null } = {}) {
+  if (mitigationApplied?.matched) return `Cost reduced: ${mitigationApplied.label}. ${mitigationApplied.effect}`;
+  if (mitigationApplied?.ignoredSevere) return 'The crew ignores the visible reduction and digs into a sharper pressure spike.';
+  if (tileTrait?.matched || tileTrait?.warning) return tileTrait.text;
   if (eventCard) return `${eventCard.title}: ${eventCard.text}`;
   if (action === 'flee' && after.escaped) return 'The escape route snaps into focus and the crew reaches the landing site.';
   if (action === 'flee' && fleeOutcome) return `Flee result: ${fleeOutcome}. The route is close enough to remember.`;
   if (action === 'dig' && discoveredArtifact) return `The dig finds the ${discoveredArtifact.name}: ${discoveredArtifact.hook}`;
   if (action === 'dig' && delta.artifacts > 0) return 'The dig hits something real: an artifact comes up before the danger can swallow the turn.';
+  if (after.departPressure >= 100) return 'Depart Pressure maxes out and the route home collapses.';
+  if (delta.departPressure >= 12) return 'The choice pays in pressure; the map home is closing faster now.';
+  if (delta.departPressure <= -6) return 'The crew buys back a little route stability.';
   if (action === 'rest') return 'The crew catches breath, and the next decision has room to matter.';
   if (action === 'help' && delta.savedPlayers > 0) return 'A teammate gets pulled back into the run.';
   if (action === 'move' && delta.distance < 0) return 'The route shortens and the board answers the input.';
@@ -302,6 +499,8 @@ export function summarizeGrowthRun(run) {
     savedPlayers: run.state.savedPlayers,
     morale: run.state.morale,
     danger: run.state.danger,
+    departPressure: run.state.departPressure ?? run.state.danger,
+    routeStability: run.state.routeStability ?? clamp(100 - (run.state.departPressure ?? run.state.danger ?? 0)),
     bestMoment,
     worstMoment,
     firstAliveTurn: firstAlive?.turn || null,
@@ -310,6 +509,7 @@ export function summarizeGrowthRun(run) {
     arcShape,
     challengeScore: scoreChallengeRun(run),
     funQuality: quality,
+    escapeCostPreview: escapeCostForState(run, run.state),
   };
   const title = runTitleFor({ run, summary: base, quality });
   const badges = badgesForRun(run, base, quality);
@@ -324,10 +524,17 @@ export function summarizeGrowthRun(run) {
 
 export function shareTextForRun(run) {
   const summary = summarizeGrowthRun(run);
-  const verb = summary.outcome === 'escaped' ? 'escaped' : summary.outcome === 'collapsed' ? 'collapsed' : 'survived';
+  const verb = summary.outcome === 'escaped' ? 'escaped' : summary.outcome === 'collapsed' ? 'collapsed' : summary.outcome?.includes('route-collapsed') ? 'lost the route' : 'survived';
   const badge = summary.badges?.[0] ? ` Badge: ${summary.badges[0]}.` : '';
   const artifacts = summary.artifactNames?.length ? ` Found ${summary.artifactNames.join(', ')}.` : '';
-  return `${summary.runTitle}: I ${verb} ${summary.scenarioName} with ${summary.artifacts} artifact(s), arc ${summary.arcShape} ${summary.arcScore}, seed ${summary.seed}.${artifacts}${badge} Can you beat this run?`;
+  const cost = summary.escapeCostPreview?.level && summary.escapeCostPreview.level !== 'not-ready'
+    ? ` ${summary.escapeCostPreview.headline}.`
+    : '';
+  const mitigation = (run.timeline || []).find((event) => event.mitigationApplied?.matched)?.mitigationApplied;
+  const traitMoment = (run.timeline || []).find((event) => event.tileTrait?.matched || event.tileTrait?.warning)?.tileTrait;
+  const mitigationCopy = mitigation?.label ? ` Cut cost with ${mitigation.label}.` : '';
+  const traitCopy = traitMoment?.label ? ` Tile moment: ${traitMoment.label}.` : '';
+  return `${summary.runTitle}: I ${verb} ${summary.scenarioName} with ${summary.artifacts} artifact(s), pressure ${summary.departPressure}, arc ${summary.arcShape} ${summary.arcScore}, seed ${summary.seed}.${cost}${mitigationCopy}${traitCopy}${artifacts}${badge} Can you beat this run?`;
 }
 
 export function encodeRun(run) {
@@ -356,12 +563,33 @@ export function replayPathForRun(run) {
 export function scoreChallengeRun(run) {
   const escaped = run.state.escaped ? 1000 : 0;
   const artifacts = Array.isArray(run.state.artifacts) ? run.state.artifacts.length : Number(run.state.artifacts || 0);
+  const escapeCost = escapeCostForState(run, run.state);
+  const matchedMitigations = (run.timeline || []).filter((event) => event.mitigationApplied?.matched).length;
+  const ignoredSevere = (run.timeline || []).filter((event) => event.mitigationApplied?.ignoredSevere).length;
+  const matchedTraits = (run.timeline || []).filter((event) => event.tileTrait?.matched).length;
+  const warningTraits = (run.timeline || []).filter((event) => event.tileTrait?.warning).length;
+  const cleanBonus = escapeCost.level === 'clean' && artifacts > 0 ? 80 : 0;
+  const costPenalty = {
+    clean: 0,
+    close: 20,
+    'artifact-risk': 60,
+    'crew-risk': 100,
+    'route-collapse': 180,
+    'not-ready': 40,
+  }[escapeCost.level] || 0;
   return escaped
     + artifacts * 140
     + run.state.savedPlayers * 90
     + Math.max(0, run.scenario.maxTurns - run.turn) * 35
     + run.state.morale
-    - run.state.danger;
+    + cleanBonus
+    + matchedMitigations * 25
+    + matchedTraits * 18
+    - run.state.danger
+    - Math.max(0, (run.state.departPressure || 0) - 60)
+    - costPenalty
+    - ignoredSevere * 40
+    - warningTraits * 22;
 }
 
 export function rankChallengeRuns(runs = [], scenarioId = WEEKLY_CHALLENGE.scenarioId) {
@@ -452,3 +680,6 @@ import {
   runTitleFor,
   secondaryEventFor,
 } from './funLoop.js';
+import { Action } from './constants.js';
+import { mitigationsForPreview } from './escapeCostPreview.js';
+import { TILE_TRAIT_IDS, TRAIT_DEFINITIONS } from './tileTraits.js';

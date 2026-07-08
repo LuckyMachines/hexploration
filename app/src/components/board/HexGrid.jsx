@@ -8,6 +8,7 @@ import { Action, ProcessingPhase, Tile } from '../../lib/constants';
 import { buildReachableTiles, validateMoveStep } from '../../lib/moveValidation';
 import { emitFeedbackEvent } from '../../lib/feedbackEvents';
 import { buildRouteStatus } from '../../lib/routeStatus';
+import { traitsForBoard, traitPreviewForIntent } from '../../lib/tileTraits';
 import {
   hexToPixel,
   gridViewBox,
@@ -55,6 +56,8 @@ export default function HexGrid({
   focusedPlayerID,
   onPlayerFocus,
   onInputSnapshot,
+  departPressure,
+  onTraitPreview,
 }) {
   const { rows, columns, isLoading: loadingSize } = useBoardSize();
   const { zones, tiles, campsites } = useActiveZones(gameId);
@@ -87,6 +90,16 @@ export default function HexGrid({
     }
     return map;
   }, [playerIDs, playerZones]);
+  const traitMap = useMemo(
+    () => traitsForBoard({
+      gameId,
+      revealedMap,
+      landingSite,
+      currentLocation,
+      departPressure,
+    }),
+    [currentLocation, departPressure, gameId, landingSite, revealedMap],
+  );
 
   const allHexes = useMemo(() => {
     const hexes = [];
@@ -131,6 +144,17 @@ export default function HexGrid({
 
   const intentAlias = hoveredTile || intentTile || currentLocation || landingSite || allHexes[0]?.alias || '';
   const intentTileData = revealedMap[intentAlias] || null;
+  const intentTrait = traitMap[intentAlias] || null;
+  const intentTraitPreview = useMemo(
+    () => traitPreviewForIntent({
+      trait: intentTrait,
+      activeAction,
+      currentLocation,
+      landingSite,
+      intentAlias,
+    }),
+    [activeAction, currentLocation, intentAlias, intentTrait, landingSite],
+  );
 
   const input = useExpeditionInputController({
     columns,
@@ -184,6 +208,10 @@ export default function HexGrid({
     input.lastInputKind,
     onInputSnapshot,
   ]);
+
+  useEffect(() => {
+    onTraitPreview?.(intentTraitPreview);
+  }, [intentTraitPreview, onTraitPreview]);
 
   if (loadingSize || !rows || !columns) {
     return (
@@ -287,6 +315,7 @@ export default function HexGrid({
     bark: funTelemetry?.bark,
     risk: funTelemetry?.risk,
     namedMoment: funTelemetry?.namedMoment,
+    traitPreview: intentTraitPreview,
   };
 
   return (
@@ -338,6 +367,7 @@ export default function HexGrid({
                       || activeInventory.relic && intentAlias === alias,
                     )}
                     isCommitted={hasSubmitted && selectedPath.includes(alias)}
+                    trait={traitMap[alias]}
                     onClick={onTileClick ? handleTileClick : undefined}
                     onHover={handleHover}
                   />
@@ -391,6 +421,7 @@ export default function HexGrid({
               stats={stats}
               companionLocations={companionLocations}
               controlFeel={controlFeel}
+              traitPreview={intentTraitPreview}
               interfaceDensity={interfaceDensity}
             />
 

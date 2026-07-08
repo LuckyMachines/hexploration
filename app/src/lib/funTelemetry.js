@@ -166,8 +166,14 @@ function buildRisk({ activeTab, movePath = [], movement = 0, routeStatus, stats 
   return { score: clamped, level, label, body };
 }
 
-function buildCombo({ activeTab, movePath = [], activeInventory = {}, routeStatus, stats = {} }) {
+function buildCombo({ activeTab, movePath = [], activeInventory = {}, routeStatus, stats = {}, traitPreview = null }) {
   const pressure = statPressure(stats);
+  if (traitPreview?.effect?.matched) {
+    return { label: `${traitPreview.trait.label} Read`, body: traitPreview.body, tone: traitPreview.effect.warning ? 'red' : 'blue' };
+  }
+  if (traitPreview?.effect?.warning) {
+    return { label: `${traitPreview.trait.label} Warning`, body: traitPreview.warning || traitPreview.body, tone: 'red' };
+  }
   if (movePath.length > 0 && routeStatus?.isValid && activeInventory.shield) {
     return { label: 'Shielded March', body: 'The route and gear agree. The path feels earned.', tone: 'blue' };
   }
@@ -203,7 +209,14 @@ function buildNearMiss({ risk, routeStatus, movePath = [], movement = 0, boardIn
   return { active: false, label: 'Clean', body: 'No near miss registered.' };
 }
 
-function buildRareBeat({ location, events = [], activeTab, risk }) {
+function buildRareBeat({ location, events = [], activeTab, risk, traitPreview = null }) {
+  if (traitPreview?.trait) {
+    return {
+      label: traitPreview.trait.label,
+      body: traitPreview.body,
+      tone: traitPreview.effect?.warning ? 'red' : traitPreview.effect?.matched ? 'green' : 'blue',
+    };
+  }
   const seed = stableIndex([location, events.length, activeTab, risk.level], 10);
   if (seed === 0 || activeTab === Action.DIG) {
     return { label: 'Lucky Find', body: 'Something catches the light before the rules know what it is.', tone: 'gold' };
@@ -214,7 +227,9 @@ function buildRareBeat({ location, events = [], activeTab, risk }) {
   return { label: 'Small Sign', body: 'The place notices the expedition noticing it.', tone: 'blue' };
 }
 
-function buildPreview({ activeTab, movePath = [], routeStatus, risk, activeInventory = {} }) {
+function buildPreview({ activeTab, movePath = [], routeStatus, risk, activeInventory = {}, traitPreview = null }) {
+  if (traitPreview?.effect?.warning) return { label: `${traitPreview.trait.label} Warning`, body: traitPreview.warning || traitPreview.body };
+  if (traitPreview?.effect?.matched) return { label: `${traitPreview.trait.label} Match`, body: traitPreview.body };
   if (routeStatus?.isValid === false) {
     return { label: 'Recover', body: 'Undo the bad step and the explorer visibly settles.' };
   }
@@ -235,8 +250,9 @@ function buildPreview({ activeTab, movePath = [], routeStatus, risk, activeInven
   return { label: 'Hold', body: 'Doing nothing still changes the explorer posture.' };
 }
 
-function buildSoundCues({ activeTab, risk, hasSubmitted, routeStatus, combo }) {
+function buildSoundCues({ activeTab, risk, hasSubmitted, routeStatus, combo, traitPreview = null }) {
   const cues = [];
+  if (traitPreview?.trait) cues.push({ key: `trait-${traitPreview.trait.id}`, label: traitPreview.effect?.warning ? 'warning ping' : 'map ping', tone: traitPreview.effect?.warning ? 'red' : 'blue' });
   if (hasSubmitted) cues.push({ key: 'submit', label: CUE_BY_TONE.submit[0], tone: 'green' });
   if (routeStatus?.isValid === false) cues.push({ key: 'fail', label: CUE_BY_TONE.fail[0], tone: 'red' });
   if (risk.level === 'hot' || risk.level === 'redline') cues.push({ key: 'danger', label: CUE_BY_TONE.danger[0], tone: 'red' });
@@ -270,7 +286,13 @@ function buildTurnScene({ phase, queueTelemetry = {}, location, stats = {}, acti
   };
 }
 
-function buildNamedMoment({ activeTab, location, movePath = [], risk, hasSubmitted }) {
+function buildNamedMoment({ activeTab, location, movePath = [], risk, hasSubmitted, traitPreview = null }) {
+  if (traitPreview?.effect?.warning) {
+    return { title: `${traitPreview.trait.label} Warning`, body: traitPreview.warning || traitPreview.body };
+  }
+  if (traitPreview?.effect?.matched) {
+    return { title: `${traitPreview.trait.label} Play`, body: traitPreview.body };
+  }
   const titles = MOMENT_TITLES[activeTab] || MOMENT_TITLES[Action.IDLE];
   const title = pick(titles, [activeTab, location, movePath.length, risk.level, hasSubmitted ? 'locked' : 'open']);
   const body = hasSubmitted
@@ -281,7 +303,13 @@ function buildNamedMoment({ activeTab, location, movePath = [], risk, hasSubmitt
   return { title, body };
 }
 
-function buildBark({ activeTab, mood, location, movePath = [], risk }) {
+function buildBark({ activeTab, mood, location, movePath = [], risk, traitPreview = null }) {
+  if (traitPreview?.effect?.warning) {
+    return { line: `${traitPreview.trait.label} makes this choice expensive.`, tone: 'red' };
+  }
+  if (traitPreview?.effect?.matched) {
+    return { line: `${traitPreview.trait.label} is the clean read.`, tone: 'blue' };
+  }
   const action = risk.level === 'redline' ? Action.FLEE : activeTab;
   const line = pick(ACTION_BARKS[action] || ACTION_BARKS[Action.IDLE], [action, mood.key, location, movePath.length, risk.level]);
   return {
@@ -329,7 +357,7 @@ export function buildActionDrama(action, context = {}) {
     body: preview.body,
     riskLabel: risk.label,
     riskScore: risk.score,
-    cue: activeTab === Action.DIG ? 'bright ping' : activeTab === Action.FLEE ? 'red tremor' : 'lock snap',
+    cue: context.traitPreview?.effect?.warning ? 'warning ping' : context.traitPreview?.trait ? 'map ping' : activeTab === Action.DIG ? 'bright ping' : activeTab === Action.FLEE ? 'red tremor' : 'lock snap',
     receipt: `${meta.label} locked as "${namedMoment.title}".`,
   };
 }
@@ -350,8 +378,8 @@ export function buildFunTelemetry(context = {}) {
   const preview = buildPreview({ ...context, risk });
   const rhythm = buildRhythm(context);
   const turnScene = buildTurnScene({ ...context, risk });
-  const namedMoment = buildNamedMoment({ activeTab, location, movePath, risk, hasSubmitted });
-  const bark = buildBark({ activeTab, mood, location, movePath, risk });
+  const namedMoment = buildNamedMoment({ ...context, activeTab, location, movePath, risk, hasSubmitted });
+  const bark = buildBark({ ...context, activeTab, mood, location, movePath, risk });
   const soundCues = buildSoundCues({ ...context, risk, combo });
   const journalEntries = buildJournalEntries({ events, namedMoment, rareBeat, location, activeTab });
 

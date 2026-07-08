@@ -362,12 +362,12 @@ async function registerLocalPlayers(env) {
 
 test('home surface renders cleanly on the game app', async ({ page }, testInfo) => {
   await page.goto('/', { waitUntil: 'domcontentloaded' });
-  await expect(page.getByRole('heading', { name: /Xenovoya/i })).toBeVisible();
+  await expect(page.getByRole('heading', { name: /^Xenovoya$/i }).first()).toBeVisible();
 
   await ensureCaptureDir();
   await page.screenshot({
     path: path.join(captureDir, `${testInfo.project.name}-home.png`),
-    fullPage: true,
+    fullPage: !['pixel-7', 'iphone-13'].includes(testInfo.project.name),
   });
 });
 

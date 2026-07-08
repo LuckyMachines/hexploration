@@ -11,7 +11,7 @@ export const DISCOVERY_TOPICS = [
   {
     id: 'turn-based-board-game',
     name: 'Chart & Depart Board Game',
-    description: 'Chart & Depart scenarios where every action changes pressure, route shape, and the decision to leave.',
+    description: 'Chart & Depart scenarios where every action changes Depart Pressure, visible escape cost, counterplay, route shape, and the decision to leave.',
     tags: ['chart-and-depart', 'board-game', 'strategy'],
   },
   {
@@ -45,7 +45,7 @@ const STATIC_ROUTES = [
     path: '/',
     type: 'home',
     title: 'Xenovoya',
-    description: 'Play Xenovoya, a Chart & Depart expedition game about mapping hostile terrain, recovering value, and escaping before the route collapses.',
+    description: 'Play Xenovoya, a Chart & Depart expedition game about mapping hostile terrain, reading visible escape costs, choosing counterplay, and escaping before the route collapses.',
     priority: 1,
     changefreq: 'weekly',
   },

@@ -3,6 +3,7 @@ import Modal from '../shared/Modal';
 export default function SubmitConfirmation({
   submission,
   routeStatus,
+  traitPreview,
   isOpen,
   onCancel,
   onConfirm,
@@ -44,6 +45,28 @@ export default function SubmitConfirmation({
                 style={{ width: `${submission.drama.riskScore}%` }}
               />
             </div>
+          </div>
+        )}
+
+        {traitPreview?.trait && (
+          <div className={`rounded border px-3 py-2 ${
+            traitPreview.effect?.warning
+              ? 'alive-risk-redline border-signal-red/40 bg-signal-red/10 text-signal-red'
+              : traitPreview.effect?.matched
+                ? 'border-oxide-green/35 bg-oxide-green/5 text-oxide-green'
+                : 'border-blueprint/35 bg-blueprint/5 text-blueprint'
+          }`}>
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <p className="font-mono text-[10px] uppercase tracking-[0.26em] opacity-80">
+                Tile consequence
+              </p>
+              <p className="font-mono text-[10px] uppercase tracking-[0.18em] opacity-80">
+                {traitPreview.trait.label}
+              </p>
+            </div>
+            <p className="mt-2 font-mono text-xs leading-relaxed text-exp-text">
+              {traitPreview.body}
+            </p>
           </div>
         )}
 

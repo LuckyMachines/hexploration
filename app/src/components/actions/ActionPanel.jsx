@@ -17,6 +17,9 @@ import ActionSimulator from './ActionSimulator';
 import SubmitConfirmation from './SubmitConfirmation';
 import ReceiptDrawer from './ReceiptDrawer';
 import { useUserPreferences } from '../../hooks/useUserPreferences';
+import EscapeCostPreview from '../expedition/EscapeCostPreview';
+import CostReductionActions from '../expedition/CostReductionActions';
+import TraitPreviewPanel from '../expedition/TraitPreviewPanel';
 
 const TABS = [
   Action.MOVE,
@@ -64,6 +67,9 @@ export default function ActionPanel({
   turnState,
   funTelemetry,
   interfaceDensity,
+  departPressure,
+  escapeCostPreview,
+  traitPreview,
 }) {
   const [localActiveTab, setLocalActiveTab] = useState(Action.MOVE);
   const [pendingSubmission, setPendingSubmission] = useState(null);
@@ -99,6 +105,9 @@ export default function ActionPanel({
     routeStatus,
     activeInventory: activeInv,
     turnState,
+    departPressure,
+    escapeCostPreview,
+    traitPreview,
   };
   const activeExplanation = getActionExplanation(activeTab, actionContext);
   const blockReason = getActionBlockReason({ action: activeTab, ...actionContext });
@@ -181,6 +190,9 @@ export default function ActionPanel({
         currentLocation,
         stats,
         boardInput,
+        departPressure,
+        escapeCostPreview,
+        traitPreview,
       }),
     });
   };
@@ -229,7 +241,7 @@ export default function ActionPanel({
       </div>
 
       <div className="px-4 pt-3">
-        <div className="grid gap-2 grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-2 grid-cols-2 lg:grid-cols-5">
           <div className="border border-exp-border/60 rounded bg-exp-dark/40 px-3 py-2">
             <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-exp-text-dim">Location</div>
             <div className="mt-1 font-mono text-xs text-compass-bright tabular-nums break-all">
@@ -253,6 +265,20 @@ export default function ActionPanel({
             <div className="mt-1 flex items-center gap-1.5 font-mono text-xs uppercase tracking-widest">
               <span className="h-2 w-2 rounded-full bg-current" />
               {txPhase}
+            </div>
+          </div>
+          <div className={`border rounded px-3 py-2 ${
+            escapeCostPreview?.tone === 'red' || departPressure?.band?.tone === 'red'
+              ? 'border-signal-red/40 bg-signal-red/10 text-signal-red'
+              : escapeCostPreview?.tone === 'orange' || departPressure?.band?.tone === 'orange'
+                ? 'border-desert/40 bg-desert/10 text-desert'
+                : escapeCostPreview?.tone === 'green' || departPressure?.band?.tone === 'green'
+                  ? 'border-oxide-green/35 bg-oxide-green/5 text-oxide-green'
+                  : 'border-compass/35 bg-compass/5 text-compass-bright'
+          }`}>
+            <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-exp-text-dim">Escape Cost</div>
+            <div className="mt-1 font-mono text-xs uppercase tracking-widest">
+              {escapeCostPreview ? escapeCostPreview.headline : departPressure ? `${departPressure.pressure} ${departPressure.band.label}` : 'Unknown'}
             </div>
           </div>
         </div>
@@ -347,6 +373,38 @@ export default function ActionPanel({
               {actionStake.requirement}
             </p>
           </div>
+          {escapeCostPreview?.bestMitigation && (
+            <div className="rounded border border-compass/30 bg-compass/5 px-3 py-2">
+              <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-compass">
+                Best reduction
+              </p>
+              <p className="mt-1 font-mono text-xs uppercase tracking-[0.12em] text-exp-text">
+                {escapeCostPreview.bestMitigation.label}
+              </p>
+              <p className="mt-1 font-mono text-[11px] leading-relaxed text-exp-text-dim">
+                {escapeCostPreview.bestMitigation.effect}
+              </p>
+            </div>
+          )}
+          {traitPreview?.trait && (
+            <div className={`rounded border px-3 py-2 ${
+              traitPreview.effect?.warning
+                ? 'border-signal-red/35 bg-signal-red/5'
+                : traitPreview.effect?.matched
+                  ? 'border-oxide-green/35 bg-oxide-green/5'
+                  : 'border-blueprint/30 bg-blueprint/5'
+            }`}>
+              <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-exp-text-dim">
+                Trait effect
+              </p>
+              <p className="mt-1 font-mono text-xs uppercase tracking-[0.12em] text-exp-text">
+                {traitPreview.trait.label}
+              </p>
+              <p className="mt-1 font-mono text-[11px] leading-relaxed text-exp-text-dim">
+                {traitPreview.body}
+              </p>
+            </div>
+          )}
           {funTelemetry && (
             <div className="md:col-span-3 grid gap-2 md:grid-cols-[1fr_auto]">
               <div className="rounded border border-compass/25 bg-compass/5 px-3 py-2">
@@ -426,6 +484,7 @@ export default function ActionPanel({
             path={movePath}
             validation={moveValidation}
             routeStatus={routeStatus}
+            traitPreview={traitPreview}
             blockedReason={blockReason}
             onSubmit={() => requestSubmit(Action.MOVE, movePath)}
             onClear={onMoveClear}
@@ -464,9 +523,32 @@ export default function ActionPanel({
         {activeTab === Action.FLEE && (
           <div className="space-y-3">
             <p className="font-mono text-xs text-exp-text-dim">
-              Depart from the landing site before pressure closes the route. You need to be at the
-              landing zone with enough recovered value.
+              {escapeCostPreview?.body || departPressure?.readiness?.body || 'Depart from the landing site before pressure closes the route. You need to be at the landing zone with enough recovered value.'}
             </p>
+            {departPressure && (
+              <div className={`rounded border px-3 py-2 ${
+                departPressure.readiness.canFlee
+                  ? 'border-oxide-green/35 bg-oxide-green/5'
+                  : 'border-exp-border/70 bg-exp-dark/35'
+              }`}>
+                <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-exp-text-dim">
+                  Escape readiness
+                </p>
+                <p className="mt-1 font-mono text-xs uppercase tracking-[0.14em] text-exp-text">
+                  {departPressure.readiness.label}
+                </p>
+                <p className="mt-1 font-mono text-[11px] leading-relaxed text-exp-text-dim">
+                  Pressure {departPressure.pressure}; route stability {departPressure.routeStability}; recovered value {departPressure.recoveredValue}.
+                </p>
+              </div>
+            )}
+            <EscapeCostPreview preview={escapeCostPreview} />
+            <TraitPreviewPanel preview={traitPreview} />
+            <CostReductionActions
+              preview={escapeCostPreview}
+              activeAction={activeTab}
+              onAction={setActiveTab}
+            />
             <button
               onClick={() => requestSubmit(Action.FLEE)}
               disabled={isLocked}
@@ -503,6 +585,7 @@ export default function ActionPanel({
             hasCampsiteKit={activeInv?.campsite ?? false}
             hasSubmitted={hasSubmitted}
             isSpectator={isSpectator}
+            traitPreview={traitPreview}
           />
         </div>
       </details>
@@ -558,6 +641,7 @@ export default function ActionPanel({
         isOpen={Boolean(pendingSubmission)}
         submission={pendingSubmission}
         routeStatus={routeStatus}
+        traitPreview={traitPreview}
         onCancel={() => setPendingSubmission(null)}
         onConfirm={confirmSubmit}
       />

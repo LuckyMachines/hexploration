@@ -155,6 +155,10 @@ test('field manual modal opens and closes with Escape', async ({ page }) => {
   await helpButton.focus();
   await page.keyboard.press('Enter');
   await expect(page.getByRole('dialog', { name: /Field Manual/i })).toBeVisible();
+  await expect(page.getByText(/Depart Pressure measures how hard it is becoming to leave cleanly/i)).toBeVisible();
+  await expect(page.getByText(/Escape Cost Preview turns pressure into a forecast/i)).toBeVisible();
+  await expect(page.getByText(/Cost Reduction Actions/i)).toBeVisible();
+  await expect(page.getByText(/Tile Traits/i)).toBeVisible();
 
   await page.keyboard.press('Escape');
   await expect(page.getByRole('dialog', { name: /Field Manual/i })).toBeHidden();

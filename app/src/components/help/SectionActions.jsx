@@ -11,7 +11,7 @@ const ACTIONS = [
   {
     name: 'Move',
     color: 'border-compass/40',
-    desc: 'Travel across the hex grid to chart new ground and keep the route home alive. Your Movement stat determines how many tiles you can traverse.',
+    desc: 'Travel across the hex grid to chart new ground and keep the route home alive. Signal, Old Trail, and High Ground make route planning more readable, while Unstable Ground warns that the step may get expensive.',
   },
   {
     name: 'Setup Camp',
@@ -26,22 +26,22 @@ const ACTIONS = [
   {
     name: 'Dig',
     color: 'border-desert/40',
-    desc: 'Search your current tile for artifacts and relics. Digging creates payoff, but it spends time while pressure builds.',
+    desc: 'Search your current tile for artifacts and relics. Cache and Relic Vein can make Dig tempting, but Unstable Ground or greedy pressure can move the forecast from artifact risk to crew risk.',
   },
   {
     name: 'Rest',
     color: 'border-blueprint/40',
-    desc: 'Recover one stat point so the crew can survive another turn, reach extraction, or risk one more reveal.',
+    desc: 'Recover one stat point so the crew can survive another turn, reach extraction, or reduce crew-risk pressure. Shelter turns Rest into a more legible board play.',
   },
   {
     name: 'Help',
     color: 'border-compass-bright/40',
-    desc: 'Assist another explorer so a weak teammate does not strand the expedition.',
+    desc: 'Assist another explorer so a weak teammate does not become the visible cost of delay. Echo Field makes Help feel spatial when crew-risk is rising.',
   },
   {
     name: 'Flee',
     color: 'border-signal-red/40',
-    desc: 'Escape from the landing site when the crew has recovered enough value. This is the Depart half of the run.',
+    desc: 'Escape from the landing site when the crew has recovered enough value. Flee is the strongest reduction when the forecast already names value or crew at risk, especially after route traits have shown the way home.',
   },
 ];
 

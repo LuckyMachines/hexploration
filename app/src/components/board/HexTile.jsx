@@ -4,7 +4,7 @@ import { TERRAIN_ICONS } from '../../lib/terrainIcons';
 
 export default function HexTile({
   cx, cy, tileType, alias, hasCampsite,
-  isSelected, isHovered, isReachable, isInventoryAssisted, isIntent, isCommitted, onClick, onHover,
+  isSelected, isHovered, isReachable, isInventoryAssisted, isIntent, isCommitted, trait, onClick, onHover,
 }) {
   const fillColor = TILE_COLORS[tileType] || TILE_COLORS[Tile.NONE];
   const TerrainIcon = TERRAIN_ICONS[tileType];
@@ -62,6 +62,20 @@ export default function HexTile({
       {TerrainIcon && (
         <TerrainIcon transform={`translate(${cx},${cy})`} style={{ color: fillColor }} />
       )}
+      {trait?.isKnown && (
+        <g transform={`translate(${cx - 15},${cy - 16})`}>
+          <title>{`${trait.label}: ${trait.summary}`}</title>
+          <circle r="6" fill="#10140d" stroke={traitStroke(trait.tone)} strokeWidth="1" opacity="0.92" />
+          <text
+            textAnchor="middle"
+            dominantBaseline="central"
+            className="fill-exp-text"
+            style={{ fontSize: '7px', fontFamily: 'JetBrains Mono, monospace', fontWeight: 700 }}
+          >
+            {trait.glyph}
+          </text>
+        </g>
+      )}
       {isRelic && (
         <circle
           cx={cx}
@@ -96,4 +110,14 @@ export default function HexTile({
       )}
     </g>
   );
+}
+
+function traitStroke(tone = '') {
+  return {
+    green: '#3a8a50',
+    gold: '#e8c860',
+    orange: '#c4964a',
+    red: '#e0604f',
+    blue: '#5090c0',
+  }[tone] || '#7a8088';
 }
