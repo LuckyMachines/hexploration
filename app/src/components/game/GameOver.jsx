@@ -7,6 +7,7 @@ import { PLAYER_COLORS } from '../../lib/constants';
 import { emitMusicDirectorState, trackForGameOverOutcome } from '../../lib/musicDirector';
 import { deriveDepartPressure } from '../../lib/departPressure';
 import { deriveEscapeCostPreview } from '../../lib/escapeCostPreview';
+import { deriveExpeditionArc } from '../../lib/expeditionArc';
 import { useLandingSite } from '../../hooks/useLandingSite';
 
 export default function GameOver({ gameId }) {
@@ -53,6 +54,25 @@ export default function GameOver({ gameId }) {
     }),
     [expedition.activeInventory, expedition.location, expedition.stats, expedition.turnState, finalPressure, landingSite, players],
   );
+  const finalArc = useMemo(
+    () => deriveExpeditionArc({
+      departPressure: finalPressure,
+      escapeCostPreview: finalEscapeCost,
+      revealedCount: expedition.events?.length || 0,
+      crew: players,
+      visibleOpportunity: finalPressure.recoveredValue <= 0,
+    }),
+    [expedition.events, finalEscapeCost, finalPressure, players],
+  );
+  const chapterTransition = finalArc.id === 'final-call'
+    ? 'Survey -> Greed Window -> Redline -> Final Call'
+    : finalArc.id === 'redline'
+      ? 'Survey -> Greed Window -> Redline'
+      : finalArc.id === 'departure-window'
+        ? 'Survey -> Greed Window -> Departure Window'
+        : finalArc.id === 'greed-window'
+          ? 'Survey -> Greed Window'
+          : 'Survey';
 
   useEffect(() => {
     emitMusicDirectorState(trackForGameOverOutcome({ lostCount, survivorCount }));
@@ -123,6 +143,26 @@ export default function GameOver({ gameId }) {
                 <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-exp-text-dim">Recovered Value</p>
                 <p className="mt-1 font-mono text-xs uppercase tracking-[0.12em] text-exp-text">
                   {finalPressure.recoveredValue}
+                </p>
+              </div>
+            </div>
+            <div className="mx-auto mt-3 grid max-w-xl gap-2 sm:grid-cols-3">
+              <div className="rounded border border-blueprint/30 bg-blueprint/5 px-3 py-2">
+                <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-exp-text-dim">Final Arc</p>
+                <p className="mt-1 font-mono text-xs uppercase tracking-[0.12em] text-exp-text">
+                  {finalArc.label}
+                </p>
+              </div>
+              <div className="rounded border border-exp-border bg-exp-dark/45 px-3 py-2">
+                <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-exp-text-dim">Chapter Path</p>
+                <p className="mt-1 font-mono text-[11px] uppercase tracking-[0.08em] text-exp-text">
+                  {chapterTransition}
+                </p>
+              </div>
+              <div className="rounded border border-compass/30 bg-compass/5 px-3 py-2">
+                <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-exp-text-dim">Timing</p>
+                <p className="mt-1 font-mono text-xs uppercase tracking-[0.12em] text-exp-text">
+                  {finalArc.id === 'final-call' ? 'After Final Call' : 'Before Final Call'}
                 </p>
               </div>
             </div>

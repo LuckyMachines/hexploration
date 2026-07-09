@@ -335,6 +335,11 @@ export function runTitleFor({ run = {}, summary = {}, quality = null } = {}) {
   const escapeCost = summary.escapeCostPreview || {};
   const mitigation = (run.timeline || []).find((event) => event.mitigationApplied?.matched)?.mitigationApplied;
   const traitMoment = (run.timeline || []).find((event) => event.tileTrait?.matched || event.tileTrait?.warning)?.tileTrait;
+  const strongestArc = summary.strongestArc;
+  if (strongestArc?.id === 'final-call') return 'The Final Call';
+  if (strongestArc?.id === 'redline') return 'The Redline Run';
+  if (strongestArc?.id === 'greed-window') return 'The Greed Window';
+  if (strongestArc?.id === 'departure-window' && summary.outcome === 'escaped' && escapeCost.level === 'clean') return 'The Clean Departure Arc';
   if (traitMoment?.id === 'signal') return 'The Signal Read';
   if (traitMoment?.id === 'old-trail') return 'The Old Trail';
   if (traitMoment?.id === 'shelter') return 'The Shelter Save';
@@ -366,6 +371,7 @@ export function badgesForRun(run = {}, summary = {}, quality = null) {
   const mitigationIds = new Set((run.timeline || []).filter((event) => event.mitigationApplied?.matched).map((event) => event.mitigationApplied.id));
   const traitIds = new Set((run.timeline || []).filter((event) => event.tileTrait?.matched || event.tileTrait?.warning).map((event) => event.tileTrait.id));
   const aftermathCategories = new Set((run.timeline || []).filter((event) => event.aftermathMoment).map((event) => event.aftermathMoment.category));
+  const arcIds = new Set((run.timeline || []).filter((event) => event.expeditionArc).map((event) => event.expeditionArc.id));
   if (mitigationIds.size > 0) badges.push('Cost Cut');
   if (mitigationIds.has('stabilize-route') || mitigationIds.has('return-to-landing')) badges.push('Route Stabilized');
   if (mitigationIds.has('help-weakest') || mitigationIds.has('rest-crew') || mitigationIds.has('regroup')) badges.push('Crew Secured');
@@ -384,6 +390,11 @@ export function badgesForRun(run = {}, summary = {}, quality = null) {
   if (aftermathCategories.has('crew-save') && traitIds.has('shelter')) badges.push('Shelter Recovery');
   if (aftermathCategories.has('trait-warning') && traitIds.has('relic-vein')) badges.push('Costly Dig');
   if (aftermathCategories.has('artifact-payoff')) badges.push('Artifact Lift');
+  if (arcIds.has('survey')) badges.push('Surveyor');
+  if (arcIds.has('greed-window')) badges.push('Greed Window');
+  if (arcIds.has('departure-window')) badges.push('Departure Read');
+  if (arcIds.has('redline')) badges.push('Redline Survivor');
+  if (arcIds.has('final-call')) badges.push('Final Call');
   if (quality?.recoveryMoments > 0 && (run.state?.danger || 0) >= 55) badges.push('Clutch Recovery');
   if ((run.fun?.maxDigStreak || 0) >= 2 && asArtifactArray(run.state?.artifacts).length > 0) badges.push('Greedy Dig');
   if ((run.state?.danger || 0) <= 35 && summary.outcome === 'escaped') badges.push('Clean Run');

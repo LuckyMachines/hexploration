@@ -1,6 +1,6 @@
 import { aftermathToneClass } from '../../lib/turnAftermath';
 
-export default function AftermathMoment({ moment, departPressure, escapeCostPreview }) {
+export default function AftermathMoment({ moment, departPressure, escapeCostPreview, expeditionArc }) {
   if (!moment) return null;
 
   return (
@@ -43,6 +43,16 @@ export default function AftermathMoment({ moment, departPressure, escapeCostPrev
       </div>
 
       <div className="mt-3 grid gap-2 sm:grid-cols-3">
+        {expeditionArc && (
+          <div className="rounded border border-current/20 bg-exp-dark/30 px-2 py-1.5">
+            <p className="font-mono text-[10px] uppercase tracking-[0.18em] opacity-70">
+              Run chapter
+            </p>
+            <p className="mt-1 font-mono text-xs text-exp-text">
+              {expeditionArc.label}
+            </p>
+          </div>
+        )}
         {(moment.receipts || []).map((item) => (
           <div key={`${item.label}-${item.value}`} className="rounded border border-current/20 bg-exp-dark/30 px-2 py-1.5">
             <p className="font-mono text-[10px] uppercase tracking-[0.18em] opacity-70">

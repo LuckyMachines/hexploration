@@ -77,6 +77,14 @@ export default function SectionOverview() {
         one more turn.
       </p>
 
+      <SectionHeader>Expedition Arc</SectionHeader>
+      <p>
+        The Arc Track names the run chapter: Survey, Greed Window, Departure
+        Window, Redline, or Final Call. Use it to understand whether the next
+        choice is about learning the map, taking value, leaving cleanly, reducing
+        a named cost, or making the run-defining call.
+      </p>
+
       <SectionHeader>Stats</SectionHeader>
       <p>
         Each explorer has three stats: <span className="text-compass">Movement</span> (tiles per turn),

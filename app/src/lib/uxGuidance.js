@@ -1,6 +1,7 @@
 import { Action } from './constants';
 import { getActionMeta } from './actionMeta';
 import { TurnState } from './turnState';
+import { EXPEDITION_ARC_IDS } from './expeditionArc';
 
 export function getActionBlockReason({
   action,
@@ -70,10 +71,12 @@ export function getBestActionSuggestion({
   departPressure,
   escapeCostPreview,
   traitPreview,
+  expeditionArc,
 } = {}) {
   if (isSpectator) return { action: null, label: 'Watch the run', reason: 'This wallet is spectating.' };
   if (turnState?.state === TurnState.RESOLVING) return { action: null, label: 'Wait for resolution', reason: 'The queue is processing submitted actions.' };
   if (hasSubmitted) return { action: null, label: 'Wait for crew', reason: 'Your action is locked.' };
+  if (expeditionArc?.id === EXPEDITION_ARC_IDS.FINAL_CALL) return { action: Action.FLEE, label: 'Final Call', reason: expeditionArc.directive };
   if (traitPreview?.effect?.warning && traitPreview.trait?.preferredAction && traitPreview.trait.preferredAction !== activeTab) {
     return {
       action: traitPreview.trait.preferredAction,
@@ -133,12 +136,16 @@ export function getTurnGuidance({
   departPressure,
   escapeCostPreview,
   traitPreview,
+  expeditionArc,
 } = {}) {
   if (!isConnected) return { title: 'Connect wallet', body: 'Connect a wallet before joining or submitting actions.', tone: 'gold' };
   if (isSpectator) return { title: 'Watching expedition', body: 'You can inspect the board and crew, but this wallet is not registered.', tone: 'blue' };
   if (turnState?.state === TurnState.RESOLVING) return { title: 'Queue resolving', body: 'The crew has submitted enough actions. Wait for chain resolution.', tone: 'blue' };
   if (hasSubmitted) return { title: 'Action locked', body: 'Your turn is submitted. Waiting on crew or queue processing.', tone: 'green' };
   if (movePath.length > 0 && routeStatus?.isValid === false) return { title: 'Fix route', body: routeStatus.invalidReason || 'Undo, clear, or choose a reachable adjacent tile.', tone: 'red' };
+  if (expeditionArc?.id === EXPEDITION_ARC_IDS.FINAL_CALL) {
+    return { title: 'Final Call', body: expeditionArc.directive, tone: 'red' };
+  }
   if (movePath.length > 0) {
     const pressureCopy = departPressure
       ? ` Depart Pressure: ${departPressure.band.label} ${departPressure.pressure}.`
@@ -154,6 +161,19 @@ export function getTurnGuidance({
       body: `${traitPreview.body} Preferred action: ${traitPreview.preferredActionLabel}.`,
       tone: traitPreview.effect?.warning ? 'red' : traitPreview.effect?.matched ? 'green' : 'blue',
     };
+  }
+  if (expeditionArc?.id === EXPEDITION_ARC_IDS.REDLINE) {
+    const reduction = escapeCostPreview?.bestMitigation?.label ? ` Best reduction: ${escapeCostPreview.bestMitigation.label}.` : '';
+    return { title: 'Redline', body: `${expeditionArc.directive}${reduction}`, tone: 'red' };
+  }
+  if (expeditionArc?.id === EXPEDITION_ARC_IDS.DEPARTURE_WINDOW) {
+    return { title: 'Departure Window', body: `${expeditionArc.playerQuestion} ${expeditionArc.directive}`, tone: 'green' };
+  }
+  if (expeditionArc?.id === EXPEDITION_ARC_IDS.GREED_WINDOW) {
+    return { title: 'Greed Window', body: `${expeditionArc.playerQuestion} ${expeditionArc.directive}`, tone: 'gold' };
+  }
+  if (expeditionArc?.id === EXPEDITION_ARC_IDS.SURVEY) {
+    return { title: 'Survey', body: `${expeditionArc.playerQuestion} ${expeditionArc.directive}`, tone: 'blue' };
   }
   if (escapeCostPreview && ['artifact-risk', 'crew-risk', 'route-collapse'].includes(escapeCostPreview.costType)) {
     const mitigationCopy = escapeCostPreview.bestMitigation

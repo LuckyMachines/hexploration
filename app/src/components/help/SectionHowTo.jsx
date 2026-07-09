@@ -9,6 +9,7 @@ function SectionHeader({ children }) {
 
 const STEPS = [
   'Enter an expedition and read the landing site.',
+  'Read the current Expedition Arc chapter and follow its directive.',
   'Move to reveal useful ground without losing the route home.',
   'Read the targeted tile trait before submitting a route.',
   'Dig when the tile is worth the risk and the crew can afford the time.',
@@ -16,6 +17,7 @@ const STEPS = [
   'Watch what the next delay puts at risk as Depart Pressure rises.',
   'When a cost appears, pick the listed reduction action unless you are choosing to gamble.',
   'After resolution, read Turn Aftermath before planning the next action.',
+  'Check whether the Expedition Arc changed after aftermath.',
   'Return to the landing site with enough recovered value.',
   'Choose Flee to escape and lock in the run.',
 ];
@@ -28,6 +30,7 @@ const TIPS = [
   'Escape Cost Preview is a forecast: clean, close, artifact risk, crew risk, or route collapse.',
   'Cost Reduction Actions show the counterplay before you commit.',
   'Turn Aftermath is the one-sentence consequence of the last resolution.',
+  'Expedition Arc is the run chapter: Survey, Greed Window, Departure Window, Redline, or Final Call.',
   'Dig only when the crew can afford the time.',
   'Rest before zero movement turns the map into a trap.',
   'Use Help to keep a teammate from becoming the reason everyone stays too long.',

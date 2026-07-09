@@ -416,6 +416,28 @@ export function applyGrowthAction(run, actionId) {
     },
     previousDepartPressure: before.departPressure ?? before.danger,
   });
+  const expeditionArc = deriveExpeditionArc({
+    departPressure: {
+      pressure: after.departPressure,
+      routeStability: after.routeStability,
+      recoveredValue: after.artifacts.length,
+      currentDistanceToLanding: after.distance,
+      readiness: { canFlee: after.distance <= 0 && after.artifacts.length > 0 },
+    },
+    escapeCostPreview,
+    traitPreview: {
+      trait: tileTrait,
+      effect: { matched: tileTrait.matched, warning: tileTrait.warning },
+    },
+    revealedCount: after.revealed,
+    crew: Array.from({ length: run.scenario.players }, (_, index) => ({
+      movement: index < after.savedPlayers ? 3 : after.morale <= 35 ? 1 : 2,
+      agility: index < after.savedPlayers ? 3 : after.danger >= 70 ? 1 : 2,
+      dexterity: 2,
+      isActive: true,
+    })),
+    visibleOpportunity: tileTrait.category === 'value' || tileTrait.category === 'reveal',
+  });
   const event = {
     turn: nextTurn,
     action,
@@ -438,6 +460,7 @@ export function applyGrowthAction(run, actionId) {
     comebackLabel,
     fleeOutcome,
     aftermathMoment,
+    expeditionArc,
     escapeCostPreview: (action === 'flee' || after.departPressure >= 50) ? escapeCostPreview : null,
     mitigationApplied,
     discoveredArtifact,
@@ -503,6 +526,12 @@ export function summarizeGrowthRun(run) {
   const recoveryCount = timeline.filter((event) => event.feelingLabel === 'recovery').length;
   const aftermathCount = timeline.filter((event) => event.aftermathMoment).length;
   const bestAftermath = bestBy(timeline, (event) => (event.aftermathMoment?.score || 0) + event.lifePulse * 0.2);
+  const arcCounts = timeline.reduce((acc, event) => {
+    const id = event.expeditionArc?.id;
+    if (id) acc[id] = (acc[id] || 0) + 1;
+    return acc;
+  }, {});
+  const strongestArcEvent = bestBy(timeline, (event) => event.expeditionArc?.priority || 0);
   const arcScore = clamp(averagePulse * 0.52 + averageAgency * 0.25 + (100 - averageFriction) * 0.23 + payoffCount * 4 + recoveryCount * 3 + (firstAlive && firstAlive.turn <= 2 ? 8 : 0));
   const startPulse = timeline.slice(0, 2).reduce((sum, event) => sum + event.lifePulse, 0) / Math.max(1, Math.min(2, timeline.length));
   const endPulse = timeline.slice(-2).reduce((sum, event) => sum + event.lifePulse, 0) / Math.max(1, Math.min(2, timeline.length));
@@ -536,6 +565,9 @@ export function summarizeGrowthRun(run) {
     routeStability: run.state.routeStability ?? clamp(100 - (run.state.departPressure ?? run.state.danger ?? 0)),
     bestMoment,
     bestAftermath: bestAftermath?.aftermathMoment || null,
+    strongestArc: strongestArcEvent?.expeditionArc || null,
+    arcCounts,
+    arcTransition: arcTransitionSummary(timeline),
     aftermathCount,
     worstMoment,
     firstAliveTurn: firstAlive?.turn || null,
@@ -568,9 +600,10 @@ export function shareTextForRun(run) {
   const mitigation = (run.timeline || []).find((event) => event.mitigationApplied?.matched)?.mitigationApplied;
   const traitMoment = (run.timeline || []).find((event) => event.tileTrait?.matched || event.tileTrait?.warning)?.tileTrait;
   const aftermath = summary.bestAftermath?.title ? ` Aftermath: ${summary.bestAftermath.title}.` : '';
+  const arc = summary.strongestArc?.label ? ` Reached ${summary.strongestArc.label} at pressure ${summary.strongestArc.context?.pressure ?? summary.departPressure}.` : '';
   const mitigationCopy = mitigation?.label ? ` Cut cost with ${mitigation.label}.` : '';
   const traitCopy = traitMoment?.label ? ` Tile moment: ${traitMoment.label}.` : '';
-  return `${summary.runTitle}: I ${verb} ${summary.scenarioName} with ${summary.artifacts} artifact(s), pressure ${summary.departPressure}, arc ${summary.arcShape} ${summary.arcScore}, seed ${summary.seed}.${cost}${mitigationCopy}${traitCopy}${aftermath}${artifacts}${badge} Can you beat this run?`;
+  return `${summary.runTitle}: I ${verb} ${summary.scenarioName} with ${summary.artifacts} artifact(s), pressure ${summary.departPressure}, arc ${summary.arcShape} ${summary.arcScore}, seed ${summary.seed}.${cost}${mitigationCopy}${traitCopy}${aftermath}${arc}${artifacts}${badge} Can you beat this run?`;
 }
 
 export function encodeRun(run) {
@@ -720,3 +753,4 @@ import { Action } from './constants.js';
 import { mitigationsForPreview } from './escapeCostPreview.js';
 import { TILE_TRAIT_IDS, TRAIT_DEFINITIONS } from './tileTraits.js';
 import { deriveTurnAftermath } from './turnAftermath.js';
+import { arcTransitionSummary, deriveExpeditionArc } from './expeditionArc.js';

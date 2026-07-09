@@ -70,6 +70,7 @@ export default function ActionPanel({
   departPressure,
   escapeCostPreview,
   traitPreview,
+  expeditionArc,
 }) {
   const [localActiveTab, setLocalActiveTab] = useState(Action.MOVE);
   const [pendingSubmission, setPendingSubmission] = useState(null);
@@ -108,6 +109,7 @@ export default function ActionPanel({
     departPressure,
     escapeCostPreview,
     traitPreview,
+    expeditionArc,
   };
   const activeExplanation = getActionExplanation(activeTab, actionContext);
   const blockReason = getActionBlockReason({ action: activeTab, ...actionContext });
@@ -402,6 +404,19 @@ export default function ActionPanel({
               </p>
               <p className="mt-1 font-mono text-[11px] leading-relaxed text-exp-text-dim">
                 {traitPreview.body}
+              </p>
+            </div>
+          )}
+          {expeditionArc && (
+            <div className="rounded border border-blueprint/30 bg-blueprint/5 px-3 py-2">
+              <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-blueprint">
+                Run chapter
+              </p>
+              <p className="mt-1 font-mono text-xs uppercase tracking-[0.12em] text-exp-text">
+                {expeditionArc.label}
+              </p>
+              <p className="mt-1 font-mono text-[11px] leading-relaxed text-exp-text-dim">
+                {expeditionArc.directive}
               </p>
             </div>
           )}

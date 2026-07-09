@@ -20,6 +20,7 @@ export default function TurnResolution({
   departPressure,
   escapeCostPreview,
   traitPreview,
+  expeditionArc,
 }) {
   const { playerActions } = useLastPlayerActions(gameId);
   const { playerIDs, cardTypes, cardsDrawn, cardResults, inventoryChanges, statUpdates } =
@@ -75,6 +76,7 @@ export default function TurnResolution({
           moment={aftermath}
           departPressure={departPressure}
           escapeCostPreview={escapeCostPreview}
+          expeditionArc={expeditionArc}
         />
 
         <div className="grid gap-2 sm:grid-cols-4">

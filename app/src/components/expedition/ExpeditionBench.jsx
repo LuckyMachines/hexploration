@@ -18,6 +18,7 @@ import DiscoveryJournal from './DiscoveryJournal';
 import EscapeCostPreview from './EscapeCostPreview';
 import CostReductionActions from './CostReductionActions';
 import TraitPreviewPanel from './TraitPreviewPanel';
+import ExpeditionArcTrack from './ExpeditionArcTrack';
 import HexGrid from '../board/HexGrid';
 import PlayerDossier from '../player/PlayerDossier';
 import ActionPanel from '../actions/ActionPanel';
@@ -32,6 +33,7 @@ import { getAdjacent, parseAlias } from '../../lib/hexmath';
 import { getBestActionSuggestion, getTurnGuidance } from '../../lib/uxGuidance';
 import { deriveDepartPressure, pressureToneClass } from '../../lib/departPressure';
 import { deriveEscapeCostPreview, escapeCostToneClass } from '../../lib/escapeCostPreview';
+import { deriveExpeditionArc } from '../../lib/expeditionArc';
 import { buildFunTelemetry } from '../../lib/funTelemetry';
 import { useInterfaceDensity } from '../../lib/interfaceDensity';
 import { emitMusicDirectorState, trackForExpeditionState } from '../../lib/musicDirector';
@@ -207,6 +209,28 @@ export default function ExpeditionBench() {
     }),
     [activeInventory, activeTab, departPressure, enrichedPlayers, landingSite, location, movePath, movement, routeStatus, stats, traitPreview, turnState],
   );
+  const revealedCount = useMemo(() => {
+    const aliases = new Set();
+    events.forEach((event) => {
+      const zone = event.args?.zoneAlias || event.args?.currentZone || event.args?.zone;
+      if (zone) aliases.add(String(zone));
+    });
+    if (location) aliases.add(location);
+    if (landingSite) aliases.add(landingSite);
+    movePath.forEach((alias) => aliases.add(alias));
+    return aliases.size;
+  }, [events, landingSite, location, movePath]);
+  const expeditionArc = useMemo(
+    () => deriveExpeditionArc({
+      departPressure,
+      escapeCostPreview,
+      traitPreview,
+      revealedCount,
+      crew: enrichedPlayers,
+      visibleOpportunity: Boolean(traitPreview?.trait && ['value', 'reveal'].includes(traitPreview.trait.category)),
+    }),
+    [departPressure, enrichedPlayers, escapeCostPreview, revealedCount, traitPreview],
+  );
   const hasSubmitted = action && action !== '' && action !== 'Idle';
   const turnGuidance = useMemo(
     () => getTurnGuidance({
@@ -220,8 +244,9 @@ export default function ExpeditionBench() {
       playerID,
       departPressure,
       escapeCostPreview,
+      expeditionArc,
     }),
-    [address, departPressure, escapeCostPreview, hasSubmitted, isSpectator, movePath, playerID, readinessByPlayerID, routeStatus, turnState],
+    [address, departPressure, escapeCostPreview, expeditionArc, hasSubmitted, isSpectator, movePath, playerID, readinessByPlayerID, routeStatus, turnState],
   );
   const suggestion = useMemo(
     () => getBestActionSuggestion({
@@ -235,8 +260,9 @@ export default function ExpeditionBench() {
       turnState,
       departPressure,
       escapeCostPreview,
+      expeditionArc,
     }),
-    [activeInventory, activeTab, departPressure, escapeCostPreview, hasSubmitted, isSpectator, movePath, movement, routeStatus, turnState],
+    [activeInventory, activeTab, departPressure, escapeCostPreview, expeditionArc, hasSubmitted, isSpectator, movePath, movement, routeStatus, turnState],
   );
   const funTelemetry = useMemo(
     () => buildFunTelemetry({
@@ -257,6 +283,7 @@ export default function ExpeditionBench() {
       readinessByPlayerID,
       playerID,
       traitPreview,
+      expeditionArc,
     }),
     [
       activeInventory,
@@ -276,6 +303,7 @@ export default function ExpeditionBench() {
       stats,
       turnState,
       traitPreview,
+      expeditionArc,
     ],
   );
   const interfaceDensity = useInterfaceDensity({
@@ -447,6 +475,7 @@ export default function ExpeditionBench() {
             departPressure={departPressure}
             escapeCostPreview={escapeCostPreview}
           />
+          <ExpeditionArcTrack arc={expeditionArc} />
           <ChartDepartStrip
             movement={movement}
             movePath={movePath}
@@ -454,6 +483,7 @@ export default function ExpeditionBench() {
             turnGuidance={turnGuidance}
             departPressure={departPressure}
             escapeCostPreview={escapeCostPreview}
+            expeditionArc={expeditionArc}
           />
           <GuidedFirstTurn
             isSpectator={isSpectator}
@@ -462,6 +492,7 @@ export default function ExpeditionBench() {
             turnState={turnState}
             departPressure={departPressure}
             escapeCostPreview={escapeCostPreview}
+            expeditionArc={expeditionArc}
           />
           <EscapeCostPreview preview={escapeCostPreview} compact />
           <TraitPreviewPanel preview={traitPreview} compact />
@@ -543,6 +574,7 @@ export default function ExpeditionBench() {
             departPressure={departPressure}
             escapeCostPreview={escapeCostPreview}
             traitPreview={traitPreview}
+            expeditionArc={expeditionArc}
           />
         </ErrorBoundary>
       )}
@@ -562,6 +594,7 @@ export default function ExpeditionBench() {
           departPressure={departPressure}
           escapeCostPreview={escapeCostPreview}
           traitPreview={traitPreview}
+          expeditionArc={expeditionArc}
         />
       </ErrorBoundary>
       <DiscoveryJournal entries={funTelemetry.journalEntries} />
