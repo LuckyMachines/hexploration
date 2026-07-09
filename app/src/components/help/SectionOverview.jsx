@@ -68,6 +68,15 @@ export default function SectionOverview() {
         that choice may affect pressure, escape cost, or crew recovery.
       </p>
 
+      <SectionHeader>Turn Aftermath</SectionHeader>
+      <p>
+        After resolution, the client highlights the turn&apos;s strongest
+        consequence: route progress, pressure spike, crew save, artifact payoff,
+        trait warning, or clean opening. Read that moment before choosing the
+        next action; it is the shortest answer to whether the crew can afford
+        one more turn.
+      </p>
+
       <SectionHeader>Stats</SectionHeader>
       <p>
         Each explorer has three stats: <span className="text-compass">Movement</span> (tiles per turn),

@@ -227,7 +227,8 @@ function buildRareBeat({ location, events = [], activeTab, risk, traitPreview = 
   return { label: 'Small Sign', body: 'The place notices the expedition noticing it.', tone: 'blue' };
 }
 
-function buildPreview({ activeTab, movePath = [], routeStatus, risk, activeInventory = {}, traitPreview = null }) {
+function buildPreview({ activeTab, movePath = [], routeStatus, risk, activeInventory = {}, traitPreview = null, aftermathMoment = null }) {
+  if (aftermathMoment) return { label: aftermathMoment.title, body: aftermathMoment.nextPrompt || aftermathMoment.summary };
   if (traitPreview?.effect?.warning) return { label: `${traitPreview.trait.label} Warning`, body: traitPreview.warning || traitPreview.body };
   if (traitPreview?.effect?.matched) return { label: `${traitPreview.trait.label} Match`, body: traitPreview.body };
   if (routeStatus?.isValid === false) {
@@ -286,7 +287,10 @@ function buildTurnScene({ phase, queueTelemetry = {}, location, stats = {}, acti
   };
 }
 
-function buildNamedMoment({ activeTab, location, movePath = [], risk, hasSubmitted, traitPreview = null }) {
+function buildNamedMoment({ activeTab, location, movePath = [], risk, hasSubmitted, traitPreview = null, aftermathMoment = null }) {
+  if (aftermathMoment) {
+    return { title: aftermathMoment.title, body: aftermathMoment.summary };
+  }
   if (traitPreview?.effect?.warning) {
     return { title: `${traitPreview.trait.label} Warning`, body: traitPreview.warning || traitPreview.body };
   }
@@ -303,7 +307,11 @@ function buildNamedMoment({ activeTab, location, movePath = [], risk, hasSubmitt
   return { title, body };
 }
 
-function buildBark({ activeTab, mood, location, movePath = [], risk, traitPreview = null }) {
+function buildBark({ activeTab, mood, location, movePath = [], risk, traitPreview = null, aftermathMoment = null }) {
+  if (aftermathMoment?.category === 'pressure-spike') return { line: 'That turn bought knowledge with pressure.', tone: 'red' };
+  if (aftermathMoment?.category === 'route-save') return { line: 'The way home got clearer.', tone: 'blue' };
+  if (aftermathMoment?.category === 'artifact-payoff') return { line: 'Now we have something worth carrying out.', tone: 'gold' };
+  if (aftermathMoment?.category === 'crew-save') return { line: 'That kept someone in the run.', tone: 'green' };
   if (traitPreview?.effect?.warning) {
     return { line: `${traitPreview.trait.label} makes this choice expensive.`, tone: 'red' };
   }

@@ -1,9 +1,10 @@
 import { ACTION_LABELS } from '../../lib/constants';
 import { getActionDetail, cardOutcomeDetail } from '../../lib/detailText';
+import { actionAftermathCopy } from '../../lib/turnAftermath';
 import StatChange from './StatChange';
 import InventoryChange from './InventoryChange';
 
-export default function ActionResult({ playerAction }) {
+export default function ActionResult({ playerAction, escapeCostPreview }) {
   if (!playerAction) return null;
 
   const pid = playerAction.playerID !== undefined ? Number(playerAction.playerID) : '?';
@@ -23,6 +24,7 @@ export default function ActionResult({ playerAction }) {
     statUpdate: playerAction.statUpdates,
     inventoryChange: playerAction.inventoryChanges,
   });
+  const consequence = actionAftermathCopy(actionIndex, { escapeCostPreview, playerAction });
 
   return (
     <div className="flex items-start gap-3 p-2 rounded border border-exp-border/50 bg-exp-dark/40">
@@ -44,6 +46,9 @@ export default function ActionResult({ playerAction }) {
         </div>
 
         <div className="grid gap-2 sm:grid-cols-2">
+          <p className="rounded border border-compass/25 bg-compass/5 px-2 py-1 font-mono text-[11px] leading-relaxed text-exp-text">
+            Consequence: {consequence}
+          </p>
           <p className="rounded border border-exp-border/50 bg-exp-dark/35 px-2 py-1 font-mono text-[11px] leading-relaxed text-exp-text-dim">
             Effect: {detail.effect}
           </p>

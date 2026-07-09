@@ -386,6 +386,36 @@ export function applyGrowthAction(run, actionId) {
     : (before.danger >= 70 && action === 'help') ? 'team-save'
       : (finalTurn && action === 'flee' && after.distance <= 1) ? 'desperate-flee'
         : null;
+  const aftermathMoment = deriveTurnAftermath({
+    playerActions: [{ playerID: 1, currentAction: contractActionForGrowth(action) }],
+    playerIDs: [1],
+    cardTypes: eventCard ? [eventCard.type || eventCard.title] : [],
+    cardsDrawn: eventCard ? [eventCard.title] : [],
+    cardResults: eventCard ? [eventCard.text] : [],
+    inventoryChanges: discoveredArtifact ? [[discoveredArtifact.name, '', discoveredArtifact.hook]] : [],
+    statUpdates: [[delta.morale, delta.danger > 0 ? -1 : 0, delta.revealed > 0 ? 1 : 0]],
+    departPressure: {
+      pressure: after.departPressure,
+      band: pressureBandForState(after.departPressure),
+      readiness: { label: after.escaped ? 'Escaped' : after.distance <= 0 ? 'At landing' : `${after.distance} from landing`, canFlee: after.distance <= 0 },
+      currentDistanceToLanding: after.distance,
+      traitRoute: tileTrait.routeDelta,
+    },
+    escapeCostPreview,
+    traitPreview: {
+      trait: tileTrait,
+      effect: {
+        matched: tileTrait.matched,
+        warning: tileTrait.warning,
+        pressureDelta: tileTrait.pressureDelta,
+        routeDelta: tileTrait.id === TILE_TRAIT_IDS.OLD_TRAIL ? 9 : 0,
+      },
+      preferredActionLabel: ACTIONS[action].label,
+      body: tileTrait.text,
+      warning: tileTrait.warning ? tileTrait.text : '',
+    },
+    previousDepartPressure: before.departPressure ?? before.danger,
+  });
   const event = {
     turn: nextTurn,
     action,
@@ -407,6 +437,7 @@ export function applyGrowthAction(run, actionId) {
     traitMatchedAction: tileTrait.matched,
     comebackLabel,
     fleeOutcome,
+    aftermathMoment,
     escapeCostPreview: (action === 'flee' || after.departPressure >= 50) ? escapeCostPreview : null,
     mitigationApplied,
     discoveredArtifact,
@@ -470,6 +501,8 @@ export function summarizeGrowthRun(run) {
   const firstFlat = timeline.find((event) => event.feelingLabel === 'flat' || event.lifePulse <= 32);
   const payoffCount = timeline.filter((event) => ['payoff', 'surprise'].includes(event.feelingLabel) || event.momentType === 'payoff').length;
   const recoveryCount = timeline.filter((event) => event.feelingLabel === 'recovery').length;
+  const aftermathCount = timeline.filter((event) => event.aftermathMoment).length;
+  const bestAftermath = bestBy(timeline, (event) => (event.aftermathMoment?.score || 0) + event.lifePulse * 0.2);
   const arcScore = clamp(averagePulse * 0.52 + averageAgency * 0.25 + (100 - averageFriction) * 0.23 + payoffCount * 4 + recoveryCount * 3 + (firstAlive && firstAlive.turn <= 2 ? 8 : 0));
   const startPulse = timeline.slice(0, 2).reduce((sum, event) => sum + event.lifePulse, 0) / Math.max(1, Math.min(2, timeline.length));
   const endPulse = timeline.slice(-2).reduce((sum, event) => sum + event.lifePulse, 0) / Math.max(1, Math.min(2, timeline.length));
@@ -502,6 +535,8 @@ export function summarizeGrowthRun(run) {
     departPressure: run.state.departPressure ?? run.state.danger,
     routeStability: run.state.routeStability ?? clamp(100 - (run.state.departPressure ?? run.state.danger ?? 0)),
     bestMoment,
+    bestAftermath: bestAftermath?.aftermathMoment || null,
+    aftermathCount,
     worstMoment,
     firstAliveTurn: firstAlive?.turn || null,
     firstFlatTurn: firstFlat?.turn || null,
@@ -532,9 +567,10 @@ export function shareTextForRun(run) {
     : '';
   const mitigation = (run.timeline || []).find((event) => event.mitigationApplied?.matched)?.mitigationApplied;
   const traitMoment = (run.timeline || []).find((event) => event.tileTrait?.matched || event.tileTrait?.warning)?.tileTrait;
+  const aftermath = summary.bestAftermath?.title ? ` Aftermath: ${summary.bestAftermath.title}.` : '';
   const mitigationCopy = mitigation?.label ? ` Cut cost with ${mitigation.label}.` : '';
   const traitCopy = traitMoment?.label ? ` Tile moment: ${traitMoment.label}.` : '';
-  return `${summary.runTitle}: I ${verb} ${summary.scenarioName} with ${summary.artifacts} artifact(s), pressure ${summary.departPressure}, arc ${summary.arcShape} ${summary.arcScore}, seed ${summary.seed}.${cost}${mitigationCopy}${traitCopy}${artifacts}${badge} Can you beat this run?`;
+  return `${summary.runTitle}: I ${verb} ${summary.scenarioName} with ${summary.artifacts} artifact(s), pressure ${summary.departPressure}, arc ${summary.arcShape} ${summary.arcScore}, seed ${summary.seed}.${cost}${mitigationCopy}${traitCopy}${aftermath}${artifacts}${badge} Can you beat this run?`;
 }
 
 export function encodeRun(run) {
@@ -683,3 +719,4 @@ import {
 import { Action } from './constants.js';
 import { mitigationsForPreview } from './escapeCostPreview.js';
 import { TILE_TRAIT_IDS, TRAIT_DEFINITIONS } from './tileTraits.js';
+import { deriveTurnAftermath } from './turnAftermath.js';

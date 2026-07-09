@@ -11,9 +11,24 @@ export default function StatChange({ statUpdate }) {
   })).filter((c) => c.value !== 0);
 
   if (changes.length === 0) return null;
+  const gains = changes.filter((change) => change.value > 0);
+  const losses = changes.filter((change) => change.value < 0);
 
   return (
-    <div className="flex gap-2 flex-wrap">
+    <div className="space-y-1">
+      <div className="flex gap-2 flex-wrap">
+        {gains.length > 0 && (
+          <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-oxide-green">
+            Recovered
+          </span>
+        )}
+        {losses.length > 0 && (
+          <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-signal-red">
+            Hurt
+          </span>
+        )}
+      </div>
+      <div className="flex gap-2 flex-wrap">
       {changes.map((change) => {
         const isPositive = change.value > 0;
         return (
@@ -33,6 +48,7 @@ export default function StatChange({ statUpdate }) {
           </span>
         );
       })}
+      </div>
     </div>
   );
 }

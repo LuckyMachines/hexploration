@@ -1,10 +1,18 @@
 import StatChange from './StatChange';
 import InventoryChange from './InventoryChange';
 import { cardOutcomeDetail } from '../../lib/detailText';
+import { cardAftermathTone } from '../../lib/turnAftermath';
 
 export default function CardDraw({ playerID, cardType, cardDrawn, cardResult, inventoryChange, statUpdate }) {
   if (!cardDrawn && !cardType) return null;
   const detail = cardOutcomeDetail({ cardType, cardDrawn, cardResult, inventoryChange, statUpdate });
+  const tone = cardAftermathTone({ cardResult, inventoryChange, statUpdate });
+  const toneClass = {
+    red: 'border-signal-red/30 bg-signal-red/5 text-signal-red',
+    gold: 'border-compass/30 bg-compass/5 text-compass-bright',
+    green: 'border-oxide-green/30 bg-oxide-green/5 text-oxide-green',
+    blue: 'border-blueprint/25 bg-blueprint/5 text-blueprint',
+  }[tone] || 'border-blueprint/25 bg-blueprint/5 text-blueprint';
 
   return (
     <div className="border border-exp-border/50 rounded p-3 bg-exp-dark/40">
@@ -26,9 +34,9 @@ export default function CardDraw({ playerID, cardType, cardDrawn, cardResult, in
         </div>
       </div>
 
-      <div className="mb-2 rounded border border-blueprint/25 bg-blueprint/5 px-2 py-1">
-        <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-blueprint">
-          Card detail
+      <div className={`mb-2 rounded border px-2 py-1 ${toneClass}`}>
+        <p className="font-mono text-[10px] uppercase tracking-[0.22em] opacity-80">
+          Card consequence
         </p>
         <p className="mt-1 font-mono text-[11px] leading-relaxed text-exp-text-dim">
           {detail.headline}

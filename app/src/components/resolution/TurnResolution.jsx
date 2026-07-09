@@ -2,15 +2,25 @@ import { useState } from 'react';
 import { useLastPlayerActions } from '../../hooks/useLastPlayerActions';
 import { useLastDayPhaseEvents } from '../../hooks/useLastDayPhaseEvents';
 import { buildTurnReplay } from '../../lib/turnReplay';
+import { deriveTurnAftermath } from '../../lib/turnAftermath';
 import { truncateAddress } from '../../lib/formatting';
 import ActionResult from './ActionResult';
 import CardDraw from './CardDraw';
+import AftermathMoment from './AftermathMoment';
 
 function countNonZero(values = []) {
   return values.filter((value) => Number(value) !== 0).length;
 }
 
-export default function TurnResolution({ gameId, events = [], turnState, turnReplay }) {
+export default function TurnResolution({
+  gameId,
+  events = [],
+  turnState,
+  turnReplay,
+  departPressure,
+  escapeCostPreview,
+  traitPreview,
+}) {
   const { playerActions } = useLastPlayerActions(gameId);
   const { playerIDs, cardTypes, cardsDrawn, cardResults, inventoryChanges, statUpdates } =
     useLastDayPhaseEvents(gameId);
@@ -31,6 +41,19 @@ export default function TurnResolution({ gameId, events = [], turnState, turnRep
     (sum, update) => sum + (update || []).filter((item) => item && item !== '').length,
     0,
   );
+  const aftermath = deriveTurnAftermath({
+    playerActions,
+    playerIDs,
+    cardTypes,
+    cardsDrawn,
+    cardResults,
+    inventoryChanges,
+    statUpdates,
+    replay,
+    departPressure,
+    escapeCostPreview,
+    traitPreview,
+  });
 
   if (!hasActions && !hasEvents && latestEvents.length === 0) return null;
 
@@ -48,6 +71,12 @@ export default function TurnResolution({ gameId, events = [], turnState, turnRep
       </div>
 
       <div className="p-4 space-y-4">
+        <AftermathMoment
+          moment={aftermath}
+          departPressure={departPressure}
+          escapeCostPreview={escapeCostPreview}
+        />
+
         <div className="grid gap-2 sm:grid-cols-4">
           {[
             ['Actions', actionCount],
@@ -158,7 +187,11 @@ export default function TurnResolution({ gameId, events = [], turnState, turnRep
             </h4>
             <div className="space-y-2">
               {playerActions.map((pa, i) => (
-                <ActionResult key={i} playerAction={pa} />
+                <ActionResult
+                  key={i}
+                  playerAction={pa}
+                  escapeCostPreview={escapeCostPreview}
+                />
               ))}
             </div>
           </div>
@@ -187,6 +220,7 @@ export default function TurnResolution({ gameId, events = [], turnState, turnRep
                 cardResult={cardResults[i]}
                 inventoryChange={inventoryChanges?.[i]}
                 statUpdate={statUpdates?.[i]}
+                escapeCostPreview={escapeCostPreview}
               />
             ))}
           </div>

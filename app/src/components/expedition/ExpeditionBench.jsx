@@ -554,7 +554,15 @@ export default function ExpeditionBench() {
       )}
 
       <ErrorBoundary>
-        <TurnResolution gameId={view.gameId} events={events} turnState={turnState} turnReplay={view.turnReplay} />
+        <TurnResolution
+          gameId={view.gameId}
+          events={events}
+          turnState={turnState}
+          turnReplay={view.turnReplay}
+          departPressure={departPressure}
+          escapeCostPreview={escapeCostPreview}
+          traitPreview={traitPreview}
+        />
       </ErrorBoundary>
       <DiscoveryJournal entries={funTelemetry.journalEntries} />
 

@@ -290,7 +290,8 @@ export function funQualityForRun(run = {}) {
   const comebackMoments = timeline.filter((event) => event.comebackLabel);
   const mitigationMoments = timeline.filter((event) => event.mitigationApplied?.matched);
   const traitMoments = timeline.filter((event) => event.tileTrait?.matched || event.tileTrait?.warning);
-  const shareWorthyMoment = [...payoffMoments, ...recoveryMoments, ...pressureSpikes, ...mitigationMoments, ...traitMoments, ...timeline.filter((event) => event.after?.escaped)].sort((a, b) => (b.lifePulse + b.agencyScore) - (a.lifePulse + a.agencyScore))[0] || null;
+  const aftermathMoments = timeline.filter((event) => event.aftermathMoment);
+  const shareWorthyMoment = [...payoffMoments, ...recoveryMoments, ...pressureSpikes, ...mitigationMoments, ...traitMoments, ...aftermathMoments, ...timeline.filter((event) => event.after?.escaped)].sort((a, b) => (b.lifePulse + b.agencyScore + (b.aftermathMoment?.score || 0)) - (a.lifePulse + a.agencyScore + (a.aftermathMoment?.score || 0)))[0] || null;
   const flatStreak = longestFlatStreak(timeline);
   const gates = {
     firstAlive: Boolean(firstAlive && firstAlive.turn <= 2),
@@ -298,6 +299,7 @@ export function funQualityForRun(run = {}) {
     pressure: pressureSpikes.length > 0,
     recovery: recoveryMoments.length + comebackMoments.length + mitigationMoments.length > 0,
     traitSurprise: traitMoments.length > 0,
+    aftermath: aftermathMoments.length > 0,
     flatStreak: flatStreak <= 1,
     shareWorthy: Boolean(shareWorthyMoment),
   };
@@ -309,6 +311,7 @@ export function funQualityForRun(run = {}) {
   if (!gates.pressure) recommendations.push('Add one readable danger spike.');
   if (!gates.recovery) recommendations.push('Add a recovery valve through rest or help.');
   if (!gates.traitSurprise) recommendations.push('Let at least one tile trait alter the turn.');
+  if (!gates.aftermath) recommendations.push('Highlight one resolved-turn consequence.');
   if (!gates.flatStreak) recommendations.push('Use a clue, event card, or reveal to break flat streaks.');
   return {
     firstAliveTurn: firstAlive?.turn || null,
@@ -316,6 +319,7 @@ export function funQualityForRun(run = {}) {
     pressureSpikes: pressureSpikes.length,
     recoveryMoments: recoveryMoments.length + comebackMoments.length + mitigationMoments.length,
     traitMoments: traitMoments.length,
+    aftermathMoments: aftermathMoments.length,
     mitigationMoments: mitigationMoments.length,
     longestFlatStreak: flatStreak,
     shareWorthyMoment,
@@ -361,6 +365,7 @@ export function badgesForRun(run = {}, summary = {}, quality = null) {
   if (summary.escapeCostPreview?.level === 'route-collapse') badges.push('Route Collapse');
   const mitigationIds = new Set((run.timeline || []).filter((event) => event.mitigationApplied?.matched).map((event) => event.mitigationApplied.id));
   const traitIds = new Set((run.timeline || []).filter((event) => event.tileTrait?.matched || event.tileTrait?.warning).map((event) => event.tileTrait.id));
+  const aftermathCategories = new Set((run.timeline || []).filter((event) => event.aftermathMoment).map((event) => event.aftermathMoment.category));
   if (mitigationIds.size > 0) badges.push('Cost Cut');
   if (mitigationIds.has('stabilize-route') || mitigationIds.has('return-to-landing')) badges.push('Route Stabilized');
   if (mitigationIds.has('help-weakest') || mitigationIds.has('rest-crew') || mitigationIds.has('regroup')) badges.push('Crew Secured');
@@ -372,6 +377,13 @@ export function badgesForRun(run = {}, summary = {}, quality = null) {
   if (traitIds.has('cache')) badges.push('Cache Secured');
   if (traitIds.has('high-ground')) badges.push('High Ground Scout');
   if (traitIds.has('echo-field')) badges.push('Echo Save');
+  if (aftermathCategories.has('route-save')) badges.push('Route Save');
+  if (aftermathCategories.has('pressure-spike')) badges.push('Pressure Spike');
+  if (aftermathCategories.has('clean-turn')) badges.push('Clean Turn');
+  if (aftermathCategories.has('crew-save') && (run.timeline || []).some((event) => event.action === 'help')) badges.push('Clutch Help');
+  if (aftermathCategories.has('crew-save') && traitIds.has('shelter')) badges.push('Shelter Recovery');
+  if (aftermathCategories.has('trait-warning') && traitIds.has('relic-vein')) badges.push('Costly Dig');
+  if (aftermathCategories.has('artifact-payoff')) badges.push('Artifact Lift');
   if (quality?.recoveryMoments > 0 && (run.state?.danger || 0) >= 55) badges.push('Clutch Recovery');
   if ((run.fun?.maxDigStreak || 0) >= 2 && asArtifactArray(run.state?.artifacts).length > 0) badges.push('Greedy Dig');
   if ((run.state?.danger || 0) <= 35 && summary.outcome === 'escaped') badges.push('Clean Run');
