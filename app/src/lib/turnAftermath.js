@@ -19,7 +19,7 @@ const CATEGORY_COPY = {
     title: 'The Route Got Shorter',
     tone: 'green',
     summary: 'The crew turned this resolution into real departure progress.',
-    whyItMatters: 'Every step toward landing makes the Chart & Depart choice sharper.',
+    whyItMatters: 'Every step toward landing makes the shared escape choice sharper.',
     nextPrompt: 'Check whether the departure window is open before spending another turn.',
   },
   [AFTERMATH_CATEGORIES.PRESSURE_SPIKE]: {

@@ -36,9 +36,19 @@ describe('growthLoop', () => {
     const summary = summarizeGrowthRun(run);
     expect(summary.turns).toBeGreaterThan(0);
     expect(summary.arcScore).toBeGreaterThanOrEqual(0);
+    expect(summary.fingerprint?.title).toBeTruthy();
     expect(shareTextForRun(run)).toContain(summary.scenarioName);
+    expect(shareTextForRun(run)).toContain(summary.fingerprint.title);
     expect(replayPathForRun(run)).toMatch(/^\/replay\//);
     expect(decodeRun(encodeRun(run)).seed).toBe(run.seed);
+  });
+
+  it('creates an expedition fingerprint by the second turn', () => {
+    let run = createGrowthRun({ scenarioId: 'solo-artifact-hunt', seed: 'fingerprint-run' });
+    run = applyGrowthAction(run, 'move');
+    if (!run.fingerprint) run = applyGrowthAction(run, 'inspect');
+    expect(run.fingerprint?.title).toBeTruthy();
+    expect(run.timeline.some((event) => event.fingerprint?.title === run.fingerprint.title)).toBe(true);
   });
 
   it('ranks challenge runs by challenge score', () => {

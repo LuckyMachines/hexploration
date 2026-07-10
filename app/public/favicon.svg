@@ -1,4 +1,16 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <rect width="64" height="64" rx="8" fill="#000"/>
-  <text x="32" y="48" text-anchor="middle" font-family="'Barlow Condensed',Arial,sans-serif" font-weight="700" font-size="46" fill="#F5C542">H</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title desc">
+  <title id="title">Xenovoya X</title>
+  <desc id="desc">A bold crossed X mark for Xenovoya.</desc>
+  <defs>
+    <linearGradient id="xenovoya-mark" x1="13" y1="9" x2="51" y2="55" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#F5C542"/>
+      <stop offset="0.48" stop-color="#F2E9C9"/>
+      <stop offset="1" stop-color="#36F0AA"/>
+    </linearGradient>
+  </defs>
+  <rect x="3" y="3" width="58" height="58" rx="10" fill="#07110F"/>
+  <path d="M11 11h14l10 12L45 11h8L39 29l16 24H41L30 38 19 53h-8l16-21L11 11Z" fill="#F5C542" opacity="0.18"/>
+  <path d="M12 11h13l9 12 10-12h8L38 29l15 24H40L30 38 19 53h-8l16-21L12 11Z" fill="url(#xenovoya-mark)"/>
+  <path d="M20 12h-8l15 20-16 21h8l11-15 10 15h13L38 29l14-18h-8L34 23 25 11h-5Z" fill="none" stroke="#07110F" stroke-width="2" stroke-linejoin="round" opacity="0.62"/>
+  <path d="M16 11h9l9 12 10-12h4L35 28l14 22h-9L30 35 18 50h-3l15-19L16 11Z" fill="#FFE8A1" opacity="0.24"/>
 </svg>

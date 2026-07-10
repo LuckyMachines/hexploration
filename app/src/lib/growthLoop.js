@@ -466,6 +466,10 @@ export function applyGrowthAction(run, actionId) {
     discoveredArtifact,
     text: eventText(action, delta, after, { eventCard, discoveredArtifact, fleeOutcome, mitigationApplied, tileTrait }),
   };
+  const fingerprint = buildExpeditionFingerprint({ run, event });
+  if (fingerprint && !run.fingerprint) {
+    event.fingerprint = fingerprint;
+  }
   const nextFun = {
     ...(run.fun || {}),
     digStreak,
@@ -478,6 +482,7 @@ export function applyGrowthAction(run, actionId) {
     state: after,
     fun: nextFun,
     timeline: [...run.timeline, event],
+    fingerprint: run.fingerprint || fingerprint || null,
   };
   next.outcome = outcomeFor(next);
   next.completed = next.outcome !== 'in-progress';
@@ -577,6 +582,7 @@ export function summarizeGrowthRun(run) {
     challengeScore: scoreChallengeRun(run),
     funQuality: quality,
     escapeCostPreview: escapeCostForState(run, run.state),
+    fingerprint: run.fingerprint || timeline.find((event) => event.fingerprint)?.fingerprint || null,
   };
   const title = runTitleFor({ run, summary: base, quality });
   const badges = badgesForRun(run, base, quality);
@@ -603,7 +609,13 @@ export function shareTextForRun(run) {
   const arc = summary.strongestArc?.label ? ` Reached ${summary.strongestArc.label} at pressure ${summary.strongestArc.context?.pressure ?? summary.departPressure}.` : '';
   const mitigationCopy = mitigation?.label ? ` Cut cost with ${mitigation.label}.` : '';
   const traitCopy = traitMoment?.label ? ` Tile moment: ${traitMoment.label}.` : '';
-  return `${summary.runTitle}: I ${verb} ${summary.scenarioName} with ${summary.artifacts} artifact(s), pressure ${summary.departPressure}, arc ${summary.arcShape} ${summary.arcScore}, seed ${summary.seed}.${cost}${mitigationCopy}${traitCopy}${aftermath}${arc}${artifacts}${badge} Can you beat this run?`;
+  const benchmark = summary.outcome === 'escaped' && summary.escapeCostPreview?.level !== 'clean'
+    ? ` Can you escape under pressure ${Math.max(35, summary.departPressure - 10)}?`
+    : ` Can you beat score ${summary.challengeScore + 25}?`;
+  const fingerprint = summary.fingerprint?.title
+    ? ` Fingerprint: ${summary.fingerprint.title}. ${summary.fingerprint.replayHook}`
+    : '';
+  return `${summary.runTitle}: I ${verb} ${summary.scenarioName} with ${summary.artifacts} artifact(s), pressure ${summary.departPressure}, arc ${summary.arcShape} ${summary.arcScore}, seed ${summary.seed}.${fingerprint}${cost}${mitigationCopy}${traitCopy}${aftermath}${arc}${artifacts}${badge}${benchmark}`;
 }
 
 export function encodeRun(run) {
@@ -754,3 +766,4 @@ import { mitigationsForPreview } from './escapeCostPreview.js';
 import { TILE_TRAIT_IDS, TRAIT_DEFINITIONS } from './tileTraits.js';
 import { deriveTurnAftermath } from './turnAftermath.js';
 import { arcTransitionSummary, deriveExpeditionArc } from './expeditionArc.js';
+import { buildExpeditionFingerprint } from './expeditionFingerprint.js';

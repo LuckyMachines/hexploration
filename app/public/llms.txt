@@ -1,12 +1,12 @@
 # Xenovoya
 
-A Chart & Depart expedition game about mapping hostile terrain, reading visible escape costs, choosing counterplay, and escaping alive.
+A cooperative on-chain hex exploration game about voyaging into fog, sharing discoveries, and escaping together.
 
 ## Core Pages
 
-- [Xenovoya](https://xenovoya.luckymachines.com): Play Xenovoya, a Chart & Depart expedition game about mapping hostile terrain, reading visible escape costs, choosing counterplay, and escaping before the route collapses.
+- [Xenovoya](https://xenovoya.luckymachines.com): Play Xenovoya, a cooperative on-chain hex exploration game about voyaging into fog, sharing discoveries, and escaping together.
 - [Gameplay Simulator](https://xenovoya.luckymachines.com/simulator): Use the same engine as the game to run scenarios, compare outcomes, and tune Xenovoya without a separate rules clone.
-- [Play Xenovoya](https://xenovoya.luckymachines.com/play): Start a seedable Chart & Depart run and see if the expedition can chart useful ground, recover value, and escape alive.
+- [Play Xenovoya](https://xenovoya.luckymachines.com/play): Start a seedable Xenovoya run and see if the expedition can reveal the map, recover value, and escape alive.
 - [Weekly Challenge: Desperate Lift-Off](https://xenovoya.luckymachines.com/challenge): Can your crew escape with the artifact before the route collapses?
 - [Expedition Scenarios](https://xenovoya.luckymachines.com/scenarios): Choose Xenovoya expeditions by pressure, difficulty, player count, and escape tension.
 
@@ -18,8 +18,8 @@ A Chart & Depart expedition game about mapping hostile terrain, reading visible 
 
 ## Discovery Topics
 
-- [Chart & Depart Board Game](https://xenovoya.luckymachines.com/topics/turn-based-board-game): Chart & Depart scenarios where every action changes Depart Pressure, visible escape cost, counterplay, route shape, and the decision to leave.
-- [Survival Expedition](https://xenovoya.luckymachines.com/topics/survival-expedition): Expedition scenarios about morale, danger, fatigue, and extracting value before the board closes in.
-- [Artifact Hunt](https://xenovoya.luckymachines.com/topics/artifact-hunt): Relic-hunting scenarios where digging creates payoff, risk, and memorable escape stories.
-- [Co-Op Escape](https://xenovoya.luckymachines.com/topics/co-op-escape): Cooperative escape scenarios built around helping, routing, and keeping the artifact holder alive.
-- [Same-Engine Simulator](https://xenovoya.luckymachines.com/topics/same-engine-simulator): Scenario tuning and outcome learning powered by the same contract engine as playable Xenovoya.
+- [On-Chain Hex Board](https://xenovoya.luckymachines.com/topics/turn-based-board-game): Cooperative hex-board scenarios where every reveal changes shared map state, pressure, route shape, and the decision to escape.
+- [Survival Expedition](https://xenovoya.luckymachines.com/topics/survival-expedition): Voyages about morale, danger, fatigue, and extracting value before the shared route closes in.
+- [Artifact Hunt](https://xenovoya.luckymachines.com/topics/artifact-hunt): Relic-hunting scenarios where digging creates payoff, risk, and a record worth challenging.
+- [Co-Op Escape](https://xenovoya.luckymachines.com/topics/co-op-escape): Cooperative escape scenarios built around shared fog, route planning, helping, and getting the artifact holder home.
+- [Same-Engine Simulator](https://xenovoya.luckymachines.com/topics/same-engine-simulator): Scenario tuning and outcome learning powered by the same rules path as playable Xenovoya.

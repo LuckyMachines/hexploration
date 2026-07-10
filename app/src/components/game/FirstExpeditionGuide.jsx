@@ -108,10 +108,10 @@ export default function FirstExpeditionGuide() {
               First expedition
             </p>
             <h2 className="mt-2 font-display text-2xl font-semibold uppercase tracking-[0.18em] text-exp-text">
-              Start your first Chart & Depart run
+              Launch your first shared survey
             </h2>
             <p className="mt-2 max-w-2xl font-mono text-xs leading-relaxed text-exp-text-dim">
-              Enter an expedition, reveal useful ground, recover what you can, and keep enough route to escape. The tablet will show when the crew is planning, waiting, resolving, or ready for the next move.
+              Enter an expedition, reveal useful ground, and give the run its first fingerprint. From there, recover what you can and keep enough route to escape.
             </p>
           </div>
           <button
@@ -146,8 +146,8 @@ export default function FirstExpeditionGuide() {
         />
         <Step
           number="3"
-          title="First decision"
-          detail="Start by moving to reveal ground, then decide when to dig, recover, help, or flee."
+          title="Fingerprint"
+          detail="Start by moving to reveal ground. The opening becomes a named benchmark you can replay and beat."
           active={isConnected && hasOpenGame}
           complete={false}
         />

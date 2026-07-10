@@ -4,11 +4,9 @@ import { Link } from 'react-router-dom';
 export default function Footer() {
   const { chain, isConnected } = useWallet();
   const links = [
+    ['/play', 'Play'],
     ['/scenarios', 'Scenarios'],
     ['/challenge', 'Challenge'],
-    ['/design-system', 'Design'],
-    ['/simulator', 'Simulator'],
-    ['/devlog', 'Devlog'],
     ['/progress', 'Progress'],
   ];
 
@@ -18,7 +16,7 @@ export default function Footer() {
         <div>
           <p className="font-display text-xl font-semibold uppercase tracking-[0.22em] text-compass">Xenovoya</p>
           <p className="mt-2 max-w-2xl font-mono text-xs leading-relaxed text-exp-text-dim">
-            Turn-based expedition board game with public scenarios, same-engine simulation, and live wallet-backed surveys.
+            Cooperative on-chain hex exploration where crews chart an alien grid, share discoveries, and escape together.
           </p>
         </div>
         <div className="flex flex-col gap-3 md:items-end">

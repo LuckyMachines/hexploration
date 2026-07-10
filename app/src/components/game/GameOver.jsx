@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useWallet } from '../../contexts/WalletContext';
 import { useExpedition } from '../../contexts/ExpeditionContext';
 import { truncateAddress } from '../../lib/formatting';
@@ -8,7 +8,11 @@ import { emitMusicDirectorState, trackForGameOverOutcome } from '../../lib/music
 import { deriveDepartPressure } from '../../lib/departPressure';
 import { deriveEscapeCostPreview } from '../../lib/escapeCostPreview';
 import { deriveExpeditionArc } from '../../lib/expeditionArc';
+import { memoryFromGameOver, recordExpeditionMemory } from '../../lib/expeditionMemory';
+import { deriveNextChallenge } from '../../lib/expeditionChallenges';
 import { useLandingSite } from '../../hooks/useLandingSite';
+import ExpeditionMemoryPanel from '../memory/ExpeditionMemoryPanel';
+import RunRelicSharePanel from '../memory/RunRelicSharePanel';
 
 export default function GameOver({ gameId }) {
   const { address } = useWallet();
@@ -20,6 +24,8 @@ export default function GameOver({ gameId }) {
   const latestReplayStep = expedition.turnReplay?.latest;
   const replayGroups = Object.entries(expedition.turnReplay?.grouped || {});
   const [copied, setCopied] = useState(false);
+  const [memoryState, setMemoryState] = useState(null);
+  const recordedMemoryRef = useRef(null);
   const survivorCount = useMemo(
     () => players.filter((player) => player.isActive).length,
     [players],
@@ -27,6 +33,7 @@ export default function GameOver({ gameId }) {
   const lostCount = Math.max(players.length - survivorCount, 0);
   const outcomeTone = lostCount === 0 ? 'text-oxide-green' : survivorCount > 0 ? 'text-compass-bright' : 'text-signal-red';
   const reportUrl = typeof window !== 'undefined' ? window.location.href : '';
+  const reportPath = typeof window !== 'undefined' ? `${window.location.pathname}${window.location.search}` : '';
   const finalPressure = useMemo(
     () => deriveDepartPressure({
       phase: expedition.phase,
@@ -73,10 +80,33 @@ export default function GameOver({ gameId }) {
         : finalArc.id === 'greed-window'
           ? 'Survey -> Greed Window'
           : 'Survey';
+  const completedMemory = useMemo(
+    () => memoryFromGameOver({
+      gameId: reportGameId,
+      players,
+      finalPressure,
+      finalEscapeCost,
+      finalArc,
+      replayProof,
+      reportPath,
+      events: expedition.events,
+    }),
+    [expedition.events, finalArc, finalEscapeCost, finalPressure, players, replayProof, reportGameId, reportPath],
+  );
+  const completedChallenge = useMemo(
+    () => deriveNextChallenge(memoryState || { entries: [completedMemory], badges: completedMemory.badges }, completedMemory),
+    [completedMemory, memoryState],
+  );
 
   useEffect(() => {
     emitMusicDirectorState(trackForGameOverOutcome({ lostCount, survivorCount }));
   }, [lostCount, survivorCount]);
+
+  useEffect(() => {
+    if (!completedMemory?.id || recordedMemoryRef.current === completedMemory.id) return;
+    recordedMemoryRef.current = completedMemory.id;
+    setMemoryState(recordExpeditionMemory(completedMemory));
+  }, [completedMemory]);
 
   const copyReport = async () => {
     if (!navigator.clipboard || !reportUrl) return;
@@ -172,6 +202,18 @@ export default function GameOver({ gameId }) {
           </div>
         </div>
       </div>
+
+      <ExpeditionMemoryPanel
+        initialMemory={memoryState}
+        latestMemory={completedMemory}
+        title="Memory Created"
+      />
+
+      <RunRelicSharePanel
+        memory={completedMemory}
+        challenge={completedChallenge}
+        title="Run Relic Card"
+      />
 
       {/* Explorer Report */}
       <div className="border border-compass/30 rounded bg-exp-panel overflow-hidden">

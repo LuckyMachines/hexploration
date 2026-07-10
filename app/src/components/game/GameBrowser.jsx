@@ -114,7 +114,7 @@ export default function GameBrowser() {
           <EmptyState
             tone="gold"
             title="No expeditions found"
-            body={address ? 'Launch a new expedition to seed the map, chart the unknown, and race for extraction.' : 'Connect a wallet to create or join a live Chart & Depart expedition.'}
+            body={address ? 'Launch a new expedition to seed the map, share discoveries, and race for extraction.' : 'Connect a wallet to create or join a live on-chain expedition.'}
           />
         ) : (
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">

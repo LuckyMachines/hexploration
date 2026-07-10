@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import ConnectButton from '../wallet/ConnectButton';
 import NetworkBadge from '../wallet/NetworkBadge';
 import HelpButton from '../help/HelpButton';
@@ -9,15 +9,13 @@ import { useWallet } from '../../contexts/WalletContext';
 
 export default function Header({ onHelpClick, audio }) {
   const { isConnected } = useWallet();
+  const { pathname } = useLocation();
   const publicLinks = [
     ['/', 'Home'],
     ['/play', 'Play'],
     ['/scenarios', 'Scenarios'],
     ['/challenge', 'Challenge'],
-    ['/devlog', 'Devlog'],
-    ['/design-system', 'Design'],
-    ['/simulator', 'Simulator'],
-    ['/audio-audition', 'Audio'],
+    ['/progress', 'Progress'],
   ];
 
   return (
@@ -30,17 +28,22 @@ export default function Header({ onHelpClick, audio }) {
         </Link>
         <div className="flex min-w-0 flex-1 items-center justify-end gap-2 sm:gap-3 flex-wrap">
           <nav className="flex max-w-full min-w-0 items-center gap-1.5 overflow-x-auto">
-            {publicLinks.map(([to, label]) => (
-              <Link key={to} to={to} className={`rounded border px-2 py-1 font-mono text-[10px] uppercase tracking-[0.14em] ${
-                label === 'Play'
-                  ? 'border-compass/35 bg-compass/5 text-compass-bright'
-                  : label === 'Challenge'
-                    ? 'border-blueprint/35 bg-blueprint/5 text-blueprint'
-                    : 'border-exp-border/75 bg-exp-dark/30 text-exp-text-dim hover:border-compass/40 hover:text-exp-text'
-              }`}>
-                {label}
-              </Link>
-            ))}
+            {publicLinks.map(([to, label]) => {
+              const isActive = to === '/'
+                ? pathname === '/'
+                : pathname === to || pathname.startsWith(`${to}/`);
+              const className = isActive
+                ? label === 'Challenge'
+                  ? 'border-blueprint/45 bg-blueprint/10 text-blueprint'
+                  : 'border-compass/45 bg-compass/10 text-compass-bright'
+                : 'border-exp-border/75 bg-exp-dark/30 text-exp-text-dim hover:border-compass/40 hover:text-exp-text';
+
+              return (
+                <Link key={to} to={to} className={`rounded border px-2 py-1 font-mono text-[10px] uppercase tracking-[0.14em] ${className}`}>
+                  {label}
+                </Link>
+              );
+            })}
           </nav>
           {audio && (
             <AudioControls

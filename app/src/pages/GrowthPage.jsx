@@ -29,6 +29,8 @@ import {
   WEEKLY_CHALLENGE,
 } from '../lib/growthLoop';
 import { funReportText } from '../lib/funLoop';
+import { deriveNextChallenge } from '../lib/expeditionChallenges';
+import { loadExpeditionMemory, memoryFromGrowthRun, recordExpeditionMemory } from '../lib/expeditionMemory';
 import {
   DISCOVERY_TOPICS,
   relatedScenariosFor,
@@ -37,6 +39,11 @@ import {
   scenariosForTopic,
   topicForId,
 } from '../lib/publicRoutes';
+import BeatThisChallenge from '../components/memory/BeatThisChallenge';
+import ExpeditionMemoryPanel from '../components/memory/ExpeditionMemoryPanel';
+import MemoryCard from '../components/memory/MemoryCard';
+import RunRelicSharePanel from '../components/memory/RunRelicSharePanel';
+import ExpeditionFingerprintCard from '../components/expedition/ExpeditionFingerprintCard';
 
 const RUNS_KEY = 'xenovoya.growth.runs';
 const EVENTS_KEY = 'xenovoya.growth.events';
@@ -277,6 +284,39 @@ function ShareCard({ run }) {
   );
 }
 
+function CompletionBridge({ run, onShare, copied }) {
+  const fingerprint = run.fingerprint || null;
+  return (
+    <section className="rounded border border-compass/35 bg-compass/5 p-4">
+      <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-compass">Your next expedition</p>
+      <h2 className="mt-2 font-display text-2xl uppercase tracking-[0.14em] text-exp-text">
+        {fingerprint?.title ? `Beat ${fingerprint.title}` : 'Do not let the run disappear'}
+      </h2>
+      <p className="mt-2 font-mono text-xs leading-relaxed text-exp-text-dim">
+        {fingerprint?.replayHook || 'The first expedition is the baseline.'} Save the memory, try a harder pressure run, or take the same chart-and-depart rhythm into a live crew survey.
+      </p>
+      <div className="mt-4 grid gap-2 md:grid-cols-4">
+        <button type="button" onClick={onShare} className="rounded border border-compass/45 bg-compass/10 px-3 py-3 text-left font-mono text-xs uppercase tracking-[0.16em] text-compass-bright">
+          {copied ? 'Memory copied' : 'Save and share memory'}
+          <span className="mt-2 block normal-case tracking-normal text-exp-text-dim">Turn this finish into a relic card and replay link.</span>
+        </button>
+        <Link to={replayPathForRun(run)} onClick={() => recordEvent('replay_opened', { scenarioId: run.scenario.id, seed: run.seed })} className="rounded border border-blueprint/45 bg-blueprint/10 px-3 py-3 font-mono text-xs uppercase tracking-[0.16em] text-blueprint">
+          Replay this run
+          <span className="mt-2 block normal-case tracking-normal text-exp-text-dim">Revisit the named opening and trace the choice that made it.</span>
+        </Link>
+        <Link to="/challenge" className="rounded border border-blueprint/45 bg-blueprint/10 px-3 py-3 font-mono text-xs uppercase tracking-[0.16em] text-blueprint">
+          Take weekly challenge
+          <span className="mt-2 block normal-case tracking-normal text-exp-text-dim">{WEEKLY_CHALLENGE.tagline}</span>
+        </Link>
+        <Link to="/#live-expedition" className="rounded border border-oxide-green/45 bg-oxide-green/10 px-3 py-3 font-mono text-xs uppercase tracking-[0.16em] text-oxide-green">
+          Go live with a crew
+          <span className="mt-2 block normal-case tracking-normal text-exp-text-dim">Use wallet-signed actions when the loop feels familiar.</span>
+        </Link>
+      </div>
+    </section>
+  );
+}
+
 export function GrowthPlayPage({ challenge = false }) {
   const query = useQuery();
   const bridgeReport = useBridgeReport();
@@ -294,10 +334,13 @@ export function GrowthPlayPage({ challenge = false }) {
   const [shareVisible, setShareVisible] = useState(false);
   const [copied, setCopied] = useState(false);
   const [selectedAction, setSelectedAction] = useState('move');
+  const [memoryState, setMemoryState] = useState(() => loadExpeditionMemory());
   const runs = loadJson(RUNS_KEY, []);
   const bridgeReadiness = readinessForScenario(bridgeReport, run.scenario.id) || (bridgedChoice?.scenarioId === run.scenario.id ? bridgedChoice : null);
   const leaderboard = rankChallengeRuns(runs, run.scenario.id);
   const summary = summarizeGrowthRun(run);
+  const completedMemory = useMemo(() => (run.completed ? memoryFromGrowthRun(run) : null), [run]);
+  const memoryChallenge = useMemo(() => deriveNextChallenge(memoryState, completedMemory), [completedMemory, memoryState]);
   const preview = actionPreviewFor(run, selectedAction);
   const latestMoment = [...run.timeline].reverse().find((event) => event.momentType || event.comebackLabel);
 
@@ -316,6 +359,7 @@ export function GrowthPlayPage({ challenge = false }) {
     if (next.completed) {
       saveRun(next);
       recordEvent('run_completed', { scenarioId: next.scenario.id, seed: next.seed, outcome: next.outcome, arcScore: summarizeGrowthRun(next).arcScore });
+      setMemoryState(recordExpeditionMemory(memoryFromGrowthRun(next)));
     }
   }
 
@@ -351,7 +395,17 @@ export function GrowthPlayPage({ challenge = false }) {
             <Metric label="Arc score" value={summary.arcScore} tone={summary.arcScore >= 65 ? 'green' : 'gold'} />
             <Metric label="Feeling" value={summary.arcShape} tone="gold" />
           </div>
+          {!run.completed && !run.fingerprint && (
+            <p className="mt-3 rounded border border-blueprint/30 bg-blueprint/5 px-3 py-2 font-mono text-xs leading-relaxed text-exp-text-dim">
+              After the first reveal, this run earns a fingerprint you can replay against.
+            </p>
+          )}
           {!run.completed && <ActionPreview preview={preview} />}
+          {run.fingerprint && (
+            <div className="mt-4">
+              <ExpeditionFingerprintCard fingerprint={run.fingerprint} />
+            </div>
+          )}
           {!run.completed ? (
             <div className="mt-4 grid gap-2 sm:grid-cols-3">
               {availableGrowthActions(run).map((action) => (
@@ -361,19 +415,22 @@ export function GrowthPlayPage({ challenge = false }) {
               ))}
             </div>
           ) : (
-            <div className="mt-4 rounded border border-oxide-green/30 bg-oxide-green/5 px-3 py-3">
-              <p className="font-mono text-xs leading-relaxed text-exp-text">{shareTextForRun(run)}</p>
-              <div className="mt-3 flex flex-wrap gap-2">
-                <button type="button" onClick={copyShare} className="rounded border border-compass/40 bg-compass/10 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.16em] text-compass-bright">
-                  {copied ? 'Share copied' : 'Generate share card'}
-                </button>
-                <Link to={replayPathForRun(run)} onClick={() => recordEvent('replay_opened', { scenarioId: run.scenario.id, seed: run.seed })} className="rounded border border-blueprint/40 bg-blueprint/10 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.16em] text-blueprint">
-                  Replay run
-                </Link>
-                <Link to={`/play?scenario=${run.scenario.id}&seed=${run.seed}-rival`} className="rounded border border-exp-border bg-exp-dark/60 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.16em] text-exp-text-dim">
-                  Try rival seed
-                </Link>
+            <div className="mt-4 space-y-3">
+              <CompletionBridge run={run} onShare={copyShare} copied={copied} />
+              <div className="rounded border border-oxide-green/30 bg-oxide-green/5 px-3 py-3">
+                <p className="font-mono text-xs leading-relaxed text-exp-text">{shareTextForRun(run)}</p>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  <button type="button" onClick={copyShare} className="rounded border border-compass/40 bg-compass/10 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.16em] text-compass-bright">
+                    {copied ? 'Share copied' : 'Generate share card'}
+                  </button>
+                  <Link to={`/play?scenario=${run.scenario.id}&seed=${run.seed}-rival`} className="rounded border border-exp-border bg-exp-dark/60 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.16em] text-exp-text-dim">
+                    Try rival seed
+                  </Link>
+                </div>
               </div>
+              <MemoryCard memory={completedMemory} label="Memory Created" />
+              <BeatThisChallenge challenge={memoryChallenge} />
+              <RunRelicSharePanel memory={completedMemory} challenge={memoryChallenge} title="Run Relic Card" compact />
             </div>
           )}
           {latestMoment && (
@@ -399,7 +456,7 @@ export function GrowthPlayPage({ challenge = false }) {
         </section>
       </div>
       <div className="mt-4"><FunReport run={run} /></div>
-      {shareVisible && <div className="mt-4"><ShareCard run={run} /></div>}
+      {shareVisible && <div className="mt-4"><RunRelicSharePanel memory={completedMemory} challenge={memoryChallenge} title="Generated Share Relic" /></div>}
       {challenge && (
         <section className="mt-4 rounded border border-exp-border bg-exp-panel p-4">
           <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-exp-text-dim">Local leaderboard</p>
@@ -595,6 +652,8 @@ export function ReplayPage() {
   const query = useQuery();
   const run = decodeRun(runId);
   const summary = run ? summarizeGrowthRun(run) : null;
+  const replayMemory = run ? memoryFromGrowthRun(run) : null;
+  const replayChallenge = replayMemory ? deriveNextChallenge({ entries: [replayMemory], badges: replayMemory.badges }, replayMemory) : null;
   const selectedTurn = Number(query.get('turn') || 0);
   if (!run) {
     return (
@@ -607,6 +666,8 @@ export function ReplayPage() {
     <GrowthFrame title={`Replay: ${run.scenario.name}`} eyebrow={`${summary.outcome} / seed ${run.seed}`}>
       <div className="grid gap-4 lg:grid-cols-[360px_minmax(0,1fr)]">
         <div className="space-y-3">
+          <ExpeditionFingerprintCard fingerprint={summary.fingerprint} label="Replay Fingerprint" />
+          <RunRelicSharePanel memory={replayMemory} challenge={replayChallenge} title="Replay Relic" compact />
           <ShareCard run={run} />
           <FunReport run={run} compact />
         </div>
@@ -640,6 +701,9 @@ export function ProgressPage() {
   const progress = mergeReadinessIntoProgress(buildPublicProgress({ runs }), bridgeReport);
   return (
     <GrowthFrame title="Scenario Progress" eyebrow="Public growth dashboard">
+      <div className="mb-4">
+        <ExpeditionMemoryPanel compact title="Persistent Run Memory" />
+      </div>
       <div className="grid gap-3 lg:grid-cols-3">
         {progress.map((item) => (
           <article key={item.scenarioId} className="rounded border border-exp-border bg-exp-panel p-4">

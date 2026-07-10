@@ -20,6 +20,9 @@ const STEPS = [
   'Check whether the Expedition Arc changed after aftermath.',
   'Return to the landing site with enough recovered value.',
   'Choose Flee to escape and lock in the run.',
+  'Read the Expedition Memory created from the outcome.',
+  'Use the Run Relic Card when you want to show the run as an image, caption, and challenge.',
+  'Start the Beat This challenge if the memory shows a cost, score, value, or crew benchmark you can improve.',
 ];
 
 const TIPS = [
@@ -31,6 +34,8 @@ const TIPS = [
   'Cost Reduction Actions show the counterplay before you commit.',
   'Turn Aftermath is the one-sentence consequence of the last resolution.',
   'Expedition Arc is the run chapter: Survey, Greed Window, Departure Window, Redline, or Final Call.',
+  'Expedition Memory is the reason to replay: it remembers what you proved and names what to beat next.',
+  'Run Relic Cards are the shortest social version of the expedition: score, pressure, badges, quote, and dare.',
   'Dig only when the crew can afford the time.',
   'Rest before zero movement turns the map into a trap.',
   'Use Help to keep a teammate from becoming the reason everyone stays too long.',

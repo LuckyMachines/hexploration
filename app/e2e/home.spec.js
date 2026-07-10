@@ -39,9 +39,34 @@ test('home page renders core surfaces', async ({ page }) => {
   await page.goto('/', { waitUntil: 'domcontentloaded' });
 
   await expect(page.getByRole('heading', { name: /^Xenovoya$/i }).first()).toBeVisible();
-  await expect(page.getByText(/Chart & Depart expedition game/i)).toBeVisible();
+  await expect(page.getByText(/Voyage\. Explore\. Escape\./i)).toBeVisible();
+  await expect(page.getByRole('link', { name: /Start first expedition/i }).first()).toBeVisible();
+  await expect(page.getByText(/You can understand the run after one choice/i)).toBeVisible();
+  await expect(page.getByRole('heading', { name: /^Fingerprint$/i })).toBeVisible();
   await expect(page.getByText(/System Health/i)).toBeVisible();
   await expect(page.getByText(/Available Expeditions/i)).toBeVisible();
+});
+
+test('home page keeps internal tooling language out of the player funnel', async ({ page }) => {
+  await page.goto('/', { waitUntil: 'domcontentloaded' });
+  await expect(page.getByText(/Voyage\. Explore\. Escape\./i)).toBeVisible();
+
+  const bodyText = (await page.locator('body').innerText()).toLowerCase();
+  const internalTerms = [
+    'simulator',
+    'same-engine',
+    'tuning',
+    'generated',
+    'current site',
+    'local build',
+    'visual direction',
+    'devlog',
+    'design system',
+  ];
+
+  for (const term of internalTerms) {
+    expect(bodyText, `homepage should not expose "${term}"`).not.toContain(term);
+  }
 });
 
 test('seeded anvil mode shows at least one expedition', async ({ page }) => {
@@ -154,14 +179,17 @@ test('field manual modal opens and closes with Escape', async ({ page }) => {
   await expect(helpButton).toBeVisible();
   await helpButton.focus();
   await page.keyboard.press('Enter');
-  await expect(page.getByRole('dialog', { name: /Field Manual/i })).toBeVisible();
+  const manual = page.getByRole('dialog', { name: /Field Manual/i });
+  await expect(manual).toBeVisible();
   await expect(page.getByText(/Depart Pressure measures how hard it is becoming to leave cleanly/i)).toBeVisible();
   await expect(page.getByText(/Escape Cost Preview turns pressure into a forecast/i)).toBeVisible();
   await expect(page.getByText(/Cost Reduction Actions/i)).toBeVisible();
   await expect(page.getByText(/Tile Traits/i)).toBeVisible();
   await expect(page.getByText(/Turn Aftermath/i)).toBeVisible();
   await expect(page.getByText(/Expedition Arc/i)).toBeVisible();
+  await expect(manual.getByRole('heading', { name: /^Expedition Memory$/i })).toBeVisible();
+  await expect(manual.getByRole('heading', { name: /^Run Relic Cards$/i })).toBeVisible();
 
   await page.keyboard.press('Escape');
-  await expect(page.getByRole('dialog', { name: /Field Manual/i })).toBeHidden();
+  await expect(manual).toBeHidden();
 });

@@ -6,7 +6,7 @@ const config = {
   siteName: 'Xenovoya',
   siteUrl: 'https://play.xenovoya.test/',
   defaultTitle: 'Xenovoya',
-  defaultDescription: 'A Chart & Depart expedition game.',
+  defaultDescription: 'A cooperative on-chain hex exploration game.',
   defaultImage: '/seo/xenovoya-share-card.svg',
   locale: 'en_US',
   twitterCard: 'summary_large_image',

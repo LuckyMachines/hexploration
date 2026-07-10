@@ -85,6 +85,22 @@ export default function SectionOverview() {
         a named cost, or making the run-defining call.
       </p>
 
+      <SectionHeader>Expedition Memory</SectionHeader>
+      <p>
+        A completed run becomes a local memory with a title, score, badges,
+        pressure record, escape cost, and the next Beat This challenge. The
+        memory log turns the next expedition into a benchmark: bring more value
+        home, lower the departure cost, save more crew, or beat the best score.
+      </p>
+
+      <SectionHeader>Run Relic Cards</SectionHeader>
+      <p>
+        A completed expedition also creates a Run Relic Card: a visual trophy
+        with the run title, route memory, score, badges, final cost, and Beat
+        This challenge. Share the relic when the run is easier to understand as
+        a card than as a full report.
+      </p>
+
       <SectionHeader>Stats</SectionHeader>
       <p>
         Each explorer has three stats: <span className="text-compass">Movement</span> (tiles per turn),

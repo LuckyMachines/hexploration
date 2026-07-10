@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-07-09T04:31:35.021Z",
+  "generatedAt": "2026-07-09T23:54:12.759Z",
   "ok": true,
   "strict": false,
   "site": {
@@ -34,7 +34,7 @@
       "errors": 0,
       "warnings": 0,
       "title": "Xenovoya",
-      "description": "Play Xenovoya, a Chart & Depart expedition game about mapping hostile terrain, reading visible escape costs, choosing counterplay, and escaping before the.",
+      "description": "Play Xenovoya, a cooperative on-chain hex exploration game about voyaging into fog, sharing discoveries, and escaping together.",
       "canonicalUrl": "https://xenovoya.luckymachines.com"
     },
     {
@@ -54,7 +54,7 @@
       "errors": 0,
       "warnings": 0,
       "title": "Play Xenovoya | Xenovoya",
-      "description": "Start a seedable Chart & Depart run and see if the expedition can chart useful ground, recover value, and escape alive.",
+      "description": "Start a seedable Xenovoya run and see if the expedition can reveal the map, recover value, and escape alive.",
       "canonicalUrl": "https://xenovoya.luckymachines.com/play"
     },
     {
@@ -124,7 +124,7 @@
       "errors": 0,
       "warnings": 0,
       "title": "Create A Scenario | Xenovoya",
-      "description": "Draft a local Xenovoya expedition, tune its desired feeling, and test it as a playable Chart & Depart run.",
+      "description": "Draft a local Xenovoya expedition, tune its desired feeling, and test it as a playable shared survey.",
       "canonicalUrl": "https://xenovoya.luckymachines.com/create-scenario"
     },
     {
@@ -163,8 +163,8 @@
       "ok": true,
       "errors": 0,
       "warnings": 0,
-      "title": "Chart & Depart Board Game | Xenovoya",
-      "description": "Chart & Depart scenarios where every action changes Depart Pressure, visible escape cost, counterplay, route shape, and the decision to leave.",
+      "title": "On-Chain Hex Board | Xenovoya",
+      "description": "Cooperative hex-board scenarios where every reveal changes shared map state, pressure, route shape, and the decision to escape.",
       "canonicalUrl": "https://xenovoya.luckymachines.com/topics/turn-based-board-game"
     },
     {
@@ -174,7 +174,7 @@
       "errors": 0,
       "warnings": 0,
       "title": "Survival Expedition | Xenovoya",
-      "description": "Expedition scenarios about morale, danger, fatigue, and extracting value before the board closes in.",
+      "description": "Voyages about morale, danger, fatigue, and extracting value before the shared route closes in.",
       "canonicalUrl": "https://xenovoya.luckymachines.com/topics/survival-expedition"
     },
     {
@@ -184,7 +184,7 @@
       "errors": 0,
       "warnings": 0,
       "title": "Artifact Hunt | Xenovoya",
-      "description": "Relic-hunting scenarios where digging creates payoff, risk, and memorable escape stories.",
+      "description": "Relic-hunting scenarios where digging creates payoff, risk, and a record worth challenging.",
       "canonicalUrl": "https://xenovoya.luckymachines.com/topics/artifact-hunt"
     },
     {
@@ -194,7 +194,7 @@
       "errors": 0,
       "warnings": 0,
       "title": "Co-Op Escape | Xenovoya",
-      "description": "Cooperative escape scenarios built around helping, routing, and keeping the artifact holder alive.",
+      "description": "Cooperative escape scenarios built around shared fog, route planning, helping, and getting the artifact holder home.",
       "canonicalUrl": "https://xenovoya.luckymachines.com/topics/co-op-escape"
     },
     {
@@ -204,7 +204,7 @@
       "errors": 0,
       "warnings": 0,
       "title": "Same-Engine Simulator | Xenovoya",
-      "description": "Scenario tuning and outcome learning powered by the same contract engine as playable Xenovoya.",
+      "description": "Scenario tuning and outcome learning powered by the same rules path as playable Xenovoya.",
       "canonicalUrl": "https://xenovoya.luckymachines.com/topics/same-engine-simulator"
     }
   ],
@@ -315,7 +315,7 @@
     },
     {
       "path": "/topics/turn-based-board-game",
-      "title": "Chart & Depart Board Game | Xenovoya",
+      "title": "On-Chain Hex Board | Xenovoya",
       "url": "https://xenovoya.luckymachines.com/topics/turn-based-board-game",
       "image": "https://xenovoya.luckymachines.com/seo/xenovoya-share-card.svg",
       "ok": true,
