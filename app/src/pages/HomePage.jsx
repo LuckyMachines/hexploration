@@ -1,5 +1,6 @@
 import GameBrowser from '../components/game/GameBrowser';
 import FirstExpeditionGuide from '../components/game/FirstExpeditionGuide';
+import ReturnLoopPanel from '../components/expedition/ReturnLoopPanel';
 import SystemHealth from '../components/shared/SystemHealth';
 import SurveyTabletFrame from '../components/layout/SurveyTabletFrame';
 import { useWallet } from '../contexts/WalletContext';
@@ -215,6 +216,10 @@ export default function HomePage() {
     <div>
       <HomeHero />
       <FirstTurnStrip />
+
+      <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16">
+        <ReturnLoopPanel />
+      </section>
 
       <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16">
         <div className="grid gap-8 lg:grid-cols-[minmax(0,0.88fr)_minmax(320px,0.72fr)]">

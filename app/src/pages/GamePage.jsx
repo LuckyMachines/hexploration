@@ -10,6 +10,7 @@ import SurveyTabletFrame from '../components/layout/SurveyTabletFrame';
 import { ExpeditionProvider } from '../contexts/ExpeditionContext';
 import { useGameOver } from '../hooks/useGameOver';
 import { parseUintId } from '../lib/ids';
+import { ReturnLoopSync } from '../components/expedition/ReturnLoopPanel';
 
 export default function GamePage() {
   const { gameId } = useParams();
@@ -101,12 +102,14 @@ export default function GamePage() {
 
           {parsedGameId !== null && isConnected && !isLoading && !error && gameStarted && !isGameOver && (
             <ExpeditionProvider gameId={normalizedGameId}>
+              <ReturnLoopSync gameId={normalizedGameId} />
               <ExpeditionBench />
             </ExpeditionProvider>
           )}
 
           {parsedGameId !== null && isConnected && !isLoading && !error && gameStarted && isGameOver && (
             <ExpeditionProvider gameId={normalizedGameId}>
+              <ReturnLoopSync gameId={normalizedGameId} isGameOver />
               <GameOver gameId={normalizedGameId} />
             </ExpeditionProvider>
           )}

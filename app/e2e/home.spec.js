@@ -47,6 +47,18 @@ test('home page renders core surfaces', async ({ page }) => {
   await expect(page.getByRole('heading', { name: /^Commit$/i })).toBeVisible();
   await expect(page.getByText(/System Health/i)).toBeVisible();
   await expect(page.getByText(/Available Expeditions/i)).toBeVisible();
+  await expect(page.getByTestId('return-loop-panel')).toBeVisible();
+});
+
+test('return loop gives a new player a role and a resumable crew thread', async ({ page }) => {
+  await page.goto('/', { waitUntil: 'domcontentloaded' });
+  const panel = page.getByTestId('return-loop-panel');
+  await panel.getByRole('button', { name: /Scout/i }).click();
+  await expect(panel.getByText(/Start or join an expedition/i)).toBeVisible();
+  await panel.getByRole('button', { name: /Create expedition thread/i }).click();
+  await expect(panel.getByText(/Sector 0 signal/i)).toBeVisible();
+  await panel.getByRole('button', { name: /Mark decision ready/i }).click();
+  await expect(panel.getByText(/Waiting on crew/i)).toBeVisible();
 });
 
 test('home page keeps internal tooling language out of the player funnel', async ({ page }) => {
