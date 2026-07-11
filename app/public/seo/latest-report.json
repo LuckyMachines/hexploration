@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-07-09T23:54:12.759Z",
+  "generatedAt": "2026-07-10T10:24:57.257Z",
   "ok": true,
   "strict": false,
   "site": {
@@ -9,21 +9,10 @@
     "canonicalHome": "https://xenovoya.luckymachines.com"
   },
   "routes": {
-    "total": 18,
-    "public": 18,
+    "total": 1,
+    "public": 1,
     "byType": {
-      "home": 1,
-      "simulator": 1,
-      "play": 1,
-      "challenge": 1,
-      "scenario-index": 1,
-      "progress": 1,
-      "devlog": 1,
-      "design-system": 1,
-      "audio-audition": 1,
-      "creator": 1,
-      "scenario": 3,
-      "topic": 5
+      "home": 1
     }
   },
   "routeSummaries": [
@@ -36,176 +25,6 @@
       "title": "Xenovoya",
       "description": "Play Xenovoya, a cooperative on-chain hex exploration game about voyaging into fog, sharing discoveries, and escaping together.",
       "canonicalUrl": "https://xenovoya.luckymachines.com"
-    },
-    {
-      "path": "/simulator",
-      "type": "simulator",
-      "ok": true,
-      "errors": 0,
-      "warnings": 0,
-      "title": "Gameplay Simulator | Xenovoya",
-      "description": "Use the same engine as the game to run scenarios, compare outcomes, and tune Xenovoya without a separate rules clone.",
-      "canonicalUrl": "https://xenovoya.luckymachines.com/simulator"
-    },
-    {
-      "path": "/play",
-      "type": "play",
-      "ok": true,
-      "errors": 0,
-      "warnings": 0,
-      "title": "Play Xenovoya | Xenovoya",
-      "description": "Start a seedable Xenovoya run and see if the expedition can reveal the map, recover value, and escape alive.",
-      "canonicalUrl": "https://xenovoya.luckymachines.com/play"
-    },
-    {
-      "path": "/challenge",
-      "type": "challenge",
-      "ok": true,
-      "errors": 0,
-      "warnings": 0,
-      "title": "Weekly Challenge: Desperate Lift-Off | Xenovoya",
-      "description": "Can your crew escape with the artifact before the route collapses?",
-      "canonicalUrl": "https://xenovoya.luckymachines.com/challenge"
-    },
-    {
-      "path": "/scenarios",
-      "type": "scenario-index",
-      "ok": true,
-      "errors": 0,
-      "warnings": 0,
-      "title": "Expedition Scenarios | Xenovoya",
-      "description": "Choose Xenovoya expeditions by pressure, difficulty, player count, and escape tension.",
-      "canonicalUrl": "https://xenovoya.luckymachines.com/scenarios"
-    },
-    {
-      "path": "/progress",
-      "type": "progress",
-      "ok": true,
-      "errors": 0,
-      "warnings": 0,
-      "title": "Scenario Progress | Xenovoya",
-      "description": "Review public scenario progress, completion trends, and evidence-backed next experiments.",
-      "canonicalUrl": "https://xenovoya.luckymachines.com/progress"
-    },
-    {
-      "path": "/devlog",
-      "type": "devlog",
-      "ok": true,
-      "errors": 0,
-      "warnings": 0,
-      "title": "Design Devlog | Xenovoya",
-      "description": "Read automated Xenovoya design updates distilled from scenario evidence, simulator reports, and growth data.",
-      "canonicalUrl": "https://xenovoya.luckymachines.com/devlog"
-    },
-    {
-      "path": "/design-system",
-      "type": "design-system",
-      "ok": true,
-      "errors": 0,
-      "warnings": 0,
-      "title": "Game UI Design System | Xenovoya",
-      "description": "Explore the Xenovoya game UI design system for tokens, board readability, action controls, feedback states, density, and live components.",
-      "canonicalUrl": "https://xenovoya.luckymachines.com/design-system"
-    },
-    {
-      "path": "/audio-audition",
-      "type": "audio-audition",
-      "ok": true,
-      "errors": 0,
-      "warnings": 0,
-      "title": "Audio Audition | Xenovoya",
-      "description": "Audition Xenovoya music and sound effects with searchable state chips, triggers, solo playback, looping, and downloads.",
-      "canonicalUrl": "https://xenovoya.luckymachines.com/audio-audition"
-    },
-    {
-      "path": "/create-scenario",
-      "type": "creator",
-      "ok": true,
-      "errors": 0,
-      "warnings": 0,
-      "title": "Create A Scenario | Xenovoya",
-      "description": "Draft a local Xenovoya expedition, tune its desired feeling, and test it as a playable shared survey.",
-      "canonicalUrl": "https://xenovoya.luckymachines.com/create-scenario"
-    },
-    {
-      "path": "/scenarios/escape-pressure-4p",
-      "type": "scenario",
-      "ok": true,
-      "errors": 0,
-      "warnings": 0,
-      "title": "Escape Pressure 4P | Xenovoya",
-      "description": "Get the artifact holder out while the crew keeps each other moving.",
-      "canonicalUrl": "https://xenovoya.luckymachines.com/scenarios/escape-pressure-4p"
-    },
-    {
-      "path": "/scenarios/solo-artifact-hunt",
-      "type": "scenario",
-      "ok": true,
-      "errors": 0,
-      "warnings": 0,
-      "title": "Solo Artifact Hunt | Xenovoya",
-      "description": "Find one artifact and escape before fatigue turns the board flat.",
-      "canonicalUrl": "https://xenovoya.luckymachines.com/scenarios/solo-artifact-hunt"
-    },
-    {
-      "path": "/scenarios/low-stat-recovery",
-      "type": "scenario",
-      "ok": true,
-      "errors": 0,
-      "warnings": 0,
-      "title": "Low Stat Recovery | Xenovoya",
-      "description": "Stabilize the crew, reveal a route, then leave with at least one recovery moment.",
-      "canonicalUrl": "https://xenovoya.luckymachines.com/scenarios/low-stat-recovery"
-    },
-    {
-      "path": "/topics/turn-based-board-game",
-      "type": "topic",
-      "ok": true,
-      "errors": 0,
-      "warnings": 0,
-      "title": "On-Chain Hex Board | Xenovoya",
-      "description": "Cooperative hex-board scenarios where every reveal changes shared map state, pressure, route shape, and the decision to escape.",
-      "canonicalUrl": "https://xenovoya.luckymachines.com/topics/turn-based-board-game"
-    },
-    {
-      "path": "/topics/survival-expedition",
-      "type": "topic",
-      "ok": true,
-      "errors": 0,
-      "warnings": 0,
-      "title": "Survival Expedition | Xenovoya",
-      "description": "Voyages about morale, danger, fatigue, and extracting value before the shared route closes in.",
-      "canonicalUrl": "https://xenovoya.luckymachines.com/topics/survival-expedition"
-    },
-    {
-      "path": "/topics/artifact-hunt",
-      "type": "topic",
-      "ok": true,
-      "errors": 0,
-      "warnings": 0,
-      "title": "Artifact Hunt | Xenovoya",
-      "description": "Relic-hunting scenarios where digging creates payoff, risk, and a record worth challenging.",
-      "canonicalUrl": "https://xenovoya.luckymachines.com/topics/artifact-hunt"
-    },
-    {
-      "path": "/topics/co-op-escape",
-      "type": "topic",
-      "ok": true,
-      "errors": 0,
-      "warnings": 0,
-      "title": "Co-Op Escape | Xenovoya",
-      "description": "Cooperative escape scenarios built around shared fog, route planning, helping, and getting the artifact holder home.",
-      "canonicalUrl": "https://xenovoya.luckymachines.com/topics/co-op-escape"
-    },
-    {
-      "path": "/topics/same-engine-simulator",
-      "type": "topic",
-      "ok": true,
-      "errors": 0,
-      "warnings": 0,
-      "title": "Same-Engine Simulator | Xenovoya",
-      "description": "Scenario tuning and outcome learning powered by the same rules path as playable Xenovoya.",
-      "canonicalUrl": "https://xenovoya.luckymachines.com/topics/same-engine-simulator"
     }
   ],
   "socialPreview": [
@@ -213,142 +32,6 @@
       "path": "/",
       "title": "Xenovoya",
       "url": "https://xenovoya.luckymachines.com",
-      "image": "https://xenovoya.luckymachines.com/seo/xenovoya-share-card.svg",
-      "ok": true,
-      "missing": []
-    },
-    {
-      "path": "/simulator",
-      "title": "Gameplay Simulator | Xenovoya",
-      "url": "https://xenovoya.luckymachines.com/simulator",
-      "image": "https://xenovoya.luckymachines.com/seo/xenovoya-share-card.svg",
-      "ok": true,
-      "missing": []
-    },
-    {
-      "path": "/play",
-      "title": "Play Xenovoya | Xenovoya",
-      "url": "https://xenovoya.luckymachines.com/play",
-      "image": "https://xenovoya.luckymachines.com/seo/xenovoya-share-card.svg",
-      "ok": true,
-      "missing": []
-    },
-    {
-      "path": "/challenge",
-      "title": "Weekly Challenge: Desperate Lift-Off | Xenovoya",
-      "url": "https://xenovoya.luckymachines.com/challenge",
-      "image": "https://xenovoya.luckymachines.com/seo/xenovoya-share-card.svg",
-      "ok": true,
-      "missing": []
-    },
-    {
-      "path": "/scenarios",
-      "title": "Expedition Scenarios | Xenovoya",
-      "url": "https://xenovoya.luckymachines.com/scenarios",
-      "image": "https://xenovoya.luckymachines.com/seo/xenovoya-share-card.svg",
-      "ok": true,
-      "missing": []
-    },
-    {
-      "path": "/progress",
-      "title": "Scenario Progress | Xenovoya",
-      "url": "https://xenovoya.luckymachines.com/progress",
-      "image": "https://xenovoya.luckymachines.com/seo/xenovoya-share-card.svg",
-      "ok": true,
-      "missing": []
-    },
-    {
-      "path": "/devlog",
-      "title": "Design Devlog | Xenovoya",
-      "url": "https://xenovoya.luckymachines.com/devlog",
-      "image": "https://xenovoya.luckymachines.com/seo/xenovoya-share-card.svg",
-      "ok": true,
-      "missing": []
-    },
-    {
-      "path": "/design-system",
-      "title": "Game UI Design System | Xenovoya",
-      "url": "https://xenovoya.luckymachines.com/design-system",
-      "image": "https://xenovoya.luckymachines.com/seo/xenovoya-share-card.svg",
-      "ok": true,
-      "missing": []
-    },
-    {
-      "path": "/audio-audition",
-      "title": "Audio Audition | Xenovoya",
-      "url": "https://xenovoya.luckymachines.com/audio-audition",
-      "image": "https://xenovoya.luckymachines.com/seo/xenovoya-share-card.svg",
-      "ok": true,
-      "missing": []
-    },
-    {
-      "path": "/create-scenario",
-      "title": "Create A Scenario | Xenovoya",
-      "url": "https://xenovoya.luckymachines.com/create-scenario",
-      "image": "https://xenovoya.luckymachines.com/seo/xenovoya-share-card.svg",
-      "ok": true,
-      "missing": []
-    },
-    {
-      "path": "/scenarios/escape-pressure-4p",
-      "title": "Escape Pressure 4P | Xenovoya",
-      "url": "https://xenovoya.luckymachines.com/scenarios/escape-pressure-4p",
-      "image": "https://xenovoya.luckymachines.com/seo/xenovoya-share-card.svg",
-      "ok": true,
-      "missing": []
-    },
-    {
-      "path": "/scenarios/solo-artifact-hunt",
-      "title": "Solo Artifact Hunt | Xenovoya",
-      "url": "https://xenovoya.luckymachines.com/scenarios/solo-artifact-hunt",
-      "image": "https://xenovoya.luckymachines.com/seo/xenovoya-share-card.svg",
-      "ok": true,
-      "missing": []
-    },
-    {
-      "path": "/scenarios/low-stat-recovery",
-      "title": "Low Stat Recovery | Xenovoya",
-      "url": "https://xenovoya.luckymachines.com/scenarios/low-stat-recovery",
-      "image": "https://xenovoya.luckymachines.com/seo/xenovoya-share-card.svg",
-      "ok": true,
-      "missing": []
-    },
-    {
-      "path": "/topics/turn-based-board-game",
-      "title": "On-Chain Hex Board | Xenovoya",
-      "url": "https://xenovoya.luckymachines.com/topics/turn-based-board-game",
-      "image": "https://xenovoya.luckymachines.com/seo/xenovoya-share-card.svg",
-      "ok": true,
-      "missing": []
-    },
-    {
-      "path": "/topics/survival-expedition",
-      "title": "Survival Expedition | Xenovoya",
-      "url": "https://xenovoya.luckymachines.com/topics/survival-expedition",
-      "image": "https://xenovoya.luckymachines.com/seo/xenovoya-share-card.svg",
-      "ok": true,
-      "missing": []
-    },
-    {
-      "path": "/topics/artifact-hunt",
-      "title": "Artifact Hunt | Xenovoya",
-      "url": "https://xenovoya.luckymachines.com/topics/artifact-hunt",
-      "image": "https://xenovoya.luckymachines.com/seo/xenovoya-share-card.svg",
-      "ok": true,
-      "missing": []
-    },
-    {
-      "path": "/topics/co-op-escape",
-      "title": "Co-Op Escape | Xenovoya",
-      "url": "https://xenovoya.luckymachines.com/topics/co-op-escape",
-      "image": "https://xenovoya.luckymachines.com/seo/xenovoya-share-card.svg",
-      "ok": true,
-      "missing": []
-    },
-    {
-      "path": "/topics/same-engine-simulator",
-      "title": "Same-Engine Simulator | Xenovoya",
-      "url": "https://xenovoya.luckymachines.com/topics/same-engine-simulator",
       "image": "https://xenovoya.luckymachines.com/seo/xenovoya-share-card.svg",
       "ok": true,
       "missing": []
@@ -360,7 +43,7 @@
     {
       "priority": "ready",
       "title": "Keep discovery artifacts fresh",
-      "reason": "The public route graph, sitemap, social previews, and metadata are passing.",
+      "reason": "The public route graph, sitemap, social previews, and metadata exclude internal preview routes.",
       "command": "npm run growth:seo"
     }
   ]

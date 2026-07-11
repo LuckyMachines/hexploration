@@ -1,5 +1,3 @@
-import { replayPathForRun, summarizeGrowthRun } from './growthLoop';
-
 export const EXPEDITION_MEMORY_STORAGE_KEY = 'xenovoya:expedition-memory:v1';
 export const EXPEDITION_MEMORY_SCHEMA_VERSION = 1;
 export const MAX_EXPEDITION_MEMORIES = 40;
@@ -68,7 +66,7 @@ function outcomeLabel(outcome = '') {
   return outcome || 'Complete';
 }
 
-function canonicalEntry(entry = {}) {
+export function canonicalEntry(entry = {}) {
   const badges = unique(entry.badges);
   const score = clamp(entry.score);
   const timestamp = entry.timestamp || nowIso();
@@ -167,40 +165,6 @@ export function deriveMemoryInsight(entry = {}) {
   if ((entry.finalPressure || 0) >= 75) return 'The last run escaped at redline. The next benchmark is lowering the cost before lift-off.';
   if (entry.artifacts <= 0) return 'The crew got out, but the record is asking for something worth carrying.';
   return 'This memory is a real benchmark: beat the score, improve the cost, or bring more value home.';
-}
-
-export function memoryFromGrowthRun(run = {}) {
-  const summary = run.summary || summarizeGrowthRun(run);
-  const base = {
-    source: 'public-run',
-    sourceId: run.id,
-    scenarioId: summary.scenarioId || run.scenario?.id,
-    scenarioName: summary.scenarioName || run.scenario?.name,
-    seed: summary.seed || run.seed,
-    title: summary.runTitle || `${summary.scenarioName} Memory`,
-    outcome: summary.outcome || run.outcome,
-    arcScore: summary.arcScore,
-    challengeScore: summary.challengeScore,
-    arcLabel: summary.strongestArc?.label || summary.arcShape,
-    arcShape: summary.arcShape,
-    finalPressure: summary.departPressure,
-    escapeCostLevel: summary.escapeCostPreview?.level,
-    escapeCostLabel: summary.escapeCostPreview?.label || summary.escapeCostPreview?.reportLabel,
-    artifacts: summary.artifacts,
-    artifactNames: summary.artifactNames,
-    turns: summary.turns,
-    survivors: summary.savedPlayers || (run.outcome === 'escaped' ? run.scenario?.players || 1 : 0),
-    crew: run.scenario?.players || 1,
-    bestMoment: summary.bestAftermath || summary.bestMoment || null,
-    bestMomentLabel: summary.bestAftermath?.title || summary.bestMoment?.momentTitle || summary.bestMoment?.feelingLabel || null,
-    fingerprint: summary.fingerprint || null,
-    replayPath: replayPathForRun(run),
-    badges: summary.badges,
-    timestamp: run.completedAt || nowIso(),
-  };
-  const score = scoreExpeditionMemory(base);
-  const entry = canonicalEntry({ ...base, score, badges: badgesForMemory({ ...base, score }) });
-  return { ...entry, insight: deriveMemoryInsight(entry) };
 }
 
 export function memoryFromGameOver({

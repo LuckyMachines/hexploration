@@ -30,7 +30,8 @@ import {
 } from '../lib/growthLoop';
 import { funReportText } from '../lib/funLoop';
 import { deriveNextChallenge } from '../lib/expeditionChallenges';
-import { loadExpeditionMemory, memoryFromGrowthRun, recordExpeditionMemory } from '../lib/expeditionMemory';
+import { memoryFromGrowthRun } from '../lib/expeditionGrowthMemory';
+import { loadExpeditionMemory, recordExpeditionMemory } from '../lib/expeditionMemory';
 import {
   DISCOVERY_TOPICS,
   relatedScenariosFor,
@@ -38,7 +39,7 @@ import {
   scenarioForId,
   scenariosForTopic,
   topicForId,
-} from '../lib/publicRoutes';
+} from '../lib/internalScenarioRoutes';
 import BeatThisChallenge from '../components/memory/BeatThisChallenge';
 import ExpeditionMemoryPanel from '../components/memory/ExpeditionMemoryPanel';
 import MemoryCard from '../components/memory/MemoryCard';

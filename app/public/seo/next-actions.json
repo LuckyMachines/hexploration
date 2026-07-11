@@ -2,7 +2,7 @@
   {
     "priority": "ready",
     "title": "Keep discovery artifacts fresh",
-    "reason": "The public route graph, sitemap, social previews, and metadata are passing.",
+    "reason": "The public route graph, sitemap, social previews, and metadata exclude internal preview routes.",
     "command": "npm run growth:seo"
   }
 ]

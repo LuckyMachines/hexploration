@@ -1,12 +1,9 @@
-import { Link } from 'react-router-dom';
 import GameBrowser from '../components/game/GameBrowser';
 import FirstExpeditionGuide from '../components/game/FirstExpeditionGuide';
 import SystemHealth from '../components/shared/SystemHealth';
 import SurveyTabletFrame from '../components/layout/SurveyTabletFrame';
-import ExpeditionMemoryPanel from '../components/memory/ExpeditionMemoryPanel';
 import { useWallet } from '../contexts/WalletContext';
-import { DISCOVERY_TOPICS, allDiscoverableScenarios } from '../lib/publicRoutes';
-import { WEEKLY_CHALLENGE } from '../lib/growthLoop';
+import { LIVE_PLAY_URL } from '../lib/internalTools';
 
 const actionLoop = [
   { verb: 'Launch', detail: 'Assemble the expedition, seed the sector, and enter a map nobody has read yet.', tone: 'blueprint' },
@@ -36,20 +33,20 @@ const firstTurnSteps = [
   },
   {
     label: '3',
-    title: 'Fingerprint',
-    detail: 'The opening earns a name and a benchmark you can replay against.',
+    title: 'Commit',
+    detail: 'Submit the choice that best protects the crew and the route.',
   },
   {
     label: '4',
-    title: 'Choose',
-    detail: 'Push for one more discovery or start protecting the exit.',
+    title: 'Depart',
+    detail: 'Leave with the discovery before pressure turns into loss.',
   },
 ];
 
 const faq = [
   {
     question: 'Can I try it without a wallet?',
-    answer: 'Yes. Public scenarios teach the expedition rhythm in the browser before you enter wallet-backed live expeditions.',
+    answer: 'You can learn the expedition rhythm on this site. Actual expeditions start in the live client.',
   },
   {
     question: 'Where does the on-chain part matter?',
@@ -57,7 +54,7 @@ const faq = [
   },
   {
     question: 'What should I do first?',
-    answer: 'Start a short expedition, reveal a few tiles, then decide whether the next discovery is worth the extra danger.',
+    answer: 'Open the live client, join or launch a survey, reveal the board, and decide when the next discovery is worth the extra danger.',
   },
 ];
 
@@ -92,24 +89,6 @@ const expeditionScenes = [
     detail: 'A completed expedition leaves behind a record of the route, the danger, and what the crew saved.',
   },
 ];
-
-const scenarioFeelings = {
-  'solo-artifact-hunt': {
-    label: 'Best first expedition',
-    feeling: 'Fast relic pressure',
-    promise: 'Learn the whole loop in a short run: reveal, grab value, and decide when the route home matters more than one more dig.',
-  },
-  'escape-pressure-4p': {
-    label: 'Crew escape',
-    feeling: 'Shared panic, shared rescue',
-    promise: 'Protect the artifact holder while the rest of the crew buys enough time to leave together.',
-  },
-  'low-stat-recovery': {
-    label: 'Recovery run',
-    feeling: 'Fragile comeback',
-    promise: 'Start weak, stabilize the crew, then choose whether the recovered route can carry one more reveal.',
-  },
-};
 
 function toneClasses(tone) {
   return {
@@ -148,42 +127,7 @@ function MarketingCard({ children, className = '' }) {
   );
 }
 
-function scenarioFeelingFor(scenario = {}) {
-  return scenarioFeelings[scenario.id] || {
-    label: scenario.difficulty || 'Expedition',
-    feeling: scenario.hook || scenario.name,
-    promise: scenario.premise || scenario.description || 'Choose a route, read the pressure, and decide when to depart.',
-  };
-}
-
-function ScenarioCard({ scenario, featured = false }) {
-  const feeling = scenarioFeelingFor(scenario);
-  return (
-    <MarketingCard className={featured ? 'border-compass/35 bg-compass/5' : ''}>
-      <div className="flex flex-wrap items-start justify-between gap-3">
-        <h3 className="font-mono text-sm uppercase tracking-[0.16em] text-exp-text">{scenario.name}</h3>
-        <span className={`rounded border px-2 py-1 font-mono text-[10px] uppercase tracking-[0.16em] ${toneClasses(featured ? 'compass' : 'blueprint')}`}>
-          {featured ? feeling.label : scenario.difficulty}
-        </span>
-      </div>
-      <p className="mt-3 font-mono text-xs uppercase tracking-[0.16em] text-compass-bright">{feeling.feeling}</p>
-      <p className="mt-2 font-mono text-xs leading-relaxed text-exp-text-dim">{featured ? feeling.promise : scenario.hook || scenario.description}</p>
-      <div className="mt-4 grid grid-cols-3 gap-2">
-        <span className="rounded border border-exp-border/70 bg-exp-dark/45 px-2 py-1 font-mono text-[10px] uppercase tracking-[0.12em] text-exp-text-dim">{scenario.players}P</span>
-        <span className="rounded border border-exp-border/70 bg-exp-dark/45 px-2 py-1 font-mono text-[10px] uppercase tracking-[0.12em] text-exp-text-dim">{scenario.maxTurns || scenario.turns} turns</span>
-        <span className="rounded border border-exp-border/70 bg-exp-dark/45 px-2 py-1 font-mono text-[10px] uppercase tracking-[0.12em] text-exp-text-dim">{scenario.difficulty || 'tuned'}</span>
-      </div>
-      <div className="mt-4 flex flex-wrap gap-2">
-        <Link to={scenario.playPath} className="rounded border border-compass/45 bg-compass/10 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.16em] text-compass-bright">
-          {featured ? 'Start first expedition' : 'Play'}
-        </Link>
-        <Link to={scenario.canonicalPath} className="rounded border border-blueprint/40 bg-blueprint/10 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.16em] text-blueprint">Details</Link>
-      </div>
-    </MarketingCard>
-  );
-}
-
-function FirstTurnStrip({ firstScenario }) {
+function FirstTurnStrip() {
   return (
     <section id="first-turn" className="border-b border-exp-border bg-exp-surface/55">
       <div className="mx-auto grid max-w-7xl gap-6 px-4 py-8 sm:px-6 lg:grid-cols-[minmax(0,0.72fr)_minmax(320px,0.78fr)]">
@@ -191,7 +135,7 @@ function FirstTurnStrip({ firstScenario }) {
           <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-compass">First turn</p>
           <h2 className="mt-2 font-display text-2xl uppercase tracking-[0.14em] text-exp-text">You can understand the run after one choice</h2>
           <p className="mt-3 font-mono text-sm leading-relaxed text-exp-text-dim">
-            Start with {firstScenario.name}. No wallet is needed for the first expedition; the first reveal gives the run a fingerprint, then the browser run teaches when to chart quickly and when to depart.
+            The live client should make the first decision readable: reveal a tile, read what changed, commit as a crew, and leave before the route turns against you.
           </p>
         </div>
         <div className="grid gap-3 sm:grid-cols-4">
@@ -222,10 +166,10 @@ function ImageFeature({ image, eyebrow, title, body, to = null, cta = null }) {
       </div>
     </article>
   );
-  return to ? <Link to={to}>{content}</Link> : content;
+  return to ? <a href={to}>{content}</a> : content;
 }
 
-function HomeHero({ firstScenario }) {
+function HomeHero() {
   return (
     <section className="relative isolate min-h-[min(760px,88svh)] overflow-hidden border-b border-exp-border">
       <HeroBoardScene />
@@ -239,18 +183,15 @@ function HomeHero({ firstScenario }) {
             Cooperative on-chain hex exploration. Build an expedition, share discoveries across an alien grid, and escape together before the route closes.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
-            <Link to={firstScenario.playPath} className="rounded border border-compass/60 bg-compass/15 px-5 py-3 font-display text-sm font-semibold uppercase tracking-[0.18em] text-compass-bright hover:bg-compass/25">
-              Start first expedition
-            </Link>
+            <a href={LIVE_PLAY_URL} className="rounded border border-compass/60 bg-compass/15 px-5 py-3 font-display text-sm font-semibold uppercase tracking-[0.18em] text-compass-bright hover:bg-compass/25">
+              Launch live client
+            </a>
             <a href="#first-turn" className="rounded border border-blueprint/50 bg-blueprint/10 px-5 py-3 font-display text-sm font-semibold uppercase tracking-[0.18em] text-blueprint hover:bg-blueprint/20">
               See first turn
             </a>
-            <Link to="/scenarios" className="rounded border border-exp-border bg-exp-dark/45 px-5 py-3 font-display text-sm font-semibold uppercase tracking-[0.18em] text-exp-text-dim hover:border-compass/40 hover:text-exp-text">
-              Browse runs
-            </Link>
           </div>
           <p className="mt-5 max-w-2xl font-mono text-xs leading-relaxed text-exp-text-dim">
-            The first expedition runs in your browser. Live wallet expeditions come after you know when to keep charting and when to get out.
+            The public promise is simple: learn the loop here, then play in the live client.
           </p>
         </div>
       </div>
@@ -269,17 +210,11 @@ function HomeHero({ firstScenario }) {
 
 export default function HomePage() {
   const { isConnected } = useWallet();
-  const scenarios = allDiscoverableScenarios();
-  const firstScenario = scenarios.find((scenario) => scenario.id === 'solo-artifact-hunt') || scenarios[0];
-  const featured = [firstScenario, ...scenarios.filter((scenario) => scenario.id !== firstScenario.id)].slice(0, 3);
-  const topics = DISCOVERY_TOPICS
-    .filter((topic) => topic.id !== 'same-engine-simulator')
-    .slice(0, 4);
 
   return (
     <div>
-      <HomeHero firstScenario={firstScenario} />
-      <FirstTurnStrip firstScenario={firstScenario} />
+      <HomeHero />
+      <FirstTurnStrip />
 
       <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16">
         <div className="grid gap-8 lg:grid-cols-[minmax(0,0.88fr)_minmax(320px,0.72fr)]">
@@ -336,26 +271,25 @@ export default function HomePage() {
 
       <section className="border-y border-exp-border bg-exp-surface/55">
         <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16">
-          <div className="flex flex-wrap items-end justify-between gap-4">
-            <SectionHeader
-              eyebrow="Start here"
-              title={`Your first expedition is ${firstScenario.name}`}
-              body="This is the intended first step: a short no-wallet run where the opening earns a fingerprint, the pressure rises fast, and the outcome becomes a memory you can beat."
-            />
-            <Link to="/challenge" className="rounded border border-compass/45 bg-compass/10 px-4 py-2 font-mono text-[10px] uppercase tracking-[0.16em] text-compass-bright">
-              {WEEKLY_CHALLENGE.title}
-            </Link>
-          </div>
+          <SectionHeader
+            eyebrow="Start here"
+            title="Your first expedition belongs in the live client"
+            body="The site explains the decision rhythm; the live client is where you launch, join, and resolve an expedition."
+          />
           <div className="mt-6 grid gap-3 lg:grid-cols-3">
-            {featured.map((scenario, index) => (
-              <ScenarioCard key={scenario.id} scenario={scenario} featured={index === 0} />
+            {[
+              ['Launch live', 'Start from the expedition client.'],
+              ['Read the board', 'Use the shared map, route home, hazards, and crew state to decide the turn.'],
+              ['Escape together', 'Treat each discovery as valuable only if the crew can still depart.'],
+            ].map(([title, detail]) => (
+              <MarketingCard key={title}>
+                <h3 className="font-mono text-sm uppercase tracking-[0.16em] text-exp-text">{title}</h3>
+                <p className="mt-2 font-mono text-xs leading-relaxed text-exp-text-dim">{detail}</p>
+              </MarketingCard>
             ))}
           </div>
+          <a href={LIVE_PLAY_URL} className="mt-6 inline-flex rounded border border-compass/45 bg-compass/10 px-4 py-3 font-mono text-[10px] uppercase tracking-[0.16em] text-compass-bright">Open live client</a>
         </div>
-      </section>
-
-      <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16">
-        <ExpeditionMemoryPanel />
       </section>
 
       <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16">
@@ -371,7 +305,7 @@ export default function HomePage() {
                 ['Co-op first', 'One expedition, shared fog-of-war, shared discoveries, and shared consequences.'],
                 ['Hex-grid voyages', 'Every tile is a decision. Every reveal changes the route and the risk.'],
                 ['On-chain state', 'Submitted actions and resolved outcomes become verifiable board state.'],
-                ['Persistent expeditions', 'Early fingerprints become memories, relic cards, and benchmarks to beat.'],
+                ['Persistent expeditions', 'Resolved expeditions leave a record the crew can inspect.'],
               ].map(([title, detail]) => (
                 <MarketingCard key={title}>
                   <h3 className="font-mono text-sm uppercase tracking-[0.16em] text-exp-text">{title}</h3>
@@ -386,35 +320,13 @@ export default function HomePage() {
               eyebrow="Cooperative"
               title="Shared consequences"
               body="Teams coordinate around the same fog, route, and pressure instead of solving private boards."
-              to="/topics/co-op-escape"
-              cta="Explore co-op routes"
             />
             <ImageFeature
               image={siteImages.onchain}
               eyebrow="Verification"
               title="State you can inspect"
               body="The game is not a themed dashboard around hidden server logic. The resolved board is the record."
-              to="/progress"
-              cta="Open progress"
             />
-          </div>
-        </div>
-      </section>
-
-      <section className="border-y border-exp-border bg-exp-surface/45">
-        <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16">
-          <SectionHeader
-            eyebrow="Discovery"
-            title="Find a run by feeling"
-            body="Choose by the pressure you want to feel: survival, artifact payoff, co-op extraction, or a clean first voyage."
-          />
-          <div className="mt-6 grid gap-3 md:grid-cols-2 xl:grid-cols-5">
-            {topics.map((topic) => (
-              <Link key={topic.id} to={`/topics/${topic.id}`} className="rounded border border-exp-border bg-exp-panel/80 p-4 hover:border-compass/45">
-                <h3 className="font-mono text-xs uppercase tracking-[0.16em] text-exp-text">{topic.name}</h3>
-                <p className="mt-2 font-mono text-[11px] leading-relaxed text-exp-text-dim">{topic.description}</p>
-              </Link>
-            ))}
           </div>
         </div>
       </section>
@@ -423,11 +335,11 @@ export default function HomePage() {
         <div className="grid gap-6 lg:grid-cols-[minmax(0,0.9fr)_minmax(300px,0.6fr)]">
           <div>
             <SectionHeader
-              eyebrow={isConnected ? 'Live expedition access' : 'After the first run'}
-              title={isConnected ? 'Take the shared survey on-chain' : 'Go live once the loop clicks'}
+              eyebrow="Live expedition access"
+              title={isConnected ? 'Take the shared survey on-chain' : 'Launch the real expedition client'}
               body={isConnected
                 ? 'Live expeditions turn the same rhythm into wallet-signed actions, shared discoveries, and outcomes the crew can inspect.'
-                : 'Public expeditions teach the rhythm first. When you are ready, live expeditions turn crew actions and outcomes into inspectable records.'}
+                : 'The live client is the playable surface. This page explains the loop and sends players to the actual expedition path.'}
             />
             <div className="mt-6">
               <SurveyTabletFrame
@@ -445,11 +357,11 @@ export default function HomePage() {
           </div>
           <div className="space-y-3">
             <MarketingCard className="border-compass/35 bg-compass/5">
-              <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-compass">Playable now</p>
+              <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-compass">Live client</p>
               <p className="mt-2 font-mono text-xs leading-relaxed text-exp-text-dim">
-                Best first run: {firstScenario.name}. No wallet needed. Learn when to keep charting, when to protect the exit, and what kind of run you want to beat next.
+                Launch, join, and resolve expeditions from the actual play surface. The public site should send players there directly.
               </p>
-              <Link to={firstScenario.playPath} className="mt-4 inline-flex rounded border border-compass/45 bg-compass/10 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.16em] text-compass-bright">Start first expedition</Link>
+              <a href={LIVE_PLAY_URL} className="mt-4 inline-flex rounded border border-compass/45 bg-compass/10 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.16em] text-compass-bright">Open live client</a>
             </MarketingCard>
             {faq.map((item) => (
               <details key={item.question} className="rounded border border-exp-border bg-exp-panel/80 p-4">

@@ -1,5 +1,7 @@
 import { test, expect } from '@playwright/test';
 
+test.skip(process.env.VITE_ENABLE_INTERNAL_TOOLS !== 'true', 'Internal simulator requires VITE_ENABLE_INTERNAL_TOOLS=true.');
+
 test('simulator workbench renders without a report', async ({ page }) => {
   await page.goto('/simulator', { waitUntil: 'domcontentloaded' });
   await expect(page.getByRole('heading', { name: /Gameplay Simulator/i })).toBeVisible();
@@ -14,5 +16,5 @@ test('simulator workbench renders without a report', async ({ page }) => {
   await expect(page.getByRole('heading', { name: /Player Feeling Black Box/i })).toBeVisible();
   await expect(page.getByRole('heading', { name: /Scenario Self-Driving Tutor/i })).toBeVisible();
   await expect(page.getByRole('heading', { name: /Scenario Designer/i })).toBeVisible();
-  await expect(page.getByText(/Solo Artifact Hunt/i)).toBeVisible();
+  await expect(page.getByText('Solo Artifact Hunt', { exact: true })).toBeVisible();
 });

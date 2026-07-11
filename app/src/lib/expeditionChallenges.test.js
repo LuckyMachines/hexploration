@@ -30,7 +30,7 @@ describe('expeditionChallenges', () => {
   it('creates a first-run challenge when no memory exists', () => {
     const challenge = deriveNextChallenge(baseMemory);
     expect(challenge.id).toBe('first-memory');
-    expect(challenge.path).toContain('/play');
+    expect(challenge.path).toBe('https://play.xenovoya.com');
   });
 
   it('asks failed value runs to bring the warning home', () => {
@@ -54,6 +54,6 @@ describe('expeditionChallenges', () => {
   it('turns strong clean runs into score benchmarks', () => {
     const challenge = deriveNextChallenge({ entries: [entry({ score: 720, finalPressure: 40, artifacts: 2 })] });
     expect(challenge.target).toContain('745');
-    expect(challenge.path).toContain('rival');
+    expect(challenge.path).toBe('https://play.xenovoya.com');
   });
 });

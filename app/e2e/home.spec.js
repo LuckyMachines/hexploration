@@ -40,9 +40,11 @@ test('home page renders core surfaces', async ({ page }) => {
 
   await expect(page.getByRole('heading', { name: /^Xenovoya$/i }).first()).toBeVisible();
   await expect(page.getByText(/Voyage\. Explore\. Escape\./i)).toBeVisible();
-  await expect(page.getByRole('link', { name: /Start first expedition/i }).first()).toBeVisible();
+  const liveLaunch = page.getByRole('link', { name: /Launch live client/i }).first();
+  await expect(liveLaunch).toBeVisible();
+  await expect(liveLaunch).toHaveAttribute('href', 'https://play.xenovoya.com');
   await expect(page.getByText(/You can understand the run after one choice/i)).toBeVisible();
-  await expect(page.getByRole('heading', { name: /^Fingerprint$/i })).toBeVisible();
+  await expect(page.getByRole('heading', { name: /^Commit$/i })).toBeVisible();
   await expect(page.getByText(/System Health/i)).toBeVisible();
   await expect(page.getByText(/Available Expeditions/i)).toBeVisible();
 });
@@ -55,6 +57,9 @@ test('home page keeps internal tooling language out of the player funnel', async
   const internalTerms = [
     'simulator',
     'same-engine',
+    'solo-artifact-hunt',
+    'gameplay oracle',
+    'feeling black box',
     'tuning',
     'generated',
     'current site',
@@ -67,6 +72,16 @@ test('home page keeps internal tooling language out of the player funnel', async
   for (const term of internalTerms) {
     expect(bodyText, `homepage should not expose "${term}"`).not.toContain(term);
   }
+});
+
+test('internal preview routes are blocked in the public funnel', async ({ page }) => {
+  await page.goto('/simulator', { waitUntil: 'domcontentloaded' });
+  await expect(page.getByRole('heading', { name: /Launch the expedition client/i })).toBeVisible();
+  await expect(page.getByText(/Gameplay Simulator/i)).toHaveCount(0);
+
+  await page.goto('/play?scenario=solo-artifact-hunt&seed=public-check', { waitUntil: 'domcontentloaded' });
+  await expect(page.getByRole('heading', { name: /Launch the expedition client/i })).toBeVisible();
+  await expect(page.getByText(/Solo Artifact Hunt/i)).toHaveCount(0);
 });
 
 test('seeded anvil mode shows at least one expedition', async ({ page }) => {

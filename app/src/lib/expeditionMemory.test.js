@@ -7,12 +7,12 @@ import {
   deriveMemoryInsight,
   loadExpeditionMemory,
   memoryFromGameOver,
-  memoryFromGrowthRun,
   memoryStats,
   recordExpeditionMemory,
   saveExpeditionMemory,
   scoreExpeditionMemory,
 } from './expeditionMemory';
+import { memoryFromGrowthRun } from './expeditionGrowthMemory';
 
 function storageWith(initial = {}) {
   const map = new Map(Object.entries(initial));

@@ -6,17 +6,18 @@ import ScaleControl from './ScaleControl';
 import AutomationStatus from '../shared/AutomationStatus';
 import AudioControls from '../audio/AudioControls';
 import { useWallet } from '../../contexts/WalletContext';
+import { LIVE_PLAY_URL, internalToolsEnabled } from '../../lib/internalTools';
 
 export default function Header({ onHelpClick, audio }) {
   const { isConnected } = useWallet();
   const { pathname } = useLocation();
-  const publicLinks = [
+  const publicLinks = internalToolsEnabled() ? [
     ['/', 'Home'],
-    ['/play', 'Play'],
+    ['/play', 'Preview'],
     ['/scenarios', 'Scenarios'],
     ['/challenge', 'Challenge'],
     ['/progress', 'Progress'],
-  ];
+  ] : [['/', 'Home']];
 
   return (
     <header className="border-b border-exp-border bg-exp-surface/80 backdrop-blur-sm">
@@ -45,6 +46,11 @@ export default function Header({ onHelpClick, audio }) {
               );
             })}
           </nav>
+          {!internalToolsEnabled() && (
+            <a href={LIVE_PLAY_URL} className="rounded border border-compass/45 bg-compass/10 px-2 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-compass-bright">
+              Play live
+            </a>
+          )}
           {audio && (
             <AudioControls
               musicEnabled={audio.musicEnabled}

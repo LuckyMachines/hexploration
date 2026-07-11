@@ -35,7 +35,7 @@ export function trackForRoute(pathname = '/') {
   return directorState(
     DEFAULT_MUSIC_TRACK_ID,
     'Title',
-    'Public shell, discovery, scenario, or simulator route.',
+    'Public shell or discovery route.',
   );
 }
 

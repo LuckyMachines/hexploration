@@ -14,13 +14,13 @@ const config = {
 
 describe('seo metadata', () => {
   test('buildCanonicalUrl normalizes site and path slashes', () => {
-    expect(buildCanonicalUrl('//scenarios/solo-artifact-hunt///', config)).toBe('https://play.xenovoya.test/scenarios/solo-artifact-hunt');
+    expect(buildCanonicalUrl('//game/123///', config)).toBe('https://play.xenovoya.test/game/123');
     expect(buildCanonicalUrl('/', config)).toBe('https://play.xenovoya.test');
   });
 
   test('public route metadata validates for generated routes', () => {
     const routes = buildPublicRouteIndex({ generatedAt: '2026-05-18T00:00:00.000Z' });
-    expect(routes.length).toBeGreaterThanOrEqual(10);
+    expect(routes.map((route) => route.path)).toEqual(['/']);
     for (const route of routes) {
       const meta = buildSeoMeta(route, config);
       const result = validateSeoMeta(meta, { route, config });
@@ -33,19 +33,24 @@ describe('seo metadata', () => {
   test('private route patterns are noindex', () => {
     expect(noindexRouteForPath('/game/123')).toBe(true);
     expect(noindexRouteForPath('/replay/encoded-run')).toBe(true);
-    expect(noindexRouteForPath('/scenarios/solo-artifact-hunt')).toBe(false);
+    expect(noindexRouteForPath('/simulator')).toBe(true);
+    expect(noindexRouteForPath('/play')).toBe(true);
+    expect(noindexRouteForPath('/scenarios/solo-artifact-hunt')).toBe(true);
   });
 
-  test('play query canonicals point at scenario detail pages', () => {
+  test('internal play query stays noindex and canonicalizes home', () => {
     const route = routeForLocation({ pathname: '/play', search: '?scenario=solo-artifact-hunt' });
     const meta = buildSeoMeta(route, config);
-    expect(route.canonicalPath).toBe('/scenarios/solo-artifact-hunt');
-    expect(meta.canonicalUrl).toBe('https://play.xenovoya.test/scenarios/solo-artifact-hunt');
+    expect(route.noindex).toBe(true);
+    expect(route.canonicalPath).toBe('/');
+    expect(meta.canonicalUrl).toBe('https://play.xenovoya.test');
+    expect(meta.robots).toContain('noindex');
   });
 
-  test('scenario pages include game structured data', () => {
-    const route = buildPublicRouteIndex().find((item) => item.path === '/scenarios/escape-pressure-4p');
-    const meta = buildSeoMeta(route, config);
-    expect(meta.jsonLd.some((item) => item['@type'] === 'Game' && item.gameItem === 'Escape Pressure 4P')).toBe(true);
+  test('public route graph excludes internal tooling and raw scenario ids', () => {
+    const serialized = JSON.stringify(buildPublicRouteIndex());
+    for (const forbidden of ['simulator', 'same-engine', 'solo-artifact-hunt', '/play?', '/scenarios/']) {
+      expect(serialized).not.toContain(forbidden);
+    }
   });
 });

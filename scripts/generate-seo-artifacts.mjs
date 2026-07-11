@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
-import { buildPublicRouteIndex, PRIVATE_ROUTE_PATTERNS } from '../app/src/lib/publicRoutes.js';
+import { buildPublicRouteIndex } from '../app/src/lib/publicRoutes.js';
 import { getSeoConfig, isPlaceholderSiteUrl, SEO_SCHEMA_VERSION } from '../app/src/lib/seoConfig.js';
 import { buildCanonicalUrl, buildSeoMeta, validateSeoMeta } from '../app/src/lib/seoMeta.js';
 import { root, writeJson } from './scenario-utils.mjs';
@@ -64,17 +64,15 @@ ${urls}
 
 function robotsTxt(config) {
   const sitemap = buildCanonicalUrl('/sitemap.xml', config);
-  const disallow = PRIVATE_ROUTE_PATTERNS.map((pattern) => `Disallow: ${pattern.replace(/:[^/]+/g, '')}`).join('\n');
   return `User-agent: *
 Allow: /
-${disallow}
 
 Sitemap: ${sitemap}
 `;
 }
 
 function llmsTxt(routes, config) {
-  const featured = routes.filter((route) => ['home', 'play', 'challenge', 'scenario-index', 'simulator'].includes(route.type));
+  const featured = routes.filter((route) => ['home'].includes(route.type));
   const scenarios = routes.filter((route) => route.type === 'scenario');
   const topics = routes.filter((route) => route.type === 'topic');
   return `# ${config.siteName}
@@ -84,14 +82,15 @@ ${config.defaultDescription}
 ## Core Pages
 
 ${featured.map((route) => `- [${route.title}](${buildCanonicalUrl(route.path, config)}): ${route.description}`).join('\n')}
+- [Play Xenovoya](https://play.xenovoya.com): Launch the live Xenovoya expedition client.
 
 ## Scenario Pages
 
-${scenarios.map((route) => `- [${route.title}](${buildCanonicalUrl(route.path, config)}): ${route.description}`).join('\n')}
+${scenarios.map((route) => `- [${route.title}](${buildCanonicalUrl(route.path, config)}): ${route.description}`).join('\n') || '- Public scenario pages are not published from this build.'}
 
 ## Discovery Topics
 
-${topics.map((route) => `- [${route.title}](${buildCanonicalUrl(route.path, config)}): ${route.description}`).join('\n')}
+${topics.map((route) => `- [${route.title}](${buildCanonicalUrl(route.path, config)}): ${route.description}`).join('\n') || '- Public discovery topic pages are not published from this build.'}
 `;
 }
 
@@ -133,19 +132,11 @@ function nextActionsFor(report) {
       command: 'npm run seo:generate',
     });
   }
-  if (report.routes.byType.scenario < 3) {
-    actions.push({
-      priority: 'medium',
-      title: 'Publish another crawlable scenario page',
-      reason: 'Discovery gets stronger when more real scenarios have durable public pages.',
-      command: 'npm run scenario:list',
-    });
-  }
   if (actions.length === 0) {
     actions.push({
       priority: 'ready',
       title: 'Keep discovery artifacts fresh',
-      reason: 'The public route graph, sitemap, social previews, and metadata are passing.',
+      reason: 'The public route graph, sitemap, social previews, and metadata exclude internal preview routes.',
       command: 'npm run growth:seo',
     });
   }

@@ -1,7 +1,4 @@
 User-agent: *
 Allow: /
-Disallow: /game/
-Disallow: /replay/
-Disallow: /ui-lab
 
 Sitemap: https://xenovoya.luckymachines.com/sitemap.xml

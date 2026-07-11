@@ -1,6 +1,8 @@
 import { test, expect } from '@playwright/test';
 
-test('public play loop completes and exposes sharing', async ({ page }) => {
+test.skip(process.env.VITE_ENABLE_INTERNAL_TOOLS !== 'true', 'Internal growth preview requires VITE_ENABLE_INTERNAL_TOOLS=true.');
+
+test('internal growth loop completes and exposes sharing', async ({ page }) => {
   await page.goto('/play?scenario=solo-artifact-hunt&seed=e2e-growth', { waitUntil: 'domcontentloaded' });
   await expect(page.getByRole('heading', { name: /Solo Artifact Hunt/i })).toBeVisible();
   await expect(page.getByText(/Action preview/i)).toBeVisible();
@@ -43,7 +45,7 @@ test('public play loop completes and exposes sharing', async ({ page }) => {
   await expect(page.getByText(/Share the expedition as a relic/i).first()).toBeVisible();
 });
 
-test('growth public routes render', async ({ page }) => {
+test('growth internal routes render', async ({ page }) => {
   await page.goto('/challenge', { waitUntil: 'domcontentloaded' });
   await expect(page.getByRole('heading', { name: /Challenge:/i })).toBeVisible();
   await expect(page.getByText(/Heavy Fog|Low Morale|Extra Relic|Damaged Route|Calm Start|Storm Season/i)).toBeVisible();

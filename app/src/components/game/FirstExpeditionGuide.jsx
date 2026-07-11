@@ -111,7 +111,7 @@ export default function FirstExpeditionGuide() {
               Launch your first shared survey
             </h2>
             <p className="mt-2 max-w-2xl font-mono text-xs leading-relaxed text-exp-text-dim">
-              Enter an expedition, reveal useful ground, and give the run its first fingerprint. From there, recover what you can and keep enough route to escape.
+              Enter an expedition, reveal useful ground, and keep enough route to escape with what the crew finds.
             </p>
           </div>
           <button
@@ -146,8 +146,8 @@ export default function FirstExpeditionGuide() {
         />
         <Step
           number="3"
-          title="Fingerprint"
-          detail="Start by moving to reveal ground. The opening becomes a named benchmark you can replay and beat."
+          title="Depart"
+          detail="Start by moving to reveal ground. Keep reading the pressure so the crew can leave cleanly."
           active={isConnected && hasOpenGame}
           complete={false}
         />

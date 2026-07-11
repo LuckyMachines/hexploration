@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { deriveNextChallenge } from './expeditionChallenges';
+import { memoryFromGrowthRun } from './expeditionGrowthMemory';
 import { applyGrowthAction, createGrowthRun } from './growthLoop';
-import { memoryFromGrowthRun } from './expeditionMemory';
 import {
   buildRunRelicCard,
   escapeRelicText,

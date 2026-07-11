@@ -1,11 +1,8 @@
+import { LIVE_PLAY_URL } from './internalTools';
 import { memoryStats } from './expeditionMemory';
 
-function publicPlayPath(memory = {}) {
-  if (memory.scenarioId && memory.source === 'public-run') {
-    const seed = memory.seed ? `&seed=${encodeURIComponent(`${memory.seed}-rival`)}` : '';
-    return `/play?scenario=${encodeURIComponent(memory.scenarioId)}${seed}`;
-  }
-  return '/';
+function livePlayPath() {
+  return LIVE_PLAY_URL;
 }
 
 function scoreTarget(memory = {}) {
@@ -22,7 +19,7 @@ export function deriveNextChallenge(memory = {}, latestOverride = null) {
       target: 'Finish any expedition and lock in a benchmark.',
       reason: 'A second run needs a first record to beat.',
       reward: 'First Memory badge path',
-      path: '/play?scenario=solo-artifact-hunt',
+      path: livePlayPath(),
       metric: 'completion',
       targetValue: 1,
     };
@@ -34,7 +31,7 @@ export function deriveNextChallenge(memory = {}, latestOverride = null) {
       target: latest.artifacts > 0 ? `Escape with at least ${latest.artifacts} recovered value.` : 'Escape with at least one survivor.',
       reason: latest.insight || 'The last memory is a warning, not a victory.',
       reward: 'Escaped',
-      path: publicPlayPath(latest),
+      path: livePlayPath(latest),
       metric: latest.artifacts > 0 ? 'escaped-artifacts' : 'survivors',
       targetValue: Math.max(1, latest.artifacts || latest.survivors || 1),
     };
@@ -46,7 +43,7 @@ export function deriveNextChallenge(memory = {}, latestOverride = null) {
       target: `Beat ${latest.escapeCostLabel || 'the last cost'} and escape below pressure ${Math.max(35, latest.finalPressure - 10)}.`,
       reason: 'The last run got out, but the cost was still the story.',
       reward: 'Clean Departure',
-      path: publicPlayPath(latest),
+      path: livePlayPath(latest),
       metric: 'pressure-under',
       targetValue: Math.max(35, latest.finalPressure - 10),
     };
@@ -58,7 +55,7 @@ export function deriveNextChallenge(memory = {}, latestOverride = null) {
       target: 'Escape with at least one artifact or recovered value.',
       reason: 'The route was clean, but the record needs a prize.',
       reward: 'Artifact Lift',
-      path: publicPlayPath(latest),
+      path: livePlayPath(latest),
       metric: 'artifacts',
       targetValue: 1,
     };
@@ -70,7 +67,7 @@ export function deriveNextChallenge(memory = {}, latestOverride = null) {
       target: `Beat score ${scoreTarget(latest)} without losing a clean departure.`,
       reason: 'The latest memory is stable enough to become a greed benchmark.',
       reward: 'Best Score',
-      path: publicPlayPath(latest),
+      path: livePlayPath(latest),
       metric: 'score',
       targetValue: scoreTarget(latest),
     };
@@ -81,7 +78,7 @@ export function deriveNextChallenge(memory = {}, latestOverride = null) {
     target: `Score ${scoreTarget(stats.best || latest)} or bring home more than ${stats.valueBest?.artifacts || latest.artifacts || 0} value.`,
     reason: 'The memory log now has a benchmark worth chasing.',
     reward: 'New Personal Best',
-    path: publicPlayPath(latest),
+    path: livePlayPath(latest),
     metric: 'score-or-value',
     targetValue: scoreTarget(stats.best || latest),
   };

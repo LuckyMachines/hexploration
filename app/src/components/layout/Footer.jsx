@@ -1,14 +1,15 @@
 import { useWallet } from '../../contexts/WalletContext';
 import { Link } from 'react-router-dom';
+import { LIVE_PLAY_URL, internalToolsEnabled } from '../../lib/internalTools';
 
 export default function Footer() {
   const { chain, isConnected } = useWallet();
-  const links = [
-    ['/play', 'Play'],
+  const links = internalToolsEnabled() ? [
+    ['/play', 'Preview'],
     ['/scenarios', 'Scenarios'],
     ['/challenge', 'Challenge'],
     ['/progress', 'Progress'],
-  ];
+  ] : [];
 
   return (
     <footer className="mt-auto border-t border-exp-border bg-exp-surface/70">
@@ -26,6 +27,9 @@ export default function Footer() {
                 {label}
               </Link>
             ))}
+            <a href={LIVE_PLAY_URL} className="rounded border border-compass/45 bg-compass/10 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.16em] text-compass-bright hover:border-compass/70">
+              Play live
+            </a>
           </nav>
           <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-exp-text-dim">
             {isConnected && chain ? `${chain.name} // Chain ${chain.id}` : 'Public discovery mode'}

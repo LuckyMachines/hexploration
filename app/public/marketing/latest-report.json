@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-05-19T05:44:23.394Z",
+  "generatedAt": "2026-07-10T22:25:13.182Z",
   "ok": true,
   "score": 100,
   "grade": "A",
   "nextAction": {
-    "title": "Keep homepage proof fresh with latest scenarios and generated SEO artifacts",
+    "title": "Keep public discovery artifacts clean of preview routes",
     "command": "npm run marketing:doctor"
   }
 }
