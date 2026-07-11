@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { RETURN_ROLES, loadReturnLoop, recordReturnEvent, returnRecommendation, saveReturnLoop, selectRole, startReturnableExpedition, updateExpeditionReturn } from '../../lib/returnLoop';
+import { trackRetentionEvent } from '../../lib/analytics';
 
 const lifecycleLabel = { preparing: 'Preparing', active: 'Active', 'waiting-on-crew': 'Waiting on crew', 'at-risk': 'At risk', 'extraction-window': 'Extraction window', complete: 'Complete', recoverable: 'Recoverable' };
 
@@ -21,6 +22,7 @@ export default function ReturnLoopPanel() {
   const [copied, setCopied] = useState(false);
   const recommendation = useMemo(() => returnRecommendation(state), [state]);
   const expedition = state.expedition;
+  useEffect(() => { trackRetentionEvent('return_loop_opened', { lifecycle: expedition?.lifecycle || 'no-expedition' }); }, []);
   const persist = (next) => { const saved = saveReturnLoop(next); setState(saved); return saved; };
   const markReady = () => expedition && persist(updateExpeditionReturn(state, { lifecycle: 'waiting-on-crew', lastConsequence: `${state.player.callsign} marked a ${state.player.role} decision ready.`, nextAction: 'Return when the crew is ready to commit.', nextReason: 'Vex is holding the crossing until your decision resolves.' }));
   const copyInvite = async () => { try { await navigator.clipboard.writeText(`${state.player.callsign} is assembling a Xenovoya crew. Join the expedition and help resolve the next shared decision.`); persist(recordReturnEvent(state, 'crew_invite_copied')); setCopied(true); } catch { setCopied(false); } };
