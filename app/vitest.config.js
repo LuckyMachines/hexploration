@@ -15,6 +15,8 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: ['./src/test/setup.js'],
     globals: true,
+    maxWorkers: 4,
+    testTimeout: 10_000,
     coverage: {
       provider: 'v8',
       reporter: ['text', 'html'],

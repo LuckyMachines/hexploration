@@ -108,19 +108,25 @@ export default function ReturnLoopPanel() {
         if (!(error instanceof ReturnServiceError) || error.status !== 404) throw error;
       }
       let merged = mergeReturnLoops(state, remote?.state || {});
-      let expectedVersion = remote?.version || 0;
+      let expectedVersion = Number(remote?.version || 0);
       let saved;
+      let conflictResolved = false;
       try {
         saved = await putCloudReturnState(merged, expectedVersion, session.token);
       } catch (error) {
         if (!(error instanceof ReturnServiceError) || error.status !== 409 || !error.payload.current) throw error;
         merged = mergeReturnLoops(merged, error.payload.current.state);
-        expectedVersion = error.payload.current.version;
+        expectedVersion = Number(error.payload.current.version);
         saved = await putCloudReturnState(merged, expectedVersion, session.token);
+        conflictResolved = true;
       }
       await updateCloudProfile({ callsign: merged.player.callsign, role: merged.player.role }, session.token);
       persist(merged);
-      setCloud({ status: 'synced', message: `Synced securely · cloud version ${saved.version}`, version: saved.version });
+      setCloud({
+        status: 'synced',
+        message: conflictResolved ? `Conflict resolved safely · cloud version ${saved.version}` : `Synced securely · cloud version ${saved.version}`,
+        version: Number(saved.version),
+      });
       trackRetentionEvent('cloud_return_saved', { has_expedition: Boolean(merged.expedition), role: merged.player.role || 'none' });
       recordRetentionEvent('cloud_return_saved', { has_expedition: Boolean(merged.expedition), role: merged.player.role || 'none' }, { gameId: merged.expedition?.gameId, token: session.token }).catch(() => {});
     } catch (error) {
@@ -159,7 +165,10 @@ export default function ReturnLoopPanel() {
         <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-exp-text-dim">Next best action</p>
         <p className="mt-2 font-display text-lg uppercase tracking-[0.1em] text-exp-text">{recommendation.action}</p>
         <p className="mt-2 font-mono text-xs leading-relaxed text-exp-text-dim">{recommendation.reason}</p>
-        {recommendation.href.startsWith('/') ? <Link to={recommendation.href} onClick={() => persist(recordReturnEvent(state, 'expedition_resumed', { gameId: expedition?.gameId }))} className="mt-4 inline-flex rounded border border-compass/50 bg-compass/10 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.18em] text-compass-bright">{recommendation.action}</Link> : <button onClick={expedition ? markReady : () => persist(startReturnableExpedition(state, { name: 'Sector 0 signal' }))} className="mt-4 rounded border border-compass/50 bg-compass/10 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.18em] text-compass-bright">{expedition ? 'Mark decision ready' : 'Create expedition thread'}</button>}
+        <div className="mt-4 flex flex-wrap gap-2">
+          {recommendation.href.startsWith('/') ? <Link to={recommendation.href} onClick={() => persist(recordReturnEvent(state, 'expedition_resumed', { gameId: expedition?.gameId }))} className="inline-flex rounded border border-compass/50 bg-compass/10 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.18em] text-compass-bright">{recommendation.action}</Link> : <button onClick={expedition ? markReady : () => persist(startReturnableExpedition(state, { name: 'Sector 0 signal' }))} className="rounded border border-compass/50 bg-compass/10 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.18em] text-compass-bright">{expedition ? 'Mark decision ready' : 'Create expedition thread'}</button>}
+          {expedition && recommendation.href.startsWith('/') && expedition.lifecycle !== 'waiting-on-crew' && <button onClick={markReady} className="rounded border border-blueprint/40 bg-blueprint/10 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.18em] text-blueprint">Mark decision ready</button>}
+        </div>
       </div>
       <div className="rounded border border-exp-border bg-exp-dark/35 p-4">
         <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-exp-text-dim">Your contribution</p>
