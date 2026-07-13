@@ -36,6 +36,36 @@ export function saveReturnLoop(value, storage = typeof window === 'undefined' ? 
   const next = normalizeReturnLoop(value); if (storage) storage.setItem(RETURN_LOOP_KEY, JSON.stringify(next)); return next;
 }
 
+export function mergeReturnLoops(localValue, cloudValue) {
+  const local = normalizeReturnLoop(localValue);
+  const cloud = normalizeReturnLoop(cloudValue);
+  const localTime = Date.parse(local.expedition?.updatedAt || 0) || 0;
+  const cloudTime = Date.parse(cloud.expedition?.updatedAt || 0) || 0;
+  const preferLocal = localTime >= cloudTime;
+  const primary = preferLocal ? local : cloud;
+  const secondary = preferLocal ? cloud : local;
+  const events = [...cloud.events, ...local.events]
+    .filter((event, index, all) => index === all.findIndex((candidate) => candidate.name === event.name && candidate.at === event.at))
+    .sort((a, b) => String(a.at).localeCompare(String(b.at)))
+    .slice(-50);
+  return normalizeReturnLoop({
+    ...secondary,
+    ...primary,
+    player: {
+      callsign: local.player.callsign !== 'Voyager' ? local.player.callsign : cloud.player.callsign,
+      role: local.player.role || cloud.player.role,
+      records: {
+        expeditions: Math.max(local.player.records.expeditions, cloud.player.records.expeditions),
+        rescues: Math.max(local.player.records.rescues, cloud.player.records.rescues),
+        relics: Math.max(local.player.records.relics, cloud.player.records.relics),
+      },
+    },
+    crew: primary.crew.length ? primary.crew : secondary.crew,
+    expedition: primary.expedition || secondary.expedition,
+    events,
+  });
+}
+
 export function recordReturnEvent(state, name, detail = {}) { return normalizeReturnLoop({ ...state, events: [...(state.events || []), { name, at: now(), ...detail }] }); }
 export function selectRole(state, role) { if (!RETURN_ROLES[role]) return normalizeReturnLoop(state); const current = normalizeReturnLoop(state); return recordReturnEvent({ ...current, player: { ...current.player, role } }, 'role_selected', { role }); }
 

@@ -54,6 +54,7 @@ export function WalletProvider({ children }) {
     const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
     setAddress(accounts[0] ?? null);
     await syncChain();
+    return accounts[0] ?? null;
   }, [syncChain]);
 
   const disconnect = useCallback(() => {
