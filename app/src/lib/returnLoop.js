@@ -80,6 +80,9 @@ export function returnRecommendation(state) {
   const current = normalizeReturnLoop(state); const expedition = current.expedition;
   if (!current.player.role) return { action: 'Choose your expedition role', reason: 'A crew needs a distinct contribution before it can depend on you.', href: '#return-loop' };
   if (!expedition) return { action: 'Start or join an expedition', reason: `${RETURN_ROLES[current.player.role].label}s ${RETURN_ROLES[current.player.role].contribution}; the first crew is waiting for that contribution.`, href: '#live-expedition' };
+  const isChainExpedition = /^\d+$/.test(expedition.gameId);
+  if (!isChainExpedition && expedition.lifecycle === 'waiting-on-crew') return { action: 'Find a live expedition', reason: 'Your starter decision is ready. Join a live crew to make the next consequence authoritative on-chain.', href: '#live-expedition' };
+  if (!isChainExpedition && !['complete', 'recoverable'].includes(expedition.lifecycle)) return { action: 'Mark your starter decision ready', reason: expedition.nextReason, href: '#return-loop' };
   if (expedition.lifecycle === 'waiting-on-crew') return { action: 'Make your crew decision', reason: expedition.nextReason, href: `/game/${expedition.gameId}` };
   if (expedition.lifecycle === 'at-risk' || expedition.lifecycle === 'extraction-window') return { action: 'Protect the extraction route', reason: `Pressure is ${expedition.pressure}%. ${expedition.nextReason}`, href: `/game/${expedition.gameId}` };
   if (expedition.lifecycle === 'complete' || expedition.lifecycle === 'recoverable') return { action: 'Follow the unresolved clue', reason: expedition.clue, href: '#live-expedition' };

@@ -8,7 +8,7 @@ export const RPC_URLS = {
   [foundry.id]:
     import.meta.env.VITE_FOUNDRY_RPC_URL ||
     import.meta.env.VITE_LOCAL_RPC_URL ||
-    'http://127.0.0.1:9955',
+    (import.meta.env.DEV ? 'http://127.0.0.1:9955' : undefined),
   [sepolia.id]: import.meta.env.VITE_RPC_URL || undefined,
 };
 

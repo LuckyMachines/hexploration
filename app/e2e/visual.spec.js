@@ -6,6 +6,9 @@ import path from 'node:path';
 import { test, expect } from '@playwright/test';
 
 const expectOpenGame = process.env.E2E_EXPECT_OPEN_GAME === 'true';
+const internalToolsEnabled = process.env.VITE_ENABLE_INTERNAL_TOOLS === 'true';
+const internalTest = internalToolsEnabled ? test : test.skip;
+const seededTest = expectOpenGame ? test : test.skip;
 const captureDir = path.resolve(process.cwd(), '..', 'captures', 'game');
 const e2eEnvPath = path.resolve(process.cwd(), '.env.e2e-anvil');
 const localEnvPath = path.resolve(process.cwd(), '.env.local');
@@ -376,7 +379,7 @@ test('invalid game id remains readable', async ({ page }) => {
   await expect(page.getByText(/Invalid survey id/i)).toBeVisible();
 });
 
-test('ui lab captures integrated board states', async ({ page }, testInfo) => {
+internalTest('ui lab captures integrated board states', async ({ page }, testInfo) => {
   test.skip(!captureProjects.has(testInfo.project.name), 'Capture run only uses the primary desktop browser.');
 
   await page.goto('/ui-lab', { waitUntil: 'domcontentloaded' });
@@ -389,8 +392,7 @@ test('ui lab captures integrated board states', async ({ page }, testInfo) => {
   });
 });
 
-test('seeded gameplay can be captured from a real local board', async ({ page }, testInfo) => {
-  test.skip(!expectOpenGame, 'Only runs when seeded Anvil data is available.');
+seededTest('seeded gameplay can be captured from a real local board', async ({ page }, testInfo) => {
   test.skip(!captureProjects.has(testInfo.project.name), 'Capture run only uses the primary desktop browser.');
 
   const env = await readGameEnv();

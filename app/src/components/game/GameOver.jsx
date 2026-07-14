@@ -13,6 +13,7 @@ import { deriveNextChallenge } from '../../lib/expeditionChallenges';
 import { useLandingSite } from '../../hooks/useLandingSite';
 import ExpeditionMemoryPanel from '../memory/ExpeditionMemoryPanel';
 import RunRelicSharePanel from '../memory/RunRelicSharePanel';
+import { trackJourneyEvent } from '../../lib/analytics';
 
 export default function GameOver({ gameId }) {
   const { address } = useWallet();
@@ -108,9 +109,17 @@ export default function GameOver({ gameId }) {
     setMemoryState(recordExpeditionMemory(completedMemory));
   }, [completedMemory]);
 
+  useEffect(() => {
+    trackJourneyEvent('recap', {
+      lifecycle: 'complete',
+      outcome: lostCount === 0 ? 'crew_survived' : survivorCount > 0 ? 'partial_survival' : 'crew_lost',
+    }, { dedupeKey: String(reportGameId) });
+  }, [lostCount, reportGameId, survivorCount]);
+
   const copyReport = async () => {
     if (!navigator.clipboard || !reportUrl) return;
     await navigator.clipboard.writeText(reportUrl);
+    trackJourneyEvent('share', { share_type: 'report_link' }, { dedupeKey: String(reportGameId) });
     setCopied(true);
     window.setTimeout(() => setCopied(false), 1800);
   };
@@ -389,6 +398,7 @@ export default function GameOver({ gameId }) {
         </Link>
         <Link
           to="/"
+          onClick={() => trackJourneyEvent('second_expedition_start', { return_interval: 'same_session' }, { dedupeKey: String(reportGameId) })}
           className="font-display text-xs tracking-widest uppercase text-compass hover:text-compass-bright border border-compass/30 hover:border-compass/50 rounded px-4 py-2 bg-compass/5 hover:bg-compass/10 transition-colors"
         >
           New Expedition

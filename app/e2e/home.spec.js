@@ -6,6 +6,7 @@ import { promises as fs } from 'node:fs';
 import { test, expect } from '@playwright/test';
 
 const expectOpenGame = process.env.E2E_EXPECT_OPEN_GAME === 'true';
+const seededTest = expectOpenGame ? test : test.skip;
 const e2eEnvPath = new URL('../.env.e2e-anvil', import.meta.url);
 const seedPk = '0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80';
 
@@ -96,9 +97,7 @@ test('internal preview routes are blocked in the public funnel', async ({ page }
   await expect(page.getByText(/Solo Artifact Hunt/i)).toHaveCount(0);
 });
 
-test('seeded anvil mode shows at least one expedition', async ({ page }) => {
-  test.skip(!expectOpenGame, 'Only required for anvil-seeded runs.');
-
+seededTest('seeded anvil mode shows at least one expedition', async ({ page }) => {
   const env = await readGameEnv();
   const transport = http(env.VITE_FOUNDRY_RPC_URL);
   const client = createPublicClient({ chain: foundry, transport });

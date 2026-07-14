@@ -1,0 +1,21 @@
+export const FIRST_PLAYER_FIXTURE = Object.freeze({
+  persona: 'first-player-v1',
+  callsign: 'Voyager',
+  role: 'scout',
+  roleLabel: 'Scout',
+  expeditionName: 'Sector 0 signal',
+  consequence: 'The crew has charted a possible route home.',
+  elapsedReturnDays: 8,
+  expectedEvents: Object.freeze([
+    'starter_opened',
+    'role_selected',
+    'meaningful_choice',
+    'cloud_save_offered',
+    'visible_consequence',
+    'starter_completed',
+    'share',
+    'resume',
+    'recap',
+    'second_expedition_start',
+  ]),
+});

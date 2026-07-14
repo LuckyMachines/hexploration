@@ -9,6 +9,11 @@ describe('return loop', () => {
     const state = updateExpeditionReturn(started, { lifecycle: 'at-risk', pressure: 71, nextReason: 'Vex needs your scan before the bridge collapses.' });
     expect(returnRecommendation(state)).toMatchObject({ action: 'Protect the extraction route', href: '/game/42' });
   });
+  it('never routes a local starter thread into a nonexistent on-chain game', () => {
+    const started = startReturnableExpedition(selectRole(emptyReturnLoop(), 'scout'), { name: 'Sector 0 signal' });
+    expect(returnRecommendation(started)).toMatchObject({ href: '#return-loop' });
+    expect(returnRecommendation(updateExpeditionReturn(started, { lifecycle: 'waiting-on-crew' }))).toMatchObject({ href: '#live-expedition' });
+  });
   it('merges two devices without letting an older expedition overwrite a newer one', () => {
     const local = startReturnableExpedition(selectRole(emptyReturnLoop(), 'scout'), { gameId: '42' });
     const cloud = updateExpeditionReturn(local, { pressure: 81, nextAction: 'Protect the bridge' });

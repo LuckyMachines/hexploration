@@ -4,7 +4,7 @@ import { SUPPORTED_CHAINS, RPC_URLS } from './chains';
 const clientCache = new Map();
 
 function getDefaultChainId() {
-  const preferredChain = SUPPORTED_CHAINS.find((chain) => {
+  const preferredChain = [...SUPPORTED_CHAINS].sort((left, right) => (left.id === 11155111 ? -1 : right.id === 11155111 ? 1 : 0)).find((chain) => {
     const rpcUrl = RPC_URLS[chain.id];
     return typeof rpcUrl === 'string' && rpcUrl.length > 0;
   });

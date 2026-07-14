@@ -7,6 +7,7 @@ import {
   renderRunRelicSvg,
 } from '../../lib/expeditionRelicCard';
 import RunRelicCard from './RunRelicCard';
+import { trackJourneyEvent } from '../../lib/analytics';
 
 function browserOrigin() {
   if (typeof window === 'undefined') return '';
@@ -69,6 +70,7 @@ export default function RunRelicSharePanel({ memory, challenge, title = 'Run Rel
       return;
     }
     await navigator.clipboard.writeText(shareText);
+    trackJourneyEvent('share', { share_type: 'relic_text' }, { dedupeKey: card.id || card.filename });
     setStatus('Share text copied');
   }
 
@@ -83,11 +85,13 @@ export default function RunRelicSharePanel({ memory, challenge, title = 'Run Rel
       return;
     }
     await navigator.clipboard.write([new ClipboardItem({ 'image/png': png })]);
+    trackJourneyEvent('share', { share_type: 'relic_image' }, { dedupeKey: card.id || card.filename });
     setStatus('Relic image copied');
   }
 
   function download() {
     downloadSvg(svg, card.filename);
+    trackJourneyEvent('share', { share_type: 'relic_download' }, { dedupeKey: card.id || card.filename });
     setStatus('Relic SVG downloaded');
   }
 

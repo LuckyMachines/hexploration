@@ -5,6 +5,7 @@ import { useAvailableGames } from '../../hooks/useAvailableGames';
 import { useGameActions } from '../../hooks/useGameActions';
 import Spinner from '../shared/Spinner';
 import TxStatus from '../shared/TxStatus';
+import { trackJourneyEvent } from '../../lib/analytics';
 
 function Step({ number, title, detail, active, complete }) {
   return (
@@ -93,6 +94,7 @@ export default function FirstExpeditionGuide() {
       return;
     }
     if (hasOpenGame) {
+      trackJourneyEvent('live_join', { game_context: 'open_registry' }, { dedupeKey: String(firstOpenGame) });
       navigate(`/game/${firstOpenGame}`);
       return;
     }

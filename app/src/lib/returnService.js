@@ -92,8 +92,8 @@ export function updateCloudProfile(profile, token = loadReturnSession()?.token) 
   return request('/v1/profile', { method: 'PUT', body: profile, token });
 }
 
-export function syncExpeditionSummary(gameId, summary, token = loadReturnSession()?.token) {
-  return request(`/v1/expeditions/${encodeURIComponent(gameId)}`, { method: 'PUT', body: summary, token });
+export function updateExpeditionAnnotation(gameId, annotation, token = loadReturnSession()?.token) {
+  return request(`/v1/expeditions/${encodeURIComponent(gameId)}/annotation`, { method: 'PUT', body: annotation, token });
 }
 
 export function recordRetentionEvent(name, properties = {}, { gameId, eventId = crypto.randomUUID(), token = loadReturnSession()?.token } = {}) {

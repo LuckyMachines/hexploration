@@ -1,6 +1,8 @@
 import { expect, test } from '@playwright/test';
 
 const RETURN_API = 'https://return-api.xenovoya.com';
+const PLAUSIBLE_SCRIPT = 'https://plausible.racerverse.com/js/script.manual.js';
+const PLAUSIBLE_API = 'https://plausible.racerverse.com/api/event';
 const WALLET = '0x1111111111111111111111111111111111111111';
 
 function createReturnCloud() {
@@ -81,7 +83,7 @@ function createReturnCloud() {
   };
 }
 
-async function configureDevice(context, cloud) {
+async function configureDevice(context, cloud, analyticsEvents) {
   await context.addInitScript(({ wallet }) => {
     const listeners = new Map();
     window.ethereum = {
@@ -97,6 +99,21 @@ async function configureDevice(context, cloud) {
     };
   }, { wallet: WALLET });
   await context.route(`${RETURN_API}/**`, (route) => cloud.handle(route));
+  await context.route(PLAUSIBLE_API, async (route) => {
+    analyticsEvents.push(route.request().postDataJSON());
+    await route.fulfill({ status: 202, contentType: 'application/json', body: '{}' });
+  });
+  await context.route(PLAUSIBLE_SCRIPT, (route) => route.fulfill({
+    status: 200,
+    contentType: 'text/javascript',
+    body: `(() => {
+      const queued = window.plausible?.q || [];
+      window.plausible = (name, options = {}) => fetch('${PLAUSIBLE_API}', {
+        method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ name, props: options.props || {} })
+      });
+      queued.forEach((args) => window.plausible(...args));
+    })();`,
+  }));
 }
 
 async function chooseRoleAndCreateThread(page) {
@@ -110,10 +127,12 @@ async function chooseRoleAndCreateThread(page) {
 test('two devices reconcile, survive conflict and offline work, recover expiry, and revoke sessions', async ({ browser }) => {
   test.slow();
   const cloud = createReturnCloud();
+  const analyticsA = [];
+  const analyticsB = [];
   const deviceA = await browser.newContext();
   const deviceB = await browser.newContext();
-  await configureDevice(deviceA, cloud);
-  await configureDevice(deviceB, cloud);
+  await configureDevice(deviceA, cloud, analyticsA);
+  await configureDevice(deviceB, cloud, analyticsB);
 
   try {
     const pageA = await deviceA.newPage();
@@ -167,6 +186,11 @@ test('two devices reconcile, survive conflict and offline work, recover expiry, 
     await pageA.getByTestId('return-loop-panel').getByRole('button', { name: /Remove cloud session/i }).click();
     await expect(pageA.getByTestId('return-loop-panel').getByText(/Cloud session removed.*Local history is unchanged/i)).toBeVisible();
     await expect(pageA.getByTestId('return-loop-panel').getByText(/Sector 0 signal/i)).toBeVisible();
+
+    await expect.poll(() => analyticsA.filter((event) => event.name === 'cloud_save_completed').length).toBe(1);
+    await expect.poll(() => analyticsB.filter((event) => event.name === 'cloud_save_completed').length).toBe(1);
+    expect(analyticsB.filter((event) => event.name === 'resume')).toHaveLength(1);
+    expect(analyticsB.find((event) => event.name === 'resume')?.props).toMatchObject({ resume_source: 'cloud', source: 'synthetic', environment: 'test' });
   } finally {
     await deviceA.close();
     await deviceB.close();

@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import { trackJourneyEvent } from '../../lib/analytics';
 
 export default function GameCard({ gameId, maxPlayers, registered }) {
   const navigate = useNavigate();
@@ -7,7 +8,10 @@ export default function GameCard({ gameId, maxPlayers, registered }) {
 
   return (
     <button
-      onClick={() => navigate(`/game/${gameId}`)}
+      onClick={() => {
+        trackJourneyEvent('live_join', { game_context: isFull ? 'full_registry' : 'open_registry' }, { dedupeKey: String(gameId) });
+        navigate(`/game/${gameId}`);
+      }}
       className="w-full text-left border border-exp-border rounded bg-exp-panel
                  hover:border-compass/40 hover:bg-exp-panel/80 transition-colors
                  focus:outline-none focus:ring-1 focus:ring-compass/50"

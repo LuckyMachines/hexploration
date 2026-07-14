@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useWallet } from '../../contexts/WalletContext';
 import {
@@ -12,7 +12,7 @@ import {
   startReturnableExpedition,
   updateExpeditionReturn,
 } from '../../lib/returnLoop';
-import { trackRetentionEvent } from '../../lib/analytics';
+import { trackJourneyEvent } from '../../lib/analytics';
 import {
   ReturnServiceError,
   authenticateReturnService,
@@ -27,6 +27,15 @@ import {
 } from '../../lib/returnService';
 
 const lifecycleLabel = { preparing: 'Preparing', active: 'Active', 'waiting-on-crew': 'Waiting on crew', 'at-risk': 'At risk', 'extraction-window': 'Extraction window', complete: 'Complete', recoverable: 'Recoverable' };
+const terminalLifecycles = new Set(['complete', 'recoverable']);
+const returnInterval = (updatedAt) => {
+  const elapsedHours = Math.max(0, (Date.now() - (Date.parse(updatedAt) || Date.now())) / 3_600_000);
+  if (elapsedHours < 1) return 'same_session';
+  if (elapsedHours < 24) return 'same_day';
+  if (elapsedHours < 72) return 'd1_d3';
+  if (elapsedHours < 168) return 'd3_d7';
+  return 'd7_plus';
+};
 
 export function ReturnLoopSync({ gameId, isGameOver = false }) {
   useEffect(() => {
@@ -49,12 +58,37 @@ export default function ReturnLoopPanel() {
   const [state, setState] = useState(() => loadReturnLoop());
   const [copied, setCopied] = useState(false);
   const [cloud, setCloud] = useState({ status: 'local', message: 'Saved on this device.', version: 0 });
+  const initialState = useRef(state);
   const recommendation = useMemo(() => returnRecommendation(state), [state]);
   const expedition = state.expedition;
 
   useEffect(() => {
-    trackRetentionEvent('return_loop_opened', { lifecycle: expedition?.lifecycle || 'no-expedition' });
+    trackJourneyEvent('starter_opened', { persona: 'first-player-v1' });
+    const initialExpedition = initialState.current.expedition;
+    if (initialExpedition) {
+      trackJourneyEvent('resume', {
+        has_expedition: true,
+        lifecycle: initialExpedition.lifecycle,
+        resume_source: 'local',
+      }, { dedupeKey: initialExpedition.gameId });
+    }
   }, []);
+
+  useEffect(() => {
+    if (!state.player.role) return;
+    trackJourneyEvent('cloud_save_offered', {
+      has_expedition: Boolean(expedition),
+      role: state.player.role,
+    });
+  }, [expedition?.gameId, state.player.role]);
+
+  useEffect(() => {
+    if (!expedition || !terminalLifecycles.has(expedition.lifecycle)) return;
+    trackJourneyEvent('recap', {
+      lifecycle: expedition.lifecycle,
+      outcome: expedition.lifecycle === 'complete' ? 'completed' : 'recoverable',
+    }, { dedupeKey: expedition.gameId });
+  }, [expedition?.gameId, expedition?.lifecycle]);
 
   useEffect(() => {
     const session = loadReturnSession();
@@ -70,17 +104,43 @@ export default function ReturnLoopPanel() {
     return saved;
   };
 
-  const markReady = () => expedition && persist(updateExpeditionReturn(state, {
-    lifecycle: 'waiting-on-crew',
-    lastConsequence: `${state.player.callsign} marked a ${state.player.role} decision ready.`,
-    nextAction: 'Return when the crew is ready to commit.',
-    nextReason: 'Vex is holding the crossing until your decision resolves.',
-  }));
+  const chooseRole = (role) => {
+    const next = persist(selectRole(state, role));
+    trackJourneyEvent('role_selected', { role });
+    trackJourneyEvent('meaningful_choice', { choice: 'crew_role', role });
+    return next;
+  };
+
+  const startThread = () => {
+    const next = persist(startReturnableExpedition(state, { name: 'Sector 0 signal' }));
+    trackJourneyEvent('visible_consequence', { outcome: 'route_charted', lifecycle: next.expedition.lifecycle }, { dedupeKey: next.expedition.gameId });
+    return next;
+  };
+
+  const startNextThread = () => {
+    const interval = returnInterval(expedition?.updatedAt);
+    const next = persist(startReturnableExpedition(state, { name: `Sector ${state.player.records.expeditions} signal` }));
+    trackJourneyEvent('second_expedition_start', { return_interval: interval, role: state.player.role }, { dedupeKey: next.expedition.gameId });
+    return next;
+  };
+
+  const markReady = () => {
+    if (!expedition) return null;
+    const next = persist(updateExpeditionReturn(state, {
+      lifecycle: 'waiting-on-crew',
+      lastConsequence: `${state.player.callsign} marked a ${state.player.role} decision ready.`,
+      nextAction: 'Return when the crew is ready to commit.',
+      nextReason: 'Vex is holding the crossing until your decision resolves.',
+    }));
+    trackJourneyEvent('starter_completed', { outcome: 'decision_ready', role: state.player.role }, { dedupeKey: expedition.gameId });
+    return next;
+  };
 
   const copyInvite = async () => {
     try {
       await navigator.clipboard.writeText(`${state.player.callsign} is assembling a Xenovoya crew. Join the expedition and help resolve the next shared decision.`);
       persist(recordReturnEvent(state, 'crew_invite_copied'));
+      trackJourneyEvent('share', { share_type: 'crew_invite' }, { dedupeKey: expedition?.gameId || 'starter' });
       setCopied(true);
     } catch {
       setCopied(false);
@@ -127,7 +187,19 @@ export default function ReturnLoopPanel() {
         message: conflictResolved ? `Conflict resolved safely · cloud version ${saved.version}` : `Synced securely · cloud version ${saved.version}`,
         version: Number(saved.version),
       });
-      trackRetentionEvent('cloud_return_saved', { has_expedition: Boolean(merged.expedition), role: merged.player.role || 'none' });
+      if (remote?.state?.expedition) {
+        trackJourneyEvent('resume', {
+          has_expedition: true,
+          lifecycle: merged.expedition?.lifecycle || 'active',
+          resume_source: 'cloud',
+        }, { dedupeKey: merged.expedition?.gameId || 'cloud' });
+      }
+      trackJourneyEvent('cloud_save_completed', {
+        has_expedition: Boolean(merged.expedition),
+        role: merged.player.role || 'none',
+        cloud_version: Number(saved.version),
+        sync_result: conflictResolved ? 'conflict_resolved' : 'synced',
+      }, { dedupeKey: merged.expedition?.gameId || merged.player.role || 'profile' });
       recordRetentionEvent('cloud_return_saved', { has_expedition: Boolean(merged.expedition), role: merged.player.role || 'none' }, { gameId: merged.expedition?.gameId, token: session.token }).catch(() => {});
     } catch (error) {
       const expired = error instanceof ReturnServiceError && error.status === 401;
@@ -156,7 +228,7 @@ export default function ReturnLoopPanel() {
       {expedition && <span className="rounded border border-compass/40 bg-compass/10 px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.18em] text-compass-bright">{lifecycleLabel[expedition.lifecycle]}</span>}
     </div>
     {!state.player.role ? <div className="mt-5 grid gap-3 md:grid-cols-3">
-      {Object.entries(RETURN_ROLES).map(([id, role]) => <button key={id} onClick={() => persist(selectRole(state, id))} className="rounded border border-exp-border bg-exp-dark/40 p-4 text-left transition hover:border-compass/50 hover:bg-compass/5">
+      {Object.entries(RETURN_ROLES).map(([id, role]) => <button key={id} onClick={() => chooseRole(id)} className="rounded border border-exp-border bg-exp-dark/40 p-4 text-left transition hover:border-compass/50 hover:bg-compass/5">
         <p className="font-mono text-xs uppercase tracking-[0.18em] text-exp-text">{role.label}</p>
         <p className="mt-2 font-mono text-[11px] leading-relaxed text-exp-text-dim">{role.contribution}.</p>
       </button>)}
@@ -166,8 +238,14 @@ export default function ReturnLoopPanel() {
         <p className="mt-2 font-display text-lg uppercase tracking-[0.1em] text-exp-text">{recommendation.action}</p>
         <p className="mt-2 font-mono text-xs leading-relaxed text-exp-text-dim">{recommendation.reason}</p>
         <div className="mt-4 flex flex-wrap gap-2">
-          {recommendation.href.startsWith('/') ? <Link to={recommendation.href} onClick={() => persist(recordReturnEvent(state, 'expedition_resumed', { gameId: expedition?.gameId }))} className="inline-flex rounded border border-compass/50 bg-compass/10 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.18em] text-compass-bright">{recommendation.action}</Link> : <button onClick={expedition ? markReady : () => persist(startReturnableExpedition(state, { name: 'Sector 0 signal' }))} className="rounded border border-compass/50 bg-compass/10 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.18em] text-compass-bright">{expedition ? 'Mark decision ready' : 'Create expedition thread'}</button>}
-          {expedition && recommendation.href.startsWith('/') && expedition.lifecycle !== 'waiting-on-crew' && <button onClick={markReady} className="rounded border border-blueprint/40 bg-blueprint/10 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.18em] text-blueprint">Mark decision ready</button>}
+          {!expedition && <button onClick={startThread} className="rounded border border-compass/50 bg-compass/10 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.18em] text-compass-bright">Create expedition thread</button>}
+          {expedition && terminalLifecycles.has(expedition.lifecycle) && <button onClick={startNextThread} className="rounded border border-compass/50 bg-compass/10 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.18em] text-compass-bright">Start next expedition thread</button>}
+          {expedition && !terminalLifecycles.has(expedition.lifecycle) && /^\d+$/.test(expedition.gameId) && <Link to={recommendation.href} onClick={() => {
+            persist(recordReturnEvent(state, 'expedition_resumed', { gameId: expedition.gameId }));
+            trackJourneyEvent('resume', { has_expedition: true, lifecycle: expedition.lifecycle, resume_source: 'local' }, { dedupeKey: expedition.gameId });
+          }} className="inline-flex rounded border border-compass/50 bg-compass/10 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.18em] text-compass-bright">{recommendation.action}</Link>}
+          {expedition && !terminalLifecycles.has(expedition.lifecycle) && !/^\d+$/.test(expedition.gameId) && expedition.lifecycle === 'waiting-on-crew' && <a href="#live-expedition" className="inline-flex rounded border border-compass/50 bg-compass/10 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.18em] text-compass-bright">Find a live expedition</a>}
+          {expedition && !terminalLifecycles.has(expedition.lifecycle) && expedition.lifecycle !== 'waiting-on-crew' && <button onClick={markReady} className="rounded border border-blueprint/40 bg-blueprint/10 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.18em] text-blueprint">Mark decision ready</button>}
         </div>
       </div>
       <div className="rounded border border-exp-border bg-exp-dark/35 p-4">

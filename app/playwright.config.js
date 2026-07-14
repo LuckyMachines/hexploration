@@ -9,7 +9,8 @@ export default defineConfig({
   testDir: './e2e',
   timeout: 60_000,
   fullyParallel: true,
-  workers: 4,
+  workers: Number(process.env.E2E_WORKERS || 1),
+  retries: Number(process.env.E2E_RETRIES || 1),
   expect: {
     timeout: 10_000,
   },
@@ -49,6 +50,9 @@ export default defineConfig({
       VITE_RETURN_API_URL: process.env.VITE_RETURN_API_URL || 'https://return-api.xenovoya.com',
       VITE_PLAUSIBLE_HOST: process.env.VITE_PLAUSIBLE_HOST || 'https://plausible.racerverse.com',
       VITE_PLAUSIBLE_DOMAIN: process.env.VITE_PLAUSIBLE_DOMAIN || 'play.xenovoya.com',
+      VITE_APP_ENV: process.env.VITE_APP_ENV || 'test',
+      VITE_RELEASE_SHA: process.env.VITE_RELEASE_SHA || 'e2e-release',
+      VITE_ANALYTICS_SOURCE: process.env.VITE_ANALYTICS_SOURCE || 'synthetic',
     },
   },
 });
