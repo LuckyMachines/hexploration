@@ -11,6 +11,14 @@ const STATIC_ROUTES = [
     priority: 1,
     changefreq: 'weekly',
   },
+  {
+    path: '/privacy',
+    type: 'privacy',
+    title: 'Xenovoya data and privacy',
+    description: 'Understand local storage, optional wallet-linked return history, privacy-safe analytics, export, deletion, and public on-chain records.',
+    priority: 0.4,
+    changefreq: 'monthly',
+  },
 ];
 
 function uniqueBy(items, keyFn) {

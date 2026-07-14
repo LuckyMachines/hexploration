@@ -118,6 +118,7 @@
     "verify:doctor": "node scripts/verify-hard.mjs --doctor",
     "verify:latest": "node scripts/verify-hard.mjs --latest",
     "verify:clean-artifacts": "node scripts/verify-hard.mjs --clean-artifacts",
+    "contract:return": "node scripts/verify-return-api-contract.mjs",
     "test:e2e:anvil": "node scripts/run-anvil-e2e.mjs"
   },
   "repository": {
@@ -130,12 +131,8 @@
     "url": "https://github.com/LuckyMachines/xenovoya/issues"
   },
   "homepage": "https://github.com/LuckyMachines/xenovoya#readme",
-  "dependencies": {
-    "@luckymachines/game-core": "file:../game-core",
-    "@luckymachines/autoloop": "file:../AUTOLOOP_STUFF/autoloop"
-  },
   "devDependencies": {
-    "dotenv": "^17.3.1",
-    "viem": "^2.46.2"
+    "dotenv": "^17.4.2",
+    "viem": "^2.55.1"
   }
 }

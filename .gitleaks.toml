@@ -1,0 +1,16 @@
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Public chain deployments, generated local evidence, and pinned upstream test fixtures"
+paths = [
+  '''(?:^|/)deployments\.json$''',
+  '''(?:^|/)app/public/local-stack/''',
+  '''(?:^|/)app/public/simulator/''',
+  '''(?:^|/)reports/local-stack/''',
+  '''(?:^|/)reports/simulator/''',
+  '''(?:^|/)lib/''',
+]
+regexes = [
+  '''0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80''',
+]

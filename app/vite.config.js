@@ -26,6 +26,23 @@ function stripInternalPublicArtifacts(enabled) {
   };
 }
 
+function emitReleaseMetadata(env) {
+  return {
+    name: 'emit-release-metadata',
+    generateBundle() {
+      this.emitFile({
+        type: 'asset',
+        fileName: 'release.json',
+        source: `${JSON.stringify({
+          service: 'xenovoya-player',
+          environment: env.VITE_APP_ENV || 'development',
+          release: env.VITE_RELEASE_SHA || 'unknown',
+        })}\n`,
+      });
+    },
+  };
+}
+
 function validateProductionEnvironment(env) {
   const failures = [];
   for (const key of addressKeys) {
@@ -50,7 +67,12 @@ export default defineConfig(({ mode }) => {
   const env = { ...loadEnv(mode, process.cwd(), ''), ...process.env };
   if (mode === 'production') validateProductionEnvironment(env);
   return {
-    plugins: [react(), tailwindcss(), stripInternalPublicArtifacts(env.VITE_ENABLE_INTERNAL_TOOLS === 'true')],
+    plugins: [
+      react(),
+      tailwindcss(),
+      stripInternalPublicArtifacts(env.VITE_ENABLE_INTERNAL_TOOLS === 'true'),
+      emitReleaseMetadata(env),
+    ],
     build: {
       rollupOptions: {
         output: {
