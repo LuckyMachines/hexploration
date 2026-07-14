@@ -14,6 +14,7 @@ import { LIVE_PLAY_URL, internalToolsEnabled } from './lib/internalTools';
 
 const HomePage = lazy(() => import('./pages/HomePage'));
 const GamePage = lazy(() => import('./pages/GamePage'));
+const PrivacyPage = lazy(() => import('./pages/PrivacyPage'));
 const INCLUDE_INTERNAL_ROUTES = import.meta.env.VITE_ENABLE_INTERNAL_TOOLS === 'true';
 const GameUILab = INCLUDE_INTERNAL_ROUTES ? lazy(() => import('./pages/GameUILab')) : null;
 const DesignSystemPage = INCLUDE_INTERNAL_ROUTES ? lazy(() => import('./pages/DesignSystemPage')) : null;
@@ -70,6 +71,7 @@ export default function App() {
             <Routes>
               <Route path="/" element={<HomePage />} />
               <Route path="/game/:gameId" element={<GamePage />} />
+              <Route path="/privacy" element={<PrivacyPage />} />
               {INCLUDE_INTERNAL_ROUTES && (
                 <>
                   <Route path="/ui-lab" element={<InternalRoute component={GameUILab} />} />

@@ -1,0 +1,218 @@
+name: Verify and deploy player
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: player-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  VITE_RPC_URL: https://ethereum-sepolia-rpc.publicnode.com
+  VITE_LIVE_PLAY_URL: https://play.xenovoya.com
+  VITE_PLAUSIBLE_HOST: https://plausible.racerverse.com
+  VITE_PLAUSIBLE_DOMAIN: play.xenovoya.com
+  VITE_RETURN_API_URL: https://return-api.xenovoya.com
+  VITE_APP_ENV: production
+  VITE_RELEASE_SHA: ${{ github.sha }}
+  VITE_ANALYTICS_SOURCE: player
+  VITE_ENABLE_INTERNAL_TOOLS: "false"
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+
+    steps:
+      - name: Check out exact revision
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+
+      - name: Scan the shipping tree for secrets
+        run: >-
+          docker run --rm --volume "$GITHUB_WORKSPACE:/repo"
+          ghcr.io/gitleaks/gitleaks:v8.30.1@sha256:c00b6bd0aeb3071cbcb79009cb16a60dd9e0a7c60e2be9ab65d25e6bc8abbb7f
+          dir /repo --config /repo/.gitleaks.toml --redact --no-banner --exit-code 1
+
+      - name: Initialize pinned contract submodules
+        run: git submodule update --init --recursive --depth 1
+
+      - name: Use Node.js 24
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            app/package-lock.json
+
+      - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@b00af27efadbc7b4ca8b82abbd903b17cc874d2a # v1
+
+      - name: Load canonical Sepolia contract addresses
+        shell: bash
+        run: |
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          const deployment = JSON.parse(fs.readFileSync('deployments.json', 'utf8')).sepolia;
+          const mapping = {
+            VITE_BOARD_ADDRESS: 'XENOVOYA_BOARD',
+            VITE_CONTROLLER_ADDRESS: 'XENOVOYA_CONTROLLER',
+            VITE_GAME_SUMMARY_ADDRESS: 'GAME_SUMMARY',
+            VITE_PLAYER_SUMMARY_ADDRESS: 'PLAYER_SUMMARY',
+            VITE_GAME_EVENTS_ADDRESS: 'GAME_EVENTS',
+            VITE_GAME_REGISTRY_ADDRESS: 'GAME_REGISTRY',
+            VITE_GAME_QUEUE_ADDRESS: 'GAME_QUEUE',
+            VITE_GAME_SETUP_ADDRESS: 'GAME_SETUP',
+          };
+          const lines = [];
+          for (const [name, key] of Object.entries(mapping)) {
+            const value = String(deployment[key] || '');
+            if (!/^0x[a-f0-9]{40}$/i.test(value) || /^0x0{40}$/i.test(value)) throw new Error(`${key} is not a deployed address`);
+            lines.push(`${name}=${value}`);
+          }
+          fs.appendFileSync(process.env.GITHUB_ENV, `${lines.join('\n')}\n`);
+          NODE
+
+      - name: Install locked root dependencies
+        run: npm ci
+
+      - name: Audit root dependencies
+        run: npm audit --audit-level=high
+
+      - name: Build and test contracts
+        run: |
+          forge build
+          forge test
+
+      - name: Test game tooling
+        run: node --test scripts/*.test.mjs
+
+      - name: Install locked player dependencies
+        working-directory: app
+        run: npm ci
+
+      - name: Audit player dependencies
+        working-directory: app
+        run: npm audit --audit-level=high
+
+      - name: Test and build player
+        working-directory: app
+        run: |
+          npm test
+          npm run build
+
+      - name: Verify the deployed return API contract
+        run: npm run contract:return
+
+      - name: Install browser engines
+        working-directory: app
+        run: npx playwright install --with-deps chromium firefox webkit
+
+      - name: Prove browser journeys
+        working-directory: app
+        env:
+          VITE_APP_ENV: test
+          VITE_RELEASE_SHA: e2e-release
+          VITE_ANALYTICS_SOURCE: synthetic
+        run: npm run test:e2e
+
+      - name: Build production container
+        run: |
+          docker build \
+            --tag xenovoya-player:${{ github.sha }} \
+            --build-arg VITE_BOARD_ADDRESS \
+            --build-arg VITE_CONTROLLER_ADDRESS \
+            --build-arg VITE_GAME_SUMMARY_ADDRESS \
+            --build-arg VITE_PLAYER_SUMMARY_ADDRESS \
+            --build-arg VITE_GAME_EVENTS_ADDRESS \
+            --build-arg VITE_GAME_REGISTRY_ADDRESS \
+            --build-arg VITE_GAME_QUEUE_ADDRESS \
+            --build-arg VITE_GAME_SETUP_ADDRESS \
+            --build-arg VITE_RPC_URL \
+            --build-arg VITE_LIVE_PLAY_URL \
+            --build-arg VITE_PLAUSIBLE_HOST \
+            --build-arg VITE_PLAUSIBLE_DOMAIN \
+            --build-arg VITE_RETURN_API_URL \
+            --build-arg VITE_APP_ENV \
+            --build-arg VITE_RELEASE_SHA \
+            --build-arg VITE_ANALYTICS_SOURCE \
+            --build-arg VITE_ENABLE_INTERNAL_TOOLS \
+            .
+
+      - name: Scan production container
+        run: >-
+          docker run --rm --volume /var/run/docker.sock:/var/run/docker.sock
+          aquasec/trivy:0.72.0@sha256:cffe3f5161a47a6823fbd23d985795b3ed72a4c806da4c4df16266c02accdd6f
+          image --scanners vuln --severity HIGH,CRITICAL --ignore-unfixed --exit-code 1 --timeout 15m
+          xenovoya-player:${{ github.sha }}
+
+      - name: Retain exact deploy artifact
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: player-dist-${{ github.sha }}
+          path: app/dist
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Retain failed browser evidence
+        if: failure()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: player-browser-failure-${{ github.sha }}
+          path: |
+            app/playwright-report
+            app/test-results
+          if-no-files-found: ignore
+          retention-days: 14
+
+  deploy:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    environment:
+      name: production
+      url: https://play.xenovoya.com
+    env:
+      CLOUDFLARE_ACCOUNT_ID: d01bf6092e5895472b8e45fffa5c9066
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+
+    steps:
+      - name: Use Node.js 24
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24
+
+      - name: Download the verified artifact
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+        with:
+          name: player-dist-${{ github.sha }}
+          path: dist
+
+      - name: Deploy the exact verified artifact
+        run: >-
+          npx --yes wrangler@4.110.0 pages deploy dist
+          --project-name=hexploration-spa
+          --branch=main
+          --commit-hash=${{ github.sha }}
+          --commit-message="CI-verified player release ${{ github.sha }}"
+
+      - name: Verify the exact production release and dependencies
+        shell: bash
+        run: |
+          for _ in {1..24}; do
+            if curl --fail --silent --show-error https://play.xenovoya.com/release.json \
+              | jq --exit-status --arg sha "$GITHUB_SHA" '.environment == "production" and .release == $sha' >/dev/null; then
+              curl --fail --silent --show-error https://return-api.xenovoya.com/ready >/dev/null
+              exit 0
+            fi
+            sleep 5
+          done
+          echo 'Production did not converge to the verified player commit.' >&2
+          exit 1

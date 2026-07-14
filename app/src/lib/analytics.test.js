@@ -13,6 +13,8 @@ afterEach(() => {
 
 describe('analytics', () => {
   it('stays disabled without explicit public configuration', async () => {
+    vi.stubEnv('VITE_PLAUSIBLE_HOST', '');
+    vi.stubEnv('VITE_PLAUSIBLE_DOMAIN', '');
     const { analyticsEnabled, trackJourneyEvent } = await import('./analytics');
     expect(analyticsEnabled()).toBe(false);
     expect(trackJourneyEvent('starter_opened', { persona: 'first-player-v1' })).toBe(false);

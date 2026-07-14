@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useWallet } from '../../contexts/WalletContext';
 import {
   RETURN_ROLES,
+  clearReturnLoop,
   loadReturnLoop,
   mergeReturnLoops,
   recordReturnEvent,
@@ -17,6 +18,8 @@ import {
   ReturnServiceError,
   authenticateReturnService,
   clearReturnSession,
+  deleteCloudProfile,
+  exportCloudProfile,
   getCloudReturnState,
   loadReturnSession,
   logoutReturnService,
@@ -58,6 +61,9 @@ export default function ReturnLoopPanel() {
   const [state, setState] = useState(() => loadReturnLoop());
   const [copied, setCopied] = useState(false);
   const [cloud, setCloud] = useState({ status: 'local', message: 'Saved on this device.', version: 0 });
+  const [privacy, setPrivacy] = useState({ status: 'idle', message: '' });
+  const [deleteArmed, setDeleteArmed] = useState(false);
+  const [localClearArmed, setLocalClearArmed] = useState(false);
   const initialState = useRef(state);
   const recommendation = useMemo(() => returnRecommendation(state), [state]);
   const expedition = state.expedition;
@@ -218,6 +224,53 @@ export default function ReturnLoopPanel() {
     setCloud({ status: 'local', message: 'Cloud session removed. Local history is unchanged.', version: 0 });
   };
 
+  const downloadCloudData = async () => {
+    setPrivacy({ status: 'working', message: 'Preparing your off-chain data export...' });
+    try {
+      const exported = await exportCloudProfile();
+      const blob = new Blob([`${JSON.stringify(exported, null, 2)}\n`], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const anchor = document.createElement('a');
+      anchor.href = url;
+      anchor.download = `xenovoya-player-export-${new Date().toISOString().slice(0, 10)}.json`;
+      document.body.appendChild(anchor);
+      anchor.click();
+      anchor.remove();
+      URL.revokeObjectURL(url);
+      setPrivacy({ status: 'done', message: 'Export downloaded. It contains wallet-linked off-chain data, so store it carefully.' });
+    } catch (error) {
+      setPrivacy({ status: 'error', message: error.message || 'The export could not be prepared.' });
+    }
+  };
+
+  const eraseCloudData = async () => {
+    if (!deleteArmed) {
+      setDeleteArmed(true);
+      setPrivacy({ status: 'confirm', message: 'Press confirm delete to erase wallet-linked off-chain history and invalidate every cloud session.' });
+      return;
+    }
+    setPrivacy({ status: 'working', message: 'Erasing wallet-linked off-chain history...' });
+    try {
+      await deleteCloudProfile();
+      setDeleteArmed(false);
+      setCloud({ status: 'local', message: 'Cloud profile erased. Local expedition history remains on this device.', version: 0 });
+      setPrivacy({ status: 'done', message: 'Cloud profile erased. Public blockchain history is unchanged and cannot be deleted by this service.' });
+    } catch (error) {
+      setPrivacy({ status: 'error', message: error.message || 'Cloud profile deletion failed safely.' });
+    }
+  };
+
+  const eraseLocalHistory = () => {
+    if (!localClearArmed) {
+      setLocalClearArmed(true);
+      setPrivacy({ status: 'confirm', message: 'Press confirm local clear to remove expedition return history from this browser.' });
+      return;
+    }
+    setState(clearReturnLoop());
+    setLocalClearArmed(false);
+    setPrivacy({ status: 'done', message: 'Local expedition history cleared. Interface preferences and anonymous analytics identifiers were left unchanged.' });
+  };
+
   return <section id="return-loop" className="rounded border border-compass/35 bg-exp-panel/90 p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]" data-testid="return-loop-panel">
     <div className="flex flex-wrap items-start justify-between gap-4">
       <div>
@@ -268,6 +321,21 @@ export default function ReturnLoopPanel() {
         <div className="flex flex-wrap gap-2">
           <button disabled={['authenticating', 'syncing'].includes(cloud.status)} onClick={saveAcrossDevices} className="rounded border border-compass/50 bg-compass/10 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.16em] text-compass-bright disabled:cursor-wait disabled:opacity-60">{cloud.status === 'synced' ? 'Sync changes' : isConnected ? 'Save across devices' : 'Connect to save'}</button>
           {loadReturnSession() && <button onClick={disconnectCloud} className="rounded border border-exp-border px-3 py-2 font-mono text-[10px] uppercase tracking-[0.16em] text-exp-text-dim">Remove cloud session</button>}
+        </div>
+      </div>
+      <div className="mt-3 rounded border border-exp-border bg-exp-dark/35 p-4" data-testid="privacy-controls">
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div className="max-w-xl">
+            <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-exp-text-dim">Your expedition data</p>
+            <p className="mt-1 font-mono text-xs leading-relaxed text-exp-text-dim">Export or erase optional cloud history, or clear this browser's local expedition thread. On-chain records remain public and immutable.</p>
+            {privacy.message && <p className="mt-2 font-mono text-[11px] leading-relaxed text-exp-text" aria-live="polite">{privacy.message}</p>}
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {loadReturnSession() && <button disabled={privacy.status === 'working'} onClick={downloadCloudData} className="rounded border border-blueprint/40 bg-blueprint/10 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.16em] text-blueprint disabled:opacity-60">Export cloud data</button>}
+            {loadReturnSession() && <button disabled={privacy.status === 'working'} onClick={eraseCloudData} className="rounded border border-signal-red/45 bg-signal-red/10 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.16em] text-signal-red disabled:opacity-60">{deleteArmed ? 'Confirm cloud delete' : 'Delete cloud data'}</button>}
+            <button disabled={privacy.status === 'working'} onClick={eraseLocalHistory} className="rounded border border-exp-border px-3 py-2 font-mono text-[10px] uppercase tracking-[0.16em] text-exp-text-dim disabled:opacity-60">{localClearArmed ? 'Confirm local clear' : 'Clear local history'}</button>
+            <Link to="/privacy" className="inline-flex rounded border border-exp-border px-3 py-2 font-mono text-[10px] uppercase tracking-[0.16em] text-exp-text-dim">How data works</Link>
+          </div>
         </div>
       </div>
     </>}

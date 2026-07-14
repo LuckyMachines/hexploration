@@ -33,4 +33,35 @@ describe('return service client contract', () => {
     expect(fetchMock.mock.calls[2][0]).toBe('https://return-api.xenovoya.com/v1/expeditions/42/annotation');
     expect(JSON.parse(fetchMock.mock.calls[2][1].body)).toEqual({ note: 'Follow the ridge.', preferences: { pinned: true } });
   });
+
+  it('fails closed when the live API contract drifts from the player adapter', async () => {
+    const service = await import('./returnService');
+    const paths = {};
+    for (const [operationId, operation] of Object.entries(service.RETURN_API_OPERATIONS)) {
+      paths[operation.path] ||= {};
+      paths[operation.path][operation.method] = { operationId };
+    }
+    const compatible = { openapi: '3.1.0', info: { version: service.RETURN_API_CONTRACT_VERSION }, paths };
+    expect(service.assertReturnApiContract(compatible)).toEqual({ version: '2026-07-14.1', operations: 13 });
+
+    const incompatible = structuredClone(compatible);
+    incompatible.info.version = 'obsolete';
+    expect(() => service.assertReturnApiContract(incompatible)).toThrow(/incompatible/i);
+  });
+
+  it('exports before deletion and clears the local session after cloud erasure', async () => {
+    const fetchMock = vi.fn()
+      .mockResolvedValueOnce({ ok: true, status: 200, json: async () => ({ schemaVersion: 1, profile: { callsign: 'Voyager' } }) })
+      .mockResolvedValueOnce({ ok: true, status: 204, json: async () => ({}) });
+    vi.stubGlobal('fetch', fetchMock);
+    const service = await import('./returnService');
+    service.saveReturnSession({ token: 'session-token', wallet: '0x1111111111111111111111111111111111111111', expiresAt: new Date(Date.now() + 60_000).toISOString() });
+    expect(await service.exportCloudProfile()).toMatchObject({ schemaVersion: 1, profile: { callsign: 'Voyager' } });
+    await service.deleteCloudProfile();
+    expect(fetchMock.mock.calls.map(([url, options]) => [url, options.method])).toEqual([
+      ['https://return-api.xenovoya.com/v1/profile/export', 'GET'],
+      ['https://return-api.xenovoya.com/v1/profile', 'DELETE'],
+    ]);
+    expect(service.loadReturnSession()).toBeNull();
+  });
 });

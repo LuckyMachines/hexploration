@@ -20,7 +20,7 @@ describe('seo metadata', () => {
 
   test('public route metadata validates for generated routes', () => {
     const routes = buildPublicRouteIndex({ generatedAt: '2026-05-18T00:00:00.000Z' });
-    expect(routes.map((route) => route.path)).toEqual(['/']);
+    expect(routes.map((route) => route.path)).toEqual(['/', '/privacy']);
     for (const route of routes) {
       const meta = buildSeoMeta(route, config);
       const result = validateSeoMeta(meta, { route, config });

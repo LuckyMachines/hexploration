@@ -36,6 +36,11 @@ export function saveReturnLoop(value, storage = typeof window === 'undefined' ? 
   const next = normalizeReturnLoop(value); if (storage) storage.setItem(RETURN_LOOP_KEY, JSON.stringify(next)); return next;
 }
 
+export function clearReturnLoop(storage = typeof window === 'undefined' ? null : window.localStorage) {
+  storage?.removeItem(RETURN_LOOP_KEY);
+  return emptyReturnLoop();
+}
+
 export function mergeReturnLoops(localValue, cloudValue) {
   const local = normalizeReturnLoop(localValue);
   const cloud = normalizeReturnLoop(cloudValue);

@@ -30,6 +30,9 @@ export default function Footer() {
             <a href={LIVE_PLAY_URL} className="rounded border border-compass/45 bg-compass/10 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.16em] text-compass-bright hover:border-compass/70">
               Play live
             </a>
+            <Link to="/privacy" className="rounded border border-exp-border/75 bg-exp-dark/35 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.16em] text-exp-text-dim hover:border-compass/40 hover:text-exp-text">
+              Data &amp; privacy
+            </Link>
           </nav>
           <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-exp-text-dim">
             {isConnected && chain ? `${chain.name} // Chain ${chain.id}` : 'Public discovery mode'}

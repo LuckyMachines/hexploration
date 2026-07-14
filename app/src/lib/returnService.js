@@ -3,6 +3,23 @@ const API_URL = String(ENV.VITE_RETURN_API_URL || '').replace(/\/$/, '');
 const SESSION_KEY = 'xenovoya:return-service-session:v2';
 const LEGACY_SESSION_KEY = 'xenovoya:return-service-session:v1';
 
+export const RETURN_API_CONTRACT_VERSION = '2026-07-14.1';
+export const RETURN_API_OPERATIONS = Object.freeze({
+  issueNonce: { method: 'post', path: '/v1/auth/nonce' },
+  verifyWallet: { method: 'post', path: '/v1/auth/verify' },
+  revokeSession: { method: 'delete', path: '/v1/session' },
+  getProfile: { method: 'get', path: '/v1/profile' },
+  exportProfile: { method: 'get', path: '/v1/profile/export' },
+  updateProfile: { method: 'put', path: '/v1/profile' },
+  deleteProfile: { method: 'delete', path: '/v1/profile' },
+  getReturnState: { method: 'get', path: '/v1/return-state' },
+  putReturnState: { method: 'put', path: '/v1/return-state' },
+  getExpedition: { method: 'get', path: '/v1/expeditions/{gameId}' },
+  updateExpeditionAnnotation: { method: 'put', path: '/v1/expeditions/{gameId}/annotation' },
+  getPublicExpedition: { method: 'get', path: '/v1/public/expeditions/{gameId}' },
+  recordRetentionEvent: { method: 'post', path: '/v1/events' },
+});
+
 export class ReturnServiceError extends Error {
   constructor(message, status, payload = {}) {
     super(message);
@@ -34,6 +51,24 @@ async function request(path, { method = 'GET', body, token } = {}) {
 }
 
 export function returnServiceEnabled() { return Boolean(API_URL); }
+
+export function assertReturnApiContract(contract) {
+  if (!contract || contract.openapi !== '3.1.0') throw new ReturnServiceError('Return service contract is missing or invalid.', 0);
+  if (contract.info?.version !== RETURN_API_CONTRACT_VERSION) {
+    throw new ReturnServiceError(`Return service contract ${contract.info?.version || 'missing'} is incompatible with this player release.`, 0);
+  }
+  for (const [operationId, operation] of Object.entries(RETURN_API_OPERATIONS)) {
+    if (contract.paths?.[operation.path]?.[operation.method]?.operationId !== operationId) {
+      throw new ReturnServiceError(`Return service operation ${operationId} is incompatible with this player release.`, 0);
+    }
+  }
+  return { version: RETURN_API_CONTRACT_VERSION, operations: Object.keys(RETURN_API_OPERATIONS).length };
+}
+
+export async function verifyReturnApiContract() {
+  const contract = await request('/openapi.json');
+  return assertReturnApiContract(contract);
+}
 
 export function loadReturnSession(storage = typeof window === 'undefined' ? null : window.localStorage) {
   if (!storage) return null;
@@ -90,6 +125,15 @@ export function putCloudReturnState(state, expectedVersion, token = loadReturnSe
 
 export function updateCloudProfile(profile, token = loadReturnSession()?.token) {
   return request('/v1/profile', { method: 'PUT', body: profile, token });
+}
+
+export function exportCloudProfile(token = loadReturnSession()?.token) {
+  return request('/v1/profile/export', { token });
+}
+
+export async function deleteCloudProfile(token = loadReturnSession()?.token) {
+  await request('/v1/profile', { method: 'DELETE', token });
+  clearReturnSession();
 }
 
 export function updateExpeditionAnnotation(gameId, annotation, token = loadReturnSession()?.token) {
