@@ -67,7 +67,11 @@ test('first-player journey emits each privacy-safe milestone once through return
     expect(event.props.installation_id).toMatch(/^[a-f0-9-]{36}$/);
     expect(event.props.journey_id).toMatch(/^[a-f0-9-]{36}$/);
     expect(event.props.event_id).toMatch(/^[a-f0-9-]{36}$/);
+    expect(event.props.journey_sequence).toBeGreaterThan(0);
     expect(JSON.stringify(event.props)).not.toMatch(/0x[a-f0-9]{40}|@|bearer|postgres(?:ql)?:\/\//i);
   }
+  const sequences = events.map((event) => event.props.journey_sequence);
+  expect(new Set(sequences).size).toBe(sequences.length);
+  expect(sequences).toEqual([...sequences].sort((left, right) => left - right));
   expect(events.find((event) => event.name === 'second_expedition_start')?.props.return_interval).toBe('d7_plus');
 });
