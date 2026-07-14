@@ -32,6 +32,9 @@ RUN npm run build
 
 # -- Serve stage --
 FROM nginxinc/nginx-unprivileged:1.31.2-alpine@sha256:6320020c7da8714feab524e02c08c5a1958675c4e68700e93a2fd8970b065786
+USER root
+RUN apk del --no-cache curl
+USER 101
 COPY --from=build /build/dist /usr/share/nginx/html
 EXPOSE 8080
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://127.0.0.1:8080/ >/dev/null || exit 1
