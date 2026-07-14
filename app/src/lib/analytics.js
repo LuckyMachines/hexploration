@@ -4,9 +4,10 @@ const PLAUSIBLE_DOMAIN = String(ENV.VITE_PLAUSIBLE_DOMAIN || '');
 const EVENT_VERSION = '1';
 const INSTALLATION_KEY = 'xenovoya:analytics-installation:v1';
 const JOURNEY_KEY = 'xenovoya:analytics-journey:v1';
+const JOURNEY_SEQUENCE_KEY = 'xenovoya:analytics-journey-sequence:v1';
 const DEDUPE_KEY = 'xenovoya:analytics-dedupe:v1';
 const MAX_DEDUPE_RECORDS = 200;
-const BASE_PROPERTIES = new Set(['event_id', 'event_version', 'environment', 'release', 'route', 'journey_id', 'installation_id', 'source']);
+const BASE_PROPERTIES = new Set(['event_id', 'event_version', 'environment', 'release', 'route', 'journey_id', 'journey_sequence', 'installation_id', 'source']);
 const UUID_PATTERN = /^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i;
 const ENUM_PROPERTIES = Object.freeze({
   environment: new Set(['production', 'preview', 'staging', 'test', 'development']),
@@ -40,6 +41,7 @@ export const JOURNEY_EVENTS = Object.freeze({
 });
 
 let ready = false;
+let fallbackJourneySequence = 0;
 
 function storageValue(storage, key, create) {
   if (!storage) return create();
@@ -67,6 +69,19 @@ function randomId() {
     const random = Math.floor(Math.random() * 16);
     return (token === 'x' ? random : (random & 0x3) | 0x8).toString(16);
   });
+}
+
+function nextJourneySequence() {
+  if (typeof window === 'undefined') return ++fallbackJourneySequence;
+  try {
+    const stored = Number(window.sessionStorage.getItem(JOURNEY_SEQUENCE_KEY) || 0);
+    const next = Math.max(Number.isSafeInteger(stored) ? stored : 0, fallbackJourneySequence) + 1;
+    fallbackJourneySequence = next;
+    window.sessionStorage.setItem(JOURNEY_SEQUENCE_KEY, String(next));
+    return next;
+  } catch {
+    return ++fallbackJourneySequence;
+  }
 }
 
 function currentEnvironment() {
@@ -105,6 +120,7 @@ function validProperty(key, value) {
   if (key === 'release') return value === 'unknown' || value === 'e2e-release' || /^[a-f0-9]{40}$/i.test(value);
   if (key === 'has_expedition') return typeof value === 'boolean';
   if (key === 'cloud_version') return Number.isSafeInteger(value) && value >= 0;
+  if (key === 'journey_sequence') return Number.isSafeInteger(value) && value > 0 && value <= 1_000_000;
   return false;
 }
 
@@ -201,7 +217,7 @@ export function trackJourneyEvent(name, props = {}, { dedupeKey = 'once' } = {})
   if (dedupe[identity]) return false;
 
   const allowed = new Set([...BASE_PROPERTIES, ...permitted]);
-  const candidate = { ...context, event_id: randomId(), ...props };
+  const candidate = { ...props, ...context, event_id: randomId(), journey_sequence: nextJourneySequence() };
   const safeProps = {};
   for (const [key, value] of Object.entries(candidate)) {
     if (!allowed.has(key)) continue;

@@ -49,6 +49,7 @@ describe('analytics', () => {
       release: 'abcdef0123456789abcdef0123456789abcdef01',
       source: 'synthetic',
       persona: 'first-player-v1',
+      journey_sequence: 1,
     });
     expect(queued[0][1].props.event_id).toMatch(/^[a-f0-9-]{36}$/);
     expect(queued[0][1].props).not.toHaveProperty('wallet');
@@ -56,6 +57,34 @@ describe('analytics', () => {
     expect(queued[0][1].props).not.toHaveProperty('unregistered');
     expect(getAnalyticsContext().installation_id).toMatch(/^[a-f0-9-]{36}$/);
     expect(getAnalyticsContext().journey_id).toMatch(/^[a-f0-9-]{36}$/);
+
+    expect(trackJourneyEvent('role_selected', { role: 'scout' })).toBe(true);
+    const roleEvent = window.plausible.q.find(([name]) => name === 'role_selected');
+    expect(roleEvent[1].props.journey_sequence).toBe(2);
+  });
+
+  it('does not let callers override trusted analytics context', async () => {
+    vi.stubEnv('VITE_PLAUSIBLE_HOST', 'https://plausible.example');
+    vi.stubEnv('VITE_PLAUSIBLE_DOMAIN', 'play.example');
+    vi.stubEnv('VITE_APP_ENV', 'test');
+    vi.stubEnv('VITE_RELEASE_SHA', 'abcdef0123456789abcdef0123456789abcdef01');
+    vi.stubEnv('VITE_ANALYTICS_SOURCE', 'synthetic');
+    const { trackJourneyEvent } = await import('./analytics');
+
+    expect(trackJourneyEvent('starter_opened', {
+      persona: 'first-player-v1',
+      environment: 'production',
+      source: 'player',
+      release: 'f'.repeat(40),
+      journey_sequence: 999,
+    })).toBe(true);
+    const [, payload] = window.plausible.q.find(([name]) => name === 'starter_opened');
+    expect(payload.props).toMatchObject({
+      environment: 'test',
+      source: 'synthetic',
+      release: 'abcdef0123456789abcdef0123456789abcdef01',
+      journey_sequence: 1,
+    });
   });
 
   it('drops unknown enum values and never records query strings as routes', async () => {

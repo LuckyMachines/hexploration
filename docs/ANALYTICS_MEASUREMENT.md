@@ -6,6 +6,7 @@ This document is the canonical measurement contract for the question: **what mak
 
 - `installation_id` is a random UUID generated in the browser and retained in local storage. It measures same-browser return behavior until that browser storage is cleared.
 - `journey_id` is a random UUID retained only for the current tab session. It groups one visit and prevents rerender/reload duplicates.
+- `journey_sequence` is a strictly increasing integer scoped to that tab session. It proves same-hour event order without adding another identity or exposing a timestamp.
 - `event_id` is a new random UUID for each accepted event. It gives an operator a safe correlation handle without exposing a player identity.
 - None of these identifiers is derived from a wallet, email, IP address, callsign, or cloud-profile record.
 - Cross-device resume is measured as an aggregate conversion. Two devices are deliberately not identity-joined in analytics; the wallet-authenticated return service performs the product synchronization without sending the wallet to Plausible.
@@ -17,7 +18,7 @@ Plausible still performs its normal anonymous visitor aggregation. The applicati
 
 ## Version 1 event contract
 
-Every event carries `event_id`, `event_version`, `environment`, `release`, `route`, `journey_id`, `installation_id`, and `source`.
+Every event carries `event_id`, `event_version`, `environment`, `release`, `route`, `journey_id`, `journey_sequence`, `installation_id`, and `source`.
 
 | Event | Meaning | Additional permitted properties |
 | --- | --- | --- |
@@ -48,7 +49,7 @@ Plausible Community Edition 3.2 does not provide saved marketing funnels. These 
 5. **Memory and advocacy:** `recap` → `share` within the same journey.
 6. **Second expedition:** first `starter_opened` → `second_expedition_start`, broken down by `return_interval`.
 
-For each funnel, report the eligible installation count, each reached-step count, step-to-step conversion, total conversion, median elapsed time, release, and observation window. An installation reaches a step only when that step occurs after its preceding step; repeated events do not increase the count.
+For each funnel, report the eligible installation count, each reached-step count, step-to-step conversion, total conversion, median elapsed time, release, and observation window. An installation reaches a step only when that step occurs after its preceding step; repeated events do not increase the count. The reporter orders different hour buckets by `time:hour` and same-hour events by `journey_sequence`. Legacy same-hour rows without a sequence are flagged and never guessed into an ordered funnel.
 
 ## D1, D3, and D7 cohorts
 
