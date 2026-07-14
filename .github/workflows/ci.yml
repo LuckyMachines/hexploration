@@ -116,6 +116,10 @@ jobs:
 
       - name: Prove browser journeys
         working-directory: app
+        env:
+          VITE_APP_ENV: test
+          VITE_RELEASE_SHA: e2e-release
+          VITE_ANALYTICS_SOURCE: synthetic
         run: npm run test:e2e
 
       - name: Build production container
