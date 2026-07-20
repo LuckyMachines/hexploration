@@ -133,6 +133,6 @@
   "homepage": "https://github.com/LuckyMachines/xenovoya#readme",
   "devDependencies": {
     "dotenv": "^17.4.2",
-    "viem": "^2.55.1"
+    "viem": "^2.55.4"
   }
 }
