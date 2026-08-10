@@ -14,25 +14,25 @@
     "test:all": "npm run test && npm run test:e2e"
   },
   "dependencies": {
-    "@tanstack/react-query": "^5.80.6",
+    "@tanstack/react-query": "^5.101.4",
     "clsx": "^2.1.1",
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0",
-    "react-router-dom": "^7.6.1",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "react-router-dom": "^7.18.2",
     "tailwind-merge": "^3.3.0",
-    "viem": "^2.31.3"
+    "viem": "^2.55.11"
   },
   "devDependencies": {
-    "@playwright/test": "^1.58.2",
-    "@tailwindcss/vite": "^4.1.8",
-    "@testing-library/jest-dom": "^6.9.1",
+    "@playwright/test": "^1.62.1",
+    "@tailwindcss/vite": "^4.3.3",
+    "@testing-library/jest-dom": "^7.0.0",
     "@testing-library/react": "^16.3.2",
-    "@testing-library/user-event": "^14.6.1",
-    "@vitejs/plugin-react": "^4.5.2",
+    "@testing-library/user-event": "^14.6.3",
+    "@vitejs/plugin-react": "^6.0.5",
     "@vitest/coverage-v8": "^4.0.18",
-    "jsdom": "^28.1.0",
+    "jsdom": "^30.0.1",
     "tailwindcss": "^4.1.8",
-    "vite": "^6.3.5",
+    "vite": "^8.2.1",
     "vitest": "^4.0.18"
   }
 }
