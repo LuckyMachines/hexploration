@@ -31,7 +31,7 @@ ARG VITE_ENABLE_INTERNAL_TOOLS=false
 RUN npm run build
 
 # -- Serve stage --
-FROM nginxinc/nginx-unprivileged:1.31.2-alpine@sha256:6320020c7da8714feab524e02c08c5a1958675c4e68700e93a2fd8970b065786
+FROM nginxinc/nginx-unprivileged:1.31.4-alpine@sha256:d9083fe47768377ef55dedafd67d4da7c2f2bc2bece7554954f29359deb0dce9
 USER root
 RUN apk del --no-cache curl
 USER 101
