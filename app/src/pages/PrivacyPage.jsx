@@ -7,7 +7,7 @@ const sections = [
   },
   {
     title: 'Privacy-safe measurement',
-    body: 'The self-hosted Plausible service receives page routes and an allowlisted set of journey milestones. Events use random installation and session journey IDs. The player rejects wallet addresses, email addresses, signatures, tokens, URLs, and unregistered properties before an event can be sent.',
+    body: 'The self-hosted Plausible service receives page routes and an allowlisted set of journey milestones. Events use random installation and session journey IDs. The player rejects wallet addresses, email addresses, signatures, tokens, URLs, and unregistered properties before an event can be sent. Browser Do Not Track and Global Privacy Control signals are respected.',
   },
   {
     title: 'When you choose cross-device history',
@@ -15,7 +15,7 @@ const sections = [
   },
   {
     title: 'Export and deletion',
-    body: 'Once cross-device history is connected, the return panel can download a JSON export or erase wallet-linked off-chain profile data. Deletion invalidates sessions, erases profile and return state, and removes player annotations. Retained aggregate events are detached from the wallet.',
+    body: 'The UI Preferences panel can disable anonymous analytics at any time. Once cross-device history is connected, the return panel can download a JSON export or erase wallet-linked off-chain profile data. Deletion invalidates sessions, erases profile and return state, and removes player annotations. Retained aggregate events are detached from the wallet.',
   },
   {
     title: 'What cannot be erased',

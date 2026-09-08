@@ -299,14 +299,22 @@ export function deriveTurnAftermath({
   }
 
   if (hasAction(actions, Action.REST) || hasAction(actions, Action.HELP) || gains >= 2) {
+    const helpResolved = hasAction(actions, Action.HELP);
     candidates.push(makeCandidate(AFTERMATH_CATEGORIES.CREW_SAVE, 68 + Math.min(12, gains * 3), {
       statDelta,
       actions: actionLabels,
-      summary: 'The crew recovered enough that the next choice has room to matter.',
-      receipts: [
-        receipt('Recovered', `${gains} stat gain${gains === 1 ? '' : 's'}`, 'green'),
-        receipt('Action', actionLabels.join(' / ') || 'Recovery', 'green'),
-      ],
+      summary: helpResolved
+        ? 'One explorer gave up a little strength so a teammate could recover twice as much.'
+        : 'The crew recovered enough that the next choice has room to matter.',
+      receipts: helpResolved
+        ? [
+          receipt('Rescue rule', 'Give 1 / rally all stats', 'green'),
+          receipt('Crew effect', 'Focused +2 / others +1', 'green'),
+        ]
+        : [
+          receipt('Recovered', `${gains} stat gain${gains === 1 ? '' : 's'}`, 'green'),
+          receipt('Action', actionLabels.join(' / ') || 'Recovery', 'green'),
+        ],
     }));
   }
 
@@ -385,8 +393,8 @@ export function actionAftermathCopy(action, context = {}) {
   if (Number(action) === Action.MOVE) return preview?.costType === 'route-collapse' ? 'Move is now route triage.' : 'Move decides whether the map stays usable.';
   if (Number(action) === Action.DIG) return preview?.headline ? `Dig must answer ${preview.headline}.` : 'Dig turns curiosity into carried risk.';
   if (Number(action) === Action.REST) return 'Rest buys one more meaningful decision.';
-  if (Number(action) === Action.HELP) return 'Help keeps a teammate from becoming the cost.';
-  if (Number(action) === Action.FLEE) return 'Flee turns the whole run into an outcome.';
+  if (Number(action) === Action.HELP) return 'Give 1 and rally all three stats: Help can pull a teammate back from collapse.';
+  if (Number(action) === Action.FLEE) return 'Depart turns the whole run into an outcome.';
   if (Number(action) === Action.SETUP_CAMP) return 'Camp creates a foothold for the next turn.';
   return `${label} changed the board state.`;
 }

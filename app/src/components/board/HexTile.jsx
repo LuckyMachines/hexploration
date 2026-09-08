@@ -4,11 +4,12 @@ import { TERRAIN_ICONS } from '../../lib/terrainIcons';
 
 export default function HexTile({
   cx, cy, tileType, alias, hasCampsite,
-  isSelected, isHovered, isReachable, isInventoryAssisted, isIntent, isCommitted, trait, onClick, onHover,
+  isSelected, isHovered, isReachable, isInventoryAssisted, isIntent, isCommitted, trait, terrainPatternId, onClick, onHover,
 }) {
   const fillColor = TILE_COLORS[tileType] || TILE_COLORS[Tile.NONE];
   const TerrainIcon = TERRAIN_ICONS[tileType];
   const isRelic = tileType === Tile.RELIC;
+  const usesVerdantTexture = tileType === Tile.JUNGLE || tileType === Tile.PLAINS;
   const patternColor = isRelic ? '#e8c860' : tileType === Tile.MOUNTAIN ? '#c4cbb8' : '#0d0f0a';
 
   return (
@@ -36,6 +37,15 @@ export default function HexTile({
         strokeWidth={isSelected || isIntent ? 2.8 : isReachable ? 2 : 1}
         className={`alive-tile transition-all duration-200 ${isCommitted ? 'alive-committed-tile' : ''} ${isIntent ? 'alive-tile-intent' : ''} ${isRelic ? 'alive-relic-tile' : ''}`}
       />
+      {usesVerdantTexture && terrainPatternId && (
+        <polygon
+          points={hexPoints(cx, cy)}
+          fill={`url(#${terrainPatternId})`}
+          opacity={isIntent || isHovered ? '0.36' : isReachable ? '0.28' : '0.2'}
+          pointerEvents="none"
+          aria-hidden="true"
+        />
+      )}
       <path
         d={`M${cx - 22},${cy - 10} C${cx - 9},${cy - 18} ${cx + 8},${cy - 2} ${cx + 22},${cy - 10} M${cx - 20},${cy + 8} C${cx - 6},${cy + 1} ${cx + 7},${cy + 15} ${cx + 20},${cy + 6}`}
         fill="none"

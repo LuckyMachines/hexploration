@@ -1,3 +1,5 @@
+import RelicMemoryArtwork from './RelicMemoryArtwork';
+
 export default function RunRelicCard({ card, compact = false }) {
   if (!card) {
     return (
@@ -13,28 +15,14 @@ export default function RunRelicCard({ card, compact = false }) {
       className={`overflow-hidden rounded border p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] ${compact ? '' : 'mx-auto max-w-xl'}`}
       style={{
         borderColor: `${p.accent}99`,
-        background: `linear-gradient(145deg, ${p.bg}, ${p.panel} 55%, #070907)`,
+        backgroundImage: `linear-gradient(145deg, ${p.bg}, ${p.panel} 55%, #070907)`,
       }}
       aria-label={`${card.title} Run Relic Card`}
     >
-      <div className="rounded border p-4" style={{ borderColor: `${p.route}66`, backgroundColor: `${p.panel}d9` }}>
-        <div className="flex flex-wrap items-start justify-between gap-3">
-          <div>
-            <p className="font-mono text-[10px] uppercase tracking-[0.24em]" style={{ color: p.accent }}>
-              {card.eyebrow}
-            </p>
-            <h3 className="mt-2 font-display text-2xl uppercase tracking-[0.1em] text-exp-text sm:text-3xl">
-              {card.title}
-            </h3>
-            <p className="mt-1 font-mono text-[11px] leading-relaxed" style={{ color: p.dim }}>
-              {card.subtitle}
-            </p>
-          </div>
-          <span className="rounded border px-2 py-1 font-mono text-[10px] uppercase tracking-[0.16em]" style={{ borderColor: `${p.accent2}88`, color: p.accent2 }}>
-            {card.stamp}
-          </span>
-        </div>
-        <p className="mt-4 font-mono text-sm leading-relaxed text-exp-text">
+      <RelicMemoryArtwork card={card} compact={compact} />
+
+      <div className="mt-3 rounded border px-4 py-3" style={{ borderColor: `${p.route}66`, backgroundColor: `${p.panel}d9` }}>
+        <p className="font-mono text-sm leading-relaxed text-exp-text">
           &quot;{card.quote}&quot;
         </p>
       </div>

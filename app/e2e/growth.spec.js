@@ -34,6 +34,7 @@ test('internal growth loop completes and exposes sharing', async ({ page }) => {
   await expect(page.getByText(/Memory Created/i).first()).toBeVisible();
   await expect(page.getByText(/Beat This Challenge/i).first()).toBeVisible();
   await expect(page.getByText(/Run Relic Card/i).first()).toBeVisible();
+  await expect(page.getByRole('button', { name: /Share relic/i }).first()).toBeVisible();
   await expect(page.getByRole('button', { name: /Copy share text/i }).first()).toBeVisible();
   await expect(page.getByRole('button', { name: /Download relic SVG/i }).first()).toBeVisible();
   const replay = page.getByRole('link', { name: /Replay this run/i });

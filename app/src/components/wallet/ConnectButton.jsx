@@ -32,7 +32,7 @@ export default function ConnectButton() {
           border border-exp-border bg-exp-panel
           hover:bg-exp-surface hover:border-compass/40
           text-exp-text font-mono text-xs tracking-wider
-          px-4 py-2 rounded
+          min-h-[44px] px-3 py-2 sm:min-h-11 sm:px-4 rounded
           transition-colors duration-150 cursor-pointer
         "
       >
@@ -48,8 +48,8 @@ export default function ConnectButton() {
         className="
           border border-compass/50 bg-exp-panel
           hover:bg-compass/10 hover:border-compass
-          text-compass font-display font-semibold text-sm tracking-widest uppercase
-          px-5 py-2 rounded
+          text-compass font-display font-semibold text-[12px] sm:text-sm tracking-widest uppercase
+          min-h-[44px] px-3 py-2 sm:min-h-11 sm:px-5 rounded
           transition-colors duration-150 cursor-pointer
         "
       >

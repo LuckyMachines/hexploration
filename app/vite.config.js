@@ -4,7 +4,7 @@ import tailwindcss from '@tailwindcss/vite';
 import { rmSync } from 'node:fs';
 import { resolve } from 'node:path';
 
-const internalPublicDirs = ['simulator', 'bridge', 'growth', 'fun', 'local-stack', 'verification'];
+const internalPublicDirs = ['simulator', 'bridge', 'growth', 'fun', 'local-stack', 'verification', 'ui-quality'];
 const addressKeys = [
   'VITE_BOARD_ADDRESS',
   'VITE_CONTROLLER_ADDRESS',
@@ -76,10 +76,15 @@ export default defineConfig(({ mode }) => {
     build: {
       rollupOptions: {
         output: {
-          manualChunks: {
-            react: ['react', 'react-dom', 'react-router-dom'],
-            query: ['@tanstack/react-query'],
-            viem: ['viem', 'viem/chains', 'viem/accounts'],
+          onlyExplicitManualChunks: true,
+          manualChunks(id) {
+            const normalizedId = id.replaceAll('\\', '/');
+            if (normalizedId.includes('/node_modules/react/') || normalizedId.includes('/node_modules/react-dom/') || normalizedId.includes('/node_modules/react-router')) return 'react';
+            if (normalizedId.includes('/node_modules/@tanstack/react-query/')) return 'query';
+            if (normalizedId.includes('/node_modules/viem/')) return 'viem';
+            if (/\/src\/config\/(clients|contracts)\.js$/.test(normalizedId)) return 'chain-client';
+            if (/\/src\/hooks\/use(Contract|AvailableGames|GameActions)/.test(normalizedId)) return 'chain-client';
+            return undefined;
           },
         },
       },

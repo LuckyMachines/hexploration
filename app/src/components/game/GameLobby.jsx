@@ -39,8 +39,8 @@ export default function GameLobby({ gameId }) {
 
   return (
     <div className="border border-exp-border rounded bg-exp-panel">
-      <div className="border-b border-exp-border px-6 py-4 flex items-center justify-between">
-        <div className="flex items-center gap-3">
+      <div className="border-b border-exp-border px-4 py-4 sm:px-6 flex flex-wrap items-center justify-between gap-3">
+        <div className="flex flex-wrap items-center gap-3">
           <h2 className="text-lg font-semibold tracking-[0.25em] text-compass uppercase font-display">
             Expedition Briefing
           </h2>
@@ -96,7 +96,7 @@ export default function GameLobby({ gameId }) {
             <button
               onClick={() => registerForGame(gameId)}
               disabled={isPending || isConfirming}
-              className="px-4 py-2 bg-compass/10 border border-compass/40 rounded text-compass text-xs font-mono tracking-widest uppercase
+              className="min-h-11 px-4 py-2 bg-compass/10 border border-compass/40 rounded text-compass text-xs font-mono tracking-widest uppercase
                          hover:bg-compass/20 hover:border-compass/60 transition-colors
                          disabled:opacity-40 disabled:cursor-not-allowed"
             >

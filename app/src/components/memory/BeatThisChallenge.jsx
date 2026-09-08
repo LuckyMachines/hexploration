@@ -16,7 +16,7 @@ export default function BeatThisChallenge({ challenge, compact = false }) {
       <p className="mt-2 font-mono text-sm leading-relaxed text-exp-text">{challenge.target}</p>
       {!compact && <p className="mt-1 font-mono text-xs leading-relaxed text-exp-text-dim">{challenge.reason}</p>}
       <div className="mt-3 flex flex-wrap gap-2">
-        <Link to={challenge.path || '/'} className="rounded border border-compass/55 bg-compass/15 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.16em] text-compass-bright">
+        <Link to={challenge.path || '/'} className="inline-flex min-h-11 items-center rounded border border-compass/55 bg-compass/15 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.16em] text-compass-bright">
           Start attempt
         </Link>
         {challenge.metric && (

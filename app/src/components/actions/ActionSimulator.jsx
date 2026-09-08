@@ -26,6 +26,7 @@ export default function ActionSimulator({
   hasSubmitted,
   isSpectator,
   traitPreview,
+  helpPreview,
 }) {
   const checks = [];
   const detail = getActionDetail(activeTab);
@@ -34,10 +35,9 @@ export default function ActionSimulator({
     ok: !isSpectator,
     label: 'Wallet is an active participant',
   });
-  checks.push({
-    ok: !hasSubmitted,
-    label: 'No action already submitted this turn',
-  });
+  checks.push(hasSubmitted
+    ? { ok: true, label: 'Intent committed; waiting for the crew' }
+    : { ok: true, label: 'No action submitted yet' });
 
   if (activeTab === Action.MOVE) {
     checks.push({
@@ -59,6 +59,21 @@ export default function ActionSimulator({
     });
   }
 
+  if (activeTab === Action.HELP) {
+    checks.push({
+      ok: helpPreview ? Boolean(helpPreview.valid) : true,
+      label: helpPreview?.targetID ? `P${helpPreview.targetID} selected for Help` : 'Choose the teammate and stat in the Help panel',
+      detail: helpPreview?.statLabel ? `${helpPreview.statLabel} ${helpPreview.targetBefore} -> ${helpPreview.targetAfter}` : '',
+    });
+    if (helpPreview?.crewGain != null) {
+      checks.push({
+        ok: Number(helpPreview.crewGain) > 0,
+        label: helpPreview.isRescue ? 'Critical rescue forecast' : 'Crew support forecast',
+        detail: `crew +${helpPreview.crewGain}`,
+      });
+    }
+  }
+
   if (traitPreview?.trait) {
     checks.push({
       ok: !traitPreview.effect?.warning,
@@ -68,6 +83,7 @@ export default function ActionSimulator({
   }
 
   const canLikelySubmit = checks.every((check) => check.ok);
+  const statusLabel = hasSubmitted ? 'Intent Locked' : canLikelySubmit ? 'Likely Valid' : 'Likely Revert';
 
   return (
     <div className="border border-exp-border/60 rounded bg-exp-dark/40 p-3 space-y-2">
@@ -76,7 +92,7 @@ export default function ActionSimulator({
           Action Simulation
         </h4>
         <span className={`font-mono text-xs uppercase tracking-wider ${canLikelySubmit ? 'text-oxide-green' : 'text-signal-red'}`}>
-          {canLikelySubmit ? 'Likely Valid' : 'Likely Revert'}
+          {statusLabel}
         </span>
       </div>
       <div className="space-y-1">

@@ -20,7 +20,7 @@ export default function AudioControls({
         aria-pressed={musicEnabled && !musicBlocked}
         title={cueTitle}
         onClick={onMusicToggle}
-        className={`rounded border px-2 py-1 font-mono text-[10px] uppercase tracking-[0.14em] transition-colors ${
+        className={`min-h-11 rounded border px-2 py-2 font-mono text-[10px] uppercase tracking-[0.14em] transition-colors ${
           musicEnabled && !musicBlocked
             ? 'border-compass/45 bg-compass/10 text-compass-bright'
             : musicBlocked
@@ -35,7 +35,7 @@ export default function AudioControls({
         aria-pressed={sfxEnabled}
         title="Toggle sound effects"
         onClick={onSfxToggle}
-        className={`rounded border px-2 py-1 font-mono text-[10px] uppercase tracking-[0.14em] transition-colors ${
+        className={`min-h-11 rounded border px-2 py-2 font-mono text-[10px] uppercase tracking-[0.14em] transition-colors ${
           sfxEnabled
             ? 'border-oxide-green/45 bg-oxide-green/10 text-oxide-green'
             : 'border-exp-border/75 bg-exp-dark/30 text-exp-text-dim hover:border-compass/40 hover:text-exp-text'

@@ -1,6 +1,21 @@
-import { foundry, sepolia } from 'viem/chains';
+export const foundry = {
+  id: 31337,
+  name: 'Foundry',
+  nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
+  rpcUrls: { default: { http: ['http://127.0.0.1:8545'] } },
+  testnet: true,
+};
 
-export { foundry, sepolia };
+export const sepolia = {
+  id: 11155111,
+  name: 'Sepolia',
+  nativeCurrency: { name: 'Sepolia Ether', symbol: 'ETH', decimals: 18 },
+  rpcUrls: { default: { http: ['https://rpc.sepolia.org'] } },
+  blockExplorers: {
+    default: { name: 'Etherscan', url: 'https://sepolia.etherscan.io' },
+  },
+  testnet: true,
+};
 
 export const SUPPORTED_CHAINS = [foundry, sepolia];
 

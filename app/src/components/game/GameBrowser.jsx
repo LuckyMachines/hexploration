@@ -37,7 +37,7 @@ export default function GameBrowser() {
   return (
     <div className="border border-exp-border rounded bg-exp-surface">
       {/* Header bar */}
-      <div className="border-b border-exp-border px-6 py-4 flex items-center justify-between">
+      <div className="border-b border-exp-border px-4 py-4 sm:px-6 flex flex-wrap items-center justify-between gap-3">
         <h2 className="font-mono text-xs tracking-[0.3em] text-exp-text-dim uppercase">
           Available Expeditions
         </h2>
@@ -47,8 +47,9 @@ export default function GameBrowser() {
             <select
               value={playerCount}
               onChange={(e) => setPlayerCount(Number(e.target.value))}
+              aria-label="Expedition crew size"
               className="bg-exp-dark border border-exp-border rounded text-xs font-mono text-exp-text-dim
-                         px-2 py-1.5 cursor-pointer hover:border-compass/40 transition-colors"
+                         min-h-11 px-2 py-1.5 cursor-pointer hover:border-compass/40 transition-colors"
             >
               {[1, 2, 3, 4].map((n) => (
                 <option key={n} value={n} className="bg-exp-dark text-exp-text">
@@ -59,7 +60,7 @@ export default function GameBrowser() {
             <button
               onClick={() => requestNewGame(playerCount)}
               disabled={isPending || isConfirming}
-              className="px-4 py-2 bg-compass/10 border border-compass/40 rounded text-compass text-xs font-mono tracking-widest uppercase
+              className="min-h-11 px-4 py-2 bg-compass/10 border border-compass/40 rounded text-compass text-xs font-mono tracking-widest uppercase
                          hover:bg-compass/20 hover:border-compass/60 transition-colors
                          disabled:opacity-40 disabled:cursor-not-allowed"
             >
@@ -89,7 +90,7 @@ export default function GameBrowser() {
       )}
 
       {/* Game list */}
-      <div className="px-6 py-5">
+      <div className="px-4 py-5 sm:px-6">
         {isLoading ? (
           <div className="flex items-center justify-center py-14">
             <div className="max-w-md rounded border border-exp-border/70 bg-exp-dark/35 px-4 py-3 text-center">

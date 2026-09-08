@@ -12,7 +12,7 @@ export default function BadgeShelf({ badges = [], limit = 8 }) {
       {visible.map((badge) => (
         <span
           key={badge}
-          className="rounded border border-oxide-green/35 bg-oxide-green/10 px-2 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-oxide-green"
+          className="rounded border border-oxide-green/35 bg-oxide-green/10 px-2 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-oxide-green-bright"
         >
           {badge}
         </span>

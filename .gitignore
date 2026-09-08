@@ -26,8 +26,11 @@ reports/bridge/
 reports/local-stack/
 reports/simulator/
 reports/ui-density/
+reports/ui-quality/
 reports/verification/
 reports/improvement/
 artifacts/art/
+artifacts/ui-quality/
 app/public/improvement/
+app/public/ui-quality/
 app/public/audio/*.zip

@@ -10,8 +10,12 @@
     "test": "vitest run --coverage --pool=threads",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
+    "test:e2e:ui-quality": "playwright test e2e/ui-quality.spec.js --project=chromium-desktop",
+    "test:e2e:ui-quality:cross-browser": "node ../scripts/ui-quality.mjs cross-browser",
+    "test:ui-quality": "vitest run src/design-system/uiQualityMatrix.test.js src/components/shared/UIQualityStatus.test.jsx --pool=threads",
     "test:e2e:anvil": "node ../scripts/run-anvil-e2e.mjs",
-    "test:all": "npm run test && npm run test:e2e"
+    "test:all": "npm run test && npm run test:e2e",
+    "verify:production": "node scripts/verify-production.mjs"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.80.6",
@@ -20,9 +24,11 @@
     "react-dom": "^19.1.0",
     "react-router-dom": "^7.6.1",
     "tailwind-merge": "^3.3.0",
+    "three": "^0.180.0",
     "viem": "^2.31.3"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
     "@playwright/test": "^1.58.2",
     "@tailwindcss/vite": "^4.1.8",
     "@testing-library/jest-dom": "^6.9.1",

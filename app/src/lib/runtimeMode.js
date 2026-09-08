@@ -1,7 +1,15 @@
-import { RPC_URLS, SUPPORTED_CHAINS, foundry } from '../config/chains';
+import { RPC_URLS, SUPPORTED_CHAINS, foundry, sepolia } from '../config/chains';
+
+export function resolveTargetChain({
+  rpcUrls = RPC_URLS,
+  appEnv = import.meta.env.VITE_APP_ENV,
+} = {}) {
+  if (appEnv === 'production' && rpcUrls[sepolia.id]) return sepolia;
+  return SUPPORTED_CHAINS.find((chain) => rpcUrls[chain.id]) || SUPPORTED_CHAINS[0];
+}
 
 export function getRuntimeMode() {
-  const targetChain = SUPPORTED_CHAINS.find((chain) => RPC_URLS[chain.id]) || SUPPORTED_CHAINS[0];
+  const targetChain = resolveTargetChain();
   const targetRpc = RPC_URLS[targetChain.id];
   const isLocal = targetChain.id === foundry.id;
 

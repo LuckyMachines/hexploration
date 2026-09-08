@@ -14,6 +14,7 @@ export default defineConfig({
   expect: {
     timeout: 10_000,
   },
+  snapshotPathTemplate: '{testDir}/__screenshots__/{arg}{ext}',
   use: {
     baseURL,
     trace: 'on-first-retry',

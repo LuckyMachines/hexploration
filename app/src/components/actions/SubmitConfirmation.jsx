@@ -70,6 +70,22 @@ export default function SubmitConfirmation({
           </div>
         )}
 
+        {submission.rescue && (
+          <div className="rounded border border-oxide-green/40 bg-oxide-green/10 px-3 py-2">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <p className="font-mono text-[10px] uppercase tracking-[0.26em] text-oxide-green">
+                Rescue forecast
+              </p>
+              <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-oxide-green">
+                Crew +{submission.rescue.crewGain}
+              </p>
+            </div>
+            <p className="mt-2 font-mono text-xs leading-relaxed text-exp-text">
+              You give 1 {submission.rescue.statLabel}: {submission.rescue.helperBefore} to {submission.rescue.helperAfter}. P{submission.rescue.targetID} restores 2 there ({submission.rescue.targetBefore} to {submission.rescue.targetAfter}) and 1 in both other stats.
+            </p>
+          </div>
+        )}
+
         <div className="grid gap-2 sm:grid-cols-2">
           <div className="rounded border border-exp-border bg-exp-dark/35 px-3 py-2">
             <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-exp-text-dim">

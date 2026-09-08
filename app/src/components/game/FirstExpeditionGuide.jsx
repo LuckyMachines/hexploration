@@ -113,13 +113,13 @@ export default function FirstExpeditionGuide() {
               Launch your first shared survey
             </h2>
             <p className="mt-2 max-w-2xl font-mono text-xs leading-relaxed text-exp-text-dim">
-              Enter an expedition, reveal useful ground, and keep enough route to escape with what the crew finds.
+              Enter an expedition, reveal useful ground, and preserve a route to depart with what the crew finds.
             </p>
           </div>
           <button
             onClick={handlePrimary}
             disabled={isConnecting || isPending || isConfirming}
-            className="min-w-44 rounded border border-compass/50 bg-compass/10 px-4 py-2.5 font-display text-xs font-semibold uppercase tracking-widest text-compass-bright transition-colors hover:border-compass hover:bg-compass/20 disabled:cursor-not-allowed disabled:opacity-50"
+            className="min-h-11 min-w-44 rounded border border-compass/50 bg-compass/10 px-4 py-2.5 font-display text-xs font-semibold uppercase tracking-widest text-compass-bright transition-colors hover:border-compass hover:bg-compass/20 disabled:cursor-not-allowed disabled:opacity-50"
           >
             {isConnecting || isPending || isConfirming ? (
               <span className="flex items-center justify-center gap-2">

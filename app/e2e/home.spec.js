@@ -39,12 +39,13 @@ async function readGameEnv() {
 test('home page renders core surfaces', async ({ page }) => {
   await page.goto('/', { waitUntil: 'domcontentloaded' });
 
-  await expect(page.getByRole('heading', { name: /^Xenovoya$/i }).first()).toBeVisible();
+  await expect(page.getByRole('heading', { name: /Chart the strange/i }).first()).toBeVisible();
   await expect(page.getByText(/Voyage\. Explore\. Escape\./i)).toBeVisible();
-  const liveLaunch = page.getByRole('link', { name: /Launch live client/i }).first();
+  const liveLaunch = page.getByRole('link', { name: /Enter live lobby/i }).first();
   await expect(liveLaunch).toBeVisible();
-  await expect(liveLaunch).toHaveAttribute('href', 'https://play.xenovoya.com');
-  await expect(page.getByText(/You can understand the run after one choice/i)).toBeVisible();
+  await expect(liveLaunch).toHaveAttribute('href', '#live-expedition');
+  await liveLaunch.click();
+  await expect(page.getByText(/One choice should explain the run/i)).toBeVisible();
   await expect(page.getByRole('heading', { name: /^Commit$/i })).toBeVisible();
   await expect(page.getByText(/System Health/i)).toBeVisible();
   await expect(page.getByText(/Available Expeditions/i)).toBeVisible();
@@ -85,6 +86,19 @@ test('home page keeps internal tooling language out of the player funnel', async
   for (const term of internalTerms) {
     expect(bodyText, `homepage should not expose "${term}"`).not.toContain(term);
   }
+});
+
+test('pseudo-localization loads when explicitly requested', async ({ page }) => {
+  await page.goto('/?pseudo=1', { waitUntil: 'domcontentloaded' });
+
+  await expect(page.locator('html')).toHaveClass(/xv-pseudo-locale/);
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('Chart the strange.');
+});
+
+test('starter expedition handoff is acknowledged in the live lobby', async ({ page }) => {
+  await page.goto('/?starter=complete&outcome=Relic%20secured&pressure=47#live-expedition', { waitUntil: 'domcontentloaded' });
+  await expect(page.getByText(/Starter record received/i)).toBeVisible();
+  await expect(page.getByText(/Relic secured at 47% storm pressure/i)).toBeVisible();
 });
 
 test('internal preview routes are blocked in the public funnel', async ({ page }) => {

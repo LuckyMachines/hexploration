@@ -10,6 +10,7 @@ import { usePlayerInventory } from './usePlayerInventory';
 import { useGameEvents } from './useGameEvents';
 import { useQueueTelemetry } from './useQueueTelemetry';
 import { useSubmissionReadiness } from './useSubmissionReadiness';
+import { useCrewStats } from './useCrewStats';
 import { useGameOver } from './useGameOver';
 import { usePersistentActionTab } from './usePersistentActionTab';
 import { Action } from '../lib/constants';
@@ -40,6 +41,7 @@ export function useExpeditionViewModel(gameId) {
   );
 
   const { readinessByPlayerID } = useSubmissionReadiness(queueTelemetry.queueID, playerIDs);
+  const { statsByPlayerID } = useCrewStats(gameId, playerIDs);
 
   const isParticipant = useMemo(
     () => (players || []).some(
@@ -62,16 +64,17 @@ export function useExpeditionViewModel(gameId) {
       const pid = player.playerID !== undefined ? Number(player.playerID) : i + 1;
       const locIdx = (locPlayerIDs || []).findIndex((id) => Number(id) === pid);
       const currentZone = locIdx >= 0 ? playerZones[locIdx] : '';
+      const crewStats = statsByPlayerID[String(pid)] || {};
       return {
         ...player,
         playerID: pid,
         currentZone,
-        movement: player.movement !== undefined ? Number(player.movement) : 0,
-        agility: player.agility !== undefined ? Number(player.agility) : 0,
-        dexterity: player.dexterity !== undefined ? Number(player.dexterity) : 0,
+        movement: Number(crewStats.movement ?? player.movement ?? 0),
+        agility: Number(crewStats.agility ?? player.agility ?? 0),
+        dexterity: Number(crewStats.dexterity ?? player.dexterity ?? 0),
       };
     }),
-    [players, locPlayerIDs, playerZones],
+    [players, locPlayerIDs, playerZones, statsByPlayerID],
   );
 
   const turnState = useMemo(

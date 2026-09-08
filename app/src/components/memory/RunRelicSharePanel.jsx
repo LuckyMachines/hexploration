@@ -18,6 +18,32 @@ function recordPathFor(memory = {}) {
   return memory.replayPath || memory.reportPath || '';
 }
 
+function legacyCopyText(value) {
+  if (typeof document === 'undefined' || typeof document.execCommand !== 'function') return false;
+  const textarea = document.createElement('textarea');
+  textarea.value = value;
+  textarea.setAttribute('readonly', '');
+  textarea.style.position = 'fixed';
+  textarea.style.opacity = '0';
+  document.body.appendChild(textarea);
+  textarea.select();
+  const copied = document.execCommand('copy');
+  textarea.remove();
+  return copied;
+}
+
+async function copyRelicText(value) {
+  try {
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(value);
+      return true;
+    }
+  } catch {
+    // Fall through to the temporary text-field path.
+  }
+  return legacyCopyText(value);
+}
+
 function downloadSvg(svg, filename) {
   const blob = new Blob([svg], { type: 'image/svg+xml;charset=utf-8' });
   const url = URL.createObjectURL(blob);
@@ -65,13 +91,49 @@ export default function RunRelicSharePanel({ memory, challenge, title = 'Run Rel
   if (!card) return null;
 
   async function copyText() {
-    if (!navigator.clipboard) {
-      setStatus('Text copy unavailable');
+    const copied = await copyRelicText(shareText);
+    if (copied) {
+      trackJourneyEvent('share', { share_type: 'relic_text' }, { dedupeKey: card.id || card.filename });
+      setStatus('Share text copied');
+    } else {
+      setStatus('Copy unavailable - select the caption below');
+    }
+  }
+
+  async function shareRelic() {
+    if (typeof navigator.share !== 'function') {
+      await copyText();
       return;
     }
-    await navigator.clipboard.writeText(shareText);
-    trackJourneyEvent('share', { share_type: 'relic_text' }, { dedupeKey: card.id || card.filename });
-    setStatus('Share text copied');
+
+    const data = {
+      title: card.title,
+      text: card.recordUrl ? shareText.replace(card.recordUrl, '').trim() : shareText,
+      ...(card.recordUrl ? { url: card.recordUrl } : {}),
+    };
+
+    if (typeof navigator.canShare === 'function' && typeof File !== 'undefined') {
+      try {
+        const png = await svgToPngBlob(svg);
+        const file = png && new File([png], card.filename.replace(/\.svg$/i, '.png'), { type: 'image/png' });
+        if (file && navigator.canShare({ files: [file] })) data.files = [file];
+      } catch {
+        // Text and the record URL still make a complete native share.
+      }
+    }
+
+    try {
+      await navigator.share(data);
+      trackJourneyEvent('share', { share_type: 'relic_native' }, { dedupeKey: card.id || card.filename });
+      setStatus('Relic shared');
+    } catch (error) {
+      if (error?.name === 'AbortError') {
+        setStatus('Share canceled');
+        return;
+      }
+      const copied = await copyRelicText(shareText);
+      setStatus(copied ? 'Share text copied instead' : 'Share unavailable - select the caption below');
+    }
   }
 
   async function copyImage() {
@@ -95,8 +157,8 @@ export default function RunRelicSharePanel({ memory, challenge, title = 'Run Rel
     setStatus('Relic SVG downloaded');
   }
 
-  const buttonClass = 'rounded border border-compass/40 bg-compass/10 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.16em] text-compass-bright hover:bg-compass/20';
-  const secondaryClass = 'rounded border border-blueprint/40 bg-blueprint/10 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.16em] text-blueprint hover:bg-blueprint/20';
+  const buttonClass = 'min-h-11 rounded border border-compass/40 bg-compass/10 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.16em] text-compass-bright hover:bg-compass/20';
+  const secondaryClass = 'min-h-11 rounded border border-blueprint/40 bg-blueprint/10 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.16em] text-blueprint hover:bg-blueprint/20';
 
   return (
     <section className="rounded border border-exp-border bg-exp-panel p-4">
@@ -111,7 +173,7 @@ export default function RunRelicSharePanel({ memory, challenge, title = 'Run Rel
           </p>
         </div>
         {status && (
-          <span className="rounded border border-oxide-green/35 bg-oxide-green/10 px-2 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-oxide-green">
+          <span role="status" className="rounded border border-oxide-green/35 bg-oxide-green/10 px-2 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-oxide-green">
             {status}
           </span>
         )}
@@ -125,6 +187,9 @@ export default function RunRelicSharePanel({ memory, challenge, title = 'Run Rel
             <p className="mt-2 font-mono text-xs leading-relaxed text-exp-text">{shareText}</p>
           </div>
           <div className="flex flex-wrap gap-2">
+            <button type="button" onClick={shareRelic} className={buttonClass}>
+              Share relic
+            </button>
             <button type="button" onClick={copyText} className={buttonClass}>
               Copy share text
             </button>
@@ -135,11 +200,11 @@ export default function RunRelicSharePanel({ memory, challenge, title = 'Run Rel
               Download relic SVG
             </button>
             {recordPath && (/^https?:\/\//i.test(recordPath) ? (
-              <a href={recordPath} className="rounded border border-exp-border bg-exp-dark/60 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.16em] text-exp-text-dim">
+              <a href={recordPath} className="inline-flex min-h-11 items-center rounded border border-exp-border bg-exp-dark/60 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.16em] text-exp-text-dim">
                 Open record
               </a>
             ) : (
-              <Link to={recordPath} className="rounded border border-exp-border bg-exp-dark/60 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.16em] text-exp-text-dim">
+              <Link to={recordPath} className="inline-flex min-h-11 items-center rounded border border-exp-border bg-exp-dark/60 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.16em] text-exp-text-dim">
                 Open record
               </Link>
             ))}

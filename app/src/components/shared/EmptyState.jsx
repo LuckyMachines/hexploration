@@ -26,7 +26,7 @@ export default function EmptyState({
         <button
           type="button"
           onClick={onAction}
-          className="mt-3 rounded border border-current/40 px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.22em] transition-colors hover:bg-exp-dark/35"
+          className="mt-3 min-h-11 rounded border border-current/40 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.22em] transition-colors hover:bg-exp-dark/35"
         >
           {action}
         </button>
@@ -34,4 +34,3 @@ export default function EmptyState({
     </div>
   );
 }
-

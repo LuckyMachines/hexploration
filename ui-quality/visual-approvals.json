@@ -1,0 +1,92 @@
+{
+  "schemaVersion": 1,
+  "scenes": {
+    "home-desktop": {
+      "approvedAt": "2026-09-08T17:50:29.157Z",
+      "owner": "product-design",
+      "reason": "Initial deterministic baseline after UI quality system implementation",
+      "sourceHash": "86b65eb83e951ca3b486a9d8478ebac97b1310717412f98548806f5e0072d0a7",
+      "baselineHash": "1d2cb993a59cf6bf2bc8632735db907c152e0a31e5f3ef2149a830ae1d598fd0",
+      "sources": [
+        "src/pages/HomePage.jsx",
+        "src/index.css",
+        "src/components/game/LiveClientStack.jsx"
+      ]
+    },
+    "home-mobile": {
+      "approvedAt": "2026-09-08T17:50:29.157Z",
+      "owner": "product-design",
+      "reason": "Initial deterministic baseline after UI quality system implementation",
+      "sourceHash": "31ddc814a52af670d19646b13ca346da7b4c064d2f4362f6ac979594b19e3ba1",
+      "baselineHash": "8b412326d8ad2e569a03555e3c9814157f0ee47a90d65873a708dda966156355",
+      "sources": [
+        "src/pages/HomePage.jsx",
+        "src/index.css",
+        "src/components/layout/Header.jsx"
+      ]
+    },
+    "board-ready": {
+      "approvedAt": "2026-09-08T17:50:29.157Z",
+      "owner": "product-design",
+      "reason": "Initial deterministic baseline after UI quality system implementation",
+      "sourceHash": "6563640a7f9200a8c5c91300a866fcf320480ac50ff827fab1c2b425c5fbbc75",
+      "baselineHash": "3f3f9cc7e70c995b14215b92bf50e0132d10979743b524c7c6a310306389f70e",
+      "sources": [
+        "src/pages/DesignSystemPage.jsx",
+        "src/components/board/ThreeBoard.jsx",
+        "src/components/board/boardWorld.js",
+        "src/components/expedition/ExpeditionArcTrack.jsx",
+        "src/components/player/PlayerDossier.jsx",
+        "src/lib/expeditionArc.js",
+        "src/lib/constants.js",
+        "src/index.css"
+      ]
+    },
+    "board-danger-comparison": {
+      "approvedAt": "2026-09-08T17:50:29.157Z",
+      "owner": "product-design",
+      "reason": "Initial deterministic baseline after UI quality system implementation",
+      "sourceHash": "92ec82827f512e9d4720dc540c3a95508882a511e849ccbb3f47f98df6f43bb5",
+      "baselineHash": "efa6e5697503c3e1e412a8090a5eaeffbaf102bba0c079554a58fdaf668b3f1d",
+      "sources": [
+        "src/pages/DesignSystemPage.jsx",
+        "src/components/board/ThreeBoard.jsx",
+        "src/components/expedition/EscapeCostPreview.jsx",
+        "src/components/expedition/ExpeditionArcTrack.jsx",
+        "src/lib/expeditionArc.js",
+        "src/index.css"
+      ]
+    },
+    "recovery-mobile": {
+      "approvedAt": "2026-09-08T17:50:29.157Z",
+      "owner": "product-design",
+      "reason": "Initial deterministic baseline after UI quality system implementation",
+      "sourceHash": "85f3b52bd4e3af8bbb53bffc7f7e717308de60ec9e4e7b3df3c4442ffdafbd00",
+      "baselineHash": "ed7fd8b1262ba06dc48ff0b9655375df4f467b30319338c47d8a16267d18f712",
+      "sources": [
+        "src/pages/DesignSystemPage.jsx",
+        "src/components/shared/TxStatus.jsx",
+        "src/components/shared/EmptyState.jsx",
+        "src/design-system/catalog.js",
+        "src/index.css"
+      ]
+    },
+    "responsive-contracts": {
+      "approvedAt": "2026-09-08T17:50:29.157Z",
+      "owner": "product-design",
+      "reason": "Initial deterministic baseline after UI quality system implementation",
+      "sourceHash": "20deaef50a170d0466069cf813fce4aa16cf88d72f808b12401d320421f9d181",
+      "baselineHash": "0bad6336a09ff3e409ae1a57c463e16c2456b58fea3a6a23e5d19bdaf6ff0c05",
+      "sources": [
+        "src/pages/DesignSystemPage.jsx",
+        "src/components/actions/ActionSimulator.jsx",
+        "src/components/expedition/MissionStatus.jsx",
+        "src/components/memory/BadgeShelf.jsx",
+        "src/components/memory/BeatThisChallenge.jsx",
+        "src/design-system/catalog.js",
+        "src/index.css"
+      ]
+    }
+  },
+  "updatedAt": "2026-09-08T17:50:29.157Z"
+}

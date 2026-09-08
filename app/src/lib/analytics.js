@@ -6,6 +6,8 @@ const INSTALLATION_KEY = 'xenovoya:analytics-installation:v1';
 const JOURNEY_KEY = 'xenovoya:analytics-journey:v1';
 const JOURNEY_SEQUENCE_KEY = 'xenovoya:analytics-journey-sequence:v1';
 const DEDUPE_KEY = 'xenovoya:analytics-dedupe:v1';
+const PREFERENCES_KEY = 'xenovoya:user-preferences';
+const PREFERENCES_CHANGE_EVENT = 'xenovoya:user-preferences-changed';
 const MAX_DEDUPE_RECORDS = 200;
 const BASE_PROPERTIES = new Set(['event_id', 'event_version', 'environment', 'release', 'route', 'journey_id', 'journey_sequence', 'installation_id', 'source']);
 const UUID_PATTERN = /^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i;
@@ -19,7 +21,7 @@ const ENUM_PROPERTIES = Object.freeze({
   sync_result: new Set(['synced', 'conflict_resolved']),
   resume_source: new Set(['local', 'cloud']),
   game_context: new Set(['open_registry', 'full_registry']),
-  share_type: new Set(['crew_invite', 'report_link', 'relic_text', 'relic_image', 'relic_download']),
+  share_type: new Set(['crew_invite', 'report_link', 'relic_text', 'relic_image', 'relic_download', 'relic_native']),
   return_interval: new Set(['same_session', 'same_day', 'd1_d3', 'd3_d7', 'd7_plus']),
   persona: new Set(['first-player-v1']),
 });
@@ -42,6 +44,17 @@ export const JOURNEY_EVENTS = Object.freeze({
 
 let ready = false;
 let fallbackJourneySequence = 0;
+
+function privacyAllowsAnalytics() {
+  if (typeof window === 'undefined' || typeof navigator === 'undefined') return false;
+  if (navigator.doNotTrack === '1' || navigator.globalPrivacyControl === true) return false;
+  try {
+    const preferences = JSON.parse(window.localStorage.getItem(PREFERENCES_KEY) || 'null');
+    return preferences?.analytics !== false;
+  } catch {
+    return true;
+  }
+}
 
 function storageValue(storage, key, create) {
   if (!storage) return create();
@@ -145,7 +158,7 @@ function writeDedupe(value) {
 }
 
 export function analyticsEnabled() {
-  return Boolean(PLAUSIBLE_HOST && PLAUSIBLE_DOMAIN && typeof document !== 'undefined' && typeof window !== 'undefined');
+  return Boolean(PLAUSIBLE_HOST && PLAUSIBLE_DOMAIN && typeof document !== 'undefined' && typeof window !== 'undefined' && privacyAllowsAnalytics());
 }
 
 export function getAnalyticsContext() {
@@ -163,7 +176,7 @@ export function getAnalyticsContext() {
 }
 
 function queuePageview() {
-  if (typeof window === 'undefined' || typeof window.plausible !== 'function') return;
+  if (!analyticsEnabled() || typeof window.plausible !== 'function') return;
   const url = window.location.href;
   if (window.__xenovoyaLastPageview === url) return;
   window.__xenovoyaLastPageview = url;
@@ -185,7 +198,22 @@ function installNavigationTracking() {
   window.addEventListener('popstate', schedule);
 }
 
+function installPreferenceTracking() {
+  if (window.__xenovoyaPreferenceTracking) return;
+  window.__xenovoyaPreferenceTracking = true;
+  window.addEventListener(PREFERENCES_CHANGE_EVENT, (event) => {
+    if (event.detail?.analytics === false) {
+      document.querySelector('script[data-xenovoya-plausible]')?.remove();
+      ready = false;
+      return;
+    }
+    initAnalytics();
+  });
+}
+
 export function initAnalytics() {
+  if (typeof window === 'undefined') return false;
+  installPreferenceTracking();
   if (!analyticsEnabled()) return false;
   if (typeof window.plausible !== 'function') {
     window.plausible = (...args) => {

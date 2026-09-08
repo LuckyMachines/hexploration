@@ -47,7 +47,7 @@ export function getActionExplanation(action, context = {}) {
         ? 'Dig can create payoff, but it may increase the visible escape cost.'
         : 'Search your tile for discoveries, with Dexterity influencing the result.',
     [Action.REST]: traitOutcome || mitigationOutcome || 'Recover a chosen stat and stabilize for the next turn.',
-    [Action.HELP]: traitOutcome || mitigationOutcome || 'Support another explorer by boosting one selected stat.',
+    [Action.HELP]: traitOutcome || mitigationOutcome || 'Give 1 selected stat to rally a teammate across all three stats.',
     [Action.FLEE]: traitOutcome || mitigationOutcome || escapeCostPreview?.body || departPressure?.readiness?.body || 'Depart from the landing site once the crew has enough value and a route home.',
   }[action] || meta.copy;
 

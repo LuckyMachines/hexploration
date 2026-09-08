@@ -1,12 +1,11 @@
 import { useEffect } from 'react';
 
-// Pseudo-localisation helper. Activate with `?pseudo=1` on any URL. Walks
-// the DOM, wraps every text node with `ʟ` markers, and pads by ~40% to
-// approximate German / Russian growth. Catches truncation and overflow
-// bugs without needing real translations.
+// Pseudo-localisation helper. Activate with `?pseudo=1` on any URL. It walks
+// the DOM, wraps text with visible ASCII markers, and pads by about 40 percent
+// to approximate translation growth. This catches truncation and overflow bugs.
 
-const PAD_LEFT = 'ʟ';
-const PAD_RIGHT = 'ʟ';
+const PAD_LEFT = '[!! ';
+const PAD_RIGHT = ' !!]';
 const PAD_RATIO = 0.4;
 
 const SKIP_SELECTOR = [
@@ -21,9 +20,9 @@ const SKIP_SELECTOR = [
   'style',
 ].join(',');
 
-function pseudoText(s) {
-  const padBy = Math.max(2, Math.round(s.length * PAD_RATIO));
-  return PAD_LEFT + s + '·'.repeat(padBy) + PAD_RIGHT;
+function pseudoText(value) {
+  const padBy = Math.max(2, Math.round(value.length * PAD_RATIO));
+  return PAD_LEFT + value + '~'.repeat(padBy) + PAD_RIGHT;
 }
 
 function shouldSkip(node) {
@@ -39,12 +38,14 @@ export default function PseudoLocale() {
     if (params.get('pseudo') !== '1') return;
 
     const seen = new WeakSet();
+    const originals = new Map();
 
     function walk(root) {
       const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
       let n = w.nextNode();
       while (n) {
         if (!seen.has(n) && n.nodeValue && n.nodeValue.trim().length > 0 && !shouldSkip(n)) {
+          originals.set(n, n.nodeValue);
           n.nodeValue = pseudoText(n.nodeValue);
           seen.add(n);
         }
@@ -59,6 +60,7 @@ export default function PseudoLocale() {
         m.addedNodes.forEach((node) => {
           if (node.nodeType === Node.TEXT_NODE) {
             if (!seen.has(node) && node.nodeValue && node.nodeValue.trim() && !shouldSkip(node)) {
+              originals.set(node, node.nodeValue);
               node.nodeValue = pseudoText(node.nodeValue);
               seen.add(node);
             }
@@ -74,6 +76,9 @@ export default function PseudoLocale() {
 
     return () => {
       obs.disconnect();
+      for (const [node, original] of originals) {
+        if (node.isConnected) node.nodeValue = original;
+      }
       document.documentElement.classList.remove('xv-pseudo-locale');
     };
   }, []);

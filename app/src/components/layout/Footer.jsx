@@ -1,6 +1,6 @@
 import { useWallet } from '../../contexts/WalletContext';
 import { Link } from 'react-router-dom';
-import { LIVE_PLAY_URL, internalToolsEnabled } from '../../lib/internalTools';
+import { internalToolsEnabled } from '../../lib/internalTools';
 
 export default function Footer() {
   const { chain, isConnected } = useWallet();
@@ -21,16 +21,16 @@ export default function Footer() {
           </p>
         </div>
         <div className="flex flex-col gap-3 md:items-end">
-          <nav className="flex flex-wrap gap-2">
+          <nav aria-label="Footer navigation" className="flex flex-wrap gap-2">
             {links.map(([to, label]) => (
-              <Link key={to} to={to} className="rounded border border-exp-border/75 bg-exp-dark/35 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.16em] text-exp-text-dim hover:border-compass/40 hover:text-exp-text">
+              <Link key={to} to={to} className="inline-flex min-h-11 items-center rounded border border-exp-border/75 bg-exp-dark/35 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.16em] text-exp-text-dim hover:border-compass/40 hover:text-exp-text">
                 {label}
               </Link>
             ))}
-            <a href={LIVE_PLAY_URL} className="rounded border border-compass/45 bg-compass/10 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.16em] text-compass-bright hover:border-compass/70">
-              Play live
+            <a href="/#live-expedition" className="inline-flex min-h-11 items-center rounded border border-compass/45 bg-compass/10 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.16em] text-compass-bright hover:border-compass/70">
+              Live lobby
             </a>
-            <Link to="/privacy" className="rounded border border-exp-border/75 bg-exp-dark/35 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.16em] text-exp-text-dim hover:border-compass/40 hover:text-exp-text">
+            <Link to="/privacy" className="inline-flex min-h-11 items-center rounded border border-exp-border/75 bg-exp-dark/35 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.16em] text-exp-text-dim hover:border-compass/40 hover:text-exp-text">
               Data &amp; privacy
             </Link>
           </nav>

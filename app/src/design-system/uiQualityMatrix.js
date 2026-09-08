@@ -1,0 +1,120 @@
+export const UI_QUALITY_VERSION = '1.0.0';
+
+export const uiQualityBudgets = Object.freeze({
+  maxHorizontalOverflowPx: 1,
+  minInteractiveTargetPx: 44,
+  maxSmallInteractiveTargets: 0,
+  maxCumulativeLayoutShift: 0.1,
+  maxFrameP95Ms: 50,
+  maxSeriousAccessibilityViolations: 0,
+  maxCriticalAccessibilityViolations: 0,
+});
+
+export const uiQualityScenes = Object.freeze([
+  {
+    id: 'home-desktop',
+    label: 'Public promise - desktop',
+    route: '/',
+    viewport: { width: 1440, height: 1000 },
+    capture: 'viewport',
+    selector: '#main-content',
+    maxDomNodes: 2600,
+    sources: [
+      'src/pages/HomePage.jsx',
+      'src/index.css',
+      'src/components/game/LiveClientStack.jsx',
+    ],
+  },
+  {
+    id: 'home-mobile',
+    label: 'Public promise - mobile',
+    route: '/',
+    viewport: { width: 390, height: 844 },
+    capture: 'viewport',
+    selector: '#main-content',
+    maxDomNodes: 2600,
+    sources: [
+      'src/pages/HomePage.jsx',
+      'src/index.css',
+      'src/components/layout/Header.jsx',
+    ],
+  },
+  {
+    id: 'board-ready',
+    label: 'Board hierarchy - ready',
+    route: '/design-system?view=gameplay&lens=ready&motion=reduce',
+    viewport: { width: 1440, height: 1000 },
+    capture: 'element',
+    selector: '[data-design-section="board"]',
+    waitForRenderer: true,
+    maxFrameP95Ms: 50,
+    maxDomNodes: 3200,
+    sources: [
+      'src/pages/DesignSystemPage.jsx',
+      'src/components/board/ThreeBoard.jsx',
+      'src/components/board/boardWorld.js',
+      'src/components/expedition/ExpeditionArcTrack.jsx',
+      'src/components/player/PlayerDossier.jsx',
+      'src/lib/expeditionArc.js',
+      'src/lib/constants.js',
+      'src/index.css',
+    ],
+  },
+  {
+    id: 'board-danger-comparison',
+    label: 'Board hierarchy - ready versus danger',
+    route: '/design-system?view=gameplay&lens=ready&compare=1&compareWith=danger&motion=reduce',
+    viewport: { width: 1440, height: 1000 },
+    capture: 'element',
+    selector: '[data-design-section="board"]',
+    waitForRenderer: true,
+    maxFrameP95Ms: 50,
+    maxDomNodes: 3600,
+    sources: [
+      'src/pages/DesignSystemPage.jsx',
+      'src/components/board/ThreeBoard.jsx',
+      'src/components/expedition/EscapeCostPreview.jsx',
+      'src/components/expedition/ExpeditionArcTrack.jsx',
+      'src/lib/expeditionArc.js',
+      'src/index.css',
+    ],
+  },
+  {
+    id: 'recovery-mobile',
+    label: 'Failure and recovery - mobile',
+    route: '/design-system?view=components&motion=reduce',
+    viewport: { width: 390, height: 844 },
+    capture: 'element',
+    selector: '[data-testid="recovery-lab"]',
+    maxDomNodes: 2400,
+    sources: [
+      'src/pages/DesignSystemPage.jsx',
+      'src/components/shared/TxStatus.jsx',
+      'src/components/shared/EmptyState.jsx',
+      'src/design-system/catalog.js',
+      'src/index.css',
+    ],
+  },
+  {
+    id: 'responsive-contracts',
+    label: 'Responsive compositions',
+    route: '/design-system?view=journeys&lens=danger&motion=reduce',
+    viewport: { width: 1280, height: 960 },
+    capture: 'element',
+    selector: '[data-design-section="responsive"]',
+    maxDomNodes: 3600,
+    sources: [
+      'src/pages/DesignSystemPage.jsx',
+      'src/components/actions/ActionSimulator.jsx',
+      'src/components/expedition/MissionStatus.jsx',
+      'src/components/memory/BadgeShelf.jsx',
+      'src/components/memory/BeatThisChallenge.jsx',
+      'src/design-system/catalog.js',
+      'src/index.css',
+    ],
+  },
+]);
+
+export function uiQualitySceneById(id) {
+  return uiQualityScenes.find((scene) => scene.id === id) || null;
+}

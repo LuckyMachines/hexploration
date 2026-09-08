@@ -3,7 +3,7 @@
   font-family: 'Barlow Condensed';
   font-style: normal;
   font-weight: 400;
-  font-display: swap;
+  font-display: optional;
   src: url('/fonts/barlow-condensed/barlow-condensed-400.woff2') format('woff2'),
        url('/fonts/barlow-condensed/barlow-condensed-400.ttf') format('truetype');
 }
@@ -11,7 +11,7 @@
   font-family: 'Barlow Condensed';
   font-style: normal;
   font-weight: 500;
-  font-display: swap;
+  font-display: optional;
   src: url('/fonts/barlow-condensed/barlow-condensed-500.woff2') format('woff2'),
        url('/fonts/barlow-condensed/barlow-condensed-500.ttf') format('truetype');
 }
@@ -19,7 +19,7 @@
   font-family: 'Barlow Condensed';
   font-style: normal;
   font-weight: 600;
-  font-display: swap;
+  font-display: optional;
   src: url('/fonts/barlow-condensed/barlow-condensed-600.woff2') format('woff2'),
        url('/fonts/barlow-condensed/barlow-condensed-600.ttf') format('truetype');
 }
@@ -27,7 +27,7 @@
   font-family: 'Barlow Condensed';
   font-style: normal;
   font-weight: 700;
-  font-display: swap;
+  font-display: optional;
   src: url('/fonts/barlow-condensed/barlow-condensed-700.woff2') format('woff2'),
        url('/fonts/barlow-condensed/barlow-condensed-700.ttf') format('truetype');
 }
@@ -37,7 +37,7 @@
   font-family: 'JetBrains Mono';
   font-style: normal;
   font-weight: 400;
-  font-display: swap;
+  font-display: optional;
   src: url('/fonts/jetbrains-mono/jetbrains-mono-400.woff2') format('woff2'),
        url('/fonts/jetbrains-mono/jetbrains-mono-400.ttf') format('truetype');
 }
@@ -45,7 +45,7 @@
   font-family: 'JetBrains Mono';
   font-style: normal;
   font-weight: 500;
-  font-display: swap;
+  font-display: optional;
   src: url('/fonts/jetbrains-mono/jetbrains-mono-500.woff2') format('woff2'),
        url('/fonts/jetbrains-mono/jetbrains-mono-500.ttf') format('truetype');
 }

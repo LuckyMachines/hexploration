@@ -452,6 +452,48 @@ export default function ExpeditionBench() {
         </div>
       </div>
 
+      <ChartDepartStrip
+        movement={movement}
+        movePath={movePath}
+        routeStatus={routeStatus}
+        turnGuidance={turnGuidance}
+        departPressure={departPressure}
+        escapeCostPreview={escapeCostPreview}
+      />
+
+      {isSpectator && <SpectatorBanner />}
+
+      {!isSpectator && (
+        <ErrorBoundary>
+          <ActionPanel
+            gameId={view.gameId}
+            playerID={playerID}
+            currentLocation={location}
+            stats={stats}
+            crew={enrichedPlayers}
+            currentAction={action}
+            movement={movement}
+            movePath={movePath}
+            onMoveSubmit={clearMovePath}
+            onMoveClear={clearMovePath}
+            onMoveBacktrack={backtrackMovePath}
+            activeTab={activeTab}
+            onTabChange={setActiveTab}
+            isSpectator={isSpectator}
+            moveValidation={moveValidation}
+            routeStatus={routeStatus}
+            boardInput={boardInput}
+            turnState={turnState}
+            funTelemetry={funTelemetry}
+            interfaceDensity={interfaceDensity}
+            departPressure={departPressure}
+            escapeCostPreview={escapeCostPreview}
+            traitPreview={traitPreview}
+            expeditionArc={expeditionArc}
+          />
+        </ErrorBoundary>
+      )}
+
       <details className="group rounded border border-exp-border/70 bg-exp-panel/45 px-4 py-3" open={interfaceDensity.details.turnBriefingOpen}>
         <summary className="cursor-pointer list-none flex items-center justify-between gap-3">
           <div className="min-w-0">
@@ -476,15 +518,6 @@ export default function ExpeditionBench() {
             escapeCostPreview={escapeCostPreview}
           />
           <ExpeditionArcTrack arc={expeditionArc} />
-          <ChartDepartStrip
-            movement={movement}
-            movePath={movePath}
-            routeStatus={routeStatus}
-            turnGuidance={turnGuidance}
-            departPressure={departPressure}
-            escapeCostPreview={escapeCostPreview}
-            expeditionArc={expeditionArc}
-          />
           <GuidedFirstTurn
             isSpectator={isSpectator}
             hasSubmitted={hasSubmitted}
@@ -545,38 +578,6 @@ export default function ExpeditionBench() {
           />
         </div>
       </details>
-      )}
-
-      {isSpectator && <SpectatorBanner />}
-
-      {!isSpectator && (
-        <ErrorBoundary>
-          <ActionPanel
-            gameId={view.gameId}
-            playerID={playerID}
-            currentLocation={location}
-            stats={stats}
-            currentAction={action}
-            movement={movement}
-            movePath={movePath}
-            onMoveSubmit={clearMovePath}
-            onMoveClear={clearMovePath}
-            onMoveBacktrack={backtrackMovePath}
-            activeTab={activeTab}
-            onTabChange={setActiveTab}
-            isSpectator={isSpectator}
-            moveValidation={moveValidation}
-            routeStatus={routeStatus}
-            boardInput={boardInput}
-            turnState={turnState}
-            funTelemetry={funTelemetry}
-            interfaceDensity={interfaceDensity}
-            departPressure={departPressure}
-            escapeCostPreview={escapeCostPreview}
-            traitPreview={traitPreview}
-            expeditionArc={expeditionArc}
-          />
-        </ErrorBoundary>
       )}
 
       {focusedPlayer && (

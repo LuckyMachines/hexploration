@@ -5,10 +5,10 @@ const PROCESS_ENV = typeof process !== 'undefined' ? process.env || {} : {};
 
 export const DEFAULT_SEO_CONFIG = {
   siteName: 'Xenovoya',
-  siteUrl: 'https://xenovoya.luckymachines.com',
-  defaultTitle: 'Xenovoya',
-  defaultDescription: 'A cooperative on-chain hex exploration game about voyaging into fog, sharing discoveries, and escaping together.',
-  defaultImage: '/seo/xenovoya-share-card.svg',
+  siteUrl: 'https://play.xenovoya.com',
+  defaultTitle: 'Play Xenovoya',
+  defaultDescription: 'Launch the Xenovoya open alpha: a cooperative on-chain hex expedition on Sepolia about exploring, sharing discoveries, and escaping together.',
+  defaultImage: '/seo/xenovoya-share-card.png',
   locale: 'en_US',
   twitterCard: 'summary_large_image',
 };

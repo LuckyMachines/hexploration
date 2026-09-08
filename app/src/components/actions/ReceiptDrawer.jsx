@@ -44,6 +44,21 @@ export default function ReceiptDrawer({
           Options: {submission.options.join(' -> ')}
         </p>
       )}
+      {submission?.rescue && (
+        <div className="mt-3 rounded border border-oxide-green/35 bg-oxide-green/10 px-3 py-2">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-oxide-green">
+              {isSuccess ? 'Rescue intent confirmed' : 'Rescue intent'}
+            </p>
+            <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-oxide-green">
+              Crew +{submission.rescue.crewGain}
+            </p>
+          </div>
+          <p className="mt-1 font-mono text-[11px] text-exp-text">
+            P{submission.rescue.helperID} {submission.rescue.statLabel} {submission.rescue.helperBefore} to {submission.rescue.helperAfter}; P{submission.rescue.targetID} rallies across all three stats when the turn resolves.
+          </p>
+        </div>
+      )}
       {submission?.drama && (
         <div className="mt-3 rounded border border-compass/25 bg-compass/5 px-3 py-2">
           <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-compass">

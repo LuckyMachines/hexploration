@@ -18,3 +18,22 @@ internalTest('ui lab exposes board input and route controls', async ({ page }) =
   await expect(undoStep).toBeVisible();
   await undoStep.click();
 });
+
+internalTest('design system can review gameplay states and component coverage', async ({ page }) => {
+  await page.goto('/design-system', { waitUntil: 'domcontentloaded' });
+
+  await expect(page.getByRole('heading', { name: /One language.*Every expedition moment/i })).toBeVisible();
+  await page.getByRole('button', { name: 'Gameplay', exact: true }).click();
+  await expect(page.locator('[data-design-section="board"]')).toBeVisible();
+  await expect(page.locator('[data-design-section="foundations"]')).toHaveCount(0);
+
+  await page.getByRole('button', { name: 'Danger', exact: true }).click();
+  await expect(page.getByRole('img', { name: 'danger board state' }).first()).toBeVisible();
+  await expect(page.getByText('The Sunstone Lens will be exposed')).toBeVisible();
+
+  await page.getByRole('button', { name: 'Standards', exact: true }).click();
+  const registry = page.getByTestId('coverage-registry');
+  await registry.getByRole('searchbox').fill('Hex Board');
+  await expect(registry.getByText('Hex Board')).toBeVisible();
+  await expect(registry.getByText('Showing 1')).toBeVisible();
+});

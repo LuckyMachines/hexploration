@@ -237,7 +237,7 @@ export function deriveExpeditionArc(context = {}) {
 
 export function arcToneClass(arc = {}) {
   return {
-    blue: 'border-blueprint/40 bg-blueprint/10 text-blueprint',
+    blue: 'border-blueprint/40 bg-blueprint/10 text-blueprint-bright',
     gold: 'border-compass/40 bg-compass/10 text-compass-bright',
     green: 'border-oxide-green/40 bg-oxide-green/10 text-oxide-green',
     red: 'border-signal-red/45 bg-signal-red/10 text-signal-red',

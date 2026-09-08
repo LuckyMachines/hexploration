@@ -1,9 +1,10 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useId, useMemo, useState } from 'react';
 import { useBoardSize } from '../../hooks/useBoardSize';
 import { useActiveZones } from '../../hooks/useActiveZones';
 import { useAllPlayerLocations } from '../../hooks/useAllPlayerLocations';
 import { useLandingSite } from '../../hooks/useLandingSite';
 import { useExpeditionInputController } from '../../hooks/useExpeditionInputController';
+import { useUserPreferences } from '../../hooks/useUserPreferences';
 import { Action, ProcessingPhase, Tile } from '../../lib/constants';
 import { buildReachableTiles, validateMoveStep } from '../../lib/moveValidation';
 import { emitFeedbackEvent } from '../../lib/feedbackEvents';
@@ -24,6 +25,7 @@ import LandingMarker from './LandingMarker';
 import PathOverlay from './PathOverlay';
 import BoardPresence from './BoardPresence';
 import TerrainLegend from './TerrainLegend';
+import ThreeBoard from './ThreeBoard';
 import Spinner from '../shared/Spinner';
 
 function submittedAction(action) {
@@ -59,12 +61,20 @@ export default function HexGrid({
   departPressure,
   onTraitPreview,
 }) {
+  const terrainPatternId = `verdant-signal-${useId().replaceAll(':', '')}`;
   const { rows, columns, isLoading: loadingSize } = useBoardSize();
   const { zones, tiles, campsites } = useActiveZones(gameId);
   const { playerIDs, playerZones } = useAllPlayerLocations(gameId);
   const { zoneAlias: landingSite } = useLandingSite(gameId);
   const [hoveredTile, setHoveredTile] = useState(null);
   const [intentTile, setIntentTile] = useState(null);
+  const [worldReady, setWorldReady] = useState(false);
+  const { preferences, setPreference } = useUserPreferences();
+  const tacticalBoard = Boolean(preferences.tacticalBoard);
+
+  useEffect(() => {
+    if (tacticalBoard) setWorldReady(false);
+  }, [tacticalBoard]);
 
   const revealedMap = useMemo(() => {
     const map = {};
@@ -112,6 +122,15 @@ export default function HexGrid({
     }
     return hexes;
   }, [columns, rows]);
+  const worldCells = useMemo(
+    () => allHexes.map((cell) => ({
+      alias: cell.alias,
+      tileType: revealedMap[cell.alias]?.tileType ?? Tile.NONE,
+      revealed: Boolean(revealedMap[cell.alias]),
+      hasCampsite: Boolean(revealedMap[cell.alias]?.hasCampsite),
+    })),
+    [allHexes, revealedMap],
+  );
 
   const reachableTiles = useMemo(() => {
     if (!isMovePlanning || !currentLocation || movement <= 0 || !rows || !columns) {
@@ -125,6 +144,7 @@ export default function HexGrid({
       revealedZones: zones,
     });
   }, [isMovePlanning, currentLocation, movement, rows, columns, zones]);
+  const reachableAliases = useMemo(() => [...reachableTiles], [reachableTiles]);
 
   useEffect(() => {
     if (currentLocation) setIntentTile(currentLocation);
@@ -332,11 +352,58 @@ export default function HexGrid({
           className={`w-full min-w-0 outline-none transition-[filter] duration-500 focus-visible:ring-2 focus-visible:ring-compass/60 ${boardToneClass} ${input.isObserving ? 'alive-observation-mode' : ''}`}
           style={{ maxWidth: boardMaxWidth }}
         >
-          <svg
-            viewBox={viewBox}
-            className="block h-auto w-full max-h-[min(75svh,760px)]"
+          <div
+            className="relative w-full overflow-hidden rounded-xl border border-exp-border/70 bg-[#080c09] shadow-[0_22px_70px_rgba(0,0,0,0.42),inset_0_1px_0_rgba(255,255,255,0.05)]"
             style={{ aspectRatio: `${viewBoxWidth} / ${viewBoxHeight}` }}
           >
+            {!tacticalBoard && (
+              <ThreeBoard
+                cells={worldCells}
+                currentLocation={currentLocation}
+                intentAlias={intentAlias}
+                selectedPath={selectedPath}
+                previewPath={previewPath}
+                reachableAliases={reachableAliases}
+                landingSite={landingSite}
+                playerLocationMap={playerLocationMap}
+                currentPlayerIndex={currentPlayerIndex}
+                activeAction={activeAction}
+                hasSubmitted={hasSubmitted}
+                isResolving={isResolving}
+                isDanger={intentIsDanger || controlFeel.risk?.level === 'redline'}
+                lowStats={controlFeel.lowStats}
+                performanceMode={preferences.efficientBoard ? 'efficient' : 'auto'}
+                onTileClick={onTileClick ? handleTileClick : undefined}
+                onTileHover={handleHover}
+                onReady={() => setWorldReady(true)}
+                onUnavailable={() => setWorldReady(false)}
+                className={`absolute inset-0 transition-opacity duration-500 ${worldReady ? 'opacity-100' : 'pointer-events-none opacity-0'}`}
+              />
+            )}
+            <svg
+              viewBox={viewBox}
+              className={`block h-full w-full transition-opacity duration-300 ${worldReady ? 'pointer-events-none opacity-0' : 'opacity-100'}`}
+              aria-hidden={worldReady ? 'true' : undefined}
+            >
+            <defs>
+              <pattern
+                id={terrainPatternId}
+                patternUnits="userSpaceOnUse"
+                x={viewBoxX}
+                y={viewBoxY}
+                width={viewBoxWidth}
+                height={viewBoxHeight}
+              >
+                <image
+                  href="/images/art/terrain/verdant-signal-base.webp"
+                  x={viewBoxX}
+                  y={viewBoxY}
+                  width={viewBoxWidth}
+                  height={viewBoxHeight}
+                  preserveAspectRatio="xMidYMid slice"
+                />
+              </pattern>
+            </defs>
             <rect
               x={viewBoxX}
               y={viewBoxY}
@@ -368,6 +435,7 @@ export default function HexGrid({
                     )}
                     isCommitted={hasSubmitted && selectedPath.includes(alias)}
                     trait={traitMap[alias]}
+                    terrainPatternId={terrainPatternId}
                     onClick={onTileClick ? handleTileClick : undefined}
                     onHover={handleHover}
                   />
@@ -440,7 +508,19 @@ export default function HexGrid({
                   />
                 );
               }))}
-          </svg>
+            </svg>
+            <button
+              type="button"
+              data-testid="board-view-toggle"
+              onClick={(event) => {
+                event.stopPropagation();
+                setPreference('tacticalBoard', !tacticalBoard);
+              }}
+              className="absolute bottom-3 right-3 z-30 min-h-11 rounded border border-exp-border/80 bg-exp-dark/85 px-3 py-2 font-mono text-[9px] uppercase tracking-[0.14em] text-exp-text-dim shadow-lg backdrop-blur-sm hover:border-compass/60 hover:text-compass-bright focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-compass/70"
+            >
+              {tacticalBoard ? 'Diorama view' : 'Tactical view'}
+            </button>
+          </div>
         </div>
       </div>
 

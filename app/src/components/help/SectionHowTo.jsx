@@ -19,7 +19,7 @@ const STEPS = [
   'After resolution, read Turn Aftermath before planning the next action.',
   'Check whether the Expedition Arc changed after aftermath.',
   'Return to the landing site with enough recovered value.',
-  'Choose Flee to escape and lock in the run.',
+  'Choose Depart to leave and lock in the run.',
   'Read the Expedition Memory created from the outcome.',
   'Use the Run Relic Card when you want to show the run as an image, caption, and challenge.',
   'Start the Beat This challenge if the memory shows a cost, score, value, or crew benchmark you can improve.',
@@ -38,7 +38,7 @@ const TIPS = [
   'Run Relic Cards are the shortest social version of the expedition: score, pressure, badges, quote, and dare.',
   'Dig only when the crew can afford the time.',
   'Rest before zero movement turns the map into a trap.',
-  'Use Help to keep a teammate from becoming the reason everyone stays too long.',
+  'Use Help on the same tile: you give 1 selected stat; your teammate restores 2 there and 1 in both other stats.',
 ];
 
 export default function SectionHowTo() {

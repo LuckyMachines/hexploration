@@ -28,11 +28,13 @@ vi.mock('../../hooks/useLandingSite', () => ({
 
 describe('HexGrid', () => {
   it('caps the board viewport from grid aspect ratio', () => {
-    render(<HexGrid gameId="1" />);
+    const { container } = render(<HexGrid gameId="1" />);
 
     expect(screen.getByTestId('hex-board-viewport')).toHaveStyle({
       maxWidth: 'min(100%, 651px, 64.228svh)',
     });
+    expect(container.querySelector('pattern image')?.getAttribute('href')).toBe('/images/art/terrain/verdant-signal-base.webp');
+    expect(container.querySelectorAll('polygon[fill^="url(#verdant-signal-"]')).toHaveLength(9);
   });
 
   it('highlights reachable tiles during move planning', () => {
@@ -66,5 +68,17 @@ describe('HexGrid', () => {
 
     await user.click(screen.getByText('1,1'));
     expect(onTileClick).toHaveBeenCalledWith('1,1', expect.any(Set));
+  });
+
+  it('lets the player switch persistently between diorama and tactical views', async () => {
+    const user = userEvent.setup();
+    render(<HexGrid gameId="1" />);
+
+    const toggle = screen.getByTestId('board-view-toggle');
+    expect(toggle).toHaveTextContent('Tactical view');
+
+    await user.click(toggle);
+    expect(toggle).toHaveTextContent('Diorama view');
+    expect(JSON.parse(window.localStorage.getItem('xenovoya:user-preferences'))).toMatchObject({ tacticalBoard: true });
   });
 });

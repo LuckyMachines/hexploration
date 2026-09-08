@@ -18,7 +18,7 @@ export default function ExpeditionArcTrack({ arc }) {
     >
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="min-w-0">
-          <p className="font-mono text-[10px] uppercase tracking-[0.3em] opacity-75">
+          <p className="font-mono text-[10px] uppercase tracking-[0.3em]">
             Expedition arc
           </p>
           <h3 className="mt-1 font-display text-base uppercase tracking-[0.16em] text-exp-text">
@@ -29,7 +29,7 @@ export default function ExpeditionArcTrack({ arc }) {
           </p>
         </div>
         <div className="min-w-[12rem] max-w-sm rounded border border-current/20 bg-exp-dark/25 px-3 py-2">
-          <p className="font-mono text-[10px] uppercase tracking-[0.22em] opacity-70">
+          <p className="font-mono text-[10px] uppercase tracking-[0.22em]">
             Decision
           </p>
           <p className="mt-1 font-mono text-[11px] leading-relaxed text-exp-text-dim">
@@ -40,7 +40,7 @@ export default function ExpeditionArcTrack({ arc }) {
 
       <div className="mt-3 grid gap-2 lg:grid-cols-[1fr_1fr]">
         <div className="rounded border border-current/20 bg-exp-dark/25 px-3 py-2">
-          <p className="font-mono text-[10px] uppercase tracking-[0.22em] opacity-70">
+          <p className="font-mono text-[10px] uppercase tracking-[0.22em]">
             Directive
           </p>
           <p className="mt-1 font-mono text-[11px] leading-relaxed text-exp-text-dim">
@@ -48,7 +48,7 @@ export default function ExpeditionArcTrack({ arc }) {
           </p>
         </div>
         <div className="rounded border border-current/20 bg-exp-dark/25 px-3 py-2">
-          <p className="font-mono text-[10px] uppercase tracking-[0.22em] opacity-70">
+          <p className="font-mono text-[10px] uppercase tracking-[0.22em]">
             Next threshold
           </p>
           <p className="mt-1 font-mono text-[11px] leading-relaxed text-exp-text-dim">
@@ -71,8 +71,8 @@ export default function ExpeditionArcTrack({ arc }) {
                 isCurrent
                   ? 'border-current bg-exp-dark/35 text-exp-text'
                   : isPast
-                    ? 'border-current/25 bg-current/10 opacity-80'
-                    : 'border-current/15 bg-exp-dark/20 opacity-50'
+                    ? 'border-current/25 bg-current/10 text-exp-text-dim'
+                    : 'border-current/15 bg-exp-dark/20 text-exp-text-dim'
               }`}
             >
               <span className="block h-1 rounded bg-current opacity-70" />
@@ -88,7 +88,7 @@ export default function ExpeditionArcTrack({ arc }) {
           return (
             <div key={key} className="rounded border border-current/20 bg-exp-dark/25 px-2 py-1.5">
               <div className="flex items-center justify-between gap-2">
-                <p className="font-mono text-[10px] uppercase tracking-[0.18em] opacity-70">
+                <p className="font-mono text-[10px] uppercase tracking-[0.18em]">
                   {label}
                 </p>
                 <p className="font-mono text-[10px] tabular-nums text-exp-text">

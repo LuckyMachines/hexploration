@@ -78,10 +78,10 @@ const ACTION_DETAILS = {
     blocked: 'Rest is only blocked by global turn or transaction state.',
   },
   [Action.HELP]: {
-    effect: 'Spend your action to strengthen another explorer.',
-    risk: 'Social payoff with less personal tempo.',
-    requirement: 'A target player and stat.',
-    blocked: 'Help needs a valid target and stat option.',
+    effect: 'Give 1 selected stat; a teammate restores 2 there and 1 in both other stats.',
+    risk: 'The helper gets weaker, so rescue the right teammate before the next hazard.',
+    requirement: 'An active teammate on your tile, a stat above 1 to give, and room for them to recover.',
+    blocked: 'Help needs another active player on your tile and a valid Movement, Agility, or Dexterity choice.',
   },
   [Action.FLEE]: {
     effect: 'Attempt to end the run from the landing zone.',

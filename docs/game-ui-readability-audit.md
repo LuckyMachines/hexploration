@@ -45,7 +45,14 @@ This audit classifies the current active-play UI against the negative-space stan
 | Focused | Route intent, active input, submitted turn, resolving, transaction pending | Board, intent cursor, route readouts, action controls |
 | High-alert | Invalid route, redline risk, transaction error | Board, localized alert readouts, action controls, required error text |
 
-## First Implementation Slice
+## Current Enforcement
 
-The first implementation slice establishes source-controlled standards, an audit inventory, a reusable density model, context-gated board overlays, persisted detail preferences, and focused tests. Remaining slices should continue converting one-off surfaces into shared quiet primitives while preserving the hierarchy above.
+The source heuristic remains useful as a cheap warning, but it is no longer treated as proof of rendered quality. `npm run ui:quality` now measures six canonical rendered scenes for horizontal overflow, effective pointer target size, DOM size, layout shift, frame pacing, and serious or critical accessibility defects. It also performs screenshot regression against explicitly approved baselines.
 
+The latest local evidence records zero overflow, zero undersized effective targets, zero cumulative layout shift, and zero serious or critical axe findings across every canonical scene. Both 3D board scenes held a 16.8 ms or better p95 animation-frame interval during the deterministic sample. The public promise and board contract additionally pass Chromium, Firefox, WebKit, Pixel 7, and iPhone 13 projects.
+
+Source counts in `reports/ui-density/latest.json` are labeled heuristics and are paired with these rendered measurements. They can warn that a component is becoming structurally dense; they cannot declare the interface readable on their own.
+
+## Human Gate
+
+Automation proves geometry, deterministic presentation, and selected accessibility rules. It does not prove that a new player understands the stakes, feels delight, or chooses confidently. The remaining A+ gate is a recent observed-player set covering first action, recovery, departure, and return intent.

@@ -3,7 +3,7 @@ const TONE_CLASS = {
   gold: 'border-compass/35 bg-compass/10 text-compass-bright',
   green: 'border-oxide-green/35 bg-oxide-green/10 text-oxide-green',
   blue: 'border-blueprint/35 bg-blueprint/10 text-blueprint',
-  purple: 'border-relic/35 bg-relic/10 text-relic',
+  purple: 'border-relic/35 bg-relic/10 text-relic-bright',
   neutral: 'border-exp-border/70 bg-exp-dark/35 text-exp-text-dim',
 };
 

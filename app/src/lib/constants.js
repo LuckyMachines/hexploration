@@ -18,7 +18,7 @@ export const ACTION_LABELS = {
   [Action.DIG]: 'Dig',
   [Action.REST]: 'Rest',
   [Action.HELP]: 'Help',
-  [Action.FLEE]: 'Flee',
+  [Action.FLEE]: 'Depart',
 };
 
 // Tile types from the board
@@ -87,5 +87,5 @@ export const MAX_GAME_PLAYERS = 4;
 export const MIN_GAME_PLAYERS = 1;
 
 // Player colors for hex markers
-export const PLAYER_COLORS = ['#e8c860', '#3a8a50', '#e88040', '#5090c0'];
+export const PLAYER_COLORS = ['#e8c860', '#63bd7e', '#e88040', '#78b9f8'];
 export const PLAYER_LABELS = ['P1', 'P2', 'P3', 'P4'];

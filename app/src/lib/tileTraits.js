@@ -399,7 +399,7 @@ function actionLabel(action) {
     [Action.DIG]: 'Dig',
     [Action.REST]: 'Rest',
     [Action.HELP]: 'Help',
-    [Action.FLEE]: 'Flee',
+    [Action.FLEE]: 'Depart',
   }[action] || 'Move';
 }
 

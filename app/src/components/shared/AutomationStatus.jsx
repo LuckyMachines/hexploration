@@ -1,6 +1,7 @@
 import { useAutomationStatus } from '../../hooks/useAutomationStatus';
+import ChainQueryProvider from './ChainQueryProvider';
 
-export default function AutomationStatus() {
+function AutomationStatusContent() {
   const { mode, pendingRequests, isLoading } = useAutomationStatus();
 
   if (isLoading) return null;
@@ -48,5 +49,13 @@ export default function AutomationStatus() {
       <span className="inline-block w-2 h-2 rounded-full bg-signal-red shadow-[0_0_4px_var(--color-signal-red)]" />
       <span className="tracking-wider uppercase">VRF Config Mismatch</span>
     </div>
+  );
+}
+
+export default function AutomationStatus() {
+  return (
+    <ChainQueryProvider>
+      <AutomationStatusContent />
+    </ChainQueryProvider>
   );
 }

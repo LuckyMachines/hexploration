@@ -7,6 +7,9 @@ const OPTIONS = [
   ['showTelemetry', 'Show telemetry'],
   ['showExtraDetail', 'Open details'],
   ['compactHud', 'Compact HUD'],
+  ['tacticalBoard', 'Tactical board'],
+  ['efficientBoard', 'Battery saver'],
+  ['analytics', 'Anonymous analytics'],
 ];
 
 export default function UserPreferencesPanel() {
@@ -21,7 +24,7 @@ export default function UserPreferencesPanel() {
         {OPTIONS.map(([key, label]) => (
           <label
             key={key}
-            className="flex items-center gap-2 rounded border border-exp-border bg-exp-dark/35 px-3 py-2 font-mono text-xs text-exp-text-dim"
+            className="flex min-h-11 items-center gap-2 rounded border border-exp-border bg-exp-dark/35 px-3 py-2 font-mono text-xs text-exp-text-dim"
           >
             <input
               type="checkbox"
@@ -35,7 +38,7 @@ export default function UserPreferencesPanel() {
         <button
           type="button"
           onClick={resetPreferences}
-          className="rounded border border-exp-border px-3 py-2 font-mono text-xs uppercase tracking-[0.2em] text-exp-text-dim hover:border-compass/50 hover:text-compass"
+          className="min-h-11 rounded border border-exp-border px-3 py-2 font-mono text-xs uppercase tracking-[0.2em] text-exp-text-dim hover:border-compass/50 hover:text-compass"
         >
           Reset
         </button>

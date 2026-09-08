@@ -6,8 +6,8 @@ const STATIC_ROUTES = [
   {
     path: '/',
     type: 'home',
-    title: 'Xenovoya',
-    description: 'Play Xenovoya, a cooperative on-chain hex exploration game about voyaging into fog, sharing discoveries, and escaping together.',
+    title: 'Play Xenovoya',
+    description: 'Launch the Xenovoya open alpha: a cooperative on-chain hex expedition on Sepolia about exploring, sharing discoveries, and escaping together.',
     priority: 1,
     changefreq: 'weekly',
   },
@@ -45,7 +45,7 @@ export function buildPublicRouteIndex({ generatedAt = new Date().toISOString() }
     discoverable: true,
     noindex: false,
     lastmod: generatedAt,
-    image: '/seo/xenovoya-share-card.svg',
+    image: '/seo/xenovoya-share-card.png',
     ...route,
   })), (route) => route.path);
 }

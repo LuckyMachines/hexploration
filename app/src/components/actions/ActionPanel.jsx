@@ -52,6 +52,7 @@ export default function ActionPanel({
   playerID,
   currentLocation,
   stats,
+  crew = [],
   currentAction,
   movement = 0,
   movePath = [],
@@ -168,7 +169,7 @@ export default function ActionPanel({
     }
   };
 
-  const requestSubmit = (actionIndex, options = [], leftHand = '', rightHand = '') => {
+  const requestSubmit = (actionIndex, options = [], leftHand = '', rightHand = '', metadata = {}) => {
     if (!playerID || !gameId) return;
     setPendingSubmission({
       playerID,
@@ -178,6 +179,7 @@ export default function ActionPanel({
       leftHand,
       rightHand,
       gameId,
+      ...metadata,
       drama: buildActionDrama(actionIndex, {
         isSpectator,
         hasSubmitted,
@@ -529,9 +531,17 @@ export default function ActionPanel({
         )}
         {activeTab === Action.HELP && (
           <HelpControl
-            gameId={gameId}
             currentPlayerID={playerID}
-            onSubmit={(targetPID, statOption) => requestSubmit(Action.HELP, [String(targetPID), statOption])}
+            currentLocation={currentLocation}
+            helperStats={stats}
+            crew={crew}
+            onSubmit={(targetPID, statOption, rescue) => requestSubmit(
+              Action.HELP,
+              [String(targetPID), statOption],
+              '',
+              '',
+              { rescue },
+            )}
             disabled={isLocked}
           />
         )}
@@ -547,7 +557,7 @@ export default function ActionPanel({
                   : 'border-exp-border/70 bg-exp-dark/35'
               }`}>
                 <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-exp-text-dim">
-                  Escape readiness
+                  Departure readiness
                 </p>
                 <p className="mt-1 font-mono text-xs uppercase tracking-[0.14em] text-exp-text">
                   {departPressure.readiness.label}
@@ -567,12 +577,12 @@ export default function ActionPanel({
             <button
               onClick={() => requestSubmit(Action.FLEE)}
               disabled={isLocked}
-              title={blockReason || 'Review and send flee action'}
+              title={blockReason || 'Review and send departure action'}
               className="px-4 py-2 bg-signal-red/10 border border-signal-red/40 rounded text-signal-red text-xs font-mono tracking-widest uppercase
                          hover:bg-signal-red/20 hover:border-signal-red/60 transition-colors
                          disabled:opacity-40 disabled:cursor-not-allowed"
             >
-              Attempt Escape
+              Attempt Departure
             </button>
           </div>
         )}

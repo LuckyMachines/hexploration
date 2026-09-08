@@ -1,8 +1,10 @@
 import { useWallet } from '../../contexts/WalletContext';
-import { SUPPORTED_CHAINS, foundry } from '../../config/chains';
+import { SUPPORTED_CHAINS } from '../../config/chains';
+import { getRuntimeMode } from '../../lib/runtimeMode';
 
 export default function NetworkBadge() {
   const { chain, isConnected, switchChain, isSwitching: isPending } = useWallet();
+  const targetChain = getRuntimeMode().chain;
 
   if (!isConnected) {
     return (
@@ -32,7 +34,7 @@ export default function NetworkBadge() {
           className="
             bg-transparent border border-exp-border rounded
             text-xs font-mono text-exp-text-dim tracking-wider uppercase
-            px-2 py-1 cursor-pointer
+            min-h-11 px-2 py-1 cursor-pointer
             hover:border-compass/40 transition-colors
             disabled:opacity-40 disabled:cursor-not-allowed
           "
@@ -45,12 +47,12 @@ export default function NetworkBadge() {
         </select>
       ) : (
         <button
-          onClick={() => switchChain({ chainId: foundry.id })}
+          onClick={() => switchChain({ chainId: targetChain.id })}
           disabled={isPending}
           className="
             border border-signal-red/50 bg-signal-red/10 rounded
             text-xs font-mono text-signal-red tracking-wider uppercase
-            px-3 py-1 cursor-pointer
+            min-h-11 px-3 py-1 cursor-pointer
             hover:bg-signal-red/20 transition-colors
             disabled:opacity-40 disabled:cursor-not-allowed
           "

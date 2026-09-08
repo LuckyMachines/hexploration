@@ -9,7 +9,9 @@ const expectOpenGame = process.env.E2E_EXPECT_OPEN_GAME === 'true';
 const internalToolsEnabled = process.env.VITE_ENABLE_INTERNAL_TOOLS === 'true';
 const internalTest = internalToolsEnabled ? test : test.skip;
 const seededTest = expectOpenGame ? test : test.skip;
-const captureDir = path.resolve(process.cwd(), '..', 'captures', 'game');
+const captureDir = process.env.E2E_CAPTURE_DIR
+  ? path.resolve(process.env.E2E_CAPTURE_DIR)
+  : path.resolve(process.cwd(), '..', 'captures', 'game');
 const e2eEnvPath = path.resolve(process.cwd(), '.env.e2e-anvil');
 const localEnvPath = path.resolve(process.cwd(), '.env.local');
 const broadcastLatest = path.resolve(
@@ -365,7 +367,7 @@ async function registerLocalPlayers(env) {
 
 test('home surface renders cleanly on the game app', async ({ page }, testInfo) => {
   await page.goto('/', { waitUntil: 'domcontentloaded' });
-  await expect(page.getByRole('heading', { name: /^Xenovoya$/i }).first()).toBeVisible();
+  await expect(page.getByRole('heading', { name: /Chart the strange/i }).first()).toBeVisible();
 
   await ensureCaptureDir();
   await page.screenshot({
@@ -390,6 +392,78 @@ internalTest('ui lab captures integrated board states', async ({ page }, testInf
     path: path.join(captureDir, `${testInfo.project.name}-ui-lab-board-states.png`),
     fullPage: true,
   });
+});
+
+internalTest('design system captures the complete game language', async ({ page }, testInfo) => {
+  test.skip(!captureProjects.has(testInfo.project.name), 'Capture run only uses the primary desktop browser.');
+
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.goto('/design-system', { waitUntil: 'domcontentloaded' });
+  await expect(page.getByRole('heading', { name: /One language.*Every expedition moment/i })).toBeVisible();
+  await expect(page.getByTestId('coverage-registry')).toBeVisible();
+  await expect(page.locator('[data-testid="three-board-world"][data-renderer-state="ready"]').first()).toBeVisible();
+
+  await ensureCaptureDir();
+  await page.screenshot({
+    path: path.join(captureDir, `${testInfo.project.name}-design-system-desktop.png`),
+    fullPage: true,
+  });
+
+  await page.goto('/design-system?view=gameplay&lens=ready&compare=1&compareWith=danger&motion=reduce', { waitUntil: 'domcontentloaded' });
+  await expect(page.getByTestId('state-comparison')).toBeVisible();
+  await expect(page.locator('[data-testid="three-board-world"][data-renderer-state="ready"]')).toHaveCount(1);
+  await page.locator('[data-design-section="board"]').screenshot({
+    path: path.join(captureDir, `${testInfo.project.name}-design-system-comparison.png`),
+  });
+
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/design-system', { waitUntil: 'domcontentloaded' });
+  await expect(page.getByTestId('design-system-controls')).toBeVisible();
+  await page.screenshot({
+    path: path.join(captureDir, `${testInfo.project.name}-design-system-mobile-top.png`),
+    fullPage: false,
+  });
+  await page.getByTestId('design-system-controls').scrollIntoViewIfNeeded();
+  await page.screenshot({
+    path: path.join(captureDir, `${testInfo.project.name}-design-system-mobile-controls.png`),
+    fullPage: false,
+  });
+  await page.locator('[data-design-section="responsive"]').scrollIntoViewIfNeeded();
+  await page.screenshot({
+    path: path.join(captureDir, `${testInfo.project.name}-design-system-mobile-responsive.png`),
+    fullPage: false,
+  });
+
+  await page.goto('/design-system?view=foundation&motion=reduce&pseudo=1', { waitUntil: 'domcontentloaded' });
+  await expect(page.locator('html')).toHaveClass(/xv-pseudo-locale/);
+  await page.getByTestId('design-system-controls').scrollIntoViewIfNeeded();
+  await page.screenshot({
+    path: path.join(captureDir, `${testInfo.project.name}-design-system-copy-stress.png`),
+    fullPage: false,
+  });
+});
+
+internalTest('3D board camera captures its stable and explored views', async ({ page }, testInfo) => {
+  test.skip(!captureProjects.has(testInfo.project.name), 'Capture run only uses the primary desktop browser.');
+
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.goto('/design-system?view=gameplay&lens=waiting&motion=reduce', { waitUntil: 'domcontentloaded' });
+  const board = page.getByTestId('three-board-world');
+  await expect(board).toHaveAttribute('data-renderer-state', 'ready');
+  await board.scrollIntoViewIfNeeded();
+  await ensureCaptureDir();
+
+  await board.screenshot({ path: path.join(captureDir, 'board-camera-default.png') });
+  await page.getByRole('button', { name: 'Open camera controls' }).click();
+  await page.getByRole('button', { name: 'Rotate camera right' }).click();
+  await page.getByRole('button', { name: 'Rotate camera right' }).click();
+  await page.getByRole('button', { name: 'Pan camera left' }).click();
+  await page.getByRole('button', { name: 'Zoom camera in' }).click();
+  await expect(board).toHaveAttribute('data-camera-view', 'custom');
+  await page.getByRole('button', { name: 'Close camera controls' }).click();
+  await board.screenshot({ path: path.join(captureDir, 'board-camera-explored.png') });
 });
 
 seededTest('seeded gameplay can be captured from a real local board', async ({ page }, testInfo) => {

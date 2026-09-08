@@ -2,8 +2,10 @@ export default function SurveyTabletFrame({
   title,
   subtitle,
   status,
+  headingLevel = 1,
   children,
 }) {
+  const Heading = headingLevel === 3 ? 'h3' : headingLevel === 2 ? 'h2' : 'h1';
   return (
     <section className="relative isolate overflow-hidden rounded-[1.35rem] border border-compass/20 bg-[linear-gradient(180deg,rgba(21,32,22,0.94)_0%,rgba(13,15,10,0.98)_100%)] shadow-[0_0_0_1px_rgba(196,166,74,0.08),0_18px_80px_rgba(0,0,0,0.45)]">
       <div aria-hidden className="pointer-events-none absolute inset-0">
@@ -20,9 +22,9 @@ export default function SurveyTabletFrame({
             <p className="font-mono text-[10px] sm:text-[11px] uppercase tracking-[0.35em] text-exp-text-dim">
               Survey Tablet
             </p>
-            <h1 className="mt-1 text-2xl sm:text-3xl font-semibold tracking-[0.24em] text-compass uppercase font-display">
+            <Heading className="mt-1 text-2xl sm:text-3xl font-semibold tracking-[0.24em] text-compass uppercase font-display">
               {title}
-            </h1>
+            </Heading>
           </div>
 
           {status && (

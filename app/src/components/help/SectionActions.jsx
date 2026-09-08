@@ -36,12 +36,12 @@ const ACTIONS = [
   {
     name: 'Help',
     color: 'border-compass-bright/40',
-    desc: 'Assist another explorer so a weak teammate does not become the visible cost of delay. Echo Field makes Help feel spatial when crew-risk is rising.',
+    desc: 'Give 1 selected stat to another explorer on your tile. They restore 2 in that stat and 1 in both others, so a timely Help can pull a critical teammate out of collapse. Echo Field makes the rescue feel spatial when crew-risk is rising.',
   },
   {
-    name: 'Flee',
+    name: 'Depart',
     color: 'border-signal-red/40',
-    desc: 'Escape from the landing site when the crew has recovered enough value. Flee is the strongest reduction when the forecast already names value or crew at risk, especially after route traits have shown the way home.',
+    desc: 'Leave from the landing site when the crew has recovered enough value. Depart is the strongest reduction when the forecast already names value or crew at risk, especially after route traits have shown the way home.',
   },
 ];
 

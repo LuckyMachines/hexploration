@@ -22,7 +22,7 @@ export default function InventoryPanel({ active, inactive }) {
         {hasRelic && (
           <div className="flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-relic shrink-0" />
-            <span className="font-mono text-xs text-relic">{active.relic}</span>
+            <span className="font-mono text-xs text-relic-bright">{active.relic}</span>
           </div>
         )}
         {active?.shield && (

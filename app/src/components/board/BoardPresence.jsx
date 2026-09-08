@@ -234,9 +234,24 @@ function DiscoveryField({ intentAlias, controlFeel, intentTile }) {
   if (!intentAlias || (!controlFeel?.intentIsFog && !controlFeel?.intentIsDanger)) return null;
   const pos = aliasToPixel(intentAlias);
   const color = controlFeel.intentIsFog ? '#c4cbb8' : TERRAIN_REACTION[intentTile?.tileType ?? Tile.NONE]?.color || '#d44040';
+  const generatedSignal = controlFeel.intentIsDanger
+    ? '/images/art/fx/redline-pressure.png'
+    : '/images/art/fx/discovery-bloom.png';
 
   return (
     <g transform={`translate(${pos.x},${pos.y})`} className="alive-discovery-field">
+      <image
+        href={generatedSignal}
+        x="-78"
+        y="-52"
+        width="156"
+        height="104"
+        opacity={controlFeel.intentIsDanger ? '0.72' : '0.58'}
+        preserveAspectRatio="xMidYMid meet"
+        pointerEvents="none"
+        aria-hidden="true"
+        style={{ mixBlendMode: 'screen' }}
+      />
       <circle r="35" fill="none" stroke={color} strokeWidth="0.8" strokeDasharray="1 6" opacity="0.48" />
       <circle r="42" fill="none" stroke={color} strokeWidth="0.6" strokeDasharray="2 8" opacity="0.26" />
       <path d="M-18,-20 C-6,-32 10,-31 20,-18" fill="none" stroke={color} strokeWidth="0.8" opacity="0.32" />

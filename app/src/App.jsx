@@ -5,19 +5,20 @@ import Footer from './components/layout/Footer';
 import Modal from './components/shared/Modal';
 import SeoHead from './components/shared/SeoHead';
 import Spinner from './components/shared/Spinner';
-import FieldManual from './components/help/FieldManual';
 import ErrorBoundary from './components/shared/ErrorBoundary';
-import PseudoLocale from './components/shared/PseudoLocale';
 import { useFeedbackEffects } from './hooks/useFeedbackEffects';
 import { useUserPreferences } from './hooks/useUserPreferences';
-import { LIVE_PLAY_URL, internalToolsEnabled } from './lib/internalTools';
+import { internalToolsEnabled } from './lib/internalTools';
+import HomePage from './pages/HomePage';
 
-const HomePage = lazy(() => import('./pages/HomePage'));
-const GamePage = lazy(() => import('./pages/GamePage'));
+const FieldManual = lazy(() => import('./components/help/FieldManual'));
+const PseudoLocale = lazy(() => import('./components/shared/PseudoLocale'));
+const GamePage = lazy(() => import('./pages/GameClientPage'));
 const PrivacyPage = lazy(() => import('./pages/PrivacyPage'));
 const INCLUDE_INTERNAL_ROUTES = import.meta.env.VITE_ENABLE_INTERNAL_TOOLS === 'true';
 const GameUILab = INCLUDE_INTERNAL_ROUTES ? lazy(() => import('./pages/GameUILab')) : null;
 const DesignSystemPage = INCLUDE_INTERNAL_ROUTES ? lazy(() => import('./pages/DesignSystemPage')) : null;
+const ArtPipelinePage = INCLUDE_INTERNAL_ROUTES ? lazy(() => import('./pages/ArtPipelinePage')) : null;
 const SimulatorPage = INCLUDE_INTERNAL_ROUTES ? lazy(() => import('./pages/SimulatorPage')) : null;
 const AudioAuditionPage = INCLUDE_INTERNAL_ROUTES ? lazy(() => import('./pages/AudioAuditionPage')) : null;
 const GrowthPlayPage = INCLUDE_INTERNAL_ROUTES ? lazy(() => import('./pages/GrowthPage').then((module) => ({ default: module.GrowthPlayPage }))) : null;
@@ -32,7 +33,7 @@ const CreateScenarioPage = INCLUDE_INTERNAL_ROUTES ? lazy(() => import('./pages/
 
 function RouteFallback() {
   return (
-    <div className="flex min-h-[45vh] items-center justify-center">
+    <div className="flex min-h-[100svh] items-center justify-center">
       <Spinner size="h-8 w-8" />
     </div>
   );
@@ -47,8 +48,8 @@ function InternalRoute({ component: Component }) {
       <p className="mt-4 font-mono text-sm leading-relaxed text-exp-text-dim">
         This route is not part of the player-facing expedition path. Start from the live client instead.
       </p>
-      <a href={LIVE_PLAY_URL} className="mx-auto mt-6 inline-flex rounded border border-compass/50 bg-compass/10 px-4 py-3 font-mono text-xs uppercase tracking-[0.18em] text-compass-bright">
-        Open live client
+      <a href="/#live-expedition" className="mx-auto mt-6 inline-flex rounded border border-compass/50 bg-compass/10 px-4 py-3 font-mono text-xs uppercase tracking-[0.18em] text-compass-bright">
+        Open live lobby
       </a>
     </section>
   );
@@ -57,15 +58,23 @@ function InternalRoute({ component: Component }) {
 export default function App() {
   const [isHelpOpen, setIsHelpOpen] = useState(false);
   const location = useLocation();
+  const isPseudoLocaleEnabled = new URLSearchParams(location.search).get('pseudo') === '1';
   const audio = useFeedbackEffects(location);
   useUserPreferences();
 
   return (
     <div className="min-h-screen flex flex-col">
       <SeoHead />
-      <PseudoLocale />
+      {isPseudoLocaleEnabled && (
+        <Suspense fallback={null}>
+          <PseudoLocale />
+        </Suspense>
+      )}
+      <a href="#main-content" className="fixed left-3 top-3 z-[200] -translate-y-24 rounded bg-compass px-4 py-3 font-display text-xs font-semibold uppercase tracking-wider text-exp-dark shadow-xl transition-transform focus:translate-y-0">
+        Skip to content
+      </a>
       <Header onHelpClick={() => setIsHelpOpen(true)} audio={audio} />
-      <main className="flex-1">
+      <main id="main-content" tabIndex={-1} className="min-h-[100svh] flex-1">
         <ErrorBoundary>
           <Suspense fallback={<RouteFallback />}>
             <Routes>
@@ -76,6 +85,7 @@ export default function App() {
                 <>
                   <Route path="/ui-lab" element={<InternalRoute component={GameUILab} />} />
                   <Route path="/design-system" element={<InternalRoute component={DesignSystemPage} />} />
+                  <Route path="/art-lab" element={<InternalRoute component={ArtPipelinePage} />} />
                   <Route path="/simulator" element={<InternalRoute component={SimulatorPage} />} />
                   <Route path="/audio-audition" element={<InternalRoute component={AudioAuditionPage} />} />
                   <Route path="/play" element={<InternalRoute component={GrowthPlayPage} />} />
@@ -100,7 +110,9 @@ export default function App() {
         onClose={() => setIsHelpOpen(false)}
         ariaLabel="Field Manual"
       >
-        <FieldManual />
+        <Suspense fallback={<p className="px-5 py-8 font-mono text-sm text-exp-text-dim" role="status">Opening field manual...</p>}>
+          <FieldManual />
+        </Suspense>
       </Modal>
     </div>
   );

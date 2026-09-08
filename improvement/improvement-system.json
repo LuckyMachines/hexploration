@@ -1,6 +1,6 @@
 {
   "$schema": "./schema/improvement-system.schema.json",
-  "version": "1.1.0",
+  "version": "1.2.1",
   "name": "Xenovoya Improvement Control Plane",
   "defaultStaleDays": 14,
   "promotionStates": ["idea", "baseline", "candidate", "verified", "selected", "shipped", "validated", "rework-required", "retired"],
@@ -69,6 +69,30 @@
       "label": "Refresh UI density evidence",
       "command": "npm",
       "args": ["run", "ui:density"],
+      "timeoutMs": 120000
+    },
+    "ux.ui-quality-doctor": {
+      "label": "UI visual approval and evidence doctor",
+      "command": "npm",
+      "args": ["run", "ui:quality:doctor"],
+      "timeoutMs": 120000
+    },
+    "ux.ui-quality-capture": {
+      "label": "Rendered UI visual regression suite",
+      "command": "npm",
+      "args": ["run", "ui:quality"],
+      "timeoutMs": 300000
+    },
+    "ux.ui-quality-cross-browser": {
+      "label": "Cross-browser UI quality contracts",
+      "command": "npm",
+      "args": ["run", "ui:quality:cross-browser"],
+      "timeoutMs": 300000
+    },
+    "ux.ui-quality-report": {
+      "label": "Refresh UI quality source-freshness report",
+      "command": "npm",
+      "args": ["run", "ui:quality:report"],
       "timeoutMs": 120000
     },
     "art.tests": {
@@ -146,6 +170,18 @@
       "auto": true
     },
     {
+      "id": "refresh-ui-quality-report",
+      "label": "Regenerate stale or missing UI quality evidence without changing visual approvals",
+      "surfaceIds": ["ux-onboarding"],
+      "actionTypes": ["missing", "invalid", "stale-evidence"],
+      "evidencePaths": ["reports/ui-quality/latest.json"],
+      "commandId": "ux.ui-quality-report",
+      "verifyCommandIds": ["ux.ui-quality-doctor"],
+      "writePaths": ["reports/ui-quality/", "app/public/ui-quality/"],
+      "risk": "low",
+      "auto": true
+    },
+    {
       "id": "refresh-marketing-readiness",
       "label": "Regenerate stale or missing marketing evidence",
       "surfaceIds": ["marketing-discovery"],
@@ -205,17 +241,19 @@
       "label": "UX, onboarding, and accessibility",
       "owner": "product-design",
       "weight": 1.3,
-      "currentGrade": "B",
+      "currentGrade": "A-",
       "objective": "A first-time player can understand the board, choose a valid action, predict stakes, and recover from errors without outside explanation.",
       "stricterABar": "Fresh desktop and mobile evidence proves a first meaningful action, readable state hierarchy, keyboard access, reduced motion, and actionable error recovery.",
-      "pathPatterns": ["^app/src/(components|hooks|pages|index\\.css|fonts\\.css)", "^app/e2e/", "^docs/game-ui-readability-audit\\.md$"],
+      "pathPatterns": ["^app/src/(components|hooks|pages|design-system|index\\.css|fonts\\.css)", "^app/e2e/", "^scripts/(ui-quality|game-ui-density)", "^ui-quality/", "^docs/(game-ui-readability-audit|ui-quality)"],
       "evidence": [
         { "path": "docs/game-ui-readability-audit.md", "kind": "audit", "required": true, "maxAgeDays": 30 },
         { "path": "reports/ui-density/latest.json", "kind": "automated-report", "required": true, "maxAgeDays": 14 },
+        { "path": "reports/ui-quality/latest.json", "kind": "rendered-quality", "required": true, "maxAgeDays": 14 },
+        { "path": "ui-quality/visual-approvals.json", "kind": "visual-approval-ledger", "required": true, "maxAgeDays": 30 },
         { "path": "app/test-results", "kind": "visual-proof", "required": false, "maxAgeDays": 14 }
       ],
-      "quickCommands": ["ux.board-tests"],
-      "fullCommands": ["ux.board-tests", "ux.app-build", "reliability.hard"]
+      "quickCommands": ["ux.board-tests", "ux.ui-quality-doctor"],
+      "fullCommands": ["ux.board-tests", "ux.ui-quality-capture", "ux.ui-quality-cross-browser", "ux.app-build", "reliability.hard"]
     },
     {
       "id": "visual-art",

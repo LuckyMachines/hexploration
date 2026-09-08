@@ -62,11 +62,11 @@ export const ACTION_META = {
     tone: 'purple',
     tool: 'signal',
     stance: 'aid',
-    copy: 'Support another explorer with a selected stat.',
+    copy: 'Give 1 selected stat to rally a teammate across all three stats.',
   },
   [Action.FLEE]: {
     key: 'flee',
-    label: 'Flee',
+    label: 'Depart',
     color: '#d44040',
     tone: 'red',
     tool: 'flare',

@@ -6,18 +6,21 @@
   --color-exp-panel: #1a2016;
   --color-exp-border: #2a3224;
   --color-exp-text: #c4cbb8;
-  --color-exp-text-dim: #6a7560;
+  --color-exp-text-dim: #939e88;
 
   --color-compass: #c4a64a;
   --color-compass-bright: #e8c860;
 
-  --color-signal-red: #d44040;
+  --color-signal-red: #e86060;
+  --color-signal-red-bright: #ff817d;
   --color-signal-red-dim: #8b2020;
 
   --color-oxide-green: #40a080;
+  --color-oxide-green-bright: #68c6a6;
   --color-oxide-green-dim: #2a7058;
 
-  --color-blueprint: #3a7cc4;
+  --color-blueprint: #4c91db;
+  --color-blueprint-bright: #78b9f8;
   --color-blueprint-dim: #1e4a7a;
 
   --color-jungle: #3a8a50;
@@ -26,11 +29,13 @@
   --color-mountain: #7a8088;
   --color-landing: #5090c0;
   --color-relic: #9060c0;
+  --color-relic-bright: #b994e6;
 
   --color-day: #e8c860;
   --color-night: #4060a0;
 
   --font-display: "Barlow Condensed", sans-serif;
+  --font-body: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-mono: "JetBrains Mono", monospace;
 }
 
@@ -47,6 +52,72 @@ html {
   --safe-r: env(safe-area-inset-right, 0px);
   --safe-b: env(safe-area-inset-bottom, 0px);
   --safe-l: env(safe-area-inset-left, 0px);
+
+  /* Executable design-system contract. Components and documentation consume
+     these variables instead of copying raw spacing, motion, and role values. */
+  --ds-color-intent: var(--color-compass-bright);
+  --ds-color-info: var(--color-blueprint);
+  --ds-color-success: var(--color-oxide-green);
+  --ds-color-danger: var(--color-signal-red);
+  --ds-color-artifact: var(--color-relic-bright);
+  --ds-color-focus: var(--color-blueprint);
+  --ds-space-1: 0.25rem;
+  --ds-space-2: 0.5rem;
+  --ds-space-3: 0.75rem;
+  --ds-space-4: 1rem;
+  --ds-space-6: 1.5rem;
+  --ds-space-8: 2rem;
+  --ds-space-12: 3rem;
+  --ds-radius-sm: 0.25rem;
+  --ds-radius-md: 0.375rem;
+  --ds-radius-lg: 0.625rem;
+  --ds-radius-full: 9999px;
+  --ds-border-hairline: 1px;
+  --ds-border-strong: 2px;
+  --ds-motion-input: 90ms;
+  --ds-motion-state: 180ms;
+  --ds-motion-reveal: 320ms;
+  --ds-motion-ambient: 900ms;
+  --ds-target-min: 44px;
+  --ds-shadow-inset: inset 0 1px 0 rgba(255, 255, 255, 0.035);
+  --ds-shadow-lift: 0 10px 28px rgba(0, 0, 0, 0.24);
+  --ds-shadow-modal: 0 24px 70px rgba(0, 0, 0, 0.52);
+}
+
+.design-system-prose {
+  font-family: var(--font-body);
+  letter-spacing: 0.01em;
+  line-height: 1.65;
+}
+
+.design-system-shell .ds-copy {
+  font-family: var(--font-body);
+  letter-spacing: 0.01em;
+  line-height: 1.65;
+}
+
+.art-pipeline-shell * {
+  min-width: 0;
+}
+
+.art-pipeline-shell h1,
+.art-pipeline-shell h2,
+.art-pipeline-shell h3,
+.art-pipeline-shell p,
+.art-pipeline-shell pre,
+.art-pipeline-shell button,
+.art-pipeline-shell a {
+  overflow-wrap: anywhere;
+}
+
+.design-system-shell h1,
+.design-system-shell h2,
+.design-system-shell h3,
+.design-system-shell p,
+.design-system-shell a,
+.design-system-shell button,
+.design-system-shell code {
+  overflow-wrap: anywhere;
 }
 
 /* High-DPI screens (>= 1.5x device pixel ratio): scale up further */
@@ -172,6 +243,10 @@ body {
 @keyframes alive-scan {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
+}
+
+.expedition-loading-orbit {
+  animation: alive-scan 6s linear infinite;
 }
 
 @keyframes alive-invalid {
@@ -540,6 +615,17 @@ body {
   transform: translateY(-1px);
 }
 
+@keyframes three-board-resolution-sweep {
+  0% { transform: translateX(0) skewX(-8deg); opacity: 0; }
+  18% { opacity: 1; }
+  72% { opacity: 0.7; }
+  100% { transform: translateX(480%) skewX(-8deg); opacity: 0; }
+}
+
+.three-board-resolution-sweep {
+  animation: three-board-resolution-sweep 1.45s cubic-bezier(0.2, 0.75, 0.25, 1) infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .alive-explorer,
   .alive-explorer-ready,
@@ -570,7 +656,9 @@ body {
   .alive-action-tab:active,
   .alive-commit-button:active,
   .alive-cancel-button:active,
-  .alive-tx-pulse {
+  .alive-tx-pulse,
+  .three-board-resolution-sweep,
+  .expedition-loading-orbit {
     animation: none;
   }
 }

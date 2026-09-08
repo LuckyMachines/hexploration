@@ -8,6 +8,7 @@ afterEach(() => {
   document.querySelectorAll('script[data-xenovoya-plausible]').forEach((script) => script.remove());
   delete window.plausible;
   delete window.__xenovoyaLastPageview;
+  delete window.__xenovoyaPreferenceTracking;
   window.history.replaceState({}, '', '/');
 });
 
@@ -18,6 +19,30 @@ describe('analytics', () => {
     const { analyticsEnabled, trackJourneyEvent } = await import('./analytics');
     expect(analyticsEnabled()).toBe(false);
     expect(trackJourneyEvent('starter_opened', { persona: 'first-player-v1' })).toBe(false);
+  });
+
+  it('honors the saved analytics opt-out before loading the adapter', async () => {
+    vi.stubEnv('VITE_PLAUSIBLE_HOST', 'https://plausible.example');
+    vi.stubEnv('VITE_PLAUSIBLE_DOMAIN', 'play.example');
+    localStorage.setItem('xenovoya:user-preferences', JSON.stringify({ analytics: false }));
+    const { analyticsEnabled, initAnalytics, trackJourneyEvent } = await import('./analytics');
+
+    expect(analyticsEnabled()).toBe(false);
+    expect(initAnalytics()).toBe(false);
+    expect(trackJourneyEvent('starter_opened', { persona: 'first-player-v1' })).toBe(false);
+    expect(document.querySelector('script[data-xenovoya-plausible]')).toBeNull();
+  });
+
+  it('honors the saved anonymous analytics opt-out', async () => {
+    vi.stubEnv('VITE_PLAUSIBLE_HOST', 'https://plausible.example');
+    vi.stubEnv('VITE_PLAUSIBLE_DOMAIN', 'play.example');
+    localStorage.setItem('xenovoya:user-preferences', JSON.stringify({ analytics: false }));
+    const { analyticsEnabled, initAnalytics, trackJourneyEvent } = await import('./analytics');
+
+    expect(analyticsEnabled()).toBe(false);
+    expect(initAnalytics()).toBe(false);
+    expect(trackJourneyEvent('starter_opened', { persona: 'first-player-v1' })).toBe(false);
+    expect(document.querySelector('script[data-xenovoya-plausible]')).toBeNull();
   });
 
   it('queues allowlisted, versioned events once and strips unsafe properties', async () => {

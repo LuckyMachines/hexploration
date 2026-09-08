@@ -25,7 +25,7 @@ export default function GamePage() {
     <div className="mx-auto w-full max-w-[100rem] px-3 py-4 sm:px-4 sm:py-8 2xl:px-6">
       <SurveyTabletFrame
         title={parsedGameId === null ? 'Survey Tablet' : `Expedition #${normalizedGameId || 'Invalid'}`}
-        subtitle="Chart the grid, manage the crew, and escape alive"
+        subtitle="Chart the grid, manage the crew, and depart alive"
         status={parsedGameId === null ? 'INVALID ID' : isConnected ? 'ONLINE' : 'LOCKED'}
       >
         <div className="space-y-5">
