@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "reports": [
+    { "id": "improvement-portfolio", "owner": "product-operations", "path": "reports/improvement/latest-portfolio.json", "purpose": "cross-surface portfolio and next action", "reviewCadenceDays": 14, "canonical": true },
+    { "id": "verification-hard", "owner": "engineering", "path": "reports/verification/latest-hard.json", "purpose": "technical verification evidence", "reviewCadenceDays": 7, "canonical": true },
+    { "id": "playable-memory", "owner": "product-design", "path": "reports/simulator/memory/latest-memory.json", "purpose": "gameplay evidence memory", "reviewCadenceDays": 14, "canonical": true },
+    { "id": "marketing-readiness", "owner": "growth", "path": "reports/marketing/latest-report.json", "purpose": "marketing readiness evidence", "reviewCadenceDays": 14, "canonical": true },
+    { "id": "ui-density", "owner": "product-design", "path": "reports/ui-density/latest.json", "purpose": "interface density evidence", "reviewCadenceDays": 14, "canonical": true },
+    { "id": "art-3d-review", "owner": "art-direction", "path": "app/src/art-pipeline/asset-3d-review.json", "purpose": "3D candidate selection and rejection evidence", "reviewCadenceDays": 30, "canonical": true },
+    { "id": "marketing-report-card", "owner": "growth", "path": "docs/marketing-site-report-card.md", "purpose": "human-readable historical marketing grade", "reviewCadenceDays": 30, "canonical": false, "supersededBy": "improvement-portfolio" }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "decisions": [
+    {
+      "id": "improvement-control-plane-v1-verified",
+      "surface": "improvement-system",
+      "objective": "Create one evidence-backed portfolio across the game and site.",
+      "hypothesis": "A shared control plane will reduce diagnosis time and prevent unsupported promotion claims.",
+      "baseline": "Specialist systems were strong but fragmented.",
+      "evidence": [
+        "reports/improvement/latest-portfolio.json",
+        "reports/verification/latest-hard.json"
+      ],
+      "grade": "B+",
+      "confidence": "high",
+      "decision": "Adopt the control plane as the canonical cross-surface improvement portfolio.",
+      "owner": "product-operations",
+      "nextExperiment": "Measure diagnosis time and recommendation completion over the next three material changes.",
+      "recordedAt": "2026-09-08T14:37:01.353Z"
+    }
+  ],
+  "updatedAt": "2026-09-08T14:37:01.355Z"
+}

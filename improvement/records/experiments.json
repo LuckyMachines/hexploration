@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "experiments": [
+    {
+      "id": "representative-playtest-round-001",
+      "surface": "player-validation",
+      "objective": "Validate first-play comprehension, delight, and return intent with representative players.",
+      "hypothesis": "At least four of five representative players will complete a meaningful first choice without coaching and name a concrete reason to return.",
+      "baseline": "Zero structured representative sessions recorded.",
+      "metric": "Unassisted first-action success and concrete return intent",
+      "target": "At least four of five sessions succeed, including two return visits.",
+      "evidence": [],
+      "grade": "pending",
+      "confidence": "low",
+      "decision": "pending",
+      "owner": "product-research",
+      "nextExperiment": "Test the highest-severity comprehension or delight gap found in round one.",
+      "status": "planned",
+      "createdAt": "2026-09-08T14:37:01.256Z"
+    }
+  ],
+  "updatedAt": "2026-09-08T14:37:01.257Z"
+}

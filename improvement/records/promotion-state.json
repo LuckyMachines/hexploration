@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-09-08T14:34:47.124Z",
+  "surfaces": {
+    "gameplay": {
+      "state": "candidate",
+      "evidence": [],
+      "decision": "Awaiting current flagship-scenario evidence."
+    },
+    "ux-onboarding": {
+      "state": "candidate",
+      "evidence": [],
+      "decision": "Awaiting current desktop and mobile journey proof."
+    },
+    "visual-art": {
+      "state": "selected",
+      "evidence": [
+        "app/src/art-pipeline/asset-3d-review.json"
+      ],
+      "decision": "Selected source candidates remain gated from runtime promotion."
+    },
+    "marketing-discovery": {
+      "state": "candidate",
+      "evidence": [
+        "docs/marketing-site-report-card.md"
+      ],
+      "decision": "Awaiting current funnel evidence."
+    },
+    "technical-reliability": {
+      "state": "verified",
+      "evidence": [],
+      "decision": "Verification tooling exists; fresh hard evidence remains required."
+    },
+    "ops-release": {
+      "state": "candidate",
+      "evidence": [],
+      "decision": "Exact-stack and post-release evidence remain required."
+    },
+    "player-validation": {
+      "state": "baseline",
+      "evidence": [
+        "improvement/records/playtests.json"
+      ],
+      "decision": "No representative observed sessions recorded yet."
+    },
+    "improvement-system": {
+      "state": "verified",
+      "evidence": [
+        "reports/improvement/latest-portfolio.json",
+        "reports/verification/latest-hard.json"
+      ],
+      "decision": "Control-plane unit tests and cross-system smoke verification pass",
+      "updatedAt": "2026-09-08T14:34:47.124Z"
+    }
+  },
+  "history": [
+    {
+      "surface": "improvement-system",
+      "from": "candidate",
+      "to": "verified",
+      "evidence": [
+        "reports/improvement/latest-portfolio.json",
+        "reports/verification/latest-hard.json"
+      ],
+      "decision": "Control-plane unit tests and cross-system smoke verification pass",
+      "at": "2026-09-08T14:34:47.124Z"
+    }
+  ]
+}

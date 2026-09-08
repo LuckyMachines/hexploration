@@ -86,43 +86,43 @@ function buildReport() {
       id: 'hero-live-client',
       label: 'Homepage points players to the live client',
       file: 'app/src/pages/HomePage.jsx',
-      patterns: [/Launch live client/i, /LIVE_PLAY_URL/i, /The public promise is simple/i],
+      patterns: [/Enter live lobby/i, /#live-expedition/i, /Open alpha on Sepolia testnet/i],
     }),
     checkText({
       id: 'visual-proof',
       label: 'Homepage includes board visual and first-turn explanation',
       file: 'app/src/pages/HomePage.jsx',
-      patterns: [/HeroBoardScene/i, /You can understand the run after one choice/i, /Read what changed/i],
+      patterns: [/HeroBoardScene/i, /The first turn/i, /see what changed/i],
     }),
     checkText({
       id: 'no-preview-funnel',
       label: 'Homepage avoids routing players into preview scenarios',
       file: 'app/src/pages/HomePage.jsx',
-      patterns: [/Your first expedition belongs in the live client/i, /Open live client/i],
+      patterns: [/Try without a wallet/i, /first-expedition/i, /Enter live lobby/i],
     }),
     checkText({
       id: 'player-safe-copy',
       label: 'Homepage explains the public player path',
       file: 'app/src/pages/HomePage.jsx',
-      patterns: [/learn the loop here/i, /actual expedition path/i],
+      patterns: [/Try without a wallet/i, /Start a live survey in three steps/i, /Every action below belongs to the playable client/i],
     }),
     checkText({
       id: 'wallet-context',
       label: 'Homepage explains wallet-backed live surveys',
       file: 'app/src/pages/HomePage.jsx',
-      patterns: [/wallet-signed actions/i, /Live expedition access/i],
+      patterns: [/wallet signatures/i, /Connect only when you are ready/i, /Sepolia testnet expedition/i],
     }),
     checkText({
       id: 'public-nav',
       label: 'Header exposes live-client navigation without preview links',
       file: 'app/src/components/layout/Header.jsx',
-      patterns: [/Play live/i, /LIVE_PLAY_URL/i, /internalToolsEnabled/i],
+      patterns: [/Live lobby/i, /#live-expedition/i, /internalToolsEnabled/i],
     }),
     checkText({
       id: 'footer-nav',
       label: 'Footer exposes live-client navigation without preview links',
       file: 'app/src/components/layout/Footer.jsx',
-      patterns: [/Play live/i, /LIVE_PLAY_URL/i, /internalToolsEnabled/i],
+      patterns: [/Live lobby/i, /#live-expedition/i, /internalToolsEnabled/i],
     }),
     checkText({
       id: 'seo-alignment',
@@ -134,8 +134,14 @@ function buildReport() {
       id: 'route-index',
       label: 'Public route model excludes preview scenarios and topics',
       required: true,
-      ok: routes.length === 1 && routes[0]?.path === '/' && !routeTypes.has('scenario') && !routeTypes.has('topic'),
-      missing: routes.length === 1 && routes[0]?.path === '/' ? [] : ['home-only public route model'],
+      ok: routes.length === 2
+        && routes.some((route) => route.path === '/' && route.type === 'home')
+        && routes.some((route) => route.path === '/privacy' && route.type === 'privacy')
+        && !routeTypes.has('scenario')
+        && !routeTypes.has('topic'),
+      missing: routes.length === 2 && routes.some((route) => route.path === '/') && routes.some((route) => route.path === '/privacy')
+        ? []
+        : ['home and privacy-only public route model'],
     },
   ];
   const failures = checks.filter((check) => check.required && !check.ok);

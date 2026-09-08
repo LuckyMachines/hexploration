@@ -1,0 +1,233 @@
+{
+  "$schema": "./schema/improvement-system.schema.json",
+  "version": "1.0.0",
+  "name": "Xenovoya Improvement Control Plane",
+  "defaultStaleDays": 14,
+  "promotionStates": ["idea", "baseline", "candidate", "verified", "selected", "shipped", "validated", "rework-required", "retired"],
+  "allowedTransitions": {
+    "idea": ["baseline", "retired"],
+    "baseline": ["candidate", "rework-required", "retired"],
+    "candidate": ["verified", "rework-required", "retired"],
+    "verified": ["selected", "rework-required", "retired"],
+    "selected": ["shipped", "rework-required", "retired"],
+    "shipped": ["validated", "rework-required", "retired"],
+    "validated": ["candidate", "rework-required", "retired"],
+    "rework-required": ["candidate", "retired"],
+    "retired": []
+  },
+  "qualityRecordFields": [
+    "objective",
+    "hypothesis",
+    "baseline",
+    "evidence",
+    "grade",
+    "confidence",
+    "decision",
+    "owner",
+    "nextExperiment"
+  ],
+  "commands": {
+    "improvement.tests": {
+      "label": "Improvement control-plane tests",
+      "command": "node",
+      "args": ["--test", "scripts/improvement-control-plane-utils.test.mjs"],
+      "timeoutMs": 120000
+    },
+    "gameplay.scenario-tests": {
+      "label": "Scenario utility tests",
+      "command": "npm",
+      "args": ["run", "scenario:test"],
+      "timeoutMs": 120000
+    },
+    "gameplay.memory-doctor": {
+      "label": "Playable Design Memory doctor",
+      "command": "npm",
+      "args": ["run", "memory:doctor", "--", "--no-build"],
+      "timeoutMs": 120000
+    },
+    "ux.board-tests": {
+      "label": "Board quality tests",
+      "command": "npx",
+      "args": ["vitest", "run", "src/components/board/boardQuality.test.js", "--pool=threads"],
+      "cwd": "app",
+      "timeoutMs": 120000
+    },
+    "ux.app-build": {
+      "label": "Application production build",
+      "command": "npm",
+      "args": ["run", "build"],
+      "cwd": "app",
+      "timeoutMs": 300000
+    },
+    "art.tests": {
+      "label": "Art pipeline tests",
+      "command": "npm",
+      "args": ["run", "art:test"],
+      "timeoutMs": 120000
+    },
+    "art.3d-tests": {
+      "label": "Image-to-3D pipeline tests",
+      "command": "npm",
+      "args": ["run", "art:3d:test"],
+      "timeoutMs": 120000
+    },
+    "marketing.doctor": {
+      "label": "Marketing readiness doctor",
+      "command": "npm",
+      "args": ["run", "marketing:doctor"],
+      "timeoutMs": 120000
+    },
+    "reliability.smoke": {
+      "label": "Cross-system smoke verification",
+      "command": "npm",
+      "args": ["run", "verify:smoke"],
+      "timeoutMs": 300000
+    },
+    "reliability.hard": {
+      "label": "Hard verification suite",
+      "command": "npm",
+      "args": ["run", "verify:hard"],
+      "timeoutMs": 900000
+    },
+    "discovery.seo-doctor": {
+      "label": "SEO discovery doctor",
+      "command": "npm",
+      "args": ["run", "seo:doctor"],
+      "timeoutMs": 120000
+    }
+  },
+  "surfaces": [
+    {
+      "id": "gameplay",
+      "label": "Product and gameplay",
+      "owner": "product-design",
+      "weight": 1.4,
+      "currentGrade": "B+",
+      "objective": "Players repeatedly make legible, consequential expedition decisions that produce tension, cooperation, recovery, and memorable outcomes.",
+      "stricterABar": "Every flagship scenario passes same-engine simulation, Oracle, feeling-arc, setup-honesty, and observed-player comprehension gates with current evidence.",
+      "pathPatterns": ["^contracts/", "^script/", "^scripts/(gameplay|scenario|player-feeling|scenario-time-machine|scenario-lab|scenario-self-driving|playable-design-memory|scenario-evidence-bridge)", "^simulator\\.scenarios\\.json$"],
+      "evidence": [
+        { "path": "simulator.scenarios.json", "kind": "source", "required": true, "maxAgeDays": 3650 },
+        { "path": "reports/simulator/latest-report.json", "kind": "simulation", "required": true, "maxAgeDays": 14 },
+        { "path": "reports/simulator/memory/latest-memory.json", "kind": "memory", "required": false, "maxAgeDays": 14 }
+      ],
+      "quickCommands": ["gameplay.scenario-tests", "gameplay.memory-doctor"],
+      "fullCommands": ["gameplay.scenario-tests", "gameplay.memory-doctor", "reliability.hard"]
+    },
+    {
+      "id": "ux-onboarding",
+      "label": "UX, onboarding, and accessibility",
+      "owner": "product-design",
+      "weight": 1.3,
+      "currentGrade": "B",
+      "objective": "A first-time player can understand the board, choose a valid action, predict stakes, and recover from errors without outside explanation.",
+      "stricterABar": "Fresh desktop and mobile evidence proves a first meaningful action, readable state hierarchy, keyboard access, reduced motion, and actionable error recovery.",
+      "pathPatterns": ["^app/src/(components|hooks|pages|index\\.css|fonts\\.css)", "^app/e2e/", "^docs/game-ui-readability-audit\\.md$"],
+      "evidence": [
+        { "path": "docs/game-ui-readability-audit.md", "kind": "audit", "required": true, "maxAgeDays": 30 },
+        { "path": "reports/ui-density/latest.json", "kind": "automated-report", "required": true, "maxAgeDays": 14 },
+        { "path": "app/test-results", "kind": "visual-proof", "required": false, "maxAgeDays": 14 }
+      ],
+      "quickCommands": ["ux.board-tests"],
+      "fullCommands": ["ux.board-tests", "ux.app-build", "reliability.hard"]
+    },
+    {
+      "id": "visual-art",
+      "label": "Visual and art direction",
+      "owner": "art-direction",
+      "weight": 1.1,
+      "currentGrade": "B+",
+      "objective": "Every visual asset is recognizable, emotionally purposeful, reusable, provenance-backed, and proven in the live game context.",
+      "stricterABar": "Every shipped asset passes contract, joy, context, performance, and promotion gates; 3D assets additionally pass geometry, pivot, LOD, and runtime-lighting review.",
+      "pathPatterns": ["^app/public/images/art/", "^app/src/art-pipeline/", "^scripts/art-", "^docs/ART_PIPELINE\\.md$"],
+      "evidence": [
+        { "path": "app/src/art-pipeline/asset-manifest.json", "kind": "manifest", "required": true, "maxAgeDays": 30 },
+        { "path": "app/src/art-pipeline/asset-3d-review.json", "kind": "review", "required": true, "maxAgeDays": 30 },
+        { "path": "artifacts/art/3d/reviews/all-trellis2-method-comparison.png", "kind": "visual-proof", "required": false, "maxAgeDays": 30 }
+      ],
+      "quickCommands": ["art.tests", "art.3d-tests"],
+      "fullCommands": ["art.tests", "art.3d-tests", "ux.app-build"]
+    },
+    {
+      "id": "marketing-discovery",
+      "label": "Marketing and discovery",
+      "owner": "growth",
+      "weight": 1,
+      "currentGrade": "B",
+      "objective": "A new visitor immediately understands the game, sees truthful gameplay proof, and reaches a playable path with measurable intent.",
+      "stricterABar": "Fresh public captures and analytics prove the homepage-to-play-to-return funnel across desktop and mobile, with scenario-specific discovery artifacts.",
+      "pathPatterns": ["^app/src/pages/HomePage", "^app/src/lib/(analytics|publicRoutes|seo)", "^app/public/(seo|robots|sitemap|site\\.webmanifest)", "^scripts/(growth|generate-seo|marketing)", "^docs/marketing-"],
+      "evidence": [
+        { "path": "app/public/marketing/latest-report.json", "kind": "automated-report", "required": true, "maxAgeDays": 14 },
+        { "path": "docs/marketing-site-report-card.md", "kind": "historical-report-card", "required": false, "maxAgeDays": 30 },
+        { "path": "app/public/seo/latest-report.json", "kind": "discovery-report", "required": true, "maxAgeDays": 14 }
+      ],
+      "quickCommands": ["marketing.doctor", "discovery.seo-doctor"],
+      "fullCommands": ["marketing.doctor", "discovery.seo-doctor", "ux.app-build"]
+    },
+    {
+      "id": "technical-reliability",
+      "label": "Technical reliability",
+      "owner": "engineering",
+      "weight": 1.3,
+      "currentGrade": "B+",
+      "objective": "Builds, tests, simulation, local services, and recovery paths are deterministic, observable, and boring to operate.",
+      "stricterABar": "The hard suite passes from a clean checkout, failures identify an owner and recovery command, and no critical evidence is stale.",
+      "pathPatterns": ["^scripts/", "^app/vite\\.config", "^app/package", "^package\\.json$", "^Dockerfile$", "^\\.dockerignore$"],
+      "evidence": [
+        { "path": "reports/verification/latest-hard.json", "kind": "verification", "required": true, "maxAgeDays": 7 },
+        { "path": "reports/local-stack/latest-health.json", "kind": "health", "required": false, "maxAgeDays": 7 }
+      ],
+      "quickCommands": ["reliability.smoke"],
+      "fullCommands": ["reliability.hard"]
+    },
+    {
+      "id": "ops-release",
+      "label": "Operations and release",
+      "owner": "engineering",
+      "weight": 1,
+      "currentGrade": "B",
+      "objective": "Every release candidate has traceable verification, rollback information, runtime health proof, and an explicit promotion decision.",
+      "stricterABar": "A release cannot become shipped without exact-stack evidence, browser coverage, security headers, rollback instructions, and post-release validation.",
+      "pathPatterns": ["^Dockerfile$", "^\\.dockerignore$", "^app/public/_headers$", "^app/public/_redirects$", "^scripts/run-local-stack", "^scripts/verify-hard", "^\\.github/"],
+      "evidence": [
+        { "path": "reports/verification/latest-hard.json", "kind": "release-verification", "required": true, "maxAgeDays": 7 },
+        { "path": "app/public/_headers", "kind": "release-config", "required": true, "maxAgeDays": 90 }
+      ],
+      "quickCommands": ["reliability.smoke"],
+      "fullCommands": ["reliability.hard"]
+    },
+    {
+      "id": "player-validation",
+      "label": "Observed player validation",
+      "owner": "product-research",
+      "weight": 1.4,
+      "currentGrade": "C",
+      "objective": "Real-player behavior validates comprehension, delight, pacing, cooperation, return intent, and the moments automation cannot judge.",
+      "stricterABar": "At least five recent representative sessions cover first play and return play, with observation notes, consent-safe evidence, severity, and incorporated decisions.",
+      "pathPatterns": ["^improvement/records/playtests\\.json$", "^docs/playtest"],
+      "evidence": [
+        { "path": "improvement/records/playtests.json", "kind": "human-observation", "required": true, "maxAgeDays": 30, "minimumRecords": 5 }
+      ],
+      "quickCommands": ["improvement.tests"],
+      "fullCommands": ["improvement.tests"]
+    },
+    {
+      "id": "improvement-system",
+      "label": "Improvement system",
+      "owner": "product-operations",
+      "weight": 1.2,
+      "currentGrade": "B+",
+      "objective": "Every meaningful change begins with a falsifiable hypothesis and ends with evidence, a decision, a promotion state, and one ranked next action.",
+      "stricterABar": "One command detects impacted surfaces, runs proportionate checks, compares the previous baseline, measures system effectiveness, and records a portfolio snapshot with no stale critical evidence.",
+      "pathPatterns": ["^improvement/", "^scripts/improvement-control-plane", "^docs/improvement-system", "^package\\.json$", "^\\.gitignore$"],
+      "evidence": [
+        { "path": "improvement/improvement-system.json", "kind": "quality-contract", "required": true, "maxAgeDays": 90 },
+        { "path": "docs/improvement-system-report-card.md", "kind": "report-card", "required": true, "maxAgeDays": 30 },
+        { "path": "reports/improvement/latest-portfolio.json", "kind": "portfolio", "required": false, "maxAgeDays": 14 }
+      ],
+      "quickCommands": ["improvement.tests"],
+      "fullCommands": ["improvement.tests", "reliability.smoke"]
+    }
+  ]
+}
