@@ -5,9 +5,17 @@ export const GRADE_ORDER = ['F', 'D', 'C-', 'C', 'C+', 'B-', 'B', 'B+', 'A-', 'A
 
 const GRADE_POINTS = Object.fromEntries(GRADE_ORDER.map((grade, index) => [grade, index]));
 const TIMESTAMP_FIELDS = ['generatedAt', 'reviewedAt', 'updatedAt', 'recordedAt', 'completedAt', 'createdAt', 'timestamp'];
+const RISK_POINTS = { low: 0, medium: 1, high: 2 };
 
 export function normalizePath(value = '') {
   return String(value).replace(/\\/g, '/').replace(/^\.\//, '').trim();
+}
+
+export function pathsOutsideDeclared(touchedPaths = [], declarations = []) {
+  const normalizedDeclarations = declarations.map(normalizePath);
+  return touchedPaths.map(normalizePath).filter((path) => !normalizedDeclarations.some((declaration) => (
+    declaration.endsWith('/') ? path.startsWith(declaration) : path === declaration
+  )));
 }
 
 export function gradeToPoints(grade = 'F') {
@@ -44,6 +52,7 @@ export function validateConfig(config = {}) {
   if (!Number.isFinite(config.defaultStaleDays) || config.defaultStaleDays < 1) errors.push('defaultStaleDays must be positive');
   if (!Array.isArray(config.surfaces) || config.surfaces.length === 0) errors.push('at least one surface is required');
   if (!config.commands || typeof config.commands !== 'object') errors.push('commands must be an object');
+  if (!Array.isArray(config.remediations)) errors.push('remediations must be an array');
   const ids = new Set();
   for (const surface of config.surfaces || []) {
     if (!surface.id) errors.push('every surface needs an id');
@@ -63,6 +72,26 @@ export function validateConfig(config = {}) {
   for (const [from, targets] of Object.entries(config.allowedTransitions || {})) {
     if (!states.has(from)) errors.push(`transition source is not a promotion state: ${from}`);
     for (const target of targets || []) if (!states.has(target)) errors.push(`transition target is not a promotion state: ${target}`);
+  }
+  const remediationIds = new Set();
+  for (const remediation of config.remediations || []) {
+    if (!remediation.id) errors.push('every remediation needs an id');
+    if (remediationIds.has(remediation.id)) errors.push(`duplicate remediation id: ${remediation.id}`);
+    remediationIds.add(remediation.id);
+    if (!remediation.label) errors.push(`${remediation.id || 'remediation'} needs a label`);
+    if (!Array.isArray(remediation.surfaceIds) || remediation.surfaceIds.length === 0) errors.push(`${remediation.id} needs surfaceIds`);
+    for (const surfaceId of remediation.surfaceIds || []) if (!ids.has(surfaceId)) errors.push(`${remediation.id} references unknown surface: ${surfaceId}`);
+    if (!Array.isArray(remediation.actionTypes) || remediation.actionTypes.length === 0) errors.push(`${remediation.id} needs actionTypes`);
+    if (!config.commands?.[remediation.commandId]) errors.push(`${remediation.id} references unknown repair command: ${remediation.commandId}`);
+    for (const commandId of remediation.verifyCommandIds || []) {
+      if (!config.commands?.[commandId]) errors.push(`${remediation.id} references unknown verification command: ${commandId}`);
+    }
+    if (!(remediation.risk in RISK_POINTS)) errors.push(`${remediation.id} has invalid risk: ${remediation.risk}`);
+    if (typeof remediation.auto !== 'boolean') errors.push(`${remediation.id} must declare auto`);
+    for (const path of remediation.writePaths || []) {
+      const normalized = normalizePath(path);
+      if (!normalized || /^[a-zA-Z]:|^\//.test(normalized) || normalized.split('/').includes('..')) errors.push(`${remediation.id} has unsafe write path: ${path}`);
+    }
   }
   return { ok: errors.length === 0, errors };
 }
@@ -160,6 +189,84 @@ export function validatePromotionTransition(config, from, to) {
   if (!(config.promotionStates || []).includes(to)) return { ok: false, error: `unknown target state: ${to}` };
   if (!(config.allowedTransitions?.[from] || []).includes(to)) return { ok: false, error: `illegal promotion transition: ${from} -> ${to}` };
   return { ok: true };
+}
+
+export function actionFingerprint(action = {}) {
+  return [action.surfaceId || 'unknown', action.type || 'unknown', action.evidence || action.title || 'unknown'].join(':');
+}
+
+function remediationMatches(action, remediation) {
+  if (!(remediation.surfaceIds || []).includes(action.surfaceId)) return false;
+  if (!(remediation.actionTypes || []).includes(action.type)) return false;
+  if (remediation.evidencePaths?.length && !remediation.evidencePaths.includes(action.evidence)) return false;
+  if (remediation.checkIds?.length && !remediation.checkIds.includes(action.evidence)) return false;
+  return true;
+}
+
+function blockedReason(action) {
+  if (action.type === 'insufficient' && action.surfaceId === 'player-validation') return 'requires genuine, consent-safe observation of representative players';
+  if (action.type === 'grade-gap') return 'requires product or creative judgment before a deterministic repair can be registered';
+  if (action.type === 'failed-check') return 'no approved deterministic repair is registered for this failing check';
+  return 'no approved deterministic repair is registered for this action';
+}
+
+export function buildRemediationPlan(actions = [], config = {}, { attempted = [], maxRisk = 'low' } = {}) {
+  const attemptedSet = new Set(attempted);
+  const automatic = [];
+  const blocked = [];
+  for (const action of actions) {
+    const fingerprint = actionFingerprint(action);
+    const recipes = (config.remediations || []).filter((remediation) => remediationMatches(action, remediation));
+    const eligibleRecipes = recipes.filter((candidate) => candidate.auto && RISK_POINTS[candidate.risk] <= (RISK_POINTS[maxRisk] ?? 0));
+    const recipe = eligibleRecipes.find((candidate) => !attemptedSet.has(`${candidate.id}:${fingerprint}`));
+    if (recipe) {
+      automatic.push({ action, recipe, fingerprint, attemptKey: `${recipe.id}:${fingerprint}` });
+      continue;
+    }
+    const unavailableRecipe = recipes[0];
+    const attemptedRecipe = eligibleRecipes.find((candidate) => attemptedSet.has(`${candidate.id}:${fingerprint}`));
+    blocked.push({
+      action,
+      fingerprint,
+      autonomy: action.type === 'insufficient' && action.surfaceId === 'player-validation' ? 'human-required' : 'assisted',
+      reason: attemptedRecipe
+        ? 'automatic repair was already attempted in this run and did not resolve the action'
+        : unavailableRecipe
+        ? unavailableRecipe.auto
+          ? `registered repair risk ${unavailableRecipe.risk} exceeds allowed risk ${maxRisk}`
+          : 'registered repair requires explicit human approval'
+        : blockedReason(action),
+    });
+  }
+  const uniqueAutomatic = automatic.filter((entry, index, all) => all.findIndex((candidate) => candidate.recipe.id === entry.recipe.id) === index);
+  return { automatic: uniqueAutomatic, blocked, next: uniqueAutomatic[0] || null };
+}
+
+export function markdownForApplyReport(report = {}) {
+  const lines = [
+    '# Improvement Apply Report',
+    '',
+    `Generated: ${report.generatedAt || 'unknown'}`,
+    `Status: ${report.status || 'unknown'}`,
+    `Mode: ${report.dryRun ? 'dry run' : 'apply'}`,
+    `Repairs attempted: ${(report.attempts || []).length}`,
+    '',
+    '## Automatic Repairs',
+    '',
+  ];
+  if (!(report.attempts || []).length) lines.push('- No eligible automatic repair was needed.');
+  for (const attempt of report.attempts || []) {
+    lines.push(`- ${String(attempt.status || 'unknown').toUpperCase()} ${attempt.recipeId}: ${attempt.label}`);
+    if (attempt.command) lines.push(`  Command: \`${attempt.command}\``);
+  }
+  lines.push('', '## Needs Judgment', '');
+  if (!(report.blocked || []).length) lines.push('- None.');
+  for (const entry of report.blocked || []) {
+    lines.push(`- [${entry.action.surfaceId}] ${entry.action.title}`);
+    lines.push(`  ${entry.reason}`);
+  }
+  lines.push('', `Portfolio: ${report.portfolioPath || 'reports/improvement/latest-portfolio.md'}`);
+  return `${lines.join('\n')}\n`;
 }
 
 export function validateQualityRecords(records = [], requiredFields = [], surfaceIds = []) {

@@ -17,7 +17,24 @@
       "owner": "product-operations",
       "nextExperiment": "Measure diagnosis time and recommendation completion over the next three material changes.",
       "recordedAt": "2026-09-08T14:37:01.353Z"
+    },
+    {
+      "id": "improvement-control-plane-v1-1-selected",
+      "surface": "improvement-system",
+      "objective": "Turn ranked quality findings into safe, repeatable repairs.",
+      "hypothesis": "Versioned repair recipes can resolve deterministic gaps without inventing evidence or damaging unrelated work.",
+      "baseline": "The control plane verified and reported gaps but did not execute repairs.",
+      "evidence": [
+        "reports/improvement/latest-apply.json",
+        "reports/improvement/latest-portfolio.json"
+      ],
+      "grade": "A-",
+      "confidence": "high",
+      "decision": "Adopt bounded automatic apply as the default improvement command and keep arbitrary code, creative choices, and playtests assisted.",
+      "owner": "product-operations",
+      "nextExperiment": "Observe the first three automatic evidence repairs and tighten any recipe whose declared outputs drift.",
+      "recordedAt": "2026-09-08T15:05:36.186Z"
     }
   ],
-  "updatedAt": "2026-09-08T14:37:01.355Z"
+  "updatedAt": "2026-09-08T15:05:36.188Z"
 }

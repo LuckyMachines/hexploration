@@ -36,6 +36,19 @@ Verified portfolio regrade: **B** overall with low confidence because representa
 
 The first all-surface automated run recorded 100% scoped verification coverage, 0% regression rate, 86% required-evidence freshness, 88% implementation-checklist completion, one stale registered report, and zero human playtests. All selected automated checks passed. The low portfolio confidence is therefore localized to missing human observation rather than failing code.
 
+## v1.1.0 - Bounded automatic repair
+
+The default command now performs a diagnose-repair-verify-regrade loop instead of stopping at recommendations. Repair recipes are versioned, command-allowlisted, risk-bounded, write-path-declared, iteration-limited, non-repeating, and protected by a concurrent-run lock. Generated simulation, UI-density, marketing, SEO, and verification evidence can self-heal. Unsupported code changes, creative choices, and player observations are packaged for human or assisted work.
+
+| Dimension | Regrade | Evidence |
+| --- | --- | --- |
+| Automatic remediation | A- | Bounded recipe selection, dry run, verification, and ineffectiveness detection |
+| Change safety | A- | Declared write paths, dirty-file fingerprints, policy-violation stop, no automatic commit |
+| Auditability | A | JSON and Markdown apply reports retain commands, outcomes, touched paths, and blockers |
+| Human-truth protection | A | Human playtest deficits stop safely and cannot be filled by automation |
+
+Improvement-system regrade: **A-**, pending repeated production use of successful repairs. Overall product portfolio remains **B** until observed-player evidence and the stale UX audit are resolved.
+
 ## Remaining blockers
 
 1. Conduct and record five consent-safe representative sessions, including first play and return play.

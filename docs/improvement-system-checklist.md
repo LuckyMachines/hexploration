@@ -16,5 +16,11 @@ This checklist is both the implementation record and the source for the portfoli
 - [x] Register specialist reports and identify stale or superseded retirement candidates without deleting them.
 - [x] Add automated tests for routing, evidence, scoring, promotion, output, and retirement behavior.
 - [x] Document the daily, hard-gate, record, and promotion workflows.
+- [x] Turn the default improvement command into a bounded diagnose-repair-verify-regrade loop.
+- [x] Register deterministic repair recipes for generated gameplay, UI, marketing, SEO, and verification evidence.
+- [x] Add dry-run planning, risk ceilings, iteration limits, no-repeat protection, and a concurrent-run lock.
+- [x] Detect undeclared Git-visible writes and stop the repair loop on policy violations.
+- [x] Emit an auditable apply report and assisted repair packet when judgment or human observation is required.
+- [x] Provide changed-surface, explicit-scope, and all-surface apply modes.
 - [ ] Record five recent representative human playtest sessions covering first play and return play.
 - [ ] Add the hard control-plane gate to CI when the repository's CI policy is restored.

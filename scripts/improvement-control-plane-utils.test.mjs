@@ -5,13 +5,16 @@ import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import {
   buildPortfolio,
+  buildRemediationPlan,
   capGrade,
   classifyChangedFiles,
   compactPublicReport,
   evaluateEvidence,
   evaluateReportRegistry,
   markdownForPortfolio,
+  markdownForApplyReport,
   parseGitStatus,
+  pathsOutsideDeclared,
   selectCommands,
   validateConfig,
   validatePromotionTransition,
@@ -35,6 +38,7 @@ function fixture() {
       shared: { label: 'Shared', command: 'node', args: ['--version'], timeoutMs: 1000 },
       art: { label: 'Art', command: 'node', args: ['--version'], timeoutMs: 1000 },
     },
+    remediations: [],
     surfaces: [
       {
         id: 'ux', label: 'UX', owner: 'design', weight: 1, currentGrade: 'B+', objective: 'Clear choices', stricterABar: 'Observed clarity',
@@ -115,6 +119,56 @@ test('validates complete, unique, surface-bound quality records', () => {
   assert.match(invalid.errors.join('\n'), /unknown surface/);
   assert.match(invalid.errors.join('\n'), /duplicate record id/);
   assert.match(invalid.errors.join('\n'), /missing owner/);
+});
+
+test('selects only bounded automatic repairs and preserves human blockers', () => {
+  const config = fixture();
+  config.remediations = [{
+    id: 'refresh-art',
+    label: 'Refresh art proof',
+    surfaceIds: ['art'],
+    actionTypes: ['stale-evidence'],
+    evidencePaths: ['reports/art.json'],
+    commandId: 'art',
+    verifyCommandIds: ['shared'],
+    writePaths: ['reports/art/'],
+    risk: 'low',
+    auto: true,
+  }];
+  assert.equal(validateConfig(config).ok, true);
+  const actions = [
+    { type: 'insufficient', surfaceId: 'player-validation', title: 'Record playtests', evidence: 'playtests.json' },
+    { type: 'stale-evidence', surfaceId: 'art', title: 'Refresh art', evidence: 'reports/art.json' },
+  ];
+  const plan = buildRemediationPlan(actions, config);
+  assert.equal(plan.next.recipe.id, 'refresh-art');
+  assert.equal(plan.blocked[0].autonomy, 'human-required');
+  const attempted = buildRemediationPlan(actions, config, { attempted: [plan.next.attemptKey] });
+  assert.equal(attempted.next, null);
+  assert.match(attempted.blocked.find((entry) => entry.action.surfaceId === 'art').reason, /already attempted/);
+  assert.match(markdownForApplyReport({ status: 'blocked', blocked: plan.blocked }), /Needs Judgment/);
+});
+
+test('rejects unsafe or unknown remediation recipes', () => {
+  const config = fixture();
+  config.remediations = [{
+    id: 'unsafe', label: 'Unsafe', surfaceIds: ['missing'], actionTypes: ['missing'], commandId: 'missing',
+    verifyCommandIds: ['missing'], writePaths: ['../outside'], risk: 'extreme', auto: true,
+  }];
+  const result = validateConfig(config);
+  assert.equal(result.ok, false);
+  assert.match(result.errors.join('\n'), /unsafe write path/);
+  assert.match(result.errors.join('\n'), /unknown repair command/);
+});
+
+test('detects writes outside a remediation allowlist', () => {
+  assert.deepEqual(
+    pathsOutsideDeclared(
+      ['reports/seo/latest.json', 'app/public/sitemap.xml', 'app/src/App.jsx'],
+      ['reports/seo/', 'app/public/sitemap.xml'],
+    ),
+    ['app/src/App.jsx'],
+  );
 });
 
 test('builds a conservative portfolio and ranks failed checks first', () => {

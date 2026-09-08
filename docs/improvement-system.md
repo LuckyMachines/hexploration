@@ -27,6 +27,12 @@ npm run improve:latest -- --markdown
 npm run improve:doctor
 ```
 
+`npm run improve` is the bounded apply loop. It diagnoses the current scope, executes every eligible low-risk repair recipe, verifies each repair, re-grades, and repeats up to three times. `npm run improve:check` performs verification and reporting without entering the repair loop. Preview automatic work without running checks or repairs with:
+
+```text
+npm run improve:apply:dry
+```
+
 Before selecting or shipping a candidate:
 
 ```text
@@ -42,10 +48,31 @@ Changed-file detection is the default. A specific review can be requested with:
 
 ```text
 npm run improve -- --scope=visual-art,ux-onboarding
+npm run improve:all
 npm run improve:hard -- --scope=technical-reliability,ops-release
 ```
 
 Available surfaces are `gameplay`, `ux-onboarding`, `visual-art`, `marketing-discovery`, `technical-reliability`, `ops-release`, `player-validation`, and `improvement-system`.
+
+## Automatic repair contract
+
+Automatic repairs are declared in `improvement/improvement-system.json`; the runner never invents a shell command. Every recipe names:
+
+- the surfaces, action types, and exact evidence paths it may address;
+- one registered repair command and one or more verification commands;
+- its risk level;
+- every path it is expected to write.
+
+The apply loop fingerprints Git-visible dirty files before and after a repair. An undeclared write stops the loop as a policy violation. A lock prevents concurrent apply runs, an attempted action is never repeated in the same run, and `--max-repairs` bounds the loop. Only low-risk recipes run by default; a higher ceiling must be explicit.
+
+```text
+npm run improve -- --max-repairs=5
+npm run improve -- --scope=marketing-discovery --allow-risk=medium
+```
+
+Current automatic recipes refresh generated simulation, UI-density, marketing, SEO, and verification evidence. New deterministic codemods can be registered through the same command-and-write-path contract.
+
+The runner will not fabricate a playtest, silently choose a creative direction, make an unsupported marketing claim, delete reports, commit changes, or invoke an unbounded coding agent. Those actions become an assisted or human-required repair packet at `reports/improvement/latest-apply.md`.
 
 ## Evidence records
 

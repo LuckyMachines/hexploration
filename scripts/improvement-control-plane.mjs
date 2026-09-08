@@ -1,16 +1,21 @@
 #!/usr/bin/env node
 import { execFileSync, spawnSync } from 'node:child_process';
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
+import { closeSync, existsSync, mkdirSync, openSync, readFileSync, statSync, unlinkSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
+  actionFingerprint,
   buildPortfolio,
+  buildRemediationPlan,
   classifyChangedFiles,
   compactPublicReport,
   evaluateReportRegistry,
   evaluateSurfaceEvidence,
   markdownForPortfolio,
+  markdownForApplyReport,
   parseGitStatus,
+  pathsOutsideDeclared,
   selectCommands,
   validateConfig,
   validatePromotionTransition,
@@ -30,6 +35,9 @@ const LATEST_MD_PATH = 'reports/improvement/latest-portfolio.md';
 const PUBLIC_PATH = 'app/public/improvement/latest-portfolio.json';
 const HISTORY_PATH = 'reports/improvement/history.json';
 const BASELINE_PATH = 'reports/improvement/baseline.json';
+const APPLY_JSON_PATH = 'reports/improvement/latest-apply.json';
+const APPLY_MD_PATH = 'reports/improvement/latest-apply.md';
+const APPLY_LOCK_PATH = 'reports/improvement/apply.lock';
 
 function readText(path, fallback = '') {
   const full = resolve(root, path);
@@ -76,7 +84,7 @@ function requiredFlag(args, name) {
 
 function changedFiles() {
   try {
-    const output = execFileSync('git', ['status', '--porcelain=v1'], { cwd: root, encoding: 'utf8', windowsHide: true });
+    const output = execFileSync('git', ['status', '--porcelain=v1', '--untracked-files=all'], { cwd: root, encoding: 'utf8', windowsHide: true });
     return parseGitStatus(output);
   } catch (error) {
     throw new Error(`Could not inspect changed files: ${error.message}`);
@@ -145,6 +153,7 @@ function executeCommand(command) {
 }
 
 function surfaceScope(config, files, args) {
+  if (has(args, 'all')) return config.surfaces.map((surface) => surface.id);
   const requested = listFlag(args, 'scope');
   if (requested.length) {
     const known = new Set(config.surfaces.map((surface) => surface.id));
@@ -196,11 +205,10 @@ function persistPortfolio(report) {
   appendHistory(report);
 }
 
-function runPortfolio(args) {
+function runPortfolio(args, { deferExit = false } = {}) {
   const started = Date.now();
-  const now = new Date();
   const files = changedFiles();
-  const { config, registry, promotionState, evidenceBySurface } = loadContext(now);
+  const { config, registry, promotionState } = loadContext(new Date());
   const valid = validateConfig(config);
   if (!valid.ok) throw new Error(`Invalid improvement config:\n- ${valid.errors.join('\n- ')}`);
   const mode = has(args, 'full') || has(args, 'hard') ? 'full' : 'quick';
@@ -214,6 +222,8 @@ function runPortfolio(args) {
       if (result.status !== 'pass' && !has(args, 'continue-on-fail')) break;
     }
   }
+  const now = new Date();
+  const evidenceBySurface = Object.fromEntries(config.surfaces.map((surface) => [surface.id, evaluateSurfaceEvidence(root, surface, now)]));
   const reportInventory = evaluateReportRegistry(root, registry, now);
   const report = buildPortfolio({
     config,
@@ -228,12 +238,192 @@ function runPortfolio(args) {
     now,
     runtimeMs: Date.now() - started,
   });
+  const scopedNextAction = report.nextActions.find((action) => scope.includes(action.surfaceId)) || null;
+  report.execution = { mode, scope, nextAction: scopedNextAction };
   persistPortfolio(report);
   console.log(`\nPortfolio: ${resolve(root, LATEST_MD_PATH)}`);
   console.log(`Grade: ${report.aggregate.grade} (${report.aggregate.confidence} confidence)`);
-  console.log(`Next: ${report.nextAction?.title || 'raise the quality bar'}`);
-  if (checkResults.some((entry) => entry.status !== 'pass')) process.exitCode = 1;
+  console.log(`Next: ${scopedNextAction?.title || 'raise the quality bar'}`);
+  if (!deferExit && checkResults.some((entry) => entry.status !== 'pass')) process.exitCode = 1;
   return report;
+}
+
+function applyArgs(args, { dryRun = false } = {}) {
+  const omitted = new Set(['--dry-run', '--strict']);
+  const clean = args.filter((value) => !omitted.has(value) && !value.startsWith('--max-repairs=') && !value.startsWith('--allow-risk='));
+  if (!clean.includes('--continue-on-fail')) clean.push('--continue-on-fail');
+  if (dryRun && !clean.includes('--no-verify')) clean.push('--no-verify');
+  return clean;
+}
+
+function acquireApplyLock() {
+  const full = resolve(root, APPLY_LOCK_PATH);
+  mkdirSync(dirname(full), { recursive: true });
+  try {
+    const descriptor = openSync(full, 'wx');
+    writeFileSync(descriptor, `${JSON.stringify({ pid: process.pid, startedAt: new Date().toISOString() })}\n`);
+    closeSync(descriptor);
+  } catch (error) {
+    if (error.code === 'EEXIST') throw new Error(`Another improvement apply loop owns ${full}`);
+    throw error;
+  }
+  return () => {
+    if (existsSync(full)) unlinkSync(full);
+  };
+}
+
+function configuredCommand(config, commandId, surfaceIds = []) {
+  const command = config.commands?.[commandId];
+  if (!command) throw new Error(`Unknown configured command: ${commandId}`);
+  return { id: commandId, ...command, surfaceIds };
+}
+
+function fingerprintFiles(paths = []) {
+  return Object.fromEntries(paths.map((path) => {
+    const full = resolve(root, path);
+    if (!existsSync(full) || !statSync(full).isFile()) return [path, null];
+    return [path, createHash('sha256').update(readFileSync(full)).digest('hex')];
+  }));
+}
+
+function touchedFiles(beforeFiles, beforeFingerprints, afterFiles) {
+  const candidates = [...new Set([...beforeFiles, ...afterFiles])];
+  const afterFingerprints = fingerprintFiles(candidates);
+  return candidates.filter((path) => !(path in beforeFingerprints) || beforeFingerprints[path] !== afterFingerprints[path]);
+}
+
+function persistApplyReport(report) {
+  writeJson(APPLY_JSON_PATH, report);
+  writeText(APPLY_MD_PATH, markdownForApplyReport(report));
+}
+
+function scopedActions(portfolio) {
+  const scopedIds = new Set((portfolio.surfaces || []).filter((surface) => surface.inScope).map((surface) => surface.id));
+  return (portfolio.nextActions || []).filter((action) => scopedIds.has(action.surfaceId));
+}
+
+function applyImprovements(args) {
+  const releaseLock = acquireApplyLock();
+  try {
+    const dryRun = has(args, 'dry-run');
+    const maxRepairs = Math.max(1, Math.min(20, Number(flag(args, 'max-repairs', '3')) || 3));
+    const maxRisk = flag(args, 'allow-risk', 'low');
+    if (!['low', 'medium', 'high'].includes(maxRisk)) throw new Error('--allow-risk must be low, medium, or high');
+    const runArgs = applyArgs(args);
+    const diagnosisArgs = runArgs.includes('--no-verify') ? runArgs : [...runArgs, '--no-verify'];
+    let portfolio = runPortfolio(diagnosisArgs, { deferExit: true });
+    const config = readJson(CONFIG_PATH);
+    const attempts = [];
+    const attempted = [];
+    let verified = false;
+    let policyViolation = false;
+
+    for (let iteration = 0; iteration < maxRepairs; iteration += 1) {
+      const plan = buildRemediationPlan(scopedActions(portfolio), config, { attempted, maxRisk });
+      if (!plan.next) break;
+      const { action, recipe, attemptKey, fingerprint } = plan.next;
+      attempted.push(attemptKey);
+      const command = configuredCommand(config, recipe.commandId, recipe.surfaceIds);
+      if (dryRun) {
+        attempts.push({
+          iteration: iteration + 1,
+          recipeId: recipe.id,
+          label: recipe.label,
+          status: 'planned',
+          command: commandText(command),
+          action,
+          writePaths: recipe.writePaths,
+          verifyCommandIds: recipe.verifyCommandIds,
+        });
+        continue;
+      }
+
+      console.log(`\n[repair] ${recipe.label}`);
+      const beforeFiles = changedFiles();
+      const beforeFingerprints = fingerprintFiles(beforeFiles);
+      const repairResult = executeCommand({ ...command, id: `repair.${recipe.id}` });
+      const afterFiles = changedFiles();
+      const touched = touchedFiles(beforeFiles, beforeFingerprints, afterFiles);
+      const undeclaredWrites = pathsOutsideDeclared(touched, recipe.writePaths);
+      if (undeclaredWrites.length) {
+        policyViolation = true;
+        portfolio = runPortfolio(diagnosisArgs, { deferExit: true });
+        attempts.push({
+          iteration: iteration + 1,
+          recipeId: recipe.id,
+          label: recipe.label,
+          status: 'policy-violation',
+          command: commandText(command),
+          action,
+          repairResult,
+          declaredWritePaths: recipe.writePaths,
+          touchedFiles: touched,
+          undeclaredWrites,
+        });
+        break;
+      }
+      portfolio = runPortfolio(runArgs, { deferExit: true });
+      verified = true;
+      const unresolved = portfolio.nextActions.some((candidate) => actionFingerprint(candidate) === fingerprint);
+      const verification = portfolio.checks.filter((check) => recipe.verifyCommandIds.includes(check.id));
+      const verificationPassed = recipe.verifyCommandIds.every((id) => verification.some((check) => check.id === id && check.status === 'pass'));
+      const status = repairResult.status !== 'pass' ? 'failed' : !unresolved && verificationPassed ? 'resolved' : 'ineffective';
+      attempts.push({
+        iteration: iteration + 1,
+        recipeId: recipe.id,
+        label: recipe.label,
+        status,
+        command: commandText(command),
+        action,
+        repairResult,
+        verification: verification.map((check) => ({ id: check.id, status: check.status })),
+        declaredWritePaths: recipe.writePaths,
+        touchedFiles: touched,
+      });
+    }
+
+    if (!dryRun && !verified && !policyViolation) {
+      portfolio = runPortfolio(runArgs, { deferExit: true });
+      verified = true;
+    }
+
+    const finalPlan = buildRemediationPlan(scopedActions(portfolio), config, { attempted, maxRisk });
+    const failed = attempts.some((attempt) => ['failed', 'ineffective', 'policy-violation'].includes(attempt.status));
+    const status = dryRun
+      ? 'planned'
+      : failed
+        ? 'attention'
+        : finalPlan.blocked.length
+          ? attempts.length ? 'partially-applied' : 'blocked'
+          : attempts.length ? 'applied' : 'stable';
+    const applyReport = {
+      schemaVersion: 1,
+      generatedAt: new Date().toISOString(),
+      status,
+      dryRun,
+      maxRisk,
+      maxRepairs,
+      verificationRun: verified,
+      attempts,
+      blocked: finalPlan.blocked,
+      remainingAutomatic: finalPlan.automatic.map((entry) => ({ action: entry.action, recipeId: entry.recipe.id })),
+      portfolioPath: LATEST_MD_PATH,
+      portfolio: {
+        status: portfolio.status,
+        grade: portfolio.aggregate.grade,
+        confidence: portfolio.aggregate.confidence,
+        nextAction: portfolio.execution?.nextAction || portfolio.nextAction,
+      },
+    };
+    persistApplyReport(applyReport);
+    console.log(`\nApply report: ${resolve(root, APPLY_MD_PATH)}`);
+    if (status === 'blocked') console.log(`Blocked safely: ${finalPlan.blocked[0]?.reason || 'human judgment is required'}`);
+    else console.log(`Apply status: ${status}`);
+    if (failed || (has(args, 'strict') && finalPlan.blocked.length)) process.exitCode = 1;
+    return applyReport;
+  } finally {
+    releaseLock();
+  }
 }
 
 function doctor(args) {
@@ -403,6 +593,7 @@ function usage() {
   console.log(`Xenovoya Improvement Control Plane
 
 Commands:
+  apply [--scope=id,id|--all] [--quick|--full] [--dry-run] [--max-repairs=3] [--allow-risk=low]
   run [--scope=id,id] [--quick|--full] [--no-verify] [--continue-on-fail]
   plan [--scope=id,id] [--quick|--full]
   latest [--markdown]
@@ -417,8 +608,9 @@ Commands:
 
 function main() {
   const args = process.argv.slice(2);
-  const command = args[0] && !args[0].startsWith('--') ? args.shift() : 'run';
-  if (command === 'run') runPortfolio(args);
+  const command = args[0] && !args[0].startsWith('--') ? args.shift() : 'apply';
+  if (command === 'apply') applyImprovements(args);
+  else if (command === 'run') runPortfolio(args);
   else if (command === 'plan') {
     const { config } = loadContext();
     const files = changedFiles();

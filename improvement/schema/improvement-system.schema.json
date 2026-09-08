@@ -3,7 +3,7 @@
   "$id": "https://xenovoya.com/schemas/improvement-system.schema.json",
   "title": "Xenovoya Improvement Control Plane",
   "type": "object",
-  "required": ["version", "name", "defaultStaleDays", "promotionStates", "allowedTransitions", "qualityRecordFields", "commands", "surfaces"],
+  "required": ["version", "name", "defaultStaleDays", "promotionStates", "allowedTransitions", "qualityRecordFields", "commands", "remediations", "surfaces"],
   "properties": {
     "$schema": { "type": "string" },
     "version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
@@ -23,6 +23,27 @@
           "args": { "type": "array", "items": { "type": "string" } },
           "cwd": { "type": "string" },
           "timeoutMs": { "type": "integer", "minimum": 1000 }
+        },
+        "additionalProperties": false
+      }
+    },
+    "remediations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "label", "surfaceIds", "actionTypes", "commandId", "verifyCommandIds", "writePaths", "risk", "auto"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "label": { "type": "string", "minLength": 1 },
+          "surfaceIds": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+          "actionTypes": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+          "evidencePaths": { "type": "array", "items": { "type": "string" } },
+          "checkIds": { "type": "array", "items": { "type": "string" } },
+          "commandId": { "type": "string" },
+          "verifyCommandIds": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+          "writePaths": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+          "risk": { "enum": ["low", "medium", "high"] },
+          "auto": { "type": "boolean" }
         },
         "additionalProperties": false
       }

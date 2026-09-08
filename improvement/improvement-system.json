@@ -1,6 +1,6 @@
 {
   "$schema": "./schema/improvement-system.schema.json",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "name": "Xenovoya Improvement Control Plane",
   "defaultStaleDays": 14,
   "promotionStates": ["idea", "baseline", "candidate", "verified", "selected", "shipped", "validated", "rework-required", "retired"],
@@ -45,6 +45,12 @@
       "args": ["run", "memory:doctor", "--", "--no-build"],
       "timeoutMs": 120000
     },
+    "gameplay.sim-refresh": {
+      "label": "Refresh flagship gameplay simulation evidence",
+      "command": "npm",
+      "args": ["run", "sim:golden"],
+      "timeoutMs": 300000
+    },
     "ux.board-tests": {
       "label": "Board quality tests",
       "command": "npx",
@@ -58,6 +64,12 @@
       "args": ["run", "build"],
       "cwd": "app",
       "timeoutMs": 300000
+    },
+    "ux.density-refresh": {
+      "label": "Refresh UI density evidence",
+      "command": "npm",
+      "args": ["run", "ui:density"],
+      "timeoutMs": 120000
     },
     "art.tests": {
       "label": "Art pipeline tests",
@@ -77,6 +89,12 @@
       "args": ["run", "marketing:doctor"],
       "timeoutMs": 120000
     },
+    "marketing.refresh": {
+      "label": "Regenerate marketing readiness evidence",
+      "command": "node",
+      "args": ["scripts/marketing-readiness.mjs"],
+      "timeoutMs": 120000
+    },
     "reliability.smoke": {
       "label": "Cross-system smoke verification",
       "command": "npm",
@@ -94,8 +112,76 @@
       "command": "npm",
       "args": ["run", "seo:doctor"],
       "timeoutMs": 120000
+    },
+    "discovery.seo-refresh": {
+      "label": "Regenerate discovery artifacts",
+      "command": "npm",
+      "args": ["run", "seo:generate"],
+      "timeoutMs": 120000
     }
   },
+  "remediations": [
+    {
+      "id": "refresh-gameplay-simulation",
+      "label": "Regenerate stale or missing gameplay simulation evidence",
+      "surfaceIds": ["gameplay"],
+      "actionTypes": ["missing", "invalid", "stale-evidence"],
+      "evidencePaths": ["reports/simulator/latest-report.json"],
+      "commandId": "gameplay.sim-refresh",
+      "verifyCommandIds": ["gameplay.scenario-tests", "gameplay.memory-doctor"],
+      "writePaths": ["reports/simulator/", "app/public/simulator/"],
+      "risk": "low",
+      "auto": true
+    },
+    {
+      "id": "refresh-ui-density",
+      "label": "Regenerate stale or missing UI density evidence",
+      "surfaceIds": ["ux-onboarding"],
+      "actionTypes": ["missing", "invalid", "stale-evidence"],
+      "evidencePaths": ["reports/ui-density/latest.json"],
+      "commandId": "ux.density-refresh",
+      "verifyCommandIds": ["ux.board-tests"],
+      "writePaths": ["reports/ui-density/", "app/public/verification/"],
+      "risk": "low",
+      "auto": true
+    },
+    {
+      "id": "refresh-marketing-readiness",
+      "label": "Regenerate stale or missing marketing evidence",
+      "surfaceIds": ["marketing-discovery"],
+      "actionTypes": ["missing", "invalid", "stale-evidence"],
+      "evidencePaths": ["app/public/marketing/latest-report.json"],
+      "commandId": "marketing.refresh",
+      "verifyCommandIds": ["marketing.doctor"],
+      "writePaths": ["reports/marketing/", "app/public/marketing/"],
+      "risk": "low",
+      "auto": true
+    },
+    {
+      "id": "refresh-discovery-artifacts",
+      "label": "Regenerate stale or missing SEO and discovery evidence",
+      "surfaceIds": ["marketing-discovery"],
+      "actionTypes": ["missing", "invalid", "stale-evidence"],
+      "evidencePaths": ["app/public/seo/latest-report.json"],
+      "commandId": "discovery.seo-refresh",
+      "verifyCommandIds": ["discovery.seo-doctor"],
+      "writePaths": ["reports/seo/", "app/public/seo/", "app/public/sitemap.xml", "app/public/robots.txt", "app/public/llms.txt"],
+      "risk": "low",
+      "auto": true
+    },
+    {
+      "id": "refresh-verification-evidence",
+      "label": "Regenerate stale or missing cross-system verification evidence",
+      "surfaceIds": ["technical-reliability", "ops-release"],
+      "actionTypes": ["missing", "invalid", "stale-evidence"],
+      "evidencePaths": ["reports/verification/latest-hard.json"],
+      "commandId": "reliability.smoke",
+      "verifyCommandIds": ["reliability.smoke"],
+      "writePaths": ["reports/verification/", "app/public/verification/"],
+      "risk": "low",
+      "auto": true
+    }
+  ],
   "surfaces": [
     {
       "id": "gameplay",
@@ -217,7 +303,7 @@
       "label": "Improvement system",
       "owner": "product-operations",
       "weight": 1.2,
-      "currentGrade": "B+",
+      "currentGrade": "A-",
       "objective": "Every meaningful change begins with a falsifiable hypothesis and ends with evidence, a decision, a promotion state, and one ranked next action.",
       "stricterABar": "One command detects impacted surfaces, runs proportionate checks, compares the previous baseline, measures system effectiveness, and records a portfolio snapshot with no stale critical evidence.",
       "pathPatterns": ["^improvement/", "^scripts/improvement-control-plane", "^docs/improvement-system", "^package\\.json$", "^\\.gitignore$"],

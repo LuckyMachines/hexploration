@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-09-08T14:34:47.124Z",
+  "updatedAt": "2026-09-08T15:05:36.042Z",
   "surfaces": {
     "gameplay": {
       "state": "candidate",
@@ -44,13 +44,13 @@
       "decision": "No representative observed sessions recorded yet."
     },
     "improvement-system": {
-      "state": "verified",
+      "state": "selected",
       "evidence": [
-        "reports/improvement/latest-portfolio.json",
-        "reports/verification/latest-hard.json"
+        "reports/improvement/latest-apply.json",
+        "reports/improvement/latest-portfolio.json"
       ],
-      "decision": "Control-plane unit tests and cross-system smoke verification pass",
-      "updatedAt": "2026-09-08T14:34:47.124Z"
+      "decision": "Bounded automatic repair loop, policy guards, and verification pass",
+      "updatedAt": "2026-09-08T15:05:36.042Z"
     }
   },
   "history": [
@@ -64,6 +64,17 @@
       ],
       "decision": "Control-plane unit tests and cross-system smoke verification pass",
       "at": "2026-09-08T14:34:47.124Z"
+    },
+    {
+      "surface": "improvement-system",
+      "from": "verified",
+      "to": "selected",
+      "evidence": [
+        "reports/improvement/latest-apply.json",
+        "reports/improvement/latest-portfolio.json"
+      ],
+      "decision": "Bounded automatic repair loop, policy guards, and verification pass",
+      "at": "2026-09-08T15:05:36.042Z"
     }
   ]
 }
