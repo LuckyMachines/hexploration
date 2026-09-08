@@ -1,0 +1,33 @@
+{
+  "assetId": "terrain-verdant-signal-base",
+  "candidate": "artifacts/art/exports/terrain-verdant-signal-base.webp",
+  "reviewer": "Codex visual QA",
+  "reviewedAt": "2026-09-06",
+  "scores": {
+    "recognition": 3,
+    "agency": 3,
+    "specificity": 4,
+    "restraint": 4,
+    "continuity": 4,
+    "reusability": 4,
+    "accessibility": 3
+  },
+  "notes": {
+    "recognition": "Reads immediately as mineral terrain at thumbnail size.",
+    "agency": "Circuit-like seams imply traversable possibility without baking in a route.",
+    "specificity": "Basalt, moss circuitry, and restrained survey marks match Xenovoya's material language.",
+    "restraint": "Low-contrast surface keeps focal objects and UI dominant.",
+    "continuity": "Field ink, oxide green, and small gold traces preserve the signal hierarchy.",
+    "reusability": "Mirrored edge construction is genuinely repeatable on both axes.",
+    "accessibility": "Value texture remains legible without relying on the green and gold accents."
+  },
+  "decision": "approved",
+  "candidateSha256": "c4537d475dc1cc45339aa8f8aa7b5b381ef0240bfbca90967b0313802e768dfa",
+  "generation": {
+    "mode": "azure-image-generation",
+    "tool": "azure-foundry",
+    "model": "FLUX.2-pro",
+    "promptSha256": "25d2b9850d9c780dcc3e72af11491f7137de23f765e58e066d6803a756c65c43"
+  },
+  "joyScore": 8.8
+}

@@ -1,0 +1,115 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://xenovoya.com/schemas/asset-3d-manifest.schema.json",
+  "title": "Xenovoya image-to-3D asset manifest",
+  "type": "object",
+  "required": ["version", "artDirectionVersion", "name", "generation", "trellis", "assets"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+    "artDirectionVersion": { "type": "string" },
+    "name": { "type": "string", "minLength": 1 },
+    "generation": {
+      "type": "object",
+      "required": ["provider", "draftModel", "consistencyModel", "sheet", "views"],
+      "properties": {
+        "provider": { "const": "azure-foundry" },
+        "draftModel": { "const": "FLUX.2-pro" },
+        "consistencyModel": { "const": "gpt-image-2" },
+        "sheet": {
+          "type": "object",
+          "required": ["width", "height", "columns", "rows", "background"],
+          "properties": {
+            "width": { "const": 1536 },
+            "height": { "const": 1024 },
+            "columns": { "const": 3 },
+            "rows": { "const": 2 },
+            "background": { "type": "string", "pattern": "^#[0-9A-Fa-f]{6}$" }
+          },
+          "additionalProperties": false
+        },
+        "views": {
+          "type": "array",
+          "minItems": 6,
+          "uniqueItems": true,
+          "items": {
+            "type": "object",
+            "required": ["id", "yaw", "cell"],
+            "properties": {
+              "id": { "type": "string", "minLength": 1 },
+              "yaw": { "type": "number", "minimum": 0, "exclusiveMaximum": 360 },
+              "cell": { "type": "integer", "minimum": 0, "maximum": 5 }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "trellis": {
+      "type": "object",
+      "required": ["server", "mode", "semanticViewMap", "pipeline", "steps", "sparseResolution", "maxTokens", "textureSize"],
+      "properties": {
+        "server": { "type": "string", "format": "uri" },
+        "mode": { "const": "multiview" },
+        "experimentalEvidenceMode": { "const": "multiimage" },
+        "semanticViewMap": {
+          "type": "object",
+          "required": ["front", "right", "back", "left"],
+          "properties": {
+            "front": { "type": "string" },
+            "right": { "type": "string" },
+            "back": { "type": "string" },
+            "left": { "type": "string" }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": true
+    },
+    "assets": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "sourceAssetId", "seed", "decimationTarget", "cardinalCrop", "physicalBrief"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+          "sourceAssetId": { "type": "string", "minLength": 1 },
+          "seed": { "type": "integer" },
+          "decimationTarget": { "type": "integer", "minimum": 10000 },
+          "physicalBrief": { "type": "string", "minLength": 1 },
+          "cardinalCrop": {
+            "type": "object",
+            "required": ["layout"],
+            "properties": {
+              "layout": { "enum": ["2x2", "4x1"] },
+              "topInset": { "type": "integer", "minimum": 0 },
+              "regions": {
+                "type": "object",
+                "required": ["front", "right", "back", "left"],
+                "additionalProperties": { "$ref": "#/$defs/cropRegion" }
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "$defs": {
+    "cropRegion": {
+      "type": "object",
+      "required": ["x", "y", "width", "height"],
+      "properties": {
+        "x": { "type": "integer", "minimum": 0, "maximum": 1023 },
+        "y": { "type": "integer", "minimum": 0, "maximum": 1023 },
+        "width": { "type": "integer", "minimum": 1, "maximum": 1024 },
+        "height": { "type": "integer", "minimum": 1, "maximum": 1024 }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

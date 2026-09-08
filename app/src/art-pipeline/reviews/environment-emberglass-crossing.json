@@ -1,0 +1,33 @@
+{
+  "assetId": "environment-emberglass-crossing",
+  "candidate": "artifacts/art/exports/environment-emberglass-crossing.webp",
+  "reviewer": "Codex visual QA",
+  "reviewedAt": "2026-09-07",
+  "scores": {
+    "recognition": 4,
+    "agency": 4,
+    "specificity": 4,
+    "restraint": 3,
+    "continuity": 4,
+    "reusability": 4,
+    "accessibility": 4
+  },
+  "notes": {
+    "recognition": "The near-field split and two distinct traversable routes read immediately.",
+    "agency": "Sheltered and exposed paths visibly stage a risk-versus-speed decision.",
+    "specificity": "Black sand, amber glass, mauve horizon, and sparse cyan points are unmistakably Xenovoya.",
+    "restraint": "The route structure is clear, though the amber field carries slightly more visual energy than ideal.",
+    "continuity": "Palette, terrain scale, and painterly treatment extend the approved Emberglass biome.",
+    "reusability": "The wide crop supports board backplates, loading art, and encounter framing.",
+    "accessibility": "Path width, shelter, and exposure remain understandable without color."
+  },
+  "decision": "approved",
+  "candidateSha256": "efd65958349a4b2dd18a0841776199777d5839d8f6bea69b1e7e438cc08ef3de",
+  "generation": {
+    "mode": "azure-image-generation",
+    "tool": "azure-foundry",
+    "model": "FLUX.2-pro",
+    "promptSha256": "55890de87d450eaacc49e200f1aa43ee6226d65a1b7b66c756f05916637209e1"
+  },
+  "joyScore": 9.8
+}

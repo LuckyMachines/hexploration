@@ -1,0 +1,33 @@
+{
+  "assetId": "memory-lantern-route-backplate",
+  "candidate": "artifacts/art/exports/memory-lantern-route-backplate.webp",
+  "reviewer": "Codex visual QA",
+  "reviewedAt": "2026-09-06",
+  "scores": {
+    "recognition": 4,
+    "agency": 4,
+    "specificity": 4,
+    "restraint": 4,
+    "continuity": 4,
+    "reusability": 4,
+    "accessibility": 3
+  },
+  "notes": {
+    "recognition": "The returning route and archival field read immediately as a kept journey.",
+    "agency": "The visible route preserves evidence of the decisions that formed the memory.",
+    "specificity": "Weathered field material, route fingerprint, and violet afterglow feel native to Xenovoya.",
+    "restraint": "The center remains quiet enough for truthful run data.",
+    "continuity": "Gold, cyan, green, and violet retain their established semantic jobs.",
+    "reusability": "The backplate supports square cards, social crops, and optional focal overlays.",
+    "accessibility": "Route form and quiet field survive without hue, though the four crew marks need contextual labels."
+  },
+  "decision": "approved",
+  "candidateSha256": "f847121024363eded1d085c9067598f7ed583729232cc7c39356b1e58387607f",
+  "generation": {
+    "mode": "azure-image-generation",
+    "tool": "azure-foundry",
+    "model": "FLUX.2-pro",
+    "promptSha256": "bbec78f94431cc741f829fdc4cd791a48af752714708bbe0678074b249e681a7"
+  },
+  "joyScore": 9.8
+}

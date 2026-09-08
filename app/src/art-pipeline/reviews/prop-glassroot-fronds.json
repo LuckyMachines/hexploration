@@ -1,0 +1,33 @@
+{
+  "assetId": "prop-glassroot-fronds",
+  "candidate": "artifacts/art/exports/prop-glassroot-fronds.png",
+  "reviewer": "Codex visual QA",
+  "reviewedAt": "2026-09-07",
+  "scores": {
+    "recognition": 4,
+    "agency": 3,
+    "specificity": 4,
+    "restraint": 4,
+    "continuity": 4,
+    "reusability": 4,
+    "accessibility": 4
+  },
+  "notes": {
+    "recognition": "Three pale mineral fronds read immediately as one jungle landmark at token scale.",
+    "agency": "The upward opening silhouette supports discovery, though choice remains intentionally code-native.",
+    "specificity": "Glass leaves rooted in weathered basalt feel specific to Xenovoya.",
+    "restraint": "One connected cluster with three broad blades and no ambient debris.",
+    "continuity": "Pale mineral glass, field ink, and localized green light preserve the visual language.",
+    "reusability": "Clean alpha, grounded base, and generous margins support varied tile placement.",
+    "accessibility": "The broad three-pronged silhouette survives without relying on hue."
+  },
+  "decision": "approved",
+  "candidateSha256": "7ac330564adbd3a55cb8d55ce718aba6d8d8a1da4271070d67126d761ff3011a",
+  "generation": {
+    "mode": "azure-image-generation",
+    "tool": "azure-foundry",
+    "model": "FLUX.2-pro",
+    "promptSha256": "56fdfffb508226f56c8373ff9f31d8c1d1042497df093189d0dd9c28fca1547f"
+  },
+  "joyScore": 9.5
+}

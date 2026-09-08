@@ -1,0 +1,33 @@
+{
+  "assetId": "environment-glassroot-cavern",
+  "candidate": "artifacts/art/exports/environment-glassroot-cavern.webp",
+  "reviewer": "Codex visual QA",
+  "reviewedAt": "2026-09-07",
+  "scores": {
+    "recognition": 4,
+    "agency": 4,
+    "specificity": 4,
+    "restraint": 3,
+    "continuity": 4,
+    "reusability": 4,
+    "accessibility": 4
+  },
+  "notes": {
+    "recognition": "The glassroot cavern and traversable broken route read immediately at card scale.",
+    "agency": "The foreground path creates a clear invitation to advance toward the discovery light.",
+    "specificity": "Root-like crystal growth, black basalt, and the restrained expedition path feel native to Xenovoya.",
+    "restraint": "The scene contains rich mineral detail, but keeps the highest contrast on the route and distant opening.",
+    "continuity": "Cyan discovery light, charcoal field values, and mineral geometry match the established world rules.",
+    "reusability": "The 1024 by 700 crop provides useful dark edge space and a stable center-right route for layered UI.",
+    "accessibility": "Route direction and depth remain readable through value, scale, and overlap without depending on color."
+  },
+  "decision": "approved",
+  "candidateSha256": "21d3db2a004e6f28bbd1be66ee74ef459a79229ee8f5fcb99027df2850884999",
+  "generation": {
+    "mode": "azure-image-generation",
+    "tool": "azure-foundry",
+    "model": "FLUX.2-pro",
+    "promptSha256": "69811afe21223c84b2454961abebc152c72d009874b3e57182fb0bb345e88bf2"
+  },
+  "joyScore": 9.8
+}

@@ -1,0 +1,33 @@
+{
+  "assetId": "prop-slate-spires",
+  "candidate": "artifacts/art/exports/prop-slate-spires.png",
+  "reviewer": "Codex visual QA",
+  "reviewedAt": "2026-09-07",
+  "scores": {
+    "recognition": 4,
+    "agency": 3,
+    "specificity": 4,
+    "restraint": 4,
+    "continuity": 4,
+    "reusability": 4,
+    "accessibility": 3
+  },
+  "notes": {
+    "recognition": "The joined twin-peak silhouette reads instantly as difficult mountain terrain.",
+    "agency": "Its narrow pass implies traversal pressure while leaving route signaling to the game.",
+    "specificity": "Layered slate planes and one restrained quartz seam avoid generic fantasy mountains.",
+    "restraint": "One connected ridge with broad faces and no manufactured ornament.",
+    "continuity": "Cool mineral planes and matte creases fit the approved slate material.",
+    "reusability": "Clean alpha and a grounded ridge base support varied scale and placement.",
+    "accessibility": "The strong peak silhouette survives color loss, though the dark internal planes need restrained runtime tinting."
+  },
+  "decision": "approved",
+  "candidateSha256": "f832d2db08df2c635dbd04136ccb3e2b016d271f4776282585fae23e9da132ad",
+  "generation": {
+    "mode": "azure-image-generation",
+    "tool": "azure-foundry",
+    "model": "FLUX.2-pro",
+    "promptSha256": "8b43e944101a677f6ba5deb7b02b72b8a575a8a64d6c5c1ac9ecaca1dd5dc169"
+  },
+  "joyScore": 9.3
+}

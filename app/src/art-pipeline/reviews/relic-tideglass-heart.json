@@ -1,0 +1,33 @@
+{
+  "assetId": "relic-tideglass-heart",
+  "candidate": "artifacts/art/exports/relic-tideglass-heart.png",
+  "reviewer": "Codex visual QA",
+  "reviewedAt": "2026-09-07",
+  "scores": {
+    "recognition": 4,
+    "agency": 3,
+    "specificity": 4,
+    "restraint": 4,
+    "continuity": 4,
+    "reusability": 4,
+    "accessibility": 4
+  },
+  "notes": {
+    "recognition": "The suspended glass shard remains a clear special object at both tested sizes.",
+    "agency": "Its calm contained current suggests recovery, while exact use is supplied by game-state copy.",
+    "specificity": "Weathered field bronze and living sea-glass belong to Xenovoya's relic vocabulary.",
+    "restraint": "One open hook and one luminous shard create a disciplined, non-iconic silhouette.",
+    "continuity": "The object shares the approved relics' practical cradle construction and restrained signal light.",
+    "reusability": "The clean alpha and open profile work as board prop, card focal, and inventory image.",
+    "accessibility": "The hooked cradle and suspended shard remain distinct without green color."
+  },
+  "decision": "approved",
+  "candidateSha256": "3363a77a60be0cf0fda0dc351b5b1371d48f417db517642f273f8e6f40a7af05",
+  "generation": {
+    "mode": "azure-image-generation",
+    "tool": "azure-foundry",
+    "model": "FLUX.2-pro",
+    "promptSha256": "aaed1edaa4758347729aa5192912ca3d183178d24dc1f861e5688fccd8842135"
+  },
+  "joyScore": 9.5
+}

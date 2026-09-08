@@ -1,0 +1,33 @@
+{
+  "assetId": "prop-route-fork-marker",
+  "candidate": "artifacts/art/exports/prop-route-fork-marker.png",
+  "reviewer": "Codex visual QA",
+  "reviewedAt": "2026-09-07",
+  "scores": {
+    "recognition": 4,
+    "agency": 4,
+    "specificity": 4,
+    "restraint": 4,
+    "continuity": 4,
+    "reusability": 4,
+    "accessibility": 3
+  },
+  "notes": {
+    "recognition": "The forked silhouette reads as a route decision immediately.",
+    "agency": "Two unequal branches make choice physical without using interface arrows.",
+    "specificity": "Field-made wood, cyan binding, and brass lantern fit Xenovoya's expedition craft.",
+    "restraint": "One stake and one light avoid decorative noise.",
+    "continuity": "Materials and restrained signal hierarchy match the landing beacon and campsite props.",
+    "reusability": "The narrow alpha silhouette can mark branch points without covering terrain.",
+    "accessibility": "The Y shape survives without color, though the lantern becomes subtle at 72 px."
+  },
+  "decision": "approved",
+  "candidateSha256": "8f0e613f4f750fe6e719d3fdb5525e826681380e48129d395db6e7369940c4c5",
+  "generation": {
+    "mode": "azure-image-generation",
+    "tool": "azure-foundry",
+    "model": "FLUX.2-pro",
+    "promptSha256": "aab406ca6462c84da65ce792165297a2b4149a39cf9993c64d0c2bd92b63771c"
+  },
+  "joyScore": 9.8
+}

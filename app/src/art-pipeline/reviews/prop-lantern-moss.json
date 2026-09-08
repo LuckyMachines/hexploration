@@ -1,0 +1,33 @@
+{
+  "assetId": "prop-lantern-moss",
+  "candidate": "artifacts/art/exports/prop-lantern-moss.png",
+  "reviewer": "Codex visual QA",
+  "reviewedAt": "2026-09-07",
+  "scores": {
+    "recognition": 4,
+    "agency": 3,
+    "specificity": 3,
+    "restraint": 4,
+    "continuity": 4,
+    "reusability": 4,
+    "accessibility": 4
+  },
+  "notes": {
+    "recognition": "The low moss island and three lantern bulbs remain readable as calm living ground.",
+    "agency": "The warm bulbs suggest a safe waypoint without replacing gameplay signals.",
+    "specificity": "The form is slightly familiar, but mineral ribs and disciplined signal light tie it to the world.",
+    "restraint": "A quiet low silhouette will not compete with explorers or routes.",
+    "continuity": "Olive growth, dark stone, and muted gold respect the established palette jobs.",
+    "reusability": "Clean alpha and a wide base support edge and center placements.",
+    "accessibility": "Low mound, fan shapes, and bulbs remain distinct in silhouette."
+  },
+  "decision": "approved",
+  "candidateSha256": "ac62e6475aa4741cbd0b488396319c14d37e9367ff9c7dc3863b1f09c82ba4a0",
+  "generation": {
+    "mode": "azure-image-generation",
+    "tool": "azure-foundry",
+    "model": "FLUX.2-pro",
+    "promptSha256": "d8c9dfe07fb3860e5b76d6282554d71e519785fbea885c6d2f1f21ed7ab2574c"
+  },
+  "joyScore": 9
+}

@@ -1,0 +1,33 @@
+{
+  "assetId": "terrain-slate-spires",
+  "candidate": "artifacts/art/exports/terrain-slate-spires.webp",
+  "reviewer": "Codex visual QA",
+  "reviewedAt": "2026-09-07",
+  "scores": {
+    "recognition": 4,
+    "agency": 3,
+    "specificity": 4,
+    "restraint": 4,
+    "continuity": 4,
+    "reusability": 4,
+    "accessibility": 4
+  },
+  "notes": {
+    "recognition": "Dense fractured slate reads as the hardest and highest terrain at a glance.",
+    "agency": "The heavy value mass reinforces movement cost while route feedback stays unobstructed.",
+    "specificity": "Faint cyan and green mineral inclusions connect natural slate to the Glassroot world.",
+    "restraint": "Pass B removes the square markings and deep architectural holes present in Pass A.",
+    "continuity": "Cool stone, weathered grain, and restrained mineral color match the 3D mountain silhouettes.",
+    "reusability": "Broad fractures remain useful under crops, rotation, and top-material tinting.",
+    "accessibility": "Strong relief and crack structure distinguish the biome without color."
+  },
+  "decision": "approved",
+  "candidateSha256": "801892fb44f1ecdbf935c7aa176166462b609dc1e56c7680c8d0f6d233030865",
+  "generation": {
+    "mode": "azure-image-generation",
+    "tool": "azure-foundry",
+    "model": "FLUX.2-pro",
+    "promptSha256": "f78038ac917baefd8f63186a79d320ef615e39e49a574e4a1157511f62c0741f"
+  },
+  "joyScore": 9.5
+}

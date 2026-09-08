@@ -1,0 +1,33 @@
+{
+  "assetId": "character-signal-cartographer-focal",
+  "candidate": "artifacts/art/exports/character-signal-cartographer-focal.png",
+  "reviewer": "Codex visual QA",
+  "reviewedAt": "2026-09-07",
+  "scores": {
+    "recognition": 4,
+    "agency": 3,
+    "specificity": 4,
+    "restraint": 3,
+    "continuity": 4,
+    "reusability": 4,
+    "accessibility": 4
+  },
+  "notes": {
+    "recognition": "Shoulder array, listening equipment, and field stance remain distinct at marker size.",
+    "agency": "The active signal tools imply coordination, though the surrounding board supplies the relationship context.",
+    "specificity": "Asymmetric survey equipment and localized cyan-green signals fit Xenovoya's expedition language.",
+    "restraint": "Equipment detail is denser than the other standees but the outer silhouette stays clear.",
+    "continuity": "Dark tactile field gear and information-colored lights preserve the art direction.",
+    "reusability": "Clean alpha and centered full-body framing work as a standee or portrait source.",
+    "accessibility": "The shoulder-array silhouette remains identifiable without its colored lights."
+  },
+  "decision": "approved",
+  "candidateSha256": "35030170b2e2554800e54c9897ae92ddf06f83e2b3dd66f956732f7cd6576d86",
+  "generation": {
+    "mode": "azure-image-generation",
+    "tool": "azure-foundry",
+    "model": "FLUX.2-pro",
+    "promptSha256": "8627d675f361c77e5ab90f568b3e60fb458d787045b2dbd71c040cdf430fdf08"
+  },
+  "joyScore": 9.3
+}

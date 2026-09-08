@@ -1,0 +1,33 @@
+{
+  "assetId": "character-relic-tender-focal",
+  "candidate": "artifacts/art/exports/character-relic-tender-focal.png",
+  "reviewer": "Codex visual QA",
+  "reviewedAt": "2026-09-07",
+  "scores": {
+    "recognition": 4,
+    "agency": 4,
+    "specificity": 4,
+    "restraint": 4,
+    "continuity": 4,
+    "reusability": 4,
+    "accessibility": 4
+  },
+  "notes": {
+    "recognition": "Protective posture and the held seed make the tender role immediate at small size.",
+    "agency": "Hands around the relic communicate care, responsibility, and carried expedition value.",
+    "specificity": "The living mineral seed and practical layered field clothing are strongly world-specific.",
+    "restraint": "One figure and one contained light preserve a simple board-readable silhouette.",
+    "continuity": "Dark fabric, warm relic light, and restrained green detail fit the established hierarchy.",
+    "reusability": "Clean alpha and full-body framing support standee, card, and memory roles.",
+    "accessibility": "Pose and object relationship remain understandable without color."
+  },
+  "decision": "approved",
+  "candidateSha256": "88b52622468321c727057b16d278377419e9b7bb7b765685c215f54c784b5cc6",
+  "generation": {
+    "mode": "azure-image-generation",
+    "tool": "azure-foundry",
+    "model": "FLUX.2-pro",
+    "promptSha256": "dcdddd4d232f42d6d7fca064f360e2b7fe006063333c8f6958a3a5eb8ed721f0"
+  },
+  "joyScore": 10
+}

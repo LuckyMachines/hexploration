@@ -1,0 +1,33 @@
+{
+  "assetId": "prop-landing-beacon",
+  "candidate": "artifacts/art/exports/prop-landing-beacon.png",
+  "reviewer": "Codex visual QA",
+  "reviewedAt": "2026-09-07",
+  "scores": {
+    "recognition": 4,
+    "agency": 4,
+    "specificity": 4,
+    "restraint": 4,
+    "continuity": 4,
+    "reusability": 4,
+    "accessibility": 4
+  },
+  "notes": {
+    "recognition": "The tall cyan vane and tripod communicate a survey landing beacon immediately.",
+    "agency": "The forward-facing gold instrument gives the starting position a clear orientation cue.",
+    "specificity": "Weathered field hardware and mineral glass match Xenovoya rather than generic military technology.",
+    "restraint": "One compact instrument with two localized lights and no secondary clutter.",
+    "continuity": "Field metal, blueprint cyan, and compass gold preserve the established palette roles.",
+    "reusability": "Clean alpha, visible feet, and generous margin support board, card, and onboarding uses.",
+    "accessibility": "Tripod and vane remain readable by silhouette and value without color."
+  },
+  "decision": "approved",
+  "candidateSha256": "007eb5f9976d06098208fb113184b81a9a7125cb9ab614ae0895161d3e51b920",
+  "generation": {
+    "mode": "azure-image-generation",
+    "tool": "azure-foundry",
+    "model": "FLUX.2-pro",
+    "promptSha256": "dcb42b0eefcb9b0a4b924f9ac2f5b85946a8eafe3d3f2df64bf9856dab35def0"
+  },
+  "joyScore": 10
+}

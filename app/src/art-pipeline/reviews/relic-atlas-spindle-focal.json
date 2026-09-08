@@ -1,0 +1,33 @@
+{
+  "assetId": "relic-atlas-spindle-focal",
+  "candidate": "artifacts/art/exports/relic-atlas-spindle-focal.png",
+  "reviewer": "Codex visual QA",
+  "reviewedAt": "2026-09-07",
+  "scores": {
+    "recognition": 4,
+    "agency": 3,
+    "specificity": 4,
+    "restraint": 4,
+    "continuity": 4,
+    "reusability": 4,
+    "accessibility": 4
+  },
+  "notes": {
+    "recognition": "The suspended violet shard and enclosing split spindle read immediately as one collectible relic.",
+    "agency": "The single gold filament suggests a preserved route, though the choice it encodes needs supporting copy in narrative use.",
+    "specificity": "Weathered survey metal, mineral glass, and an asymmetric non-compass silhouette feel specific to Xenovoya.",
+    "restraint": "One isolated object carries the frame, with violet and gold restricted to the meaningful core and route filament.",
+    "continuity": "The material treatment, dark painted contour, and signal palette match the board cutouts and existing relic family.",
+    "reusability": "The square alpha asset has generous margin and remains legible as a board focal, inventory object, or memory-card layer.",
+    "accessibility": "The outer spindle, central shard, and filament remain separable by silhouette and value without relying on hue."
+  },
+  "decision": "approved",
+  "candidateSha256": "22fc477d24fe8d1be524445cc4d6362a8be0dac59201c14820fba92e41b0fade",
+  "generation": {
+    "mode": "azure-image-generation",
+    "tool": "azure-foundry",
+    "model": "FLUX.2-pro",
+    "promptSha256": "da68fa914d15530ef8066da3ee7988f70705c60472d960b66e0749ba35c7be85"
+  },
+  "joyScore": 9.5
+}

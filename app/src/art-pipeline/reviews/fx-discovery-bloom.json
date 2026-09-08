@@ -1,0 +1,33 @@
+{
+  "assetId": "fx-discovery-bloom",
+  "candidate": "artifacts/art/exports/fx-discovery-bloom.png",
+  "reviewer": "Codex visual QA",
+  "reviewedAt": "2026-09-06",
+  "scores": {
+    "recognition": 3,
+    "agency": 3,
+    "specificity": 4,
+    "restraint": 4,
+    "continuity": 4,
+    "reusability": 4,
+    "accessibility": 3
+  },
+  "notes": {
+    "recognition": "The small point and expanding mineral wave read as a reveal effect.",
+    "agency": "The effect directs attention without inventing a reward or outcome.",
+    "specificity": "The irregular mineral wave and broken hex echo avoid a generic scanner treatment.",
+    "restraint": "Most of the canvas remains transparent and the signal stays quiet.",
+    "continuity": "Blueprint cyan and the faint oxide trace keep the established semantic roles.",
+    "reusability": "True alpha and broad padding support additive layering at multiple scales.",
+    "accessibility": "Shape and luminance communicate the reveal, though the faintest trace is color-dependent."
+  },
+  "decision": "approved",
+  "candidateSha256": "70b6d30fc0bd02053f97a416d64e69d5d3d47af2a59b023d88adb34b3d2793a5",
+  "generation": {
+    "mode": "azure-image-generation",
+    "tool": "azure-foundry",
+    "model": "FLUX.2-pro",
+    "promptSha256": "f9cc54a6fb5db058944bd21c9de7fd28e45ab8fd7628cde712fa2ab90cd02d84"
+  },
+  "joyScore": 8.8
+}

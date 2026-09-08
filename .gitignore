@@ -27,4 +27,5 @@ reports/local-stack/
 reports/simulator/
 reports/ui-density/
 reports/verification/
+artifacts/art/
 app/public/audio/*.zip

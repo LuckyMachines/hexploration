@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://xenovoya.com/schemas/art-direction.schema.json",
+  "title": "Xenovoya art direction",
+  "type": "object",
+  "required": ["version", "name", "promise", "visualDna", "palette", "emotions", "partRoles", "assetTypes", "qualityGates"],
+  "properties": {
+    "version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+    "name": { "type": "string", "minLength": 1 },
+    "promise": { "type": "string", "minLength": 1 },
+    "visualDna": { "type": "array", "minItems": 3, "items": { "type": "string" } },
+    "palette": { "type": "array", "minItems": 5 },
+    "emotions": { "type": "array", "minItems": 6 },
+    "partRoles": { "type": "array", "minItems": 4 },
+    "assetTypes": { "type": "array", "minItems": 4 },
+    "qualityGates": { "type": "array", "minItems": 5 },
+    "minimumJoyScore": { "type": "number", "minimum": 0, "maximum": 10 },
+    "minimumGateScore": { "type": "number", "minimum": 0, "maximum": 4 }
+  },
+  "additionalProperties": true
+}

@@ -1,0 +1,133 @@
+{
+  "$schema": "./schema/asset-3d-manifest.schema.json",
+  "version": "1.0.0",
+  "artDirectionVersion": "1.1.0",
+  "name": "Xenovoya Multi-view 3D Source Pipeline",
+  "generation": {
+    "provider": "azure-foundry",
+    "draftModel": "FLUX.2-pro",
+    "consistencyModel": "gpt-image-2",
+    "sheet": {
+      "width": 1536,
+      "height": 1024,
+      "columns": 3,
+      "rows": 2,
+      "background": "#ffffff"
+    },
+    "views": [
+      { "id": "front", "yaw": 0, "cell": 0 },
+      { "id": "front-right", "yaw": 60, "cell": 1 },
+      { "id": "back-right", "yaw": 120, "cell": 2 },
+      { "id": "back", "yaw": 180, "cell": 3 },
+      { "id": "back-left", "yaw": 240, "cell": 4 },
+      { "id": "front-left", "yaw": 300, "cell": 5 }
+    ]
+  },
+  "trellis": {
+    "server": "http://127.0.0.1:8192",
+    "mode": "multiview",
+    "experimentalEvidenceMode": "multiimage",
+    "semanticViewMap": {
+      "front": "front",
+      "right": "right",
+      "back": "back",
+      "left": "left"
+    },
+    "pipeline": "1024_cascade",
+    "steps": 20,
+    "sparseResolution": 64,
+    "maxTokens": 98304,
+    "textureSize": 2048,
+    "sampler": "heun",
+    "frontAxis": "z",
+    "blendTemperature": 2.0,
+    "dinoLock": 0.35,
+    "dinoSubsteps": 2,
+    "dinoFoundationCap": 0.92,
+    "conditioningSubjectScale": 0.96,
+    "holeFillAlgorithm": "flood_fill",
+    "holeIterations": 2
+  },
+  "assets": [
+    {
+      "id": "relic-sunstone-lens-focal",
+      "sourceAssetId": "relic-sunstone-lens-focal",
+      "seed": 41001,
+      "decimationTarget": 140000,
+      "cardinalCrop": { "layout": "2x2", "topInset": 0 },
+      "physicalBrief": "A palm-sized solid relic with believable thickness, a continuous faceted metal shell, inset glass aperture, and no floating pieces."
+    },
+    {
+      "id": "relic-atlas-spindle-focal",
+      "sourceAssetId": "relic-atlas-spindle-focal",
+      "seed": 41002,
+      "decimationTarget": 160000,
+      "cardinalCrop": {
+        "layout": "4x1",
+        "regions": {
+          "front": { "x": 0, "y": 80, "width": 315, "height": 650 },
+          "right": { "x": 280, "y": 80, "width": 285, "height": 650 },
+          "back": { "x": 520, "y": 80, "width": 330, "height": 650 },
+          "left": { "x": 780, "y": 80, "width": 244, "height": 650 }
+        }
+      },
+      "physicalBrief": "A hand-scale open spindle frame with a physically supported suspended mineral shard and sufficient strut thickness for a watertight reconstruction."
+    },
+    {
+      "id": "relic-tideglass-heart",
+      "sourceAssetId": "relic-tideglass-heart",
+      "seed": 41003,
+      "decimationTarget": 150000,
+      "cardinalCrop": {
+        "layout": "4x1",
+        "regions": {
+          "front": { "x": 0, "y": 100, "width": 300, "height": 720 },
+          "right": { "x": 800, "y": 100, "width": 224, "height": 720 },
+          "back": { "x": 250, "y": 100, "width": 330, "height": 720 },
+          "left": { "x": 570, "y": 100, "width": 270, "height": 720 }
+        }
+      },
+      "physicalBrief": "A hand-scale crescent cradle with a continuous rounded metal body and securely seated translucent sea-glass chamber."
+    },
+    {
+      "id": "prop-landing-beacon",
+      "sourceAssetId": "prop-landing-beacon",
+      "seed": 41004,
+      "decimationTarget": 180000,
+      "cardinalCrop": {
+        "layout": "4x1",
+        "regions": {
+          "front": { "x": 0, "y": 90, "width": 280, "height": 700 },
+          "right": { "x": 250, "y": 90, "width": 270, "height": 700 },
+          "back": { "x": 480, "y": 90, "width": 310, "height": 700 },
+          "left": { "x": 750, "y": 90, "width": 274, "height": 700 }
+        }
+      },
+      "physicalBrief": "A compact human-scale tripod beacon with three complete load-bearing feet, a sturdy central housing, and an inset orientation vane."
+    },
+    {
+      "id": "prop-campsite-shelter",
+      "sourceAssetId": "prop-campsite-shelter",
+      "seed": 41005,
+      "decimationTarget": 220000,
+      "cardinalCrop": { "layout": "2x2", "topInset": 28 },
+      "physicalBrief": "One connected low expedition shelter assembly with believable fabric thickness, a coherent rear wall, two attached packs, and one contained safety lantern."
+    },
+    {
+      "id": "prop-route-fork-marker",
+      "sourceAssetId": "prop-route-fork-marker",
+      "seed": 41006,
+      "decimationTarget": 140000,
+      "cardinalCrop": {
+        "layout": "4x1",
+        "regions": {
+          "front": { "x": 0, "y": 0, "width": 280, "height": 900 },
+          "right": { "x": 250, "y": 0, "width": 270, "height": 900 },
+          "back": { "x": 480, "y": 0, "width": 310, "height": 900 },
+          "left": { "x": 750, "y": 0, "width": 274, "height": 900 }
+        }
+      },
+      "physicalBrief": "A freestanding survey marker with one sturdy base stake and two unequal but connected mineral vanes; every visible component must have believable rear geometry."
+    }
+  ]
+}

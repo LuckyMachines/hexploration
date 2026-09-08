@@ -1,0 +1,2007 @@
+{
+  "$schema": "./schema/asset-manifest.schema.json",
+  "version": "1.6.0",
+  "artDirectionVersion": "1.1.0",
+  "managedRoots": [
+    "app/public/images/site-refresh",
+    "app/public/images/art"
+  ],
+  "assets": [
+    {
+      "id": "marketing-alien-gate-hero",
+      "name": "Alien Gate Hero",
+      "family": "marketing",
+      "status": "approved",
+      "emotionalBeat": "discovery",
+      "assetType": "hero-wide",
+      "partRole": "backplate",
+      "output": {
+        "path": "app/public/images/site-refresh/hero-bg.webp",
+        "width": 2400,
+        "height": 1000,
+        "format": "webp",
+        "alpha": false,
+        "maxBytes": 350000,
+        "safeZone": "left-42-percent"
+      },
+      "prompt": {
+        "primaryRequest": "A monumental faceted hexagonal expedition gate hovering above an unexplored alien basin.",
+        "scene": "Distant mineral spires, sparse planets, and a deep horizon with open foreground for a dark interface overlay.",
+        "subject": "One ancient survey gate with a star-filled opening and weathered technological surfaces.",
+        "composition": "Ultra-wide establishing image; gate on the right; calm low-detail negative space on the left; strong silhouette at small size.",
+        "lighting": "Cyan discovery light on the gate, violet atmospheric depth, restrained gold at the horizon.",
+        "constraints": [
+          "No explorers",
+          "No embedded text",
+          "No additional portals"
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/site-refresh/hero-bg.webp",
+          "role": "approved visual anchor"
+        }
+      ],
+      "provenance": {
+        "origin": "existing-approved-art",
+        "reviewedAt": "2026-09-06",
+        "sha256": "b3e871eeabb27d161fa8af266107449a9105dc0a4823432efec64e993b98f377"
+      }
+    },
+    {
+      "id": "feature-cooperative-signals",
+      "name": "Cooperative Signals",
+      "family": "marketing",
+      "status": "approved",
+      "emotionalBeat": "cooperation",
+      "assetType": "feature-landscape",
+      "partRole": "signal",
+      "output": {
+        "path": "app/public/images/site-refresh/feature-cooperative.webp",
+        "width": 1024,
+        "height": 700,
+        "format": "webp",
+        "alpha": false,
+        "maxBytes": 180000,
+        "safeZone": "center"
+      },
+      "prompt": {
+        "primaryRequest": "Three distinct expedition signals linked through a shared geometric field.",
+        "scene": "Dark quiet instrument space with minimal atmospheric texture.",
+        "subject": "Three crystalline survey nodes whose routes visibly converge around one shared center.",
+        "composition": "Balanced horizontal triad with a clear cooperative relationship and generous outer margin.",
+        "lighting": "Localized cyan and oxide-green connection light with restrained relic-violet depth.",
+        "constraints": [
+          "No text",
+          "No anonymous crowd",
+          "No isolated unrelated icons"
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/site-refresh/feature-cooperative.webp",
+          "role": "approved visual anchor"
+        }
+      ],
+      "provenance": {
+        "origin": "existing-approved-art",
+        "reviewedAt": "2026-09-06",
+        "sha256": "1f32da63657d2f253ec51fca707076adbd0aa7b18c75f8ac521377c397372ed6"
+      }
+    },
+    {
+      "id": "feature-expedition-route",
+      "name": "Expedition Route",
+      "family": "marketing",
+      "status": "approved",
+      "emotionalBeat": "agency",
+      "assetType": "feature-landscape",
+      "partRole": "route",
+      "output": {
+        "path": "app/public/images/site-refresh/feature-expedition.webp",
+        "width": 1024,
+        "height": 700,
+        "format": "webp",
+        "alpha": false,
+        "maxBytes": 180000,
+        "safeZone": "center"
+      },
+      "prompt": {
+        "primaryRequest": "A navigable luminous route crossing a dark alien mineral plain toward an unknown signal.",
+        "scene": "Low open basin with basalt spires and a distant column of discovery light.",
+        "subject": "One cyan primary route with a restrained gold alternate path.",
+        "composition": "Low wide viewpoint; route begins at the lower edge and creates a readable decision toward the horizon.",
+        "lighting": "Dark field, localized cyan route light, thin gold choice accents.",
+        "constraints": [
+          "No vehicles",
+          "No text",
+          "No more than two route choices"
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/site-refresh/feature-expedition.webp",
+          "role": "approved visual anchor"
+        }
+      ],
+      "provenance": {
+        "origin": "existing-approved-art",
+        "reviewedAt": "2026-09-06",
+        "sha256": "b2583fd37b0eb3e20741eaf7e0df417bf5be9b0019f7a926a9b8975bba1540f1"
+      }
+    },
+    {
+      "id": "feature-hex-terrain",
+      "name": "Surveyed Hex Terrain",
+      "family": "marketing",
+      "status": "approved",
+      "emotionalBeat": "discovery",
+      "assetType": "feature-landscape",
+      "partRole": "texture",
+      "output": {
+        "path": "app/public/images/site-refresh/feature-hex-grid.webp",
+        "width": 1024,
+        "height": 700,
+        "format": "webp",
+        "alpha": false,
+        "maxBytes": 180000,
+        "safeZone": "center"
+      },
+      "prompt": {
+        "primaryRequest": "A field of raised mineral hex tiles transitioning from hidden darkness into surveyed light.",
+        "scene": "Abstract terrain surface with geological variation and no horizon.",
+        "subject": "Interlocking imperfect hex tiles with a readable cluster of newly revealed terrain.",
+        "composition": "Oblique close view; one illuminated reveal cluster; edges suitable for card cropping.",
+        "lighting": "Localized blueprint-cyan reveal light and faint relic-violet ambient depth.",
+        "constraints": [
+          "No letters or numbers",
+          "No uniform checkerboard",
+          "No full-frame glow"
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/site-refresh/feature-hex-grid.webp",
+          "role": "approved visual anchor"
+        }
+      ],
+      "provenance": {
+        "origin": "existing-approved-art",
+        "reviewedAt": "2026-09-06",
+        "sha256": "eadf05cfabf2beee2ff4fd06797dee4c5268aa16b8e8aaf7c79854a496e59c34"
+      }
+    },
+    {
+      "id": "feature-chain-proof",
+      "name": "Quiet Chain Proof",
+      "family": "marketing",
+      "status": "approved",
+      "emotionalBeat": "trust",
+      "assetType": "feature-landscape",
+      "partRole": "proof",
+      "output": {
+        "path": "app/public/images/site-refresh/feature-onchain.webp",
+        "width": 1024,
+        "height": 700,
+        "format": "webp",
+        "alpha": false,
+        "maxBytes": 180000,
+        "safeZone": "center"
+      },
+      "prompt": {
+        "primaryRequest": "A stable field of dark translucent records with a sparse set of confirmed gold signals.",
+        "scene": "Abstract survey archive viewed from above.",
+        "subject": "Precise repeating cells with a few clearly confirmed records and calm system depth.",
+        "composition": "Top-down field with stable rhythm and no single oversized token.",
+        "lighting": "Deep violet structure, quiet gold confirmations, minimal bloom.",
+        "constraints": [
+          "No coins",
+          "No chains",
+          "No padlocks",
+          "No currency symbols",
+          "No text"
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/site-refresh/feature-onchain.webp",
+          "role": "approved visual anchor"
+        }
+      ],
+      "provenance": {
+        "origin": "existing-approved-art",
+        "reviewedAt": "2026-09-06",
+        "sha256": "25cf81987779525b149985290a02aa29384c76a184e1b54b0d629e3262a54a0e"
+      }
+    },
+    {
+      "id": "gameplay-board-proof-one",
+      "name": "Gameplay Proof One",
+      "family": "proof",
+      "status": "approved",
+      "emotionalBeat": "agency",
+      "assetType": "gameplay-proof",
+      "partRole": "proof",
+      "output": {
+        "path": "app/public/images/site-refresh/gameplay-1.webp",
+        "width": 1216,
+        "height": 832,
+        "format": "webp",
+        "alpha": false,
+        "maxBytes": 240000,
+        "safeZone": "none"
+      },
+      "prompt": {
+        "primaryRequest": "A truthful current Xenovoya gameplay capture showing the board as the primary decision surface.",
+        "scene": "The shipped player client, captured from deterministic seeded gameplay.",
+        "subject": "Board, current route, pressure, crew state, and next action visible in their real interface hierarchy.",
+        "composition": "Product capture only; no invented UI; board dominant; useful 3:2 crop.",
+        "lighting": "Native interface rendering.",
+        "constraints": [
+          "Must come from the current build",
+          "No generated interface",
+          "No post-added labels"
+        ]
+      },
+      "references": [],
+      "provenance": {
+        "origin": "deterministic-product-capture",
+        "reviewedAt": "2026-09-06",
+        "sha256": "4d70e8e2b3ac4151f639c288d45b744e539cc81f6cfa34b9cc707a4d27a8f9e4"
+      }
+    },
+    {
+      "id": "gameplay-board-proof-two",
+      "name": "Gameplay Proof Two",
+      "family": "proof",
+      "status": "approved",
+      "emotionalBeat": "jeopardy",
+      "assetType": "gameplay-proof",
+      "partRole": "proof",
+      "output": {
+        "path": "app/public/images/site-refresh/gameplay-2.webp",
+        "width": 1216,
+        "height": 832,
+        "format": "webp",
+        "alpha": false,
+        "maxBytes": 240000,
+        "safeZone": "none"
+      },
+      "prompt": {
+        "primaryRequest": "A truthful current Xenovoya gameplay capture showing a specific preventable expedition cost.",
+        "scene": "The shipped player client, captured from deterministic seeded gameplay.",
+        "subject": "Board, endangered value, pressure, crew state, and recovery action visible together.",
+        "composition": "Product capture only; no invented UI; consequence readable at thumbnail size.",
+        "lighting": "Native interface rendering.",
+        "constraints": [
+          "Must come from the current build",
+          "No generated interface",
+          "No post-added labels"
+        ]
+      },
+      "references": [],
+      "provenance": {
+        "origin": "deterministic-product-capture",
+        "reviewedAt": "2026-09-06",
+        "sha256": "81cf5aea3d9bbad424aa0913f4073f2ab663e2f5a87a06aa0ffd0907e607e43e"
+      }
+    },
+    {
+      "id": "gameplay-board-proof-three",
+      "name": "Gameplay Proof Three",
+      "family": "proof",
+      "status": "approved",
+      "emotionalBeat": "remembrance",
+      "assetType": "gameplay-proof",
+      "partRole": "proof",
+      "output": {
+        "path": "app/public/images/site-refresh/gameplay-3.webp",
+        "width": 1216,
+        "height": 832,
+        "format": "webp",
+        "alpha": false,
+        "maxBytes": 240000,
+        "safeZone": "none"
+      },
+      "prompt": {
+        "primaryRequest": "A truthful current Xenovoya result capture that preserves the crew's decisive moment.",
+        "scene": "The shipped player client at resolution or expedition memory.",
+        "subject": "Outcome, crew, cost, route evidence, and replay invitation visible in the real interface.",
+        "composition": "Product capture only; no invented UI; result story legible in one scan.",
+        "lighting": "Native interface rendering.",
+        "constraints": [
+          "Must come from the current build",
+          "No generated interface",
+          "No post-added labels"
+        ]
+      },
+      "references": [],
+      "provenance": {
+        "origin": "deterministic-product-capture",
+        "reviewedAt": "2026-09-06",
+        "sha256": "42900f86f0ad85908af636917108f474f44277a72f2abaad0c27960e438cf248"
+      }
+    },
+    {
+      "id": "reference-tablet-hero",
+      "name": "Tablet Hero Reference",
+      "family": "reference",
+      "status": "reference",
+      "emotionalBeat": "agency",
+      "assetType": "reference-only",
+      "partRole": "proof",
+      "output": {
+        "path": "app/public/images/site-refresh/option-tablet-hero.png",
+        "width": 1672,
+        "height": 941,
+        "format": "png",
+        "alpha": false,
+        "maxBytes": 3000000,
+        "safeZone": "left-40-percent"
+      },
+      "prompt": {
+        "primaryRequest": "A historical concept reference for the expedition tablet framing and board-first hierarchy.",
+        "scene": "A survey tablet floating above a dark mineral hex landscape.",
+        "subject": "One rugged tablet showing a route across an alien board.",
+        "composition": "Wide concept frame with tablet on the right and atmospheric space on the left.",
+        "lighting": "Restrained gold instrument light over dark green-black terrain.",
+        "constraints": [
+          "Reference only",
+          "Do not treat the generated interface as product truth"
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/site-refresh/option-tablet-hero.png",
+          "role": "historical composition reference"
+        }
+      ],
+      "provenance": {
+        "origin": "legacy-concept-reference",
+        "reviewedAt": "2026-09-06",
+        "sha256": "3484a453f00cb8aecce78c58d67b749347e323d05cba42ab4369c89fca3d5e9c"
+      }
+    },
+    {
+      "id": "reference-social-board",
+      "name": "Social Board Reference",
+      "family": "reference",
+      "status": "reference",
+      "emotionalBeat": "cooperation",
+      "assetType": "reference-only",
+      "partRole": "proof",
+      "output": {
+        "path": "app/public/images/site-refresh/option-social-board.png",
+        "width": 1254,
+        "height": 1254,
+        "format": "png",
+        "alpha": false,
+        "maxBytes": 3000000,
+        "safeZone": "center"
+      },
+      "prompt": {
+        "primaryRequest": "A historical concept reference for a square shared-board marketing composition.",
+        "scene": "A dark mineral expedition board surrounded by sparse instrument traces and fog.",
+        "subject": "Four crew markers, one shared route, a protected landing, a relic, and a localized danger field.",
+        "composition": "Square overhead composition with a readable board silhouette and one dominant route.",
+        "lighting": "Gold destination, cyan route, green safety, and localized signal-red jeopardy.",
+        "constraints": [
+          "Reference only",
+          "Do not treat generated board state as product truth"
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/site-refresh/option-social-board.png",
+          "role": "historical composition reference"
+        }
+      ],
+      "provenance": {
+        "origin": "legacy-concept-reference",
+        "reviewedAt": "2026-09-06",
+        "sha256": "467eaaf6b2462b905e59913e094419c4631a4ee748769aad50d3454e10ef3a21"
+      }
+    },
+    {
+      "id": "reference-gameplay-concept",
+      "name": "Gameplay Concept Reference",
+      "family": "reference",
+      "status": "reference",
+      "emotionalBeat": "agency",
+      "assetType": "reference-only",
+      "partRole": "proof",
+      "output": {
+        "path": "app/public/images/site-refresh/option-gameplay-capture.png",
+        "width": 1448,
+        "height": 1086,
+        "format": "png",
+        "alpha": false,
+        "maxBytes": 3000000,
+        "safeZone": "center"
+      },
+      "prompt": {
+        "primaryRequest": "A historical concept reference for route clarity, crew presence, relic value, and escape pressure.",
+        "scene": "An overhead mineral hex field with a route from landing to relic and extraction.",
+        "subject": "Four explorer markers, one legible route, one relic goal, and supporting status clusters.",
+        "composition": "Landscape game-board concept with central board dominance and edge telemetry.",
+        "lighting": "Blue route light, gold value, green extraction, and red consequence accents.",
+        "constraints": [
+          "Reference only",
+          "Do not treat generated controls or status graphics as product truth"
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/site-refresh/option-gameplay-capture.png",
+          "role": "historical hierarchy reference"
+        }
+      ],
+      "provenance": {
+        "origin": "legacy-concept-reference",
+        "reviewedAt": "2026-09-06",
+        "sha256": "2053c663c66ccf6fe775a08c8f360459655effd18059192ef771a2d11fa935e4"
+      }
+    },
+    {
+      "id": "terrain-verdant-signal-base",
+      "name": "Verdant Signal Terrain Base",
+      "family": "game-part",
+      "status": "approved",
+      "emotionalBeat": "discovery",
+      "assetType": "tileable-texture",
+      "partRole": "texture",
+      "output": {
+        "path": "app/public/images/art/terrain/verdant-signal-base.webp",
+        "width": 1024,
+        "height": 1024,
+        "format": "webp",
+        "alpha": false,
+        "maxBytes": 350000,
+        "safeZone": "tileable"
+      },
+      "prompt": {
+        "primaryRequest": "A seamless alien terrain material for the Verdant Signal sector.",
+        "scene": "Top-down mineral ground with subtle moss-like circuitry and weathered basalt seams.",
+        "subject": "Quiet reusable terrain with no unique landmark or baked route.",
+        "composition": "Orthographic square texture; seamless on every edge; even scale and lighting.",
+        "lighting": "Neutral low-contrast ambient light suitable for UI tinting.",
+        "constraints": [
+          "Genuinely seamless",
+          "No focal object",
+          "No baked hex outline",
+          "No text"
+        ],
+        "variationDirection": "emphasize large calm basalt plates, sparse moss-like circuitry, and extremely subtle seam transitions. Keep all four edges seamless and avoid any center focal point."
+      },
+      "references": [
+        {
+          "path": "app/public/images/site-refresh/feature-hex-grid.webp",
+          "role": "material and color reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-generation",
+        "reviewedAt": "2026-09-06",
+        "sha256": "c4537d475dc1cc45339aa8f8aa7b5b381ef0240bfbca90967b0313802e768dfa",
+        "review": "app/src/art-pipeline/reviews/terrain-verdant-signal-base.json",
+        "promptSha256": "25d2b9850d9c780dcc3e72af11491f7137de23f765e58e066d6803a756c65c43"
+      }
+    },
+    {
+      "id": "terrain-glassroot-canopy",
+      "name": "Glassroot Canopy Terrain",
+      "family": "game-part",
+      "status": "approved",
+      "emotionalBeat": "discovery",
+      "assetType": "tileable-texture",
+      "partRole": "texture",
+      "output": {
+        "path": "app/public/images/art/terrain/glassroot-canopy.webp",
+        "width": 1024,
+        "height": 1024,
+        "format": "webp",
+        "alpha": false,
+        "maxBytes": 350000,
+        "safeZone": "tileable"
+      },
+      "prompt": {
+        "primaryRequest": "A seamless top-down jungle floor material for Xenovoya's living Glassroot canopy.",
+        "scene": "Weathered basalt soil threaded by sparse translucent roots, damp mineral moss, and tiny pale green glass leaves.",
+        "subject": "Quiet reusable jungle ground with broad readable material patches and no unique landmark.",
+        "composition": "Strict orthographic square texture; even scale; seamless on every edge; no baked perspective or hex outline.",
+        "lighting": "Neutral diffuse field light with restrained oxide-green bioluminescence inside a few roots.",
+        "constraints": [
+          "Genuinely seamless",
+          "No central focal object",
+          "No trees viewed from the side",
+          "No route, symbols, text, logos, or watermark"
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/environments/glassroot-cavern.webp",
+          "role": "approved material and palette reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-generation",
+        "reviewedAt": "2026-09-07",
+        "sha256": "9cecffde3ed906996ffdd78d6e9d6676fd503c6c6347bb5cda5a93614d8ae7e4",
+        "review": "app/src/art-pipeline/reviews/terrain-glassroot-canopy.json",
+        "promptSha256": "b208eec3a3b713f23ce6840e1e01a9ec4a52af82c53e5a08f7d7eea5ceb73090"
+      }
+    },
+    {
+      "id": "terrain-lantern-moss",
+      "name": "Lantern Moss Plains Terrain",
+      "family": "game-part",
+      "status": "approved",
+      "emotionalBeat": "relief",
+      "assetType": "tileable-texture",
+      "partRole": "texture",
+      "output": {
+        "path": "app/public/images/art/terrain/lantern-moss.webp",
+        "width": 1024,
+        "height": 1024,
+        "format": "webp",
+        "alpha": false,
+        "maxBytes": 350000,
+        "safeZone": "tileable"
+      },
+      "prompt": {
+        "primaryRequest": "A seamless top-down alien plains material called Lantern Moss.",
+        "scene": "Soft olive mineral turf, low silver-green lichen fans, fine dark soil seams, and rare muted gold spores.",
+        "subject": "Open calm traversable ground with tactile variation but no single plant or landmark.",
+        "composition": "Strict orthographic square texture; seamless on every edge; broad low-frequency patches that remain readable on a small hex tile.",
+        "lighting": "Even overcast ambient light with tiny localized gold warmth and no cast shadows.",
+        "constraints": [
+          "Genuinely seamless",
+          "No central focal object",
+          "No horizon or side-view vegetation",
+          "No route, symbols, text, logos, or watermark"
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/terrain/verdant-signal-base.webp",
+          "role": "approved scale and restraint reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-generation",
+        "reviewedAt": "2026-09-07",
+        "sha256": "1db422db5782cf4e08905186a841a2a86f47f8b9cadc1834e56c0e38297ace6d",
+        "review": "app/src/art-pipeline/reviews/terrain-lantern-moss.json",
+        "promptSha256": "feb153d09dbedf6f034800d70bf5e08dce9ab35cfda321ac03f17896be816b92"
+      }
+    },
+    {
+      "id": "terrain-emberglass-dunes",
+      "name": "Emberglass Dunes Terrain",
+      "family": "game-part",
+      "status": "approved",
+      "emotionalBeat": "agency",
+      "assetType": "tileable-texture",
+      "partRole": "texture",
+      "output": {
+        "path": "app/public/images/art/terrain/emberglass-dunes.webp",
+        "width": 1024,
+        "height": 1024,
+        "format": "webp",
+        "alpha": false,
+        "maxBytes": 350000,
+        "safeZone": "tileable"
+      },
+      "prompt": {
+        "primaryRequest": "A seamless top-down alien desert material called Emberglass Dunes.",
+        "scene": "Wind-combed ochre mineral dust crossed by dark basalt grains and small translucent amber glass fragments.",
+        "subject": "Quiet reusable desert ground with directional grain but no landmark or object cluster.",
+        "composition": "Strict orthographic square texture; seamless on every edge; broad ripples and readable material scale for small hex tiles.",
+        "lighting": "Neutral diffuse light with restrained warm mineral reflections and no hard cast shadows.",
+        "constraints": [
+          "Genuinely seamless",
+          "No central focal object",
+          "No dunes seen from the side or horizon",
+          "No route, symbols, text, logos, or watermark"
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/site-refresh/feature-expedition.webp",
+          "role": "approved route-world material reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-generation",
+        "reviewedAt": "2026-09-07",
+        "sha256": "6d14ca1c2e647c76bbf7b70d2abf5dc8d320207587c05f356cd4a9a7a14e23b8",
+        "review": "app/src/art-pipeline/reviews/terrain-emberglass-dunes.json",
+        "promptSha256": "d48d29c62e2e945386e43f63854e1f680484e481a78e4571e25669069bcbf5c4"
+      }
+    },
+    {
+      "id": "terrain-slate-spires",
+      "name": "Slate Spires Mountain Terrain",
+      "family": "game-part",
+      "status": "approved",
+      "emotionalBeat": "jeopardy",
+      "assetType": "tileable-texture",
+      "partRole": "texture",
+      "output": {
+        "path": "app/public/images/art/terrain/slate-spires.webp",
+        "width": 1024,
+        "height": 1024,
+        "format": "webp",
+        "alpha": false,
+        "maxBytes": 350000,
+        "safeZone": "tileable"
+      },
+      "prompt": {
+        "primaryRequest": "A seamless top-down alien mountain surface material called Slate Spires.",
+        "scene": "Cold fractured slate plates, pale mineral veins, dark crevices, and sparse quartz splinters embedded flat in the rock.",
+        "subject": "Dense reusable highland stone with strong value structure but no individual peak or landmark.",
+        "composition": "Strict orthographic square texture; seamless on every edge; large readable fractures suitable for a small raised hex tile.",
+        "lighting": "Even cool ambient light with restrained cyan mineral reflection and no directional cast shadows.",
+        "constraints": [
+          "Genuinely seamless",
+          "No central focal object",
+          "No side-view cliffs or horizon",
+          "No route, symbols, text, logos, or watermark"
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/environments/glassroot-cavern.webp",
+          "role": "approved basalt and depth reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-generation",
+        "reviewedAt": "2026-09-07",
+        "sha256": "801892fb44f1ecdbf935c7aa176166462b609dc1e56c7680c8d0f6d233030865",
+        "review": "app/src/art-pipeline/reviews/terrain-slate-spires.json",
+        "promptSha256": "f78038ac917baefd8f63186a79d320ef615e39e49a574e4a1157511f62c0741f"
+      }
+    },
+    {
+      "id": "terrain-violet-reliquary",
+      "name": "Violet Reliquary Terrain",
+      "family": "game-part",
+      "status": "approved",
+      "emotionalBeat": "remembrance",
+      "assetType": "tileable-texture",
+      "partRole": "texture",
+      "output": {
+        "path": "app/public/images/art/terrain/violet-reliquary.webp",
+        "width": 1024,
+        "height": 1024,
+        "format": "webp",
+        "alpha": false,
+        "maxBytes": 350000,
+        "safeZone": "tileable"
+      },
+      "prompt": {
+        "primaryRequest": "A seamless top-down alien reliquary floor material for rare relic hexes.",
+        "scene": "Ancient dark mineral plates fused with translucent violet memory glass and a few dim green living filaments.",
+        "subject": "Quiet reusable relic ground that feels rare without containing a relic object or decorative glyph.",
+        "composition": "Strict orthographic square texture; seamless on every edge; one stable material field with no center emphasis.",
+        "lighting": "Even low-contrast ambient light with localized violet subsurface glow and no cast shadows.",
+        "constraints": [
+          "Genuinely seamless",
+          "No relic object or central focal point",
+          "No runes, writing, symbols, interface marks, logos, or watermark",
+          "No full-frame neon saturation"
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/relics/choir-seed.png",
+          "role": "approved relic material and color reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-generation",
+        "reviewedAt": "2026-09-07",
+        "sha256": "a4a15dd51163604cbafd81e4beb434d67fc73be4b605439318d256a39549d6b8",
+        "review": "app/src/art-pipeline/reviews/terrain-violet-reliquary.json",
+        "promptSha256": "2e6d5791f46c1873ded0514c280a91680fd38e219e23674032cbc649ea35fea5"
+      }
+    },
+    {
+      "id": "relic-sunstone-lens-focal",
+      "name": "Sunstone Lens Focal",
+      "family": "game-part",
+      "status": "approved",
+      "emotionalBeat": "triumph",
+      "assetType": "transparent-focal",
+      "partRole": "focal",
+      "output": {
+        "path": "app/public/images/art/relics/sunstone-lens.png",
+        "width": 1024,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "12-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "The Sunstone Lens, a singular expedition relic built from translucent mineral glass and worn survey metal.",
+        "scene": "Genuinely transparent background with no floor, frame, or environment.",
+        "subject": "One palm-sized faceted lens with a warm internal gold aperture and a subtle violet memory trace.",
+        "composition": "Centered three-quarter object view; complete silhouette; generous transparent margin.",
+        "lighting": "Controlled rim light with readable material edges and no cast background shadow.",
+        "constraints": [
+          "Transparent alpha",
+          "One object only",
+          "No stand",
+          "No text",
+          "No bloom beyond the silhouette margin"
+        ],
+        "variationDirection": "unmistakably an alien expedition relic, not a watch, clock, compass, camera, or human consumer device. Use a compact asymmetrical faceted hexagonal silhouette with one central amber mineral aperture, dark weathered survey-metal ribs, and one restrained violet subsurface memory filament. Absolutely no letters, numbers, runes, glyphs, ticks, labels, diagram marks, interface markings, decorative writing, knobs, crown, strap, or dial. Isolation requirement: perfectly flat uniform pure white background (#ffffff), no floor, no cast shadow, no halo, no loose particles. One complete object with a generous 12 percent margin."
+      },
+      "references": [
+        {
+          "path": "app/public/images/site-refresh/hero-bg.webp",
+          "role": "faceted technology and material reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-generation",
+        "reviewedAt": "2026-09-06",
+        "sha256": "df51afc762944b9c2097793a70a87a7d2aa45b9db9cf9531dbaf0fd454f0d5ed",
+        "review": "app/src/art-pipeline/reviews/relic-sunstone-lens-focal.json",
+        "promptSha256": "45114fb3cef50287084745311ed990feec0ffcce1eb9f7779de8697dacd18fd7"
+      }
+    },
+    {
+      "id": "fx-discovery-bloom",
+      "name": "Discovery Bloom Overlay",
+      "family": "game-part",
+      "status": "approved",
+      "emotionalBeat": "discovery",
+      "assetType": "fx-overlay",
+      "partRole": "signal",
+      "output": {
+        "path": "app/public/images/art/fx/discovery-bloom.png",
+        "width": 1536,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "center"
+      },
+      "prompt": {
+        "primaryRequest": "A restrained cyan survey reveal blooming outward from one newly discovered point.",
+        "scene": "Genuinely transparent background.",
+        "subject": "One localized scan ring, a few mineral particles, and a faint hexagonal echo.",
+        "composition": "Centered effect with soft falloff; empty outer half; designed for additive layering.",
+        "lighting": "Blueprint-cyan core fading to transparent with a trace of oxide green.",
+        "constraints": [
+          "Transparent alpha",
+          "No full-frame haze",
+          "No text",
+          "No lightning",
+          "No explosive debris"
+        ],
+        "variationDirection": "isolated atmospheric VFX sprite, not an object, HUD, scanner, diagram, portal, orbit, or space scene. Perfectly uniform pure black (#000000) background for alpha extraction. At exact center: one tiny cyan point of light. Around it: one soft, incomplete, irregular circular wave made of diffused mineral light, plus one extremely faint broken hex echo. Add exactly three tiny motes. No crystal, no rock, no horizon ellipse, no radial grid, no spokes, no rings beyond the single soft wave, no symbols, no text. The effect occupies only the middle third and fades gently into empty black. Quiet invitation and wonder."
+      },
+      "references": [
+        {
+          "path": "app/public/images/site-refresh/feature-expedition.webp",
+          "role": "signal light reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-generation",
+        "reviewedAt": "2026-09-06",
+        "sha256": "70b6d30fc0bd02053f97a416d64e69d5d3d47af2a59b023d88adb34b3d2793a5",
+        "review": "app/src/art-pipeline/reviews/fx-discovery-bloom.json",
+        "promptSha256": "f9cc54a6fb5db058944bd21c9de7fd28e45ab8fd7628cde712fa2ab90cd02d84"
+      }
+    },
+    {
+      "id": "fx-redline-pressure",
+      "name": "Redline Pressure Overlay",
+      "family": "game-part",
+      "status": "approved",
+      "emotionalBeat": "jeopardy",
+      "assetType": "fx-overlay",
+      "partRole": "signal",
+      "output": {
+        "path": "app/public/images/art/fx/redline-pressure.png",
+        "width": 1536,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "edge-biased"
+      },
+      "prompt": {
+        "primaryRequest": "A localized expedition pressure fracture that threatens one focal object while leaving the recovery path readable.",
+        "scene": "Genuinely transparent background.",
+        "subject": "A narrow signal-red fault, sparse warning particles, and one tightening arc.",
+        "composition": "Edge-biased overlay; quiet center; effect occupies less than one third of the canvas.",
+        "lighting": "Signal red with a dim gold edge showing the preventable route.",
+        "constraints": [
+          "Transparent alpha",
+          "No global red wash",
+          "No gore",
+          "No text",
+          "No screen-filling explosion"
+        ],
+        "variationDirection": "isolated VFX sprite only, no physical machine. Pure flat black background (#000000) for alpha extraction. A single thin diagonal red energy fracture enters from the right edge, branches twice, and fades before reaching center. Add one subtle partial red pressure arc hugging the right edge and one narrow muted-gold recovery streak pointing toward open center. Maximum six tiny red particles. Keep 70 percent of the canvas completely empty black. Absolutely no brackets, bolts, cables, gauge, frame, landscape, rocks, dial markings, ticks, letters, glyphs, or UI."
+      },
+      "references": [
+        {
+          "path": "app/public/images/site-refresh/gameplay-2.webp",
+          "role": "consequence hierarchy reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-generation",
+        "reviewedAt": "2026-09-06",
+        "sha256": "2f5ffc5a134cda15c2f671d19e1895616857e57db60930df51d76b4e61f59e4b",
+        "review": "app/src/art-pipeline/reviews/fx-redline-pressure.json",
+        "promptSha256": "b105641ea073f45816e0ef005528cd1fafeddc259c76941c730ea41fe74f0a39"
+      }
+    },
+    {
+      "id": "memory-lantern-route-backplate",
+      "name": "Lantern Route Memory Backplate",
+      "family": "memory",
+      "status": "approved",
+      "emotionalBeat": "remembrance",
+      "assetType": "social-square",
+      "partRole": "backplate",
+      "output": {
+        "path": "app/public/images/art/memory/lantern-route-backplate.webp",
+        "width": 1200,
+        "height": 1200,
+        "format": "webp",
+        "alpha": false,
+        "maxBytes": 450000,
+        "safeZone": "center-60-percent"
+      },
+      "prompt": {
+        "primaryRequest": "An archival expedition backplate preserving the Lantern Route as a quiet luminous fingerprint.",
+        "scene": "Dark field archive with weathered mineral texture and a nearly invisible map grid.",
+        "subject": "One gold route trace crossing a violet relic afterglow with four subtle crew marks returning together.",
+        "composition": "Square artifact; open central region for real run data; route detail around the perimeter; strong thumbnail silhouette.",
+        "lighting": "Contained compass-gold memory light and restrained relic-violet depth.",
+        "constraints": [
+          "No embedded text",
+          "No fake statistics",
+          "No logos",
+          "No generic trophy"
+        ],
+        "variationDirection": "a premium square archival backplate, not a poster and not a game UI screenshot. Preserve a calm, dark, low-detail central 60 percent for code-native run data. Around the perimeter, one thin imperfect gold expedition route arcs through a restrained violet mineral afterglow and resolves into four subtle, equal crew-light marks returning together. Weathered basalt and etched survey metal only at the edges. No words, letters, numbers, labels, panels, icons, badges, statistics, logo, trophy, or frame text."
+      },
+      "references": [
+        {
+          "path": "app/public/images/site-refresh/gameplay-3.webp",
+          "role": "memory hierarchy reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-generation",
+        "reviewedAt": "2026-09-06",
+        "sha256": "f847121024363eded1d085c9067598f7ed583729232cc7c39356b1e58387607f",
+        "review": "app/src/art-pipeline/reviews/memory-lantern-route-backplate.json",
+        "promptSha256": "bbec78f94431cc741f829fdc4cd791a48af752714708bbe0678074b249e681a7"
+      }
+    },
+    {
+      "id": "relic-choir-seed-focal",
+      "name": "Choir Seed Relic",
+      "family": "relic",
+      "status": "approved",
+      "emotionalBeat": "discovery",
+      "assetType": "transparent-focal",
+      "partRole": "focal",
+      "output": {
+        "path": "app/public/images/art/relics/choir-seed.png",
+        "width": 1024,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "15-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "The Choir Seed, an unmistakably alien expedition relic that responds to nearby crew members with nested mineral resonance.",
+        "scene": "A perfectly uniform pure white isolation background with no floor, horizon, frame, or environment.",
+        "subject": "One palm-sized split mineral seed with three nested translucent chambers and a restrained oxide-green inner pulse.",
+        "composition": "Centered three-quarter museum-object view, complete silhouette, generous margin, readable at 96 pixels.",
+        "lighting": "Controlled soft rim light that reveals translucent mineral depth without cast shadows or bloom.",
+        "constraints": [
+          "One object only",
+          "No stand or pedestal",
+          "No text, runes, glyphs, labels, or dial marks",
+          "No familiar consumer-device silhouette",
+          "Pure white isolation background"
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/relics/sunstone-lens.png",
+          "role": "material-family and silhouette-quality reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-generation",
+        "reviewedAt": "2026-09-07",
+        "sha256": "4152b440c4688c867fb15262d5d0fe3be4c88de81589ab60e4585a0ad5ed868c",
+        "review": "app/src/art-pipeline/reviews/relic-choir-seed-focal.json",
+        "promptSha256": "0d02d88d9646a0241d51f01030557da404311813d7af172ae1925199c2e2e933"
+      }
+    },
+    {
+      "id": "relic-atlas-spindle-focal",
+      "name": "Atlas Spindle Relic",
+      "family": "relic",
+      "status": "approved",
+      "emotionalBeat": "agency",
+      "assetType": "transparent-focal",
+      "partRole": "focal",
+      "output": {
+        "path": "app/public/images/art/relics/atlas-spindle.png",
+        "width": 1024,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "15-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "The Atlas Spindle, an alien expedition relic that preserves the memory of a path without resembling a compass or map device.",
+        "scene": "A perfectly uniform pure white isolation background with no floor, horizon, frame, or environment.",
+        "subject": "One hand-scale asymmetric spindle of weathered survey metal holding a suspended violet mineral shard and one thin gold route filament.",
+        "composition": "Centered three-quarter museum-object view, complete silhouette, generous margin, readable at 96 pixels.",
+        "lighting": "Controlled edge light with a quiet violet core and one localized compass-gold filament.",
+        "constraints": [
+          "One object only",
+          "No stand or pedestal",
+          "No text, runes, glyphs, labels, map lines, or dial marks",
+          "No compass, clock, watch, camera, or weapon silhouette",
+          "Pure white isolation background"
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/site-refresh/hero-bg.webp",
+          "role": "faceted technology and mineral-light reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-generation",
+        "reviewedAt": "2026-09-07",
+        "sha256": "22fc477d24fe8d1be524445cc4d6362a8be0dac59201c14820fba92e41b0fade",
+        "review": "app/src/art-pipeline/reviews/relic-atlas-spindle-focal.json",
+        "promptSha256": "da68fa914d15530ef8066da3ee7988f70705c60472d960b66e0749ba35c7be85"
+      }
+    },
+    {
+      "id": "environment-glassroot-cavern",
+      "name": "Glassroot Cavern",
+      "family": "environment",
+      "status": "approved",
+      "emotionalBeat": "discovery",
+      "assetType": "feature-landscape",
+      "partRole": "backplate",
+      "output": {
+        "path": "app/public/images/art/environments/glassroot-cavern.webp",
+        "width": 1024,
+        "height": 700,
+        "format": "webp",
+        "alpha": false,
+        "maxBytes": 180000,
+        "safeZone": "center-left"
+      },
+      "prompt": {
+        "primaryRequest": "A playable alien cavern where translucent mineral roots reveal a safe route through deep basalt darkness.",
+        "scene": "A vast subterranean chamber of weathered basalt, mineral dust, and a sparse grove of glasslike roots.",
+        "subject": "One traversable path curving toward a distant cyan discovery aperture, with human-scale cover and landmarks.",
+        "composition": "Wide establishing concept, low human-height camera, foreground path, readable midground landmarks, deep background opening, quiet left-center space for game UI.",
+        "lighting": "Localized cyan discovery light with restrained oxide-green root glow and deep field-ink shadows.",
+        "constraints": [
+          "No characters",
+          "No text or interface",
+          "No giant portal",
+          "No full-frame neon",
+          "Playable terrain and believable traversal scale"
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/site-refresh/feature-expedition.webp",
+          "role": "route hierarchy and atmospheric-depth reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-generation",
+        "reviewedAt": "2026-09-07",
+        "sha256": "21d3db2a004e6f28bbd1be66ee74ef459a79229ee8f5fcb99027df2850884999",
+        "review": "app/src/art-pipeline/reviews/environment-glassroot-cavern.json",
+        "promptSha256": "69811afe21223c84b2454961abebc152c72d009874b3e57182fb0bb345e88bf2"
+      }
+    },
+    {
+      "id": "environment-violet-archive",
+      "name": "Violet Archive Hollow",
+      "family": "environment",
+      "status": "candidate",
+      "emotionalBeat": "remembrance",
+      "assetType": "feature-landscape",
+      "partRole": "backplate",
+      "output": {
+        "path": "app/public/images/art/environments/violet-archive-hollow.webp",
+        "width": 1024,
+        "height": 700,
+        "format": "webp",
+        "alpha": false,
+        "maxBytes": 180000,
+        "safeZone": "center"
+      },
+      "prompt": {
+        "primaryRequest": "A buried alien archive where past expedition routes persist as faint mineral afterimages in the stone.",
+        "scene": "A sheltered basalt hollow with worn survey-metal ribs, layered rock terraces, and sparse suspended mineral fragments.",
+        "subject": "One quiet archival chamber organized around a recessed violet memory seam and a clear walkable approach.",
+        "composition": "Wide environment concept from human eye level, strong foreground threshold, calm central chamber, deep but readable layers.",
+        "lighting": "Restrained relic-violet subsurface light with one quiet gold confirmation point and broad dark negative space.",
+        "constraints": [
+          "No characters",
+          "No text, glyph wall, or interface",
+          "No throne or cathedral",
+          "No full-frame purple glow",
+          "Playable terrain and believable traversal scale"
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/memory/lantern-route-backplate.webp",
+          "role": "memory palette and restraint reference"
+        }
+      ],
+      "provenance": {
+        "origin": "planned-azure-image-generation"
+      }
+    },
+    {
+      "id": "character-routekeeper-focal",
+      "name": "Routekeeper Explorer",
+      "family": "character",
+      "status": "approved",
+      "emotionalBeat": "agency",
+      "assetType": "transparent-focal",
+      "partRole": "focal",
+      "output": {
+        "path": "app/public/images/art/characters/routekeeper.png",
+        "width": 1024,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "10-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "A distinctive Xenovoya Routekeeper explorer whose equipment communicates careful pathfinding and responsibility for the crew.",
+        "scene": "A perfectly uniform neutral charcoal isolation background with no landscape, architecture, interface, or cast shadow.",
+        "subject": "One full-body human explorer in practical dark field gear with an asymmetrical weathered survey mantle, compact route tools, and one restrained gold guidance light.",
+        "composition": "Full-body three-quarter standing pose, boots fully visible, strong readable silhouette, generous margin, calm alert posture.",
+        "lighting": "Soft neutral key light with localized gold equipment light and subtle cyan rim light.",
+        "constraints": [
+          "One adult character only",
+          "Face visible but not photoreal or celebrity-like",
+          "No helmet visor hiding the face",
+          "No weapon-forward pose",
+          "No text, logos, military insignia, or bulky power armor"
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/site-refresh/hero-bg.webp",
+          "role": "palette and weathered-technology reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-generation",
+        "reviewedAt": "2026-09-07",
+        "sha256": "16ee0269723457c7e0af1d5481473fcea911157f04690245494aa34614c1b320",
+        "review": "app/src/art-pipeline/reviews/character-routekeeper-focal.json",
+        "promptSha256": "f7a67ad7dd0f6058edf374b29c03fcf351690e7a4b05ec4067fc9ab103d80bff"
+      }
+    },
+    {
+      "id": "character-signal-cartographer-focal",
+      "name": "Signal Cartographer Explorer",
+      "family": "character",
+      "status": "approved",
+      "emotionalBeat": "cooperation",
+      "assetType": "transparent-focal",
+      "partRole": "focal",
+      "output": {
+        "path": "app/public/images/art/characters/signal-cartographer.png",
+        "width": 1024,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "10-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "A distinctive Xenovoya Signal Cartographer explorer whose equipment communicates listening, mapping, and care for distant crew members.",
+        "scene": "A perfectly uniform neutral charcoal isolation background with no landscape, architecture, interface, or cast shadow.",
+        "subject": "One full-body human explorer in layered dark field fabric with a compact shoulder signal array, mineral sample satchel, and paired cyan and oxide-green link lights.",
+        "composition": "Full-body three-quarter standing pose, boots fully visible, strong readable silhouette, generous margin, attentive open posture.",
+        "lighting": "Soft neutral key light with localized cyan and oxide-green equipment light.",
+        "constraints": [
+          "One adult character only",
+          "Face visible but not photoreal or celebrity-like",
+          "No helmet visor hiding the face",
+          "No weapon-forward pose",
+          "No text, logos, military insignia, or bulky power armor"
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/site-refresh/feature-cooperative.webp",
+          "role": "cooperative signal palette reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-generation",
+        "reviewedAt": "2026-09-07",
+        "sha256": "35030170b2e2554800e54c9897ae92ddf06f83e2b3dd66f956732f7cd6576d86",
+        "review": "app/src/art-pipeline/reviews/character-signal-cartographer-focal.json",
+        "promptSha256": "8627d675f361c77e5ab90f568b3e60fb458d787045b2dbd71c040cdf430fdf08"
+      }
+    },
+    {
+      "id": "character-relic-tender-focal",
+      "name": "Relic Tender Explorer",
+      "family": "character",
+      "status": "approved",
+      "emotionalBeat": "trust",
+      "assetType": "transparent-focal",
+      "partRole": "focal",
+      "output": {
+        "path": "app/public/images/art/characters/relic-tender.png",
+        "width": 1024,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "10-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "A distinctive Xenovoya Relic Tender explorer whose silhouette communicates careful stewardship of strange living mineral artifacts.",
+        "scene": "A perfectly uniform neutral charcoal isolation background with no landscape, architecture, interface, or cast shadow.",
+        "subject": "One full-body human explorer wearing tactile layered cloth and a protective fabric sling holding a softly glowing mineral seed.",
+        "composition": "Full-body three-quarter pose with boots and hands visible, generous margin, protective body language, and a strong readable silhouette.",
+        "lighting": "Soft neutral key light with a small oxide-green relic glow reflected naturally on the hands and clothing.",
+        "constraints": [
+          "One adult character only",
+          "Face clearly visible but stylized",
+          "No weapons, armor, helmet, screen, tablet, antenna, or backpack machinery",
+          "No text, labels, logos, badges, patches, or interface marks",
+          "One simple mineral relic in a soft sling"
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/relics/sunstone-lens.png",
+          "role": "relic material and human-scale relationship reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-generation",
+        "reviewedAt": "2026-09-07",
+        "sha256": "88b52622468321c727057b16d278377419e9b7bb7b765685c215f54c784b5cc6",
+        "review": "app/src/art-pipeline/reviews/character-relic-tender-focal.json",
+        "promptSha256": "dcdddd4d232f42d6d7fca064f360e2b7fe006063333c8f6958a3a5eb8ed721f0"
+      }
+    },
+    {
+      "id": "prop-glassroot-fronds",
+      "name": "Glassroot Frond Cutout",
+      "family": "environment-prop",
+      "status": "approved",
+      "emotionalBeat": "discovery",
+      "assetType": "transparent-prop",
+      "partRole": "prop",
+      "output": {
+        "path": "app/public/images/art/props/glassroot-fronds.png",
+        "width": 1024,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "12-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "A modular illustrated Glassroot jungle scenery cutout for a small 3D expedition board.",
+        "scene": "A perfectly uniform pure white isolation background with no floor, horizon, environment, or cast shadow.",
+        "subject": "One compact basalt root cluster supporting three asymmetric translucent green mineral fronds and a few tiny glass leaves.",
+        "composition": "Complete upright three-quarter silhouette, bottom contact edge clearly visible, broad readable shapes, generous margin.",
+        "lighting": "Soft neutral key with restrained oxide-green internal light and a faint cool rim.",
+        "constraints": [
+          "One connected scenery cluster only",
+          "Painterly board-game cutout rather than a photoreal plant",
+          "No character, route, symbol, text, logo, watermark, frame, or detached debris"
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/terrain/glassroot-canopy.webp",
+          "role": "approved biome material and palette reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-generation",
+        "reviewedAt": "2026-09-07",
+        "sha256": "7ac330564adbd3a55cb8d55ce718aba6d8d8a1da4271070d67126d761ff3011a",
+        "review": "app/src/art-pipeline/reviews/prop-glassroot-fronds.json",
+        "promptSha256": "56fdfffb508226f56c8373ff9f31d8c1d1042497df093189d0dd9c28fca1547f"
+      }
+    },
+    {
+      "id": "prop-lantern-moss",
+      "name": "Lantern Moss Cutout",
+      "family": "environment-prop",
+      "status": "approved",
+      "emotionalBeat": "relief",
+      "assetType": "transparent-prop",
+      "partRole": "prop",
+      "output": {
+        "path": "app/public/images/art/props/lantern-moss.png",
+        "width": 1024,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "12-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "A modular illustrated Lantern Moss scenery cutout for a small 3D expedition board.",
+        "scene": "A perfectly uniform pure white isolation background with no floor, horizon, environment, or cast shadow.",
+        "subject": "One low dark mineral mound with two broad olive lichen fans, soft moss, and three tiny muted-gold spore bulbs.",
+        "composition": "Complete low three-quarter silhouette, bottom contact edge clearly visible, broad readable shapes, generous margin.",
+        "lighting": "Soft neutral key with a localized warm spore glow and quiet green bounce.",
+        "constraints": [
+          "One connected scenery cluster only",
+          "Painterly board-game cutout rather than a photoreal plant",
+          "No character, route, symbol, text, logo, watermark, frame, or detached debris"
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/terrain/lantern-moss.webp",
+          "role": "approved biome material and palette reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-generation",
+        "reviewedAt": "2026-09-07",
+        "sha256": "ac62e6475aa4741cbd0b488396319c14d37e9367ff9c7dc3863b1f09c82ba4a0",
+        "review": "app/src/art-pipeline/reviews/prop-lantern-moss.json",
+        "promptSha256": "d8c9dfe07fb3860e5b76d6282554d71e519785fbea885c6d2f1f21ed7ab2574c"
+      }
+    },
+    {
+      "id": "prop-emberglass-shards",
+      "name": "Emberglass Shard Cutout",
+      "family": "environment-prop",
+      "status": "approved",
+      "emotionalBeat": "agency",
+      "assetType": "transparent-prop",
+      "partRole": "prop",
+      "output": {
+        "path": "app/public/images/art/props/emberglass-shards.png",
+        "width": 1024,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "12-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "A modular illustrated Emberglass desert scenery cutout for a small 3D expedition board.",
+        "scene": "A perfectly uniform pure white isolation background with no floor, horizon, environment, or cast shadow.",
+        "subject": "One asymmetric ochre stone cluster holding two wind-worn translucent amber glass fins with small dark mineral grit at the base.",
+        "composition": "Complete upright three-quarter silhouette, bottom contact edge clearly visible, broad readable shapes, generous margin.",
+        "lighting": "Soft neutral key with restrained warm amber transmission and dark mineral contrast.",
+        "constraints": [
+          "One connected scenery cluster only",
+          "Painterly board-game cutout rather than a weapon or crystal treasure",
+          "No character, route, symbol, text, logo, watermark, frame, or detached debris"
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/terrain/emberglass-dunes.webp",
+          "role": "approved biome material and palette reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-generation",
+        "reviewedAt": "2026-09-07",
+        "sha256": "b7f7adb05b62c3ac59a1b6dec30d0b283c56c6fe1c130c895528e64383629065",
+        "review": "app/src/art-pipeline/reviews/prop-emberglass-shards.json",
+        "promptSha256": "b08b27cfa04f669f1916e98829bba1fc7e3ae465c013f6d49e9877177ae17092"
+      }
+    },
+    {
+      "id": "prop-slate-spires",
+      "name": "Slate Spire Cutout",
+      "family": "environment-prop",
+      "status": "approved",
+      "emotionalBeat": "jeopardy",
+      "assetType": "transparent-prop",
+      "partRole": "prop",
+      "output": {
+        "path": "app/public/images/art/props/slate-spires.png",
+        "width": 1024,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "12-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "A modular illustrated slate mountain scenery cutout for a small 3D expedition board.",
+        "scene": "A perfectly uniform pure white isolation background with no floor, horizon, environment, or cast shadow.",
+        "subject": "One compact natural slate ridge with two uneven narrow peaks, layered fractured planes, and one restrained pale quartz seam.",
+        "composition": "Complete upright three-quarter silhouette, bottom contact edge clearly visible, broad readable planes, generous margin.",
+        "lighting": "Soft neutral key with cool edge light and deep matte creases.",
+        "constraints": [
+          "One connected scenery cluster only",
+          "Natural geological silhouette with no architecture or manufactured marks",
+          "No character, route, symbol, text, logo, watermark, frame, or detached debris"
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/terrain/slate-spires.webp",
+          "role": "approved biome material and palette reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-generation",
+        "reviewedAt": "2026-09-07",
+        "sha256": "f832d2db08df2c635dbd04136ccb3e2b016d271f4776282585fae23e9da132ad",
+        "review": "app/src/art-pipeline/reviews/prop-slate-spires.json",
+        "promptSha256": "8b43e944101a677f6ba5deb7b02b72b8a575a8a64d6c5c1ac9ecaca1dd5dc169"
+      }
+    },
+    {
+      "id": "prop-violet-reliquary",
+      "name": "Violet Reliquary Cutout",
+      "family": "environment-prop",
+      "status": "approved",
+      "emotionalBeat": "remembrance",
+      "assetType": "transparent-prop",
+      "partRole": "prop",
+      "output": {
+        "path": "app/public/images/art/props/violet-reliquary.png",
+        "width": 1024,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "12-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "A modular illustrated Violet Reliquary scenery cutout for a small 3D expedition board.",
+        "scene": "A perfectly uniform pure white isolation background with no floor, horizon, environment, or cast shadow.",
+        "subject": "One low charcoal mineral arch with an irregular violet glass vein and a few dim green living filaments rooted through its base.",
+        "composition": "Complete upright three-quarter silhouette, bottom contact edge clearly visible, one calm opening, generous margin.",
+        "lighting": "Soft neutral key with localized relic-violet subsurface light and faint oxide-green life.",
+        "constraints": [
+          "One connected scenery cluster only",
+          "Ancient natural form, not a portal, altar, doorway, or machine",
+          "No glyphs, character, route, symbol, text, logo, watermark, frame, or detached debris"
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/terrain/violet-reliquary.webp",
+          "role": "approved biome material and palette reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-generation",
+        "reviewedAt": "2026-09-07",
+        "sha256": "d9c049e65818e5a3e3f20828992f78991749a41e3f6341bf2d1f287bc5c63c2c",
+        "review": "app/src/art-pipeline/reviews/prop-violet-reliquary.json",
+        "promptSha256": "cde9cbb15ab4344488579c693f2d23df660657a27105b841bc18098feaa29586"
+      }
+    },
+    {
+      "id": "prop-landing-beacon",
+      "name": "Landing Beacon Cutout",
+      "family": "environment-prop",
+      "status": "approved",
+      "emotionalBeat": "trust",
+      "assetType": "transparent-prop",
+      "partRole": "prop",
+      "output": {
+        "path": "app/public/images/art/props/landing-beacon.png",
+        "width": 1024,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "12-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "A modular illustrated expedition landing beacon cutout for the Xenovoya 3D board.",
+        "scene": "A perfectly uniform pure white isolation background with no floor, horizon, environment, or cast shadow.",
+        "subject": "One compact tripod survey beacon with a weathered dark-metal body, one translucent cyan orientation vane, and one tiny compass-gold confirmation lamp.",
+        "composition": "Complete upright three-quarter silhouette, all feet visible on one clear contact line, broad readable shapes, generous margin.",
+        "lighting": "Soft neutral key with localized cyan and gold instrument light.",
+        "constraints": [
+          "One connected equipment cluster only",
+          "Painterly board-game cutout with practical human-scale construction",
+          "No satellite dish, weapon, character, text, logo, watermark, frame, cast shadow, or detached debris"
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/characters/routekeeper.png",
+          "role": "approved painterly equipment and cutout-style reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-generation",
+        "reviewedAt": "2026-09-07",
+        "sha256": "007eb5f9976d06098208fb113184b81a9a7125cb9ab614ae0895161d3e51b920",
+        "review": "app/src/art-pipeline/reviews/prop-landing-beacon.json",
+        "promptSha256": "dcb42b0eefcb9b0a4b924f9ac2f5b85946a8eafe3d3f2df64bf9856dab35def0"
+      }
+    },
+    {
+      "id": "prop-campsite-shelter",
+      "name": "Campsite Shelter Cutout",
+      "family": "environment-prop",
+      "status": "approved",
+      "emotionalBeat": "relief",
+      "assetType": "transparent-prop",
+      "partRole": "prop",
+      "output": {
+        "path": "app/public/images/art/props/campsite-shelter.png",
+        "width": 1024,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "12-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "A modular illustrated expedition campsite shelter cutout for the Xenovoya 3D board.",
+        "scene": "A perfectly uniform pure white isolation background with no floor, horizon, environment, or cast shadow.",
+        "subject": "One low weathered dark-fabric survey shelter anchored by two compact packs and one small warm safety lantern.",
+        "composition": "Complete low three-quarter silhouette on one clear contact edge, broad readable shelter shape, generous margin.",
+        "lighting": "Soft neutral key with one contained oxide-green and warm-gold recovery glow.",
+        "constraints": [
+          "One connected campsite cluster only",
+          "Painterly board-game cutout with practical expedition materials",
+          "No character, campfire, weapon, text, logo, watermark, frame, cast shadow, or detached debris"
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/characters/routekeeper.png",
+          "role": "approved fabric, equipment, and cutout-style reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-generation",
+        "reviewedAt": "2026-09-07",
+        "sha256": "73ebb063c3aa50eea4880f77d6c831c43701feac6ea07b12596a5ff9ec908c77",
+        "review": "app/src/art-pipeline/reviews/prop-campsite-shelter.json",
+        "promptSha256": "8addb2b00b371f3cc9c3d1d1bd6831e75a10c3226a86b1ff706670b369307105"
+      }
+    },
+    {
+      "id": "character-routekeeper-wounded",
+      "name": "Strained Routekeeper",
+      "family": "character-condition",
+      "status": "approved",
+      "emotionalBeat": "jeopardy",
+      "assetType": "transparent-focal",
+      "partRole": "focal",
+      "output": {
+        "path": "app/public/images/art/characters/routekeeper-wounded.png",
+        "width": 1024,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "10-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "The established Xenovoya Routekeeper visibly depleted but still choosing and communicating a safe route for the crew.",
+        "scene": "A perfectly uniform pure white isolation background with no floor, horizon, environment, or cast shadow.",
+        "subject": "One full-body Routekeeper in the same practical dark field gear and asymmetrical survey mantle, standing with a guarded leg, one hand steadying the torso, and the other keeping a small gold route light raised.",
+        "composition": "Full-body three-quarter cutout, boots and hands visible, readable strained silhouette, generous margin, body language resilient rather than defeated.",
+        "lighting": "Soft neutral key with a restrained gold guidance light and no injury effects.",
+        "constraints": [
+          "One adult character only",
+          "Preserve the approved Routekeeper clothing language and humane proportions",
+          "No blood, gore, weapon, heroic battle pose, text, logo, watermark, frame, floor, or cast shadow",
+          "Pure white isolation background"
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/characters/routekeeper.png",
+          "role": "approved character identity, costume, silhouette, and painterly cutout reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-generation",
+        "reviewedAt": "2026-09-07",
+        "sha256": "2f712afa6e2ad3c3848e73eabb72b02b809dbbfc3e9edfca5f3514f1ba0fd647",
+        "review": "app/src/art-pipeline/reviews/character-routekeeper-wounded.json",
+        "promptSha256": "197493c3c305d14f4f0c52661db794060a46b811a6c324d21fe2628b5ceefd1a"
+      }
+    },
+    {
+      "id": "character-cartographer-helping",
+      "name": "Helping Signal Cartographer",
+      "family": "character-condition",
+      "status": "approved",
+      "emotionalBeat": "cooperation",
+      "assetType": "transparent-focal",
+      "partRole": "focal",
+      "output": {
+        "path": "app/public/images/art/characters/signal-cartographer-helping.png",
+        "width": 1024,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "10-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "The established Xenovoya Signal Cartographer actively helping an off-frame crewmate through a clear cooperative gesture.",
+        "scene": "A perfectly uniform pure white isolation background with no floor, horizon, environment, or cast shadow.",
+        "subject": "One full-body Signal Cartographer in layered dark field fabric, leaning forward with one open hand extended while one short plain cyan-to-green connection ribbon trails from the wrist.",
+        "composition": "Full-body three-quarter cutout, boots and both hands visible, strong diagonal helping gesture, generous margin, no second character.",
+        "lighting": "Soft neutral key with localized cyan and oxide-green light linking the hand and shoulder instrument.",
+        "constraints": [
+          "One adult character only",
+          "Preserve the approved Cartographer clothing, equipment, and painterly cutout language",
+          "No second person, weapon, text, logo, watermark, frame, floor, or cast shadow",
+          "Pure white isolation background"
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/characters/signal-cartographer.png",
+          "role": "approved character identity, equipment, palette, and cutout reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-generation",
+        "reviewedAt": "2026-09-07",
+        "sha256": "c8d0b2112f6cec601234c3ff4bed206e58c4db361b96292628c87d48abf0cc06",
+        "review": "app/src/art-pipeline/reviews/character-cartographer-helping.json",
+        "promptSha256": "b71b16914e91ef305dd8b687955e48b7c32b5e050f156002b977ea5f0efedfd1"
+      }
+    },
+    {
+      "id": "character-relic-tender-triumph",
+      "name": "Relic Tender Triumph",
+      "family": "character-condition",
+      "status": "approved",
+      "emotionalBeat": "triumph",
+      "assetType": "transparent-focal",
+      "partRole": "focal",
+      "output": {
+        "path": "app/public/images/art/characters/relic-tender-triumph.png",
+        "width": 1024,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "10-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "The established Xenovoya Relic Tender in a quiet, relieved pause after protecting a recovered artifact.",
+        "scene": "A perfectly uniform pure white isolation background with no floor, horizon, environment, or cast shadow.",
+        "subject": "One full-body Relic Tender in layered dark cloth holding one palm-sized cyan recovery relic close to the sternum, shoulders finally relaxed.",
+        "composition": "Full-body three-quarter cutout, boots and hands visible, resolved protective silhouette, generous margin, intimate relief rather than spectacle.",
+        "lighting": "Soft neutral key, contained cyan relic glow, and a restrained warm edge light.",
+        "constraints": [
+          "One adult character and one protected relic only",
+          "Preserve the approved Relic Tender costume and painterly cutout language",
+          "No trophy pose, confetti, weapon, text, logo, watermark, frame, floor, or cast shadow",
+          "Pure white isolation background"
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/characters/relic-tender.png",
+          "role": "approved character identity, costume, body language, and cutout reference"
+        },
+        {
+          "path": "app/public/images/art/relics/atlas-spindle.png",
+          "role": "approved relic material and restrained triumph-light reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-generation",
+        "reviewedAt": "2026-09-07",
+        "sha256": "e2dde42e833e42b630180f57253d7a0d4810d357a067d5614dab06348db0a67f",
+        "review": "app/src/art-pipeline/reviews/character-relic-tender-triumph.json",
+        "promptSha256": "498747e6aa994a41cc435e99acb0889f607be3582ac39a5aaf056e8bb088cdcd"
+      }
+    },
+    {
+      "id": "encounter-glassroot-stalker",
+      "name": "Glassroot Grazer",
+      "family": "encounter",
+      "status": "approved",
+      "emotionalBeat": "jeopardy",
+      "assetType": "transparent-focal",
+      "partRole": "focal",
+      "output": {
+        "path": "app/public/images/art/encounters/glassroot-stalker.png",
+        "width": 1024,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "12-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "A cautious alien Glassroot Grazer encounter silhouette that pauses on the route without reading as a combat monster.",
+        "scene": "A perfectly uniform pure white isolation background with no floor, horizon, environment, or cast shadow.",
+        "subject": "One low four-legged mineral herbivore with a rounded basalt body, translucent glassroot leaf plates, folded alert posture, and a lowered curious nose.",
+        "composition": "Complete side-three-quarter creature silhouette on one clear contact line, head turned toward the viewer, broad readable anatomy, generous margin.",
+        "lighting": "Soft neutral key with dim cyan mineral edge light and warm attentive eyes.",
+        "constraints": [
+          "One creature only",
+          "Animal-like and cautious rather than demonic, insectoid, or weaponized",
+          "No gore, attack pose, text, logo, watermark, frame, floor, cast shadow, or detached debris",
+          "Pure white isolation background"
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/props/glassroot-fronds.png",
+          "role": "approved glassroot material, contour, and board-cutout reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-generation",
+        "reviewedAt": "2026-09-07",
+        "sha256": "3f6db2e9f9025d3e4ec15745719421526ab9acf8f939c15eaf3c6af512e213be",
+        "review": "app/src/art-pipeline/reviews/encounter-glassroot-stalker.json",
+        "promptSha256": "ea5549d41dcd0ca9a5965877d51866b3ff6cfad93dca12f00224486f098c278b"
+      }
+    },
+    {
+      "id": "encounter-emberglass-mimic",
+      "name": "Emberglass Scuttler",
+      "family": "encounter",
+      "status": "approved",
+      "emotionalBeat": "discovery",
+      "assetType": "transparent-focal",
+      "partRole": "focal",
+      "output": {
+        "path": "app/public/images/art/encounters/emberglass-mimic.png",
+        "width": 1024,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "12-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "An alien Emberglass Scuttler whose resting shape resembles a harmless crystal cluster until several short legs begin to move.",
+        "scene": "A perfectly uniform pure white isolation background with no floor, horizon, environment, or cast shadow.",
+        "subject": "One compact asymmetrical amber-black mineral creature, half crystal cluster and half cautious scavenger, with several short legs and one tiny cyan light aperture hidden in a seam.",
+        "composition": "Complete low three-quarter silhouette, all contact points visible, one dominant clustered form, generous margin, readable at 72 pixels.",
+        "lighting": "Soft neutral key with restrained ember-gold translucency and one tiny cyan discovery signal.",
+        "constraints": [
+          "One creature only",
+          "Curious and uncanny rather than cute mascot or horror monster",
+          "No mouth, teeth, weapon, text, logo, watermark, frame, floor, cast shadow, or detached debris",
+          "Pure white isolation background"
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/props/emberglass-shards.png",
+          "role": "approved emberglass material, palette, silhouette, and cutout reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-generation",
+        "reviewedAt": "2026-09-07",
+        "sha256": "064709fef8bf5c1bab57457b2896950c22236ef11eb4d11cbcac23120282eeb3",
+        "review": "app/src/art-pipeline/reviews/encounter-emberglass-mimic.json",
+        "promptSha256": "74418fcea43e3237b695e673ad57baf8eb758de51971f14be226bc52ba38791f"
+      }
+    },
+    {
+      "id": "relic-tideglass-heart",
+      "name": "Tideglass Cradle Relic",
+      "family": "relic",
+      "status": "approved",
+      "emotionalBeat": "relief",
+      "assetType": "transparent-focal",
+      "partRole": "focal",
+      "output": {
+        "path": "app/public/images/art/relics/tideglass-heart.png",
+        "width": 1024,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "15-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "The Tideglass Cradle, a hand-scale crescent-shaped alien relic that visibly stores one exhausted breath and returns it as calm green light.",
+        "scene": "A perfectly uniform pure white isolation background with no floor, horizon, environment, or cast shadow.",
+        "subject": "One rounded asymmetric dark-metal cradle holding a translucent sea-glass chamber with a single soft oxide-green current curling inside.",
+        "composition": "Centered three-quarter museum-object cutout, complete silhouette, broad readable forms, generous margin, readable at 96 pixels.",
+        "lighting": "Controlled neutral edge light with one contained green recovery glow and faint cyan glass edge.",
+        "constraints": [
+          "One object only",
+          "No anatomical heart, bottle, potion, medical device, stand, text, runes, logo, watermark, frame, floor, or cast shadow",
+          "Pure white isolation background"
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/relics/choir-seed.png",
+          "role": "approved living-mineral relic and soft internal-light reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-generation",
+        "reviewedAt": "2026-09-07",
+        "sha256": "3363a77a60be0cf0fda0dc351b5b1371d48f417db517642f273f8e6f40a7af05",
+        "review": "app/src/art-pipeline/reviews/relic-tideglass-heart.json",
+        "promptSha256": "aaed1edaa4758347729aa5192912ca3d183178d24dc1f861e5688fccd8842135"
+      }
+    },
+    {
+      "id": "prop-route-fork-marker",
+      "name": "Route Fork Marker",
+      "family": "environment-prop",
+      "status": "approved",
+      "emotionalBeat": "agency",
+      "assetType": "transparent-prop",
+      "partRole": "route",
+      "output": {
+        "path": "app/public/images/art/props/route-fork-marker.png",
+        "width": 1024,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "12-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "A modular Xenovoya route-fork marker that makes a consequential path choice visible without arrows, text, or interface symbols.",
+        "scene": "A perfectly uniform pure white isolation background with no floor, horizon, environment, or cast shadow.",
+        "subject": "One low weathered survey stake splitting into two unequal mineral vanes, one calm cyan and one narrow compass-gold decision light.",
+        "composition": "Complete upright three-quarter cutout on one contact edge, unmistakable fork silhouette, generous margin, readable at 64 pixels.",
+        "lighting": "Soft neutral key with localized cyan route light and one restrained gold choice point.",
+        "constraints": [
+          "One connected marker only",
+          "No arrowheads, road sign, text, glyphs, compass, logo, watermark, frame, floor, cast shadow, or detached debris",
+          "Pure white isolation background"
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/props/landing-beacon.png",
+          "role": "approved survey-equipment construction and painterly cutout reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-generation",
+        "reviewedAt": "2026-09-07",
+        "sha256": "8f0e613f4f750fe6e719d3fdb5525e826681380e48129d395db6e7369940c4c5",
+        "review": "app/src/art-pipeline/reviews/prop-route-fork-marker.json",
+        "promptSha256": "aab406ca6462c84da65ce792165297a2b4149a39cf9993c64d0c2bd92b63771c"
+      }
+    },
+    {
+      "id": "environment-emberglass-crossing",
+      "name": "Emberglass Crossing",
+      "family": "environment",
+      "status": "approved",
+      "emotionalBeat": "agency",
+      "assetType": "feature-landscape",
+      "partRole": "backplate",
+      "output": {
+        "path": "app/public/images/art/environments/emberglass-crossing.webp",
+        "width": 1024,
+        "height": 700,
+        "format": "webp",
+        "alpha": false,
+        "maxBytes": 180000,
+        "safeZone": "center"
+      },
+      "prompt": {
+        "primaryRequest": "A traversable Emberglass desert crossing where two materially different routes create a clear risk-versus-speed decision.",
+        "scene": "A sheltered alien dune basin of matte black sand, weathered basalt shelves, and sparse amber glass shards at human scale.",
+        "subject": "One route bends safely behind low cover while one shorter exposed route crosses a narrow field of glowing emberglass.",
+        "composition": "Wide human-eye-level environment, strong foreground threshold, readable route fork in the middle distance, calm deep horizon, open center for board framing.",
+        "lighting": "Low cool ambient light with restrained amber glass glow and one localized gold decision point at the fork.",
+        "constraints": [
+          "No characters",
+          "No road signs, arrows, maps, text, glyphs, interface, logo, watermark, giant portal, or full-frame orange glow",
+          "Playable terrain and believable traversal scale"
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/terrain/emberglass-dunes.webp",
+          "role": "approved emberglass material, restrained palette, and terrain reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-generation",
+        "reviewedAt": "2026-09-07",
+        "sha256": "efd65958349a4b2dd18a0841776199777d5839d8f6bea69b1e7e438cc08ef3de",
+        "review": "app/src/art-pipeline/reviews/environment-emberglass-crossing.json",
+        "promptSha256": "55890de87d450eaacc49e200f1aa43ee6226d65a1b7b66c756f05916637209e1"
+      }
+    },
+    {
+      "id": "concept-first-relic-encounter",
+      "name": "First Relic Encounter Concept",
+      "family": "concept-reference",
+      "status": "candidate",
+      "emotionalBeat": "discovery",
+      "assetType": "feature-landscape",
+      "partRole": "backplate",
+      "output": {
+        "path": "app/public/images/art/concepts/first-relic-encounter.webp",
+        "width": 1024,
+        "height": 700,
+        "format": "webp",
+        "alpha": false,
+        "maxBytes": 180000,
+        "safeZone": "left-35-percent"
+      },
+      "prompt": {
+        "primaryRequest": "A cohesive in-world key-art target for an explorer encountering a small alien relic along a playable cavern route.",
+        "scene": "A dark basalt ravine with sparse translucent mineral roots, a clear traversable foreground path, and cyan depth.",
+        "subject": "One human explorer approaches one hand-scale luminous mineral relic resting naturally on a waist-high stone ledge.",
+        "composition": "Landscape frame at human eye level; explorer occupies less than one fifth of the frame; relic is small but unmistakable; clear path and contact surfaces; quiet left space for interface.",
+        "lighting": "One coherent cool environmental key light, restrained green mineral bounce, and localized warm relic light affecting the explorer and ledge.",
+        "constraints": [
+          "One explorer and one relic only",
+          "Relic physically grounded with contact shadow",
+          "No floating cutout appearance",
+          "No interface, screens, text, symbols, or signs",
+          "No weapons or power armor"
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/site-refresh/feature-expedition.webp",
+          "role": "route hierarchy and world-palette reference"
+        }
+      ],
+      "provenance": {
+        "origin": "planned-azure-image-generation"
+      }
+    },
+    {
+      "id": "concept-crew-relic-return",
+      "name": "Crew Relic Return Concept",
+      "family": "concept-reference",
+      "status": "candidate",
+      "emotionalBeat": "cooperation",
+      "assetType": "feature-landscape",
+      "partRole": "backplate",
+      "output": {
+        "path": "app/public/images/art/concepts/crew-relic-return.webp",
+        "width": 1024,
+        "height": 700,
+        "format": "webp",
+        "alpha": false,
+        "maxBytes": 180000,
+        "safeZone": "center"
+      },
+      "prompt": {
+        "primaryRequest": "A cohesive in-world key-art target showing a small expedition crew protecting a living relic on the return path.",
+        "scene": "A weathered basalt threshold opening from a violet archive hollow toward a calm green extraction route.",
+        "subject": "Three distinct human explorers move together around one carried mineral relic, with their relationship visible through spacing and gesture.",
+        "composition": "Landscape frame at human eye level; group remains a readable middle-distance silhouette; foreground route leads toward safety; generous dark space for interface.",
+        "lighting": "Shared cool cavern key light, localized green safety light ahead, subtle violet memory behind, and warm relic bounce on all three explorers.",
+        "constraints": [
+          "Exactly three explorers and one carried relic",
+          "Believable contact shadows and shared lighting",
+          "No heroic battle pose",
+          "No interface, screens, text, symbols, or signs",
+          "No weapons or power armor"
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/site-refresh/feature-cooperative.webp",
+          "role": "relationship and signal-palette reference"
+        }
+      ],
+      "provenance": {
+        "origin": "planned-azure-image-generation"
+      }
+    }
+  ],
+  "compositions": [
+    {
+      "id": "discovery-reveal",
+      "name": "Discovery Reveal",
+      "emotionalBeat": "discovery",
+      "slots": [
+        {
+          "role": "backplate",
+          "assetId": "terrain-verdant-signal-base",
+          "required": true
+        },
+        {
+          "role": "focal",
+          "assetId": "relic-sunstone-lens-focal",
+          "required": true
+        },
+        {
+          "role": "signal",
+          "assetId": "fx-discovery-bloom",
+          "required": true
+        }
+      ],
+      "rule": "The terrain stays quiet, the relic creates the question, and the bloom reveals without becoming the reward."
+    },
+    {
+      "id": "redline-choice",
+      "name": "Redline Choice",
+      "emotionalBeat": "jeopardy",
+      "slots": [
+        {
+          "role": "backplate",
+          "assetId": "terrain-verdant-signal-base",
+          "required": true
+        },
+        {
+          "role": "focal",
+          "assetId": "relic-sunstone-lens-focal",
+          "required": true
+        },
+        {
+          "role": "signal",
+          "assetId": "fx-redline-pressure",
+          "required": true
+        }
+      ],
+      "rule": "Red threatens the relic locally while a gold escape direction remains visible."
+    },
+    {
+      "id": "lantern-route-memory",
+      "name": "Lantern Route Memory",
+      "emotionalBeat": "remembrance",
+      "slots": [
+        {
+          "role": "backplate",
+          "assetId": "memory-lantern-route-backplate",
+          "required": true
+        },
+        {
+          "role": "focal",
+          "assetId": "relic-sunstone-lens-focal",
+          "required": false
+        }
+      ],
+      "rule": "Live run data and truthful product typography sit above the backplate; generative art never invents the result."
+    }
+  ]
+}

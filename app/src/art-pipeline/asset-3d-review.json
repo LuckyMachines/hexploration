@@ -1,0 +1,81 @@
+{
+  "version": "1.0.0",
+  "reviewedAt": "2026-09-08T08:02:00Z",
+  "policy": "A generated GLB remains a source candidate until it passes identity, volume, rear construction, material, pivot, scale, topology, LOD, and in-game performance review.",
+  "aggregateImageInputs": "artifacts/art/3d/reviews/all-assets-image-inputs-contact.png",
+  "aggregateMethodComparison": "artifacts/art/3d/reviews/all-trellis2-method-comparison.png",
+  "assets": [
+    {
+      "id": "relic-sunstone-lens-focal",
+      "status": "cleanup-candidate",
+      "selectedLane": "cardinal-multiview",
+      "selectedModel": "artifacts/art/3d/relic-sunstone-lens-focal/relic-sunstone-lens-focal-trellis2-multiview.glb",
+      "scores": { "recognition": 3, "volume": 4, "identity": 3, "materials": 2, "topology": 2 },
+      "notes": [
+        "The cardinal model preserves the thick octagonal lens housing and coherent rear mass.",
+        "The six-orbit model fuses the views into an elongated barrel and is rejected.",
+        "Remove loose internal filaments, correct orientation, and rebake the over-bright metal before runtime use."
+      ]
+    },
+    {
+      "id": "relic-atlas-spindle-focal",
+      "status": "cleanup-candidate",
+      "selectedLane": "cardinal-multiview",
+      "selectedModel": "artifacts/art/3d/relic-atlas-spindle-focal/relic-atlas-spindle-focal-trellis2-multiview.glb",
+      "scores": { "recognition": 4, "volume": 4, "identity": 3, "materials": 3, "topology": 3 },
+      "notes": [
+        "The cardinal model preserves the open spindle cage and suspended crystal from every direction.",
+        "The six-orbit model contains an opaque rectangular background plane and is rejected.",
+        "Consolidate fine orbital strands and validate the crystal support before runtime use."
+      ]
+    },
+    {
+      "id": "relic-tideglass-heart",
+      "status": "cleanup-candidate",
+      "selectedLane": "cardinal-multiview",
+      "selectedModel": "artifacts/art/3d/relic-tideglass-heart/relic-tideglass-heart-trellis2-multiview.glb",
+      "scores": { "recognition": 4, "volume": 2, "identity": 4, "materials": 3, "topology": 3 },
+      "notes": [
+        "The cardinal model best preserves the green Tideglass chamber and asymmetric bronze cradle.",
+        "The six-orbit model changes the chamber to magenta and alters the cradle silhouette.",
+        "Increase minimum thickness and verify the pendant connection before runtime use."
+      ]
+    },
+    {
+      "id": "prop-landing-beacon",
+      "status": "cleanup-candidate",
+      "selectedLane": "six-orbit-multiimage",
+      "selectedModel": "artifacts/art/3d/prop-landing-beacon/prop-landing-beacon-trellis2-multiimage-experimental.glb",
+      "scores": { "recognition": 4, "volume": 4, "identity": 4, "materials": 3, "topology": 3 },
+      "notes": [
+        "The six-orbit model preserves the beacon head, glass vane, housing, and three-legged stance.",
+        "The cardinal model collapses into a textured plane and is rejected.",
+        "Correct the local forward axis, establish ground contact, and make gameplay LODs before runtime use."
+      ]
+    },
+    {
+      "id": "prop-campsite-shelter",
+      "status": "rework-required",
+      "selectedLane": "six-orbit-multiimage",
+      "selectedModel": "artifacts/art/3d/prop-campsite-shelter/prop-campsite-shelter-trellis2-multiimage-experimental.glb",
+      "scores": { "recognition": 3, "volume": 3, "identity": 3, "materials": 2, "topology": 1 },
+      "notes": [
+        "The six-orbit model gives the strongest shelter volume and prop arrangement.",
+        "Both lanes bake a large ground slab into the mesh, so neither is runtime-ready.",
+        "Split the shelter, packs, lantern, and terrain into separate generation targets before reconstructing again."
+      ]
+    },
+    {
+      "id": "prop-route-fork-marker",
+      "status": "cleanup-candidate",
+      "selectedLane": "six-orbit-multiimage",
+      "selectedModel": "artifacts/art/3d/prop-route-fork-marker/prop-route-fork-marker-trellis2-multiimage-experimental.glb",
+      "scores": { "recognition": 4, "volume": 3, "identity": 4, "materials": 3, "topology": 3 },
+      "notes": [
+        "The six-orbit model preserves the unequal Y-shaped fork and colored mineral tips.",
+        "The cardinal model loses one fork and is rejected.",
+        "Thicken the narrow vanes, set the ground pivot, and make gameplay LODs before runtime use."
+      ]
+    }
+  ]
+}

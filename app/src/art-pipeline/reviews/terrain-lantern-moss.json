@@ -1,0 +1,33 @@
+{
+  "assetId": "terrain-lantern-moss",
+  "candidate": "artifacts/art/exports/terrain-lantern-moss.webp",
+  "reviewer": "Codex visual QA",
+  "reviewedAt": "2026-09-07",
+  "scores": {
+    "recognition": 4,
+    "agency": 3,
+    "specificity": 3,
+    "restraint": 4,
+    "continuity": 4,
+    "reusability": 4,
+    "accessibility": 4
+  },
+  "notes": {
+    "recognition": "Open olive mineral ground reads as the most traversable terrain at thumbnail size.",
+    "agency": "The calm value field lets movement and route choices remain the active information.",
+    "specificity": "Mineral lichen helps continuity, though this is intentionally the least exotic biome.",
+    "restraint": "Low contrast and broad patches protect silhouettes and interaction rings.",
+    "continuity": "Olive, charcoal, and rare warm flecks preserve the established signal hierarchy.",
+    "reusability": "The surface tolerates crops, rotation, tint, and repeated tile use.",
+    "accessibility": "Large value-separated patches survive desaturation and small rendering."
+  },
+  "decision": "approved",
+  "candidateSha256": "1db422db5782cf4e08905186a841a2a86f47f8b9cadc1834e56c0e38297ace6d",
+  "generation": {
+    "mode": "azure-image-generation",
+    "tool": "azure-foundry",
+    "model": "FLUX.2-pro",
+    "promptSha256": "feb153d09dbedf6f034800d70bf5e08dce9ab35cfda321ac03f17896be816b92"
+  },
+  "joyScore": 9
+}

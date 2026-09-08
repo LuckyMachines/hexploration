@@ -1,0 +1,33 @@
+{
+  "assetId": "encounter-glassroot-stalker",
+  "candidate": "artifacts/art/exports/encounter-glassroot-stalker.png",
+  "reviewer": "Codex visual QA",
+  "reviewedAt": "2026-09-07",
+  "scores": {
+    "recognition": 4,
+    "agency": 3,
+    "specificity": 4,
+    "restraint": 4,
+    "continuity": 4,
+    "reusability": 4,
+    "accessibility": 4
+  },
+  "notes": {
+    "recognition": "A calm mineral grazer reads immediately at 72 px without looking like combat art.",
+    "agency": "Its lowered head creates a readable pause-or-approach encounter, though player choice depends on surrounding UI.",
+    "specificity": "Basalt hide and translucent leaf plates extend the established Glassroot material language.",
+    "restraint": "The silhouette uses one pale botanical accent and no effects clutter.",
+    "continuity": "Muted stone, soft cyan growth, and gentle proportions fit the exploration tone.",
+    "reusability": "A complete horizontal silhouette works as a board encounter and card crop.",
+    "accessibility": "Leaf mass and animal contour remain distinct without hue."
+  },
+  "decision": "approved",
+  "candidateSha256": "3f6db2e9f9025d3e4ec15745719421526ab9acf8f939c15eaf3c6af512e213be",
+  "generation": {
+    "mode": "azure-image-generation",
+    "tool": "azure-foundry",
+    "model": "FLUX.2-pro",
+    "promptSha256": "ea5549d41dcd0ca9a5965877d51866b3ff6cfad93dca12f00224486f098c278b"
+  },
+  "joyScore": 9.5
+}

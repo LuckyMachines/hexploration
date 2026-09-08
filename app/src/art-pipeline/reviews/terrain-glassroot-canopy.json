@@ -1,0 +1,33 @@
+{
+  "assetId": "terrain-glassroot-canopy",
+  "candidate": "artifacts/art/exports/terrain-glassroot-canopy.webp",
+  "reviewer": "Codex visual QA",
+  "reviewedAt": "2026-09-07",
+  "scores": {
+    "recognition": 4,
+    "agency": 3,
+    "specificity": 4,
+    "restraint": 4,
+    "continuity": 4,
+    "reusability": 3,
+    "accessibility": 4
+  },
+  "notes": {
+    "recognition": "Reads immediately as damp jungle ground at tile and contact-sheet size.",
+    "agency": "Supports reveal and traversal states while leaving the route itself code-native.",
+    "specificity": "Glassroot filaments, basalt plates, and pale mineral growth fit Xenovoya rather than generic grassland.",
+    "restraint": "Broad dark plates keep landmarks, pawns, and route light dominant.",
+    "continuity": "Field ink, weathered mineral, and localized green light match the approved cavern.",
+    "reusability": "The quiet surface crops and rotates safely across individual tile tops.",
+    "accessibility": "Root and stone shapes remain distinct without depending on green hue."
+  },
+  "decision": "approved",
+  "candidateSha256": "9cecffde3ed906996ffdd78d6e9d6676fd503c6c6347bb5cda5a93614d8ae7e4",
+  "generation": {
+    "mode": "azure-image-generation",
+    "tool": "azure-foundry",
+    "model": "FLUX.2-pro",
+    "promptSha256": "b208eec3a3b713f23ce6840e1e01a9ec4a52af82c53e5a08f7d7eea5ceb73090"
+  },
+  "joyScore": 9.3
+}

@@ -1,0 +1,33 @@
+{
+  "assetId": "prop-emberglass-shards",
+  "candidate": "artifacts/art/exports/prop-emberglass-shards.png",
+  "reviewer": "Codex visual QA",
+  "reviewedAt": "2026-09-07",
+  "scores": {
+    "recognition": 4,
+    "agency": 3,
+    "specificity": 4,
+    "restraint": 4,
+    "continuity": 4,
+    "reusability": 4,
+    "accessibility": 4
+  },
+  "notes": {
+    "recognition": "Two unequal amber fins and one anchored stone base read immediately at token scale.",
+    "agency": "The directional V silhouette subtly reinforces route choice without becoming a UI arrow.",
+    "specificity": "Wind-worn translucent mineral embedded in ochre stone belongs to Emberglass terrain.",
+    "restraint": "The single connected cluster has a controlled highlight and no detached sparkle field.",
+    "continuity": "Localized warm glass and matte dark grit preserve the material hierarchy.",
+    "reusability": "Clean alpha and compact base support rotation and repeated board placement.",
+    "accessibility": "The paired fins remain legible by shape and value rather than color alone."
+  },
+  "decision": "approved",
+  "candidateSha256": "b7f7adb05b62c3ac59a1b6dec30d0b283c56c6fe1c130c895528e64383629065",
+  "generation": {
+    "mode": "azure-image-generation",
+    "tool": "azure-foundry",
+    "model": "FLUX.2-pro",
+    "promptSha256": "b08b27cfa04f669f1916e98829bba1fc7e3ae465c013f6d49e9877177ae17092"
+  },
+  "joyScore": 9.5
+}

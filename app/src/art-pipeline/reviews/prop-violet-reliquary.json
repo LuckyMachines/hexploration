@@ -1,0 +1,33 @@
+{
+  "assetId": "prop-violet-reliquary",
+  "candidate": "artifacts/art/exports/prop-violet-reliquary.png",
+  "reviewer": "Codex visual QA",
+  "reviewedAt": "2026-09-07",
+  "scores": {
+    "recognition": 4,
+    "agency": 3,
+    "specificity": 4,
+    "restraint": 4,
+    "continuity": 4,
+    "reusability": 4,
+    "accessibility": 4
+  },
+  "notes": {
+    "recognition": "The broken mineral arch creates a memorable relic-terrain silhouette immediately.",
+    "agency": "The open center suggests passage and inspection while leaving actual affordance to code.",
+    "specificity": "Irregular violet glass seams and living filaments make the form recognizably Xenovoya.",
+    "restraint": "One arch and one localized material event avoid decorative glyph noise.",
+    "continuity": "Charcoal stone, restrained violet rarity, and dim green life preserve palette roles.",
+    "reusability": "Clean alpha, a connected base, and interior transparency support world-space placement.",
+    "accessibility": "The open arch reads by negative space and silhouette without depending on violet."
+  },
+  "decision": "approved",
+  "candidateSha256": "d9c049e65818e5a3e3f20828992f78991749a41e3f6341bf2d1f287bc5c63c2c",
+  "generation": {
+    "mode": "azure-image-generation",
+    "tool": "azure-foundry",
+    "model": "FLUX.2-pro",
+    "promptSha256": "cde9cbb15ab4344488579c693f2d23df660657a27105b841bc18098feaa29586"
+  },
+  "joyScore": 9.5
+}

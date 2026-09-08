@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://xenovoya.com/schemas/asset-manifest.schema.json",
+  "title": "Xenovoya art asset manifest",
+  "type": "object",
+  "required": ["version", "artDirectionVersion", "managedRoots", "assets", "compositions"],
+  "properties": {
+    "version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+    "artDirectionVersion": { "type": "string" },
+    "managedRoots": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+    "assets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "family", "status", "emotionalBeat", "assetType", "partRole", "output", "prompt", "references", "provenance"]
+      }
+    },
+    "compositions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "emotionalBeat", "slots", "rule"]
+      }
+    }
+  },
+  "additionalProperties": false
+}

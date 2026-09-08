@@ -1,0 +1,33 @@
+{
+  "assetId": "prop-campsite-shelter",
+  "candidate": "artifacts/art/exports/prop-campsite-shelter.png",
+  "reviewer": "Codex visual QA",
+  "reviewedAt": "2026-09-07",
+  "scores": {
+    "recognition": 4,
+    "agency": 3,
+    "specificity": 4,
+    "restraint": 4,
+    "continuity": 4,
+    "reusability": 4,
+    "accessibility": 4
+  },
+  "notes": {
+    "recognition": "The low canopy, packs, and protected lantern read immediately as a temporary campsite.",
+    "agency": "The shelter suggests a recoverable rest choice while leaving the actual action state code-native.",
+    "specificity": "Weathered survey fabric, compact packs, and restrained light belong to Xenovoya's expedition language.",
+    "restraint": "One connected low cluster keeps the lantern as the only bright focal point.",
+    "continuity": "Dark tactile fabric and warm safety light preserve the material and signal hierarchy.",
+    "reusability": "Clean alpha and broad grounded silhouette support multiple board and narrative placements.",
+    "accessibility": "Shelter, packs, and lamp remain legible through silhouette and value."
+  },
+  "decision": "approved",
+  "candidateSha256": "73ebb063c3aa50eea4880f77d6c831c43701feac6ea07b12596a5ff9ec908c77",
+  "generation": {
+    "mode": "azure-image-generation",
+    "tool": "azure-foundry",
+    "model": "FLUX.2-pro",
+    "promptSha256": "8addb2b00b371f3cc9c3d1d1bd6831e75a10c3226a86b1ff706670b369307105"
+  },
+  "joyScore": 9.5
+}

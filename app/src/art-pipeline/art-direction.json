@@ -1,0 +1,141 @@
+{
+  "$schema": "./schema/art-direction.schema.json",
+  "version": "1.1.0",
+  "name": "Xenovoya Expedition Art Direction",
+  "promise": "Alien wonder made legible through a calm field instrument, then made memorable through consequence and crew care.",
+  "visualDna": [
+    "A dark mineral world observed through precise expedition instrumentation.",
+    "Hexagonal geometry appears as structure, never as decorative wallpaper.",
+    "Light behaves like information: cyan reveals, gold invites, green reassures, red warns, and violet marks the rare.",
+    "Every image has one unmistakable focal event and enough quiet space for interface hierarchy.",
+    "Materials feel tactile and weathered while technology remains restrained, readable, and human-scale."
+  ],
+  "palette": [
+    { "id": "field-ink", "hex": "#0d0f0a", "job": "negative space and depth" },
+    { "id": "survey-panel", "hex": "#1a2016", "job": "instrument surfaces and quiet structure" },
+    { "id": "compass-gold", "hex": "#e8c860", "job": "agency, invitation, and earned triumph" },
+    { "id": "blueprint-cyan", "hex": "#4c91db", "job": "route, information, and discovery" },
+    { "id": "oxide-green", "hex": "#40a080", "job": "cooperation, safety, and recovery" },
+    { "id": "signal-red", "hex": "#e86060", "job": "specific preventable cost" },
+    { "id": "relic-violet", "hex": "#b994e6", "job": "rarity, mystery, and remembrance" }
+  ],
+  "materials": [
+    "weathered basalt and matte mineral dust",
+    "etched survey metal with restrained edge wear",
+    "translucent relic glass with internal light",
+    "soft atmospheric particulate used sparingly",
+    "dark fabric and practical expedition equipment"
+  ],
+  "geometry": [
+    "hexagonal modules with imperfect geological variation",
+    "clear routes and thresholds rather than ornamental grids",
+    "strong silhouette before surface detail",
+    "one dominant form supported by two or fewer secondary forms"
+  ],
+  "continuityLocks": [
+    "Preserve the deep field-ink base and mineral material language.",
+    "Keep neon color localized to signals, routes, relics, and atmospheric events.",
+    "Reserve compass gold for agency or earned value, never generic decoration.",
+    "Keep the composition readable at thumbnail size and under a dark UI overlay.",
+    "Use no embedded interface copy, logos, signatures, or watermarks."
+  ],
+  "globalAvoid": [
+    "generic glossy mobile-game fantasy",
+    "full-frame neon saturation",
+    "busy starfield noise behind important silhouettes",
+    "unmotivated lens flares or particle explosions",
+    "photoreal human faces unless the brief explicitly requires them",
+    "tiny decorative detail that disappears at delivery size",
+    "text, pseudo-text, logos, signatures, and watermarks",
+    "direct imitation of a named artist or entertainment franchise"
+  ],
+  "emotions": [
+    {
+      "id": "discovery",
+      "job": "Turn uncertainty into an inviting new possibility.",
+      "visualSignals": ["one newly illuminated form", "cool route light", "dark space opening into depth"],
+      "payoff": "The player should want to inspect what was revealed.",
+      "avoid": "Treating discovery as a loud reward explosion."
+    },
+    {
+      "id": "cooperation",
+      "job": "Show that one choice makes another explorer safer or stronger.",
+      "visualSignals": ["two linked signals", "converging routes", "oxide-green confirmation"],
+      "payoff": "The relationship must read before the spectacle.",
+      "avoid": "Anonymous crowds or generic teamwork poses."
+    },
+    {
+      "id": "agency",
+      "job": "Make the next meaningful choice feel available and owned.",
+      "visualSignals": ["clear route fork", "gold decision point", "calm surrounding field"],
+      "payoff": "The eye should understand where choice lives.",
+      "avoid": "Multiple equally loud focal points."
+    },
+    {
+      "id": "trust",
+      "job": "Make invisible systems feel dependable without making infrastructure the fantasy.",
+      "visualSignals": ["stable rhythm", "precise alignment", "quiet gold confirmation"],
+      "payoff": "The system should feel settled and inspectable.",
+      "avoid": "Coins, chains, padlocks, or generic blockchain symbolism."
+    },
+    {
+      "id": "jeopardy",
+      "job": "Name a specific preventable loss and make action feel urgent.",
+      "visualSignals": ["localized signal-red fracture", "tightened negative space", "endangered focal object"],
+      "payoff": "The player should know what can still be saved.",
+      "avoid": "Global red tint, gore, horror, or consequence without agency."
+    },
+    {
+      "id": "relief",
+      "job": "Let the composition visibly exhale after danger recedes.",
+      "visualSignals": ["opened space", "green return signal", "receding red residue"],
+      "payoff": "Safety should feel earned, not merely neutral.",
+      "avoid": "Confetti or a total palette reset."
+    },
+    {
+      "id": "triumph",
+      "job": "Celebrate the decision and the crew that made it possible.",
+      "visualSignals": ["gold route completion", "resolved silhouette", "contained luminous crest"],
+      "payoff": "The cause of success should remain visible.",
+      "avoid": "Generic fireworks, trophies, or detached victory spectacle."
+    },
+    {
+      "id": "remembrance",
+      "job": "Turn a completed expedition into an artifact worth keeping and sharing.",
+      "visualSignals": ["relic-violet afterglow", "route fingerprint", "quiet archival framing"],
+      "payoff": "The image should preserve a specific decision, cost, or relationship.",
+      "avoid": "A generic end card without evidence of this run."
+    }
+  ],
+  "partRoles": [
+    { "id": "backplate", "purpose": "Environment, atmosphere, and negative-space architecture.", "alpha": false },
+    { "id": "focal", "purpose": "The relic, portal, explorer, or decisive object.", "alpha": true },
+    { "id": "route", "purpose": "Readable movement, connection, or cause-and-effect linework.", "alpha": true },
+    { "id": "signal", "purpose": "A localized discovery, safety, danger, or completion accent.", "alpha": true },
+    { "id": "prop", "purpose": "A reusable environmental silhouette that gives a biome scale, character, and parallax.", "alpha": true },
+    { "id": "texture", "purpose": "Seamless material variation with no unique focal event.", "alpha": false },
+    { "id": "proof", "purpose": "A truthful capture or artifact derived from the shipped product.", "alpha": false }
+  ],
+  "assetTypes": [
+    { "id": "hero-wide", "useCase": "stylized-concept", "width": 2400, "height": 1000, "format": "webp", "alpha": false, "maxBytes": 350000 },
+    { "id": "feature-landscape", "useCase": "stylized-concept", "width": 1024, "height": 700, "format": "webp", "alpha": false, "maxBytes": 180000 },
+    { "id": "gameplay-proof", "useCase": "ui-mockup", "width": 1216, "height": 832, "format": "webp", "alpha": false, "maxBytes": 240000 },
+    { "id": "social-square", "useCase": "stylized-concept", "width": 1200, "height": 1200, "format": "webp", "alpha": false, "maxBytes": 450000 },
+    { "id": "transparent-focal", "useCase": "stylized-concept", "width": 1024, "height": 1024, "format": "png", "alpha": true, "maxBytes": 1800000 },
+    { "id": "transparent-prop", "useCase": "stylized-concept", "width": 1024, "height": 1024, "format": "png", "alpha": true, "maxBytes": 1800000 },
+    { "id": "fx-overlay", "useCase": "stylized-concept", "width": 1536, "height": 1024, "format": "png", "alpha": true, "maxBytes": 1800000 },
+    { "id": "tileable-texture", "useCase": "stylized-concept", "width": 1024, "height": 1024, "format": "webp", "alpha": false, "maxBytes": 350000 },
+    { "id": "reference-only", "useCase": "stylized-concept", "width": 0, "height": 0, "format": "png", "alpha": false, "maxBytes": 4000000 }
+  ],
+  "qualityGates": [
+    { "id": "recognition", "question": "Does the subject and emotional beat read in two seconds at thumbnail size?", "weight": 2 },
+    { "id": "agency", "question": "Does the image reveal a choice, relationship, consequence, or earned result?", "weight": 2 },
+    { "id": "specificity", "question": "Could this image belong only to Xenovoya rather than generic science fiction?", "weight": 2 },
+    { "id": "restraint", "question": "Is one focal event protected by quiet space and disciplined color?", "weight": 1 },
+    { "id": "continuity", "question": "Does it preserve the palette, material, geometry, and signal hierarchy?", "weight": 1 },
+    { "id": "reusability", "question": "Can the useful parts crop, layer, and scale without losing meaning?", "weight": 1 },
+    { "id": "accessibility", "question": "Does the meaning survive without color and leave readable contrast for UI?", "weight": 1 }
+  ],
+  "minimumJoyScore": 8,
+  "minimumGateScore": 3
+}

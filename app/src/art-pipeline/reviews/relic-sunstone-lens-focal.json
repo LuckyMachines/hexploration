@@ -1,0 +1,33 @@
+{
+  "assetId": "relic-sunstone-lens-focal",
+  "candidate": "artifacts/art/exports/relic-sunstone-lens-focal.png",
+  "reviewer": "Codex visual QA",
+  "reviewedAt": "2026-09-06",
+  "scores": {
+    "recognition": 4,
+    "agency": 4,
+    "specificity": 4,
+    "restraint": 4,
+    "continuity": 4,
+    "reusability": 4,
+    "accessibility": 4
+  },
+  "notes": {
+    "recognition": "The singular amber lens and faceted silhouette read instantly.",
+    "agency": "The contained aperture feels like an earned tool rather than decorative loot.",
+    "specificity": "Weathered survey ribs, mineral glass, gold core, and violet trace are distinctly Xenovoya.",
+    "restraint": "One object, one aperture, and no labels or detached spectacle.",
+    "continuity": "Material and signal colors follow the art-direction contract exactly.",
+    "reusability": "Clean alpha, complete silhouette, and generous margins support layering and cropping.",
+    "accessibility": "Silhouette, depth, and aperture contrast remain clear without color."
+  },
+  "decision": "approved",
+  "candidateSha256": "df51afc762944b9c2097793a70a87a7d2aa45b9db9cf9531dbaf0fd454f0d5ed",
+  "generation": {
+    "mode": "azure-image-generation",
+    "tool": "azure-foundry",
+    "model": "FLUX.2-pro",
+    "promptSha256": "45114fb3cef50287084745311ed990feec0ffcce1eb9f7779de8697dacd18fd7"
+  },
+  "joyScore": 10
+}

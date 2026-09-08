@@ -1,0 +1,33 @@
+{
+  "assetId": "terrain-violet-reliquary",
+  "candidate": "artifacts/art/exports/terrain-violet-reliquary.webp",
+  "reviewer": "Codex visual QA",
+  "reviewedAt": "2026-09-07",
+  "scores": {
+    "recognition": 4,
+    "agency": 3,
+    "specificity": 4,
+    "restraint": 4,
+    "continuity": 4,
+    "reusability": 4,
+    "accessibility": 4
+  },
+  "notes": {
+    "recognition": "Violet glass fused through dark mineral immediately marks a rare relic surface.",
+    "agency": "The quiet ground protects the interactive relic and selection signal as the decision point.",
+    "specificity": "Irregular memory glass and living seams fit Xenovoya without relying on generic runes.",
+    "restraint": "Pass B removes the baked hex pattern and manufactured glyph-like marks from Pass A.",
+    "continuity": "Relic violet remains localized inside a dark tactile mineral field.",
+    "reusability": "The broad irregular material works under varied crops, lighting, and tile rotations.",
+    "accessibility": "Value contrast between glass seams and stone remains visible without violet hue."
+  },
+  "decision": "approved",
+  "candidateSha256": "a4a15dd51163604cbafd81e4beb434d67fc73be4b605439318d256a39549d6b8",
+  "generation": {
+    "mode": "azure-image-generation",
+    "tool": "azure-foundry",
+    "model": "FLUX.2-pro",
+    "promptSha256": "2e6d5791f46c1873ded0514c280a91680fd38e219e23674032cbc649ea35fea5"
+  },
+  "joyScore": 9.5
+}

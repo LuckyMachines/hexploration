@@ -1,0 +1,33 @@
+{
+  "assetId": "relic-choir-seed-focal",
+  "candidate": "artifacts/art/exports/relic-choir-seed-focal.png",
+  "reviewer": "Codex visual QA",
+  "reviewedAt": "2026-09-07",
+  "scores": {
+    "recognition": 4,
+    "agency": 3,
+    "specificity": 4,
+    "restraint": 4,
+    "continuity": 4,
+    "reusability": 4,
+    "accessibility": 4
+  },
+  "notes": {
+    "recognition": "The split stone seed and three luminous inner leaves remain distinct at 96 pixels.",
+    "agency": "The opening form suggests a crew-triggered response, though the isolated object relies on surrounding UI to explain the choice.",
+    "specificity": "Weathered basalt enclosing living mineral glass is strongly aligned with Xenovoya's material language.",
+    "restraint": "One silhouette, one green pulse, no symbols, and ample transparent quiet space.",
+    "continuity": "Charcoal mineral mass, restrained green signal light, and tactile wear match the approved art direction.",
+    "reusability": "Clean defringed alpha, complete silhouette, and centered margins support card, badge, and encounter roles.",
+    "accessibility": "The open-versus-closed silhouette and strong value contrast remain legible without relying on hue."
+  },
+  "decision": "approved",
+  "candidateSha256": "4152b440c4688c867fb15262d5d0fe3be4c88de81589ab60e4585a0ad5ed868c",
+  "generation": {
+    "mode": "azure-image-generation",
+    "tool": "azure-foundry",
+    "model": "FLUX.2-pro",
+    "promptSha256": "0d02d88d9646a0241d51f01030557da404311813d7af172ae1925199c2e2e933"
+  },
+  "joyScore": 9.5
+}

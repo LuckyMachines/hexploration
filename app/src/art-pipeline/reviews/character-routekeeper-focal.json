@@ -1,0 +1,33 @@
+{
+  "assetId": "character-routekeeper-focal",
+  "candidate": "artifacts/art/exports/character-routekeeper-focal.png",
+  "reviewer": "Codex visual QA",
+  "reviewedAt": "2026-09-07",
+  "scores": {
+    "recognition": 4,
+    "agency": 4,
+    "specificity": 4,
+    "restraint": 4,
+    "continuity": 4,
+    "reusability": 4,
+    "accessibility": 4
+  },
+  "notes": {
+    "recognition": "Mantle, lantern, and grounded stance remain legible at board-marker size.",
+    "agency": "The raised route lantern communicates pathfinding and an available decision.",
+    "specificity": "Weathered expedition fabric and compact survey tools feel native to Xenovoya.",
+    "restraint": "One character, one gold signal, and a clean silhouette avoid board clutter.",
+    "continuity": "Field-ink clothing, cyan instrument detail, and compass gold preserve the palette jobs.",
+    "reusability": "Clean alpha and full-body framing support standee, card, and memory compositions.",
+    "accessibility": "The mantle and lantern silhouette communicate the role without relying on color."
+  },
+  "decision": "approved",
+  "candidateSha256": "16ee0269723457c7e0af1d5481473fcea911157f04690245494aa34614c1b320",
+  "generation": {
+    "mode": "azure-image-generation",
+    "tool": "azure-foundry",
+    "model": "FLUX.2-pro",
+    "promptSha256": "f7a67ad7dd0f6058edf374b29c03fcf351690e7a4b05ec4067fc9ab103d80bff"
+  },
+  "joyScore": 10
+}

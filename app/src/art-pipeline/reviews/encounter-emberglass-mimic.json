@@ -1,0 +1,33 @@
+{
+  "assetId": "encounter-emberglass-mimic",
+  "candidate": "artifacts/art/exports/encounter-emberglass-mimic.png",
+  "reviewer": "Codex visual QA",
+  "reviewedAt": "2026-09-07",
+  "scores": {
+    "recognition": 4,
+    "agency": 3,
+    "specificity": 4,
+    "restraint": 4,
+    "continuity": 4,
+    "reusability": 4,
+    "accessibility": 4
+  },
+  "notes": {
+    "recognition": "The walking crystal-cluster reveal survives at 72 px while remaining initially plausible as terrain.",
+    "agency": "Its discovery quality invites investigation, though the consequential response belongs to encounter UI.",
+    "specificity": "Emberglass, porous basalt, and the restrained cyan aperture make it world-specific.",
+    "restraint": "The focal amber crystals stay contained within one compact silhouette.",
+    "continuity": "Material, outline, and signal colors align with the approved Emberglass props.",
+    "reusability": "The low compact cutout layers cleanly onto several biome surfaces.",
+    "accessibility": "Legs and crystal crown communicate living terrain without depending on color."
+  },
+  "decision": "approved",
+  "candidateSha256": "064709fef8bf5c1bab57457b2896950c22236ef11eb4d11cbcac23120282eeb3",
+  "generation": {
+    "mode": "azure-image-generation",
+    "tool": "azure-foundry",
+    "model": "FLUX.2-pro",
+    "promptSha256": "74418fcea43e3237b695e673ad57baf8eb758de51971f14be226bc52ba38791f"
+  },
+  "joyScore": 9.5
+}

@@ -1,0 +1,33 @@
+{
+  "assetId": "terrain-emberglass-dunes",
+  "candidate": "artifacts/art/exports/terrain-emberglass-dunes.webp",
+  "reviewer": "Codex visual QA",
+  "reviewedAt": "2026-09-07",
+  "scores": {
+    "recognition": 4,
+    "agency": 3,
+    "specificity": 4,
+    "restraint": 4,
+    "continuity": 4,
+    "reusability": 4,
+    "accessibility": 4
+  },
+  "notes": {
+    "recognition": "Wind-combed ochre ground and embedded glass read immediately as desert terrain.",
+    "agency": "Flowing currents imply traversal direction without baking in a playable route.",
+    "specificity": "Amber glass fragments and charcoal mineral grit make the surface world-specific.",
+    "restraint": "The broad sand field remains quieter than the raised rocks and player pawns.",
+    "continuity": "Warm agency color stays material-local and never becomes full-frame neon.",
+    "reusability": "The non-directional crop works across rotations and differently shaped tile clusters.",
+    "accessibility": "Ripple relief and mineral fragments remain readable in grayscale."
+  },
+  "decision": "approved",
+  "candidateSha256": "6d14ca1c2e647c76bbf7b70d2abf5dc8d320207587c05f356cd4a9a7a14e23b8",
+  "generation": {
+    "mode": "azure-image-generation",
+    "tool": "azure-foundry",
+    "model": "FLUX.2-pro",
+    "promptSha256": "d48d29c62e2e945386e43f63854e1f680484e481a78e4571e25669069bcbf5c4"
+  },
+  "joyScore": 9.5
+}

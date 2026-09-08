@@ -1,0 +1,33 @@
+{
+  "assetId": "fx-redline-pressure",
+  "candidate": "artifacts/art/exports/fx-redline-pressure.png",
+  "reviewer": "Codex visual QA",
+  "reviewedAt": "2026-09-06",
+  "scores": {
+    "recognition": 4,
+    "agency": 4,
+    "specificity": 4,
+    "restraint": 3,
+    "continuity": 4,
+    "reusability": 4,
+    "accessibility": 4
+  },
+  "notes": {
+    "recognition": "The localized fracture reads immediately as preventable pressure.",
+    "agency": "The gold escape direction makes recovery legible beside the threat.",
+    "specificity": "Mineral fracture, restrained arc, and expedition gold fit the game's language.",
+    "restraint": "The effect stays edge-biased, though its brightest branch should remain short-lived in motion.",
+    "continuity": "Red names cost while gold names agency, preserving the semantic hierarchy.",
+    "reusability": "True alpha, quiet center, and edge-biased framing work across multiple scenes.",
+    "accessibility": "Direction, fracture shape, and luminance carry meaning independently of hue."
+  },
+  "decision": "approved",
+  "candidateSha256": "2f5ffc5a134cda15c2f671d19e1895616857e57db60930df51d76b4e61f59e4b",
+  "generation": {
+    "mode": "azure-image-generation",
+    "tool": "azure-foundry",
+    "model": "FLUX.2-pro",
+    "promptSha256": "b105641ea073f45816e0ef005528cd1fafeddc259c76941c730ea41fe74f0a39"
+  },
+  "joyScore": 9.8
+}
