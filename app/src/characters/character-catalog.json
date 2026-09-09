@@ -1,0 +1,180 @@
+{
+  "$schema": "./schema/character-catalog.schema.json",
+  "version": "1.0.0",
+  "requiredStates": [
+    "neutral",
+    "selected",
+    "moving",
+    "digging",
+    "helping",
+    "recovering",
+    "strained",
+    "downed",
+    "carrying",
+    "escaping",
+    "triumph",
+    "aftermath"
+  ],
+  "roleAliases": {
+    "warden": "guard",
+    "salvager": "carrier"
+  },
+  "roles": [
+    {
+      "id": "scout",
+      "label": "Scout",
+      "characterId": "signal-cartographer",
+      "contribution": "Reveals safe routes and reads distant signals",
+      "ability": "Move can reveal an extra zone.",
+      "verbs": ["listen", "map", "reveal"]
+    },
+    {
+      "id": "medic",
+      "label": "Medic",
+      "characterId": "field-mender",
+      "contribution": "Restores the crew and turns setbacks into another chance",
+      "ability": "Rest and Help recover more morale.",
+      "verbs": ["mend", "steady", "restore"]
+    },
+    {
+      "id": "carrier",
+      "label": "Carrier",
+      "characterId": "relic-tender",
+      "contribution": "Protects recovered relics and interprets their needs",
+      "ability": "Carried artifacts lower departure risk.",
+      "verbs": ["shelter", "carry", "attune"]
+    },
+    {
+      "id": "guard",
+      "label": "Guard",
+      "characterId": "routekeeper",
+      "contribution": "Stabilizes crossings and protects the crew's way home",
+      "ability": "Danger spikes are softened.",
+      "verbs": ["anchor", "guide", "protect"]
+    }
+  ],
+  "characters": [
+    {
+      "id": "signal-cartographer",
+      "name": "Signal Cartographer",
+      "roleId": "scout",
+      "fantasy": "Hear the path before anyone else can see it.",
+      "emotionalPromise": "Your attention turns uncertainty into a route the crew can trust.",
+      "voice": "Precise, observant, quietly reassuring; speaks in bearings, echoes, and possibilities.",
+      "identity": {
+        "silhouette": "Tall upright figure with a large square shoulder signal array, paired antennae, and a low mineral satchel.",
+        "face": "Mature angular face, straight brows, blue-gray eyes, long nose, clean-shaven jaw.",
+        "hair": "Short dark-brown hair swept high and back with closely cropped sides.",
+        "proportions": "Tall lean adult with long legs and restrained, attentive posture.",
+        "palette": ["#151a20", "#5de1d3", "#75c989", "#5a4637"],
+        "signatureEquipment": ["square left-shoulder signal array with cyan display", "paired antennae rising behind the left shoulder", "rectangular mineral satchel at the left hip"],
+        "immutableDetails": ["mature clean-shaven face", "swept-back dark hair", "left-shoulder signal array", "paired cyan and green signals", "low left-hip satchel"],
+        "avoid": ["young fashion-model face", "facial hair", "removing the shoulder array", "moving the satchel to the opposite hip", "military weaponry"]
+      },
+      "assets": {
+        "neutral": "/images/art/characters/signal-cartographer.png",
+        "neutralAssetId": "character-signal-cartographer-focal",
+        "states": {
+          "helping": "/images/art/characters/signal-cartographer-helping.png"
+        },
+        "stateAssetIds": {
+          "helping": "character-cartographer-helping"
+        }
+      },
+      "standee": { "visualScale": 1, "footAnchor": 0.08, "billboard": "camera-facing", "shadowWidth": 0.96 }
+    },
+    {
+      "id": "field-mender",
+      "name": "Field Mender",
+      "roleId": "medic",
+      "fantasy": "Keep one more light alive when the expedition begins to fray.",
+      "emotionalPromise": "Care becomes a visible, consequential form of courage.",
+      "voice": "Warm, economical, and gently stubborn; names what can still be repaired.",
+      "identity": {
+        "silhouette": "Short broad figure with a rounded cross-body field case, rolled blanket collar, and three luminous repair vials at the right hip.",
+        "face": "Older broad face with warm dark-brown skin, high cheekbones, a soft square jaw, and a narrow scar through the left eyebrow.",
+        "hair": "Close-cropped silver curls with a clean rounded hairline.",
+        "proportions": "Short, broad, sturdy adult with grounded feet and relaxed shoulders.",
+        "palette": ["#18201c", "#78c88a", "#d4b85f", "#6d4938"],
+        "signatureEquipment": ["rounded moss-green field case worn cross-body", "three oxide-green luminous repair vials at the right hip", "thick rolled blanket collar"],
+        "immutableDetails": ["older broad face", "silver close-cropped curls", "left-eyebrow scar", "rounded field case", "three green vials"],
+        "avoid": ["youthful narrow face", "long hair", "white medical uniform", "red cross symbol", "weapons", "bulky power armor"]
+      },
+      "assets": {
+        "neutral": "/images/art/characters/field-mender.png",
+        "neutralAssetId": "character-field-mender-focal",
+        "states": {
+          "recovering": "/images/art/characters/field-mender-recovering.png"
+        },
+        "stateAssetIds": {
+          "recovering": "character-field-mender-recovering"
+        }
+      },
+      "standee": { "visualScale": 1.04, "footAnchor": 0.08, "billboard": "camera-facing", "shadowWidth": 1.08 }
+    },
+    {
+      "id": "relic-tender",
+      "name": "Relic Tender",
+      "roleId": "carrier",
+      "fantasy": "Carry something impossible without treating it like a prize.",
+      "emotionalPromise": "Stewardship makes discovery feel tender, strange, and earned.",
+      "voice": "Patient, tactile, and quietly awed; describes weight, warmth, pulse, and trust.",
+      "identity": {
+        "silhouette": "Medium-height figure with a long split tunic, cloth relic sling across the chest, and one protected mineral seed held at the sternum.",
+        "face": "Young adult oval face, warm light-brown skin, large dark eyes, soft straight brows, and a small rounded chin.",
+        "hair": "Medium-brown hair center-parted into a low ponytail with two short face-framing strands.",
+        "proportions": "Medium-height slender adult with protective inward arm shapes and an unhurried stance.",
+        "palette": ["#28312f", "#847d73", "#d58a43", "#514036"],
+        "signatureEquipment": ["gray protective fabric sling across the chest", "single warm mineral seed", "long split-front field tunic"],
+        "immutableDetails": ["low brown ponytail", "oval youthful face", "gray chest sling", "warm seed relic", "split-front tunic"],
+        "avoid": ["blue trophy device", "armored breastplate", "short tactical jacket", "celebrity pose", "weapons"]
+      },
+      "assets": {
+        "neutral": "/images/art/characters/relic-tender.png",
+        "neutralAssetId": "character-relic-tender-focal",
+        "states": {
+          "triumph": "/images/art/characters/relic-tender-relief.png"
+        },
+        "stateAssetIds": {
+          "triumph": "character-relic-tender-relief"
+        }
+      },
+      "standee": { "visualScale": 1.02, "footAnchor": 0.08, "billboard": "camera-facing", "shadowWidth": 0.94 }
+    },
+    {
+      "id": "routekeeper",
+      "name": "Routekeeper",
+      "roleId": "guard",
+      "fantasy": "Hold the way home open while the world argues otherwise.",
+      "emotionalPromise": "Responsibility becomes a calm, visible act of protection.",
+      "voice": "Steady, spare, and protective; speaks in crossings, anchors, and promises kept.",
+      "identity": {
+        "silhouette": "Tall figure under a long asymmetrical charcoal mantle, with a square gold route lantern held high in the right hand.",
+        "face": "Adult long oval face, warm olive skin, strong straight brows, narrow brown eyes, and a squared chin.",
+        "hair": "Dark-brown hair center-parted and tied into a low short ponytail.",
+        "proportions": "Tall athletic adult with long legs, broad mantle, and grounded stance.",
+        "palette": ["#17191b", "#4a443d", "#e0bd58", "#65cfc9"],
+        "signatureEquipment": ["large square brass route lantern", "weathered asymmetrical survey mantle", "round cyan route instrument at the right hip"],
+        "immutableDetails": ["long oval face", "center-parted tied-back dark hair", "square lantern", "asymmetrical mantle", "cyan hip instrument"],
+        "avoid": ["small oval hand lamp", "additional lantern", "heavy shoulder armor", "changing age or facial structure", "weapons"]
+      },
+      "assets": {
+        "neutral": "/images/art/characters/routekeeper.png",
+        "neutralAssetId": "character-routekeeper-focal",
+        "states": {
+          "strained": "/images/art/characters/routekeeper-strained.png"
+        },
+        "stateAssetIds": {
+          "strained": "character-routekeeper-strained"
+        }
+      },
+      "standee": { "visualScale": 1, "footAnchor": 0.08, "billboard": "camera-facing", "shadowWidth": 1.04 }
+    }
+  ],
+  "qualityContract": {
+    "minimumRelationalScore": 3,
+    "thumbnailSizes": [32, 64, 128],
+    "requiredContexts": ["crew-lineup", "board", "dossier", "grayscale-silhouette"],
+    "identityDimensions": ["samePerson", "face", "proportions", "costume", "equipment", "visualScale", "stateRead"]
+  }
+}

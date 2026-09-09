@@ -21,7 +21,7 @@ describe('art pipeline contracts', () => {
   test('the checked-in art direction and manifest are internally valid', () => {
     const result = validateArtSystem(direction, manifest, { repoRoot });
     assert.deepEqual(result.errors, []);
-    assert.equal(summarizeArtSystem(direction, manifest).assets, 45);
+    assert.equal(summarizeArtSystem(direction, manifest).assets, 47);
   });
 
   test('generation briefs combine visual DNA, emotional purpose, delivery, and avoid rules', () => {
@@ -58,6 +58,28 @@ describe('art pipeline contracts', () => {
     const failing = scoreReview(direction, review);
     assert.equal(failing.passed, false);
     assert.ok(failing.errors.some((error) => error.includes('recognition')));
+  });
+
+  test('character condition reviews require same-person relational evidence', () => {
+    const asset = manifest.assets.find((item) => item.id === 'character-routekeeper-strained');
+    const review = createReviewTemplate(direction, manifest, asset.id, 'candidate.png');
+    review.reviewer = 'Character review pair';
+    review.decision = 'approved';
+    review.scores = Object.fromEntries(direction.qualityGates.map((gate) => [gate.id, 4]));
+    review.characterIdentity.scores = Object.fromEntries(Object.keys(review.characterIdentity.scores).map((dimension) => [dimension, 4]));
+    assert.equal(scoreReview(direction, review, { asset, manifest }).passed, true);
+    review.characterIdentity.scores.samePerson = 2;
+    assert.equal(scoreReview(direction, review, { asset, manifest }).passed, false);
+  });
+
+  test('character conditions require a matching canonical base and explicit identity locks', () => {
+    const broken = structuredClone(manifest);
+    const asset = broken.assets.find((item) => item.id === 'character-routekeeper-strained');
+    asset.character.id = 'somebody-else';
+    asset.prompt.identityLocks = [];
+    const result = validateArtSystem(direction, broken, { repoRoot });
+    assert.ok(result.errors.some((error) => error.includes('condition character id must match')));
+    assert.ok(result.errors.some((error) => error.includes('five explicit identity locks')));
   });
 
   test('candidate validation enforces size, format, alpha, color space, and byte budget', () => {

@@ -1,0 +1,88 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://xenovoya.com/schemas/character-catalog.schema.json",
+  "title": "Xenovoya character catalog",
+  "type": "object",
+  "required": ["version", "requiredStates", "roleAliases", "roles", "characters", "qualityContract"],
+  "properties": {
+    "version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+    "requiredStates": {
+      "type": "array",
+      "minItems": 8,
+      "uniqueItems": true,
+      "items": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" }
+    },
+    "roleAliases": { "type": "object", "additionalProperties": { "type": "string" } },
+    "roles": {
+      "type": "array",
+      "minItems": 4,
+      "items": {
+        "type": "object",
+        "required": ["id", "label", "characterId", "contribution", "ability", "verbs"],
+        "properties": {
+          "id": { "type": "string" },
+          "label": { "type": "string" },
+          "characterId": { "type": "string" },
+          "contribution": { "type": "string" },
+          "ability": { "type": "string" },
+          "verbs": { "type": "array", "minItems": 2, "items": { "type": "string" } }
+        }
+      }
+    },
+    "characters": {
+      "type": "array",
+      "minItems": 4,
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "roleId", "fantasy", "emotionalPromise", "voice", "identity", "assets", "standee"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+          "name": { "type": "string" },
+          "roleId": { "type": "string" },
+          "fantasy": { "type": "string" },
+          "emotionalPromise": { "type": "string" },
+          "voice": { "type": "string" },
+          "identity": {
+            "type": "object",
+            "required": ["silhouette", "face", "hair", "proportions", "palette", "signatureEquipment", "immutableDetails", "avoid"],
+            "properties": {
+              "silhouette": { "type": "string" },
+              "face": { "type": "string" },
+              "hair": { "type": "string" },
+              "proportions": { "type": "string" },
+              "palette": { "type": "array", "minItems": 3, "items": { "type": "string" } },
+              "signatureEquipment": { "type": "array", "minItems": 2, "items": { "type": "string" } },
+              "immutableDetails": { "type": "array", "minItems": 3, "items": { "type": "string" } },
+              "avoid": { "type": "array", "minItems": 2, "items": { "type": "string" } }
+            }
+          },
+          "assets": {
+            "type": "object",
+            "required": ["neutral", "neutralAssetId", "states", "stateAssetIds"],
+            "properties": {
+              "neutral": { "type": "string" },
+              "neutralAssetId": { "type": "string" },
+              "states": { "type": "object", "additionalProperties": { "type": "string" } },
+              "stateAssetIds": { "type": "object", "additionalProperties": { "type": "string" } }
+            }
+          },
+          "standee": {
+            "type": "object",
+            "required": ["visualScale", "footAnchor", "billboard", "shadowWidth"],
+            "properties": {
+              "visualScale": { "type": "number", "minimum": 0.8, "maximum": 1.2 },
+              "footAnchor": { "type": "number", "minimum": 0, "maximum": 0.2 },
+              "billboard": { "enum": ["camera-facing"] },
+              "shadowWidth": { "type": "number", "minimum": 0.7, "maximum": 1.3 }
+            }
+          }
+        }
+      }
+    },
+    "qualityContract": {
+      "type": "object",
+      "required": ["minimumRelationalScore", "thumbnailSizes", "requiredContexts", "identityDimensions"]
+    }
+  },
+  "additionalProperties": false
+}

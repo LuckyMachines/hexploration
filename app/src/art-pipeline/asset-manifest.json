@@ -1,6 +1,6 @@
 {
   "$schema": "./schema/asset-manifest.schema.json",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "artDirectionVersion": "1.1.0",
   "managedRoots": [
     "app/public/images/site-refresh",
@@ -1070,6 +1070,11 @@
       "id": "character-routekeeper-focal",
       "name": "Routekeeper Explorer",
       "family": "character",
+      "character": {
+        "id": "routekeeper",
+        "state": "neutral",
+        "baseAssetId": "character-routekeeper-focal"
+      },
       "status": "approved",
       "emotionalBeat": "agency",
       "assetType": "transparent-focal",
@@ -1115,6 +1120,11 @@
       "id": "character-signal-cartographer-focal",
       "name": "Signal Cartographer Explorer",
       "family": "character",
+      "character": {
+        "id": "signal-cartographer",
+        "state": "neutral",
+        "baseAssetId": "character-signal-cartographer-focal"
+      },
       "status": "approved",
       "emotionalBeat": "cooperation",
       "assetType": "transparent-focal",
@@ -1160,6 +1170,11 @@
       "id": "character-relic-tender-focal",
       "name": "Relic Tender Explorer",
       "family": "character",
+      "character": {
+        "id": "relic-tender",
+        "state": "neutral",
+        "baseAssetId": "character-relic-tender-focal"
+      },
       "status": "approved",
       "emotionalBeat": "trust",
       "assetType": "transparent-focal",
@@ -1199,6 +1214,60 @@
         "sha256": "88b52622468321c727057b16d278377419e9b7bb7b765685c215f54c784b5cc6",
         "review": "app/src/art-pipeline/reviews/character-relic-tender-focal.json",
         "promptSha256": "dcdddd4d232f42d6d7fca064f360e2b7fe006063333c8f6958a3a5eb8ed721f0"
+      }
+    },
+    {
+      "id": "character-field-mender-focal",
+      "name": "Field Mender Explorer",
+      "family": "character",
+      "character": {
+        "id": "field-mender",
+        "state": "neutral",
+        "baseAssetId": "character-field-mender-focal"
+      },
+      "status": "approved",
+      "emotionalBeat": "trust",
+      "assetType": "transparent-focal",
+      "partRole": "focal",
+      "output": {
+        "path": "app/public/images/art/characters/field-mender.png",
+        "width": 1024,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "10-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "The canonical Xenovoya Field Mender, a distinctive crew medic whose care reads as practical courage.",
+        "scene": "A perfectly uniform pure white isolation background with no floor, horizon, environment, or cast shadow.",
+        "subject": "One older short broad human explorer with warm dark-brown skin, close-cropped silver curls, a narrow scar through the left eyebrow, a thick rolled blanket collar, a rounded moss-green field case worn cross-body, and exactly three oxide-green luminous repair vials at the right hip.",
+        "composition": "Full-body three-quarter standing pose, boots and hands fully visible, grounded relaxed shoulders, strong rounded silhouette, consistent foot line, generous margin.",
+        "lighting": "Soft neutral key with restrained oxide-green vial light and a faint warm guidance rim.",
+        "constraints": [
+          "One adult character only",
+          "Preserve a short broad body and older broad face",
+          "Exactly one rounded field case and three repair vials",
+          "No red cross, white medical uniform, weapon, helmet, text, logo, watermark, frame, floor, or cast shadow",
+          "Painterly graphic-novel cutout matching the approved crew"
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/characters/routekeeper.png",
+          "role": "approved crew rendering, field-material, and cutout reference"
+        },
+        {
+          "path": "app/public/images/art/characters/relic-tender.png",
+          "role": "approved humane proportion and restrained equipment reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-generation",
+        "reviewedAt": "2026-09-09",
+        "sha256": "b36e23b4b252b1a4a3d74fe8ae731614ecab946ef9091f94785a4634f9ff0cd7",
+        "review": "app/src/art-pipeline/reviews/character-field-mender-focal.json",
+        "promptSha256": "fe6449ab97ffe597edb3eda69f15e8b3a64b111fc90dc9d3a9ab2071679610de"
       }
     },
     {
@@ -1503,15 +1572,20 @@
       }
     },
     {
-      "id": "character-routekeeper-wounded",
+      "id": "character-routekeeper-strained",
       "name": "Strained Routekeeper",
       "family": "character-condition",
+      "character": {
+        "id": "routekeeper",
+        "state": "strained",
+        "baseAssetId": "character-routekeeper-focal"
+      },
       "status": "approved",
       "emotionalBeat": "jeopardy",
       "assetType": "transparent-focal",
       "partRole": "focal",
       "output": {
-        "path": "app/public/images/art/characters/routekeeper-wounded.png",
+        "path": "app/public/images/art/characters/routekeeper-strained.png",
         "width": 1024,
         "height": 1024,
         "format": "png",
@@ -1530,6 +1604,15 @@
           "Preserve the approved Routekeeper clothing language and humane proportions",
           "No blood, gore, weapon, heroic battle pose, text, logo, watermark, frame, floor, or cast shadow",
           "Pure white isolation background"
+        ],
+        "identityLocks": [
+          "Adult with the same long oval face, warm olive skin, strong straight brows, narrow brown eyes, and squared chin",
+          "Dark-brown hair center-parted and tied into the same low short ponytail",
+          "Tall athletic proportions",
+          "Large square brass route lantern held in the right hand",
+          "Weathered asymmetrical charcoal mantle",
+          "Round cyan route instrument at the right hip",
+          "Never add a second lantern, small oval lamp, or heavy shoulder armor"
         ]
       },
       "references": [
@@ -1539,17 +1622,22 @@
         }
       ],
       "provenance": {
-        "origin": "azure-image-generation",
-        "reviewedAt": "2026-09-07",
-        "sha256": "2f712afa6e2ad3c3848e73eabb72b02b809dbbfc3e9edfca5f3514f1ba0fd647",
-        "review": "app/src/art-pipeline/reviews/character-routekeeper-wounded.json",
-        "promptSha256": "197493c3c305d14f4f0c52661db794060a46b811a6c324d21fe2628b5ceefd1a"
+        "origin": "azure-image-edit",
+        "reviewedAt": "2026-09-09",
+        "sha256": "6bbffdca035a9d4ff3fb4341b4786e3a38f5c044dfa5872609048b78a2d2abbb",
+        "review": "app/src/art-pipeline/reviews/character-routekeeper-strained.json",
+        "promptSha256": "ac90e8f20a6c7c718b47fc6fcf07980aa1e36e79cfdd0b698b4341a14999ccbb"
       }
     },
     {
       "id": "character-cartographer-helping",
       "name": "Helping Signal Cartographer",
       "family": "character-condition",
+      "character": {
+        "id": "signal-cartographer",
+        "state": "helping",
+        "baseAssetId": "character-signal-cartographer-focal"
+      },
       "status": "approved",
       "emotionalBeat": "cooperation",
       "assetType": "transparent-focal",
@@ -1574,6 +1662,15 @@
           "Preserve the approved Cartographer clothing, equipment, and painterly cutout language",
           "No second person, weapon, text, logo, watermark, frame, floor, or cast shadow",
           "Pure white isolation background"
+        ],
+        "identityLocks": [
+          "Mature clean-shaven angular face with straight brows, blue-gray eyes, long nose, and defined jaw",
+          "Short dark-brown hair swept high and back with closely cropped sides",
+          "Tall lean proportions",
+          "Large square signal array fixed to the left shoulder with paired antennae",
+          "Rectangular mineral satchel remains at the left hip",
+          "Paired cyan and oxide-green displays remain in their established positions",
+          "Never add facial hair, remove the shoulder array, or redesign the costume"
         ]
       },
       "references": [
@@ -1583,23 +1680,28 @@
         }
       ],
       "provenance": {
-        "origin": "azure-image-generation",
-        "reviewedAt": "2026-09-07",
-        "sha256": "c8d0b2112f6cec601234c3ff4bed206e58c4db361b96292628c87d48abf0cc06",
+        "origin": "azure-image-edit",
+        "reviewedAt": "2026-09-09",
+        "sha256": "4204ae523c936c619af9fb64595275cbf558378b51e398ff7ca3c3f6b63c5e55",
         "review": "app/src/art-pipeline/reviews/character-cartographer-helping.json",
-        "promptSha256": "b71b16914e91ef305dd8b687955e48b7c32b5e050f156002b977ea5f0efedfd1"
+        "promptSha256": "4aa51676e25d3c5c3cc493f3d0d294d355f9dd87e519ed94eb96b3371c9016c3"
       }
     },
     {
-      "id": "character-relic-tender-triumph",
-      "name": "Relic Tender Triumph",
+      "id": "character-relic-tender-relief",
+      "name": "Relic Tender Relief",
       "family": "character-condition",
+      "character": {
+        "id": "relic-tender",
+        "state": "triumph",
+        "baseAssetId": "character-relic-tender-focal"
+      },
       "status": "approved",
-      "emotionalBeat": "triumph",
+      "emotionalBeat": "relief",
       "assetType": "transparent-focal",
       "partRole": "focal",
       "output": {
-        "path": "app/public/images/art/characters/relic-tender-triumph.png",
+        "path": "app/public/images/art/characters/relic-tender-relief.png",
         "width": 1024,
         "height": 1024,
         "format": "png",
@@ -1618,24 +1720,88 @@
           "Preserve the approved Relic Tender costume and painterly cutout language",
           "No trophy pose, confetti, weapon, text, logo, watermark, frame, floor, or cast shadow",
           "Pure white isolation background"
+        ],
+        "identityLocks": [
+          "Young adult with the same oval face, warm light-brown skin, large dark eyes, soft brows, and small rounded chin",
+          "Medium-brown center-parted hair in the same low ponytail with two face-framing strands",
+          "Medium-height slender proportions",
+          "Gray protective fabric sling remains across the chest",
+          "The single warm mineral seed remains the protected relic",
+          "Long split-front field tunic remains unchanged",
+          "Never substitute a blue trophy device, armored breastplate, or short tactical jacket"
         ]
       },
       "references": [
         {
           "path": "app/public/images/art/characters/relic-tender.png",
           "role": "approved character identity, costume, body language, and cutout reference"
-        },
-        {
-          "path": "app/public/images/art/relics/atlas-spindle.png",
-          "role": "approved relic material and restrained triumph-light reference"
         }
       ],
       "provenance": {
-        "origin": "azure-image-generation",
-        "reviewedAt": "2026-09-07",
-        "sha256": "e2dde42e833e42b630180f57253d7a0d4810d357a067d5614dab06348db0a67f",
-        "review": "app/src/art-pipeline/reviews/character-relic-tender-triumph.json",
-        "promptSha256": "498747e6aa994a41cc435e99acb0889f607be3582ac39a5aaf056e8bb088cdcd"
+        "origin": "azure-image-edit",
+        "reviewedAt": "2026-09-09",
+        "sha256": "0ae42bc35709139e8b927dd10d0185e118a83f04c2a999277ca4c9da80398885",
+        "review": "app/src/art-pipeline/reviews/character-relic-tender-relief.json",
+        "promptSha256": "1e238d4bf0ab482392d25faf258970e63c8c1d314b9f1d183d4dc04fa2a16a04"
+      }
+    },
+    {
+      "id": "character-field-mender-recovering",
+      "name": "Recovering Field Mender",
+      "family": "character-condition",
+      "character": {
+        "id": "field-mender",
+        "state": "recovering",
+        "baseAssetId": "character-field-mender-focal"
+      },
+      "status": "approved",
+      "emotionalBeat": "relief",
+      "assetType": "transparent-focal",
+      "partRole": "focal",
+      "output": {
+        "path": "app/public/images/art/characters/field-mender-recovering.png",
+        "width": 1024,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "10-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "The established Xenovoya Field Mender using practical care to restore an off-frame crewmate.",
+        "scene": "A perfectly uniform pure white isolation background with no floor, horizon, environment, or cast shadow.",
+        "subject": "The exact canonical Field Mender in the exact same clothing and equipment, grounded on one knee with one open steadying hand and one oxide-green repair vial held near an off-frame crewmate.",
+        "composition": "Full-body three-quarter cutout, boots and both hands visible, strong rounded silhouette, consistent apparent scale and foot line, no second character.",
+        "lighting": "Soft neutral key with a localized oxide-green care signal and restrained warm rim.",
+        "constraints": [
+          "Preserve the exact same face, age, silver curls, eyebrow scar, body proportions, costume, field case, and three-vial equipment system",
+          "Change only pose, expression, and the active vial",
+          "One adult character only",
+          "No red cross, white medical uniform, weapon, text, logo, watermark, frame, floor, or cast shadow",
+          "Pure white isolation background"
+        ],
+        "identityLocks": [
+          "Older broad face with warm dark-brown skin, high cheekbones, soft square jaw, and a narrow scar through the left eyebrow",
+          "Close-cropped silver curls with the same rounded hairline",
+          "Short broad sturdy proportions",
+          "Rounded moss-green field case remains cross-body",
+          "Exactly three oxide-green repair vials remain at the right hip",
+          "Thick rolled blanket collar remains unchanged",
+          "Never introduce a red cross, white medical uniform, long hair, or youthful narrow face"
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/characters/field-mender.png",
+          "role": "mandatory canonical edit target for identity, face, proportions, costume, and equipment"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-edit",
+        "reviewedAt": "2026-09-09",
+        "sha256": "579e08fc0b421acc646066b46c2268143c8b8c14125e4158617e4875072f6be4",
+        "review": "app/src/art-pipeline/reviews/character-field-mender-recovering.json",
+        "promptSha256": "04cd9cb81f849b372f8a6b8f0af82068de5c1f9ca1561a503143b3e124313336"
       }
     },
     {

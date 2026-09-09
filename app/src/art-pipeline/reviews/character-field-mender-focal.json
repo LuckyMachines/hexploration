@@ -1,0 +1,33 @@
+{
+  "assetId": "character-field-mender-focal",
+  "candidate": "artifacts/art/exports/character-field-mender-focal.png",
+  "reviewer": "Codex character QA",
+  "reviewedAt": "2026-09-09",
+  "scores": {
+    "recognition": 3,
+    "agency": 3,
+    "specificity": 4,
+    "restraint": 4,
+    "continuity": 3,
+    "reusability": 4,
+    "accessibility": 4
+  },
+  "notes": {
+    "recognition": "Broad grounded silhouette, green repair vials, and field case communicate a support specialist at thumbnail size.",
+    "agency": "The ready stance and accessible equipment imply practical intervention, though the neutral pose intentionally limits action drama.",
+    "specificity": "Weathered expedition cloth, mineral repair vials, and non-military equipment feel specific to Xenovoya.",
+    "restraint": "One figure, one equipment cluster, and quiet negative space preserve the focal read.",
+    "continuity": "Materials and palette fit the crew; the rendering is slightly more painterly-realistic than the three earlier line-led cutouts.",
+    "reusability": "Clean full-body silhouette, generous margin, and clear hand/foot shapes support board, dossier, and memory crops.",
+    "accessibility": "Body shape, collar, case, and vial cluster separate the role without depending on green alone."
+  },
+  "decision": "approved",
+  "candidateSha256": "b36e23b4b252b1a4a3d74fe8ae731614ecab946ef9091f94785a4634f9ff0cd7",
+  "generation": {
+    "mode": "azure-image-generation",
+    "tool": "azure-foundry",
+    "model": "gpt-image-2",
+    "promptSha256": "fe6449ab97ffe597edb3eda69f15e8b3a64b111fc90dc9d3a9ab2071679610de"
+  },
+  "joyScore": 8.8
+}

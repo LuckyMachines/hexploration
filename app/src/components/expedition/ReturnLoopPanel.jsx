@@ -292,10 +292,18 @@ export default function ReturnLoopPanel() {
       </div>
       {expedition && <span className="rounded border border-compass/40 bg-compass/10 px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.18em] text-compass-bright">{lifecycleLabel[expedition.lifecycle]}</span>}
     </div>
-    {!state.player.role ? <div className="mt-5 grid gap-3 md:grid-cols-3">
-      {Object.entries(RETURN_ROLES).map(([id, role]) => <button key={id} type="button" onClick={() => chooseRole(id)} className="min-h-11 rounded border border-exp-border bg-exp-dark/40 p-4 text-left transition hover:border-compass/50 hover:bg-compass/5">
-        <p className="font-mono text-xs uppercase tracking-[0.18em] text-exp-text">{role.label}</p>
-        <p className="mt-2 font-mono text-[11px] leading-relaxed text-exp-text-dim">{role.contribution}.</p>
+    {!state.player.role ? <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+      {Object.entries(RETURN_ROLES).map(([id, role]) => <button key={id} type="button" onClick={() => chooseRole(id)} className="group min-h-11 overflow-hidden rounded border border-exp-border bg-exp-dark/40 text-left transition hover:border-compass/50 hover:bg-compass/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-compass/70">
+        <div className="relative h-36 overflow-hidden border-b border-exp-border bg-[radial-gradient(circle_at_50%_38%,rgba(232,200,96,0.15),transparent_58%),rgba(8,12,9,0.88)]">
+          <img src={role.character.assets.neutral} alt="" className="h-full w-full object-contain object-bottom transition-transform duration-300 group-hover:scale-[1.03]" />
+        </div>
+        <div className="p-4">
+          <p className="font-display text-lg uppercase tracking-[0.12em] text-exp-text">{role.character.name}</p>
+          <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.18em] text-compass">{role.label}</p>
+          <p className="mt-2 font-sans text-xs leading-relaxed text-exp-text-dim">{role.character.fantasy}</p>
+          <p className="mt-3 font-mono text-[10px] leading-relaxed text-exp-text">{role.contribution}.</p>
+          <p className="mt-2 font-mono text-[9px] uppercase tracking-[0.12em] text-blueprint">{role.verbs.join(' / ')}</p>
+        </div>
       </button>)}
     </div> : <div className="mt-5 grid gap-3 lg:grid-cols-[minmax(0,1fr)_minmax(240px,0.55fr)]">
       <div className="rounded border border-exp-border bg-exp-dark/35 p-4">
@@ -313,11 +321,21 @@ export default function ReturnLoopPanel() {
           {expedition && !terminalLifecycles.has(expedition.lifecycle) && expedition.lifecycle !== 'waiting-on-crew' && <button type="button" onClick={markReady} className="inline-flex min-h-11 items-center rounded border border-blueprint/40 bg-blueprint/10 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.18em] text-blueprint">Mark decision ready</button>}
         </div>
       </div>
-      <div className="rounded border border-exp-border bg-exp-dark/35 p-4">
-        <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-exp-text-dim">Your contribution</p>
-        <p className="mt-2 font-mono text-sm text-compass-bright">{RETURN_ROLES[state.player.role].label}</p>
-        <p className="mt-1 font-mono text-xs leading-relaxed text-exp-text-dim">{RETURN_ROLES[state.player.role].contribution}.</p>
-        {expedition && <><p className="mt-4 font-mono text-[10px] uppercase tracking-[0.2em] text-exp-text-dim">Unresolved clue</p><p className="mt-1 font-mono text-xs leading-relaxed text-exp-text">{expedition.clue}</p></>}
+      <div className="overflow-hidden rounded border border-exp-border bg-exp-dark/35">
+        <div className="grid grid-cols-[5.5rem_1fr] gap-3 border-b border-exp-border p-3">
+          <div className="h-24 overflow-hidden rounded border border-exp-border bg-exp-dark/70"><img src={RETURN_ROLES[state.player.role].character.assets.neutral} alt="" className="h-full w-full object-contain object-bottom" /></div>
+          <div className="min-w-0 py-1">
+            <p className="font-mono text-[9px] uppercase tracking-[0.22em] text-exp-text-dim">Your contribution</p>
+            <p className="mt-1 font-display text-lg uppercase tracking-[0.1em] text-exp-text">{RETURN_ROLES[state.player.role].character.name}</p>
+            <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.16em] text-compass-bright">{RETURN_ROLES[state.player.role].label}</p>
+            <p className="mt-2 font-sans text-xs leading-relaxed text-exp-text-dim">{RETURN_ROLES[state.player.role].character.emotionalPromise}</p>
+          </div>
+        </div>
+        <div className="p-4">
+          <p className="font-mono text-xs leading-relaxed text-exp-text-dim">{RETURN_ROLES[state.player.role].contribution}.</p>
+          <p className="mt-2 font-mono text-[10px] leading-relaxed text-blueprint">{RETURN_ROLES[state.player.role].ability}</p>
+          {expedition && <><p className="mt-4 font-mono text-[10px] uppercase tracking-[0.2em] text-exp-text-dim">Unresolved clue</p><p className="mt-1 font-mono text-xs leading-relaxed text-exp-text">{expedition.clue}</p></>}
+        </div>
       </div>
     </div>}
     {state.player.role && <>

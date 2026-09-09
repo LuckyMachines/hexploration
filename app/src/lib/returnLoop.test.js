@@ -3,7 +3,11 @@ import { emptyReturnLoop, mergeReturnLoops, returnRecommendation, selectRole, st
 
 describe('return loop', () => {
   it('asks a new player to choose a role before starting a run', () => expect(returnRecommendation(emptyReturnLoop()).action).toMatch(/Choose your expedition role/));
-  it('persists a role-specific reason to begin', () => expect(returnRecommendation(selectRole(emptyReturnLoop(), 'warden')).reason).toMatch(/stabilizes crossings/));
+  it('migrates a legacy role and persists a role-specific reason to begin', () => {
+    const selected = selectRole(emptyReturnLoop(), 'warden');
+    expect(selected.player).toMatchObject({ role: 'guard', characterId: 'routekeeper' });
+    expect(returnRecommendation(selected).reason).toMatch(/stabilizes crossings/i);
+  });
   it('turns an active game into a resumable pressure-aware decision', () => {
     const started = startReturnableExpedition(selectRole(emptyReturnLoop(), 'scout'), { gameId: '42' });
     const state = updateExpeditionReturn(started, { lifecycle: 'at-risk', pressure: 71, nextReason: 'Vex needs your scan before the bridge collapses.' });

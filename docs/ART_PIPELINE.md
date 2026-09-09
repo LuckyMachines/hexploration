@@ -100,13 +100,36 @@ The authorized local adapter is `$HOME/.codex/azure-image.sh`, with `$HOME/.code
 
 FLUX may return opaque JPEG bytes even when the requested filename ends in `.png`. Treat the bytes, not the extension, as truth. Use `art:cutout` for transparent assets generated against a uniform white or hexadecimal-color isolation field; adjust `--fuzz` only after inspecting edges. The default 13 percent removes the connected backdrop without globally deleting enclosed light values. Closed silhouettes such as rings may retain isolated background pockets; inspect the alpha result and repeat with source-pixel `--seeds` for each pocket. Reserve `--all-background` for imagery without light values close to the isolation color. The approved manifest and adjacent prompt/receipt pair preserve reproducible generation provenance.
 
+### Character identity pipeline
+
+`app/src/characters/character-catalog.json` is the canonical roster shared by gameplay, role selection, dossiers, the Three.js standees, the design system, and art QA. Its schema fixes identity anchors, silhouette, palette, signature equipment, immutable details, state coverage, and the 2.5D standee contract. The runtime always resolves an authored state when one exists and otherwise falls back to that character's neutral art; it never substitutes another person.
+
+Use the character wrapper for identity work:
+
+```text
+npm run character:doctor
+npm run character:plan
+npm run character:brief -- field-mender neutral --write
+npm run character:generate -- field-mender recovering --write
+npm run character:review -- field-mender recovering artifacts/art/exports/character-field-mender-recovering.png --write
+npm run character:contact-sheet -- crew --write
+npm run character:contact-sheet -- crew --write --mode silhouette
+npm run character:context-sheet -- field-mender --write
+npm run character:report
+npm run character:ci
+```
+
+Neutral concepts may begin with FLUX.2-pro, but state art must use GPT Image 2 edit mode with the approved neutral file as its canonical input. A condition cannot pass on generic beauty scores alone: `samePerson`, `face`, `proportions`, `costume`, `equipment`, `visualScale`, and `stateRead` must each reach 3/4. The review records the neutral asset fingerprint, so changing a base identity automatically invalidates every dependent state until it is regenerated or reviewed again.
+
+For a tightly controlled restyle, `art:generate` accepts one content/identity source through `--input` and semicolon-separated style-only sources through `--style-inputs`. This is an experimental review lane, not an automatic promotion lane: multi-image edits can collapse toward a style reference's person or costume. Reject that result even when the rendering is attractive. Every provider output remains a candidate until technical checks, side-by-side identity review, silhouette review, context sheets, and promotion all pass.
+
 ## Current memory composition
 
 The Run Relic experience composes two independently reviewed parts in `RelicMemoryArtwork.jsx`: the Glassroot Cavern backplate supplies route depth and quiet text space, while the transparent Choir Seed supplies the focal reward. All run title, outcome, score, crew, cost, route, and challenge data remain live HTML. This keeps the memory truthful and responsive while avoiding the pasted-on character collage identified during exploration.
 
 ## Current board composition
 
-The Three.js expedition world composes five approved terrain materials, five transparent biome props, two approved state-effect textures, and three transparent character standees in `ThreeBoard.jsx`. Tile geometry, elevation, lighting, routes, reachability, selection, danger, and interaction remain native 3D systems. Generated art adds surface identity and role character without becoming a screenshot-shaped dependency or replacing live game state. The `prop` role and `transparent-prop` contract keep scenery cutouts distinct from characters and decisive relic focal art.
+The Three.js expedition world composes five approved terrain materials, five transparent biome props, two approved state-effect textures, and four distinct transparent character standees in `ThreeBoard.jsx`. Player identity and condition are resolved from the canonical character catalog rather than seat-index texture arrays. Tile geometry, elevation, lighting, routes, reachability, selection, danger, and interaction remain native 3D systems. Generated art adds surface identity and role character without becoming a screenshot-shaped dependency or replacing live game state. The `prop` role and `transparent-prop` contract keep scenery cutouts distinct from characters and decisive relic focal art.
 
 ## Generation rules
 

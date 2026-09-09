@@ -55,8 +55,8 @@ Commands:
   doctor [--strict]                         Validate contracts, files, dimensions, formats, and fingerprints.
   list [--status status]                    Show the asset inventory and next state.
   brief <asset-id> [--write]                Compile a generation or capture brief.
-  generate <asset-id> --variant name [--direction text] [--size WIDTHxHEIGHT] --write [--out path] [--replace]
-                                             Generate a raw candidate through the authorized FLUX.2-pro adapter.
+  generate <asset-id> --variant name [--direction text] [--input canonical.png] [--style-inputs "a.png;b.png"] [--model FLUX.2-pro|gpt-image-2] [--size WIDTHxHEIGHT] --write [--out path] [--replace]
+                                             Generate with FLUX.2-pro, or use GPT Image 2 edit mode with one identity input and optional style-only references.
   cutout <asset-id> <source-path> --write [--fuzz percent] [--background color] [--seeds "x,y;x,y"] [--all-background] [--out path] [--replace]
                                              Remove an isolation background and export a contract-valid alpha asset.
   composition <composition-id>              Show the reusable layer stack.
@@ -127,13 +127,18 @@ function commandGenerate(assetId, flags) {
   if (existsSync(output) && !flags.replace) throw new Error(`Candidate exists; use --replace: ${relativeOutput}`);
 
   const codexRoot = process.env.CODEX_HOME || path.join(homedir(), '.codex');
-  const defaultAzureHelper = path.join(codexRoot, 'azure-image.sh');
-  const helper = process.env.ART_FLUX2_COMMAND
-    ? path.resolve(process.env.ART_FLUX2_COMMAND)
+  const hasStyleInputs = typeof flags['style-inputs'] === 'string' && flags['style-inputs'].trim().length > 0;
+  const identityEdit = asset.family === 'character-condition' || Boolean(flags.input) || hasStyleInputs;
+  const requestedModel = identityEdit ? 'gpt-image-2' : String(flags.model || 'FLUX.2-pro');
+  if (!['FLUX.2-pro', 'gpt-image-2'].includes(requestedModel)) throw new Error('model must be FLUX.2-pro or gpt-image-2');
+  const defaultAzureHelper = path.join(codexRoot, identityEdit ? 'azure-image-edit.sh' : 'azure-image.sh');
+  const configuredHelper = identityEdit ? process.env.ART_CHARACTER_EDIT_COMMAND : process.env.ART_FLUX2_COMMAND;
+  const helper = configuredHelper
+    ? path.resolve(configuredHelper)
     : existsSync(defaultAzureHelper)
       ? defaultAzureHelper
-      : path.join(codexRoot, 'flux2-pro-image.sh');
-  if (!existsSync(helper)) throw new Error(`FLUX.2-pro adapter is unavailable: ${helper}`);
+      : path.join(codexRoot, identityEdit ? 'azure-image-edit.sh' : 'flux2-pro-image.sh');
+  if (!existsSync(helper)) throw new Error(`Image adapter is unavailable: ${helper}`);
   const requestedSize = String(flags.size || '1024x1024');
   if (!/^\d{3,4}x\d{3,4}$/.test(requestedSize)) throw new Error('size must use WIDTHxHEIGHT');
 
@@ -141,7 +146,7 @@ function commandGenerate(assetId, flags) {
   const variationDirection = typeof flags.direction === 'string' ? flags.direction.trim() : '';
   const prompt = variationDirection ? `${basePrompt}\nVariation direction: ${variationDirection}` : basePrompt;
   if (!flags.write) {
-    console.log(`DRY RUN FLUX.2-pro -> ${relativeOutput}`);
+    console.log(`DRY RUN ${identityEdit ? 'GPT Image 2 identity edit' : requestedModel} -> ${relativeOutput}`);
     console.log('Add --write to make the billable generation request.');
     return;
   }
@@ -149,9 +154,17 @@ function commandGenerate(assetId, flags) {
   mkdirSync(path.dirname(output), { recursive: true });
   const promptPath = output.replace(/\.[^.]+$/, '.prompt.md');
   writeFileSync(promptPath, `# ${asset.name} / ${variant}\n\n${prompt}\n`);
-  const helperArgs = path.basename(helper).toLowerCase() === 'azure-image.sh'
-    ? [helper, prompt, output, 'FLUX.2-pro', requestedSize]
-    : [helper, prompt, output];
+  const baseAsset = asset.family === 'character-condition' ? findAsset(manifest, asset.character?.baseAssetId) : null;
+  const baseInput = flags.input ? candidatePath(flags.input) : baseAsset ? resolveRepoPath(repoRoot, baseAsset.output.path) : null;
+  const styleInputs = hasStyleInputs
+    ? String(flags['style-inputs']).split(';').map((value) => value.trim()).filter(Boolean).map(candidatePath)
+    : [];
+  if (identityEdit && (!baseInput || !existsSync(baseInput))) throw new Error(`Canonical character input is missing: ${flags.input || baseAsset?.output.path || ''}`);
+  const helperArgs = identityEdit
+    ? [helper, prompt, output, requestedSize, baseInput, ...styleInputs]
+    : path.basename(helper).toLowerCase() === 'azure-image.sh'
+      ? [helper, prompt, output, requestedModel, requestedSize]
+      : [helper, prompt, output];
   const result = spawnSync('bash', helperArgs, { encoding: 'utf8', windowsHide: true });
   if (result.error) throw new Error(`FLUX.2-pro adapter failed to start: ${result.error.message}`);
   if (result.status !== 0) throw new Error((result.stderr || result.stdout || 'FLUX.2-pro generation failed').trim());
@@ -164,7 +177,10 @@ function commandGenerate(assetId, flags) {
     variant,
     generatedAt: new Date().toISOString(),
     provider: 'azure-foundry',
-    model: 'FLUX.2-pro',
+    model: requestedModel,
+    mode: identityEdit ? 'identity-preserve' : 'stylized-concept',
+    canonicalInput: baseInput ? path.relative(repoRoot, baseInput).replaceAll('\\', '/') : null,
+    styleInputs: styleInputs.map((input) => path.relative(repoRoot, input).replaceAll('\\', '/')),
     variationDirection,
     requestedSize,
     promptSha256: sha256Text(prompt),
@@ -178,7 +194,7 @@ function commandGenerate(assetId, flags) {
       : `npm run art:export -- ${asset.id} ${normalizedCandidatePath} --write`,
   };
   writeFileSync(output.replace(/\.[^.]+$/, '.json'), `${JSON.stringify(receipt, null, 2)}\n`);
-  console.log(`GENERATED ${path.relative(repoRoot, output)} with Azure Foundry FLUX.2-pro`);
+  console.log(`GENERATED ${path.relative(repoRoot, output)} with Azure Foundry ${identityEdit ? 'GPT Image 2 identity edit' : requestedModel}`);
   console.log(`OBSERVED ${metadata.width}x${metadata.height} ${metadata.format.toUpperCase()} ${metadata.bytes} bytes`);
   console.log(`RECEIPT ${path.relative(repoRoot, output.replace(/\.[^.]+$/, '.json'))}`);
   console.log(`PROMPT ${path.relative(repoRoot, promptPath)}`);
@@ -331,8 +347,8 @@ function sha256Text(value) {
 function commandReviewCheck(reviewValue) {
   const reviewPath = candidatePath(reviewValue);
   const review = JSON.parse(readFileSync(reviewPath, 'utf8'));
-  findAsset(manifest, review.assetId);
-  const result = scoreReview(direction, review);
+  const asset = findAsset(manifest, review.assetId);
+  const result = scoreReview(direction, review, { asset, manifest });
   console.log(`Joy score: ${result.joyScore}/10`);
   for (const error of result.errors) console.error(`FAIL ${error}`);
   if (!result.passed) process.exitCode = 1;
@@ -441,7 +457,8 @@ function commandPromote(assetId, candidateValue, flags) {
   const candidateFingerprint = sha256File(candidate);
   if (!/^[a-f0-9]{64}$/.test(review.candidateSha256 || '')) throw new Error('Review must record the candidate SHA-256 fingerprint');
   if (review.candidateSha256 !== candidateFingerprint) throw new Error('Candidate fingerprint does not match the reviewed file');
-  const reviewResult = scoreReview(direction, review);
+  const reviewAsset = findAsset(manifest, assetId);
+  const reviewResult = scoreReview(direction, review, { asset: reviewAsset, manifest });
   if (!reviewResult.passed) throw new Error(`Review does not pass: ${reviewResult.errors.join('; ')}`);
   const lockPath = resolveRepoPath(repoRoot, 'artifacts/art/asset-manifest.lock');
   mkdirSync(path.dirname(lockPath), { recursive: true });

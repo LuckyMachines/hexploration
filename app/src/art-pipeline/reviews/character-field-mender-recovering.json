@@ -1,0 +1,57 @@
+{
+  "assetId": "character-field-mender-recovering",
+  "candidate": "artifacts/art/exports/character-field-mender-recovering.png",
+  "reviewer": "Codex character QA",
+  "reviewedAt": "2026-09-09",
+  "scores": {
+    "recognition": 4,
+    "agency": 4,
+    "specificity": 4,
+    "restraint": 3,
+    "continuity": 3,
+    "reusability": 4,
+    "accessibility": 4
+  },
+  "notes": {
+    "recognition": "The active green vial and field case communicate recovery support immediately.",
+    "agency": "The Mender is visibly using a tool rather than posing passively.",
+    "specificity": "Weathered field cloth and the luminous repair-vial system preserve the Xenovoya language.",
+    "restraint": "The single active vial is clear, though its vapor adds modest visual noise.",
+    "continuity": "The person and costume remain stable; the case gains a simple medical field mark and the active vial is larger.",
+    "reusability": "The full-body alpha and contained effect remain usable as a standee and dossier portrait.",
+    "accessibility": "The held tool and equipment posture communicate recovery without relying on green alone."
+  },
+  "decision": "approved",
+  "characterIdentity": {
+    "characterId": "field-mender",
+    "state": "recovering",
+    "baseAssetId": "character-field-mender-focal",
+    "baseSha256": "b36e23b4b252b1a4a3d74fe8ae731614ecab946ef9091f94785a4634f9ff0cd7",
+    "scores": {
+      "samePerson": 4,
+      "face": 4,
+      "proportions": 4,
+      "costume": 3,
+      "equipment": 3,
+      "visualScale": 4,
+      "stateRead": 4
+    },
+    "notes": {
+      "samePerson": "Older face, silver curls, facial marks, body type, and bearing match the canonical Mender.",
+      "face": "Broad facial structure, cheekbones, eyes, nose, and hairline remain stable.",
+      "proportions": "Short broad proportions remain unchanged.",
+      "costume": "Rolled collar and layered field clothing match; the case receives a simple temporary field-care mark.",
+      "equipment": "Cross-body case and three hip vials remain; one additional active vial is held for the state action.",
+      "visualScale": "The character occupies a consistent head-to-boot range.",
+      "stateRead": "The active glowing vial and outward hand make recovery immediately readable."
+    }
+  },
+  "candidateSha256": "579e08fc0b421acc646066b46c2268143c8b8c14125e4158617e4875072f6be4",
+  "generation": {
+    "mode": "azure-image-edit",
+    "tool": "azure-foundry",
+    "model": "gpt-image-2",
+    "promptSha256": "04cd9cb81f849b372f8a6b8f0af82068de5c1f9ca1561a503143b3e124313336"
+  },
+  "joyScore": 9.5
+}

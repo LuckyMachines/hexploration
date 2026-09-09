@@ -136,6 +136,10 @@ const CHANGED_FILE_TEST_MAP = [
   { pattern: /^scripts\/player-feeling/, commandId: 'focused.feel-tests', reason: 'feeling tooling changed' },
   { pattern: /^scripts\/growth-/, commandId: 'focused.growth-tests', reason: 'growth tooling changed' },
   { pattern: /^scripts\/fun-/, commandId: 'focused.fun-tests', reason: 'fun tooling changed' },
+  { pattern: /^scripts\/character-/, commandId: 'focused.character-ci', reason: 'character tooling changed' },
+  { pattern: /^app\/src\/characters\//, commandId: 'focused.character-ci', reason: 'character catalog changed' },
+  { pattern: /^app\/src\/lib\/characters/, commandId: 'focused.character-ci', reason: 'character runtime changed' },
+  { pattern: /^app\/src\/art-pipeline\/(?:asset-manifest|reviews\/character-)/, commandId: 'focused.character-ci', reason: 'character art evidence changed' },
   { pattern: /^app\/src\/lib\/interfaceDensity/, commandId: 'smoke.app-focused-tests', reason: 'interface density changed' },
   { pattern: /^app\/src\/components\/actions\//, commandId: 'smoke.app-focused-tests', reason: 'action UI changed' },
   { pattern: /^app\/src\/components\/board\//, commandId: 'smoke.app-focused-tests', reason: 'board UI changed' },
@@ -184,4 +188,3 @@ export function hintForFailure(step = {}) {
   if (text.includes('sim')) return 'Regenerate or compare simulator evidence before accepting a baseline.';
   return 'Run the step command directly for full output.';
 }
-

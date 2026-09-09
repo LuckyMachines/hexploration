@@ -1,11 +1,11 @@
 {
   "assetId": "character-cartographer-helping",
   "candidate": "artifacts/art/exports/character-cartographer-helping.png",
-  "reviewer": "Codex visual QA",
-  "reviewedAt": "2026-09-07",
+  "reviewer": "Codex character QA",
+  "reviewedAt": "2026-09-09",
   "scores": {
-    "recognition": 4,
-    "agency": 4,
+    "recognition": 3,
+    "agency": 3,
     "specificity": 4,
     "restraint": 4,
     "continuity": 4,
@@ -13,21 +13,45 @@
     "accessibility": 4
   },
   "notes": {
-    "recognition": "The kneeling reach reads immediately as an offer of help at both tested sizes.",
-    "agency": "Both empty hands create a strong relational action aimed beyond the frame.",
-    "specificity": "Field satchel, restrained cyan tether, and tailored expedition kit feel native to Xenovoya.",
-    "restraint": "The clean pose and single light ribbon avoid interface clutter.",
-    "continuity": "Palette, equipment weight, and painterly edge treatment match the approved Cartographer.",
-    "reusability": "The pose reads as a board pawn, event portrait, or cooperation callout.",
-    "accessibility": "The kneeling body language communicates assistance independently of cyan color."
+    "recognition": "The map, shoulder array, and attentive stance read as navigational assistance, though less immediately than an extended-hand pose.",
+    "agency": "The opened route map communicates a useful crew contribution rather than passive decoration.",
+    "specificity": "The asymmetric signal rig, dual-color displays, and field satchel remain specific to Xenovoya.",
+    "restraint": "One map and one signal system carry the beat without environmental clutter.",
+    "continuity": "Rendering, palette, costume, face, and equipment match the canonical portrait.",
+    "reusability": "The full-body cutout and contained map work at board and dossier scales.",
+    "accessibility": "Map-reading posture and equipment silhouette do not depend on cyan or green alone."
   },
   "decision": "approved",
-  "candidateSha256": "c8d0b2112f6cec601234c3ff4bed206e58c4db361b96292628c87d48abf0cc06",
-  "generation": {
-    "mode": "azure-image-generation",
-    "tool": "azure-foundry",
-    "model": "FLUX.2-pro",
-    "promptSha256": "b71b16914e91ef305dd8b687955e48b7c32b5e050f156002b977ea5f0efedfd1"
+  "characterIdentity": {
+    "characterId": "signal-cartographer",
+    "state": "helping",
+    "baseAssetId": "character-signal-cartographer-focal",
+    "baseSha256": "35030170b2e2554800e54c9897ae92ddf06f83e2b3dd66f956732f7cd6576d86",
+    "scores": {
+      "samePerson": 4,
+      "face": 4,
+      "proportions": 4,
+      "costume": 4,
+      "equipment": 4,
+      "visualScale": 4,
+      "stateRead": 3
+    },
+    "notes": {
+      "samePerson": "Mature face, hairline, bearing, and costume match the neutral Cartographer.",
+      "face": "Angular clean-shaven face and mature features remain stable.",
+      "proportions": "Tall lean body and long-leg proportions are unchanged.",
+      "costume": "High collar, dark field suit, gloves, belt, and boots match.",
+      "equipment": "Left-shoulder array, twin antennae, front displays, and left-hip satchel all remain present.",
+      "visualScale": "The figure occupies the same head-to-boot range as the neutral asset.",
+      "stateRead": "Showing a route map reads as navigational help, but the off-frame relationship remains implicit."
+    }
   },
-  "joyScore": 10
+  "candidateSha256": "4204ae523c936c619af9fb64595275cbf558378b51e398ff7ca3c3f6b63c5e55",
+  "generation": {
+    "mode": "azure-image-edit",
+    "tool": "azure-foundry",
+    "model": "gpt-image-2",
+    "promptSha256": "4aa51676e25d3c5c3cc493f3d0d294d355f9dd87e519ed94eb96b3371c9016c3"
+  },
+  "joyScore": 9
 }

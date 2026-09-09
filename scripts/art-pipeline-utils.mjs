@@ -8,6 +8,7 @@ import {
   findAsset,
   summarizeArtSystem,
 } from '../app/src/art-pipeline/promptBuilder.js';
+import { CHARACTER_REVIEW_DIMENSIONS, scoreCharacterReview } from './character-pipeline-utils.mjs';
 
 export { buildCompositionPlan, buildPrompt, findAsset, summarizeArtSystem };
 
@@ -175,6 +176,27 @@ export function validateArtSystem(direction, manifest, options = {}) {
       errors.push(`${label}: at least two asset-specific prompt constraints are required`);
     }
 
+    if (asset.family === 'character' || asset.family === 'character-condition') {
+      if (!asset.character?.id) errors.push(`${label}: character.id is required`);
+      if (!asset.character?.state) errors.push(`${label}: character.state is required`);
+      if (!asset.character?.baseAssetId) errors.push(`${label}: character.baseAssetId is required`);
+    }
+    if (asset.family === 'character') {
+      if (asset.character?.state !== 'neutral') errors.push(`${label}: canonical character art must use the neutral state`);
+      if (asset.character?.baseAssetId !== asset.id) errors.push(`${label}: canonical character art must reference itself as the base asset`);
+    }
+    if (asset.family === 'character-condition') {
+      const baseAsset = assetMap.get(asset.character?.baseAssetId);
+      if (!baseAsset) errors.push(`${label}: canonical base asset ${asset.character?.baseAssetId || '(missing)'} does not exist`);
+      else {
+        if (baseAsset.family !== 'character') errors.push(`${label}: canonical base must use the character family`);
+        if (baseAsset.character?.id !== asset.character?.id) errors.push(`${label}: condition character id must match its canonical base`);
+      }
+      if (!Array.isArray(asset.prompt?.identityLocks) || asset.prompt.identityLocks.length < 5) {
+        errors.push(`${label}: at least five explicit identity locks are required`);
+      }
+    }
+
     for (const reference of asset.references || []) {
       try {
         const referencePath = resolveRepoPath(repoRoot, reference.path);
@@ -204,7 +226,7 @@ export function validateArtSystem(direction, manifest, options = {}) {
               if (review.candidateSha256 !== asset.provenance.sha256) errors.push(`${label}: durable review fingerprint does not match the approved asset`);
               if (review.generation?.promptSha256 !== promptFingerprint) errors.push(`${label}: durable review prompt fingerprint has drifted`);
               if (!review.generation?.tool || !review.generation?.model) errors.push(`${label}: durable review needs generation tool and model provenance`);
-              const reviewResult = scoreReview(direction, review);
+              const reviewResult = scoreReview(direction, review, { asset, manifest });
               for (const failure of reviewResult.errors) errors.push(`${label}: durable review ${failure}`);
               if (review.decision !== 'approved') errors.push(`${label}: durable review decision must be approved`);
             }
@@ -284,7 +306,7 @@ export function validateArtSystem(direction, manifest, options = {}) {
 
 export function createReviewTemplate(direction, manifest, assetId, candidatePath = '') {
   const asset = findAsset(manifest, assetId);
-  return {
+  const review = {
     assetId: asset.id,
     candidate: candidatePath,
     reviewer: '',
@@ -293,9 +315,21 @@ export function createReviewTemplate(direction, manifest, assetId, candidatePath
     notes: Object.fromEntries(direction.qualityGates.map((gate) => [gate.id, gate.question])),
     decision: 'pending',
   };
+  if (asset.family === 'character-condition') {
+    const baseAsset = findAsset(manifest, asset.character?.baseAssetId);
+    review.characterIdentity = {
+      characterId: asset.character?.id || '',
+      state: asset.character?.state || '',
+      baseAssetId: baseAsset.id,
+      baseSha256: baseAsset.provenance?.sha256 || '',
+      scores: Object.fromEntries(CHARACTER_REVIEW_DIMENSIONS.map((dimension) => [dimension, null])),
+      notes: Object.fromEntries(CHARACTER_REVIEW_DIMENSIONS.map((dimension) => [dimension, 'Record concrete comparison evidence against the canonical neutral asset.'])),
+    };
+  }
+  return review;
 }
 
-export function scoreReview(direction, review) {
+export function scoreReview(direction, review, { asset = null, manifest = null } = {}) {
   const errors = [];
   let earned = 0;
   let possible = 0;
@@ -313,5 +347,17 @@ export function scoreReview(direction, review) {
   if (joyScore < direction.minimumJoyScore) errors.push(`joy score ${joyScore} is below the minimum ${direction.minimumJoyScore}`);
   if (!review.reviewer?.trim()) errors.push('reviewer is required');
   if (!/^\d{4}-\d{2}-\d{2}$/.test(review.reviewedAt || '')) errors.push('reviewedAt must use YYYY-MM-DD');
+  if (asset?.family === 'character-condition') {
+    const baseAsset = manifest?.assets?.find((item) => item.id === asset.character?.baseAssetId);
+    if (!review.characterIdentity) errors.push('characterIdentity relational review is required');
+    else {
+      if (review.characterIdentity.characterId !== asset.character?.id) errors.push('characterIdentity character id does not match the asset contract');
+      if (review.characterIdentity.state !== asset.character?.state) errors.push('characterIdentity state does not match the asset contract');
+      if (review.characterIdentity.baseAssetId !== asset.character?.baseAssetId) errors.push('characterIdentity base asset does not match the asset contract');
+      if (!baseAsset?.provenance?.sha256 || review.characterIdentity.baseSha256 !== baseAsset.provenance.sha256) errors.push('characterIdentity base fingerprint is stale');
+      const relational = scoreCharacterReview(review, 3);
+      for (const failure of relational.errors) if (!errors.includes(failure)) errors.push(`characterIdentity ${failure}`);
+    }
+  }
   return { joyScore, passed: errors.length === 0, errors };
 }

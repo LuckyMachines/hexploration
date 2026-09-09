@@ -404,6 +404,7 @@ export default function ExpeditionBench() {
               isMovePlanning={activeTab === Action.MOVE && !isSpectator}
               activeAction={activeTab}
               currentAction={action}
+              crew={enrichedPlayers}
               queuePhase={queueTelemetry.phase}
               isSpectator={isSpectator}
               stats={stats}

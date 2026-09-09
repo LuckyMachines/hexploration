@@ -1,0 +1,57 @@
+{
+  "assetId": "character-relic-tender-relief",
+  "candidate": "artifacts/art/exports/character-relic-tender-relief.png",
+  "reviewer": "Codex character QA",
+  "reviewedAt": "2026-09-09",
+  "scores": {
+    "recognition": 3,
+    "agency": 3,
+    "specificity": 4,
+    "restraint": 4,
+    "continuity": 4,
+    "reusability": 4,
+    "accessibility": 4
+  },
+  "notes": {
+    "recognition": "The brighter protected seed and softened expression read as quiet relief rather than spectacle.",
+    "agency": "The Tender visibly maintains care of the recovered seed, though the state delta is deliberately subtle.",
+    "specificity": "The living seed, cloth sling, and field-worn layered costume remain distinctively Xenovoya.",
+    "restraint": "One character and one seed remain isolated with no staff, scenery, halo, or trophy pose.",
+    "continuity": "Face, hair, sling, tunic, palette, and rendering match the canonical Tender.",
+    "reusability": "The clean full-body alpha supports standee, dossier, and aftermath compositions.",
+    "accessibility": "Protected hand posture and relaxed expression supplement the warm glow."
+  },
+  "decision": "approved",
+  "characterIdentity": {
+    "characterId": "relic-tender",
+    "state": "triumph",
+    "baseAssetId": "character-relic-tender-focal",
+    "baseSha256": "88b52622468321c727057b16d278377419e9b7bb7b765685c215f54c784b5cc6",
+    "scores": {
+      "samePerson": 4,
+      "face": 4,
+      "proportions": 4,
+      "costume": 4,
+      "equipment": 4,
+      "visualScale": 4,
+      "stateRead": 3
+    },
+    "notes": {
+      "samePerson": "Face, ponytail, age, posture, and costume match the neutral Tender.",
+      "face": "Oval face, large eyes, brows, nose, and chin remain stable.",
+      "proportions": "Medium-height slender proportions and inward protective arm language remain stable.",
+      "costume": "Gray chest sling, shoulder pieces, belt, split tunic, trousers, and boots match.",
+      "equipment": "The same single warm mineral seed remains the only focal object.",
+      "visualScale": "Head-to-boot occupancy and ground line match the canonical image.",
+      "stateRead": "Brighter seed light and softer expression communicate relief, though the pose intentionally remains restrained."
+    }
+  },
+  "candidateSha256": "0ae42bc35709139e8b927dd10d0185e118a83f04c2a999277ca4c9da80398885",
+  "generation": {
+    "mode": "azure-image-edit",
+    "tool": "azure-foundry",
+    "model": "gpt-image-2",
+    "promptSha256": "1e238d4bf0ab482392d25faf258970e63c8c1d314b9f1d183d4dc04fa2a16a04"
+  },
+  "joyScore": 9
+}

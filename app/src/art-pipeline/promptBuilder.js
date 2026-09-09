@@ -19,9 +19,15 @@ export function buildPrompt(direction, manifest, assetId) {
     : 'None';
   const palette = direction.palette.map((swatch) => `${swatch.id} ${swatch.hex} for ${swatch.job}`).join('; ');
   const constraints = [...direction.continuityLocks, ...asset.prompt.constraints].join('; ');
+  const characterEdit = asset.family === 'character-condition';
+  const identityLines = characterEdit ? [
+    `Canonical character ID: ${asset.character?.id}`,
+    `Identity locks: ${(asset.prompt.identityLocks || []).join('; ')}`,
+    'Identity requirement: edit the supplied canonical image; preserve the exact same person, age, face, hair, proportions, costume construction, equipment placement, and apparent scale.',
+  ] : [];
 
   return [
-    `Production mode: ${captureOnly ? 'deterministic product capture; do not use image generation' : 'generate a new raster candidate'}`,
+    `Production mode: ${captureOnly ? 'deterministic product capture; do not use image generation' : characterEdit ? 'identity-preserving edit of the canonical character reference' : 'generate a new raster candidate'}`,
     `Use case: ${type.useCase}`,
     `Asset ID: ${asset.id}`,
     `Asset type: ${type.id}; ${role.purpose}`,
@@ -29,6 +35,7 @@ export function buildPrompt(direction, manifest, assetId) {
     `Input images: ${references}`,
     `Scene/backdrop: ${asset.prompt.scene}`,
     `Subject: ${asset.prompt.subject}`,
+    ...identityLines,
     'Style/medium: restrained cinematic game art with tactile mineral materials and precise expedition-instrument geometry',
     `Composition/framing: ${asset.prompt.composition}`,
     `Lighting/mood: ${asset.prompt.lighting}`,

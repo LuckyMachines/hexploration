@@ -1,0 +1,57 @@
+{
+  "assetId": "character-routekeeper-strained",
+  "candidate": "artifacts/art/exports/character-routekeeper-strained.png",
+  "reviewer": "Codex character QA",
+  "reviewedAt": "2026-09-09",
+  "scores": {
+    "recognition": 4,
+    "agency": 4,
+    "specificity": 4,
+    "restraint": 4,
+    "continuity": 4,
+    "reusability": 4,
+    "accessibility": 4
+  },
+  "notes": {
+    "recognition": "The lowered head and bracing hand read as exhaustion while the lantern keeps the role legible.",
+    "agency": "The lantern remains raised, showing that the Routekeeper is strained but still guiding the crew.",
+    "specificity": "The survey mantle, route instrument, and brass lantern retain Xenovoya's field language.",
+    "restraint": "One exhausted gesture and one guidance light carry the entire beat without injury spectacle.",
+    "continuity": "Palette, line treatment, materials, costume, and signal hierarchy match the canonical portrait.",
+    "reusability": "The full-body alpha silhouette remains clean for standee, dossier, and recap uses.",
+    "accessibility": "Posture and silhouette communicate strain independently of color."
+  },
+  "decision": "approved",
+  "characterIdentity": {
+    "characterId": "routekeeper",
+    "state": "strained",
+    "baseAssetId": "character-routekeeper-focal",
+    "baseSha256": "16ee0269723457c7e0af1d5481473fcea911157f04690245494aa34614c1b320",
+    "scores": {
+      "samePerson": 4,
+      "face": 4,
+      "proportions": 4,
+      "costume": 4,
+      "equipment": 4,
+      "visualScale": 4,
+      "stateRead": 4
+    },
+    "notes": {
+      "samePerson": "Face, hair, age, and bearing match the neutral Routekeeper in the pair sheet.",
+      "face": "Long oval face, brows, eyes, nose, and jaw remain stable.",
+      "proportions": "Tall athletic proportions and leg length are unchanged.",
+      "costume": "Asymmetrical mantle, field suit, belt, gloves, knee pads, and boots match.",
+      "equipment": "Square brass lantern and round cyan hip instrument remain in their canonical positions.",
+      "visualScale": "Head-to-boot occupancy and ground line match the neutral asset.",
+      "stateRead": "Hand to forehead and lowered shoulder make fatigue immediately readable without blood or damage."
+    }
+  },
+  "candidateSha256": "6bbffdca035a9d4ff3fb4341b4786e3a38f5c044dfa5872609048b78a2d2abbb",
+  "generation": {
+    "mode": "azure-image-edit",
+    "tool": "azure-foundry",
+    "model": "gpt-image-2",
+    "promptSha256": "ac90e8f20a6c7c718b47fc6fcf07980aa1e36e79cfdd0b698b4341a14999ccbb"
+  },
+  "joyScore": 10
+}

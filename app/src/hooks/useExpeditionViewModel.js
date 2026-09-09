@@ -17,6 +17,8 @@ import { Action } from '../lib/constants';
 import { deriveTurnState } from '../lib/turnState';
 import { validateMovePath, validateMoveStep } from '../lib/moveValidation';
 import { buildTurnReplay } from '../lib/turnReplay';
+import { assignCrewCharacters } from '../lib/characters';
+import { loadReturnLoop } from '../lib/returnLoop';
 
 export function useExpeditionViewModel(gameId) {
   const { address } = useWallet();
@@ -58,9 +60,10 @@ export function useExpeditionViewModel(gameId) {
     [players, address],
   );
   const [activeTab, setActiveTab] = usePersistentActionTab(gameId, playerID);
+  const preferredRoleId = useMemo(() => loadReturnLoop().player.role, [address, gameId]);
 
   const enrichedPlayers = useMemo(
-    () => (players || []).map((player, i) => {
+    () => assignCrewCharacters((players || []).map((player, i) => {
       const pid = player.playerID !== undefined ? Number(player.playerID) : i + 1;
       const locIdx = (locPlayerIDs || []).findIndex((id) => Number(id) === pid);
       const currentZone = locIdx >= 0 ? playerZones[locIdx] : '';
@@ -73,8 +76,8 @@ export function useExpeditionViewModel(gameId) {
         agility: Number(crewStats.agility ?? player.agility ?? 0),
         dexterity: Number(crewStats.dexterity ?? player.dexterity ?? 0),
       };
-    }),
-    [players, locPlayerIDs, playerZones, statsByPlayerID],
+    }), { currentAddress: address, preferredRoleId }),
+    [address, players, locPlayerIDs, playerZones, preferredRoleId, statsByPlayerID],
   );
 
   const turnState = useMemo(

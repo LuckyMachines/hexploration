@@ -48,6 +48,7 @@ export default function HexGrid({
   isMovePlanning = false,
   activeAction = Action.MOVE,
   currentAction = '',
+  crew = [],
   queuePhase,
   isSpectator = false,
   stats = {},
@@ -366,6 +367,7 @@ export default function HexGrid({
                 reachableAliases={reachableAliases}
                 landingSite={landingSite}
                 playerLocationMap={playerLocationMap}
+                crew={crew}
                 currentPlayerIndex={currentPlayerIndex}
                 activeAction={activeAction}
                 hasSubmitted={hasSubmitted}

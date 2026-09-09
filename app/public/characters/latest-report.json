@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-09-09T10:44:51.185Z",
+  "scope": "automated-only",
+  "catalogVersion": "1.0.0",
+  "grade": "A-",
+  "architectureGrade": "A",
+  "evidenceGrade": "B+",
+  "roster": {
+    "roles": 4,
+    "characters": 4,
+    "uniquePairings": 4
+  },
+  "coverage": {
+    "authoredStateCount": 8,
+    "possibleStateCount": 48,
+    "fallbackCount": 40
+  },
+  "validation": {
+    "errors": [],
+    "warnings": []
+  },
+  "evidenceLimits": [
+    "No representative human attachment or recognition study has been collected.",
+    "Automated and expert visual review must not be described as player evidence."
+  ],
+  "nextAction": "Add authored states only when gameplay evidence shows the neutral fallback is insufficient."
+}

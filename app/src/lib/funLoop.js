@@ -1,3 +1,5 @@
+import { ROLE_ROSTER } from './characters';
+
 export const FUN_ACTION_PREVIEWS = {
   move: {
     intent: 'Close distance',
@@ -51,12 +53,12 @@ export const FUN_ARTIFACTS = [
   { id: 'root-crown', name: 'Root Crown', hook: 'Lets recovery feel ancient and earned.', effect: 'recovery-boost', shareFlavor: 'root crown comeback' },
 ];
 
-export const FUN_ROLES = [
-  { id: 'scout', name: 'Scout', ability: 'Move can reveal an extra zone.' },
-  { id: 'medic', name: 'Medic', ability: 'Rest and help recover more morale.' },
-  { id: 'carrier', name: 'Carrier', ability: 'Artifacts lower flee risk.' },
-  { id: 'guard', name: 'Guard', ability: 'Danger spikes are softened.' },
-];
+export const FUN_ROLES = ROLE_ROSTER.map((role) => ({
+  id: role.id,
+  name: role.label,
+  characterId: role.characterId,
+  ability: role.ability,
+}));
 
 export const FUN_EVENT_CARDS = [
   { id: 'storm-front', title: 'Storm Front', text: 'Weather slams the route sideways.', actions: ['move', 'flee'], effect: { danger: 8, departPressure: 8 }, feelingBias: 'panic', momentType: 'panic' },

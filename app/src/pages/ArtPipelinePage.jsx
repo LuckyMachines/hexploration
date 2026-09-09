@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import direction from '../art-pipeline/art-direction.json';
 import manifest from '../art-pipeline/asset-manifest.json';
+import characterCatalog from '../characters/character-catalog.json';
 import { buildCompositionPlan, buildPrompt, summarizeArtSystem } from '../art-pipeline/promptBuilder';
 
 const statusStyles = {
@@ -150,6 +151,51 @@ function PartSystem() {
   );
 }
 
+function CharacterSystem() {
+  const roleById = new Map(characterCatalog.roles.map((role) => [role.id, role]));
+  const availableStates = characterCatalog.characters.reduce(
+    (total, character) => total + 1 + Object.keys(character.assets.states || {}).length,
+    0,
+  );
+  const possibleStates = characterCatalog.characters.length * characterCatalog.requiredStates.length;
+  return (
+    <section className="mt-12" data-testid="character-system">
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <div><Label>Character system {characterCatalog.version}</Label><h2 className="mt-2 font-display text-3xl uppercase tracking-[0.1em] text-exp-text">One identity from role choice to aftermath</h2></div>
+        <div className="flex gap-2"><span className="rounded border border-oxide-green/40 bg-oxide-green/10 px-3 py-2 font-mono text-[9px] uppercase tracking-[0.16em] text-oxide-green">{characterCatalog.characters.length} unique crew</span><span className="rounded border border-blueprint/40 bg-blueprint/10 px-3 py-2 font-mono text-[9px] uppercase tracking-[0.16em] text-blueprint">{availableStates}/{possibleStates} authored states</span></div>
+      </div>
+      <div className="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        {characterCatalog.characters.map((character) => {
+          const role = roleById.get(character.roleId);
+          const authoredStates = new Set(['neutral', ...Object.keys(character.assets.states || {})]);
+          return <Surface key={character.id} className="overflow-hidden p-0">
+            <div className="relative h-64 border-b border-exp-border bg-[radial-gradient(circle_at_50%_38%,rgba(232,200,96,0.13),transparent_58%),rgba(8,12,9,0.88)]">
+              <img src={character.assets.neutral} alt={`${character.name}, ${role.label}`} className="h-full w-full object-contain object-bottom" loading="lazy" />
+              <span className="absolute left-3 top-3 rounded border border-compass/40 bg-exp-dark/90 px-2 py-1 font-mono text-[9px] uppercase tracking-[0.16em] text-compass-bright">{role.label}</span>
+            </div>
+            <div className="p-4">
+              <h3 className="font-display text-xl uppercase tracking-[0.1em] text-exp-text">{character.name}</h3>
+              <p className="mt-2 font-sans text-sm leading-relaxed text-exp-text-dim">{character.fantasy}</p>
+              <p className="mt-3 font-mono text-[9px] uppercase tracking-[0.14em] text-blueprint">{role.verbs.join(' / ')}</p>
+              <div className="mt-4 flex flex-wrap gap-1.5">
+                {characterCatalog.requiredStates.map((state) => <span key={state} className={`rounded border px-1.5 py-1 font-mono text-[8px] uppercase tracking-[0.1em] ${authoredStates.has(state) ? 'border-oxide-green/35 bg-oxide-green/8 text-oxide-green' : 'border-exp-border bg-exp-dark/50 text-exp-text-dim'}`}>{state}{authoredStates.has(state) ? '' : ' -> neutral'}</span>)}
+              </div>
+              <div className="mt-4 border-t border-exp-border pt-3"><p className="font-mono text-[9px] uppercase tracking-[0.16em] text-exp-text-dim">Identity anchors</p><ul className="mt-2 space-y-1 font-sans text-xs leading-relaxed text-exp-text-dim">{character.identity.signatureEquipment.map((item) => <li key={item}>+ {item}</li>)}</ul></div>
+            </div>
+          </Surface>;
+        })}
+      </div>
+      <Surface className="mt-4 p-4">
+        <div className="grid gap-3 sm:grid-cols-3">
+          <div><Label>Identity gate</Label><p className="mt-2 font-display text-xl text-compass-bright">{characterCatalog.qualityContract.minimumRelationalScore}/4 minimum</p></div>
+          <div><Label>Thumbnail proof</Label><p className="mt-2 font-mono text-xs text-exp-text">{characterCatalog.qualityContract.thumbnailSizes.join(' / ')} px</p></div>
+          <div><Label>Required contexts</Label><p className="mt-2 font-mono text-xs leading-relaxed text-exp-text">{characterCatalog.qualityContract.requiredContexts.join(' / ')}</p></div>
+        </div>
+      </Surface>
+    </section>
+  );
+}
+
 function CompositionLab({ selectedId, onSelect }) {
   const plan = buildCompositionPlan(direction, manifest, selectedId);
   const selected = manifest.compositions.find((item) => item.id === selectedId);
@@ -223,6 +269,7 @@ export default function ArtPipelinePage() {
       <DirectionModules />
       <EmotionLibrary />
       <PartSystem />
+      <CharacterSystem />
       <CompositionLab selectedId={composition} onSelect={(value) => setParam('composition', value, manifest.compositions[0].id)} />
       <AssetRegistry status={status} setStatus={(value) => setParam('status', value, 'all')} selectedId={selectedId} setSelectedId={(value) => setParam('asset', value, 'relic-sunstone-lens-focal')} />
       <JoyGates />

@@ -571,11 +571,12 @@ function BoardScene({ lens = 'ready' }) {
           previewPath={previewPath}
           reachableAliases={lens === 'ready' ? ['0,1', '1,0', '1,1'] : []}
           landingSite="0,0"
+          crew={playersFixture}
           playerLocationMap={isDanger
-            ? { '0,0': [0], '2,0': [1] }
+            ? { '0,0': [0], '2,0': [1], '1,1': [2], '2,1': [3] }
             : isWaiting
-              ? { '2,1': [0, 1], '1,1': [2] }
-              : { '0,0': [0], '2,1': [1], ...(isResolving ? { '1,1': [2] } : {}) }}
+              ? { '2,1': [0, 1], '1,1': [2], '2,0': [3] }
+              : { '0,0': [0], '2,1': [1], '1,1': [2], '2,0': [3] }}
           currentPlayerIndex={isWaiting ? 1 : isResolving ? 2 : 0}
           activeAction={isDanger ? Action.FLEE : isWaiting ? Action.HELP : Action.MOVE}
           hasSubmitted={isWaiting || isResolving || isComplete}
@@ -890,7 +891,7 @@ function ResponsiveContracts({ lens }) {
             <div className="relative h-40 overflow-hidden rounded border border-exp-border bg-exp-dark">
               <img src="/images/art/environments/glassroot-cavern.webp" alt="Glassroot cavern route" className="h-full w-full object-cover opacity-75" />
               <span className="absolute inset-0 bg-gradient-to-t from-exp-dark via-transparent to-transparent" />
-              <img src="/images/art/characters/routekeeper-wounded.png" alt="The Routekeeper holding the escape route" className="absolute bottom-0 left-3 h-32 w-28 object-contain drop-shadow-[0_10px_10px_rgba(0,0,0,0.8)]" />
+              <img src="/images/art/characters/routekeeper-strained.png" alt="The Routekeeper holding the escape route" className="absolute bottom-0 left-3 h-32 w-28 object-contain drop-shadow-[0_10px_10px_rgba(0,0,0,0.8)]" />
               <img src="/images/art/relics/sunstone-lens.png" alt="Sunstone Lens at risk" className="absolute bottom-2 right-3 h-20 w-20 object-contain drop-shadow-[0_8px_12px_rgba(0,0,0,0.75)]" />
               <p className="absolute bottom-2 left-32 right-20 font-mono text-[10px] uppercase tracking-[0.14em] text-compass-bright">Route open / relic exposed</p>
             </div>

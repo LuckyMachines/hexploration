@@ -1,5 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { ACTION_LABELS, Action, PLAYER_COLORS, TILE_LABELS, Tile } from '../../lib/constants';
+import {
+  CHARACTER_NEUTRAL_TEXTURE_PATHS,
+  CHARACTER_TEXTURE_PATHS,
+  deriveCharacterState,
+  resolveCharacterVisual,
+  resolvePlayerCharacter,
+} from '../../lib/characters';
 import { buildBoardWorld, cameraPlan, seedForAlias, WORLD_TERRAIN } from './boardWorld';
 import { resolveBoardQuality } from './boardQuality';
 
@@ -21,11 +28,6 @@ const STATE_FX_TEXTURES = {
   discovery: '/images/art/fx/discovery-bloom.png',
   danger: '/images/art/fx/redline-pressure.png',
 };
-const PLAYER_STANDEE_TEXTURES = [
-  '/images/art/characters/routekeeper.png',
-  '/images/art/characters/signal-cartographer.png',
-  '/images/art/characters/relic-tender.png',
-];
 const CUTOUT_PROP_TEXTURES = {
   [Tile.LANDING]: '/images/art/props/landing-beacon.png',
   [Tile.JUNGLE]: '/images/art/props/glassroot-fronds.png',
@@ -47,11 +49,6 @@ const ATLAS_SPINDLE_TEXTURE = '/images/art/relics/atlas-spindle.png';
 const TIDEGLASS_CRADLE_TEXTURE = '/images/art/relics/tideglass-heart.png';
 const CAVERN_BACKPLATE = '/images/art/environments/glassroot-cavern.webp';
 const EMBERGLASS_BACKPLATE = '/images/art/environments/emberglass-crossing.webp';
-const CHARACTER_STATE_TEXTURES = {
-  routekeeperStrained: '/images/art/characters/routekeeper-wounded.png',
-  cartographerHelping: '/images/art/characters/signal-cartographer-helping.png',
-  tenderTriumph: '/images/art/characters/relic-tender-triumph.png',
-};
 const ENCOUNTER_TEXTURES = {
   glassrootGrazer: '/images/art/encounters/glassroot-stalker.png',
   emberglassScuttler: '/images/art/encounters/emberglass-mimic.png',
@@ -340,14 +337,16 @@ function addTerrainLandmarks(THREE, tile, mesh, propTexture, campsiteTexture) {
   return cutoutProp;
 }
 
-function createPawn(THREE, color, isCurrent, standeeTexture) {
+function createPawn(THREE, color, isCurrent, standeeTexture, standeeProfile = {}) {
   const group = new THREE.Group();
+  const visualScale = standeeProfile.visualScale || 1;
+  const shadowWidth = standeeProfile.shadowWidth || 1;
   const contactShadow = new THREE.Mesh(
     new THREE.CircleGeometry(0.34, 24),
     new THREE.MeshBasicMaterial({ color: '#010302', transparent: true, opacity: 0.62, depthWrite: false }),
   );
   contactShadow.rotation.x = -Math.PI / 2;
-  contactShadow.scale.set(1, 0.48, 1);
+  contactShadow.scale.set(shadowWidth, 0.48, 1);
   contactShadow.position.y = 0.006;
   group.add(contactShadow);
 
@@ -386,9 +385,9 @@ function createPawn(THREE, color, isCurrent, standeeTexture) {
       depthWrite: false,
       toneMapped: false,
     }));
-    backing.center.set(0.5, 0);
+    backing.center.set(0.5, standeeProfile.footAnchor || 0.08);
     backing.position.y = 0.095;
-    backing.scale.set(2.08, 2.36, 1);
+    backing.scale.set(2.08 * visualScale, 2.36 * visualScale, 1);
     backing.renderOrder = 2;
     group.add(backing);
 
@@ -403,9 +402,9 @@ function createPawn(THREE, color, isCurrent, standeeTexture) {
       depthWrite: false,
       toneMapped: false,
     }));
-    standee.center.set(0.5, 0);
+    standee.center.set(0.5, standeeProfile.footAnchor || 0.08);
     standee.position.y = 0.1;
-    standee.scale.set(1.96, 2.22, 1);
+    standee.scale.set(1.96 * visualScale, 2.22 * visualScale, 1);
     standee.renderOrder = 3;
     group.add(standee);
   } else {
@@ -750,18 +749,28 @@ function addDynamicWorld(THREE, context, state) {
     const tile = context.worldByAlias.get(alias);
     if (!tile) return;
     indices.forEach((playerIndex, index) => {
-      let standeeTexture = context.characterTextures[playerIndex % context.characterTextures.length];
-      if (playerIndex === state.currentPlayerIndex && context.conditionTextures) {
-        if (playerIndex === 0 && state.lowStats) standeeTexture = context.conditionTextures.routekeeperStrained || standeeTexture;
-        if (playerIndex === 1 && state.activeAction === Action.HELP) standeeTexture = context.conditionTextures.cartographerHelping || standeeTexture;
-        if (playerIndex === 2 && state.isResolving) standeeTexture = context.conditionTextures.tenderTriumph || standeeTexture;
-      }
+      const player = state.crew?.[playerIndex] || {};
+      const character = resolvePlayerCharacter(player, playerIndex);
+      const characterState = deriveCharacterState({
+        player,
+        isCurrent: playerIndex === state.currentPlayerIndex,
+        activeAction: state.activeAction,
+        lowStats: state.lowStats,
+        isResolving: state.isResolving,
+        hasArtifact: Boolean(player.hasArtifact),
+      });
+      const presentation = resolveCharacterVisual({ characterId: character.id, state: characterState });
+      const stateTexture = context.characterTextures[presentation.path];
+      const standeeTexture = stateTexture || context.characterTextures[character.assets.neutral];
       const pawn = createPawn(
         THREE,
         PLAYER_COLORS[playerIndex] || PLAYER_COLORS[0],
         playerIndex === state.currentPlayerIndex,
         standeeTexture,
+        character.standee,
       );
+      pawn.userData.characterId = character.id;
+      pawn.userData.characterState = stateTexture ? presentation.resolvedState : 'neutral';
       const angle = (index / Math.max(1, indices.length)) * Math.PI * 2;
       const radius = indices.length > 1 ? 0.28 : 0;
       pawn.position.set(tile.x + Math.cos(angle) * radius, tile.height + 0.04, tile.z + Math.sin(angle) * radius);
@@ -872,15 +881,11 @@ function createWorld(THREE, OrbitControls, mount, world, initialState, handlers,
     texture.colorSpace = THREE.SRGBColorSpace;
     return [keyName, texture];
   }));
-  const characterTextures = PLAYER_STANDEE_TEXTURES.map((texturePath) => {
+  const characterTexturePaths = quality.mode === 'efficient' ? CHARACTER_NEUTRAL_TEXTURE_PATHS : CHARACTER_TEXTURE_PATHS;
+  const characterTextures = Object.fromEntries(characterTexturePaths.map((texturePath) => {
     const texture = textureLoader.load(texturePath);
     texture.colorSpace = THREE.SRGBColorSpace;
-    return texture;
-  });
-  const conditionTextures = quality.mode === 'efficient' ? {} : Object.fromEntries(Object.entries(CHARACTER_STATE_TEXTURES).map(([keyName, texturePath]) => {
-    const texture = textureLoader.load(texturePath);
-    texture.colorSpace = THREE.SRGBColorSpace;
-    return [keyName, texture];
+    return [texturePath, texture];
   }));
   const encounterTextures = quality.mode === 'efficient' ? {} : {
     glassrootGrazer: usedTileTypes.has(Tile.JUNGLE) ? textureLoader.load(ENCOUNTER_TEXTURES.glassrootGrazer) : null,
@@ -914,7 +919,6 @@ function createWorld(THREE, OrbitControls, mount, world, initialState, handlers,
     terrainTextures,
     fxTextures,
     characterTextures,
-    conditionTextures,
     encounterTextures,
     routeForkTexture,
     propTextures,
@@ -1213,8 +1217,7 @@ function createWorld(THREE, OrbitControls, mount, world, initialState, handlers,
       disposeObject(scene);
       terrainTextures.forEach((texture) => texture.dispose());
       Object.values(fxTextures).forEach((texture) => texture.dispose());
-      characterTextures.forEach((texture) => texture.dispose());
-      Object.values(conditionTextures).forEach((texture) => texture.dispose());
+      Object.values(characterTextures).forEach((texture) => texture.dispose());
       Object.values(encounterTextures).filter(Boolean).forEach((texture) => texture.dispose());
       routeForkTexture?.dispose();
       propTextures.forEach((texture) => texture.dispose());
@@ -1277,6 +1280,7 @@ export default function ThreeBoard({
   reachableAliases = [],
   landingSite = '',
   playerLocationMap = {},
+  crew = [],
   currentPlayerIndex = 0,
   activeAction,
   hasSubmitted = false,
@@ -1310,13 +1314,14 @@ export default function ThreeBoard({
     reachableAliases,
     landingSite,
     playerLocationMap,
+    crew,
     currentPlayerIndex,
     activeAction,
     hasSubmitted,
     isResolving,
     isDanger,
     lowStats,
-  }), [activeAction, currentLocation, currentPlayerIndex, hasSubmitted, intentAlias, isDanger, isResolving, landingSite, lowStats, playerLocationMap, previewPath, reachableAliases, selectedPath]);
+  }), [activeAction, crew, currentLocation, currentPlayerIndex, hasSubmitted, intentAlias, isDanger, isResolving, landingSite, lowStats, playerLocationMap, previewPath, reachableAliases, selectedPath]);
 
   handlersRef.current = {
     onTileClick,

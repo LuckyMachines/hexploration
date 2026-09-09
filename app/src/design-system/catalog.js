@@ -79,6 +79,8 @@ export const emotionalBeats = [
 export const playersFixture = [
   {
     playerID: 1,
+    roleId: 'scout',
+    characterId: 'signal-cartographer',
     playerAddress: '0xA17cF882F82D86F58fA4F5B9d77E7B66A11B05E2',
     currentZone: '0,0',
     movement: 4,
@@ -89,6 +91,8 @@ export const playersFixture = [
   },
   {
     playerID: 2,
+    roleId: 'medic',
+    characterId: 'field-mender',
     playerAddress: '0x2B4D164A4C0c44C725D0D92A69fAE8aE8C8B2Ea3',
     currentZone: '1,1',
     movement: 2,
@@ -99,6 +103,8 @@ export const playersFixture = [
   },
   {
     playerID: 3,
+    roleId: 'carrier',
+    characterId: 'relic-tender',
     playerAddress: '0x771FB03A843D1A04C7f94C26a205fb9981147EE9',
     currentZone: '2,1',
     movement: 3,
@@ -109,6 +115,8 @@ export const playersFixture = [
   },
   {
     playerID: 4,
+    roleId: 'guard',
+    characterId: 'routekeeper',
     playerAddress: '0xA90509dEA8bF2B4C8116F53B5BE18e27E4D6eC43',
     currentZone: '1,2',
     movement: 1,

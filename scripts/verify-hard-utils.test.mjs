@@ -60,9 +60,10 @@ test('selectFocusedCommands maps changed files to targeted checks', () => {
     'M scripts/gameplay-oracle.mjs',
     'M app/src/components/board/BoardPresence.jsx',
     'M app/src/pages/GamePage.jsx',
+    'M app/src/characters/character-catalog.json',
   ]);
   const ids = selected.map((item) => item.id).sort();
-  assert.deepEqual(ids, ['focused.app-page-tests', 'focused.oracle-tests', 'smoke.app-focused-tests']);
+  assert.deepEqual(ids, ['focused.app-page-tests', 'focused.character-ci', 'focused.oracle-tests', 'smoke.app-focused-tests']);
 });
 
 test('markdownForReport includes failures and hints', () => {
@@ -101,4 +102,3 @@ test('gradeHardness and compactPublicReport summarize reports', () => {
     { id: 'bad', label: 'Bad', status: 'fail', hint: 'Run bad' },
   ]);
 });
-
