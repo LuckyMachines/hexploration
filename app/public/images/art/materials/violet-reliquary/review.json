@@ -1,0 +1,25 @@
+{
+  "materialSystemVersion": "1.0.0",
+  "materialId": "violet-reliquary",
+  "sourceSha256": "a4a15dd51163604cbafd81e4beb434d67fc73be4b605439318d256a39549d6b8",
+  "candidateSha256": {
+    "baseColor": "779c5c513537bb9d6df0bcb16271bd7bda7e7d9a129ab8bcf683e567ab749d24",
+    "normal": "5db0abddb143f7ea3c9fee3c3b3233949a8ca2af69cff0de38a924f859b6a002",
+    "roughness": "3d25ae5a45bdfc5c63b94b3794e375ca3de1c7f6336b174b0d19a7341bb0c54e",
+    "ao": "4dd6904238868a2c140988b4fa50c84a7e10fd23242ead9942b414dc7438696b",
+    "height": "989b32f1b85622b9eb21b0e01de997b27a0b73b83ab7896bd9d4de59c82970ca",
+    "emissive": "8383219e546eb515dd2e1a8c02557888e126423cc82014fe2eea79006155a62f"
+  },
+  "reviewer": "Codex visual QA",
+  "reviewedAt": "2026-09-09T17:47:29.208Z",
+  "scores": {
+    "tileability": 3,
+    "depthResponse": 4,
+    "lightNeutrality": 4,
+    "materialIdentity": 4,
+    "stateLegibility": 4,
+    "accessibility": 4
+  },
+  "decision": "approved",
+  "notes": "Approved after seam-safe Sobel normal generation; violet identity survives all semantic lighting states."
+}

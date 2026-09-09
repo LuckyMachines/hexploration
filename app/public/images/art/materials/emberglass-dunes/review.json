@@ -1,0 +1,25 @@
+{
+  "materialSystemVersion": "1.0.0",
+  "materialId": "emberglass-dunes",
+  "sourceSha256": "6d14ca1c2e647c76bbf7b70d2abf5dc8d320207587c05f356cd4a9a7a14e23b8",
+  "candidateSha256": {
+    "baseColor": "3ab288f7e82dfb998a599fb9e98a1ced8dc8e74839f74f91f7fa51ac14faef0a",
+    "normal": "9797231d0ada69f8990b183b011238ffd7c7c11281f78ddcb08ef477d79888c2",
+    "roughness": "118c5d5f0e00bf676a84b9855a56fd2c8deb8dffa606568cfbaaf2ea4955135f",
+    "ao": "7433345195dce8752b49bbce311fc48064f063b55ba7f4a5dc6ccc01873549a1",
+    "height": "f167891a02f78986e616c04d2d39ca5194e64550787a0f82a9539dc72aab8b9f",
+    "emissive": "640619563a14b6d8781a513a36c6c790afbff51bbffe260be9ef2e6ed8108848"
+  },
+  "reviewer": "Codex visual QA",
+  "reviewedAt": "2026-09-09T17:47:28.956Z",
+  "scores": {
+    "tileability": 3,
+    "depthResponse": 4,
+    "lightNeutrality": 4,
+    "materialIdentity": 4,
+    "stateLegibility": 3,
+    "accessibility": 4
+  },
+  "decision": "approved",
+  "notes": "Approved after seam-safe Sobel normal generation; warm mineral response remains distinct across lighting rigs."
+}

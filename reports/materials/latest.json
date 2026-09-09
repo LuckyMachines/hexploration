@@ -1,0 +1,1304 @@
+{
+  "generatedAt": "2026-09-09T17:58:31.380Z",
+  "materialSystemVersion": "1.0.0",
+  "passed": true,
+  "strict": true,
+  "contractErrors": [],
+  "runtimeErrors": [],
+  "materials": [
+    {
+      "materialId": "glassroot-canopy",
+      "passed": true,
+      "failures": [],
+      "warnings": [],
+      "evidence": {
+        "top": {
+          "baseColor": {
+            "width": 512,
+            "height": 512,
+            "format": "WEBP",
+            "channels": "srgb",
+            "mean": 0.287743,
+            "bytes": 53478,
+            "edgeDifference": 2.58691,
+            "clipping": {
+              "shadows": 1.12648,
+              "highlights": 0
+            },
+            "sha256": "9ec2f50d04d0a1158203203221c057b76ec018176aa5857d1645acd77cffc001",
+            "ktx2": {
+              "bytes": 67200,
+              "sha256": "9da806c4682b3748fd1430e44c5d330be7415814e960c7b846c57e7a2a3c8dfb"
+            }
+          },
+          "normal": {
+            "width": 512,
+            "height": 512,
+            "format": "WEBP",
+            "channels": "srgb",
+            "mean": 0.666102,
+            "bytes": 11306,
+            "edgeDifference": 2.73151,
+            "clipping": null,
+            "sha256": "71bb793c4285d0e7c51595a3750d7862a64a5f99bb96e90d351f855bfc0b2569",
+            "ktx2": {
+              "bytes": 151874,
+              "sha256": "0dbafbaa83b29ef71f6d080914c409341f117787536c3e841015e41890faab31"
+            }
+          },
+          "roughness": {
+            "width": 512,
+            "height": 512,
+            "format": "WEBP",
+            "channels": "srgb",
+            "mean": 0.889095,
+            "bytes": 6604,
+            "edgeDifference": 0.84375,
+            "clipping": null,
+            "sha256": "254b492b3f177f1b652624d20a4af9e6d5c00fc23ac7ee847c6440a3cdea911b",
+            "ktx2": {
+              "bytes": 17822,
+              "sha256": "baa0cd64b6283d8a3164b7a138d55e77bb0e45bf7e6ec652bbefb0c353ea44f8"
+            }
+          },
+          "ao": {
+            "width": 512,
+            "height": 512,
+            "format": "WEBP",
+            "channels": "srgb",
+            "mean": 0.812672,
+            "bytes": 1812,
+            "edgeDifference": 0.302734,
+            "clipping": null,
+            "sha256": "23c06e64bd22dfeed071830c7b74d2bba2e100cf2efe1d71f88134040ed4bc6e",
+            "ktx2": {
+              "bytes": 6505,
+              "sha256": "ca6d0272f96d703f0034eb3ec4e2ca3dcbff49f87b77e3a7a4991505379a1015"
+            }
+          },
+          "height": {
+            "width": 512,
+            "height": 512,
+            "format": "WEBP",
+            "channels": "srgb",
+            "mean": 0.256702,
+            "bytes": 23838,
+            "edgeDifference": 2.09848,
+            "clipping": null,
+            "sha256": "37330aff845e1d189b5a61a75fd7531fd1073c0bb59a4d43690d26ee95a041b4",
+            "ktx2": {
+              "bytes": 48117,
+              "sha256": "365fbb0d59c2a415762006236f50a2dcc436ed241b22ff6f75329d0b75e57544"
+            }
+          },
+          "emissive": {
+            "width": 512,
+            "height": 512,
+            "format": "WEBP",
+            "channels": "srgb",
+            "mean": 0.0000122669,
+            "bytes": 548,
+            "edgeDifference": 0,
+            "clipping": null,
+            "sha256": "39ddcdbdbfc84677d164ad9d7bea527b8ead8d1d006c214d60660457511fce5a",
+            "ktx2": {
+              "bytes": 1185,
+              "sha256": "30b4fc16c32a50f50dbd773dbde523b65ee2421382d66ee1b7ee152c2a0c41eb"
+            }
+          }
+        },
+        "side": {
+          "baseColor": {
+            "width": 512,
+            "height": 512,
+            "format": "WEBP",
+            "channels": "srgb",
+            "mean": 0.28795,
+            "bytes": 8442,
+            "edgeDifference": 1.38118,
+            "clipping": {
+              "shadows": 0.922775,
+              "highlights": 0
+            },
+            "sha256": "11af706808285e873aa721fb51f06abf27d7e6495e4ffaa10cee9b160dbeff39",
+            "ktx2": {
+              "bytes": 40786,
+              "sha256": "f6b5a274904c256dcfe799108e8cdc735d7447ed617780935ba18b00a08f0df7"
+            }
+          },
+          "normal": {
+            "width": 512,
+            "height": 512,
+            "format": "WEBP",
+            "channels": "srgb",
+            "mean": 0.666491,
+            "bytes": 3096,
+            "edgeDifference": 1.54911,
+            "clipping": null,
+            "sha256": "e4db06d950d640ea5e034b53f09161bc64086e59d1ee00e1d24b9e74946e9e4f",
+            "ktx2": {
+              "bytes": 47779,
+              "sha256": "c2a7f714841197c6f234d3a98d5ed6e698e518722fb6aa712c5fd496e857699d"
+            }
+          },
+          "roughness": {
+            "width": 512,
+            "height": 512,
+            "format": "WEBP",
+            "channels": "srgb",
+            "mean": 0.888914,
+            "bytes": 3064,
+            "edgeDifference": 0.664062,
+            "clipping": null,
+            "sha256": "311a6ed385cb009aa0225447d1d5bb6d5cfb36ebac19c2fa8ac30ce99a564fbe",
+            "ktx2": {
+              "bytes": 10226,
+              "sha256": "47c6396f071f2272f13d9bb2d8265485a090fd2d9f45335da4aec2b85116ba6c"
+            }
+          },
+          "ao": {
+            "width": 512,
+            "height": 512,
+            "format": "WEBP",
+            "channels": "srgb",
+            "mean": 0.812453,
+            "bytes": 1582,
+            "edgeDifference": 0.251953,
+            "clipping": null,
+            "sha256": "9d639d800fea4342752b2eddfbca800d0c904247d15f4651b46ab83a96ce0b8d",
+            "ktx2": {
+              "bytes": 6021,
+              "sha256": "8eb4d43677ab45e0adbfd6320845738f3add078a5f7c2188f9ee4ef24ac510c6"
+            }
+          },
+          "height": {
+            "width": 512,
+            "height": 512,
+            "format": "WEBP",
+            "channels": "srgb",
+            "mean": 0.256355,
+            "bytes": 7748,
+            "edgeDifference": 1.42076,
+            "clipping": null,
+            "sha256": "946993a77de384a741232575dbd3c5ebad39485367aaaf77e1e91fd9e8d1f478",
+            "ktx2": {
+              "bytes": 33841,
+              "sha256": "1c3afc8f5fe26fbd75bd1cbf19db0794ecdc9e43c5d4023b964fabfc54593dfc"
+            }
+          },
+          "emissive": {
+            "width": 512,
+            "height": 512,
+            "format": "WEBP",
+            "channels": "srgb",
+            "mean": 0,
+            "bytes": 528,
+            "edgeDifference": 0,
+            "clipping": null,
+            "sha256": "8383219e546eb515dd2e1a8c02557888e126423cc82014fe2eea79006155a62f",
+            "ktx2": {
+              "bytes": 1060,
+              "sha256": "c82f3641a07391bb1c756915400def6390a6ea48eeb33422412afea225b122d3"
+            }
+          }
+        }
+      },
+      "review": {
+        "reviewer": "Codex visual QA",
+        "reviewedAt": "2026-09-09T17:47:28.747Z",
+        "decision": "approved",
+        "scores": {
+          "tileability": 3,
+          "depthResponse": 4,
+          "lightNeutrality": 4,
+          "materialIdentity": 4,
+          "stateLegibility": 3,
+          "accessibility": 4
+        }
+      }
+    },
+    {
+      "materialId": "lantern-moss",
+      "passed": true,
+      "failures": [],
+      "warnings": [],
+      "evidence": {
+        "top": {
+          "baseColor": {
+            "width": 512,
+            "height": 512,
+            "format": "WEBP",
+            "channels": "srgb",
+            "mean": 0.314154,
+            "bytes": 83372,
+            "edgeDifference": 2.78236,
+            "clipping": {
+              "shadows": 0,
+              "highlights": 0
+            },
+            "sha256": "e78aec133a7a1795766a93050b0f88f87578fa00d1440c85625dab198684f27f",
+            "ktx2": {
+              "bytes": 71374,
+              "sha256": "ed00a141c2c956fd32f49517062266550e630652770d732a32f1ac7b71bb4c1d"
+            }
+          },
+          "normal": {
+            "width": 512,
+            "height": 512,
+            "format": "WEBP",
+            "channels": "srgb",
+            "mean": 0.665851,
+            "bytes": 23094,
+            "edgeDifference": 2.9538,
+            "clipping": null,
+            "sha256": "a006bdb8ecab10b1943d5b6c814ccfd4d8fe8924b53848f09f0c95b558a349d2",
+            "ktx2": {
+              "bytes": 263195,
+              "sha256": "11d4e3527766f0deae817ab0d28a2a4f472100995e9070ac00e8feeafd817bdf"
+            }
+          },
+          "roughness": {
+            "width": 512,
+            "height": 512,
+            "format": "WEBP",
+            "channels": "srgb",
+            "mean": 0.875956,
+            "bytes": 11222,
+            "edgeDifference": 1.4043,
+            "clipping": null,
+            "sha256": "931014fe2c9fdd0c0a611c36806d8b907c2226f033acece279278b40a5e885b7",
+            "ktx2": {
+              "bytes": 28762,
+              "sha256": "8bdefe31e68a83814356c03c22f9275d3b72a08d4473699daa93ff146b4b3252"
+            }
+          },
+          "ao": {
+            "width": 512,
+            "height": 512,
+            "format": "WEBP",
+            "channels": "srgb",
+            "mean": 0.82098,
+            "bytes": 2088,
+            "edgeDifference": 0.324219,
+            "clipping": null,
+            "sha256": "743807e3d9da6ea57634a5a9112fb7c3fb0d3b32ca2bd1d0adb2d8ef268c22b7",
+            "ktx2": {
+              "bytes": 7065,
+              "sha256": "2cd10a71d5b43c17c4ffa5293b3afe8f3884df51e3023b492ce83ccac88ad4d2"
+            }
+          },
+          "height": {
+            "width": 512,
+            "height": 512,
+            "format": "WEBP",
+            "channels": "srgb",
+            "mean": 0.301623,
+            "bytes": 36888,
+            "edgeDifference": 2.22575,
+            "clipping": null,
+            "sha256": "d4b4d4c1327c2136fdb97f854d65c773dc11eb869c12c0c0dde1c4ceb5d99e9a",
+            "ktx2": {
+              "bytes": 53227,
+              "sha256": "5dfbf42a61081444aaf99589e3756ae41372380ee13e53ac019eedd54495daf4"
+            }
+          },
+          "emissive": {
+            "width": 512,
+            "height": 512,
+            "format": "WEBP",
+            "channels": "srgb",
+            "mean": 0,
+            "bytes": 528,
+            "edgeDifference": 0,
+            "clipping": null,
+            "sha256": "8383219e546eb515dd2e1a8c02557888e126423cc82014fe2eea79006155a62f",
+            "ktx2": {
+              "bytes": 1060,
+              "sha256": "c82f3641a07391bb1c756915400def6390a6ea48eeb33422412afea225b122d3"
+            }
+          }
+        },
+        "side": {
+          "baseColor": {
+            "width": 512,
+            "height": 512,
+            "format": "WEBP",
+            "channels": "srgb",
+            "mean": 0.314542,
+            "bytes": 13008,
+            "edgeDifference": 1.34324,
+            "clipping": {
+              "shadows": 0,
+              "highlights": 0
+            },
+            "sha256": "af23fd110ced98724fb9300a4fe8ddc38e2b84cfdd69923cbfb0ceaa1252f0f5",
+            "ktx2": {
+              "bytes": 49603,
+              "sha256": "0f48a060cb38537d8b8653f60305ce4d0b4830efd82422f47082614e27b1de7d"
+            }
+          },
+          "normal": {
+            "width": 512,
+            "height": 512,
+            "format": "WEBP",
+            "channels": "srgb",
+            "mean": 0.666358,
+            "bytes": 5770,
+            "edgeDifference": 1.09196,
+            "clipping": null,
+            "sha256": "d85b82f7162abad6bd592b5782f5ec5db8df5f8bf2b5961899e6b501b1c5cd73",
+            "ktx2": {
+              "bytes": 86886,
+              "sha256": "e0939b8652af29cd7ee44110a904dc0b54db8585f626276c26440d57eb397169"
+            }
+          },
+          "roughness": {
+            "width": 512,
+            "height": 512,
+            "format": "WEBP",
+            "channels": "srgb",
+            "mean": 0.876344,
+            "bytes": 4128,
+            "edgeDifference": 0.525391,
+            "clipping": null,
+            "sha256": "e8ee4e9a51c635a62e9c485d274bc525990775043ef9c3993151d2c68901c81d",
+            "ktx2": {
+              "bytes": 13011,
+              "sha256": "8748c75f7e7eeaf28cec991190b8b2b07831e725fec01a24c52e7ec9cf3cfd84"
+            }
+          },
+          "ao": {
+            "width": 512,
+            "height": 512,
+            "format": "WEBP",
+            "channels": "srgb",
+            "mean": 0.821048,
+            "bytes": 1742,
+            "edgeDifference": 0.255859,
+            "clipping": null,
+            "sha256": "38df399921067a573416d1b6e477139ccfcb0b8a8e3fa9785e3a6b7cbdb3e809",
+            "ktx2": {
+              "bytes": 5804,
+              "sha256": "ebc99add39cc1f2feb2d70691477ff6b872fb37a0b1ac2285634bd58e9ad249f"
+            }
+          },
+          "height": {
+            "width": 512,
+            "height": 512,
+            "format": "WEBP",
+            "channels": "srgb",
+            "mean": 0.301157,
+            "bytes": 11392,
+            "edgeDifference": 1.26115,
+            "clipping": null,
+            "sha256": "9fbbfc1fc00b983db7933c749b6618a1e8b84552289921e30907c6824a76115f",
+            "ktx2": {
+              "bytes": 40078,
+              "sha256": "be71d6b3db8f3e32ef70ec7afef4aae2e04a134b031387279ac171f07d36cb4c"
+            }
+          },
+          "emissive": {
+            "width": 512,
+            "height": 512,
+            "format": "WEBP",
+            "channels": "srgb",
+            "mean": 0,
+            "bytes": 528,
+            "edgeDifference": 0,
+            "clipping": null,
+            "sha256": "8383219e546eb515dd2e1a8c02557888e126423cc82014fe2eea79006155a62f",
+            "ktx2": {
+              "bytes": 1060,
+              "sha256": "c82f3641a07391bb1c756915400def6390a6ea48eeb33422412afea225b122d3"
+            }
+          }
+        }
+      },
+      "review": {
+        "reviewer": "Codex visual QA",
+        "reviewedAt": "2026-09-09T17:47:28.853Z",
+        "decision": "approved",
+        "scores": {
+          "tileability": 3,
+          "depthResponse": 4,
+          "lightNeutrality": 4,
+          "materialIdentity": 4,
+          "stateLegibility": 3,
+          "accessibility": 4
+        }
+      }
+    },
+    {
+      "materialId": "emberglass-dunes",
+      "passed": true,
+      "failures": [],
+      "warnings": [],
+      "evidence": {
+        "top": {
+          "baseColor": {
+            "width": 512,
+            "height": 512,
+            "format": "WEBP",
+            "channels": "srgb",
+            "mean": 0.390219,
+            "bytes": 61556,
+            "edgeDifference": 3.25215,
+            "clipping": {
+              "shadows": 0,
+              "highlights": 0
+            },
+            "sha256": "3ab288f7e82dfb998a599fb9e98a1ced8dc8e74839f74f91f7fa51ac14faef0a",
+            "ktx2": {
+              "bytes": 69902,
+              "sha256": "cbfeac97d618e91c6fe0ba9f9b2f9d7f990e1b49387d286c3d2150b286050346"
+            }
+          },
+          "normal": {
+            "width": 512,
+            "height": 512,
+            "format": "WEBP",
+            "channels": "srgb",
+            "mean": 0.665997,
+            "bytes": 12166,
+            "edgeDifference": 2.93271,
+            "clipping": null,
+            "sha256": "9797231d0ada69f8990b183b011238ffd7c7c11281f78ddcb08ef477d79888c2",
+            "ktx2": {
+              "bytes": 199884,
+              "sha256": "4d7023a9f41af490b55f380b2507926604524412fd8c04a9245c4347f6a210e5"
+            }
+          },
+          "roughness": {
+            "width": 512,
+            "height": 512,
+            "format": "WEBP",
+            "channels": "srgb",
+            "mean": 0.855792,
+            "bytes": 6974,
+            "edgeDifference": 1.22656,
+            "clipping": null,
+            "sha256": "118c5d5f0e00bf676a84b9855a56fd2c8deb8dffa606568cfbaaf2ea4955135f",
+            "ktx2": {
+              "bytes": 19453,
+              "sha256": "e1140e8ff6f6d2c09832e42f9e24b66f4a972ba8e9285ff848a794fca115d352"
+            }
+          },
+          "ao": {
+            "width": 512,
+            "height": 512,
+            "format": "WEBP",
+            "channels": "srgb",
+            "mean": 0.835445,
+            "bytes": 1954,
+            "edgeDifference": 0.396484,
+            "clipping": null,
+            "sha256": "7433345195dce8752b49bbce311fc48064f063b55ba7f4a5dc6ccc01873549a1",
+            "ktx2": {
+              "bytes": 6910,
+              "sha256": "9e718db51c23074b6b9b78c3893c030cdae0e694f75a5ed0d8f37c457fd95d29"
+            }
+          },
+          "height": {
+            "width": 512,
+            "height": 512,
+            "format": "WEBP",
+            "channels": "srgb",
+            "mean": 0.373909,
+            "bytes": 25150,
+            "edgeDifference": 2.24582,
+            "clipping": null,
+            "sha256": "f167891a02f78986e616c04d2d39ca5194e64550787a0f82a9539dc72aab8b9f",
+            "ktx2": {
+              "bytes": 49614,
+              "sha256": "3d10be72e2c2efac8edc52d4853621638c38195bdd94e21f725aafa35f86f61d"
+            }
+          },
+          "emissive": {
+            "width": 512,
+            "height": 512,
+            "format": "WEBP",
+            "channels": "srgb",
+            "mean": 0.000074439,
+            "bytes": 638,
+            "edgeDifference": 0.0742188,
+            "clipping": null,
+            "sha256": "640619563a14b6d8781a513a36c6c790afbff51bbffe260be9ef2e6ed8108848",
+            "ktx2": {
+              "bytes": 1477,
+              "sha256": "b0f920726f354e28884386c48115876f510c377ad0a73e92a067930e8c2bc71a"
+            }
+          }
+        },
+        "side": {
+          "baseColor": {
+            "width": 512,
+            "height": 512,
+            "format": "WEBP",
+            "channels": "srgb",
+            "mean": 0.390765,
+            "bytes": 10806,
+            "edgeDifference": 1.55334,
+            "clipping": {
+              "shadows": 0,
+              "highlights": 0
+            },
+            "sha256": "2b1158cc79292ea467150a370cbe6e8aa4bd27699ee49299de0e5b0185911d8f",
+            "ktx2": {
+              "bytes": 47527,
+              "sha256": "56d7dc5ee33cfed60e11b2f6f778e182c8070e2a9469a5f152cb291c4141e62e"
+            }
+          },
+          "normal": {
+            "width": 512,
+            "height": 512,
+            "format": "WEBP",
+            "channels": "srgb",
+            "mean": 0.666446,
+            "bytes": 3968,
+            "edgeDifference": 2.52394,
+            "clipping": null,
+            "sha256": "98ecf197c3a34c9e47d523c685c764325403ccf935d4c49f3814c8635572e059",
+            "ktx2": {
+              "bytes": 64828,
+              "sha256": "615efeb0c9a254b094c3c372dd6c5f6377bbb10e15448818d70aa21191731bea"
+            }
+          },
+          "roughness": {
+            "width": 512,
+            "height": 512,
+            "format": "WEBP",
+            "channels": "srgb",
+            "mean": 0.855785,
+            "bytes": 3498,
+            "edgeDifference": 0.708984,
+            "clipping": null,
+            "sha256": "51603a40e69f50605b86b9f69f530ab5cdbd38fb76e10e1da6d9d8a5e22a1514",
+            "ktx2": {
+              "bytes": 10934,
+              "sha256": "c7132f1b45c86828d162a53acd999131c18368074a5499d7da6491ab4e8b1a01"
+            }
+          },
+          "ao": {
+            "width": 512,
+            "height": 512,
+            "format": "WEBP",
+            "channels": "srgb",
+            "mean": 0.835648,
+            "bytes": 1746,
+            "edgeDifference": 0.253906,
+            "clipping": null,
+            "sha256": "c028c2a54f62530b1d4f12a6cea1f544ac824442f4d183c25eacc8aa2a003248",
+            "ktx2": {
+              "bytes": 6221,
+              "sha256": "8c894c85989fc350d85cf1051d6fdbb007bbcb0ea0e36e6ccbd2ea4921b161dd"
+            }
+          },
+          "height": {
+            "width": 512,
+            "height": 512,
+            "format": "WEBP",
+            "channels": "srgb",
+            "mean": 0.374654,
+            "bytes": 9236,
+            "edgeDifference": 1.46231,
+            "clipping": null,
+            "sha256": "5b079d06adbd907387efd36380925fc1f54fe2738f5713548d7eebba856efe97",
+            "ktx2": {
+              "bytes": 37355,
+              "sha256": "bcf57c4f1bb6f205e3241f850e256da24d18b19ae8426adb1beb9e68fc408690"
+            }
+          },
+          "emissive": {
+            "width": 512,
+            "height": 512,
+            "format": "WEBP",
+            "channels": "srgb",
+            "mean": 0,
+            "bytes": 528,
+            "edgeDifference": 0,
+            "clipping": null,
+            "sha256": "8383219e546eb515dd2e1a8c02557888e126423cc82014fe2eea79006155a62f",
+            "ktx2": {
+              "bytes": 1060,
+              "sha256": "c82f3641a07391bb1c756915400def6390a6ea48eeb33422412afea225b122d3"
+            }
+          }
+        }
+      },
+      "review": {
+        "reviewer": "Codex visual QA",
+        "reviewedAt": "2026-09-09T17:47:28.956Z",
+        "decision": "approved",
+        "scores": {
+          "tileability": 3,
+          "depthResponse": 4,
+          "lightNeutrality": 4,
+          "materialIdentity": 4,
+          "stateLegibility": 3,
+          "accessibility": 4
+        }
+      }
+    },
+    {
+      "materialId": "slate-spires",
+      "passed": true,
+      "failures": [],
+      "warnings": [],
+      "evidence": {
+        "top": {
+          "baseColor": {
+            "width": 512,
+            "height": 512,
+            "format": "WEBP",
+            "channels": "srgb",
+            "mean": 0.319929,
+            "bytes": 77800,
+            "edgeDifference": 2.93756,
+            "clipping": {
+              "shadows": 0,
+              "highlights": 0
+            },
+            "sha256": "d50b6009e9ccf48673f1ee250481f9c23bb67e8ef0b414884301a966ba2adf80",
+            "ktx2": {
+              "bytes": 71330,
+              "sha256": "21b910fb9974657f6dc9d65e5d8d3e6be6319ce58f94ea8973ad7945f356b565"
+            }
+          },
+          "normal": {
+            "width": 512,
+            "height": 512,
+            "format": "WEBP",
+            "channels": "srgb",
+            "mean": 0.6657,
+            "bytes": 21018,
+            "edgeDifference": 3.76539,
+            "clipping": null,
+            "sha256": "7e3f43e3f26216a0b7cb8ddf77c12b18f0a44f077d932b68e60661de993373fa",
+            "ktx2": {
+              "bytes": 254363,
+              "sha256": "b258011213ecd55a87fca8c41604bc1abdb0953c71f0566bcb5ddc1211ce5bfc"
+            }
+          },
+          "roughness": {
+            "width": 512,
+            "height": 512,
+            "format": "WEBP",
+            "channels": "srgb",
+            "mean": 0.880437,
+            "bytes": 10678,
+            "edgeDifference": 1.38867,
+            "clipping": null,
+            "sha256": "60860aee17409a3fcfd7334389838b416ab5b884035af711e2fa8a9e5670190c",
+            "ktx2": {
+              "bytes": 27461,
+              "sha256": "033e0cde4bdd175e1bc0ba3ee318eb6f2e7f433c35423c035a8bb452a93eab74"
+            }
+          },
+          "ao": {
+            "width": 512,
+            "height": 512,
+            "format": "WEBP",
+            "channels": "srgb",
+            "mean": 0.818437,
+            "bytes": 1762,
+            "edgeDifference": 0.263672,
+            "clipping": null,
+            "sha256": "138f8ae16dc40fa9e1250ab1c67f7605d0b52ba0836c6967f74d708334000a77",
+            "ktx2": {
+              "bytes": 6325,
+              "sha256": "f7cb10ac029894d43749939d427eef776bf1f5b80344db2f19aac92f57c335a8"
+            }
+          },
+          "height": {
+            "width": 512,
+            "height": 512,
+            "format": "WEBP",
+            "channels": "srgb",
+            "mean": 0.286359,
+            "bytes": 36610,
+            "edgeDifference": 2.35909,
+            "clipping": null,
+            "sha256": "520af55afd4baa880796a73fbdd462da8985d7556c3fa72a3b5fe7c139235a77",
+            "ktx2": {
+              "bytes": 53217,
+              "sha256": "e3d9c5a9aa868115eb15f9ec6ae90602db6e69fccd7979e25426258faabb56df"
+            }
+          },
+          "emissive": {
+            "width": 512,
+            "height": 512,
+            "format": "WEBP",
+            "channels": "srgb",
+            "mean": 0,
+            "bytes": 528,
+            "edgeDifference": 0,
+            "clipping": null,
+            "sha256": "8383219e546eb515dd2e1a8c02557888e126423cc82014fe2eea79006155a62f",
+            "ktx2": {
+              "bytes": 1060,
+              "sha256": "c82f3641a07391bb1c756915400def6390a6ea48eeb33422412afea225b122d3"
+            }
+          }
+        },
+        "side": {
+          "baseColor": {
+            "width": 512,
+            "height": 512,
+            "format": "WEBP",
+            "channels": "srgb",
+            "mean": 0.319611,
+            "bytes": 11044,
+            "edgeDifference": 1.38475,
+            "clipping": {
+              "shadows": 0,
+              "highlights": 0
+            },
+            "sha256": "83a6874a268d0098c99dd36d199713f73174aedbb46b1646e887af2f75d26ba8",
+            "ktx2": {
+              "bytes": 51564,
+              "sha256": "ca9889d60d316d147dcfb462a6ac743f5d75d4b9db7915d4a7b7a97ab4cf3cc8"
+            }
+          },
+          "normal": {
+            "width": 512,
+            "height": 512,
+            "format": "WEBP",
+            "channels": "srgb",
+            "mean": 0.666391,
+            "bytes": 4814,
+            "edgeDifference": 1.14949,
+            "clipping": null,
+            "sha256": "a3be9c9332de5d2703a6ac8a97ac65419075305417ab77b89fdc679be46a31ca",
+            "ktx2": {
+              "bytes": 71267,
+              "sha256": "aa61653041604a8ae4c418c3c6f0cfceee8defe10b0ee5248f519520fa01bc60"
+            }
+          },
+          "roughness": {
+            "width": 512,
+            "height": 512,
+            "format": "WEBP",
+            "channels": "srgb",
+            "mean": 0.880593,
+            "bytes": 3588,
+            "edgeDifference": 0.597656,
+            "clipping": null,
+            "sha256": "4e97b96f674279915e556ebfadb47055efd93dee6227579472bac59f892ff58d",
+            "ktx2": {
+              "bytes": 10828,
+              "sha256": "4c914766c33ef7ec9ce01b271ae474939043e7b1b9bcfd8b34a5a25bf7af283f"
+            }
+          },
+          "ao": {
+            "width": 512,
+            "height": 512,
+            "format": "WEBP",
+            "channels": "srgb",
+            "mean": 0.818663,
+            "bytes": 1498,
+            "edgeDifference": 0.240234,
+            "clipping": null,
+            "sha256": "b93d75067bba4de5fc9f0c3e3848d41166693e323b7a57dff45360ab9120233f",
+            "ktx2": {
+              "bytes": 5380,
+              "sha256": "25ee347e44b15c9341680244126a04c71d60a395fb138f9c0d5e58622270f06d"
+            }
+          },
+          "height": {
+            "width": 512,
+            "height": 512,
+            "format": "WEBP",
+            "channels": "srgb",
+            "mean": 0.28676,
+            "bytes": 10388,
+            "edgeDifference": 1.54074,
+            "clipping": null,
+            "sha256": "4a9114ce5de7b7fec8cdc8bd393fcbb47fb9273930b11512632471eae9e282d8",
+            "ktx2": {
+              "bytes": 40117,
+              "sha256": "2b34036d6516b80a1f85cd4c7dca0a99314bc04766c3873a18083188809aad78"
+            }
+          },
+          "emissive": {
+            "width": 512,
+            "height": 512,
+            "format": "WEBP",
+            "channels": "srgb",
+            "mean": 0,
+            "bytes": 528,
+            "edgeDifference": 0,
+            "clipping": null,
+            "sha256": "8383219e546eb515dd2e1a8c02557888e126423cc82014fe2eea79006155a62f",
+            "ktx2": {
+              "bytes": 1060,
+              "sha256": "c82f3641a07391bb1c756915400def6390a6ea48eeb33422412afea225b122d3"
+            }
+          }
+        }
+      },
+      "review": {
+        "reviewer": "Codex visual QA",
+        "reviewedAt": "2026-09-09T17:47:29.048Z",
+        "decision": "approved",
+        "scores": {
+          "tileability": 3,
+          "depthResponse": 4,
+          "lightNeutrality": 4,
+          "materialIdentity": 4,
+          "stateLegibility": 3,
+          "accessibility": 4
+        }
+      }
+    },
+    {
+      "materialId": "verdant-signal-base",
+      "passed": true,
+      "failures": [],
+      "warnings": [],
+      "evidence": {
+        "top": {
+          "baseColor": {
+            "width": 512,
+            "height": 512,
+            "format": "WEBP",
+            "channels": "srgb",
+            "mean": 0.236562,
+            "bytes": 65462,
+            "edgeDifference": 2.87952,
+            "clipping": {
+              "shadows": 0,
+              "highlights": 0
+            },
+            "sha256": "524e1b82e53f493b21f4290413cc0d9167baa1ea963a1eca0ea6b26dd7d1c34f",
+            "ktx2": {
+              "bytes": 67132,
+              "sha256": "5bec2de02cccad277778d052435ca752206248c518d880fc67ab793a13aabb79"
+            }
+          },
+          "normal": {
+            "width": 512,
+            "height": 512,
+            "format": "WEBP",
+            "channels": "srgb",
+            "mean": 0.666039,
+            "bytes": 12352,
+            "edgeDifference": 2.258,
+            "clipping": null,
+            "sha256": "4ebda82af3b3807dd00eb1d84d1c4df409706b555d7900fbec8123b0a027a268",
+            "ktx2": {
+              "bytes": 176553,
+              "sha256": "19ad1c147914b227c255619e38d7c2b256a0e74e3133333d3efe207c6477ab7d"
+            }
+          },
+          "roughness": {
+            "width": 512,
+            "height": 512,
+            "format": "WEBP",
+            "channels": "srgb",
+            "mean": 0.906188,
+            "bytes": 6562,
+            "edgeDifference": 0.787109,
+            "clipping": null,
+            "sha256": "20486e19976130197a15124de6ae270ae493d2fead3b7f5e7894a083a3afbca4",
+            "ktx2": {
+              "bytes": 15423,
+              "sha256": "608f352c7e03156f737f6d3abe211d02d0235fe13dbf0ebf709c21277218e0a5"
+            }
+          },
+          "ao": {
+            "width": 512,
+            "height": 512,
+            "format": "WEBP",
+            "channels": "srgb",
+            "mean": 0.799951,
+            "bytes": 1540,
+            "edgeDifference": 0.289062,
+            "clipping": null,
+            "sha256": "af0fb6a9c071b4912de6a5c6322cd7404d248493f12036d9548dd1bd7b09d3f7",
+            "ktx2": {
+              "bytes": 4408,
+              "sha256": "7779fd56ca029050975b0005c16ca19cd50f4f3a809df2100e92f7097b54f530"
+            }
+          },
+          "height": {
+            "width": 512,
+            "height": 512,
+            "format": "WEBP",
+            "channels": "srgb",
+            "mean": 0.198016,
+            "bytes": 28656,
+            "edgeDifference": 2.08203,
+            "clipping": null,
+            "sha256": "58c1189b7227389ed3f5a3783ae486ea2cbf1ad1e7cb3a00ba3aa68907de56a6",
+            "ktx2": {
+              "bytes": 50012,
+              "sha256": "5e7cd25458f4bf582761f83c51dd9cd4dba27675e2824513217e74a832c93b9b"
+            }
+          },
+          "emissive": {
+            "width": 512,
+            "height": 512,
+            "format": "WEBP",
+            "channels": "srgb",
+            "mean": 0,
+            "bytes": 528,
+            "edgeDifference": 0,
+            "clipping": null,
+            "sha256": "8383219e546eb515dd2e1a8c02557888e126423cc82014fe2eea79006155a62f",
+            "ktx2": {
+              "bytes": 1060,
+              "sha256": "c82f3641a07391bb1c756915400def6390a6ea48eeb33422412afea225b122d3"
+            }
+          }
+        },
+        "side": {
+          "baseColor": {
+            "width": 512,
+            "height": 512,
+            "format": "WEBP",
+            "channels": "srgb",
+            "mean": 0.236593,
+            "bytes": 8656,
+            "edgeDifference": 1.15057,
+            "clipping": {
+              "shadows": 0,
+              "highlights": 0
+            },
+            "sha256": "e092ce2f5da6c008f353d860862ea1579238ec041ae4e51869c3994c94ae1b75",
+            "ktx2": {
+              "bytes": 38211,
+              "sha256": "810e274415c61fdd6dd2d3518ca947465b0df9f3e3b410cd14920a2b3fa6b5f4"
+            }
+          },
+          "normal": {
+            "width": 512,
+            "height": 512,
+            "format": "WEBP",
+            "channels": "srgb",
+            "mean": 0.666545,
+            "bytes": 2366,
+            "edgeDifference": 0.703655,
+            "clipping": null,
+            "sha256": "44f4c057a4b1f29505cde06e43c4263adf6fd4c10caa62fdac4f893b7d3160c5",
+            "ktx2": {
+              "bytes": 31710,
+              "sha256": "c5af26b80d205e5fbdc905eb5f760c2ca43981bc50fea4cf981ee723e8d6e182"
+            }
+          },
+          "roughness": {
+            "width": 512,
+            "height": 512,
+            "format": "WEBP",
+            "channels": "srgb",
+            "mean": 0.907156,
+            "bytes": 2212,
+            "edgeDifference": 0.472656,
+            "clipping": null,
+            "sha256": "22670cd31e1bb2aace5f2cc0a8e0f93de04289ca93c253b149042b93e8d2125f",
+            "ktx2": {
+              "bytes": 7058,
+              "sha256": "fda972dd190fc550e9922075f7b92cef0c745c78b6f3af466a6b57cf0d01c145"
+            }
+          },
+          "ao": {
+            "width": 512,
+            "height": 512,
+            "format": "WEBP",
+            "channels": "srgb",
+            "mean": 0.79987,
+            "bytes": 1282,
+            "edgeDifference": 0.132812,
+            "clipping": null,
+            "sha256": "ac9b1ba33397211237ac775164647e8186f4ccc7e079e04d022ef56238e88ad1",
+            "ktx2": {
+              "bytes": 3474,
+              "sha256": "d660a8702c83ebc15ef5afa8d74478b7ac5ffaa7b175338cfef45ec138b268cc"
+            }
+          },
+          "height": {
+            "width": 512,
+            "height": 512,
+            "format": "WEBP",
+            "channels": "srgb",
+            "mean": 0.197649,
+            "bytes": 7778,
+            "edgeDifference": 1.19336,
+            "clipping": null,
+            "sha256": "3f862345369b8e19bbe8e7569e2943c46a25cea4be22d9205ad8bbc6ba0f3752",
+            "ktx2": {
+              "bytes": 24287,
+              "sha256": "66bcddf2e9a0f5741ac38db5759fda2999aca45719775e3946f9fea4d7077aab"
+            }
+          },
+          "emissive": {
+            "width": 512,
+            "height": 512,
+            "format": "WEBP",
+            "channels": "srgb",
+            "mean": 0,
+            "bytes": 528,
+            "edgeDifference": 0,
+            "clipping": null,
+            "sha256": "8383219e546eb515dd2e1a8c02557888e126423cc82014fe2eea79006155a62f",
+            "ktx2": {
+              "bytes": 1060,
+              "sha256": "c82f3641a07391bb1c756915400def6390a6ea48eeb33422412afea225b122d3"
+            }
+          }
+        }
+      },
+      "review": {
+        "reviewer": "Codex visual QA",
+        "reviewedAt": "2026-09-09T17:47:29.129Z",
+        "decision": "approved",
+        "scores": {
+          "tileability": 3,
+          "depthResponse": 3,
+          "lightNeutrality": 4,
+          "materialIdentity": 3,
+          "stateLegibility": 3,
+          "accessibility": 4
+        }
+      }
+    },
+    {
+      "materialId": "violet-reliquary",
+      "passed": true,
+      "failures": [],
+      "warnings": [],
+      "evidence": {
+        "top": {
+          "baseColor": {
+            "width": 512,
+            "height": 512,
+            "format": "WEBP",
+            "channels": "srgb",
+            "mean": 0.212855,
+            "bytes": 49022,
+            "edgeDifference": 2.79114,
+            "clipping": {
+              "shadows": 0,
+              "highlights": 0
+            },
+            "sha256": "779c5c513537bb9d6df0bcb16271bd7bda7e7d9a129ab8bcf683e567ab749d24",
+            "ktx2": {
+              "bytes": 67732,
+              "sha256": "b8a32917f2b3a601ac84eef00a04ded1df27e4ff926693b7aca4e01c17d0823f"
+            }
+          },
+          "normal": {
+            "width": 512,
+            "height": 512,
+            "format": "WEBP",
+            "channels": "srgb",
+            "mean": 0.666108,
+            "bytes": 10472,
+            "edgeDifference": 2.11099,
+            "clipping": null,
+            "sha256": "5db0abddb143f7ea3c9fee3c3b3233949a8ca2af69cff0de38a924f859b6a002",
+            "ktx2": {
+              "bytes": 176819,
+              "sha256": "32bcdbdf979c1c9cfd5af1d1afc345143ee3ee1e5ff66eb6da049e4a5350eed1"
+            }
+          },
+          "roughness": {
+            "width": 512,
+            "height": 512,
+            "format": "WEBP",
+            "channels": "srgb",
+            "mean": 0.918848,
+            "bytes": 6530,
+            "edgeDifference": 1.10547,
+            "clipping": null,
+            "sha256": "3d25ae5a45bdfc5c63b94b3794e375ca3de1c7f6336b174b0d19a7341bb0c54e",
+            "ktx2": {
+              "bytes": 16456,
+              "sha256": "35f44bc87f753cf89a069ccede8e107bba197d59caf483a33edd1e54ad30d170"
+            }
+          },
+          "ao": {
+            "width": 512,
+            "height": 512,
+            "format": "WEBP",
+            "channels": "srgb",
+            "mean": 0.790986,
+            "bytes": 1742,
+            "edgeDifference": 0.347656,
+            "clipping": null,
+            "sha256": "4dd6904238868a2c140988b4fa50c84a7e10fd23242ead9942b414dc7438696b",
+            "ktx2": {
+              "bytes": 5750,
+              "sha256": "037447fae37aa6c93ce98e2c363de52d5a7a5998ba82f8d13a8bd917eb6a6be5"
+            }
+          },
+          "height": {
+            "width": 512,
+            "height": 512,
+            "format": "WEBP",
+            "channels": "srgb",
+            "mean": 0.150398,
+            "bytes": 23052,
+            "edgeDifference": 2.19728,
+            "clipping": null,
+            "sha256": "989b32f1b85622b9eb21b0e01de997b27a0b73b83ab7896bd9d4de59c82970ca",
+            "ktx2": {
+              "bytes": 48518,
+              "sha256": "b92579cd3a051597230931a3ef0b93eee31df705781c213a2aa1753a8ddf3bf5"
+            }
+          },
+          "emissive": {
+            "width": 512,
+            "height": 512,
+            "format": "WEBP",
+            "channels": "srgb",
+            "mean": 0,
+            "bytes": 528,
+            "edgeDifference": 0,
+            "clipping": null,
+            "sha256": "8383219e546eb515dd2e1a8c02557888e126423cc82014fe2eea79006155a62f",
+            "ktx2": {
+              "bytes": 1060,
+              "sha256": "c82f3641a07391bb1c756915400def6390a6ea48eeb33422412afea225b122d3"
+            }
+          }
+        },
+        "side": {
+          "baseColor": {
+            "width": 512,
+            "height": 512,
+            "format": "WEBP",
+            "channels": "srgb",
+            "mean": 0.21299,
+            "bytes": 8554,
+            "edgeDifference": 1.29043,
+            "clipping": {
+              "shadows": 0,
+              "highlights": 0
+            },
+            "sha256": "df15c4b30ad9ef9409f8835a07a187b8b7872c1d2ce1bfbad4ce0eaf89f307b9",
+            "ktx2": {
+              "bytes": 41392,
+              "sha256": "0efb243c567d99e7f211b2709fe1bd543ee6c156b508aadeb5372a7aa72744c6"
+            }
+          },
+          "normal": {
+            "width": 512,
+            "height": 512,
+            "format": "WEBP",
+            "channels": "srgb",
+            "mean": 0.666501,
+            "bytes": 2570,
+            "edgeDifference": 0.822948,
+            "clipping": null,
+            "sha256": "a76bea380ff9d545caa38bfc79dab730c71bc5632147c5404ce2adaebbfbbd14",
+            "ktx2": {
+              "bytes": 42072,
+              "sha256": "a71c663f6344bbd296d02b65c973b6124a7ca63c6b341eb8881cd325bf667b7c"
+            }
+          },
+          "roughness": {
+            "width": 512,
+            "height": 512,
+            "format": "WEBP",
+            "channels": "srgb",
+            "mean": 0.918803,
+            "bytes": 2806,
+            "edgeDifference": 0.632812,
+            "clipping": null,
+            "sha256": "9a652048f85fec81eca55551bd016b3784352cee97972e97fed5382814fe6333",
+            "ktx2": {
+              "bytes": 8760,
+              "sha256": "dec134440d6b280e8d3254468d27f9fe901eb7fac9ac22d099f0cf8d7ad59f21"
+            }
+          },
+          "ao": {
+            "width": 512,
+            "height": 512,
+            "format": "WEBP",
+            "channels": "srgb",
+            "mean": 0.791082,
+            "bytes": 1454,
+            "edgeDifference": 0.273438,
+            "clipping": null,
+            "sha256": "e343fd70b12da0ff33df1be05608dd91b6d2f08cab12054fe0b20cfae5468e4d",
+            "ktx2": {
+              "bytes": 4811,
+              "sha256": "a97f44e1b7aca1bede0389e764f9b356d7813c21c98f4dc986a729b9414f8cf3"
+            }
+          },
+          "height": {
+            "width": 512,
+            "height": 512,
+            "format": "WEBP",
+            "channels": "srgb",
+            "mean": 0.151156,
+            "bytes": 8056,
+            "edgeDifference": 1.47683,
+            "clipping": null,
+            "sha256": "4ae6af033076ce5aba841e790e724c92cc3dabc37078a1fe16be5e39a064eafb",
+            "ktx2": {
+              "bytes": 34655,
+              "sha256": "6d33c60a0cb2f2f85de23c42a9e5f59af22fc14d8d3a5ead2b4f8686a7607ead"
+            }
+          },
+          "emissive": {
+            "width": 512,
+            "height": 512,
+            "format": "WEBP",
+            "channels": "srgb",
+            "mean": 0,
+            "bytes": 528,
+            "edgeDifference": 0,
+            "clipping": null,
+            "sha256": "8383219e546eb515dd2e1a8c02557888e126423cc82014fe2eea79006155a62f",
+            "ktx2": {
+              "bytes": 1060,
+              "sha256": "c82f3641a07391bb1c756915400def6390a6ea48eeb33422412afea225b122d3"
+            }
+          }
+        }
+      },
+      "review": {
+        "reviewer": "Codex visual QA",
+        "reviewedAt": "2026-09-09T17:47:29.208Z",
+        "decision": "approved",
+        "scores": {
+          "tileability": 3,
+          "depthResponse": 4,
+          "lightNeutrality": 4,
+          "materialIdentity": 4,
+          "stateLegibility": 4,
+          "accessibility": 4
+        }
+      }
+    }
+  ],
+  "runtime": {
+    "board": {
+      "generatedAt": "2026-09-09T17:55:02.247Z",
+      "materialSystemVersion": "1.0.0",
+      "states": [
+        {
+          "lens": "ready",
+          "drawCalls": 132,
+          "triangles": 5452,
+          "textures": 8,
+          "lightingRig": "neutral"
+        },
+        {
+          "lens": "danger",
+          "drawCalls": 132,
+          "triangles": 6832,
+          "textures": 2,
+          "lightingRig": "danger"
+        }
+      ]
+    },
+    "frame": {
+      "generatedAt": "2026-09-09T17:42:19.273Z",
+      "frameP95Ms": 100,
+      "pixelRatio": 1,
+      "quality": "balanced"
+    }
+  }
+}

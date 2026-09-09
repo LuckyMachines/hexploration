@@ -8,22 +8,21 @@ import {
   resolvePlayerCharacter,
 } from '../../lib/characters';
 import { buildBoardWorld, cameraPlan, seedForAlias, WORLD_TERRAIN } from './boardWorld';
-import { resolveBoardQuality } from './boardQuality';
-
-const TERRAIN_TEXTURES = {
-  [Tile.JUNGLE]: '/images/art/terrain/glassroot-canopy.webp',
-  [Tile.PLAINS]: '/images/art/terrain/lantern-moss.webp',
-  [Tile.DESERT]: '/images/art/terrain/emberglass-dunes.webp',
-  [Tile.MOUNTAIN]: '/images/art/terrain/slate-spires.webp',
-  [Tile.RELIC]: '/images/art/terrain/violet-reliquary.webp',
-};
-const TERRAIN_TEXTURE_TINTS = {
-  [Tile.JUNGLE]: '#a3b6a2',
-  [Tile.PLAINS]: '#b7b58d',
-  [Tile.DESERT]: '#c5a076',
-  [Tile.MOUNTAIN]: '#abb3b8',
-  [Tile.RELIC]: '#b8a6ca',
-};
+import { nextPixelRatio, resolveBoardQuality } from './boardQuality';
+import {
+  MATERIAL_SYSTEM_VERSION,
+  applySurfaceUvVariation,
+  createSurfaceMaterial,
+  loadSurfaceTextureSet,
+  surfaceProfileForTile,
+} from './surfaceCatalog';
+import {
+  createLightingSystem,
+  disposeLightingSystem,
+  resolveLightingRigId,
+  setLightingRig,
+  updateLightingSystem,
+} from './lightingRigs';
 const STATE_FX_TEXTURES = {
   discovery: '/images/art/fx/discovery-bloom.png',
   danger: '/images/art/fx/redline-pressure.png',
@@ -64,7 +63,9 @@ function disposeObject(object) {
     const childMaterials = Array.isArray(child.material) ? child.material : [child.material];
     childMaterials.filter(Boolean).forEach((material) => {
       materials.add(material);
-      if (material.map) textures.add(material.map);
+      Object.values(material).forEach((value) => {
+        if (value?.isTexture) textures.add(value);
+      });
     });
   });
   geometries.forEach((geometry) => geometry.dispose());
@@ -143,7 +144,8 @@ function addCutoutProp(THREE, group, tile, texture, seed, options = {}) {
     opacity: 0.92,
     alphaTest: 0.08,
     depthWrite: false,
-    toneMapped: false,
+    toneMapped: true,
+    fog: true,
   }));
   backing.center.set(0.5, 0.1);
   backing.position.set(horizontalOffset, 0.024, depthOffset);
@@ -160,7 +162,8 @@ function addCutoutProp(THREE, group, tile, texture, seed, options = {}) {
     opacity: 1,
     alphaTest: 0.08,
     depthWrite: false,
-    toneMapped: false,
+    toneMapped: true,
+    fog: true,
   }));
   face.center.set(0.5, 0.1);
   face.position.set(horizontalOffset, 0.028, depthOffset);
@@ -383,7 +386,8 @@ function createPawn(THREE, color, isCurrent, standeeTexture, standeeProfile = {}
       opacity: 0.94,
       alphaTest: 0.08,
       depthWrite: false,
-      toneMapped: false,
+      toneMapped: true,
+      fog: true,
     }));
     backing.center.set(0.5, standeeProfile.footAnchor || 0.08);
     backing.position.y = 0.095;
@@ -400,7 +404,8 @@ function createPawn(THREE, color, isCurrent, standeeTexture, standeeProfile = {}
       opacity: 1,
       alphaTest: 0.08,
       depthWrite: false,
-      toneMapped: false,
+      toneMapped: true,
+      fog: true,
     }));
     standee.center.set(0.5, standeeProfile.footAnchor || 0.08);
     standee.position.y = 0.1;
@@ -542,10 +547,7 @@ function addDynamicWorld(THREE, context, state) {
   clearGroup(context.dynamicGroup);
   context.animated = [];
   context.isResolving = Boolean(state.isResolving);
-  context.scene.fog.color.set(state.isDanger ? '#1b090d' : '#09100c');
-  context.warmFill.color.set(state.isDanger ? '#ef6257' : '#e8c860');
-  context.warmFill.intensity = state.isDanger ? 3.2 : 2.2;
-  context.cyanRim.intensity = state.isDanger ? 1.3 : 2.6;
+  setLightingRig(THREE, context.lighting, resolveLightingRigId(state), { immediate: context.reducedMotion });
   const selected = new Set(state.selectedPath || []);
   const reachable = new Set(state.reachableAliases || []);
   const occupiedAliases = new Set(
@@ -781,8 +783,8 @@ function addDynamicWorld(THREE, context, state) {
   });
 }
 
-function createWorld(THREE, OrbitControls, mount, world, initialState, handlers, performanceMode) {
-  const quality = resolveBoardQuality({
+function createWorld(THREE, OrbitControls, RoomEnvironment, KTX2Loader, mount, world, initialState, handlers, performanceMode) {
+  const requestedQuality = resolveBoardQuality({
     mode: performanceMode,
     deviceMemory: navigator.deviceMemory ?? 8,
     hardwareConcurrency: navigator.hardwareConcurrency ?? 8,
@@ -790,20 +792,24 @@ function createWorld(THREE, OrbitControls, mount, world, initialState, handlers,
     viewportWidth: mount.clientWidth || window.innerWidth,
   });
   const renderer = new THREE.WebGLRenderer({
-    antialias: quality.mode !== 'efficient',
+    antialias: requestedQuality.mode !== 'efficient',
     alpha: true,
-    powerPreference: quality.mode === 'efficient' ? 'low-power' : 'high-performance',
+    powerPreference: requestedQuality.mode === 'efficient' ? 'low-power' : 'high-performance',
   });
+  const quality = {
+    ...requestedQuality,
+    anisotropy: Math.min(requestedQuality.anisotropy, renderer.capabilities.getMaxAnisotropy()),
+  };
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, quality.pixelRatioCap));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.24;
   renderer.shadowMap.enabled = quality.shadows;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   renderer.setClearColor(0x000000, 0);
   renderer.domElement.className = 'block h-full w-full cursor-grab';
   renderer.domElement.setAttribute('aria-hidden', 'true');
   renderer.domElement.dataset.boardQuality = quality.mode;
+  renderer.domElement.dataset.materialSystemVersion = MATERIAL_SYSTEM_VERSION;
   mount.appendChild(renderer.domElement);
 
   const scene = new THREE.Scene();
@@ -841,23 +847,7 @@ function createWorld(THREE, OrbitControls, mount, world, initialState, handlers,
   floor.receiveShadow = true;
   scene.add(floor);
 
-  scene.add(new THREE.HemisphereLight(0xc9eff2, 0x071008, 1.72));
-  const key = new THREE.DirectionalLight(0xd9f2f2, 3.4);
-  key.position.set(-world.radius * 0.7, world.radius * 1.5, world.radius * 0.8);
-  key.castShadow = quality.shadows;
-  key.shadow.mapSize.set(quality.shadowMapSize, quality.shadowMapSize);
-  key.shadow.camera.left = -world.radius;
-  key.shadow.camera.right = world.radius;
-  key.shadow.camera.top = world.radius;
-  key.shadow.camera.bottom = -world.radius;
-  key.shadow.bias = -0.0005;
-  scene.add(key);
-  const warmFill = new THREE.PointLight(0xe8c860, 2.2, world.radius * 2.2, 2);
-  warmFill.position.set(-world.width * 0.45, 3.5, world.depth * 0.35);
-  scene.add(warmFill);
-  const cyanRim = new THREE.PointLight(0x68d5e4, 2.6, world.radius * 2.5, 2);
-  cyanRim.position.set(world.width * 0.42, 4.4, -world.depth * 0.4);
-  scene.add(cyanRim);
+  const lighting = createLightingSystem(THREE, { renderer, scene, world, quality, RoomEnvironment });
 
   const tileMeshes = [];
   const propLandmarks = new Map();
@@ -866,16 +856,20 @@ function createWorld(THREE, OrbitControls, mount, world, initialState, handlers,
   const hasCampsite = world.cells.some((tile) => tile.hasCampsite);
   let resolveTextures;
   const texturesReady = new Promise((resolve) => { resolveTextures = resolve; });
-  const textureLoader = new THREE.TextureLoader(new THREE.LoadingManager(() => resolveTextures()));
-  const terrainTextures = new Map(Object.entries(TERRAIN_TEXTURES).filter(([tileType]) => usedTileTypes.has(Number(tileType))).map(([tileType, texturePath]) => {
-    const texture = textureLoader.load(texturePath);
-    texture.colorSpace = THREE.SRGBColorSpace;
-    texture.wrapS = THREE.RepeatWrapping;
-    texture.wrapT = THREE.RepeatWrapping;
-    texture.repeat.set(0.72, 0.72);
-    texture.offset.set(0.14, 0.14);
-    return [Number(tileType), texture];
-  }));
+  const loadingManager = new THREE.LoadingManager(() => resolveTextures());
+  const textureLoader = new THREE.TextureLoader(loadingManager);
+  const compressedTextureLoader = quality.compressedTextures
+    ? new KTX2Loader(loadingManager).setTranscoderPath('/basis/').detectSupport(renderer)
+    : null;
+  const surfaceLoader = compressedTextureLoader || textureLoader;
+  const surfaceTextureSets = new Map([...usedTileTypes].map((tileType) => {
+    const profile = surfaceProfileForTile(tileType);
+    if (!profile) return [tileType, null];
+    return [tileType, {
+      top: loadSurfaceTextureSet(THREE, surfaceLoader, profile, quality),
+      side: loadSurfaceTextureSet(THREE, surfaceLoader, profile, quality, { side: true }),
+    }];
+  }).filter(([, textureSet]) => textureSet));
   const fxTextures = Object.fromEntries(Object.entries(STATE_FX_TEXTURES).map(([keyName, texturePath]) => {
     const texture = textureLoader.load(texturePath);
     texture.colorSpace = THREE.SRGBColorSpace;
@@ -914,9 +908,8 @@ function createWorld(THREE, OrbitControls, mount, world, initialState, handlers,
     tileMeshes,
     propLandmarks,
     worldByAlias,
-    warmFill,
-    cyanRim,
-    terrainTextures,
+    lighting,
+    surfaceTextureSets,
     fxTextures,
     characterTextures,
     encounterTextures,
@@ -932,25 +925,42 @@ function createWorld(THREE, OrbitControls, mount, world, initialState, handlers,
 
   world.cells.forEach((tile) => {
     const terrain = WORLD_TERRAIN[tile.revealed ? tile.tileType : Tile.NONE] || WORLD_TERRAIN[Tile.NONE];
-    const terrainTexture = tile.revealed ? terrainTextures.get(tile.tileType) : null;
-    const side = material(THREE, terrain.side, { roughness: 0.96, metalness: 0.03 });
-    const top = material(THREE, terrainTexture ? TERRAIN_TEXTURE_TINTS[tile.tileType] : terrain.top, {
-      roughness: tile.tileType === Tile.RELIC ? 0.54 : 0.88,
-      metalness: tile.tileType === Tile.RELIC ? 0.16 : 0.03,
-      emissive: terrain.emissive,
-      emissiveIntensity: tile.revealed ? 0.08 : 0.015,
-      transparent: !tile.revealed,
-      opacity: tile.revealed ? 1 : 0.68,
-    });
-    if (terrainTexture) top.map = terrainTexture;
-    const geometry = new THREE.CylinderGeometry(0.94, 0.94, tile.height, 6, 1, false);
+    const profile = tile.revealed ? surfaceProfileForTile(tile.tileType) : null;
+    const textureSet = profile ? surfaceTextureSets.get(tile.tileType) : null;
+    const seed = seedForAlias(tile.alias);
+    const side = profile
+      ? createSurfaceMaterial(THREE, profile, textureSet?.side, quality, { seed, side: true })
+      : material(THREE, terrain.side, { roughness: 0.98, metalness: 0 });
+    const top = profile
+      ? createSurfaceMaterial(THREE, profile, textureSet?.top, quality, { seed })
+      : material(THREE, terrain.top, {
+        roughness: 0.94,
+        metalness: 0,
+        emissive: terrain.emissive,
+        emissiveIntensity: 0.012,
+        transparent: true,
+        opacity: 0.68,
+      });
+    const geometry = new THREE.CylinderGeometry(0.94, 0.88, tile.height, 6, 1, false);
+    applySurfaceUvVariation(geometry, profile, seed);
     const mesh = new THREE.Mesh(geometry, [side, top, side]);
     mesh.position.set(tile.x, tile.height / 2, tile.z);
-    mesh.rotation.y = Math.PI / 6 + (seedForAlias(tile.alias) % 6) * (Math.PI / 3);
+    mesh.rotation.y = Math.PI / 6;
     mesh.castShadow = tile.revealed;
     mesh.receiveShadow = true;
     mesh.userData.alias = tile.alias;
     mesh.userData.tile = tile;
+    mesh.userData.surfaceId = profile?.id || 'unknown';
+
+    if (tile.revealed) {
+      const collarGeometry = new THREE.CylinderGeometry(0.945, 0.92, 0.055, 6, 1, false);
+      applySurfaceUvVariation(collarGeometry, profile, seed + 17);
+      const collar = new THREE.Mesh(collarGeometry, [side, top, side]);
+      collar.position.y = tile.height / 2 + 0.012;
+      collar.castShadow = true;
+      collar.receiveShadow = true;
+      mesh.add(collar);
+    }
 
     const edges = new THREE.LineSegments(
       new THREE.EdgesGeometry(geometry, 24),
@@ -1104,11 +1114,23 @@ function createWorld(THREE, OrbitControls, mount, world, initialState, handlers,
 
   addDynamicWorld(THREE, context, initialState);
   const clock = new THREE.Clock();
+  const frameSamples = [];
+  const cameraRight = new THREE.Vector3();
+  let currentPixelRatio = renderer.getPixelRatio();
+  renderer.domElement.dataset.pixelRatio = currentPixelRatio.toFixed(2);
   let frame = 0;
   const animate = () => {
     frame = 0;
     if (disposed || !pageVisible || !boardVisible) return;
-    const elapsed = clock.getElapsedTime();
+    const delta = Math.min(0.1, clock.getDelta());
+    const elapsed = clock.elapsedTime;
+    const lightingMoving = updateLightingSystem(lighting, delta);
+    cameraRight.setFromMatrixColumn(camera.matrix, 0).setY(0).normalize();
+    lighting.rim.position.set(
+      controls.target.x + cameraRight.x * world.radius * 0.82,
+      world.radius * 0.72,
+      controls.target.z + cameraRight.z * world.radius * 0.82,
+    );
     if (!context.reducedMotion) {
       particles.rotation.y = elapsed * 0.012;
       context.animated.forEach(({ object, kind, baseY, delay = 0 }, index) => {
@@ -1126,7 +1148,27 @@ function createWorld(THREE, OrbitControls, mount, world, initialState, handlers,
     }
     controls.update();
     renderer.render(scene, camera);
-    if (!context.reducedMotion) frame = window.requestAnimationFrame(animate);
+    renderer.domElement.dataset.drawCalls = String(renderer.info.render.calls);
+    renderer.domElement.dataset.triangles = String(renderer.info.render.triangles);
+    renderer.domElement.dataset.textures = String(renderer.info.memory.textures);
+    renderer.domElement.dataset.lightingRig = lighting.activeRigId;
+    if (quality.dynamicResolution && !context.reducedMotion && delta > 0) {
+      frameSamples.push(delta * 1000);
+      if (frameSamples.length >= 120) {
+        const ordered = [...frameSamples].sort((a, b) => a - b);
+        const p95 = ordered[Math.floor(ordered.length * 0.95)];
+        renderer.domElement.dataset.frameP95 = p95.toFixed(2);
+        const nextRatio = nextPixelRatio({ current: currentPixelRatio, frameP95Ms: p95, maximum: quality.pixelRatioCap });
+        if (nextRatio !== currentPixelRatio) {
+          currentPixelRatio = nextRatio;
+          renderer.setPixelRatio(currentPixelRatio);
+          renderer.domElement.dataset.pixelRatio = currentPixelRatio.toFixed(2);
+          resize();
+        }
+        frameSamples.length = 0;
+      }
+    }
+    if (!context.reducedMotion || lightingMoving) frame = window.requestAnimationFrame(animate);
   };
   requestRender = () => {
     if (disposed || !pageVisible || !boardVisible || frame) return;
@@ -1214,8 +1256,12 @@ function createWorld(THREE, OrbitControls, mount, world, initialState, handlers,
       renderer.domElement.removeEventListener('click', onClick);
       renderer.domElement.removeEventListener('contextmenu', onContextMenu);
       renderer.domElement.removeEventListener('webglcontextlost', onContextLost);
+      disposeLightingSystem(lighting);
       disposeObject(scene);
-      terrainTextures.forEach((texture) => texture.dispose());
+      surfaceTextureSets.forEach((textureSet) => {
+        Object.values(textureSet.top).forEach((texture) => texture.dispose());
+        Object.values(textureSet.side).forEach((texture) => texture.dispose());
+      });
       Object.values(fxTextures).forEach((texture) => texture.dispose());
       Object.values(characterTextures).forEach((texture) => texture.dispose());
       Object.values(encounterTextures).filter(Boolean).forEach((texture) => texture.dispose());
@@ -1224,6 +1270,7 @@ function createWorld(THREE, OrbitControls, mount, world, initialState, handlers,
       campsiteTexture?.dispose();
       atlasTexture?.dispose();
       tideglassTexture?.dispose();
+      compressedTextureLoader?.dispose();
       renderer.dispose();
       renderer.domElement.remove();
     },
@@ -1350,10 +1397,12 @@ export default function ThreeBoard({
     Promise.all([
       import('three'),
       import('three/addons/controls/OrbitControls.js'),
-    ]).then(([THREE, { OrbitControls }]) => {
+      import('three/addons/environments/RoomEnvironment.js'),
+      import('three/addons/loaders/KTX2Loader.js'),
+    ]).then(([THREE, { OrbitControls }, { RoomEnvironment }, { KTX2Loader }]) => {
       if (disposed || !mountRef.current) return;
       try {
-        worldInstance = createWorld(THREE, OrbitControls, mount, buildBoardWorld(cells), stateRef.current, handlersRef, performanceMode);
+        worldInstance = createWorld(THREE, OrbitControls, RoomEnvironment, KTX2Loader, mount, buildBoardWorld(cells), stateRef.current, handlersRef, performanceMode);
         worldRef.current = worldInstance;
         worldInstance.ready.then(() => {
           if (disposed || worldRef.current !== worldInstance) return;
@@ -1361,12 +1410,16 @@ export default function ThreeBoard({
           setStatus('ready');
           onReady?.();
         });
-      } catch {
+      } catch (error) {
+        console.error('ThreeBoard initialization failed', error);
+        mount.dataset.rendererError = error instanceof Error ? error.message : String(error);
         setStatus('unavailable');
         onUnavailable?.();
       }
-    }).catch(() => {
+    }).catch((error) => {
       if (!disposed) {
+        console.error('ThreeBoard dependency loading failed', error);
+        mount.dataset.rendererError = error instanceof Error ? error.message : String(error);
         setStatus('unavailable');
         onUnavailable?.();
       }
@@ -1397,7 +1450,7 @@ export default function ThreeBoard({
       ref={mountRef}
       className={`three-board-world relative h-full w-full overflow-hidden rounded-xl ${className}`}
       style={{
-        backgroundImage: `${isDanger ? 'linear-gradient(180deg, rgba(31,7,10,0.28), rgba(17,5,7,0.88))' : 'linear-gradient(180deg, rgba(7,11,8,0.25), rgba(7,11,8,0.9))'}, url('${backplate}')`,
+        backgroundImage: `linear-gradient(180deg, rgba(7,11,8,0.25), rgba(7,11,8,0.9)), url('${backplate}')`,
         backgroundPosition: 'center',
         backgroundSize: 'cover',
       }}
@@ -1407,7 +1460,7 @@ export default function ThreeBoard({
       data-camera-view={cameraView}
       data-testid="three-board-world"
     >
-      <div className={`pointer-events-none absolute inset-0 z-10 ${isDanger ? 'bg-[radial-gradient(circle_at_58%_48%,rgba(239,98,87,0.13),transparent_34%),linear-gradient(180deg,transparent_58%,rgba(15,4,6,0.74))]' : 'bg-[radial-gradient(circle_at_72%_18%,rgba(104,213,228,0.12),transparent_30%),linear-gradient(180deg,transparent_58%,rgba(5,8,6,0.72))]'}`} />
+      <div className={`pointer-events-none absolute inset-0 z-10 ${isDanger ? 'bg-[radial-gradient(circle_at_58%_48%,rgba(239,98,87,0.17),transparent_28%),linear-gradient(180deg,transparent_62%,rgba(7,9,7,0.76))]' : 'bg-[radial-gradient(circle_at_72%_18%,rgba(104,213,228,0.12),transparent_30%),linear-gradient(180deg,transparent_58%,rgba(5,8,6,0.72))]'}`} />
       <div className="pointer-events-none absolute left-3 top-3 z-20 rounded border border-white/10 bg-exp-dark/70 px-2.5 py-2 backdrop-blur-sm">
         <p className="font-mono text-[8px] uppercase tracking-[0.25em] text-exp-text-dim">Living survey</p>
         <p className="mt-1 font-display text-sm uppercase tracking-[0.12em] text-exp-text">

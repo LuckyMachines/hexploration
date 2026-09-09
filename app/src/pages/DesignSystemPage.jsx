@@ -1050,6 +1050,7 @@ export default function DesignSystemPage() {
           <nav aria-label="Design system sections" className="sticky top-40 space-y-1 border-l border-exp-border pl-3">{visibleNav.map(([id, label]) => <a key={id} href={`#${id}`} className="flex min-h-11 items-center rounded-r border-l-2 border-transparent px-3 py-2 font-mono text-[10px] uppercase tracking-[0.16em] text-exp-text-dim hover:border-compass hover:bg-compass/5 hover:text-exp-text">{label}</a>)}</nav>
           <Link to="/ui-lab" className="mt-5 inline-flex min-h-11 items-center rounded border border-blueprint/40 bg-blueprint/10 px-3 font-mono text-[10px] uppercase tracking-[0.14em] text-blueprint">Open UI lab</Link>
           <Link to="/art-lab" className="mt-2 inline-flex min-h-11 items-center rounded border border-relic/40 bg-relic/10 px-3 font-mono text-[10px] uppercase tracking-[0.14em] text-relic-bright">Open art lab</Link>
+          <Link to="/material-lab" className="mt-2 inline-flex min-h-11 items-center rounded border border-compass/40 bg-compass/10 px-3 font-mono text-[10px] uppercase tracking-[0.14em] text-compass-bright">Open material lab</Link>
         </aside>
         <main className="min-w-0">
           {view === 'all' && <Section id="overview" eyebrow="System map" title="Design the feeling across the whole run" body="Each phase has one emotional job. Components succeed only when they preserve that handoff."><SystemMap /></Section>}

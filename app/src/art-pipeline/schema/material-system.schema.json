@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Xenovoya material system",
+  "type": "object",
+  "required": ["version", "principles", "channels", "qualityTiers", "lightingRigs", "materials", "qualityContract"],
+  "properties": {
+    "version": { "type": "string" },
+    "principles": { "type": "array", "minItems": 3, "items": { "type": "string" } },
+    "channels": { "type": "object", "required": ["baseColor", "normal", "roughness", "ao", "height", "emissive"] },
+    "qualityTiers": { "type": "object", "required": ["high", "balanced", "efficient"] },
+    "lightingRigs": { "type": "object", "required": ["neutral", "discovery", "danger", "recovery", "relic"] },
+    "materials": {
+      "type": "array",
+      "minItems": 6,
+      "items": {
+        "type": "object",
+        "required": ["id", "tileType", "label", "story", "source", "directory", "tint", "sideTint", "roughness", "metalness", "bumpScale", "normalScale", "aoIntensity", "emissiveColor", "emissiveIntensity", "uv"]
+      }
+    },
+    "qualityContract": { "type": "object" }
+  }
+}

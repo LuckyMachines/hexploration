@@ -167,6 +167,30 @@
       "args": ["run", "art:3d:test"],
       "timeoutMs": 120000
     },
+    "art.material-tests": {
+      "label": "Material contract and runtime unit tests",
+      "command": "npm",
+      "args": ["run", "material:test"],
+      "timeoutMs": 180000
+    },
+    "art.material-doctor": {
+      "label": "Material provenance, channel, compression, and review doctor",
+      "command": "npm",
+      "args": ["run", "material:doctor"],
+      "timeoutMs": 300000
+    },
+    "art.material-capture": {
+      "label": "Material look-dev and integrated board browser gates",
+      "command": "npm",
+      "args": ["run", "material:capture"],
+      "timeoutMs": 600000
+    },
+    "art.material-cross-browser": {
+      "label": "Material KTX2 compatibility in Firefox and WebKit",
+      "command": "npm",
+      "args": ["run", "material:cross-browser"],
+      "timeoutMs": 600000
+    },
     "marketing.doctor": {
       "label": "Marketing readiness doctor",
       "command": "npm",
@@ -349,14 +373,17 @@
       "currentGrade": "B+",
       "objective": "Every visual asset is recognizable, emotionally purposeful, reusable, provenance-backed, and proven in the live game context.",
       "stricterABar": "Every shipped asset passes contract, joy, context, performance, and promotion gates; 3D assets additionally pass geometry, pivot, LOD, and runtime-lighting review.",
-      "pathPatterns": ["^app/public/images/art/", "^app/src/art-pipeline/", "^scripts/art-", "^docs/ART_PIPELINE\\.md$"],
+      "pathPatterns": ["^app/public/images/art/", "^app/public/basis/", "^app/src/art-pipeline/", "^app/src/components/board/(ThreeBoard|MaterialPreviewScene|surfaceCatalog|lightingRigs|boardQuality)", "^app/src/pages/MaterialLabPage", "^app/e2e/material-system", "^scripts/(art-|material-)", "^docs/(ART_PIPELINE|MATERIAL_AND_LIGHTING_SYSTEM|material-lighting-system-)\\.md$"],
       "evidence": [
         { "path": "app/src/art-pipeline/asset-manifest.json", "kind": "manifest", "required": true, "maxAgeDays": 30 },
         { "path": "app/src/art-pipeline/asset-3d-review.json", "kind": "review", "required": true, "maxAgeDays": 30 },
+        { "path": "app/src/art-pipeline/material-system.json", "kind": "material-contract", "required": true, "maxAgeDays": 90 },
+        { "path": "reports/materials/latest.json", "kind": "material-verification", "required": true, "maxAgeDays": 14 },
+        { "path": "artifacts/materials/lookdev-material-contact-sheet.png", "kind": "material-lookdev", "required": false, "maxAgeDays": 30 },
         { "path": "artifacts/art/3d/reviews/all-trellis2-method-comparison.png", "kind": "visual-proof", "required": false, "maxAgeDays": 30 }
       ],
-      "quickCommands": ["art.tests", "art.3d-tests"],
-      "fullCommands": ["art.tests", "art.3d-tests", "ux.app-build"]
+      "quickCommands": ["art.tests", "art.3d-tests", "art.material-tests", "art.material-doctor"],
+      "fullCommands": ["art.tests", "art.3d-tests", "art.material-tests", "art.material-doctor", "art.material-capture", "art.material-cross-browser", "ux.app-build"]
     },
     {
       "id": "marketing-discovery",

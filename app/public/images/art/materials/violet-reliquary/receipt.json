@@ -1,0 +1,112 @@
+{
+  "materialSystemVersion": "1.0.0",
+  "materialId": "violet-reliquary",
+  "generatedAt": "2026-09-09T17:40:18.777Z",
+  "source": "app/public/images/art/terrain/violet-reliquary.webp",
+  "sourceSha256": "a4a15dd51163604cbafd81e4beb434d67fc73be4b605439318d256a39549d6b8",
+  "process": "neutralize -> mirrored seamless field -> scalar maps -> tangent normal",
+  "top": {
+    "baseColor": {
+      "path": "app/public/images/art/materials/violet-reliquary/baseColor.webp",
+      "sha256": "779c5c513537bb9d6df0bcb16271bd7bda7e7d9a129ab8bcf683e567ab749d24"
+    },
+    "normal": {
+      "path": "app/public/images/art/materials/violet-reliquary/normal.webp",
+      "sha256": "5db0abddb143f7ea3c9fee3c3b3233949a8ca2af69cff0de38a924f859b6a002"
+    },
+    "roughness": {
+      "path": "app/public/images/art/materials/violet-reliquary/roughness.webp",
+      "sha256": "3d25ae5a45bdfc5c63b94b3794e375ca3de1c7f6336b174b0d19a7341bb0c54e"
+    },
+    "ao": {
+      "path": "app/public/images/art/materials/violet-reliquary/ao.webp",
+      "sha256": "4dd6904238868a2c140988b4fa50c84a7e10fd23242ead9942b414dc7438696b"
+    },
+    "height": {
+      "path": "app/public/images/art/materials/violet-reliquary/height.webp",
+      "sha256": "989b32f1b85622b9eb21b0e01de997b27a0b73b83ab7896bd9d4de59c82970ca"
+    },
+    "emissive": {
+      "path": "app/public/images/art/materials/violet-reliquary/emissive.webp",
+      "sha256": "8383219e546eb515dd2e1a8c02557888e126423cc82014fe2eea79006155a62f"
+    }
+  },
+  "side": {
+    "baseColor": {
+      "path": "app/public/images/art/materials/violet-reliquary/side-baseColor.webp",
+      "sha256": "df15c4b30ad9ef9409f8835a07a187b8b7872c1d2ce1bfbad4ce0eaf89f307b9"
+    },
+    "normal": {
+      "path": "app/public/images/art/materials/violet-reliquary/side-normal.webp",
+      "sha256": "a76bea380ff9d545caa38bfc79dab730c71bc5632147c5404ce2adaebbfbbd14"
+    },
+    "roughness": {
+      "path": "app/public/images/art/materials/violet-reliquary/side-roughness.webp",
+      "sha256": "9a652048f85fec81eca55551bd016b3784352cee97972e97fed5382814fe6333"
+    },
+    "ao": {
+      "path": "app/public/images/art/materials/violet-reliquary/side-ao.webp",
+      "sha256": "e343fd70b12da0ff33df1be05608dd91b6d2f08cab12054fe0b20cfae5468e4d"
+    },
+    "height": {
+      "path": "app/public/images/art/materials/violet-reliquary/side-height.webp",
+      "sha256": "4ae6af033076ce5aba841e790e724c92cc3dabc37078a1fe16be5e39a064eafb"
+    },
+    "emissive": {
+      "path": "app/public/images/art/materials/violet-reliquary/side-emissive.webp",
+      "sha256": "8383219e546eb515dd2e1a8c02557888e126423cc82014fe2eea79006155a62f"
+    }
+  },
+  "compressedTop": {
+    "baseColor": {
+      "path": "app/public/images/art/materials/violet-reliquary/baseColor.ktx2",
+      "sha256": "b8a32917f2b3a601ac84eef00a04ded1df27e4ff926693b7aca4e01c17d0823f"
+    },
+    "normal": {
+      "path": "app/public/images/art/materials/violet-reliquary/normal.ktx2",
+      "sha256": "32bcdbdf979c1c9cfd5af1d1afc345143ee3ee1e5ff66eb6da049e4a5350eed1"
+    },
+    "roughness": {
+      "path": "app/public/images/art/materials/violet-reliquary/roughness.ktx2",
+      "sha256": "35f44bc87f753cf89a069ccede8e107bba197d59caf483a33edd1e54ad30d170"
+    },
+    "ao": {
+      "path": "app/public/images/art/materials/violet-reliquary/ao.ktx2",
+      "sha256": "037447fae37aa6c93ce98e2c363de52d5a7a5998ba82f8d13a8bd917eb6a6be5"
+    },
+    "height": {
+      "path": "app/public/images/art/materials/violet-reliquary/height.ktx2",
+      "sha256": "b92579cd3a051597230931a3ef0b93eee31df705781c213a2aa1753a8ddf3bf5"
+    },
+    "emissive": {
+      "path": "app/public/images/art/materials/violet-reliquary/emissive.ktx2",
+      "sha256": "c82f3641a07391bb1c756915400def6390a6ea48eeb33422412afea225b122d3"
+    }
+  },
+  "compressedSide": {
+    "baseColor": {
+      "path": "app/public/images/art/materials/violet-reliquary/side-baseColor.ktx2",
+      "sha256": "0efb243c567d99e7f211b2709fe1bd543ee6c156b508aadeb5372a7aa72744c6"
+    },
+    "normal": {
+      "path": "app/public/images/art/materials/violet-reliquary/side-normal.ktx2",
+      "sha256": "a71c663f6344bbd296d02b65c973b6124a7ca63c6b341eb8881cd325bf667b7c"
+    },
+    "roughness": {
+      "path": "app/public/images/art/materials/violet-reliquary/side-roughness.ktx2",
+      "sha256": "dec134440d6b280e8d3254468d27f9fe901eb7fac9ac22d099f0cf8d7ad59f21"
+    },
+    "ao": {
+      "path": "app/public/images/art/materials/violet-reliquary/side-ao.ktx2",
+      "sha256": "a97f44e1b7aca1bede0389e764f9b356d7813c21c98f4dc986a729b9414f8cf3"
+    },
+    "height": {
+      "path": "app/public/images/art/materials/violet-reliquary/side-height.ktx2",
+      "sha256": "6d33c60a0cb2f2f85de23c42a9e5f59af22fc14d8d3a5ead2b4f8686a7607ead"
+    },
+    "emissive": {
+      "path": "app/public/images/art/materials/violet-reliquary/side-emissive.ktx2",
+      "sha256": "c82f3641a07391bb1c756915400def6390a6ea48eeb33422412afea225b122d3"
+    }
+  }
+}

@@ -1,0 +1,112 @@
+{
+  "materialSystemVersion": "1.0.0",
+  "materialId": "verdant-signal-base",
+  "generatedAt": "2026-09-09T17:40:11.675Z",
+  "source": "app/public/images/art/terrain/verdant-signal-base.webp",
+  "sourceSha256": "c4537d475dc1cc45339aa8f8aa7b5b381ef0240bfbca90967b0313802e768dfa",
+  "process": "neutralize -> mirrored seamless field -> scalar maps -> tangent normal",
+  "top": {
+    "baseColor": {
+      "path": "app/public/images/art/materials/verdant-signal-base/baseColor.webp",
+      "sha256": "524e1b82e53f493b21f4290413cc0d9167baa1ea963a1eca0ea6b26dd7d1c34f"
+    },
+    "normal": {
+      "path": "app/public/images/art/materials/verdant-signal-base/normal.webp",
+      "sha256": "4ebda82af3b3807dd00eb1d84d1c4df409706b555d7900fbec8123b0a027a268"
+    },
+    "roughness": {
+      "path": "app/public/images/art/materials/verdant-signal-base/roughness.webp",
+      "sha256": "20486e19976130197a15124de6ae270ae493d2fead3b7f5e7894a083a3afbca4"
+    },
+    "ao": {
+      "path": "app/public/images/art/materials/verdant-signal-base/ao.webp",
+      "sha256": "af0fb6a9c071b4912de6a5c6322cd7404d248493f12036d9548dd1bd7b09d3f7"
+    },
+    "height": {
+      "path": "app/public/images/art/materials/verdant-signal-base/height.webp",
+      "sha256": "58c1189b7227389ed3f5a3783ae486ea2cbf1ad1e7cb3a00ba3aa68907de56a6"
+    },
+    "emissive": {
+      "path": "app/public/images/art/materials/verdant-signal-base/emissive.webp",
+      "sha256": "8383219e546eb515dd2e1a8c02557888e126423cc82014fe2eea79006155a62f"
+    }
+  },
+  "side": {
+    "baseColor": {
+      "path": "app/public/images/art/materials/verdant-signal-base/side-baseColor.webp",
+      "sha256": "e092ce2f5da6c008f353d860862ea1579238ec041ae4e51869c3994c94ae1b75"
+    },
+    "normal": {
+      "path": "app/public/images/art/materials/verdant-signal-base/side-normal.webp",
+      "sha256": "44f4c057a4b1f29505cde06e43c4263adf6fd4c10caa62fdac4f893b7d3160c5"
+    },
+    "roughness": {
+      "path": "app/public/images/art/materials/verdant-signal-base/side-roughness.webp",
+      "sha256": "22670cd31e1bb2aace5f2cc0a8e0f93de04289ca93c253b149042b93e8d2125f"
+    },
+    "ao": {
+      "path": "app/public/images/art/materials/verdant-signal-base/side-ao.webp",
+      "sha256": "ac9b1ba33397211237ac775164647e8186f4ccc7e079e04d022ef56238e88ad1"
+    },
+    "height": {
+      "path": "app/public/images/art/materials/verdant-signal-base/side-height.webp",
+      "sha256": "3f862345369b8e19bbe8e7569e2943c46a25cea4be22d9205ad8bbc6ba0f3752"
+    },
+    "emissive": {
+      "path": "app/public/images/art/materials/verdant-signal-base/side-emissive.webp",
+      "sha256": "8383219e546eb515dd2e1a8c02557888e126423cc82014fe2eea79006155a62f"
+    }
+  },
+  "compressedTop": {
+    "baseColor": {
+      "path": "app/public/images/art/materials/verdant-signal-base/baseColor.ktx2",
+      "sha256": "5bec2de02cccad277778d052435ca752206248c518d880fc67ab793a13aabb79"
+    },
+    "normal": {
+      "path": "app/public/images/art/materials/verdant-signal-base/normal.ktx2",
+      "sha256": "19ad1c147914b227c255619e38d7c2b256a0e74e3133333d3efe207c6477ab7d"
+    },
+    "roughness": {
+      "path": "app/public/images/art/materials/verdant-signal-base/roughness.ktx2",
+      "sha256": "608f352c7e03156f737f6d3abe211d02d0235fe13dbf0ebf709c21277218e0a5"
+    },
+    "ao": {
+      "path": "app/public/images/art/materials/verdant-signal-base/ao.ktx2",
+      "sha256": "7779fd56ca029050975b0005c16ca19cd50f4f3a809df2100e92f7097b54f530"
+    },
+    "height": {
+      "path": "app/public/images/art/materials/verdant-signal-base/height.ktx2",
+      "sha256": "5e7cd25458f4bf582761f83c51dd9cd4dba27675e2824513217e74a832c93b9b"
+    },
+    "emissive": {
+      "path": "app/public/images/art/materials/verdant-signal-base/emissive.ktx2",
+      "sha256": "c82f3641a07391bb1c756915400def6390a6ea48eeb33422412afea225b122d3"
+    }
+  },
+  "compressedSide": {
+    "baseColor": {
+      "path": "app/public/images/art/materials/verdant-signal-base/side-baseColor.ktx2",
+      "sha256": "810e274415c61fdd6dd2d3518ca947465b0df9f3e3b410cd14920a2b3fa6b5f4"
+    },
+    "normal": {
+      "path": "app/public/images/art/materials/verdant-signal-base/side-normal.ktx2",
+      "sha256": "c5af26b80d205e5fbdc905eb5f760c2ca43981bc50fea4cf981ee723e8d6e182"
+    },
+    "roughness": {
+      "path": "app/public/images/art/materials/verdant-signal-base/side-roughness.ktx2",
+      "sha256": "fda972dd190fc550e9922075f7b92cef0c745c78b6f3af466a6b57cf0d01c145"
+    },
+    "ao": {
+      "path": "app/public/images/art/materials/verdant-signal-base/side-ao.ktx2",
+      "sha256": "d660a8702c83ebc15ef5afa8d74478b7ac5ffaa7b175338cfef45ec138b268cc"
+    },
+    "height": {
+      "path": "app/public/images/art/materials/verdant-signal-base/side-height.ktx2",
+      "sha256": "66bcddf2e9a0f5741ac38db5759fda2999aca45719775e3946f9fea4d7077aab"
+    },
+    "emissive": {
+      "path": "app/public/images/art/materials/verdant-signal-base/side-emissive.ktx2",
+      "sha256": "c82f3641a07391bb1c756915400def6390a6ea48eeb33422412afea225b122d3"
+    }
+  }
+}

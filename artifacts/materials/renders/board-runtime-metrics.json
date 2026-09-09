@@ -1,0 +1,20 @@
+{
+  "generatedAt": "2026-09-09T17:55:02.247Z",
+  "materialSystemVersion": "1.0.0",
+  "states": [
+    {
+      "lens": "ready",
+      "drawCalls": 132,
+      "triangles": 5452,
+      "textures": 8,
+      "lightingRig": "neutral"
+    },
+    {
+      "lens": "danger",
+      "drawCalls": 132,
+      "triangles": 6832,
+      "textures": 2,
+      "lightingRig": "danger"
+    }
+  ]
+}

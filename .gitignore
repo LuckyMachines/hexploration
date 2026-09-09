@@ -32,6 +32,8 @@ reports/verification/
 reports/improvement/
 artifacts/art/
 artifacts/ui-quality/
+artifacts/materials/debug/
+artifacts/materials/ktx-debug/
 app/public/improvement/
 app/public/ui-quality/
 app/public/ux/

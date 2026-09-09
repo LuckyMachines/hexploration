@@ -20,6 +20,7 @@ const INCLUDE_INTERNAL_ROUTES = import.meta.env.VITE_ENABLE_INTERNAL_TOOLS === '
 const GameUILab = INCLUDE_INTERNAL_ROUTES ? lazy(() => import('./pages/GameUILab')) : null;
 const DesignSystemPage = INCLUDE_INTERNAL_ROUTES ? lazy(() => import('./pages/DesignSystemPage')) : null;
 const ArtPipelinePage = INCLUDE_INTERNAL_ROUTES ? lazy(() => import('./pages/ArtPipelinePage')) : null;
+const MaterialLabPage = INCLUDE_INTERNAL_ROUTES ? lazy(() => import('./pages/MaterialLabPage')) : null;
 const SimulatorPage = INCLUDE_INTERNAL_ROUTES ? lazy(() => import('./pages/SimulatorPage')) : null;
 const AudioAuditionPage = INCLUDE_INTERNAL_ROUTES ? lazy(() => import('./pages/AudioAuditionPage')) : null;
 const GrowthPlayPage = INCLUDE_INTERNAL_ROUTES ? lazy(() => import('./pages/GrowthPage').then((module) => ({ default: module.GrowthPlayPage }))) : null;
@@ -92,6 +93,7 @@ export default function App() {
                   <Route path="/ui-lab" element={<InternalRoute component={GameUILab} />} />
                   <Route path="/design-system" element={<InternalRoute component={DesignSystemPage} />} />
                   <Route path="/art-lab" element={<InternalRoute component={ArtPipelinePage} />} />
+                  <Route path="/material-lab" element={<InternalRoute component={MaterialLabPage} />} />
                   <Route path="/simulator" element={<InternalRoute component={SimulatorPage} />} />
                   <Route path="/audio-audition" element={<InternalRoute component={AudioAuditionPage} />} />
                   <Route path="/play" element={<InternalRoute component={GrowthPlayPage} />} />

@@ -1,0 +1,112 @@
+{
+  "materialSystemVersion": "1.0.0",
+  "materialId": "slate-spires",
+  "generatedAt": "2026-09-09T17:40:04.205Z",
+  "source": "app/public/images/art/terrain/slate-spires.webp",
+  "sourceSha256": "801892fb44f1ecdbf935c7aa176166462b609dc1e56c7680c8d0f6d233030865",
+  "process": "neutralize -> mirrored seamless field -> scalar maps -> tangent normal",
+  "top": {
+    "baseColor": {
+      "path": "app/public/images/art/materials/slate-spires/baseColor.webp",
+      "sha256": "d50b6009e9ccf48673f1ee250481f9c23bb67e8ef0b414884301a966ba2adf80"
+    },
+    "normal": {
+      "path": "app/public/images/art/materials/slate-spires/normal.webp",
+      "sha256": "7e3f43e3f26216a0b7cb8ddf77c12b18f0a44f077d932b68e60661de993373fa"
+    },
+    "roughness": {
+      "path": "app/public/images/art/materials/slate-spires/roughness.webp",
+      "sha256": "60860aee17409a3fcfd7334389838b416ab5b884035af711e2fa8a9e5670190c"
+    },
+    "ao": {
+      "path": "app/public/images/art/materials/slate-spires/ao.webp",
+      "sha256": "138f8ae16dc40fa9e1250ab1c67f7605d0b52ba0836c6967f74d708334000a77"
+    },
+    "height": {
+      "path": "app/public/images/art/materials/slate-spires/height.webp",
+      "sha256": "520af55afd4baa880796a73fbdd462da8985d7556c3fa72a3b5fe7c139235a77"
+    },
+    "emissive": {
+      "path": "app/public/images/art/materials/slate-spires/emissive.webp",
+      "sha256": "8383219e546eb515dd2e1a8c02557888e126423cc82014fe2eea79006155a62f"
+    }
+  },
+  "side": {
+    "baseColor": {
+      "path": "app/public/images/art/materials/slate-spires/side-baseColor.webp",
+      "sha256": "83a6874a268d0098c99dd36d199713f73174aedbb46b1646e887af2f75d26ba8"
+    },
+    "normal": {
+      "path": "app/public/images/art/materials/slate-spires/side-normal.webp",
+      "sha256": "a3be9c9332de5d2703a6ac8a97ac65419075305417ab77b89fdc679be46a31ca"
+    },
+    "roughness": {
+      "path": "app/public/images/art/materials/slate-spires/side-roughness.webp",
+      "sha256": "4e97b96f674279915e556ebfadb47055efd93dee6227579472bac59f892ff58d"
+    },
+    "ao": {
+      "path": "app/public/images/art/materials/slate-spires/side-ao.webp",
+      "sha256": "b93d75067bba4de5fc9f0c3e3848d41166693e323b7a57dff45360ab9120233f"
+    },
+    "height": {
+      "path": "app/public/images/art/materials/slate-spires/side-height.webp",
+      "sha256": "4a9114ce5de7b7fec8cdc8bd393fcbb47fb9273930b11512632471eae9e282d8"
+    },
+    "emissive": {
+      "path": "app/public/images/art/materials/slate-spires/side-emissive.webp",
+      "sha256": "8383219e546eb515dd2e1a8c02557888e126423cc82014fe2eea79006155a62f"
+    }
+  },
+  "compressedTop": {
+    "baseColor": {
+      "path": "app/public/images/art/materials/slate-spires/baseColor.ktx2",
+      "sha256": "21b910fb9974657f6dc9d65e5d8d3e6be6319ce58f94ea8973ad7945f356b565"
+    },
+    "normal": {
+      "path": "app/public/images/art/materials/slate-spires/normal.ktx2",
+      "sha256": "b258011213ecd55a87fca8c41604bc1abdb0953c71f0566bcb5ddc1211ce5bfc"
+    },
+    "roughness": {
+      "path": "app/public/images/art/materials/slate-spires/roughness.ktx2",
+      "sha256": "033e0cde4bdd175e1bc0ba3ee318eb6f2e7f433c35423c035a8bb452a93eab74"
+    },
+    "ao": {
+      "path": "app/public/images/art/materials/slate-spires/ao.ktx2",
+      "sha256": "f7cb10ac029894d43749939d427eef776bf1f5b80344db2f19aac92f57c335a8"
+    },
+    "height": {
+      "path": "app/public/images/art/materials/slate-spires/height.ktx2",
+      "sha256": "e3d9c5a9aa868115eb15f9ec6ae90602db6e69fccd7979e25426258faabb56df"
+    },
+    "emissive": {
+      "path": "app/public/images/art/materials/slate-spires/emissive.ktx2",
+      "sha256": "c82f3641a07391bb1c756915400def6390a6ea48eeb33422412afea225b122d3"
+    }
+  },
+  "compressedSide": {
+    "baseColor": {
+      "path": "app/public/images/art/materials/slate-spires/side-baseColor.ktx2",
+      "sha256": "ca9889d60d316d147dcfb462a6ac743f5d75d4b9db7915d4a7b7a97ab4cf3cc8"
+    },
+    "normal": {
+      "path": "app/public/images/art/materials/slate-spires/side-normal.ktx2",
+      "sha256": "aa61653041604a8ae4c418c3c6f0cfceee8defe10b0ee5248f519520fa01bc60"
+    },
+    "roughness": {
+      "path": "app/public/images/art/materials/slate-spires/side-roughness.ktx2",
+      "sha256": "4c914766c33ef7ec9ce01b271ae474939043e7b1b9bcfd8b34a5a25bf7af283f"
+    },
+    "ao": {
+      "path": "app/public/images/art/materials/slate-spires/side-ao.ktx2",
+      "sha256": "25ee347e44b15c9341680244126a04c71d60a395fb138f9c0d5e58622270f06d"
+    },
+    "height": {
+      "path": "app/public/images/art/materials/slate-spires/side-height.ktx2",
+      "sha256": "2b34036d6516b80a1f85cd4c7dca0a99314bc04766c3873a18083188809aad78"
+    },
+    "emissive": {
+      "path": "app/public/images/art/materials/slate-spires/side-emissive.ktx2",
+      "sha256": "c82f3641a07391bb1c756915400def6390a6ea48eeb33422412afea225b122d3"
+    }
+  }
+}

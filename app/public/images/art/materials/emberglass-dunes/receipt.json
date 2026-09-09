@@ -1,0 +1,112 @@
+{
+  "materialSystemVersion": "1.0.0",
+  "materialId": "emberglass-dunes",
+  "generatedAt": "2026-09-09T17:39:55.262Z",
+  "source": "app/public/images/art/terrain/emberglass-dunes.webp",
+  "sourceSha256": "6d14ca1c2e647c76bbf7b70d2abf5dc8d320207587c05f356cd4a9a7a14e23b8",
+  "process": "neutralize -> mirrored seamless field -> scalar maps -> tangent normal",
+  "top": {
+    "baseColor": {
+      "path": "app/public/images/art/materials/emberglass-dunes/baseColor.webp",
+      "sha256": "3ab288f7e82dfb998a599fb9e98a1ced8dc8e74839f74f91f7fa51ac14faef0a"
+    },
+    "normal": {
+      "path": "app/public/images/art/materials/emberglass-dunes/normal.webp",
+      "sha256": "9797231d0ada69f8990b183b011238ffd7c7c11281f78ddcb08ef477d79888c2"
+    },
+    "roughness": {
+      "path": "app/public/images/art/materials/emberglass-dunes/roughness.webp",
+      "sha256": "118c5d5f0e00bf676a84b9855a56fd2c8deb8dffa606568cfbaaf2ea4955135f"
+    },
+    "ao": {
+      "path": "app/public/images/art/materials/emberglass-dunes/ao.webp",
+      "sha256": "7433345195dce8752b49bbce311fc48064f063b55ba7f4a5dc6ccc01873549a1"
+    },
+    "height": {
+      "path": "app/public/images/art/materials/emberglass-dunes/height.webp",
+      "sha256": "f167891a02f78986e616c04d2d39ca5194e64550787a0f82a9539dc72aab8b9f"
+    },
+    "emissive": {
+      "path": "app/public/images/art/materials/emberglass-dunes/emissive.webp",
+      "sha256": "640619563a14b6d8781a513a36c6c790afbff51bbffe260be9ef2e6ed8108848"
+    }
+  },
+  "side": {
+    "baseColor": {
+      "path": "app/public/images/art/materials/emberglass-dunes/side-baseColor.webp",
+      "sha256": "2b1158cc79292ea467150a370cbe6e8aa4bd27699ee49299de0e5b0185911d8f"
+    },
+    "normal": {
+      "path": "app/public/images/art/materials/emberglass-dunes/side-normal.webp",
+      "sha256": "98ecf197c3a34c9e47d523c685c764325403ccf935d4c49f3814c8635572e059"
+    },
+    "roughness": {
+      "path": "app/public/images/art/materials/emberglass-dunes/side-roughness.webp",
+      "sha256": "51603a40e69f50605b86b9f69f530ab5cdbd38fb76e10e1da6d9d8a5e22a1514"
+    },
+    "ao": {
+      "path": "app/public/images/art/materials/emberglass-dunes/side-ao.webp",
+      "sha256": "c028c2a54f62530b1d4f12a6cea1f544ac824442f4d183c25eacc8aa2a003248"
+    },
+    "height": {
+      "path": "app/public/images/art/materials/emberglass-dunes/side-height.webp",
+      "sha256": "5b079d06adbd907387efd36380925fc1f54fe2738f5713548d7eebba856efe97"
+    },
+    "emissive": {
+      "path": "app/public/images/art/materials/emberglass-dunes/side-emissive.webp",
+      "sha256": "8383219e546eb515dd2e1a8c02557888e126423cc82014fe2eea79006155a62f"
+    }
+  },
+  "compressedTop": {
+    "baseColor": {
+      "path": "app/public/images/art/materials/emberglass-dunes/baseColor.ktx2",
+      "sha256": "cbfeac97d618e91c6fe0ba9f9b2f9d7f990e1b49387d286c3d2150b286050346"
+    },
+    "normal": {
+      "path": "app/public/images/art/materials/emberglass-dunes/normal.ktx2",
+      "sha256": "4d7023a9f41af490b55f380b2507926604524412fd8c04a9245c4347f6a210e5"
+    },
+    "roughness": {
+      "path": "app/public/images/art/materials/emberglass-dunes/roughness.ktx2",
+      "sha256": "e1140e8ff6f6d2c09832e42f9e24b66f4a972ba8e9285ff848a794fca115d352"
+    },
+    "ao": {
+      "path": "app/public/images/art/materials/emberglass-dunes/ao.ktx2",
+      "sha256": "9e718db51c23074b6b9b78c3893c030cdae0e694f75a5ed0d8f37c457fd95d29"
+    },
+    "height": {
+      "path": "app/public/images/art/materials/emberglass-dunes/height.ktx2",
+      "sha256": "3d10be72e2c2efac8edc52d4853621638c38195bdd94e21f725aafa35f86f61d"
+    },
+    "emissive": {
+      "path": "app/public/images/art/materials/emberglass-dunes/emissive.ktx2",
+      "sha256": "b0f920726f354e28884386c48115876f510c377ad0a73e92a067930e8c2bc71a"
+    }
+  },
+  "compressedSide": {
+    "baseColor": {
+      "path": "app/public/images/art/materials/emberglass-dunes/side-baseColor.ktx2",
+      "sha256": "56d7dc5ee33cfed60e11b2f6f778e182c8070e2a9469a5f152cb291c4141e62e"
+    },
+    "normal": {
+      "path": "app/public/images/art/materials/emberglass-dunes/side-normal.ktx2",
+      "sha256": "615efeb0c9a254b094c3c372dd6c5f6377bbb10e15448818d70aa21191731bea"
+    },
+    "roughness": {
+      "path": "app/public/images/art/materials/emberglass-dunes/side-roughness.ktx2",
+      "sha256": "c7132f1b45c86828d162a53acd999131c18368074a5499d7da6491ab4e8b1a01"
+    },
+    "ao": {
+      "path": "app/public/images/art/materials/emberglass-dunes/side-ao.ktx2",
+      "sha256": "8c894c85989fc350d85cf1051d6fdbb007bbcb0ea0e36e6ccbd2ea4921b161dd"
+    },
+    "height": {
+      "path": "app/public/images/art/materials/emberglass-dunes/side-height.ktx2",
+      "sha256": "bcf57c4f1bb6f205e3241f850e256da24d18b19ae8426adb1beb9e68fc408690"
+    },
+    "emissive": {
+      "path": "app/public/images/art/materials/emberglass-dunes/side-emissive.ktx2",
+      "sha256": "c82f3641a07391bb1c756915400def6390a6ea48eeb33422412afea225b122d3"
+    }
+  }
+}

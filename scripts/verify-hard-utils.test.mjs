@@ -66,6 +66,18 @@ test('selectFocusedCommands maps changed files to targeted checks', () => {
   assert.deepEqual(ids, ['focused.app-page-tests', 'focused.character-ci', 'focused.oracle-tests', 'smoke.app-focused-tests']);
 });
 
+test('selectFocusedCommands treats material contracts and runtime surfaces as one gate', () => {
+  const selected = selectFocusedCommands([
+    'M scripts/material-pipeline.mjs',
+    'M app/src/art-pipeline/material-system.json',
+    'M app/public/images/art/materials/slate-spires/normal.webp',
+    'M app/src/components/board/lightingRigs.js',
+  ]);
+  const materialGate = selected.find((item) => item.id === 'focused.material-ci');
+  assert.ok(materialGate);
+  assert.equal(materialGate.reasons.length, 4);
+});
+
 test('markdownForReport includes failures and hints', () => {
   const markdown = markdownForReport({
     tier: 'smoke',

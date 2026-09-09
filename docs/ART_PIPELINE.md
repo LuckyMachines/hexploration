@@ -129,7 +129,28 @@ The Run Relic experience composes two independently reviewed parts in `RelicMemo
 
 ## Current board composition
 
-The Three.js expedition world composes five approved terrain materials, five transparent biome props, two approved state-effect textures, and four distinct transparent character standees in `ThreeBoard.jsx`. Player identity and condition are resolved from the canonical character catalog rather than seat-index texture arrays. Tile geometry, elevation, lighting, routes, reachability, selection, danger, and interaction remain native 3D systems. Generated art adds surface identity and role character without becoming a screenshot-shaped dependency or replacing live game state. The `prop` role and `transparent-prop` contract keep scenery cutouts distinct from characters and decisive relic focal art.
+The Three.js expedition world composes six approved terrain materials, five transparent biome props, two approved state-effect textures, and four distinct transparent character standees in `ThreeBoard.jsx`. Player identity and condition are resolved from the canonical character catalog rather than seat-index texture arrays. Tile geometry, elevation, lighting, routes, reachability, selection, danger, and interaction remain native 3D systems. Generated art adds surface identity and role character without becoming a screenshot-shaped dependency or replacing live game state. The `prop` role and `transparent-prop` contract keep scenery cutouts distinct from characters and decisive relic focal art.
+
+### Surface and lighting pipeline
+
+`app/src/art-pipeline/material-system.json` is the source of truth for board surface channels, semantic lighting rigs, quality tiers, tile-to-material assignments, and runtime budgets. Each surface ships paired top and side bundles with base color, tangent normal, roughness, ambient occlusion, height, and localized emissive maps. WebP files remain inspectable sources; KTX2 packages are the runtime delivery format.
+
+Run the following from `hexploration` in PowerShell or Git Bash:
+
+```text
+npm run material:generate
+npm run material:contact-sheet
+npm run material:capture
+npm run material:cross-browser
+npm run material:render-sheet
+npm run material:review -- --material=glassroot-canopy --reviewer="Name" --decision=approved --scores=tileability:3,depthResponse:3,lightNeutrality:3,materialIdentity:3,stateLegibility:3,accessibility:3
+npm run material:doctor
+npm run material:ci
+```
+
+`material:generate` derives reproducible channel bundles and receipts from each registered terrain source, then packages both horizontal and vertical variants as KTX2. `material:capture` launches the internal look-dev route with the correct feature flag, captures every material under neutral light, captures the reference material under every semantic rig, verifies the integrated board in ready and danger states, and measures draw calls, resident textures, frame pacing, and adaptive pixel ratio. `material:cross-browser` checks KTX2 decode and board integration in Firefox and WebKit. The strict doctor rejects missing, stale, oversized, non-tileable, uncompressed, or unapproved material bundles.
+
+Use `/material-lab` only as the controlled comparison surface. Final approval still requires the real board captures because scale, silhouettes, UI contrast, and semantic state can fail even when an isolated sphere looks convincing. See `docs/MATERIAL_AND_LIGHTING_SYSTEM.md` for ownership and troubleshooting.
 
 ## Generation rules
 

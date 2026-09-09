@@ -160,6 +160,21 @@ function commandRegistry() {
       timeoutMs: DEFAULT_TIMEOUTS.medium,
       required: true,
     },
+    'focused.material-ci': {
+      id: 'focused.material-ci',
+      label: 'Material channels, compression, provenance, and runtime gates',
+      ...npmScript('material:ci'),
+      timeoutMs: DEFAULT_TIMEOUTS.heavy,
+      required: true,
+    },
+    'release.material-cross-browser': {
+      id: 'release.material-cross-browser',
+      label: 'Material KTX2 compatibility in Firefox and WebKit',
+      ...npmScript('material:cross-browser'),
+      timeoutMs: DEFAULT_TIMEOUTS.release,
+      required: true,
+      group: 'e2e',
+    },
     'hard.forge-build': {
       id: 'hard.forge-build',
       label: 'Forge build',
@@ -294,9 +309,9 @@ function commandRegistry() {
 const BASE_SEQUENCES = {
   smoke: ['smoke.git-status', 'smoke.local-doctor-tests', 'smoke.scenario-tests', 'smoke.ui-density', 'smoke.app-focused-tests'],
   focused: ['smoke.git-status', 'smoke.local-doctor-tests', 'smoke.scenario-tests', 'smoke.ui-density', 'smoke.app-focused-tests', 'focused.app-build'],
-  hard: ['smoke.git-status', 'hard.forge-build', 'hard.forge-test', 'hard.root-node-tests', 'focused.character-ci', 'focused.app-build', 'hard.app-test', 'smoke.ui-density', 'hard.sim-golden', 'hard.oracle-ci', 'hard.setup-doctor', 'hard.memory-doctor', 'hard.lab-doctor', 'hard.feel-doctor', 'hard.bridge-doctor'],
-  exact: ['smoke.git-status', 'hard.forge-build', 'hard.forge-test', 'hard.root-node-tests', 'focused.character-ci', 'focused.app-build', 'hard.app-test', 'smoke.ui-density', 'hard.sim-golden', 'hard.oracle-ci', 'hard.setup-doctor', 'hard.memory-doctor', 'hard.lab-doctor', 'hard.feel-doctor', 'hard.bridge-doctor', 'exact.local-stack-start', 'exact.local-doctor-gate'],
-  release: ['release.clean-repo', 'hard.forge-build', 'hard.forge-test', 'hard.root-node-tests', 'focused.character-ci', 'focused.app-build', 'hard.app-test', 'smoke.ui-density', 'hard.sim-golden', 'hard.oracle-ci', 'hard.setup-doctor', 'hard.memory-doctor', 'hard.lab-doctor', 'hard.feel-doctor', 'hard.bridge-doctor', 'exact.local-stack-start', 'exact.local-doctor-gate', 'release.e2e', 'release.ui-density-strict', 'release.clean-repo'],
+  hard: ['smoke.git-status', 'hard.forge-build', 'hard.forge-test', 'hard.root-node-tests', 'focused.character-ci', 'focused.material-ci', 'focused.app-build', 'hard.app-test', 'smoke.ui-density', 'hard.sim-golden', 'hard.oracle-ci', 'hard.setup-doctor', 'hard.memory-doctor', 'hard.lab-doctor', 'hard.feel-doctor', 'hard.bridge-doctor'],
+  exact: ['smoke.git-status', 'hard.forge-build', 'hard.forge-test', 'hard.root-node-tests', 'focused.character-ci', 'focused.material-ci', 'focused.app-build', 'hard.app-test', 'smoke.ui-density', 'hard.sim-golden', 'hard.oracle-ci', 'hard.setup-doctor', 'hard.memory-doctor', 'hard.lab-doctor', 'hard.feel-doctor', 'hard.bridge-doctor', 'exact.local-stack-start', 'exact.local-doctor-gate'],
+  release: ['release.clean-repo', 'hard.forge-build', 'hard.forge-test', 'hard.root-node-tests', 'focused.character-ci', 'focused.material-ci', 'focused.app-build', 'hard.app-test', 'smoke.ui-density', 'hard.sim-golden', 'hard.oracle-ci', 'hard.setup-doctor', 'hard.memory-doctor', 'hard.lab-doctor', 'hard.feel-doctor', 'hard.bridge-doctor', 'exact.local-stack-start', 'exact.local-doctor-gate', 'release.material-cross-browser', 'release.e2e', 'release.ui-density-strict', 'release.clean-repo'],
 };
 
 function writeJson(path, value) {
