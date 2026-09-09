@@ -3,13 +3,15 @@ import { copyFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from
 import { dirname, resolve } from 'path';
 import { fileURLToPath } from 'url';
 import { spawnSync } from 'child_process';
+import { comparePairedReports } from './gameplay-experiment-utils.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = resolve(__dirname, '..');
 const reportDir = resolve(root, 'reports', 'simulator');
 const experimentRoot = resolve(reportDir, 'experiments');
 const publicExperimentDir = resolve(root, 'app', 'public', 'simulator', 'autotune');
-const balancePath = resolve(root, 'simulator.balance.json');
+const policyPath = resolve(root, 'simulator.agent-policies.json');
+const evaluationPath = resolve(root, 'simulator.evaluation.json');
 const latestReportPath = resolve(reportDir, 'latest-report.json');
 const publicLatestAutoTunePath = resolve(publicExperimentDir, 'latest-report.json');
 const experimentIndexPath = resolve(experimentRoot, 'index.json');
@@ -47,12 +49,15 @@ function clamp(value, min, max) {
   return Math.max(min, Math.min(max, value));
 }
 
+const POLICY_KNOBS = new Set(['moveBias', 'digBias', 'restBias', 'idleBias', 'fleeBias', 'recoverAtStat', 'movementFallbackPriority']);
+
 function applyKnobPatch(balance, knobPatch = {}) {
+  const safePatch = Object.fromEntries(Object.entries(knobPatch).filter(([key]) => POLICY_KNOBS.has(key)));
   return {
     ...balance,
     knobs: {
       ...(balance.knobs || {}),
-      ...knobPatch,
+      ...safePatch,
     },
   };
 }
@@ -123,12 +128,14 @@ function scoreCandidate(candidateReport, baselineReport, balance) {
 }
 
 function candidate(name, cause, hypothesis, knobPatch, expectedEffect, blastRadius = 'low') {
+  const policyPatch = Object.fromEntries(Object.entries(knobPatch).filter(([key]) => POLICY_KNOBS.has(key)));
   return {
     id: name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''),
     name,
     cause,
     hypothesis,
-    patch: { knobs: knobPatch },
+    patch: { knobs: policyPatch },
+    rejectedEvaluationKnobs: Object.keys(knobPatch).filter((key) => !POLICY_KNOBS.has(key)),
     expectedEffect,
     blastRadius,
   };
@@ -147,35 +154,27 @@ function generateCandidates(sourceReport, balance) {
   const knobs = balance.knobs || {};
   const catalog = {
     noBoardDelta: [
-      candidate('Quiet Turn Signal', issue, 'Flat turns need visible feedback before rules change.', {
-        quietTurnLifeBonus: knob(knobs, 'quietTurnLifeBonus', 0) + 6,
-        noBoardDeltaPenalty: Math.max(12, knob(knobs, 'noBoardDeltaPenalty', 22) - 4),
-      }, 'Raises life score for quiet-but-readable turns and lowers the flat penalty.', 'low'),
       candidate('Move Reveals Earlier', issue, 'Movement should be more likely to produce a visible board delta.', {
         moveBias: knob(knobs, 'moveBias', 1) + 1,
-        movementLifeReward: knob(knobs, 'movementLifeReward', 8) + 4,
-        discoveryLifeReward: knob(knobs, 'discoveryLifeReward', 12) + 2,
-      }, 'Biases simulator agents toward movement and rewards board/location deltas.', 'medium'),
+      }, 'Biases synthetic players toward movement without changing the evaluation rubric.', 'medium'),
       candidate('First Step Priority', issue, 'The smallest movement nudge is to prefer valid movement fallback earlier.', {
         movementFallbackPriority: 2,
         moveBias: knob(knobs, 'moveBias', 1) + 1,
       }, 'Tries move before lower-information fallbacks more often.', 'medium'),
     ],
     oneChoice: [
-      candidate('Choice Density Reward', issue, 'Choice-rich states should count more strongly as alive.', {
-        choiceDensityReward: knob(knobs, 'choiceDensityReward', 18) + 6,
+      candidate('Less Idle Sampling', issue, 'Synthetic players should exercise available actions instead of over-sampling idle.', {
         idleBias: Math.max(0, knob(knobs, 'idleBias', 1) - 1),
-      }, 'Rewards multiple valid choices and reduces idle selection pressure.', 'low'),
+      }, 'Reduces idle selection pressure while leaving choice scoring unchanged.', 'low'),
       candidate('Move Alternative Bias', issue, 'Movement should remain a practical alternative when choices collapse.', {
         movementFallbackPriority: 2,
         moveBias: knob(knobs, 'moveBias', 1) + 1,
       }, 'Moves valid movement earlier in candidate action ordering.', 'medium'),
     ],
     invalidFriction: [
-      candidate('Invalid Friction Guard', issue, 'Invalid attempts should be punished in scoring and avoided by candidates.', {
-        invalidAttemptPenalty: knob(knobs, 'invalidAttemptPenalty', 5) + 3,
+      candidate('Safer Fallback Ordering', issue, 'Synthetic players should try a known-valid movement fallback before noisy invalid actions.', {
         movementFallbackPriority: 2,
-      }, 'Makes invalid-action regressions easier to reject and prefers safer move fallback.', 'low'),
+      }, 'Prefers the valid movement fallback without changing invalid-action penalties.', 'low'),
       candidate('Less Flee Fishing', issue, 'Risky escape attempts are creating readability noise.', {
         fleeBias: Math.max(0, knob(knobs, 'fleeBias', 1) - 1),
         restBias: knob(knobs, 'restBias', 1) + 1,
@@ -185,8 +184,7 @@ function generateCandidates(sourceReport, balance) {
       candidate('Active Recovery Bias', issue, 'Recovery should not require every turn to become rest.', {
         restBias: Math.max(0, knob(knobs, 'restBias', 1) - 1),
         moveBias: knob(knobs, 'moveBias', 1) + 1,
-        progressLifeReward: knob(knobs, 'progressLifeReward', 4) + 2,
-      }, 'Reduces rest frequency and rewards active progress.', 'medium'),
+      }, 'Reduces rest frequency and samples more active progress.', 'medium'),
       candidate('Recover Later', issue, 'The bot may be resting too early.', {
         recoverAtStat: 0,
         restBias: Math.max(0, knob(knobs, 'restBias', 1) - 1),
@@ -197,31 +195,30 @@ function generateCandidates(sourceReport, balance) {
         moveBias: knob(knobs, 'moveBias', 1) + 2,
         movementFallbackPriority: 2,
       }, 'Pushes movement into more turns.', 'medium'),
-      candidate('Movement Feels Better', issue, 'Movement deltas should count as more alive.', {
-        movementLifeReward: knob(knobs, 'movementLifeReward', 8) + 5,
-        discoveryLifeReward: knob(knobs, 'discoveryLifeReward', 12) + 2,
-      }, 'Increases life score from movement and reveal outcomes.', 'low'),
+      candidate('Movement Over Idle', issue, 'Exploration behavior needs a second policy-only probe.', {
+        moveBias: knob(knobs, 'moveBias', 1) + 1,
+        idleBias: Math.max(0, knob(knobs, 'idleBias', 1) - 1),
+      }, 'Trades idle selections for movement without changing movement scores.', 'low'),
     ],
     noArtifactPayoff: [
-      candidate('Dig Payoff Clarity', issue, 'Digging should feel worthwhile even before changing artifact math.', {
+      candidate('Dig Sampling Up', issue, 'Artifact scenarios need more synthetic-player attempts before their payoff can be judged.', {
         digBias: knob(knobs, 'digBias', 1) + 1,
-        artifactLifeReward: knob(knobs, 'artifactLifeReward', 22) + 5,
-      }, 'Runs more dig checks and values artifact moments more strongly.', 'medium'),
+      }, 'Runs more dig checks while preserving artifact scoring.', 'medium'),
       candidate('Dig Without Collapse', issue, 'Artifact chasing needs less stat-collapse collateral.', {
         digBias: knob(knobs, 'digBias', 1) + 1,
-        statCollapsePenalty: knob(knobs, 'statCollapsePenalty', 14) + 4,
         restBias: knob(knobs, 'restBias', 1) + 1,
-      }, 'Tests dig payoff while guarding against stat collapse.', 'medium'),
+      }, 'Samples dig and recovery together while the fixed rubric guards against collapse.', 'medium'),
     ],
     statCollapse: [
       candidate('Earlier Rescue', issue, 'The system needs a rescue affordance before zero-stat collapse.', {
         recoverAtStat: 2,
         restBias: knob(knobs, 'restBias', 1) + 1,
-        statCollapsePenalty: knob(knobs, 'statCollapsePenalty', 14) + 4,
-      }, 'Starts recovery earlier and rejects collapse more aggressively.', 'medium'),
-      candidate('Collapse Gate Hardening', issue, 'Life-score improvements are not acceptable if collapse worsens.', {
-        statCollapsePenalty: knob(knobs, 'statCollapsePenalty', 14) + 8,
-      }, 'Raises collapse penalty so bad candidates lose.', 'low'),
+      }, 'Starts synthetic-player recovery earlier; the fixed collapse gate remains unchanged.', 'medium'),
+      candidate('Recovery Over Idle', issue, 'Critical synthetic players should recover instead of spending low-information turns.', {
+        recoverAtStat: 2,
+        restBias: knob(knobs, 'restBias', 1) + 1,
+        idleBias: Math.max(0, knob(knobs, 'idleBias', 1) - 1),
+      }, 'Exercises the recovery branch more often without changing collapse scoring.', 'medium'),
     ],
   };
   const selected = catalog[issue] || catalog.noBoardDelta;
@@ -230,33 +227,31 @@ function generateCandidates(sourceReport, balance) {
   if (scenarioTags.includes('escape')) {
     scenarioCandidates.push(candidate('Escape Pressure Probe', issue, 'Escape scenarios need at least one high-stakes flee attempt without invalid-action noise.', {
       fleeBias: knob(knobs, 'fleeBias', 1) + 1,
-      invalidAttemptPenalty: knob(knobs, 'invalidAttemptPenalty', 5) + 2,
-    }, 'Raises escape pressure while keeping invalid attempts costly.', 'medium'));
+    }, 'Raises synthetic-player escape pressure while the fixed rubric continues to reject invalid attempts.', 'medium'));
   }
   if (scenarioTags.includes('cooperation')) {
     scenarioCandidates.push(candidate('Cooperation Recovery Probe', issue, 'Cooperation scenarios need visible help/recovery value.', {
       restBias: knob(knobs, 'restBias', 1) + 1,
-      choiceDensityReward: knob(knobs, 'choiceDensityReward', 18) + 4,
-    }, 'Increases recovery-oriented choices and rewards choice density.', 'medium'));
+    }, 'Increases recovery-oriented synthetic-player choices without changing choice scoring.', 'medium'));
   }
   if (scenarioTags.includes('artifact')) {
-    scenarioCandidates.push(candidate('Artifact Payoff Probe', issue, 'Artifact scenarios need stronger dig/reward evidence.', {
+    scenarioCandidates.push(candidate('Artifact Attempt Probe', issue, 'Artifact scenarios need more dig attempts before payoff evidence is conclusive.', {
       digBias: knob(knobs, 'digBias', 1) + 1,
-      artifactLifeReward: knob(knobs, 'artifactLifeReward', 22) + 4,
-    }, 'Raises dig pressure and artifact-moment value.', 'medium'));
+    }, 'Raises dig-attempt frequency while preserving artifact evaluation weights.', 'medium'));
   }
   const fallback = [
-    candidate('Low-Risk Life Weighting', issue, 'Improve debug sensitivity without behavior blast radius.', {
-      quietTurnLifeBonus: knob(knobs, 'quietTurnLifeBonus', 0) + 3,
-      choiceDensityReward: knob(knobs, 'choiceDensityReward', 18) + 3,
-    }, 'Makes quiet feedback and choice density more visible in scoring.', 'low'),
+    candidate('Conservative Explore Probe', issue, 'When diagnosis is ambiguous, sample a small behavior-only exploration nudge.', {
+      moveBias: knob(knobs, 'moveBias', 1) + 1,
+    }, 'Changes only synthetic-player action selection and leaves the evaluator fixed.', 'low'),
   ];
-  return [...scenarioCandidates, ...selected, ...fallback].slice(0, Math.max(2, Math.min(5, Number(arg('candidates', 4)))));
+  return [...scenarioCandidates, ...selected, ...fallback]
+    .filter((item) => Object.keys(item.patch.knobs).length > 0)
+    .slice(0, Math.max(2, Math.min(5, Number(arg('candidates', 4)))));
 }
 
 function simulatorArgs(extra = {}) {
   const scenario = String(arg('scenario', 'benchmark'));
-  const batch = String(arg('batch', '3'));
+  const batch = String(arg('batch', '10'));
   const strategies = arg('strategies', null);
   const turns = arg('turns', null);
   const players = arg('players', null);
@@ -279,15 +274,17 @@ function simulatorArgs(extra = {}) {
   return result;
 }
 
-function runSimulator(label, balanceFile, sessionDir) {
+function runSimulator(label, policyFile, sessionDir) {
   const result = spawnSync(process.execPath, simulatorArgs({
-    balance: balanceFile,
+    policy: policyFile,
+    evaluation: evaluationPath,
     note: `autotune ${label}`,
     changed: label,
   }), {
     cwd: root,
     encoding: 'utf8',
     stdio: ['ignore', 'pipe', 'pipe'],
+    windowsHide: true,
   });
   if (result.status !== 0) {
     throw new Error(`Simulator failed for ${label}: ${result.stderr || result.stdout}`);
@@ -321,12 +318,14 @@ function buildReport({ sessionId, sessionDir, baseline, candidates, results, dry
     sessionDir,
     config: {
       scenario: String(arg('scenario', 'benchmark')),
-      batch: Number(arg('batch', '3')),
+      batch: Number(arg('batch', '10')),
       strategies: arg('strategies', null),
       seed: String(arg('seed', 'autotune')),
     },
     safety: {
-      baselineBalancePath: balancePath,
+      baselinePolicyPath: policyPath,
+      immutableEvaluationPath: evaluationPath,
+      pairedSeeds: true,
       baselineReportPath: baseline?.reportPath || null,
       applyWinnerRequested: boolArg('apply-winner', false),
     },
@@ -343,15 +342,18 @@ function buildReport({ sessionId, sessionDir, baseline, candidates, results, dry
     winner,
     recommendation: winner
       ? `Apply "${winner.name}" only if its design hypothesis matches the next intended tuning pass.`
-      : 'No candidate passed rejection gates; keep the current balance file.',
+      : 'No candidate passed rejection gates; keep the current agent policy.',
   };
 }
 
 async function main() {
   const dryRun = boolArg('dry-run', false);
   const applyWinner = boolArg('apply-winner', false);
-  const balance = readJson(balancePath);
-  if (!balance) throw new Error(`Missing ${balancePath}`);
+  const balance = readJson(policyPath);
+  if (!balance) throw new Error(`Missing ${policyPath}`);
+  const evaluation = readJson(evaluationPath);
+  if (!evaluation) throw new Error(`Missing ${evaluationPath}`);
+  balance.gates = evaluation.gates || {};
   const sourceReport = readJson(latestReportPath, null);
   const candidates = generateCandidates(sourceReport, balance);
   const sessionId = stamp();
@@ -384,11 +386,19 @@ async function main() {
     writeJson(resolve(candidateDir, 'candidate.json'), item);
     const candidateRun = runSimulator(item.id, candidateBalancePath, sessionDir);
     const score = scoreCandidate(candidateRun.report, baseline.report, balance);
+    const pairedEvidence = comparePairedReports(baseline.report, candidateRun.report, {
+      minimumReplicates: Number(arg('batch', 10)),
+    });
+    if (!pairedEvidence.passed) {
+      score.rejected = true;
+      score.rejectedReasons.push(...pairedEvidence.failures.map((failure) => `paired evidence: ${failure}`));
+    }
     results.push({
       ...item,
       reportPath: candidateRun.reportPath,
       balancePath: candidateBalancePath,
       ...score,
+      pairedEvidence,
       explanation: score.rejected
         ? `Rejected: ${score.rejectedReasons.join('; ')}.`
         : `Improved life by ${score.deltas.lifeScore.delta.toFixed(2)}, Oracle by ${score.deltas.oracleScore.delta.toFixed(2)}, and flat-turn rate by ${score.deltas.flatTurnRate.delta.toFixed(3)}.`,
@@ -409,9 +419,10 @@ async function main() {
 
   if (applyWinner && report.winner) {
     const winnerBalance = applyKnobPatch(balance, report.winner.patch.knobs);
-    copyFileSync(balancePath, resolve(sessionDir, 'pre-apply-balance.json'));
-    writeJson(balancePath, winnerBalance);
-    report.appliedWinner = { id: report.winner.id, name: report.winner.name, balancePath };
+    copyFileSync(policyPath, resolve(sessionDir, 'pre-apply-policy.json'));
+    delete winnerBalance.gates;
+    writeJson(policyPath, winnerBalance);
+    report.appliedWinner = { id: report.winner.id, name: report.winner.name, policyPath };
     writeJson(reportPath, report);
     writeJson(publicLatestAutoTunePath, report);
   }

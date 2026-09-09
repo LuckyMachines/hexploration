@@ -6,6 +6,14 @@ export const FUN_REPORT_VERSION = '1.0.0';
 export const funReportRoot = resolve(root, 'reports', 'fun');
 export const publicFunRoot = resolve(root, 'app', 'public', 'fun');
 
+export function isProductionScenarioId(scenarioId = '', scenarioStore = null) {
+  const id = String(scenarioId);
+  if (!id || /^autopilot(?:-test)?-/i.test(id) || /-fixture$/i.test(id)) return false;
+  if (!scenarioStore) return true;
+  const definition = asArray(scenarioStore.scenarios).find((scenario) => scenario.id === id);
+  return Boolean(definition && !definition.archived && definition.productionEligible !== false && definition.testFixture !== true);
+}
+
 function nowIso() {
   return new Date().toISOString();
 }
@@ -32,22 +40,32 @@ export function loadFunEvidence({ eventsFile = null } = {}) {
     feelingIndex: readJson(resolve(root, 'reports', 'simulator', 'feeling-black-box', 'index.json'), null),
     growthReport: readJson(resolve(root, 'reports', 'growth', 'latest-report.json'), null),
     timeMachineIndex: readJson(resolve(root, 'reports', 'simulator', 'time-machine', 'index.json'), null),
+    scenarioStore: readJson(resolve(root, 'simulator.scenarios.json'), null),
   };
 }
 
-export function qualityFromFeelingScenario(scenario = {}) {
+export function qualityFromFeelingScenario(scenario = {}, definition = {}) {
   const arcScore = number(scenario.arcScore);
   const firstAlive = scenario.firstAliveTurn;
   const firstFlat = scenario.firstFlatTurn;
-  const payoff = ['payoff', 'surprise'].includes(scenario.bestMomentLabel);
-  const pressure = ['panic', 'friction', 'dead-end'].includes(scenario.worstMomentLabel);
+  const tags = asArray(definition.tags);
+  const labelCounts = scenario.labelCounts || {};
+  const requiresPayoff = tags.includes('artifact');
+  const requiresTension = tags.some((tag) => ['escape', 'survival', 'chaos'].includes(tag));
+  const requiresRecovery = tags.some((tag) => ['cooperation', 'escape', 'survival'].includes(tag));
+  const payoff = ['payoff', 'surprise'].includes(scenario.bestMomentLabel)
+    || number(labelCounts.payoff) + number(labelCounts.surprise) > 0;
+  const pressure = ['tense', 'panic', 'friction', 'dead-end'].includes(scenario.worstMomentLabel)
+    || number(scenario.tensionProfile?.pressureCount) > 0;
+  const recovery = number(labelCounts.recovery) + number(labelCounts.hopeful) > 0
+    || scenario.tensionProfile?.recoveredAfterPressure === true;
   const gates = {
     firstAlive: firstAlive !== undefined && firstAlive !== null && number(firstAlive, 99) <= 2,
-    payoff: payoff || arcScore >= 65,
-    pressure: pressure || arcScore < 55,
-    recovery: scenario.recommendation?.type !== 'panic-loop',
+    payoff: !requiresPayoff || payoff,
+    pressure: !requiresTension || pressure,
+    recovery: !requiresRecovery || recovery,
     flatStreak: firstFlat === undefined || firstFlat === null || number(firstFlat, 99) > 1,
-    shareWorthy: arcScore >= 60 || payoff,
+    shareWorthy: arcScore >= 60 && scenario.arcShape !== 'flatline',
   };
   const passed = Object.values(gates).filter(Boolean).length;
   return {
@@ -56,6 +74,7 @@ export function qualityFromFeelingScenario(scenario = {}) {
     arcShape: scenario.arcShape,
     firstAliveTurn: firstAlive ?? null,
     firstFlatTurn: firstFlat ?? null,
+    profile: { requiresPayoff, requiresTension, requiresRecovery },
     gates,
     funVerdict: passed >= 5 ? 'share-worthy' : passed >= 4 ? 'nearly-there' : passed >= 2 ? 'needs-spark' : 'flat',
     releaseBlockers: Object.entries(gates).filter(([, pass]) => !pass).map(([gate]) => gate),
@@ -63,13 +82,23 @@ export function qualityFromFeelingScenario(scenario = {}) {
   };
 }
 
-export function buildFunReport({ events = [], feelingIndex = null, growthReport = null, timeMachineIndex = null, generatedAt = nowIso() } = {}) {
-  const scenarioQualities = asArray(feelingIndex?.scenarios).map(qualityFromFeelingScenario);
+export function buildFunReport({ events = [], feelingIndex = null, growthReport = null, timeMachineIndex = null, scenarioStore = null, generatedAt = nowIso() } = {}) {
+  const excludedScenarioIds = asArray(feelingIndex?.scenarios)
+    .map((scenario) => scenario.scenarioId)
+    .filter((scenarioId) => !isProductionScenarioId(scenarioId, scenarioStore));
+  const scenarioQualities = asArray(feelingIndex?.scenarios)
+    .filter((scenario) => isProductionScenarioId(scenario.scenarioId, scenarioStore))
+    .map((scenario) => qualityFromFeelingScenario(
+      scenario,
+      asArray(scenarioStore?.scenarios).find((definition) => definition.id === scenario.scenarioId) || {},
+    ));
   const shareEvents = events.filter((event) => ['share_card_generated', 'share_clicked'].includes(event.type));
   const completedEvents = events.filter((event) => event.type === 'run_completed');
   const releaseBlockers = [
     ...scenarioQualities.flatMap((item) => item.releaseBlockers.map((gate) => ({ scenarioId: item.scenarioId, gate }))).slice(0, 12),
-    ...asArray(timeMachineIndex?.scenarios).filter((item) => item.trend === 'regressing').map((item) => ({ scenarioId: item.scenarioId, gate: 'regressing' })),
+    ...asArray(timeMachineIndex?.scenarios)
+      .filter((item) => item.trend === 'regressing' && isProductionScenarioId(item.scenarioId, scenarioStore))
+      .map((item) => ({ scenarioId: item.scenarioId, gate: 'regressing' })),
   ];
   const strongest = [...scenarioQualities].sort((a, b) => b.arcScore - a.arcScore)[0] || null;
   const weakest = [...scenarioQualities].sort((a, b) => a.arcScore - b.arcScore)[0] || null;
@@ -99,6 +128,11 @@ export function buildFunReport({ events = [], feelingIndex = null, growthReport 
     strongestFunScenario: strongest,
     weakestFunScenario: weakest,
     releaseBlockers,
+    evidenceHygiene: {
+      excludedScenarioIds,
+      excludedCount: excludedScenarioIds.length,
+      policy: 'Only active, production-eligible scenarios may affect release scoring.',
+    },
     nextFunFix: nextFix,
   };
 }

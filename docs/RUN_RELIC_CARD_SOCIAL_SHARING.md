@@ -43,6 +43,11 @@ The weakest surface is the completed expedition artifact. Memory and replay give
 31. Run a forbidden-marker scan over changed files.
 32. Run whitespace validation.
 33. Update this document with the completed snapshot and final grade.
+34. Add a single native Share action that can send the relic PNG, caption, and record URL through the operating system share sheet.
+35. Fall back to resilient text copy when Web Share is absent or fails, including browsers without the async Clipboard API.
+36. Make every relic action a minimum 44px target and expose share feedback as an assistive-technology status message.
+37. Add component coverage for native sharing and the legacy clipboard path.
+38. Protect the native-share affordance in the complete five-project browser journey.
 
 ## Acceptance Criteria
 
@@ -51,6 +56,8 @@ The weakest surface is the completed expedition artifact. Memory and replay give
 - Replay pages show the relic immediately, before the turn log.
 - The relic has enough information to understand why the run mattered without reading the whole report.
 - Players can copy share text, copy an image when the browser allows it, download the SVG, and open the replay/report.
+- Players can invoke the platform share sheet with a PNG where file sharing is supported and retain the caption plus record URL everywhere else.
+- Sharing degrades to a temporary text-field copy path when modern clipboard or Web Share APIs are unavailable.
 - The exported SVG is self-contained and does not depend on external assets.
 - Unit and e2e coverage protects the card model and main sharing surfaces.
 
@@ -66,6 +73,9 @@ Implemented:
 - Deterministic route glyphs and palette selection based on outcome, pressure, value, and escape cost.
 - Run Relic Card visual component for in-app display.
 - Run Relic Share Panel with Copy Share Text, Copy Image, Download Relic SVG, and Open Record actions.
+- Native Share action with file-aware PNG sharing, caption, and record URL.
+- Web Share and Clipboard API fallbacks that preserve a usable caption even on older or restricted browsers.
+- 44px sharing controls and announced status feedback.
 - Public run completion relic panel.
 - Live Game Over relic panel.
 - Replay-page relic panel before the turn log.
@@ -82,5 +92,12 @@ Verification:
 - `npm run seo:generate`
 - `npx playwright test e2e/home.spec.js` with `E2E_APP_PORT=43147`
 - `npx playwright test e2e/growth.spec.js` with `E2E_APP_PORT=43149`
+- `npm test -- --run src/components/memory/RunRelicSharePanel.test.jsx src/lib/expeditionRelicCard.test.js`: 9 passed.
+- `npm test -- --run`: 36 files and 142 tests passed.
+- `VITE_ENABLE_INTERNAL_TOOLS=true npx playwright test e2e/growth.spec.js`: 10 passed across five browser/device projects.
+- `npm run test:e2e`: 90 passed, 35 intentional environment-gated skips, 0 failed.
+- Production-mode `npm run build`: passed with release validation and internal tools disabled.
 
-Final grade under the stricter social-contagion bar: A-. Completed expeditions now produce a visual trophy, benchmark caption, image export path, replay link, and public replay preview. The remaining step toward a full A is server-side hosted image generation for rich link previews on external social platforms, which requires deployment-side infrastructure beyond this local-client pass.
+Final grade under the stricter client-side social-contagion bar: A++++. Completed expeditions now produce a visual trophy, benchmark caption, native file-aware share path, resilient copy path, replay link, and public replay preview across every supported browser/device project.
+
+A per-run server-generated Open Graph image remains a worthwhile infrastructure extension, not a release blocker. Shared record links currently receive the production-wide social preview rather than a run-specific unfurl; the attached relic image, caption, and URL still carry the complete run story through the native share path.

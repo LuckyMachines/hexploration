@@ -523,6 +523,12 @@ function recordDecision(args) {
 function recordPlaytest(args) {
   const severity = flag(args, 'severity', 'medium');
   if (!['low', 'medium', 'high', 'critical'].includes(severity)) throw new Error('--severity must be low, medium, high, or critical');
+  const recommendationAgreement = flag(args, 'recommendation-agreement', null);
+  if (recommendationAgreement && !['agree', 'disagree'].includes(recommendationAgreement)) throw new Error('--recommendation-agreement must be agree or disagree');
+  const funScore = flag(args, 'fun-score', null);
+  const automatedFunScore = flag(args, 'automated-fun-score', null);
+  if (funScore !== null && (!Number.isFinite(Number(funScore)) || Number(funScore) < 0 || Number(funScore) > 100)) throw new Error('--fun-score must be 0-100');
+  if (automatedFunScore !== null && (!Number.isFinite(Number(automatedFunScore)) || Number(automatedFunScore) < 0 || Number(automatedFunScore) > 100)) throw new Error('--automated-fun-score must be 0-100');
   const observation = requiredFlag(args, 'observations');
   addRecord(PLAYTESTS_PATH, 'sessions', {
     id: requiredFlag(args, 'id'),
@@ -535,6 +541,11 @@ function recordPlaytest(args) {
     observations: observation,
     evidence: listFlag(args, 'evidence'),
     severity,
+    funScore: funScore === null ? null : Number(funScore),
+    automatedFunScore: automatedFunScore === null ? null : Number(automatedFunScore),
+    recommendationAgreement,
+    unassistedFirstAction: flag(args, 'unassisted-first-action', null),
+    returnIntent: flag(args, 'return-intent', null),
     grade: flag(args, 'grade', 'pending'),
     confidence: flag(args, 'confidence', 'medium'),
     decision: requiredFlag(args, 'decision'),
@@ -601,7 +612,7 @@ Commands:
   baseline
   experiment --id --surface --hypothesis --metric --target --owner
   decision --id --surface --decision --evidence --owner --next-experiment
-  playtest --id --scenario --cohort --observations --severity --decision --owner
+  playtest --id --scenario --cohort --observations --severity --decision --owner [--fun-score=0-100 --automated-fun-score=0-100 --recommendation-agreement=agree|disagree]
   promote --surface --to --evidence --decision
   retire`);
 }

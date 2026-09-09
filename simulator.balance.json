@@ -1,6 +1,8 @@
 {
   "schemaVersion": 1,
-  "description": "Safe simulator auto-tune knobs. These affect simulator agent behavior and fun-debugger scoring, not deployed contract code.",
+  "deprecated": true,
+  "replacedBy": ["simulator.agent-policies.json", "simulator.evaluation.json"],
+  "description": "Legacy compatibility snapshot. Do not use for new experiments because it mixes synthetic-player policy with evaluation scoring.",
   "knobs": {
     "moveBias": 1,
     "digBias": 1,

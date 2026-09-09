@@ -20,17 +20,8 @@ library XenovoyaGameplayUpdates {
         address rollDrawAddress,
         bytes memory summaryData
     ) public view returns (XenovoyaGameplay.PlayUpdates memory) {
-        XenovoyaGameplay.DataSummary memory summary = abi.decode(
-            summaryData,
-            (XenovoyaGameplay.DataSummary)
-        );
-        return
-            playUpdatesForPlayerActionPhase(
-                queueAddress,
-                queueID,
-                rollDrawAddress,
-                summary
-            );
+        XenovoyaGameplay.DataSummary memory summary = abi.decode(summaryData, (XenovoyaGameplay.DataSummary));
+        return playUpdatesForPlayerActionPhase(queueAddress, queueID, rollDrawAddress, summary);
     }
 
     function playUpdatesForPlayerActionPhase(
@@ -40,41 +31,28 @@ library XenovoyaGameplayUpdates {
         XenovoyaGameplay.DataSummary memory summary
     ) public view returns (XenovoyaGameplay.PlayUpdates memory) {
         XenovoyaGameplay.PlayUpdates memory playUpdates;
-        uint256[] memory playersInQueue = XenovoyaQueue(
-            payable(queueAddress)
-        ).getAllPlayers(queueID);
+        uint256[] memory playersInQueue = XenovoyaQueue(payable(queueAddress)).getAllPlayers(queueID);
         uint256 position;
         // uint256 maxMovementPerPlayer = 7;
         // Movement
-        playUpdates.playerPositionIDs = new uint256[](
-            summary.playerPositionUpdates
-        );
+        playUpdates.playerPositionIDs = new uint256[](summary.playerPositionUpdates);
         playUpdates.spacesToMove = new uint256[](summary.playerPositionUpdates);
-        playUpdates.playerMovementOptions = new string[7][](
-            summary.playerPositionUpdates
-        );
+        playUpdates.playerMovementOptions = new string[7][](summary.playerPositionUpdates);
         position = 0;
         for (uint256 i = 0; i < playersInQueue.length; i++) {
             if (
-                XenovoyaQueue(payable(queueAddress)).submissionAction(
-                    queueID,
-                    playersInQueue[i]
-                ) == XenovoyaQueue.Action.Move
+                XenovoyaQueue(payable(queueAddress)).submissionAction(queueID, playersInQueue[i])
+                    == XenovoyaQueue.Action.Move
             ) {
                 // return [player id, # spaces to move]
 
                 playUpdates.playerPositionIDs[position] = playersInQueue[i];
-                playUpdates.spacesToMove[position] = XenovoyaQueue(
-                    payable(queueAddress)
-                ).getSubmissionOptions(queueID, playersInQueue[i]).length;
-                string[] memory options = XenovoyaQueue(
-                    payable(queueAddress)
-                ).getSubmissionOptions(queueID, playersInQueue[i]);
+                playUpdates.spacesToMove[position] =
+                XenovoyaQueue(payable(queueAddress)).getSubmissionOptions(queueID, playersInQueue[i]).length;
+                string[] memory options =
+                    XenovoyaQueue(payable(queueAddress)).getSubmissionOptions(queueID, playersInQueue[i]);
                 for (uint256 j = 0; j < 7; j++) {
-                    playUpdates.playerMovementOptions[position][j] = j <
-                        options.length
-                        ? options[j]
-                        : "";
+                    playUpdates.playerMovementOptions[position][j] = j < options.length ? options[j] : "";
                 }
                 position++;
             }
@@ -86,40 +64,27 @@ library XenovoyaGameplayUpdates {
         playUpdates.playerEquips = new string[](summary.playerEquips);
         position = 0;
         for (uint256 i = 0; i < playersInQueue.length; i++) {
-            if (
-                bytes(
-                    XenovoyaQueue(payable(queueAddress)).submissionLeftHand(
-                        queueID,
-                        playersInQueue[i]
-                    )
-                ).length > 0
-            ) {
+            if (bytes(XenovoyaQueue(payable(queueAddress)).submissionLeftHand(queueID, playersInQueue[i])).length > 0) {
                 // return [player id, r/l hand (0/1)]
 
                 playUpdates.playerEquipIDs[position] = playersInQueue[i];
                 playUpdates.playerEquipHands[position] = 0;
-                playUpdates.playerEquips[position] = XenovoyaQueue(
-                    payable(queueAddress)
-                ).submissionLeftHand(queueID, playersInQueue[i]);
+                playUpdates.playerEquips[position] =
+                    XenovoyaQueue(payable(queueAddress)).submissionLeftHand(queueID, playersInQueue[i]);
                 position++;
             }
         }
 
         // RH equip
         for (uint256 i = 0; i < playersInQueue.length; i++) {
-            if (
-                bytes(
-                    XenovoyaQueue(payable(queueAddress))
-                        .submissionRightHand(queueID, playersInQueue[i])
-                ).length > 0
-            ) {
+            if (bytes(XenovoyaQueue(payable(queueAddress)).submissionRightHand(queueID, playersInQueue[i])).length > 0)
+            {
                 // return [player id, r/l hand (0/1)]
 
                 playUpdates.playerEquipIDs[position] = playersInQueue[i];
                 playUpdates.playerEquipHands[position] = 1;
-                playUpdates.playerEquips[position] = XenovoyaQueue(
-                    payable(queueAddress)
-                ).submissionRightHand(queueID, playersInQueue[i]);
+                playUpdates.playerEquips[position] =
+                    XenovoyaQueue(payable(queueAddress)).submissionRightHand(queueID, playersInQueue[i]);
                 position++;
             }
         }
@@ -132,10 +97,8 @@ library XenovoyaGameplayUpdates {
         position = 0;
         for (uint256 i = 0; i < playersInQueue.length; i++) {
             if (
-                XenovoyaQueue(payable(queueAddress)).submissionAction(
-                    queueID,
-                    playersInQueue[i]
-                ) == XenovoyaQueue.Action.SetupCamp
+                XenovoyaQueue(payable(queueAddress)).submissionAction(queueID, playersInQueue[i])
+                    == XenovoyaQueue.Action.SetupCamp
             ) {
                 // setup camp
                 // transfer from player to zone
@@ -152,10 +115,8 @@ library XenovoyaGameplayUpdates {
 
         for (uint256 i = 0; i < playersInQueue.length; i++) {
             if (
-                XenovoyaQueue(payable(queueAddress)).submissionAction(
-                    queueID,
-                    playersInQueue[i]
-                ) == XenovoyaQueue.Action.BreakDownCamp
+                XenovoyaQueue(payable(queueAddress)).submissionAction(queueID, playersInQueue[i])
+                    == XenovoyaQueue.Action.BreakDownCamp
             ) {
                 // break down camp
                 // transfer from zone to player
@@ -167,35 +128,21 @@ library XenovoyaGameplayUpdates {
             }
         }
 
-        playUpdates.playerActiveActionIDs = new uint256[](
-            summary.activeActions
-        );
+        playUpdates.playerActiveActionIDs = new uint256[](summary.activeActions);
         playUpdates.activeActions = new string[](summary.activeActions);
         playUpdates.activeActionOptions = new string[][](summary.activeActions);
         playUpdates.activeActionResults = new uint256[](summary.activeActions);
-        playUpdates.activeActionResultCard = new string[2][](
-            summary.activeActions
-        );
-        playUpdates.activeActionInventoryChanges = new string[3][](
-            summary.activeActions
-        );
+        playUpdates.activeActionResultCard = new string[2][](summary.activeActions);
+        playUpdates.activeActionInventoryChanges = new string[3][](summary.activeActions);
         playUpdates.playerHandLossIDs = new uint256[](summary.playerTransfers);
         playUpdates.playerHandLosses = new uint256[](summary.playerTransfers);
 
-        playUpdates.playerStatUpdateIDs = new uint256[](
-            summary.playerStatUpdates
-        );
-        playUpdates.playerStatUpdates = new int8[3][](
-            summary.playerStatUpdates
-        );
+        playUpdates.playerStatUpdateIDs = new uint256[](summary.playerStatUpdates);
+        playUpdates.playerStatUpdates = new int8[3][](summary.playerStatUpdates);
         playUpdates.playerTransfersTo = new uint256[](summary.playerTransfers);
-        playUpdates.playerTransfersFrom = new uint256[](
-            summary.playerTransfers
-        );
+        playUpdates.playerTransfersFrom = new uint256[](summary.playerTransfers);
         playUpdates.playerTransferQtys = new uint256[](summary.playerTransfers);
-        playUpdates.playerTransferItemTypes = new string[](
-            summary.playerTransfers
-        );
+        playUpdates.playerTransferItemTypes = new string[](summary.playerTransfers);
 
         position = 0;
         // increase with each one added...
@@ -215,42 +162,30 @@ library XenovoyaGameplayUpdates {
         */
         for (uint256 i = 0; i < playersInQueue.length; i++) {
             if (
-                XenovoyaQueue(payable(queueAddress)).submissionAction(
-                    queueID,
-                    playersInQueue[i]
-                ) == XenovoyaQueue.Action.SetupCamp
+                XenovoyaQueue(payable(queueAddress)).submissionAction(queueID, playersInQueue[i])
+                    == XenovoyaQueue.Action.SetupCamp
             ) {
                 playUpdates.activeActions[position] = "Setup camp";
                 playUpdates.activeActionOptions[position] = new string[](0);
                 playUpdates.playerActiveActionIDs[position] = playersInQueue[i];
                 position++;
             } else if (
-                XenovoyaQueue(payable(queueAddress)).submissionAction(
-                    queueID,
-                    playersInQueue[i]
-                ) == XenovoyaQueue.Action.BreakDownCamp
+                XenovoyaQueue(payable(queueAddress)).submissionAction(queueID, playersInQueue[i])
+                    == XenovoyaQueue.Action.BreakDownCamp
             ) {
                 playUpdates.activeActions[position] = "Break down camp";
                 playUpdates.activeActionOptions[position] = new string[](0);
                 playUpdates.playerActiveActionIDs[position] = playersInQueue[i];
                 position++;
             } else if (
-                XenovoyaQueue(payable(queueAddress)).submissionAction(
-                    queueID,
-                    playersInQueue[i]
-                ) == XenovoyaQueue.Action.Dig
+                XenovoyaQueue(payable(queueAddress)).submissionAction(queueID, playersInQueue[i])
+                    == XenovoyaQueue.Action.Dig
             ) {
                 playUpdates.activeActions[position] = "Dig";
                 playUpdates.playerActiveActionIDs[position] = playersInQueue[i];
                 playUpdates.activeActionOptions[position] = new string[](0);
-                playUpdates.activeActionResults[position] = uint256(
-                    dig(
-                        queueAddress,
-                        queueID,
-                        rollDrawAddress,
-                        playersInQueue[i]
-                    )
-                );
+                playUpdates.activeActionResults[position] =
+                    uint256(dig(queueAddress, queueID, rollDrawAddress, playersInQueue[i]));
                 (
                     playUpdates.activeActionResultCard[position][0],
                     playUpdates.playerStatUpdates[position],
@@ -258,42 +193,32 @@ library XenovoyaGameplayUpdates {
                     playUpdates.activeActionInventoryChanges[position][1],
                     playUpdates.activeActionInventoryChanges[position][2],
                     playUpdates.activeActionResultCard[position][1]
-                ) = RollDraw(rollDrawAddress).drawCard(
-                    RollDraw.CardType(
-                        playUpdates.activeActionResults[position]
-                    ),
-                    queueID,
-                    playersInQueue[i],
-                    false,
-                    true
-                );
-                playUpdates.playerStatUpdateIDs[
-                    playerStatPosition
-                ] = playersInQueue[i];
+                ) =
+                    RollDraw(rollDrawAddress)
+                        .drawCard(
+                            RollDraw.CardType(playUpdates.activeActionResults[position]),
+                            queueID,
+                            playersInQueue[i],
+                            false,
+                            true
+                        );
+                playUpdates.playerStatUpdateIDs[playerStatPosition] = playersInQueue[i];
 
-                if (
-                    bytes(playUpdates.activeActionInventoryChanges[position][0])
-                        .length > 0
-                ) {
+                if (bytes(playUpdates.activeActionInventoryChanges[position][0]).length > 0) {
                     // item loss
-                    playUpdates.playerTransferItemTypes[position] = playUpdates
-                        .activeActionInventoryChanges[position][0];
+                    playUpdates.playerTransferItemTypes[position] =
+                        playUpdates.activeActionInventoryChanges[position][0];
                     playUpdates.playerTransfersTo[position] = 0;
-                    playUpdates.playerTransfersFrom[position] = playersInQueue[
-                        i
-                    ];
+                    playUpdates.playerTransfersFrom[position] = playersInQueue[i];
                     playUpdates.playerTransferQtys[position] = 1;
                     // TODO: check if we need this...
                     // playUpdates.playerStatUpdateIDs[position] = playersInQueue[
                     //     i
                     // ];
-                } else if (
-                    bytes(playUpdates.activeActionInventoryChanges[position][1])
-                        .length > 0
-                ) {
+                } else if (bytes(playUpdates.activeActionInventoryChanges[position][1]).length > 0) {
                     // item gain
-                    playUpdates.playerTransferItemTypes[position] = playUpdates
-                        .activeActionInventoryChanges[position][1];
+                    playUpdates.playerTransferItemTypes[position] =
+                        playUpdates.activeActionInventoryChanges[position][1];
                     playUpdates.playerTransfersTo[position] = playersInQueue[i];
                     playUpdates.playerTransfersFrom[position] = 0;
                     playUpdates.playerTransferQtys[position] = 1;
@@ -301,54 +226,35 @@ library XenovoyaGameplayUpdates {
                     // playUpdates.playerStatUpdateIDs[position] = playersInQueue[
                     //     i
                     // ];
-                } else if (
-                    bytes(playUpdates.activeActionInventoryChanges[position][2])
-                        .length > 0
-                ) {
+                } else if (bytes(playUpdates.activeActionInventoryChanges[position][2]).length > 0) {
                     // hand loss
 
                     playUpdates.playerHandLossIDs[position] = playersInQueue[i];
-                    playUpdates.playerHandLosses[position] = stringsMatch(
-                        playUpdates.activeActionInventoryChanges[position][2],
-                        "Right"
-                    )
-                        ? 1
-                        : 0;
+                    playUpdates.playerHandLosses[position] =
+                        stringsMatch(playUpdates.activeActionInventoryChanges[position][2], "Right") ? 1 : 0;
                 }
 
                 playerStatPosition++;
                 position++;
             } else if (
-                XenovoyaQueue(payable(queueAddress)).submissionAction(
-                    queueID,
-                    playersInQueue[i]
-                ) == XenovoyaQueue.Action.Rest
+                XenovoyaQueue(payable(queueAddress)).submissionAction(queueID, playersInQueue[i])
+                    == XenovoyaQueue.Action.Rest
             ) {
                 playUpdates.activeActions[position] = "Rest";
-                playUpdates.activeActionOptions[position] = XenovoyaQueue(
-                    payable(queueAddress)
-                ).getSubmissionOptions(queueID, playersInQueue[i]);
+                playUpdates.activeActionOptions[position] =
+                    XenovoyaQueue(payable(queueAddress)).getSubmissionOptions(queueID, playersInQueue[i]);
                 playUpdates.playerActiveActionIDs[position] = playersInQueue[i];
-                playUpdates.playerStatUpdates[playerStatPosition] = rest(
-                    queueAddress,
-                    queueID,
-                    playersInQueue[i]
-                );
-                playUpdates.playerStatUpdateIDs[
-                    playerStatPosition
-                ] = playersInQueue[i];
+                playUpdates.playerStatUpdates[playerStatPosition] = rest(queueAddress, queueID, playersInQueue[i]);
+                playUpdates.playerStatUpdateIDs[playerStatPosition] = playersInQueue[i];
                 playerStatPosition++;
                 position++;
             } else if (
-                XenovoyaQueue(payable(queueAddress)).submissionAction(
-                    queueID,
-                    playersInQueue[i]
-                ) == XenovoyaQueue.Action.Help
+                XenovoyaQueue(payable(queueAddress)).submissionAction(queueID, playersInQueue[i])
+                    == XenovoyaQueue.Action.Help
             ) {
                 playUpdates.activeActions[position] = "Help";
-                playUpdates.activeActionOptions[position] = XenovoyaQueue(
-                    payable(queueAddress)
-                ).getSubmissionOptions(queueID, playersInQueue[i]);
+                playUpdates.activeActionOptions[position] =
+                    XenovoyaQueue(payable(queueAddress)).getSubmissionOptions(queueID, playersInQueue[i]);
                 playUpdates.playerActiveActionIDs[position] = playersInQueue[i];
 
                 // Update stats from help
@@ -358,38 +264,26 @@ library XenovoyaGameplayUpdates {
                     playUpdates.playerStatUpdates[playerStatPosition + 1]
                 ) = help(queueAddress, queueID, playersInQueue[i]);
 
-                playUpdates.playerStatUpdateIDs[
-                    playerStatPosition
-                ] = playersInQueue[i];
-                playUpdates.playerStatUpdateIDs[
-                    playerStatPosition + 1
-                ] = playerIDFromString(
-                    playUpdates.activeActionOptions[position][0]
-                );
+                playUpdates.playerStatUpdateIDs[playerStatPosition] = playersInQueue[i];
+                playUpdates.playerStatUpdateIDs[playerStatPosition + 1] =
+                    playerIDFromString(playUpdates.activeActionOptions[position][0]);
                 playerStatPosition += 2;
 
                 position++;
             } else if (
-                XenovoyaQueue(payable(queueAddress)).submissionAction(
-                    queueID,
-                    playersInQueue[i]
-                ) == XenovoyaQueue.Action.Move
+                XenovoyaQueue(payable(queueAddress)).submissionAction(queueID, playersInQueue[i])
+                    == XenovoyaQueue.Action.Move
             ) {
                 playUpdates.activeActions[position] = "Move";
-                playUpdates.activeActionOptions[position] = XenovoyaQueue(
-                    payable(queueAddress)
-                ).getSubmissionOptions(queueID, playersInQueue[i]);
+                playUpdates.activeActionOptions[position] =
+                    XenovoyaQueue(payable(queueAddress)).getSubmissionOptions(queueID, playersInQueue[i]);
                 playUpdates.playerActiveActionIDs[position] = playersInQueue[i];
                 position++;
             }
         }
-        playUpdates.randomness = XenovoyaQueue(payable(queueAddress))
-            .getRandomness(queueID);
+        playUpdates.randomness = XenovoyaQueue(payable(queueAddress)).getRandomness(queueID);
 
-        playUpdates.gamePhase = XenovoyaQueue(payable(queueAddress))
-            .isDayPhase(queueID)
-            ? "Day"
-            : "Night";
+        playUpdates.gamePhase = XenovoyaQueue(payable(queueAddress)).isDayPhase(queueID) ? "Day" : "Night";
 
         return playUpdates;
     }
@@ -402,9 +296,7 @@ library XenovoyaGameplayUpdates {
         address rollDrawAddress
     ) public view returns (XenovoyaGameplay.PlayUpdates memory) {
         XenovoyaGameplay.PlayUpdates memory dayPhaseUpdates;
-        uint256 totalPlayers = PlayerRegistry(
-            XenovoyaBoard(gameBoardAddress).prAddress()
-        ).totalRegistrations(gameID);
+        uint256 totalPlayers = PlayerRegistry(XenovoyaBoard(gameBoardAddress).prAddress()).totalRegistrations(gameID);
         // if (
         //     TokenInventory(XenovoyaBoard(gameBoardAddress).tokenInventory())
         //         .DAY_NIGHT_TOKEN()
@@ -412,8 +304,7 @@ library XenovoyaGameplayUpdates {
         // ) {
         //updates.activeActions
         //updates.playerActiveActionIDs
-        dayPhaseUpdates.randomness = XenovoyaQueue(payable(queueAddress))
-            .getRandomness(queueID);
+        dayPhaseUpdates.randomness = XenovoyaQueue(payable(queueAddress)).getRandomness(queueID);
         dayPhaseUpdates.activeActions = new string[](totalPlayers);
         dayPhaseUpdates.playerActiveActionIDs = new uint256[](totalPlayers);
         for (uint256 i = 0; i < totalPlayers; i++) {
@@ -424,9 +315,7 @@ library XenovoyaGameplayUpdates {
         dayPhaseUpdates.activeActionResultCard = new string[2][](totalPlayers);
         dayPhaseUpdates.playerStatUpdateIDs = new uint256[](totalPlayers);
         dayPhaseUpdates.playerStatUpdates = new int8[3][](totalPlayers);
-        dayPhaseUpdates.activeActionInventoryChanges = new string[3][](
-            totalPlayers
-        );
+        dayPhaseUpdates.activeActionInventoryChanges = new string[3][](totalPlayers);
         dayPhaseUpdates.playerTransferItemTypes = new string[](totalPlayers);
         dayPhaseUpdates.playerTransfersFrom = new uint256[](totalPlayers);
         dayPhaseUpdates.playerTransfersTo = new uint256[](totalPlayers);
@@ -437,28 +326,16 @@ library XenovoyaGameplayUpdates {
 
         for (uint256 i = 0; i < totalPlayers; i++) {
             uint256 playerID = i + 1;
-            if (
-                !CharacterCard(
-                    XenovoyaBoard(gameBoardAddress).characterCard()
-                ).playerIsDead(gameID, playerID)
-            ) {
+            if (!CharacterCard(XenovoyaBoard(gameBoardAddress).characterCard()).playerIsDead(gameID, playerID)) {
                 RandomIndices.RandomIndex randomIndex = playerID == 1
                     ? RandomIndices.RandomIndex.P1DayEventType
                     : playerID == 2
-                    ? RandomIndices.RandomIndex.P2DayEventType
-                    : playerID == 3
-                    ? RandomIndices.RandomIndex.P3DayEventType
-                    : RandomIndices.RandomIndex.P4DayEventType;
+                        ? RandomIndices.RandomIndex.P2DayEventType
+                        : playerID == 3
+                            ? RandomIndices.RandomIndex.P3DayEventType
+                            : RandomIndices.RandomIndex.P4DayEventType;
                 // roll D6
-                if (
-                    ((
-                        RollDraw(rollDrawAddress).d6Roll(
-                            1,
-                            queueID,
-                            uint256(randomIndex)
-                        )
-                    ) % 2) == 0
-                ) {
+                if (((RollDraw(rollDrawAddress).d6Roll(1, queueID, uint256(randomIndex))) % 2) == 0) {
                     // even roll
                     // draw event card
                     int8[3] memory stats;
@@ -471,13 +348,7 @@ library XenovoyaGameplayUpdates {
                         dayPhaseUpdates.activeActionInventoryChanges[i][1],
                         dayPhaseUpdates.activeActionInventoryChanges[i][2],
                         dayPhaseUpdates.activeActionResultCard[i][1]
-                    ) = RollDraw(rollDrawAddress).drawCard(
-                        RollDraw.CardType.Event,
-                        queueID,
-                        playerID,
-                        true,
-                        true
-                    );
+                    ) = RollDraw(rollDrawAddress).drawCard(RollDraw.CardType.Event, queueID, playerID, true, true);
                     dayPhaseUpdates.playerStatUpdates[i] = stats;
                     dayPhaseUpdates.activeActionResults[i] = 1;
                     dayPhaseUpdates.playerStatUpdateIDs[i] = playerID;
@@ -492,13 +363,7 @@ library XenovoyaGameplayUpdates {
                         dayPhaseUpdates.activeActionInventoryChanges[i][1],
                         dayPhaseUpdates.activeActionInventoryChanges[i][2],
                         dayPhaseUpdates.activeActionResultCard[i][1]
-                    ) = RollDraw(rollDrawAddress).drawCard(
-                        RollDraw.CardType.Ambush,
-                        queueID,
-                        playerID,
-                        true,
-                        true
-                    );
+                    ) = RollDraw(rollDrawAddress).drawCard(RollDraw.CardType.Ambush, queueID, playerID, true, true);
                     dayPhaseUpdates.playerStatUpdates[i] = stats;
                     dayPhaseUpdates.activeActionResults[i] = 2;
                     dayPhaseUpdates.playerStatUpdateIDs[i] = playerID;
@@ -509,56 +374,34 @@ library XenovoyaGameplayUpdates {
                 // string memory handLossInventory = dayPhaseUpdates
                 //     .activeActionInventoryChanges[i][2];
 
-                if (
-                    !stringsMatch(
-                        dayPhaseUpdates.activeActionInventoryChanges[i][0],
-                        ""
-                    )
-                ) {
+                if (!stringsMatch(dayPhaseUpdates.activeActionInventoryChanges[i][0], "")) {
                     // set item loss
 
                     // dayPhaseUpdates.playerActiveActionIDs[i] = playerID;
-                    dayPhaseUpdates.playerTransferItemTypes[i] = dayPhaseUpdates
-                        .activeActionInventoryChanges[i][0];
+                    dayPhaseUpdates.playerTransferItemTypes[i] = dayPhaseUpdates.activeActionInventoryChanges[i][0];
                     dayPhaseUpdates.playerTransfersTo[i] = 0;
                     dayPhaseUpdates.playerTransfersFrom[i] = playerID;
                     dayPhaseUpdates.playerTransferQtys[i] = 1;
                 }
 
-                if (
-                    !stringsMatch(
-                        dayPhaseUpdates.activeActionInventoryChanges[i][1],
-                        ""
-                    )
-                ) {
+                if (!stringsMatch(dayPhaseUpdates.activeActionInventoryChanges[i][1], "")) {
                     // Set item gain
                     // dayPhaseUpdates.playerActiveActionIDs[i] = playerID;
-                    dayPhaseUpdates.playerTransferItemTypes[i] = dayPhaseUpdates
-                        .activeActionInventoryChanges[i][1];
+                    dayPhaseUpdates.playerTransferItemTypes[i] = dayPhaseUpdates.activeActionInventoryChanges[i][1];
                     dayPhaseUpdates.playerTransfersFrom[i] = 0;
                     dayPhaseUpdates.playerTransfersTo[i] = playerID;
                     dayPhaseUpdates.playerTransferQtys[i] = 1;
                 }
 
-                if (
-                    !stringsMatch(
-                        dayPhaseUpdates.activeActionInventoryChanges[i][2],
-                        ""
-                    )
-                ) {
+                if (!stringsMatch(dayPhaseUpdates.activeActionInventoryChanges[i][2], "")) {
                     // set hand loss if item is in hand
                     string memory handItem = itemInHand(
-                        dayPhaseUpdates.activeActionInventoryChanges[i][2],
-                        playerID,
-                        gameID,
-                        gameBoardAddress
+                        dayPhaseUpdates.activeActionInventoryChanges[i][2], playerID, gameID, gameBoardAddress
                     );
                     if (
-                        !stringsMatch(handItem, "") &&
-                        TokenInventory(
-                            XenovoyaBoard(gameBoardAddress).tokenInventory()
-                        ).ITEM_TOKEN().balance(handItem, gameID, playerID) >
-                        0
+                        !stringsMatch(handItem, "")
+                            && TokenInventory(XenovoyaBoard(gameBoardAddress).tokenInventory()).ITEM_TOKEN()
+                                    .balance(handItem, gameID, playerID) > 0
                     ) {
                         // dayPhaseUpdates.playerActiveActionIDs[i] = playerID;
                         dayPhaseUpdates.playerTransferItemTypes[i] = handItem;
@@ -567,8 +410,7 @@ library XenovoyaGameplayUpdates {
                         dayPhaseUpdates.playerTransferQtys[i] = 1;
                         dayPhaseUpdates.playerEquipIDs[i] = playerID;
                         dayPhaseUpdates.playerEquipHands[i] = stringsMatch(
-                            dayPhaseUpdates.activeActionInventoryChanges[i][2],
-                            "Left"
+                            dayPhaseUpdates.activeActionInventoryChanges[i][2], "Left"
                         )
                             ? LEFT_HAND
                             : RIGHT_HAND;
@@ -580,55 +422,38 @@ library XenovoyaGameplayUpdates {
         return dayPhaseUpdates;
     }
 
-    function itemInHand(
-        string memory whichHand,
-        uint256 playerID,
-        uint256 gameID,
-        address gameBoardAddress
-    ) public view returns (string memory item) {
+    function itemInHand(string memory whichHand, uint256 playerID, uint256 gameID, address gameBoardAddress)
+        public
+        view
+        returns (string memory item)
+    {
         item = "";
         if (stringsMatch(whichHand, "Left")) {
-            item = CharacterCard(
-                XenovoyaBoard(gameBoardAddress).characterCard()
-            ).leftHandItem(gameID, playerID);
+            item = CharacterCard(XenovoyaBoard(gameBoardAddress).characterCard()).leftHandItem(gameID, playerID);
         } else if (stringsMatch(whichHand, "Right")) {
-            item = CharacterCard(
-                XenovoyaBoard(gameBoardAddress).characterCard()
-            ).rightHandItem(gameID, playerID);
+            item = CharacterCard(XenovoyaBoard(gameBoardAddress).characterCard()).rightHandItem(gameID, playerID);
         }
     }
 
-    function dig(
-        address queueAddress,
-        uint256 queueID,
-        address rollDrawAddress,
-        uint256 playerID
-    ) internal view returns (RollDraw.CardType resultType) {
+    function dig(address queueAddress, uint256 queueID, address rollDrawAddress, uint256 playerID)
+        internal
+        view
+        returns (RollDraw.CardType resultType)
+    {
         // if digging available... (should be pre-checked)
         // TODO:
         // roll dice (d6) for each player on space not resting
 
-        uint256 playersOnSpace = XenovoyaQueue(payable(queueAddress))
-            .getSubmissionOptions(queueID, playerID)
-            .length - 1;
-        string memory phase = XenovoyaQueue(payable(queueAddress))
-            .getSubmissionOptions(queueID, playerID)[0];
+        uint256 playersOnSpace = XenovoyaQueue(payable(queueAddress)).getSubmissionOptions(queueID, playerID).length - 1;
+        string memory phase = XenovoyaQueue(payable(queueAddress)).getSubmissionOptions(queueID, playerID)[0];
         RandomIndices.RandomIndex randomIndex = playerID == 1
             ? RandomIndices.RandomIndex.P1DigPassFail
             : playerID == 2
-            ? RandomIndices.RandomIndex.P2DigPassFail
-            : playerID == 3
-            ? RandomIndices.RandomIndex.P3DigPassFail
-            : RandomIndices.RandomIndex.P4DigPassFail;
-        uint256 rollOutcome = RollDraw(rollDrawAddress).d6Roll(
-            playersOnSpace,
-            queueID,
-            uint256(randomIndex)
-        );
+                ? RandomIndices.RandomIndex.P2DigPassFail
+                : playerID == 3 ? RandomIndices.RandomIndex.P3DigPassFail : RandomIndices.RandomIndex.P4DigPassFail;
+        uint256 rollOutcome = RollDraw(rollDrawAddress).d6Roll(playersOnSpace, queueID, uint256(randomIndex));
         uint256 rollRequired = stringsMatch(phase, "Day") ? 4 : 5;
-        resultType = rollOutcome < rollRequired
-            ? RollDraw.CardType.Ambush
-            : RollDraw.CardType.Treasure;
+        resultType = rollOutcome < rollRequired ? RollDraw.CardType.Ambush : RollDraw.CardType.Treasure;
 
         // if sum of rolls is greater than 5 during night win treasure
         // if sum of rolls is greater than 4 during day win treasure
@@ -636,40 +461,36 @@ library XenovoyaGameplayUpdates {
         // Result types: 0 = None, 1 = Event, 2 = Ambush, 3 = Treasure
     }
 
-    function help(
-        address queueAddress,
-        uint256 queueID,
-        uint256 playerID
-    )
+    function help(address queueAddress, uint256 queueID, uint256 playerID)
         internal
         view
-        returns (
-            int8[3] memory playerStatAdjustment,
-            int8[3] memory recipientStatAdjustment
-        )
+        returns (int8[3] memory playerStatAdjustment, int8[3] memory recipientStatAdjustment)
     {
         // returns [playerStat adjustments, recipientAdjustments]
-        string[] memory helpOptions = XenovoyaQueue(payable(queueAddress))
-            .getSubmissionOptions(queueID, playerID);
+        string[] memory helpOptions = XenovoyaQueue(payable(queueAddress)).getSubmissionOptions(queueID, playerID);
+        // Help is a rally, not a zero-sum transfer: the chosen stat receives
+        // focused recovery while the teammate's other stats stabilize.
+        recipientStatAdjustment[0] = 1;
+        recipientStatAdjustment[1] = 1;
+        recipientStatAdjustment[2] = 1;
         if (stringsMatch(helpOptions[1], "Movement")) {
             playerStatAdjustment[0] = -1;
-            recipientStatAdjustment[0] = 1;
+            recipientStatAdjustment[0] = 2;
         } else if (stringsMatch(helpOptions[1], "Agility")) {
             playerStatAdjustment[1] = -1;
-            recipientStatAdjustment[1] = 1;
+            recipientStatAdjustment[1] = 2;
         } else if (stringsMatch(helpOptions[1], "Dexterity")) {
             playerStatAdjustment[2] = -1;
-            recipientStatAdjustment[2] = 1;
+            recipientStatAdjustment[2] = 2;
         }
     }
 
-    function rest(
-        address queueAddress,
-        uint256 queueID,
-        uint256 playerID
-    ) internal view returns (int8[3] memory stats) {
-        string memory statToRest = XenovoyaQueue(payable(queueAddress))
-            .getSubmissionOptions(queueID, playerID)[0];
+    function rest(address queueAddress, uint256 queueID, uint256 playerID)
+        internal
+        view
+        returns (int8[3] memory stats)
+    {
+        string memory statToRest = XenovoyaQueue(payable(queueAddress)).getSubmissionOptions(queueID, playerID)[0];
         if (stringsMatch(statToRest, "Movement")) {
             stats[0] = 1;
         } else if (stringsMatch(statToRest, "Agility")) {
@@ -679,20 +500,11 @@ library XenovoyaGameplayUpdates {
         }
     }
 
-    function stringsMatch(string memory s1, string memory s2)
-        internal
-        pure
-        returns (bool)
-    {
-        return
-            keccak256(abi.encodePacked(s1)) == keccak256(abi.encodePacked(s2));
+    function stringsMatch(string memory s1, string memory s2) internal pure returns (bool) {
+        return keccak256(abi.encodePacked(s1)) == keccak256(abi.encodePacked(s2));
     }
 
-    function playerIDFromString(string memory playerID)
-        internal
-        pure
-        returns (uint256)
-    {
+    function playerIDFromString(string memory playerID) internal pure returns (uint256) {
         if (stringsMatch(playerID, "1")) {
             return 1;
         } else if (stringsMatch(playerID, "2")) {

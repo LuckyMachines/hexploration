@@ -14,17 +14,11 @@ import "./GameWallets.sol";
 import "@chainlink/contracts/src/v0.8/AutomationCompatible.sol";
 import "@luckymachines/autoloop/src/AutoLoopCompatible.sol";
 
-contract XenovoyaController is
-    GameController,
-    GameWallets,
-    AutomationCompatibleInterface,
-    AutoLoopCompatible
-{
+contract XenovoyaController is GameController, GameWallets, AutomationCompatibleInterface, AutoLoopCompatible {
     // functions are meant to be called directly by players by default
     // we are adding the ability of a Controller Admin or Keeper to
     // execute the game aspects not directly controlled by players
-    bytes32 public constant VERIFIED_CONTROLLER_ROLE =
-        keccak256("VERIFIED_CONTROLLER_ROLE");
+    bytes32 public constant VERIFIED_CONTROLLER_ROLE = keccak256("VERIFIED_CONTROLLER_ROLE");
 
     XenovoyaStateUpdate GAME_STATE;
     GameEvents GAME_EVENTS;
@@ -33,8 +27,7 @@ contract XenovoyaController is
     uint256 public timeLimit = 10 * 60; // Defaults to 10 minutes (in seconds)
 
     // Mapping from board address => game ID => queue ID
-    mapping(address => mapping(uint256 => mapping(uint256 => uint256)))
-        public submissionTimeStart;
+    mapping(address => mapping(uint256 => mapping(uint256 => uint256))) public submissionTimeStart;
     mapping(address => mapping(uint256 => mapping(uint256 => bool))) readyForUpdate;
 
     address[] public activeGameAddresses;
@@ -42,8 +35,7 @@ contract XenovoyaController is
 
     modifier onlyAdminVC() {
         require(
-            hasRole(DEFAULT_ADMIN_ROLE, _msgSender()) ||
-                hasRole(VERIFIED_CONTROLLER_ROLE, _msgSender()),
+            hasRole(DEFAULT_ADMIN_ROLE, _msgSender()) || hasRole(VERIFIED_CONTROLLER_ROLE, _msgSender()),
             "Admin or Keeper role required"
         );
         _;
@@ -53,52 +45,30 @@ contract XenovoyaController is
 
     // Admin Functions
 
-    function setGameEvents(address gameEventsAddress)
-        public
-        onlyRole(DEFAULT_ADMIN_ROLE)
-    {
+    function setGameEvents(address gameEventsAddress) public onlyRole(DEFAULT_ADMIN_ROLE) {
         GAME_EVENTS = GameEvents(gameEventsAddress);
     }
 
-    function setGameStateUpdate(address gsuAddress)
-        public
-        onlyRole(DEFAULT_ADMIN_ROLE)
-    {
+    function setGameStateUpdate(address gsuAddress) public onlyRole(DEFAULT_ADMIN_ROLE) {
         GAME_STATE = XenovoyaStateUpdate(gsuAddress);
     }
 
-    function setGameSetup(address gameSetupAddress)
-        public
-        onlyRole(DEFAULT_ADMIN_ROLE)
-    {
+    function setGameSetup(address gameSetupAddress) public onlyRole(DEFAULT_ADMIN_ROLE) {
         GAME_SETUP = GameSetup(payable(gameSetupAddress));
     }
 
-    function addVerifiedController(address vcAddress)
-        public
-        onlyRole(DEFAULT_ADMIN_ROLE)
-    {
+    function addVerifiedController(address vcAddress) public onlyRole(DEFAULT_ADMIN_ROLE) {
         grantRole(VERIFIED_CONTROLLER_ROLE, vcAddress);
     }
 
-    function setTimeLimit(uint256 timeInSeconds)
-        public
-        onlyRole(DEFAULT_ADMIN_ROLE)
-    {
+    function setTimeLimit(uint256 timeInSeconds) public onlyRole(DEFAULT_ADMIN_ROLE) {
         timeLimit = timeInSeconds;
     }
 
-    function stopTimer(
-        uint256 gameID,
-        address boardAddress,
-        uint256 queueID
-    ) public onlyRole(DEFAULT_ADMIN_ROLE) {
+    function stopTimer(uint256 gameID, address boardAddress, uint256 queueID) public onlyRole(DEFAULT_ADMIN_ROLE) {
         delete submissionTimeStart[boardAddress][gameID][queueID];
         for (uint256 i = 0; i < activeGames.length; i++) {
-            if (
-                activeGames[i] == gameID &&
-                activeGameAddresses[i] == boardAddress
-            ) {
+            if (activeGames[i] == gameID && activeGameAddresses[i] == boardAddress) {
                 delete activeGames[i];
                 delete activeGameAddresses[i];
             }
@@ -112,11 +82,7 @@ contract XenovoyaController is
         board.registerPlayer(tx.origin, gameID);
         uint256 playerID = pr.playerID(gameID, tx.origin);
         // TODO: set to official values
-        CharacterCard(board.characterCard()).setStats(
-            [4, 4, 4],
-            gameID,
-            playerID
-        );
+        CharacterCard(board.characterCard()).setStats([4, 4, 4], gameID, playerID);
         // emit player joined
         GAME_EVENTS.emitGameRegistration(gameID, tx.origin, playerID);
 
@@ -135,22 +101,11 @@ contract XenovoyaController is
         uint256 gameID,
         address boardAddress
     ) public {
-        _checkAction(
-            actionIndex,
-            options,
-            leftHand,
-            rightHand,
-            gameID,
-            boardAddress,
-            playerID
-        );
+        _checkAction(actionIndex, options, leftHand, rightHand, gameID, boardAddress, playerID);
         XenovoyaBoard board = XenovoyaBoard(boardAddress);
         XenovoyaQueue q = XenovoyaQueue(payable(board.gameplayQueue()));
         PlayerRegistry pr = PlayerRegistry(board.prAddress());
-        require(
-            pr.playerAddress(gameID, playerID) == tx.origin,
-            "PlayerID is not sender"
-        );
+        require(pr.playerAddress(gameID, playerID) == tx.origin, "PlayerID is not sender");
         uint256 qID = q.queueID(gameID);
         if (qID == 0) {
             uint256 totalRegistrations = pr.totalRegistrations(gameID);
@@ -166,9 +121,8 @@ contract XenovoyaController is
 
         string memory cz = board.currentPlayZone(gameID, playerID);
         string[] memory newOptions;
-        bool isDayPhase = TokenInventory(board.tokenInventory())
-            .DAY_NIGHT_TOKEN()
-            .balance("Day", gameID, GAME_BOARD_WALLET_ID) > 0
+        bool isDayPhase = TokenInventory(board.tokenInventory()).DAY_NIGHT_TOKEN()
+                .balance("Day", gameID, GAME_BOARD_WALLET_ID) > 0
             ? true
             : false;
         if (actionIndex == 4) {
@@ -177,9 +131,7 @@ contract XenovoyaController is
             uint256 activePlayersOnSpace = 0;
             for (uint256 i = 0; i < pr.totalRegistrations(gameID); i++) {
                 if (
-                    keccak256(
-                        abi.encodePacked(board.currentPlayZone(gameID, i + 1))
-                    ) == keccak256(abi.encodePacked(cz))
+                    keccak256(abi.encodePacked(board.currentPlayZone(gameID, i + 1))) == keccak256(abi.encodePacked(cz))
                 ) {
                     activePlayersOnSpace++;
                 }
@@ -191,15 +143,7 @@ contract XenovoyaController is
             newOptions = options;
         }
 
-        q.submitActionForPlayer(
-            playerID,
-            actionIndex,
-            newOptions,
-            leftHand,
-            rightHand,
-            qID,
-            isDayPhase
-        );
+        q.submitActionForPlayer(playerID, actionIndex, newOptions, leftHand, rightHand, qID, isDayPhase);
 
         if (q.getAllPlayers(qID).length >= q.totalPlayers(qID)) {
             readyForUpdate[boardAddress][gameID][qID] = true;
@@ -207,38 +151,23 @@ contract XenovoyaController is
     }
 
     // TODO: limit this to authorized game starters
-    function requestNewGame(address gameRegistryAddress, address boardAddress)
-        public
-    {
+    function requestNewGame(address gameRegistryAddress, address boardAddress) public {
         requestNewGame(gameRegistryAddress, boardAddress, 4);
     }
 
-    function requestNewGame(
-        address gameRegistryAddress,
-        address boardAddress,
-        uint256 totalPlayers
-    ) public {
+    function requestNewGame(address gameRegistryAddress, address boardAddress, uint256 totalPlayers) public {
         XenovoyaBoard board = XenovoyaBoard(boardAddress);
         board.requestNewGame(gameRegistryAddress, totalPlayers);
     }
 
     // TODO: move this into game summary
-    function latestGame(address gameRegistryAddress, address boardAddress)
-        public
-        view
-        returns (uint256)
-    {
+    function latestGame(address gameRegistryAddress, address boardAddress) public view returns (uint256) {
         return GameRegistry(gameRegistryAddress).latestGame(boardAddress);
     }
 
     // AutoLoop
     // forwarding keeper functions for compatibility
-    function shouldProgressLoop()
-        external
-        view
-        override
-        returns (bool loopIsReady, bytes memory progressWithData)
-    {
+    function shouldProgressLoop() external view override returns (bool loopIsReady, bytes memory progressWithData) {
         (loopIsReady, progressWithData) = this.checkUpkeep(new bytes(0));
     }
 
@@ -259,25 +188,15 @@ contract XenovoyaController is
         uint256 queueID;
         for (uint256 i = 0; i < activeGames.length; i++) {
             if (activeGames[i] > 0) {
-                XenovoyaBoard board = XenovoyaBoard(
-                    activeGameAddresses[i]
-                );
-                XenovoyaQueue q = XenovoyaQueue(
-                    payable(board.gameplayQueue())
-                );
+                XenovoyaBoard board = XenovoyaBoard(activeGameAddresses[i]);
+                XenovoyaQueue q = XenovoyaQueue(payable(board.gameplayQueue()));
                 queueID = q.queueID(activeGames[i]);
-                if (
-                    readyForUpdate[activeGameAddresses[i]][activeGames[i]][
-                        queueID
-                    ] == true
-                ) {
+                if (readyForUpdate[activeGameAddresses[i]][activeGames[i]][queueID] == true) {
                     gameIndex = i;
                     upkeepNeeded = true;
                     break;
                 }
-                uint256 startTime = submissionTimeStart[activeGameAddresses[i]][
-                    activeGames[i]
-                ][queueID];
+                uint256 startTime = submissionTimeStart[activeGameAddresses[i]][activeGames[i]][queueID];
                 // Keeper timeout is intentionally based on block time.
                 // forge-lint: disable-next-line(block-timestamp)
                 if (startTime > 0 && block.timestamp - startTime >= timeLimit) {
@@ -296,24 +215,18 @@ contract XenovoyaController is
         uint256 gameIndex;
         uint256 queueID;
         (gameIndex, queueID) = abi.decode(performData, (uint256, uint256));
-        uint256 startTime = submissionTimeStart[activeGameAddresses[gameIndex]][
-            activeGames[gameIndex]
-        ][queueID];
+        uint256 startTime = submissionTimeStart[activeGameAddresses[gameIndex]][activeGames[gameIndex]][queueID];
         if (
-            readyForUpdate[activeGameAddresses[gameIndex]][
-                activeGames[gameIndex]
-            ][queueID] ||
-            (startTime > 0 &&
-                activeGames.length > gameIndex &&
-                activeGames[gameIndex] > 0 &&
-                // Keeper timeout is intentionally based on block time.
-                // forge-lint: disable-next-line(block-timestamp)
-                block.timestamp - startTime > timeLimit)
+            readyForUpdate[activeGameAddresses[gameIndex]][activeGames[gameIndex]][queueID]
+                || (startTime > 0
+                    && activeGames.length > gameIndex
+                    && activeGames[gameIndex] > 0
+                    &&
+                    // Keeper timeout is intentionally based on block time.
+                    // forge-lint: disable-next-line(block-timestamp)
+                    block.timestamp - startTime > timeLimit)
         ) {
-            submissionTimeout(
-                activeGames[gameIndex],
-                activeGameAddresses[gameIndex]
-            );
+            submissionTimeout(activeGames[gameIndex], activeGameAddresses[gameIndex]);
             // update
             delete activeGames[gameIndex];
             delete activeGameAddresses[gameIndex];
@@ -324,11 +237,7 @@ contract XenovoyaController is
         games = activeGames;
     }
 
-    function getActiveGameAddresses()
-        public
-        view
-        returns (address[] memory addresses)
-    {
+    function getActiveGameAddresses() public view returns (address[] memory addresses) {
         addresses = activeGameAddresses;
     }
 
@@ -343,9 +252,8 @@ contract XenovoyaController is
         XenovoyaBoard board = XenovoyaBoard(boardAddress);
         XenovoyaQueue q = XenovoyaQueue(payable(board.gameplayQueue()));
         uint256 qID = q.queueID(gameID);
-        bool isDayPhase = TokenInventory(board.tokenInventory())
-            .DAY_NIGHT_TOKEN()
-            .balance("Day", gameID, GAME_BOARD_WALLET_ID) > 0
+        bool isDayPhase = TokenInventory(board.tokenInventory()).DAY_NIGHT_TOKEN()
+                .balance("Day", gameID, GAME_BOARD_WALLET_ID) > 0
             ? true
             : false;
         q.requestProcessActions(qID, isDayPhase);
@@ -364,15 +272,7 @@ contract XenovoyaController is
     ) internal view {
         bool valid;
         string memory reason;
-        (valid, reason) = actionIsValid(
-            actionIndex,
-            options,
-            leftHand,
-            rightHand,
-            gameID,
-            gameBoardAddress,
-            playerID
-        );
+        (valid, reason) = actionIsValid(actionIndex, options, leftHand, rightHand, gameID, gameBoardAddress, playerID);
         require(valid, reason);
     }
 
@@ -386,26 +286,19 @@ contract XenovoyaController is
         uint256 playerID
     ) public view returns (bool isValid, string memory invalidError) {
         XenovoyaBoard gameBoard = XenovoyaBoard(gameBoardAddress);
-        XenovoyaQueue q = XenovoyaQueue(
-            payable(gameBoard.gameplayQueue())
-        );
+        XenovoyaQueue q = XenovoyaQueue(payable(gameBoard.gameplayQueue()));
         uint256 qID = q.queueID(gameID);
         CharacterCard cc = CharacterCard(gameBoard.characterCard());
         if (readyForUpdate[gameBoardAddress][gameID][qID] == true) {
             isValid = false;
             invalidError = "Cannot submit move. Queue already processing.";
-        } else if (
-            gameBoard.gameOver(gameID) || cc.playerIsDead(gameID, playerID)
-        ) {
+        } else if (gameBoard.gameOver(gameID) || cc.playerIsDead(gameID, playerID)) {
             isValid = false;
             invalidError = "Invalid action submitted: Game over or player is dead";
         } else {
             isValid = true;
             invalidError = "";
-            string memory currentSpace = gameBoard.currentPlayZone(
-                gameID,
-                playerID
-            );
+            string memory currentSpace = gameBoard.currentPlayZone(gameID, playerID);
             if (actionIndex == 4) {
                 // TODO:
                 // dig action
@@ -413,14 +306,7 @@ contract XenovoyaController is
                     // artifact already found at space, can't dig here
                     isValid = false;
                     invalidError = "Invalid action submitted: Artifact found on space, can't dig.";
-                } else if (
-                    bytes(
-                        CharacterCard(gameBoard.characterCard()).artifact(
-                            gameID,
-                            playerID
-                        )
-                    ).length > 0
-                ) {
+                } else if (bytes(CharacterCard(gameBoard.characterCard()).artifact(gameID, playerID)).length > 0) {
                     // player already has artifact, can't dig
                     isValid = false;
                     invalidError = "Invalid action submitted: Player has artifact, can't dig.";
@@ -429,12 +315,7 @@ contract XenovoyaController is
                 // moving
                 // check options for valid movement
                 // TODO: make sure # of spaces is within movement
-                if (
-                    CharacterCard(gameBoard.characterCard()).movement(
-                        gameID,
-                        playerID
-                    ) < (options.length)
-                ) {
+                if (CharacterCard(gameBoard.characterCard()).movement(gameID, playerID) < (options.length)) {
                     isValid = false;
                     invalidError = "Invalid action submitted: player movement limit exceeded.";
                 } else {
@@ -458,25 +339,14 @@ contract XenovoyaController is
                 }
             } else if (actionIndex == 2) {
                 // setup camp
-                TokenInventory tokenInventory = TokenInventory(
-                    gameBoard.tokenInventory()
-                );
-                if (
-                    tokenInventory.ITEM_TOKEN().balance(
-                        "Campsite",
-                        gameID,
-                        playerID
-                    ) == 0
-                ) {
+                TokenInventory tokenInventory = TokenInventory(gameBoard.tokenInventory());
+                if (tokenInventory.ITEM_TOKEN().balance("Campsite", gameID, playerID) == 0) {
                     // campsite is not in player inventory
                     isValid = false;
                     invalidError = "Invalid action submitted: Campsite not in inventory.";
                 } else if (
-                    tokenInventory.ITEM_TOKEN().zoneBalance(
-                        "Campsite",
-                        gameID,
-                        zoneIndex(gameBoard.getZoneAliases(), currentSpace)
-                    ) > 0
+                    tokenInventory.ITEM_TOKEN()
+                            .zoneBalance("Campsite", gameID, zoneIndex(gameBoard.getZoneAliases(), currentSpace)) > 0
                 ) {
                     // campsite is already on board space
                     isValid = false;
@@ -484,25 +354,14 @@ contract XenovoyaController is
                 }
             } else if (actionIndex == 3) {
                 // break down camp
-                TokenInventory tokenInventory = TokenInventory(
-                    gameBoard.tokenInventory()
-                );
-                if (
-                    tokenInventory.ITEM_TOKEN().balance(
-                        "Campsite",
-                        gameID,
-                        playerID
-                    ) > 0
-                ) {
+                TokenInventory tokenInventory = TokenInventory(gameBoard.tokenInventory());
+                if (tokenInventory.ITEM_TOKEN().balance("Campsite", gameID, playerID) > 0) {
                     // campsite is already in player inventory
                     isValid = false;
                     invalidError = "Invalid action submitted: Campsite already in inventory.";
                 } else if (
-                    tokenInventory.ITEM_TOKEN().zoneBalance(
-                        "Campsite",
-                        gameID,
-                        zoneIndex(gameBoard.getZoneAliases(), currentSpace)
-                    ) == 0
+                    tokenInventory.ITEM_TOKEN()
+                            .zoneBalance("Campsite", gameID, zoneIndex(gameBoard.getZoneAliases(), currentSpace)) == 0
                 ) {
                     // campsite is not on board space
                     isValid = false;
@@ -511,15 +370,9 @@ contract XenovoyaController is
             } else if (actionIndex == 5) {
                 // rest
                 if (
-                    TokenInventory(gameBoard.tokenInventory())
-                        .ITEM_TOKEN()
-                        .zoneBalance(
-                            "Campsite",
-                            gameID,
-                            zoneIndex(gameBoard.getZoneAliases(), currentSpace)
-                        ) ==
-                    0 ||
-                    bytes(options[0]).length == 0
+                    TokenInventory(gameBoard.tokenInventory()).ITEM_TOKEN()
+                                .zoneBalance("Campsite", gameID, zoneIndex(gameBoard.getZoneAliases(), currentSpace))
+                            == 0 || bytes(options[0]).length == 0
                 ) {
                     // campsite is not on board space || options is not ""
                     isValid = false;
@@ -530,59 +383,62 @@ contract XenovoyaController is
                 // check that player being helped is on the same space
                 // options[0] = player to help ("1","2","3", or "4")
                 // options[1] = attribute to help ("Movement", "Agility", or "Dexterity")
-                uint256 playerIDToHelp = stringsMatch(options[0], "1")
-                    ? 1
-                    : stringsMatch(options[0], "2")
-                    ? 2
-                    : stringsMatch(options[0], "3")
-                    ? 3
-                    : stringsMatch(options[0], "4")
-                    ? 4
-                    : 0;
-                if (
-                    !stringsMatch(
-                        currentSpace,
-                        gameBoard.currentPlayZone(gameID, playerIDToHelp)
-                    )
-                ) {
-                    // players are not on same space
+                if (options.length < 2) {
                     isValid = false;
-                    invalidError = "Invalid action submitted: players not on same space";
+                    invalidError = "Invalid action submitted: Help needs a teammate and stat.";
                 } else {
-                    // check that player can transfer attribute (> 1)
-                    // check that receiving player can increase attribute (< MAX)
-                    if (stringsMatch(options[1], "Movement")) {
-                        if (
-                            cc.movement(gameID, playerID) <= 1 ||
-                            cc.movement(gameID, playerIDToHelp) ==
-                            cc.MAX_MOVEMENT()
-                        ) {
-                            // player doesn't have movement attribute to transfer or
-                            // recipient has full movement attribute
+                    uint256 playerIDToHelp = stringsMatch(options[0], "1")
+                        ? 1
+                        : stringsMatch(options[0], "2")
+                            ? 2
+                            : stringsMatch(options[0], "3") ? 3 : stringsMatch(options[0], "4") ? 4 : 0;
+                if (
+                    playerIDToHelp == 0 ||
+                    playerIDToHelp == playerID ||
+                    cc.playerIsDead(gameID, playerIDToHelp)
+                ) {
+                    isValid = false;
+                    invalidError = "Invalid action submitted: Help needs another living player.";
+                    } else if (!stringsMatch(currentSpace, gameBoard.currentPlayZone(gameID, playerIDToHelp))) {
+                        // players are not on same space
+                        isValid = false;
+                        invalidError = "Invalid action submitted: players not on same space";
+                    } else {
+                        // check that player can transfer attribute (> 1)
+                        // check that receiving player can increase attribute (< MAX)
+                        if (stringsMatch(options[1], "Movement")) {
+                            if (
+                                cc.movement(gameID, playerID) <= 1
+                                    || cc.movement(gameID, playerIDToHelp) >= cc.MAX_MOVEMENT()
+                            ) {
+                                // player doesn't have movement attribute to transfer or
+                                // recipient has full movement attribute
+                                isValid = false;
+                                invalidError = "Invalid action submitted: Movement attribute mismatch";
+                            }
+                        } else if (stringsMatch(options[1], "Agility")) {
+                            if (
+                                cc.agility(gameID, playerID) <= 1
+                                    || cc.agility(gameID, playerIDToHelp) >= cc.MAX_AGILITY()
+                            ) {
+                                // player doesn't have agility attribute to transfer or
+                                // recipient has full agility attribute
+                                isValid = false;
+                                invalidError = "Invalid action submitted: Agility attribute mismatch";
+                            }
+                        } else if (stringsMatch(options[1], "Dexterity")) {
+                            if (
+                                cc.dexterity(gameID, playerID) <= 1
+                                    || cc.dexterity(gameID, playerIDToHelp) >= cc.MAX_DEXTERITY()
+                            ) {
+                                // player doesn't have dexterity attribute to transfer or
+                                // recipient has full dexterity attribute
+                                isValid = false;
+                                invalidError = "Invalid action submitted: Dexterity attribute mismatch";
+                            }
+                        } else {
                             isValid = false;
-                            invalidError = "Invalid action submitted: Movement attribute mismatch";
-                        }
-                    } else if (stringsMatch(options[1], "Agility")) {
-                        if (
-                            cc.agility(gameID, playerID) <= 1 ||
-                            cc.agility(gameID, playerIDToHelp) ==
-                            cc.MAX_AGILITY()
-                        ) {
-                            // player doesn't have agility attribute to transfer or
-                            // recipient has full agility attribute
-                            isValid = false;
-                            invalidError = "Invalid action submitted: Agility attribute mismatch";
-                        }
-                    } else if (stringsMatch(options[1], "Dexterity")) {
-                        if (
-                            cc.dexterity(gameID, playerID) <= 1 ||
-                            cc.dexterity(gameID, playerIDToHelp) ==
-                            cc.MAX_DEXTERITY()
-                        ) {
-                            // player doesn't have dexterity attribute to transfer or
-                            // recipient has full dexterity attribute
-                            isValid = false;
-                            invalidError = "Invalid action submitted: Dexterity attribute mismatch";
+                            invalidError = "Invalid action submitted: Choose Movement, Agility, or Dexterity.";
                         }
                     }
                 }
@@ -591,26 +447,14 @@ contract XenovoyaController is
                 // cannot equip both hands in one turn
                 isValid = false;
                 invalidError = "Invalid action submitted: Can't equip both hands in one turn.";
-            } else if (
-                bytes(leftHand).length > 0 && !stringsMatch(leftHand, "None")
-            ) {
-                if (
-                    TokenInventory(gameBoard.tokenInventory())
-                        .ITEM_TOKEN()
-                        .balance(leftHand, gameID, playerID) == 0
-                ) {
+            } else if (bytes(leftHand).length > 0 && !stringsMatch(leftHand, "None")) {
+                if (TokenInventory(gameBoard.tokenInventory()).ITEM_TOKEN().balance(leftHand, gameID, playerID) == 0) {
                     // item not in inventory
                     isValid = false;
                     invalidError = "Invalid action submitted: LH equip not in inventory.";
                 }
-            } else if (
-                bytes(rightHand).length > 0 && !stringsMatch(rightHand, "None")
-            ) {
-                if (
-                    TokenInventory(gameBoard.tokenInventory())
-                        .ITEM_TOKEN()
-                        .balance(rightHand, gameID, playerID) == 0
-                ) {
+            } else if (bytes(rightHand).length > 0 && !stringsMatch(rightHand, "None")) {
+                if (TokenInventory(gameBoard.tokenInventory()).ITEM_TOKEN().balance(rightHand, gameID, playerID) == 0) {
                     // item not in inventory
                     isValid = false;
                     invalidError = "Invalid action submitted: RH equip not in inventory.";
@@ -619,9 +463,7 @@ contract XenovoyaController is
         }
     }
 
-    function supportsInterface(
-        bytes4 interfaceId
-    )
+    function supportsInterface(bytes4 interfaceId)
         public
         view
         virtual
@@ -631,26 +473,14 @@ contract XenovoyaController is
         return super.supportsInterface(interfaceId);
     }
 
-    function stringsMatch(string memory s1, string memory s2)
-        internal
-        pure
-        returns (bool)
-    {
-        return
-            keccak256(abi.encodePacked(s1)) == keccak256(abi.encodePacked(s2));
+    function stringsMatch(string memory s1, string memory s2) internal pure returns (bool) {
+        return keccak256(abi.encodePacked(s1)) == keccak256(abi.encodePacked(s2));
     }
 
-    function zoneIndex(string[] memory allZones, string memory zoneAlias)
-        internal
-        pure
-        returns (uint256 index)
-    {
+    function zoneIndex(string[] memory allZones, string memory zoneAlias) internal pure returns (uint256 index) {
         index = 1111111111111;
         for (uint256 i = 0; i < allZones.length; i++) {
-            if (
-                keccak256(abi.encodePacked(zoneAlias)) ==
-                keccak256(abi.encodePacked(allZones[i]))
-            ) {
+            if (keccak256(abi.encodePacked(zoneAlias)) == keccak256(abi.encodePacked(allZones[i]))) {
                 index = i;
                 break;
             }

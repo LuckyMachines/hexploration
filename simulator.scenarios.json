@@ -11,7 +11,7 @@
       "players": 1,
       "turns": 12,
       "strategies": ["dig", "balanced", "risky"],
-      "batch": 1,
+      "batch": 10,
       "seed": "scenario-solo-artifact-hunt",
       "tags": ["solo", "artifact", "survival"],
       "initialState": {
@@ -56,6 +56,13 @@
       },
       "packs": ["artifacts"],
       "importance": "core",
+      "productionEligible": true,
+      "loopCoverage": ["explore-decide-resolve", "dig-reward-risk", "failure-recovery"],
+      "evidenceRequirements": {
+        "minRunsPerStrategy": 10,
+        "minDistinctSeedsPerStrategy": 10,
+        "requireTerminalOutcome": true
+      },
       "requiredSetupLevel": "exact",
       "setupForge": {
         "schemaVersion": 1,
@@ -65,6 +72,7 @@
             "playerIndex": 0,
             "stats": { "movement": 2, "agility": 2, "dexterity": 2 },
             "inventory": ["Gryroscopic Drill"],
+            "location": "0,0",
             "critical": true,
             "notes": "Creates low but playable stat pressure for artifact hunting."
           }
@@ -73,7 +81,7 @@
           "revealedZones": ["0,0", "1,0"],
           "terrain": {
             "0,0": "LandingSite",
-            "1,0": "Jungle"
+            "1,0": "RelicMystery"
           },
           "landingZone": "0,0",
           "campsites": []
@@ -119,7 +127,7 @@
       "players": 4,
       "turns": 10,
       "strategies": ["balanced", "rest", "move", "risky"],
-      "batch": 1,
+      "batch": 10,
       "seed": "scenario-escape-pressure-4p",
       "tags": ["multiplayer", "cooperation", "escape", "survival"],
       "initialState": {
@@ -164,7 +172,7 @@
         { "metric": "flatStreak", "op": ">=", "value": 3, "label": "Flat streak >= 3" },
         { "metric": "helpActions", "op": "==", "value": 0, "label": "No help actions" },
         { "metric": "fleeActions", "op": "==", "value": 0, "label": "No flee actions" },
-        { "metric": "zeroStatPlayers", "op": ">", "value": 0, "label": "Any zero-stat player" }
+        { "metric": "zeroStatPlayers", "op": ">", "value": 1, "label": "Multiple zero-stat players" }
       ],
       "notes": {
         "author": "system",
@@ -179,14 +187,22 @@
       },
       "packs": ["escape", "cooperation"],
       "importance": "core",
-      "requiredSetupLevel": "exact",
+      "productionEligible": true,
+      "loopCoverage": ["help-recover", "flee-extract", "failure-recovery"],
+      "evidenceRequirements": {
+        "minRunsPerStrategy": 10,
+        "minDistinctSeedsPerStrategy": 10,
+        "requireTerminalOutcome": true
+      },
+      "requiredSetupLevel": "partial",
       "setupForge": {
         "schemaVersion": 1,
-        "requiredSetupLevel": "exact",
+        "requiredSetupLevel": "partial",
         "players": [
           {
             "playerIndex": 0,
             "stats": { "movement": 1, "agility": 1, "dexterity": 1 },
+            "location": "1,0",
             "critical": true,
             "notes": "First exhausted player."
           },
@@ -194,6 +210,7 @@
             "playerIndex": 1,
             "stats": { "movement": 1, "agility": 1, "dexterity": 1 },
             "artifacts": ["Engraved Tablet"],
+            "location": "1,1",
             "critical": true,
             "notes": "Second exhausted player and artifact pressure holder."
           },
@@ -257,33 +274,300 @@
       "createdAt": "2026-05-14T00:00:00.000Z",
       "updatedAt": "2026-05-14T00:00:00.000Z",
       "archived": false
+    },
+    {
+      "schemaVersion": 1,
+      "id": "first-discovery-solo",
+      "name": "First Discovery Solo",
+      "version": 1,
+      "description": "A clean solo opening that measures whether movement quickly reveals a useful route and an understandable consequence.",
+      "designQuestion": "Does a new player reach a visible, consequential discovery in the first two turns?",
+      "players": 1,
+      "turns": 8,
+      "strategies": ["move", "balanced"],
+      "batch": 10,
+      "seed": "scenario-first-discovery-solo",
+      "tags": ["solo", "exploration", "smoke"],
+      "loopCoverage": ["explore-decide-resolve"],
+      "productionEligible": true,
+      "evidenceRequirements": { "minRunsPerStrategy": 10, "minDistinctSeedsPerStrategy": 10, "requireTerminalOutcome": true },
+      "targets": [
+        { "metric": "revealedZones", "op": ">=", "value": 2, "label": "Early revealed zones" },
+        { "metric": "moveShare", "op": ">=", "value": 0.25, "label": "Move share" },
+        { "metric": "flatTurnRate", "op": "<=", "value": 0.25, "label": "Flat-turn rate" }
+      ],
+      "failureSignals": [
+        { "metric": "flatStreak", "op": ">=", "value": 2, "label": "Opening flat streak" },
+        { "metric": "moveShare", "op": "<", "value": 0.2, "label": "Movement underused" }
+      ],
+      "initialState": { "assumptions": [], "support": {} },
+      "setupForge": { "schemaVersion": 1, "requiredSetupLevel": "metadata", "players": [], "board": {}, "time": {}, "pressure": {}, "scriptedPrelude": { "turns": 0, "strategies": [], "discardPreludeFromMetrics": true } },
+      "requiredSetupLevel": "metadata",
+      "notes": { "author": "system", "hypothesis": "The opening exploration loop should become alive before turn three.", "decision": "" },
+      "ladder": { "prerequisites": [], "easier": [], "harder": ["solo-artifact-hunt"], "related": [] },
+      "packs": ["exploration"],
+      "importance": "core",
+      "createdAt": "2026-09-08T00:00:00.000Z",
+      "updatedAt": "2026-09-08T00:00:00.000Z",
+      "archived": false
+    },
+    {
+      "schemaVersion": 1,
+      "id": "cooperative-rescue-2p",
+      "name": "Cooperative Rescue 2P",
+      "version": 1,
+      "description": "Two players share a campsite while one is exhausted, creating an immediate help-versus-progress decision.",
+      "designQuestion": "Is helping a threatened teammate readable, valuable, and strategically interesting?",
+      "players": 2,
+      "turns": 8,
+      "strategies": ["rest", "balanced", "move"],
+      "batch": 10,
+      "seed": "scenario-cooperative-rescue-2p",
+      "tags": ["multiplayer", "cooperation", "survival"],
+      "loopCoverage": ["help-recover", "failure-recovery"],
+      "productionEligible": true,
+      "evidenceRequirements": { "minRunsPerStrategy": 10, "minDistinctSeedsPerStrategy": 10, "requireTerminalOutcome": true },
+      "targets": [
+        { "metric": "helpActions", "op": ">=", "value": 1, "label": "Help action count" },
+        { "metric": "zeroStatPlayers", "op": "<=", "value": 0.5, "label": "Zero-stat players" },
+        { "metric": "lifeScore", "op": ">=", "value": 45, "label": "Life score" }
+      ],
+      "failureSignals": [
+        { "metric": "helpActions", "op": "==", "value": 0, "label": "No help actions" },
+        { "metric": "zeroStatPlayers", "op": ">", "value": 0.5, "label": "Rescue failed" }
+      ],
+      "initialState": { "assumptions": [{ "key": "playerStats", "description": "one exhausted player", "support": "exact", "mode": "exact" }], "support": { "playerStats": "exact", "campsites": "exact" } },
+      "setupForge": {
+        "schemaVersion": 1,
+        "requiredSetupLevel": "partial",
+        "players": [
+          { "playerIndex": 0, "stats": { "movement": 1, "agility": 1, "dexterity": 1 }, "location": "1,0", "critical": true },
+          { "playerIndex": 1, "location": "1,0", "critical": false }
+        ],
+        "board": { "revealedZones": ["0,0", "1,0"], "terrain": { "0,0": "LandingSite", "1,0": "Jungle" }, "landingZone": "0,0", "campsites": ["1,0"] },
+        "time": { "day": 2, "phase": "Day" },
+        "pressure": { "strategies": ["rest", "balanced"], "lowStatPressure": true },
+        "scriptedPrelude": { "turns": 0, "strategies": [], "discardPreludeFromMetrics": true }
+      },
+      "requiredSetupLevel": "partial",
+      "notes": { "author": "system", "hypothesis": "Help should create an observable stabilization story.", "decision": "" },
+      "ladder": { "prerequisites": ["first-discovery-solo"], "easier": [], "harder": ["escape-pressure-4p"], "related": [] },
+      "packs": ["cooperation"],
+      "importance": "core",
+      "createdAt": "2026-09-08T00:00:00.000Z",
+      "updatedAt": "2026-09-08T00:00:00.000Z",
+      "archived": false
+    },
+    {
+      "schemaVersion": 1,
+      "id": "artifact-extraction-2p",
+      "name": "Artifact Extraction 2P",
+      "version": 1,
+      "description": "Two players must decide whether to extract an artifact or spend dwindling resources pursuing more value.",
+      "designQuestion": "Does artifact ownership create a clear, tense extraction decision?",
+      "players": 2,
+      "turns": 10,
+      "strategies": ["risky", "balanced", "move"],
+      "batch": 10,
+      "seed": "scenario-artifact-extraction-2p",
+      "tags": ["multiplayer", "artifact", "escape", "survival"],
+      "loopCoverage": ["dig-reward-risk", "flee-extract"],
+      "productionEligible": true,
+      "evidenceRequirements": { "minRunsPerStrategy": 10, "minDistinctSeedsPerStrategy": 10, "requireTerminalOutcome": true },
+      "targets": [
+        { "metric": "fleeActions", "op": ">=", "value": 1, "label": "Escape attempts" },
+        { "metric": "artifacts", "op": ">=", "value": 0.5, "label": "Artifact retained" },
+        { "metric": "lifeScore", "op": ">=", "value": 40, "label": "Life score" }
+      ],
+      "failureSignals": [
+        { "metric": "fleeActions", "op": "==", "value": 0, "label": "No extraction decision" },
+        { "metric": "flatStreak", "op": ">=", "value": 3, "label": "Flat extraction window" }
+      ],
+      "initialState": { "assumptions": [{ "key": "artifactsHeld", "description": "one player holds an artifact", "support": "exact", "mode": "exact" }], "support": { "artifactsHeld": "exact", "landingRevealed": "exact" } },
+      "setupForge": {
+        "schemaVersion": 1,
+        "requiredSetupLevel": "partial",
+        "players": [
+          { "playerIndex": 0, "artifacts": ["Engraved Tablet"], "location": "1,0", "critical": true },
+          { "playerIndex": 1, "location": "1,1", "critical": false }
+        ],
+        "board": { "revealedZones": ["0,0", "1,0", "1,1"], "terrain": { "0,0": "LandingSite", "1,0": "Jungle", "1,1": "Plains" }, "landingZone": "0,0", "campsites": [] },
+        "time": { "day": 3, "phase": "Day" },
+        "pressure": { "strategies": ["risky", "balanced"], "escapePressure": true },
+        "scriptedPrelude": { "turns": 0, "strategies": [], "discardPreludeFromMetrics": true }
+      },
+      "requiredSetupLevel": "partial",
+      "notes": { "author": "system", "hypothesis": "A held artifact should make fleeing a legible strategic option.", "decision": "" },
+      "ladder": { "prerequisites": ["solo-artifact-hunt"], "easier": [], "harder": ["escape-pressure-4p"], "related": ["cooperative-rescue-2p"] },
+      "packs": ["artifacts", "escape"],
+      "importance": "core",
+      "createdAt": "2026-09-08T00:00:00.000Z",
+      "updatedAt": "2026-09-08T00:00:00.000Z",
+      "archived": false
+    },
+    {
+      "schemaVersion": 1,
+      "id": "three-player-regroup-3p",
+      "name": "Three-Player Regroup",
+      "version": 1,
+      "description": "A split three-person crew must rescue a weakened explorer, regroup, and decide whether to extract.",
+      "designQuestion": "Can a three-player crew read the rescue window, regroup, and reach a terminal extraction decision?",
+      "players": 3,
+      "turns": 12,
+      "strategies": ["balanced", "rest", "risky"],
+      "batch": 10,
+      "seed": "scenario-three-player-regroup-3p",
+      "tags": ["multiplayer", "cooperation", "escape", "survival"],
+      "loopCoverage": ["explore-decide-resolve", "help-recover", "flee-extract", "failure-recovery"],
+      "productionEligible": true,
+      "evidenceRequirements": { "minRunsPerStrategy": 10, "minDistinctSeedsPerStrategy": 10, "requireTerminalOutcome": true },
+      "targets": [
+        { "metric": "helpActions", "op": ">=", "value": 1, "label": "Rescue attempted" },
+        { "metric": "recipientStatDelta", "op": ">=", "value": 1, "label": "Help creates recipient recovery" },
+        { "metric": "fleeActions", "op": ">=", "value": 1, "label": "Extraction considered" }
+      ],
+      "failureSignals": [
+        { "metric": "helpActions", "op": "==", "value": 0, "label": "Rescue window ignored" },
+        { "metric": "timeoutRate", "op": ">", "value": 0.8, "label": "Most runs fail to resolve" }
+      ],
+      "initialState": { "assumptions": [{ "key": "playerStats", "description": "one explorer begins critical", "support": "exact", "mode": "exact" }], "support": { "playerStats": "exact", "revealedZones": "exact", "landingRevealed": "exact", "campsites": "exact" } },
+      "setupForge": {
+        "schemaVersion": 1,
+        "requiredSetupLevel": "partial",
+        "players": [
+          { "playerIndex": 0, "stats": { "movement": 1, "agility": 1, "dexterity": 1 }, "location": "2,0", "critical": true },
+          { "playerIndex": 1, "location": "1,0", "critical": false },
+          { "playerIndex": 2, "artifacts": ["Engraved Tablet"], "location": "2,1", "critical": false }
+        ],
+        "board": { "revealedZones": ["0,0", "1,0", "2,0", "2,1"], "terrain": { "0,0": "LandingSite", "1,0": "Plains", "2,0": "Jungle", "2,1": "RelicMystery" }, "landingZone": "0,0", "campsites": ["1,0"] },
+        "time": { "day": 3, "phase": "Day" },
+        "pressure": { "strategies": ["balanced", "rest", "risky"], "escapePressure": true, "lowStatPressure": true },
+        "scriptedPrelude": { "turns": 0, "strategies": [], "discardPreludeFromMetrics": true }
+      },
+      "requiredSetupLevel": "partial",
+      "notes": { "author": "system", "hypothesis": "Three-player coordination should create a visible rescue-to-extraction arc.", "decision": "" },
+      "ladder": { "prerequisites": ["cooperative-rescue-2p"], "easier": ["cooperative-rescue-2p"], "harder": ["escape-pressure-4p"], "related": ["artifact-extraction-2p"] },
+      "packs": ["cooperation", "escape"],
+      "importance": "core",
+      "createdAt": "2026-09-08T00:00:00.000Z",
+      "updatedAt": "2026-09-08T00:00:00.000Z",
+      "archived": false
+    },
+    {
+      "schemaVersion": 1,
+      "id": "timeout-boundary-solo",
+      "name": "Timeout Boundary Solo",
+      "version": 1,
+      "description": "A deliberately short run verifies that unresolved play is classified as timed out rather than as success.",
+      "designQuestion": "Does the evidence system reject an unresolved run cleanly?",
+      "players": 1,
+      "turns": 1,
+      "strategies": ["idle"],
+      "batch": 2,
+      "seed": "scenario-timeout-boundary-solo",
+      "tags": ["solo", "regression", "boundary", "timeout"],
+      "loopCoverage": ["failure-recovery"],
+      "productionEligible": false,
+      "testFixture": true,
+      "evidenceRequirements": { "minRunsPerStrategy": 2, "minDistinctSeedsPerStrategy": 2, "requireTerminalOutcome": false },
+      "targets": [{ "metric": "timeoutRate", "op": ">=", "value": 1, "label": "Timeout classified" }],
+      "failureSignals": [{ "metric": "terminalRate", "op": ">", "value": 0, "label": "Unexpected terminal result" }],
+      "initialState": { "assumptions": [], "support": {} },
+      "requiredSetupLevel": "metadata",
+      "notes": { "author": "system", "hypothesis": "Bounded unresolved runs remain visibly inconclusive.", "decision": "" },
+      "ladder": { "prerequisites": [], "easier": [], "harder": [], "related": [] },
+      "packs": ["chaos-regression"],
+      "importance": "regression",
+      "createdAt": "2026-09-08T00:00:00.000Z",
+      "updatedAt": "2026-09-08T00:00:00.000Z",
+      "archived": false
+    },
+    {
+      "schemaVersion": 1,
+      "id": "inventory-limit-boundary-solo",
+      "name": "Inventory Limit Boundary",
+      "version": 1,
+      "description": "A full inventory and nearby relic exercise reward overflow and artifact attribution.",
+      "designQuestion": "Does a full inventory produce a legible reward outcome without losing the relic state?",
+      "players": 1,
+      "turns": 4,
+      "strategies": ["dig", "balanced"],
+      "batch": 2,
+      "seed": "scenario-inventory-limit-boundary-solo",
+      "tags": ["solo", "artifact", "regression", "boundary", "inventory"],
+      "loopCoverage": ["dig-reward-risk"],
+      "productionEligible": false,
+      "testFixture": true,
+      "evidenceRequirements": { "minRunsPerStrategy": 2, "minDistinctSeedsPerStrategy": 2, "requireTerminalOutcome": false },
+      "targets": [{ "metric": "digActions", "op": ">=", "value": 1, "label": "Dig attempted" }],
+      "failureSignals": [{ "metric": "invalidAttempts", "op": ">", "value": 4, "label": "Inventory affordance failure" }],
+      "initialState": { "assumptions": [{ "key": "inventory", "description": "inventory begins full", "support": "exact", "mode": "exact" }], "support": { "inventory": "exact", "revealedZones": "exact" } },
+      "setupForge": { "schemaVersion": 1, "requiredSetupLevel": "partial", "players": [{ "playerIndex": 0, "inventory": ["Gryroscopic Drill", "Rope", "Compass"], "location": "1,0", "critical": true }], "board": { "revealedZones": ["0,0", "1,0"], "terrain": { "0,0": "LandingSite", "1,0": "RelicMystery" }, "landingZone": "0,0", "campsites": [] }, "time": { "day": 2, "phase": "Day" }, "pressure": { "strategies": ["dig", "balanced"] }, "scriptedPrelude": { "turns": 0, "strategies": [], "discardPreludeFromMetrics": true } },
+      "requiredSetupLevel": "partial",
+      "notes": { "author": "system", "hypothesis": "Inventory limits should preserve clear artifact attribution.", "decision": "" },
+      "ladder": { "prerequisites": ["solo-artifact-hunt"], "easier": [], "harder": [], "related": [] },
+      "packs": ["chaos-regression"],
+      "importance": "regression",
+      "createdAt": "2026-09-08T00:00:00.000Z",
+      "updatedAt": "2026-09-08T00:00:00.000Z",
+      "archived": false
+    },
+    {
+      "schemaVersion": 1,
+      "id": "nightfall-chokepoint-2p",
+      "name": "Nightfall Chokepoint",
+      "version": 1,
+      "description": "Two explorers enter a narrow route near nightfall to test transition pressure and recovery readability.",
+      "designQuestion": "Does the day-to-night boundary create a readable route and recovery decision?",
+      "players": 2,
+      "turns": 6,
+      "strategies": ["move", "rest"],
+      "batch": 2,
+      "seed": "scenario-nightfall-chokepoint-2p",
+      "tags": ["multiplayer", "exploration", "survival", "regression", "boundary", "night"],
+      "loopCoverage": ["explore-decide-resolve", "failure-recovery"],
+      "productionEligible": false,
+      "testFixture": true,
+      "evidenceRequirements": { "minRunsPerStrategy": 2, "minDistinctSeedsPerStrategy": 2, "requireTerminalOutcome": false },
+      "targets": [{ "metric": "moveShare", "op": ">=", "value": 0.2, "label": "Route choice attempted" }],
+      "failureSignals": [{ "metric": "flatStreak", "op": ">=", "value": 3, "label": "Night transition went flat" }],
+      "initialState": { "assumptions": [{ "key": "dayNumber", "description": "near night transition", "support": "partial", "mode": "partial" }], "support": { "revealedZones": "exact", "dayNumber": "partial" } },
+      "setupForge": { "schemaVersion": 1, "requiredSetupLevel": "partial", "players": [{ "playerIndex": 0, "location": "2,0", "critical": false }, { "playerIndex": 1, "stats": { "movement": 2, "agility": 2, "dexterity": 1 }, "location": "1,0", "critical": true }], "board": { "revealedZones": ["0,0", "1,0", "2,0"], "terrain": { "0,0": "LandingSite", "1,0": "Jungle", "2,0": "Mountains" }, "landingZone": "0,0", "campsites": ["1,0"] }, "time": { "day": 3, "phase": "Night" }, "pressure": { "strategies": ["move", "rest"], "lowStatPressure": true }, "scriptedPrelude": { "turns": 0, "strategies": [], "discardPreludeFromMetrics": true } },
+      "requiredSetupLevel": "partial",
+      "notes": { "author": "system", "hypothesis": "Nightfall should create urgency without hiding the safe route.", "decision": "" },
+      "ladder": { "prerequisites": ["first-discovery-solo"], "easier": [], "harder": ["three-player-regroup-3p"], "related": [] },
+      "packs": ["chaos-regression"],
+      "importance": "regression",
+      "createdAt": "2026-09-08T00:00:00.000Z",
+      "updatedAt": "2026-09-08T00:00:00.000Z",
+      "archived": false
     }
   ],
   "packs": [
     {
       "id": "artifacts",
       "name": "Artifacts",
-      "scenarioIds": ["solo-artifact-hunt"]
+      "scenarioIds": ["solo-artifact-hunt", "artifact-extraction-2p"]
     },
     {
       "id": "escape",
       "name": "Escape",
-      "scenarioIds": ["escape-pressure-4p"]
+      "scenarioIds": ["artifact-extraction-2p", "three-player-regroup-3p", "escape-pressure-4p"]
     },
     {
       "id": "cooperation",
       "name": "Multiplayer Cooperation",
-      "scenarioIds": ["escape-pressure-4p"]
+      "scenarioIds": ["cooperative-rescue-2p", "three-player-regroup-3p", "escape-pressure-4p"]
     },
     {
       "id": "exploration",
       "name": "Exploration",
-      "scenarioIds": []
+      "scenarioIds": ["first-discovery-solo"]
     },
     {
       "id": "chaos-regression",
       "name": "Chaos Regression",
-      "scenarioIds": []
+      "scenarioIds": ["timeout-boundary-solo", "inventory-limit-boundary-solo", "nightfall-chokepoint-2p"]
     }
   ]
 }

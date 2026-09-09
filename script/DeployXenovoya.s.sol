@@ -174,6 +174,7 @@ contract DeployXenovoya is Script {
         board.addVerifiedController(s_gameplay);
         board.addVerifiedController(s_stateUpdate);
         board.addVerifiedController(s_gameSetup);
+        board.addVerifiedController(s_relicManagement);
         board.addFactory(deployer);
         board.setCharacterCard(s_characterCard);
         board.setTokenInventory(s_tokenInventory);
@@ -190,16 +191,19 @@ contract DeployXenovoya is Script {
 
         GameToken(s_dayNight).addController(s_tokenInventory);
         GameToken(s_dayNight).addController(s_gameSetup);
+        GameToken(s_dayNight).addController(s_stateUpdate);
         GameToken(s_disaster).addController(s_tokenInventory);
         GameToken(s_disaster).addController(s_gameSetup);
         GameToken(s_enemy).addController(s_tokenInventory);
         GameToken(s_enemy).addController(s_gameSetup);
         GameToken(s_item).addController(s_tokenInventory);
         GameToken(s_item).addController(s_gameSetup);
+        GameToken(s_item).addController(s_stateUpdate);
         GameToken(s_playerStatus).addController(s_tokenInventory);
         GameToken(s_playerStatus).addController(s_gameSetup);
         GameToken(s_relic).addController(s_tokenInventory);
         GameToken(s_relic).addController(s_gameSetup);
+        GameToken(s_relic).addController(s_relicManagement);
     }
 
     function _wireGameLogic() internal {
@@ -238,6 +242,7 @@ contract DeployXenovoya is Script {
         CharacterCard(s_characterCard).addVerifiedController(s_gameplay);
         CharacterCard(s_characterCard).addVerifiedController(s_stateUpdate);
         CharacterCard(s_characterCard).addVerifiedController(s_gameSetup);
+        CharacterCard(s_characterCard).addVerifiedController(s_relicManagement);
     }
 
     function _wireEvents() internal {

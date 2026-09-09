@@ -81,6 +81,7 @@ export const SETUP_ABIS = {
     { type: 'function', name: 'mintTo', stateMutability: 'nonpayable', inputs: [{ name: 'recipient', type: 'uint256' }, { name: 'tokenType', type: 'string' }, { name: 'gameID', type: 'uint256' }, { name: 'quantity', type: 'uint256' }], outputs: [] },
     { type: 'function', name: 'transfer', stateMutability: 'nonpayable', inputs: [{ name: 'tokenType', type: 'string' }, { name: 'gameID', type: 'uint256' }, { name: 'fromID', type: 'uint256' }, { name: 'toID', type: 'uint256' }, { name: 'quantity', type: 'uint256' }], outputs: [] },
     { type: 'function', name: 'transferToZone', stateMutability: 'nonpayable', inputs: [{ name: 'tokenType', type: 'string' }, { name: 'gameID', type: 'uint256' }, { name: 'fromID', type: 'uint256' }, { name: 'toZoneIndex', type: 'uint256' }, { name: 'quantity', type: 'uint256' }], outputs: [] },
+    { type: 'function', name: 'zoneBalance', stateMutability: 'view', inputs: [{ name: 'tokenType', type: 'string' }, { name: 'gameID', type: 'uint256' }, { name: 'zoneIndex', type: 'uint256' }], outputs: [{ type: 'uint256' }] },
   ],
 };
 
@@ -368,7 +369,7 @@ async function ensureLocalRoles(adapter, context, application) {
       application.warnings.push(`CHARACTER_CARD role grant skipped: ${error.shortMessage || error.message || String(error)}`);
     }
   }
-  for (const key of ['ITEM_TOKEN', 'DAY_NIGHT_TOKEN']) {
+  for (const key of ['ITEM_TOKEN', 'DAY_NIGHT_TOKEN', 'RELIC_TOKEN']) {
     if (!addresses[key]) continue;
     try {
       const hash = await safeWrite(adapter, deployerWallet, addresses[key], SETUP_ABIS.gameToken, 'addController', [deployerAddress]);
@@ -465,6 +466,15 @@ export async function applySetupForge(adapter, context, setupForgeInput = {}, op
       const tile = TILE_ENUM[tileName];
       const hash = await safeWrite(adapter, context.deployerWallet, context.addresses.BOARD, SETUP_ABIS.board, 'enableZone', [alias, tile, gameId]);
       application.applied.push(applied('revealedZones', { alias, tile: tileName, hash }));
+      if (tileName === 'RelicMystery' && context.addresses.RELIC_TOKEN) {
+        const zoneIndex = await adapter.readContract(context.addresses.BOARD, SETUP_ABIS.board, 'zoneIndex', [alias]);
+        const mysteryBalance = await adapter.readContract(context.addresses.RELIC_TOKEN, SETUP_ABIS.gameToken, 'zoneBalance', ['Mystery', gameId, BigInt(zoneIndex)]);
+        if (BigInt(mysteryBalance) === 0n) {
+          const mintHash = await safeWrite(adapter, context.deployerWallet, context.addresses.RELIC_TOKEN, SETUP_ABIS.gameToken, 'mint', ['Mystery', gameId, 1n]);
+          const stockHash = await safeWrite(adapter, context.deployerWallet, context.addresses.RELIC_TOKEN, SETUP_ABIS.gameToken, 'transferToZone', ['Mystery', gameId, 0n, BigInt(zoneIndex), 1n]);
+          application.applied.push(applied('revealedZones', { alias, tile: tileName, label: 'mystery relic stock', hash: stockHash, mintHash }));
+        }
+      }
       if (alias === setupForge.board.landingZone) {
         application.applied.push(applied('landingZone', { alias, tile: tileName, label: 'landing zone', hash }));
       }

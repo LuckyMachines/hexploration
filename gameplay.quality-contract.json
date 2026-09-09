@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "evaluationMode": "automated-only",
+  "minimumIndependentReplicates": 10,
+  "requirePairedSeeds": true,
+  "requireTerminalOutcome": true,
+  "requiredPlayerCounts": [1, 2, 3, 4],
+  "requiredLoops": [
+    "explore-decide-resolve",
+    "dig-reward-risk",
+    "help-recover",
+    "flee-extract",
+    "failure-recovery",
+    "return-continuity"
+  ],
+  "productionExclusions": ["autopilot-test-*", "*-fixture", "archived scenarios"],
+  "externalLoopEvidence": {
+    "return-continuity": "reports/ux/latest.json"
+  },
+  "humanCalibration": {
+    "enabled": false,
+    "minimumObservedSessions": 5,
+    "minimumRecommendationAgreement": 0.6,
+    "minimumFunScoreCorrelation": 0.5
+  }
+}

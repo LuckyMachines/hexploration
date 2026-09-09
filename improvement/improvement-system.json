@@ -1,6 +1,6 @@
 {
   "$schema": "./schema/improvement-system.schema.json",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "name": "Xenovoya Improvement Control Plane",
   "defaultStaleDays": 14,
   "promotionStates": ["idea", "baseline", "candidate", "verified", "selected", "shipped", "validated", "rework-required", "retired"],
@@ -50,6 +50,36 @@
       "command": "npm",
       "args": ["run", "sim:golden"],
       "timeoutMs": 300000
+    },
+    "gameplay.system-tests": {
+      "label": "Gameplay improvement, experiment, Oracle, and fun-evidence tests",
+      "command": "npm",
+      "args": ["run", "gameplay:test"],
+      "timeoutMs": 180000
+    },
+    "gameplay.system-doctor": {
+      "label": "Gameplay improvement-system doctor",
+      "command": "npm",
+      "args": ["run", "gameplay:doctor"],
+      "timeoutMs": 120000
+    },
+    "gameplay.evidence-refresh": {
+      "label": "Refresh the complete gameplay evidence dependency graph",
+      "command": "npm",
+      "args": ["run", "gameplay:refresh"],
+      "timeoutMs": 300000
+    },
+    "gameplay.exact-refresh": {
+      "label": "Refresh the canonical exact-engine gameplay matrix on a disposable chain",
+      "command": "npm",
+      "args": ["run", "gameplay:refresh:exact", "--", "--resume"],
+      "timeoutMs": 7200000
+    },
+    "gameplay.regression-pack": {
+      "label": "Run boundary and failure scenarios on a disposable chain",
+      "command": "npm",
+      "args": ["run", "gameplay:regression", "--", "--resume"],
+      "timeoutMs": 1800000
     },
     "ux.board-tests": {
       "label": "Board quality tests",
@@ -188,6 +218,18 @@
       "auto": true
     },
     {
+      "id": "refresh-gameplay-evidence-graph",
+      "label": "Regenerate stale or missing gameplay improvement evidence",
+      "surfaceIds": ["gameplay"],
+      "actionTypes": ["missing", "invalid", "stale-evidence"],
+      "evidencePaths": ["reports/gameplay-improvement/latest-report.json"],
+      "commandId": "gameplay.evidence-refresh",
+      "verifyCommandIds": ["gameplay.system-tests", "gameplay.system-doctor"],
+      "writePaths": ["reports/gameplay-improvement/", "reports/simulator/", "reports/bridge/", "reports/fun/", "app/public/gameplay/", "app/public/simulator/", "app/public/bridge/", "app/public/fun/"],
+      "risk": "low",
+      "auto": true
+    },
+    {
       "id": "refresh-ui-density",
       "label": "Regenerate stale or missing UI density evidence",
       "surfaceIds": ["ux-onboarding"],
@@ -266,17 +308,18 @@
       "label": "Product and gameplay",
       "owner": "product-design",
       "weight": 1.4,
-      "currentGrade": "B+",
+      "currentGrade": "A-",
       "objective": "Players repeatedly make legible, consequential expedition decisions that produce tension, cooperation, recovery, and memorable outcomes.",
       "stricterABar": "Every flagship scenario passes same-engine simulation, Oracle, feeling-arc, setup-honesty, and observed-player comprehension gates with current evidence.",
-      "pathPatterns": ["^contracts/", "^script/", "^scripts/(gameplay|scenario|player-feeling|scenario-time-machine|scenario-lab|scenario-self-driving|playable-design-memory|scenario-evidence-bridge)", "^simulator\\.scenarios\\.json$"],
+      "pathPatterns": ["^contracts/", "^script/", "^scripts/(gameplay|scenario|player-feeling|scenario-time-machine|scenario-lab|scenario-self-driving|playable-design-memory|scenario-evidence-bridge|fun-report|simulator-autotune)", "^(simulator\\.(scenarios|agent-policies|evaluation)|gameplay\\.(quality-contract|experiments))\\.json$"],
       "evidence": [
         { "path": "simulator.scenarios.json", "kind": "source", "required": true, "maxAgeDays": 3650 },
         { "path": "reports/simulator/latest-report.json", "kind": "simulation", "required": true, "maxAgeDays": 14 },
-        { "path": "reports/simulator/memory/latest-memory.json", "kind": "memory", "required": false, "maxAgeDays": 14 }
+        { "path": "reports/simulator/memory/latest-memory.json", "kind": "memory", "required": false, "maxAgeDays": 14 },
+        { "path": "reports/gameplay-improvement/latest-report.json", "kind": "gameplay-improvement-system", "required": true, "maxAgeDays": 14 }
       ],
-      "quickCommands": ["gameplay.scenario-tests", "gameplay.memory-doctor"],
-      "fullCommands": ["gameplay.scenario-tests", "gameplay.memory-doctor", "reliability.hard"]
+      "quickCommands": ["gameplay.system-tests", "gameplay.system-doctor"],
+      "fullCommands": ["gameplay.system-tests", "gameplay.system-doctor", "gameplay.memory-doctor", "reliability.hard"]
     },
     {
       "id": "ux-onboarding",

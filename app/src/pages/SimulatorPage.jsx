@@ -77,6 +77,69 @@ function Metric({ label, value, tone = 'neutral' }) {
   );
 }
 
+function GameplayEvidencePanel({ evidence }) {
+  if (!evidence) return null;
+  const scenarios = evidence.scenarioEvidence || [];
+  const pipeline = evidence.pipeline || [];
+  const complete = scenarios.filter((scenario) => scenario.truthGatesPassed && scenario.simulatorEvidenceFresh).length;
+  const freshStages = pipeline.filter((stage) => stage.fresh).length;
+  const toneFor = (passed) => passed
+    ? 'border-oxide-green/35 bg-oxide-green/10 text-oxide-green'
+    : 'border-signal-red/35 bg-signal-red/10 text-signal-red';
+
+  return (
+    <section className="mb-4 rounded border border-exp-border bg-exp-panel p-4" aria-labelledby="gameplay-evidence-title">
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <p className="font-mono text-[10px] uppercase tracking-[0.26em] text-compass">Automated evidence control plane</p>
+          <h2 id="gameplay-evidence-title" className="mt-1 font-display text-xl uppercase tracking-[0.15em] text-exp-text">Scenario readiness</h2>
+          <p className="mt-2 max-w-3xl font-mono text-xs leading-relaxed text-exp-text-dim">
+            Architecture and evidence are graded separately. A scenario is ready only when its exact-engine report is fresh and every truth gate passes.
+          </p>
+        </div>
+        <div className="grid grid-cols-2 gap-2">
+          <Metric label="Architecture" value={evidence.grades?.architecture || evidence.grade || '-'} tone="blue" />
+          <Metric label="Evidence" value={evidence.grades?.evidenceReadiness || evidence.grade || '-'} tone={evidence.qualityPassed ? 'green' : 'gold'} />
+        </div>
+      </div>
+      <div className="mt-4 grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
+        {scenarios.map((scenario) => {
+          const passed = scenario.truthGatesPassed && scenario.simulatorEvidenceFresh;
+          return (
+            <article key={scenario.scenarioId} className={`rounded border px-3 py-3 ${toneFor(passed)}`}>
+              <div className="flex items-center justify-between gap-3">
+                <p className="font-mono text-xs uppercase tracking-[0.16em]">{scenario.scenarioId}</p>
+                <span className="font-mono text-[10px] uppercase tracking-[0.16em]">{passed ? 'ready' : scenario.verdict || 'missing'}</span>
+              </div>
+              {!passed && (
+                <p className="mt-2 font-mono text-[11px] leading-relaxed opacity-80">
+                  {scenario.truthGateFailures?.[0] || (!scenario.hasSimulatorReport ? 'Exact report missing.' : 'Evidence is stale.')}
+                </p>
+              )}
+            </article>
+          );
+        })}
+      </div>
+      <div className="mt-3 grid gap-3 lg:grid-cols-[minmax(0,1fr)_minmax(300px,0.7fr)]">
+        <div className="rounded border border-exp-border/60 bg-exp-dark/35 px-3 py-3">
+          <div className="flex items-center justify-between gap-3 font-mono text-[11px] uppercase tracking-[0.18em] text-exp-text-dim">
+            <span>Canonical evidence</span>
+            <span>{complete}/{scenarios.length} scenarios - {freshStages}/{pipeline.length} stages fresh</span>
+          </div>
+          <div className="mt-2 h-2 overflow-hidden rounded bg-exp-border/70">
+            <div className="h-full rounded bg-oxide-green" style={{ width: `${scenarios.length ? (complete / scenarios.length) * 100 : 0}%` }} />
+          </div>
+        </div>
+        <div className="rounded border border-compass/30 bg-compass/5 px-3 py-3">
+          <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-compass">Next executable action</p>
+          <p className="mt-1 font-mono text-xs text-exp-text">{evidence.nextActions?.[0]?.title || 'Evidence matrix is ready.'}</p>
+          {evidence.nextActions?.[0]?.command && <code className="mt-2 block overflow-x-auto text-[11px] text-compass-bright">{evidence.nextActions[0].command}</code>}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function ActionBars({ actions = {} }) {
   const entries = Object.entries(actions);
   const total = entries.reduce((sum, [, count]) => sum + Number(count), 0);
@@ -2262,7 +2325,26 @@ export default function SimulatorPage() {
   const [feelingReport, setFeelingReport] = useState(null);
   const [oracleReport, setOracleReport] = useState(null);
   const [oracleHistory, setOracleHistory] = useState([]);
+  const [gameplayEvidence, setGameplayEvidence] = useState(null);
   const [loadState, setLoadState] = useState('loading');
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch('/gameplay/latest-report.json', { cache: 'no-store' })
+      .then((response) => {
+        if (!response.ok) throw new Error('No gameplay evidence report found.');
+        return response.json();
+      })
+      .then((json) => {
+        if (!cancelled) setGameplayEvidence(json);
+      })
+      .catch(() => {
+        if (!cancelled) setGameplayEvidence(null);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -2461,7 +2543,7 @@ export default function SimulatorPage() {
   const funDebugger = report.funDebugger || SAMPLE_REPORT.funDebugger;
   const oracle = oracleReport || report.oracle || SAMPLE_REPORT.oracle;
   const currentScenarioId = report.scenarioDefinition?.id || report.config?.scenarioId || report.config?.scenario || '';
-  const command = `node scripts/gameplay-simulator.mjs --scenario=benchmark --batch=3 --setup-mode=best-effort --note="first pass" --hypothesis="movement should reveal faster"`;
+  const command = 'npm run gameplay:refresh:exact -- --port=11133 --resume';
 
   useEffect(() => {
     if (!currentScenarioId || currentScenarioId === 'none') {
@@ -2582,6 +2664,8 @@ export default function SimulatorPage() {
         </div>
       </section>
 
+      <GameplayEvidencePanel evidence={gameplayEvidence} />
+
       <section className="mb-4 rounded border border-exp-border bg-exp-panel p-4">
         <div className="grid gap-3 md:grid-cols-4">
           <Metric label="Runs" value={aggregate.runs || report.runs?.length || 0} tone="gold" />
@@ -2597,7 +2681,7 @@ export default function SimulatorPage() {
             Tuning Controls
           </h2>
           <p className="mt-2 font-mono text-xs leading-relaxed text-exp-text-dim">
-            Run the simulator from the repo root while the local stack is active. It writes the latest report into this app automatically.
+            Run the self-managed exact matrix from the repo root. It starts a hidden disposable chain, checkpoints each scenario, refreshes dependent evidence, and cleans up the process tree.
           </p>
           <div className="mt-3 rounded border border-compass/25 bg-compass/5 px-3 py-2">
             <p className="font-mono text-[10px] uppercase tracking-[0.26em] text-compass">
@@ -2608,7 +2692,7 @@ export default function SimulatorPage() {
             </p>
           </div>
           <pre className="mt-3 overflow-x-auto rounded border border-exp-border bg-exp-dark/60 p-3 font-mono text-[11px] text-compass-bright">
-            {`npm run local:solo\n${command}`}
+            {command}
           </pre>
           <pre className="mt-2 overflow-x-auto rounded border border-exp-border bg-exp-dark/60 p-3 font-mono text-[11px] text-blueprint">
             {`npm run sim:golden -- --save-baseline\nnpm run sim:golden -- --baseline --changed="movement tuning"`}
@@ -2645,7 +2729,15 @@ export default function SimulatorPage() {
               {report.config?.strategy || 'none'} / {report.engine}
             </p>
           </div>
-          <ActionBars actions={summary.actions} />
+          <ActionBars actions={aggregate.outcomeDistribution || { [summary.outcome || 'in-progress']: 1 }} />
+          <div className="mt-4 grid grid-cols-2 gap-2">
+            <PercentMetric label="Terminal rate" value={aggregate.terminalRate || 0} />
+            <PercentMetric label="Timeout rate" value={aggregate.timeoutRate || 0} />
+          </div>
+          <div className="mt-4 border-t border-exp-border/60 pt-3">
+            <p className="mb-2 font-mono text-[10px] uppercase tracking-[0.2em] text-exp-text-dim">Action mix</p>
+            <ActionBars actions={summary.actions} />
+          </div>
         </section>
       </div>
 

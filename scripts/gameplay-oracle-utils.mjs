@@ -14,7 +14,7 @@ import {
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-export const ORACLE_VERSION = '1.0.0';
+export const ORACLE_VERSION = '1.1.0';
 export const oracleReportRoot = resolve(root, 'reports', 'simulator', 'oracle');
 export const publicOracleRoot = resolve(root, 'app', 'public', 'simulator', 'oracle');
 export const oracleSummaryIndexPath = resolve(oracleReportRoot, 'summary-index.json');
@@ -55,6 +55,12 @@ export const DEFAULT_ORACLE_GATES = {
   failOnBlocked: true,
 };
 
+export const DEFAULT_TRUTH_GATES = {
+  minRunsPerStrategy: 3,
+  minDistinctSeedsPerStrategy: 3,
+  requireTerminalOutcome: true,
+};
+
 export const SCENARIO_ORACLE_GOALS = {
   artifact: {
     weights: { agency: 1.35, surprise: 1.25, systemIntegration: 1.2, outcomeLegibility: 1.2 },
@@ -87,6 +93,27 @@ function clamp(value, min = 0, max = 100) {
 function average(values) {
   const numbers = values.map(Number).filter(Number.isFinite);
   return numbers.length > 0 ? numbers.reduce((sum, value) => sum + value, 0) / numbers.length : 0;
+}
+
+function standardDeviation(values) {
+  const numbers = values.map(Number).filter(Number.isFinite);
+  if (numbers.length < 2) return 0;
+  const mean = average(numbers);
+  return Math.sqrt(numbers.reduce((sum, value) => sum + ((value - mean) ** 2), 0) / (numbers.length - 1));
+}
+
+export function estimateOracleUncertainty(report = {}, weightedScore = 0) {
+  const runScores = (report.runs || []).map((run) => Number(run.funDebugger?.averageLifeScore ?? run.summary?.funDebugger?.averageLifeScore)).filter(Number.isFinite);
+  const deviation = standardDeviation(runScores);
+  const margin = runScores.length >= 2 ? Math.max(2, 1.96 * deviation / Math.sqrt(runScores.length)) : null;
+  return {
+    samples: runScores.length,
+    standardDeviation: Math.round(deviation * 100) / 100,
+    margin95: margin === null ? null : Math.round(margin * 100) / 100,
+    lower95: margin === null ? null : Math.round(clamp(weightedScore - margin) * 100) / 100,
+    upper95: margin === null ? null : Math.round(clamp(weightedScore + margin) * 100) / 100,
+    status: runScores.length < 2 ? 'underpowered' : margin > 10 ? 'high-variance' : 'stable',
+  };
 }
 
 function max(values) {
@@ -157,7 +184,9 @@ function turnStatTotal(snapshot) {
 }
 
 function turnArtifactCount(snapshot) {
-  return (snapshot?.players || []).reduce((sum, player) => sum + (player.artifacts || []).length, 0);
+  return (snapshot?.players || []).reduce((sum, player) => (
+    sum + (player.artifacts || []).length + (player.inventory?.relic ? 1 : 0)
+  ), 0);
 }
 
 function turnRevealedCount(snapshot) {
@@ -225,12 +254,16 @@ export function scenarioOracleGoals(scenario = {}) {
 export function scoreAgency(report) {
   const aggregate = report.aggregate || {};
   const avgChoice = Number(aggregate.averages?.meaningfulChoiceDensity || 0);
+  const decisionEntropy = Number(aggregate.averages?.decisionEntropy ?? avgChoice);
+  const consequenceVisibility = Number(aggregate.averages?.consequenceVisibility ?? avgChoice);
   const idleShare = actionShare(report, 'Idle');
   const restShare = actionShare(report, 'Rest');
   const actionVariety = uniqueCount(Object.keys(aggregate.actionTotals || {}));
   const repeatedFlat = report.funDebugger?.flatTurnRate || 0;
   const score = average([
     scoreHigh(avgChoice, 0.65, 0.15),
+    scoreHigh(decisionEntropy, 0.7, 0.15),
+    scoreHigh(consequenceVisibility, 0.75, 0.2),
     scoreLow(idleShare, 0.35, 0.03),
     scoreLow(restShare, 0.55, 0.08),
     scoreHigh(actionVariety, 5, 1),
@@ -238,6 +271,8 @@ export function scoreAgency(report) {
   ]);
   return scoreEvidence('agency', score, [
     evidence('Meaningful choice density', avgChoice, '>= 0.65'),
+    evidence('Decision entropy', decisionEntropy, '>= 0.70'),
+    evidence('Visible consequence rate', consequenceVisibility, '>= 0.75'),
     evidence('Idle action share', idleShare, '<= 0.03 ideal'),
     evidence('Rest action share', restShare, '<= 0.08 ideal'),
     evidence('Action variety', actionVariety, '5+ distinct actions'),
@@ -477,7 +512,8 @@ export function findDecisiveTurns(report) {
 export function scoreOutcomeLegibility(report) {
   const decisive = findDecisiveTurns(report);
   const failureReasons = (report.runs || []).flatMap((run) => run.summary?.failureReasons || []);
-  const hasOutcome = Boolean(report.summary?.outcome || report.summary?.gameOver || report.aggregate?.averages);
+  const terminalRuns = (report.runs || []).filter((run) => isTerminalRun(run));
+  const hasOutcome = terminalRuns.length > 0;
   const decisiveCoverage = scoreHigh(decisive.length, 4, 0);
   const failureNoise = scoreLow(uniqueCount(failureReasons), 5, 0);
   const score = average([
@@ -487,11 +523,74 @@ export function scoreOutcomeLegibility(report) {
     report.scenarioVerdict?.verdict === 'failed' ? 45 : 75,
   ]);
   return scoreEvidence('outcomeLegibility', score, [
-    evidence('Outcome present', hasOutcome, 'true'),
+    evidence('Terminal outcome present', hasOutcome, 'true'),
+    evidence('Terminal runs', terminalRuns.length, '1+'),
     evidence('Decisive turns', decisive.length, '4+'),
     evidence('Distinct failure reasons', uniqueCount(failureReasons), '<= 0 ideal'),
     evidence('Scenario verdict', report.scenarioVerdict?.verdict || 'none', 'not failed'),
   ]);
+}
+
+export function isTerminalRun(run = {}) {
+  if (run.summary?.terminal === true || run.summary?.gameOver === true || run.after?.gameOver === true) return true;
+  const outcome = String(run.summary?.outcome || '').trim().toLowerCase();
+  if (!outcome || ['unknown', 'in-progress', 'in progress', 'running', 'timed-out', 'timeout'].includes(outcome)) return false;
+  return /(escape|ended|complete|victory|defeat|won|lost|failed|dead)/.test(outcome);
+}
+
+export function evaluateTruthGates(report, scenario = {}, overrides = {}) {
+  const requirements = {
+    ...DEFAULT_TRUTH_GATES,
+    ...(scenario.evidenceRequirements || {}),
+    ...overrides,
+  };
+  const requiredSetupLevel = scenario.requiredSetupLevel || report.setupForge?.requiredSetupLevel || 'none';
+  const setupLevel = report.setupLevel || report.setupApplication?.setupLevel || (report.setupForge ? 'metadata' : 'none');
+  const rank = { none: 0, metadata: 1, partial: 2, exact: 3 };
+  const hardFailures = [];
+  const confidenceFailures = [];
+  if ((rank[setupLevel] || 0) < (rank[requiredSetupLevel] || 0)) {
+    hardFailures.push(`required ${requiredSetupLevel} setup ran as ${setupLevel}`);
+  }
+  const criticalSkipped = (report.setupApplication?.skipped || []).filter((item) => {
+    const support = (report.setupApplication?.support || []).find((field) => field.key === item.field);
+    return support?.critical;
+  });
+  const criticalFailed = (report.setupApplication?.failed || []).filter((item) => {
+    const support = (report.setupApplication?.support || []).find((field) => field.key === item.field);
+    return support?.critical;
+  });
+  if (criticalSkipped.length > 0) hardFailures.push(`${criticalSkipped.length} critical setup field(s) skipped`);
+  if (criticalFailed.length > 0) hardFailures.push(`${criticalFailed.length} critical setup field(s) failed`);
+  const terminalRuns = (report.runs || []).filter((run) => isTerminalRun(run));
+  if (requirements.requireTerminalOutcome && terminalRuns.length === 0) hardFailures.push('no terminal outcome observed');
+
+  const strategies = [...new Set([
+    ...(scenario.strategies || []),
+    ...Object.keys(report.aggregate?.strategies || {}),
+    ...(report.runs || []).map((run) => run.config?.strategy).filter(Boolean),
+  ])];
+  const replication = strategies.map((strategy) => {
+    const runs = (report.runs || []).filter((run) => (run.config?.strategy || report.config?.strategy) === strategy);
+    const seeds = new Set(runs.map((run) => run.config?.seed).filter(Boolean));
+    return { strategy, runs: runs.length, distinctSeeds: seeds.size };
+  });
+  for (const item of replication) {
+    if (item.runs < requirements.minRunsPerStrategy) {
+      confidenceFailures.push(`${item.strategy} has ${item.runs}/${requirements.minRunsPerStrategy} required runs`);
+    }
+    if (item.distinctSeeds < requirements.minDistinctSeedsPerStrategy) {
+      confidenceFailures.push(`${item.strategy} has ${item.distinctSeeds}/${requirements.minDistinctSeedsPerStrategy} distinct seeds`);
+    }
+  }
+  return {
+    passed: hardFailures.length === 0 && confidenceFailures.length === 0,
+    strongPassEligible: hardFailures.length === 0 && confidenceFailures.length === 0,
+    hardFailures,
+    confidenceFailures,
+    requirements,
+    observed: { setupLevel, terminalRuns: terminalRuns.length, replication },
+  };
 }
 
 export function classifyRunArc(run) {
@@ -555,7 +654,7 @@ function recommendationForWeakness(weakestMetric, scenario = {}, report = {}) {
       title: 'Increase early meaningful choices',
       why: 'Agency is weak when players repeat passive actions or have too few visible valid alternatives.',
       changeType: 'game-rule-or-strategy',
-      targetFiles: ['scripts/gameplay-simulator.mjs', 'simulator.balance.json'],
+      targetFiles: ['scripts/gameplay-simulator.mjs', 'simulator.agent-policies.json'],
       risk: 'May increase action noise if readability is not checked at the same time.',
     };
   }
@@ -574,8 +673,8 @@ function recommendationForWeakness(weakestMetric, scenario = {}, report = {}) {
       ...common,
       title: tags.includes('escape') ? 'Make escape pressure arrive earlier' : 'Add a controlled pressure spike',
       why: 'Tension needs a readable threat, a time window, and a recovery opportunity.',
-      changeType: 'balance-knob',
-      targetFiles: ['simulator.balance.json', 'simulator.tuning.json'],
+      changeType: 'gameplay-mechanic-experiment',
+      targetFiles: ['gameplay.experiments.json', 'contracts/XenovoyaGameplayUpdates.sol'],
       risk: 'Too much pressure can collapse recovery and readability.',
     };
   }
@@ -620,6 +719,7 @@ function recommendationForWeakness(weakestMetric, scenario = {}, report = {}) {
 }
 
 export function recommendSmallestExperiment(scores, scenario, report) {
+  const requiredSetupLevel = scenario.requiredSetupLevel || report.setupForge?.requiredSetupLevel || 'metadata';
   const criticalSkipped = (report.setupApplication?.skipped || []).filter((item) => {
     const support = (report.setupApplication?.support || []).find((field) => field.key === item.field);
     return support?.critical;
@@ -628,7 +728,7 @@ export function recommendSmallestExperiment(scores, scenario, report) {
     const support = (report.setupApplication?.support || []).find((field) => field.key === item.field);
     return support?.critical;
   });
-  if (criticalSkipped.length > 0 || criticalFailed.length > 0 || (report.setupForge?.requiredSetupLevel === 'exact' && report.setupLevel !== 'exact')) {
+  if (criticalSkipped.length > 0 || criticalFailed.length > 0 || (requiredSetupLevel === 'exact' && report.setupLevel !== 'exact')) {
     const scenarioId = scenario.id || report.config?.scenario || 'scenario';
     return {
       primary: {
@@ -668,7 +768,7 @@ export function oracleTaskFromRecommendation(recommendation) {
   };
 }
 
-export function computeConfidence(report, scenario = {}, telemetryGaps = []) {
+export function computeConfidence(report, scenario = {}, telemetryGaps = [], truthGates = null) {
   let confidence = 0.85;
   const runs = report.runs?.length || 0;
   const strategies = Object.keys(report.aggregate?.strategies || {}).length;
@@ -691,6 +791,9 @@ export function computeConfidence(report, scenario = {}, telemetryGaps = []) {
   else if (setupLevel === 'metadata') confidence -= 0.08;
   if (criticalSkipped.length > 0) confidence -= Math.min(0.2, criticalSkipped.length * 0.08);
   if (criticalFailed.length > 0) confidence -= Math.min(0.24, criticalFailed.length * 0.1);
+  const truth = truthGates || evaluateTruthGates(report, scenario);
+  if (truth.hardFailures.length > 0) confidence = Math.min(confidence, 0.39);
+  else if (truth.confidenceFailures.length > 0) confidence = Math.min(confidence, 0.59);
   return clamp(confidence, 0.1, 0.95);
 }
 
@@ -708,6 +811,8 @@ export function evaluateRegressionGate(oracle, baselineOracle = null, gateConfig
   const gates = { ...DEFAULT_ORACLE_GATES, ...gateConfig };
   const failures = [];
   if (gates.failOnBlocked && oracle.oracleVerdict === 'blocked') failures.push('oracle verdict is blocked');
+  for (const failure of oracle.truthGates?.hardFailures || []) failures.push(`truth gate: ${failure}`);
+  for (const failure of oracle.truthGates?.confidenceFailures || []) failures.push(`evidence gate: ${failure}`);
   if (oracle.setup?.requiredSetupLevel === 'exact' && oracle.setup?.level !== 'exact') failures.push(`required exact setup ran as ${oracle.setup?.level || 'none'}`);
   if (oracle.setup?.requiredSetupLevel === 'partial' && ['metadata', 'none', undefined].includes(oracle.setup?.level)) failures.push(`required partial setup ran as ${oracle.setup?.level || 'none'}`);
   if (oracle.weightedScore < gates.minimumWeightedScore) failures.push(`weighted score ${oracle.weightedScore} < ${gates.minimumWeightedScore}`);
@@ -753,9 +858,13 @@ export function evaluateOracle(inputReport, scenarioInput = null, config = {}) {
   const weightedTotal = ORACLE_DIMENSIONS.reduce((sum, key) => sum + scores[key].score * Number(weights[key] || 1), 0);
   const totalWeight = ORACLE_DIMENSIONS.reduce((sum, key) => sum + Number(weights[key] || 1), 0);
   const weightedScore = Math.round(weightedTotal / totalWeight);
-  const confidence = computeConfidence(report, scenario, telemetryGaps);
+  const truthGates = evaluateTruthGates(report, scenario, config.truthGates || {});
+  const confidence = computeConfidence(report, scenario, telemetryGaps, truthGates);
+  const uncertainty = estimateOracleUncertainty(report, weightedScore);
   const unsupported = (scenario.initialState?.assumptions || []).filter((assumption) => assumption.support === 'notYetSupported' || assumption.mode === 'notYetSupported');
-  const blocked = telemetryGaps.includes('turn traces missing') || ((config.blockOnUnsupported ?? false) && unsupported.length > 0);
+  const blocked = telemetryGaps.includes('turn traces missing')
+    || truthGates.hardFailures.length > 0
+    || ((config.blockOnUnsupported ?? false) && unsupported.length > 0);
   const recommendations = recommendSmallestExperiment(scores, scenario, report);
   const decisiveTurns = findDecisiveTurns(report);
   const runArcs = (report.runs || []).map((run) => ({
@@ -766,9 +875,10 @@ export function evaluateOracle(inputReport, scenarioInput = null, config = {}) {
   const minimumFailures = Object.entries(goals.minimums || {})
     .filter(([metric, minimum]) => (scores[metric]?.score || 0) < Number(minimum))
     .map(([metric, minimum]) => `${metric} ${scores[metric].score} < scenario minimum ${minimum}`);
-  const oracleVerdict = minimumFailures.length > 0
+  let oracleVerdict = minimumFailures.length > 0
     ? scoreVerdict(Math.min(weightedScore, 54), report.scenarioVerdict?.verdict, confidence, blocked)
     : scoreVerdict(weightedScore, report.scenarioVerdict?.verdict, confidence, blocked);
+  if (oracleVerdict === 'strong-pass' && !truthGates.strongPassEligible) oracleVerdict = 'pass';
   const oracle = {
     schemaVersion: 1,
     oracleVersion: ORACLE_VERSION,
@@ -779,15 +889,20 @@ export function evaluateOracle(inputReport, scenarioInput = null, config = {}) {
     oracleVerdict,
     confidence,
     weightedScore,
+    scoreConfidenceInterval: uncertainty,
     experienceScores: scores,
     weights,
     scenarioGoals: goals,
+    truthGates,
     evidence: {
       decisiveTurns,
       runArcs,
       scenarioVerdict: report.scenarioVerdict || null,
       aggregateWarnings: report.aggregate?.warnings || [],
       telemetryGaps,
+      outcomeDistribution: report.aggregate?.outcomeDistribution || {},
+      terminalRate: report.aggregate?.terminalRate ?? null,
+      timeoutRate: report.aggregate?.timeoutRate ?? null,
       setupApplication: report.setupApplication || null,
       setupDiff: report.setupApplication?.actualDiff || [],
     },
@@ -807,7 +922,7 @@ export function evaluateOracle(inputReport, scenarioInput = null, config = {}) {
     })),
     setup: {
       level: report.setupLevel || report.setupApplication?.setupLevel || (report.setupForge ? 'metadata' : 'none'),
-      requiredSetupLevel: report.setupForge?.requiredSetupLevel || scenario.requiredSetupLevel || 'metadata',
+      requiredSetupLevel: scenario.requiredSetupLevel || report.setupForge?.requiredSetupLevel || 'metadata',
       applied: report.setupApplication?.applied?.length || 0,
       skipped: report.setupApplication?.skipped?.length || 0,
       failed: report.setupApplication?.failed?.length || 0,
@@ -858,11 +973,16 @@ export function oracleSummaryEntry(oracle, extra = {}) {
     verdict: oracle.oracleVerdict,
     weightedScore: oracle.weightedScore,
     confidence: oracle.confidence,
+    scoreConfidenceInterval: oracle.scoreConfidenceInterval || null,
+    truthGatesPassed: oracle.truthGates?.passed === true,
     weakestScore: weakest ? { metric: weakest[0], score: weakest[1].score } : null,
     strongestScore: strongest ? { metric: strongest[0], score: strongest[1].score } : null,
     setupLevel: oracle.setup?.level || 'none',
     requiredSetupLevel: oracle.setup?.requiredSetupLevel || 'metadata',
     smallestNextExperiment: oracle.smallestNextExperiment?.title || null,
+    outcomeDistribution: oracle.evidence?.outcomeDistribution || {},
+    terminalRate: oracle.evidence?.terminalRate ?? null,
+    timeoutRate: oracle.evidence?.timeoutRate ?? null,
     commonFailurePattern: extra.commonFailurePattern || null,
     reportPath: extra.reportPath || null,
   };

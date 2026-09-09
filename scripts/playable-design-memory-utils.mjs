@@ -384,7 +384,7 @@ export function normalizeMemorySource({ path = '', source = {}, type = null, sce
 
 export function scenarioDefinitionEvents(store = loadScenarioStore()) {
   return asArray(store.scenarios)
-    .filter((scenario) => scenario.archived !== true)
+    .filter((scenario) => scenario.archived !== true && scenario.productionEligible !== false && scenario.testFixture !== true)
     .map((scenario) => normalizeMemorySource({
       path: 'simulator.scenarios.json',
       source: scenario,
@@ -447,7 +447,10 @@ export function collectMemorySources({ paths = REPORT_PATHS, store = loadScenari
       if (Array.isArray(json)) continue;
       const type = classifyMemorySource(path, json);
       if (type === 'unknown') continue;
-      const scenario = scenarioIdFor(json) ? findScenario(store, scenarioIdFor(json)) : null;
+      const sourceScenarioId = scenarioIdFor(json);
+      const scenario = sourceScenarioId ? findScenario(store, sourceScenarioId) : null;
+      if (json.mode === 'dry-run' || json.preview === true) continue;
+      if (sourceScenarioId && (!scenario || scenario.archived || scenario.productionEligible === false || scenario.testFixture === true)) continue;
       sources.push({ event: normalizeMemorySource({ path, source: json, type, scenario }), source: json });
     }
   }

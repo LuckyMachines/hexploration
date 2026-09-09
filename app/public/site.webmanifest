@@ -1,6 +1,10 @@
 {
   "name": "Xenovoya",
   "short_name": "Xenovoya",
+  "description": "A cooperative on-chain hex expedition on Sepolia.",
+  "id": "/",
+  "start_url": "/#live-expedition",
+  "scope": "/",
   "icons": [
     {
       "src": "/icon-192.png",
@@ -15,5 +19,6 @@
   ],
   "theme_color": "#07110F",
   "background_color": "#07110F",
-  "display": "standalone"
+  "display": "standalone",
+  "orientation": "any"
 }

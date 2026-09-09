@@ -140,9 +140,16 @@ function runScenario(store) {
     scenarioFile: scenarioStorePath,
     quiet: boolArg('quiet', false),
     balance: arg('balance', undefined),
+    batch: arg('batch', undefined),
+    turns: arg('turns', undefined),
+    seed: arg('seed', undefined),
+    strategies: arg('strategies', undefined),
     setupForge: !boolArg('no-setup-forge', false),
     setupMode: arg('setup-mode', 'best-effort'),
-    timeoutMs: Number(arg('timeout-ms', 180_000)),
+    rpc: arg('rpc', process.env.RPC_URL || undefined),
+    policy: arg('policy', undefined),
+    evaluation: arg('evaluation', undefined),
+    timeoutMs: Number(arg('timeout-ms', 600_000)),
   });
   if (result.status !== 0) {
     if (result.error) console.error(result.error.message);
@@ -160,7 +167,7 @@ function runPack(store) {
   for (const scenarioId of pack.scenarioIds || []) {
     const scenario = findScenario(store, scenarioId);
     if (!scenario) continue;
-    const result = runSimulatorForScenario(scenario, { scenarioFile: scenarioStorePath, quiet: true, setupForge: true, setupMode: arg('setup-mode', 'best-effort'), timeoutMs: Number(arg('timeout-ms', 180_000)) });
+    const result = runSimulatorForScenario(scenario, { scenarioFile: scenarioStorePath, quiet: true, setupForge: true, setupMode: arg('setup-mode', 'best-effort'), timeoutMs: Number(arg('timeout-ms', 600_000)) });
     results.push({
       scenarioId,
       ok: result.status === 0,

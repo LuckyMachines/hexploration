@@ -146,6 +146,7 @@ function runCommand(command, args, options = {}) {
       env: { ...process.env, ...(options.env || {}) },
       shell: options.shell ?? defaultShell,
       stdio: options.stdio ?? 'inherit',
+      windowsHide: true,
     });
 
     function settle(error) {
@@ -180,6 +181,7 @@ function spawnChild(command, args, options = {}) {
     env: { ...process.env, ...(options.env || {}) },
     shell: options.shell ?? defaultShell,
     stdio: options.stdio ?? 'inherit',
+    windowsHide: true,
   });
   child.localStackLabel = options.label || path.basename(command);
   child.localStackCommand = `${command} ${args.join(' ')}`;
@@ -513,6 +515,7 @@ async function ensureLocalWiring({ appAddrs, deckAddrs, byName }) {
     byName.XenovoyaGameplay,
     byName.XenovoyaStateUpdate,
     appAddrs.VITE_GAME_SETUP_ADDRESS,
+    byName.RelicManagement,
   ]) {
     await write(appAddrs.VITE_BOARD_ADDRESS, 'addVerifiedController', [controller]);
   }
@@ -537,6 +540,9 @@ async function ensureLocalWiring({ appAddrs, deckAddrs, byName }) {
     await write(token, 'addController', [appAddrs.VITE_TOKEN_INVENTORY_ADDRESS]);
     await write(token, 'addController', [appAddrs.VITE_GAME_SETUP_ADDRESS]);
   }
+  await write(byName.DAY_NIGHT_TOKEN, 'addController', [byName.XenovoyaStateUpdate]);
+  await write(byName.ITEM_TOKEN, 'addController', [byName.XenovoyaStateUpdate]);
+  await write(byName.RELIC_TOKEN, 'addController', [byName.RelicManagement]);
 
   await write(appAddrs.VITE_CONTROLLER_ADDRESS, 'setGameEvents', [byName.GameEvents]);
   await write(appAddrs.VITE_CONTROLLER_ADDRESS, 'setGameStateUpdate', [byName.XenovoyaStateUpdate]);
@@ -565,6 +571,7 @@ async function ensureLocalWiring({ appAddrs, deckAddrs, byName }) {
     byName.XenovoyaGameplay,
     byName.XenovoyaStateUpdate,
     appAddrs.VITE_GAME_SETUP_ADDRESS,
+    byName.RelicManagement,
   ]) {
     await write(appAddrs.VITE_CHARACTER_CARD_ADDRESS, 'addVerifiedController', [controller]);
   }
@@ -645,6 +652,7 @@ async function main() {
     '--host', '127.0.0.1',
     '--port', String(ANVIL_PORT),
     '--chain-id', '31337',
+    '--silent',
   ], { shell: false, stdio: 'inherit', label: 'anvil' }));
 
   anvil.on('exit', (code) => {
@@ -662,6 +670,7 @@ async function main() {
     'script/DeployXenovoya.s.sol',
     '--rpc-url', RPC_URL,
     '--broadcast',
+    '--slow',
     '--non-interactive',
   ], {
     env: { PRIVATE_KEY: ANVIL_PK },
@@ -758,7 +767,7 @@ async function main() {
         RPC_URL,
         PRIVATE_KEY: ANVIL_PK,
         DEPLOYMENTS_JSON: workerDeployments,
-        POLL_INTERVAL_MS: '2000',
+        POLL_INTERVAL_MS: '250',
       },
       label: 'xenovoya-worker',
     }));
@@ -772,7 +781,7 @@ async function main() {
     await runBootStep('bots.auto.start', 'Start auto-bot daemon', 10_000, async () => spawnChild('node', ['scripts/auto-bots.mjs'], {
       env: {
         RPC_URL,
-        POLL_INTERVAL_MS: '2000',
+        POLL_INTERVAL_MS: '250',
       },
       label: 'auto-bots',
     }));

@@ -171,7 +171,7 @@ function projectCommand() {
   const store = loadScenarioStore();
   const coreIds = new Set();
   for (const scenario of store.scenarios || []) {
-    if ((scenario.importance || 'supporting') === 'core') coreIds.add(scenario.id);
+    if ((scenario.importance || 'supporting') === 'core' && !scenario.archived && scenario.productionEligible !== false && scenario.testFixture !== true) coreIds.add(scenario.id);
   }
   if (coreIds.size === 0) {
     for (const pack of store.packs || []) {
@@ -201,6 +201,10 @@ function projectCommand() {
   mkdirSync(oracleReportRoot, { recursive: true });
   writeFileSync(resolve(oracleReportRoot, 'project-latest.md'), markdownForPack(summary));
   print(summary);
+  if (boolArg('strict', false)) {
+    const failedTruth = oracles.some((oracle) => oracle.truthGates?.passed !== true || ['blocked', 'fail', 'weak'].includes(oracle.oracleVerdict));
+    if (failures.length > 0 || oracles.length !== coreIds.size || failedTruth) process.exitCode = 1;
+  }
 }
 
 function markdownForPack(summary) {
@@ -230,6 +234,7 @@ function runCommand() {
     encoding: 'utf8',
     stdio: ['ignore', 'pipe', 'pipe'],
     timeout: Number(arg('timeout-ms', 180_000)),
+    windowsHide: true,
   });
   if (result.status !== 0) {
     if (result.error) console.error(result.error.message);

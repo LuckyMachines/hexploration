@@ -45,7 +45,7 @@ npm run autopilot:latest -- --markdown
 Autopilot can edit only:
 
 - `simulator.scenarios.json`
-- `simulator.balance.json`
+- `simulator.agent-policies.json`
 
 Autopilot does not edit Solidity contracts, frontend gameplay code, deploy scripts, or generated reports as patch surfaces. Candidate changes are JSON-structured and reversible. When an applied candidate regresses Oracle score, confidence, flat-turn rate, invalid attempts, or zero-stat collapse, Autopilot restores the original JSON snapshots.
 
@@ -69,7 +69,7 @@ The `/simulator` workbench shows the latest Scenario Autopilot report, including
 
 - `scenario-setup`: removes or reduces dependence on blocked setup fields before tuning balance.
 - `scenario-design`: changes strategy mix, batch count, turn count, or Setup Forge prelude.
-- `balance-knob`: applies small simulator behavior or Fun Debugger scoring deltas in `simulator.balance.json`.
+- `agent-policy`: applies small synthetic-player behavior deltas in `simulator.agent-policies.json`; evaluation weights are immutable during experiments.
 - `run`: requests a missing baseline before making a design claim.
 
 ## Recommended Loop

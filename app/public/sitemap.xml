@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://xenovoya.luckymachines.com</loc>
-    <lastmod>2026-07-10T10:24:57.257Z</lastmod>
+    <loc>https://play.xenovoya.com</loc>
+    <lastmod>2026-09-08T15:09:36.179Z</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.00</priority>
+  </url>
+  <url>
+    <loc>https://play.xenovoya.com/privacy</loc>
+    <lastmod>2026-09-08T15:09:36.179Z</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.40</priority>
   </url>
 </urlset>

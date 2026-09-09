@@ -31,9 +31,9 @@ ARG VITE_ENABLE_INTERNAL_TOOLS=false
 RUN npm run build
 
 # -- Serve stage --
-FROM nginxinc/nginx-unprivileged:1.31.2-alpine@sha256:6320020c7da8714feab524e02c08c5a1958675c4e68700e93a2fd8970b065786
+FROM nginxinc/nginx-unprivileged:1.31.5-alpine3.24@sha256:aa8c9087d36d93e9d650c5365f883b421e8214aedbad24ade52b844c583358f1
 USER root
-RUN apk del --no-cache curl
+RUN apk upgrade --no-cache libuuid && apk del --no-cache curl
 USER 101
 COPY --from=build /build/dist /usr/share/nginx/html
 EXPOSE 8080

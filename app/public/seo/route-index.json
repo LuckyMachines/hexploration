@@ -2,13 +2,25 @@
   {
     "discoverable": true,
     "noindex": false,
-    "lastmod": "2026-07-10T10:24:57.257Z",
-    "image": "/seo/xenovoya-share-card.svg",
+    "lastmod": "2026-09-08T15:09:36.179Z",
+    "image": "/seo/xenovoya-share-card.png",
     "path": "/",
     "type": "home",
-    "title": "Xenovoya",
-    "description": "Play Xenovoya, a cooperative on-chain hex exploration game about voyaging into fog, sharing discoveries, and escaping together.",
+    "title": "Play Xenovoya",
+    "description": "Launch the Xenovoya open alpha: a cooperative on-chain hex expedition on Sepolia about exploring, sharing discoveries, and escaping together.",
     "priority": 1,
     "changefreq": "weekly"
+  },
+  {
+    "discoverable": true,
+    "noindex": false,
+    "lastmod": "2026-09-08T15:09:36.179Z",
+    "image": "/seo/xenovoya-share-card.png",
+    "path": "/privacy",
+    "type": "privacy",
+    "title": "Xenovoya data and privacy",
+    "description": "Understand local storage, optional wallet-linked return history, privacy-safe analytics, export, deletion, and public on-chain records.",
+    "priority": 0.4,
+    "changefreq": "monthly"
   }
 ]

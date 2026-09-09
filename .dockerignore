@@ -1,6 +1,10 @@
 node_modules
 app/node_modules
 app/dist
+app/coverage
+app/test-results
+app/playwright-report
+app/.wrangler
 lib
 out
 cache
@@ -8,3 +12,9 @@ broadcast
 .git
 .github
 *.md
+*.log
+**/*.log
+.env
+.env.*
+**/.env
+**/.env.*

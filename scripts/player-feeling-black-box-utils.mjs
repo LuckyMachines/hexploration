@@ -528,12 +528,36 @@ export function computeArcScore(timeline = []) {
   const recoveryCount = timeline.filter((event) => ['recovery', 'hopeful'].includes(event.feelingLabel)).length;
   const flatCount = timeline.filter((event) => ['flat', 'dead-end'].includes(event.feelingLabel)).length;
   const confusionCount = timeline.filter((event) => ['confusing', 'friction'].includes(event.feelingLabel)).length;
-  let score = averagePulse * 0.55 + averageAgency * 0.25 + (100 - averageFriction) * 0.2;
-  if (firstAliveIndex >= 0) score += Math.max(0, 10 - firstAliveIndex * 2);
+  let score = averagePulse * 0.45 + averageAgency * 0.25 + (100 - averageFriction) * 0.2;
+  if (firstAliveIndex >= 0) score += Math.max(0, 8 - firstAliveIndex * 2);
   else score -= 12;
-  score += Math.min(12, payoffCount * 5 + recoveryCount * 3);
+  score += Math.min(9, payoffCount * 4 + recoveryCount * 2);
   score -= Math.min(18, flatCount * 4 + confusionCount * 3);
-  return Math.round(clamp(score));
+  const shape = detectArcShape(timeline);
+  if (shape === 'falling') score -= 8;
+  else if (shape === 'uncertain') score -= 4;
+  else if (shape === 'flatline' || shape === 'panic-loop') score -= 12;
+  return Math.round(clamp(score, 0, 98));
+}
+
+export function buildTensionProfile(timeline = []) {
+  const pressureLabels = new Set(['tense', 'panic', 'friction', 'dead-end']);
+  const recoveryLabels = new Set(['recovery', 'hopeful', 'payoff']);
+  const hasLabel = (event, labels) => labels.has(event.feelingLabel) || asArray(event.secondaryLabels).some((label) => labels.has(label));
+  const pressureEvents = timeline.filter((event) => hasLabel(event, pressureLabels));
+  const onset = pressureEvents[0] || null;
+  const peak = [...timeline].sort((a, b) => Number(b.lifePulse || 0) - Number(a.lifePulse || 0))[0] || null;
+  const recovery = onset
+    ? timeline.find((event) => Number(event.turn) > Number(onset.turn) && hasLabel(event, recoveryLabels)) || null
+    : null;
+  return {
+    onsetTurn: onset?.turn ?? null,
+    peakTurn: peak?.turn ?? null,
+    peakPulse: peak?.lifePulse ?? null,
+    recoveryTurn: recovery?.turn ?? null,
+    pressureCount: pressureEvents.length,
+    recoveredAfterPressure: Boolean(recovery),
+  };
 }
 
 export function recommendFeelingImprovement(arc = {}) {
@@ -569,6 +593,7 @@ export function buildArcSummary(timeline = [], { scenarioId = '' } = {}) {
     payoffMoment: momentSummary(findPayoffMoment(timeline)),
     arcShape: detectArcShape(timeline),
     arcScore: computeArcScore(timeline),
+    tensionProfile: buildTensionProfile(timeline),
   };
   summary.recommendedImprovement = recommendFeelingImprovement(summary);
   return summary;
@@ -638,6 +663,8 @@ export function buildFeelingIndex({ reports = null } = {}) {
       firstFlatTurn: report.arc.firstFlatTurn,
       bestMomentLabel: report.arc.bestMoment?.label,
       worstMomentLabel: report.arc.worstMoment?.label,
+      labelCounts: report.arc.labelCounts,
+      tensionProfile: report.arc.tensionProfile,
       recommendation: report.recommendedImprovement,
     });
   }).filter(Boolean);

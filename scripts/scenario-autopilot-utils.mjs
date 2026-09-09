@@ -24,11 +24,13 @@ import {
   normalizeSetupForge,
   validateSetupForge,
 } from './setup-forge-utils.mjs';
+import { comparePairedReports } from './gameplay-experiment-utils.mjs';
 
 export const AUTOPILOT_VERSION = '1.0.0';
 export const autopilotReportRoot = resolve(root, 'reports', 'simulator', 'autopilot');
 export const publicAutopilotRoot = resolve(root, 'app', 'public', 'simulator', 'autopilot');
-export const balancePath = resolve(root, 'simulator.balance.json');
+export const balancePath = resolve(root, 'simulator.agent-policies.json');
+const POLICY_KNOBS = new Set(['moveBias', 'digBias', 'restBias', 'idleBias', 'fleeBias', 'recoverAtStat', 'movementFallbackPriority']);
 
 const DEFAULT_LIMITS = {
   maxIterations: 2,
@@ -36,7 +38,7 @@ const DEFAULT_LIMITS = {
   targetScore: 70,
   targetConfidence: 0.68,
   maxCandidates: 4,
-  allowedFiles: ['simulator.balance.json', 'simulator.scenarios.json'],
+  allowedFiles: ['simulator.agent-policies.json', 'simulator.scenarios.json'],
 };
 
 export function autopilotLimits(input = {}) {
@@ -220,8 +222,8 @@ function scenarioPatch(scenario, patch = {}) {
 
 function balancePatch(knobs = {}) {
   return {
-    file: 'simulator.balance.json',
-    knobs,
+    file: 'simulator.agent-policies.json',
+    knobs: Object.fromEntries(Object.entries(knobs).filter(([key]) => POLICY_KNOBS.has(key))),
   };
 }
 
@@ -279,7 +281,7 @@ export function generateAutopilotCandidates({ scenario = {}, baselineReport = nu
       targetMetric: 'agency',
       changeType: 'scenario-design',
       files: ['simulator.scenarios.json'],
-      patch: scenarioPatch(scenario, { strategies: uniqueStrategies(['move', 'dig', ...(scenario.strategies || []), 'balanced']), batch: Math.max(2, Number(scenario.batch || 1)) }),
+      patch: scenarioPatch(scenario, { strategies: uniqueStrategies(['move', 'dig', ...(scenario.strategies || []), 'balanced']), batch: Math.max(10, Number(scenario.batch || 1)) }),
       verificationCommand: `npm run scenario:run -- --id=${scenario.id} && npm run oracle:scenario -- --id=${scenario.id}`,
     }));
     candidates.push(patchCandidate({
@@ -287,12 +289,11 @@ export function generateAutopilotCandidates({ scenario = {}, baselineReport = nu
       title: 'Bias movement without changing rules',
       hypothesis: 'A small movement bias can increase meaningful choices while staying inside simulator behavior knobs.',
       targetMetric: 'agency',
-      changeType: 'balance-knob',
-      files: ['simulator.balance.json'],
+      changeType: 'agent-policy',
+      files: ['simulator.agent-policies.json'],
       patch: balancePatch({
         moveBias: knob(balance, 'moveBias', 1) + 1,
         movementFallbackPriority: 2,
-        choiceDensityReward: knob(balance, 'choiceDensityReward', 18) + 3,
       }),
       verificationCommand: `npm run autopilot -- --id=${scenario.id} --mode=iterate --apply`,
     }));
@@ -303,10 +304,9 @@ export function generateAutopilotCandidates({ scenario = {}, baselineReport = nu
       title: 'Reject invalid-action noise harder',
       hypothesis: 'Readability improves when invalid attempts are more expensive to the tuning score and safer fallbacks are preferred.',
       targetMetric: 'readability',
-      changeType: 'balance-knob',
-      files: ['simulator.balance.json'],
+      changeType: 'agent-policy',
+      files: ['simulator.agent-policies.json'],
       patch: balancePatch({
-        invalidAttemptPenalty: knob(balance, 'invalidAttemptPenalty', 5) + 3,
         movementFallbackPriority: 2,
       }),
       verificationCommand: `npm run autopilot -- --id=${scenario.id} --mode=iterate --apply`,
@@ -337,12 +337,11 @@ export function generateAutopilotCandidates({ scenario = {}, baselineReport = nu
       title: 'Open the recovery window earlier',
       hypothesis: 'Recovery should appear before stat collapse, especially in cooperative pressure.',
       targetMetric: 'recovery',
-      changeType: 'balance-knob',
-      files: ['simulator.balance.json'],
+      changeType: 'agent-policy',
+      files: ['simulator.agent-policies.json'],
       patch: balancePatch({
         recoverAtStat: clamp(knob(balance, 'recoverAtStat', 1) + 1, 1, 3),
         restBias: knob(balance, 'restBias', 1) + 1,
-        statCollapsePenalty: knob(balance, 'statCollapsePenalty', 14) + 3,
       }),
       verificationCommand: `npm run autopilot -- --id=${scenario.id} --mode=iterate --apply`,
     }));
@@ -353,11 +352,10 @@ export function generateAutopilotCandidates({ scenario = {}, baselineReport = nu
       title: 'Increase artifact payoff pressure',
       hypothesis: 'More dig pressure and artifact reward scoring should reveal whether artifact hunting can become the emotional peak.',
       targetMetric: 'surprise',
-      changeType: 'balance-knob',
-      files: ['simulator.balance.json'],
+      changeType: 'agent-policy',
+      files: ['simulator.agent-policies.json'],
       patch: balancePatch({
         digBias: knob(balance, 'digBias', 1) + 1,
-        artifactLifeReward: knob(balance, 'artifactLifeReward', 22) + 4,
       }),
       verificationCommand: `npm run autopilot -- --id=${scenario.id} --mode=iterate --apply`,
     }));
@@ -370,7 +368,7 @@ export function generateAutopilotCandidates({ scenario = {}, baselineReport = nu
       targetMetric: 'pacing',
       changeType: 'scenario-design',
       files: ['simulator.scenarios.json'],
-      patch: scenarioPatch(scenario, { turns: Math.max(6, Number(scenario.turns || 12) - 2), batch: Math.max(2, Number(scenario.batch || 1)) }),
+      patch: scenarioPatch(scenario, { turns: Math.max(6, Number(scenario.turns || 12) - 2), batch: Math.max(10, Number(scenario.batch || 1)) }),
       verificationCommand: `npm run scenario:run -- --id=${scenario.id} && npm run oracle:scenario -- --id=${scenario.id}`,
     }));
   }
@@ -382,7 +380,7 @@ export function generateAutopilotCandidates({ scenario = {}, baselineReport = nu
       targetMetric: 'confidence',
       changeType: 'scenario-design',
       files: ['simulator.scenarios.json'],
-      patch: scenarioPatch(scenario, { batch: Math.max(3, Number(scenario.batch || 1)), strategies: uniqueStrategies([...(scenario.strategies || []), 'balanced', 'move', 'risky']) }),
+      patch: scenarioPatch(scenario, { batch: Math.max(10, Number(scenario.batch || 1)), strategies: uniqueStrategies([...(scenario.strategies || []), 'balanced', 'move', 'risky']) }),
       verificationCommand: `npm run scenario:run -- --id=${scenario.id} && npm run oracle:scenario -- --id=${scenario.id}`,
     }));
   }
@@ -404,7 +402,7 @@ function dedupeCandidates(candidates) {
 }
 
 export function selectAutopilotCandidate(candidates = []) {
-  const order = { run: 0, 'scenario-setup': 1, 'scenario-design': 2, 'balance-knob': 3 };
+  const order = { run: 0, 'scenario-setup': 1, 'scenario-design': 2, 'agent-policy': 3 };
   return [...candidates].sort((a, b) => (order[a.changeType] ?? 9) - (order[b.changeType] ?? 9) || a.files.length - b.files.length)[0] || null;
 }
 
@@ -445,13 +443,13 @@ export function applyAutopilotCandidate(candidate, { storePath = resolve(root, '
     const store = readJson(storePath, loadScenarioStore());
     writeStableJson(storePath, applyScenarioPatch(store, candidate.patch));
   }
-  if (candidate.patch?.file === 'simulator.balance.json') {
+  if (['simulator.agent-policies.json', 'simulator.balance.json'].includes(candidate.patch?.file)) {
     const balance = readJson(balanceFile, loadBalance(balanceFile));
     writeStableJson(balanceFile, {
       ...balance,
       knobs: {
         ...(balance.knobs || {}),
-        ...(candidate.patch.knobs || {}),
+        ...Object.fromEntries(Object.entries(candidate.patch.knobs || {}).filter(([key]) => POLICY_KNOBS.has(key))),
       },
     });
   }
@@ -465,7 +463,7 @@ export function applyAutopilotCandidate(candidate, { storePath = resolve(root, '
 
 function candidateFilePath(file, { storePath = resolve(root, 'simulator.scenarios.json'), balanceFile = balancePath } = {}) {
   if (file === 'simulator.scenarios.json') return storePath;
-  if (file === 'simulator.balance.json') return balanceFile;
+  if (['simulator.agent-policies.json', 'simulator.balance.json'].includes(file)) return balanceFile;
   return resolve(root, file);
 }
 
@@ -502,10 +500,17 @@ export function compareAutopilotRuns(baselineReport = {}, baselineOracle = {}, f
   if (delta.flatTurnRate > 0.03) rejectedReasons.push(`flat-turn rate worsened by ${delta.flatTurnRate.toFixed(2)}`);
   if (delta.invalidAttempts > 1) rejectedReasons.push(`invalid attempts worsened by ${delta.invalidAttempts.toFixed(1)}`);
   if (delta.zeroStatPlayers > 0.25) rejectedReasons.push(`zero-stat players worsened by ${delta.zeroStatPlayers.toFixed(1)}`);
+  const pairedEvidence = baselineReport.simulationContract || finalReport.simulationContract
+    ? comparePairedReports(baselineReport, finalReport, {
+      minimumReplicates: Number(finalReport.scenarioDefinition?.evidenceRequirements?.minRunsPerStrategy || 10),
+    })
+    : null;
+  if (pairedEvidence && !pairedEvidence.passed) rejectedReasons.push(...pairedEvidence.failures.map((failure) => `paired evidence: ${failure}`));
   return {
     before,
     after,
     delta,
+    pairedEvidence,
     accepted: rejectedReasons.length === 0 && (delta.weightedScore > 0 || delta.confidence > 0.02 || delta.lifeScore > 1),
     rejectedReasons,
   };
@@ -521,15 +526,16 @@ export function finalAutopilotVerdict({ oracle = null, comparison = null, limits
   return 'needs-iteration';
 }
 
-export function autopilotReportPaths(scenarioId = null) {
+export function autopilotReportPaths(scenarioId = null, { preview = false } = {}) {
   const stamp = new Date().toISOString().replace(/[:.]/g, '-');
-  const scenarioDir = scenarioId ? resolve(scenarioReportRoot, scenarioId, 'autopilot') : null;
+  const reportRoot = preview ? resolve(autopilotReportRoot, 'previews') : autopilotReportRoot;
+  const scenarioDir = scenarioId ? resolve(scenarioReportRoot, scenarioId, preview ? 'autopilot-previews' : 'autopilot') : null;
   return {
-    latest: resolve(autopilotReportRoot, 'latest-report.json'),
-    latestMarkdown: resolve(autopilotReportRoot, 'latest-report.md'),
-    stamped: resolve(autopilotReportRoot, `autopilot-${stamp}.json`),
-    history: resolve(autopilotReportRoot, 'history.json'),
-    publicLatest: resolve(publicAutopilotRoot, 'latest-report.json'),
+    latest: resolve(reportRoot, 'latest-report.json'),
+    latestMarkdown: resolve(reportRoot, 'latest-report.md'),
+    stamped: resolve(reportRoot, `autopilot-${stamp}.json`),
+    history: resolve(reportRoot, 'history.json'),
+    publicLatest: preview ? null : resolve(publicAutopilotRoot, 'latest-report.json'),
     scenarioLatest: scenarioDir ? resolve(scenarioDir, 'latest-report.json') : null,
     scenarioMarkdown: scenarioDir ? resolve(scenarioDir, 'latest-report.md') : null,
     scenarioStamped: scenarioDir ? resolve(scenarioDir, `autopilot-${stamp}.json`) : null,
@@ -588,7 +594,8 @@ function formatSigned(value) {
 }
 
 export function writeAutopilotReport(report, { markdown = true } = {}) {
-  const paths = autopilotReportPaths(report.scenarioId);
+  const preview = report.mode === 'dry-run';
+  const paths = autopilotReportPaths(report.scenarioId, { preview });
   const memo = designMemoMarkdown(report);
   const withPaths = {
     ...report,
@@ -597,7 +604,7 @@ export function writeAutopilotReport(report, { markdown = true } = {}) {
   };
   writeJson(paths.latest, withPaths);
   writeJson(paths.stamped, withPaths);
-  writeJson(paths.publicLatest, withPaths);
+  if (paths.publicLatest) writeJson(paths.publicLatest, withPaths);
   if (paths.scenarioLatest) writeJson(paths.scenarioLatest, withPaths);
   if (paths.scenarioStamped) writeJson(paths.scenarioStamped, withPaths);
   if (markdown) {
@@ -605,7 +612,7 @@ export function writeAutopilotReport(report, { markdown = true } = {}) {
     if (paths.scenarioMarkdown) writeText(paths.scenarioMarkdown, memo);
   }
   const history = readJson(paths.history, []);
-  writeJson(paths.history, [autopilotHistoryEntry(withPaths), ...(Array.isArray(history) ? history : [])].slice(0, 100));
+  writeJson(paths.history, [autopilotHistoryEntry(withPaths), ...(Array.isArray(history) ? history : [])].slice(0, preview ? 25 : 100));
   return withPaths;
 }
 

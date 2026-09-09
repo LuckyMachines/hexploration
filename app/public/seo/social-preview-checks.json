@@ -1,9 +1,17 @@
 [
   {
     "path": "/",
-    "title": "Xenovoya",
-    "url": "https://xenovoya.luckymachines.com",
-    "image": "https://xenovoya.luckymachines.com/seo/xenovoya-share-card.svg",
+    "title": "Play Xenovoya | Xenovoya",
+    "url": "https://play.xenovoya.com",
+    "image": "https://play.xenovoya.com/seo/xenovoya-share-card.png",
+    "ok": true,
+    "missing": []
+  },
+  {
+    "path": "/privacy",
+    "title": "Xenovoya data and privacy | Xenovoya",
+    "url": "https://play.xenovoya.com/privacy",
+    "image": "https://play.xenovoya.com/seo/xenovoya-share-card.png",
     "ok": true,
     "missing": []
   }

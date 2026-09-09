@@ -49,11 +49,25 @@ test('validates missing and invalid scenario fields', () => {
 
 test('compiles scenario into simulator args', () => {
   const scenario = parseScenarioIntent('solo exploration smoke');
-  const args = compileScenarioArgs(scenario, { quiet: true });
+  const args = compileScenarioArgs(scenario, { quiet: true, batch: 10, seed: 'paired-proof', rpc: 'http://127.0.0.1:11133' });
   assert.ok(args.includes(`--scenario-id=${scenario.id}`));
   assert.ok(args.includes(`--players=${scenario.players}`));
   assert.ok(args.includes('--quiet'));
+  assert.ok(args.includes('--batch=10'));
+  assert.ok(args.includes('--seed=paired-proof'));
+  assert.ok(args.includes('--rpc=http://127.0.0.1:11133'));
   assert.ok(args.some((entry) => entry.startsWith('--strategies=')));
+});
+
+test('requires production scenarios to define strict evidence', () => {
+  const result = validateScenario({
+    id: 'underpowered', name: 'Underpowered', designQuestion: 'Does it work?', players: 1,
+    strategies: ['balanced'], productionEligible: true, loopCoverage: ['explore'],
+    evidenceRequirements: { minRunsPerStrategy: 1, minDistinctSeedsPerStrategy: 1, requireTerminalOutcome: false },
+  }, []);
+  assert.equal(result.ok, false);
+  assert.ok(result.errors.some((error) => error.includes('10 runs')));
+  assert.ok(result.errors.some((error) => error.includes('terminal outcome')));
 });
 
 test('evaluates scenario verdicts', () => {

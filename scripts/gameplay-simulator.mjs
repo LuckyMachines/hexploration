@@ -20,6 +20,7 @@ import { createPublicClient, createWalletClient, http } from 'viem';
 import { foundry } from 'viem/chains';
 import { privateKeyToAccount } from 'viem/accounts';
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
+import { createHash } from 'crypto';
 import { dirname, resolve } from 'path';
 import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
@@ -43,6 +44,7 @@ import {
   applySetupForge,
   compareRequestedToActualSetup,
   normalizeSetupForge,
+  SETUP_ABIS,
   setupApplicationLevel,
   writeSetupReport,
 } from './setup-forge-utils.mjs';
@@ -56,6 +58,8 @@ const reportDir = resolve(root, 'reports', 'simulator');
 const publicReportDir = resolve(appDir, 'public', 'simulator');
 const tuningConfigPath = resolve(root, 'simulator.tuning.json');
 const balanceConfigPath = resolve(root, 'simulator.balance.json');
+const agentPolicyConfigPath = resolve(root, 'simulator.agent-policies.json');
+const evaluationConfigPath = resolve(root, 'simulator.evaluation.json');
 const defaultBaselinePath = resolve(reportDir, 'baseline-report.json');
 const tuningLedgerPath = resolve(reportDir, 'tuning-ledger.json');
 
@@ -110,6 +114,7 @@ const scenario = scenarioDefinition ? scenarioToSimulatorPreset(scenarioDefiniti
 
 const config = {
   rpcUrl: String(arg('rpc', process.env.RPC_URL || 'http://127.0.0.1:9955')),
+  pollingIntervalMs: Math.max(50, Number(arg('polling-interval-ms', process.env.SIM_POLL_INTERVAL_MS || 100))),
   scenario: scenarioName,
   scenarioLabel: String(scenario.label || scenarioName),
   turns: Math.max(1, Number(arg('turns', scenario.turns || 8))),
@@ -121,7 +126,9 @@ const config = {
   note: String(arg('note', '')),
   hypothesis: String(arg('hypothesis', '')),
   changed: String(arg('changed', '')),
-  balance: String(arg('balance', balanceConfigPath)),
+  balance: arg('balance', null),
+  agentPolicy: String(arg('policy', agentPolicyConfigPath)),
+  evaluation: String(arg('evaluation', evaluationConfigPath)),
   scenarioFile: String(arg('scenario-file', scenarioStorePath)),
   scenarioId: String(arg('scenario-id', '')),
   scenarioJson: String(arg('scenario-json', '')),
@@ -201,7 +208,7 @@ const DEFAULT_TUNING_CONFIG = {
 
 const DEFAULT_BALANCE_CONFIG = {
   schemaVersion: 1,
-  description: 'Safe simulator auto-tune knobs. These affect simulator agent behavior and fun-debugger scoring, not deployed contract code.',
+    description: 'Legacy compatibility defaults. New runs split synthetic-player policy from the immutable evaluation rubric.',
   knobs: {
     moveBias: 1,
     digBias: 1,
@@ -284,6 +291,42 @@ function readJson(path) {
   return JSON.parse(readFileSync(path, 'utf8'));
 }
 
+function stableConfigHash(value) {
+  return createHash('sha256').update(JSON.stringify(value || {})).digest('hex');
+}
+
+function runTraceHash(run, summary) {
+  return stableConfigHash({
+    scenario: run.config?.scenario,
+    strategy: run.config?.strategy,
+    seed: run.config?.seed,
+    turns: (run.turns || []).map((turn) => ({
+      turn: turn.turn,
+      actions: (turn.submissions || []).map((submission) => ({
+        playerId: String(submission.playerId || ''),
+        action: submission.action || null,
+        options: submission.options || [],
+        error: Boolean(submission.error),
+      })),
+      state: {
+        day: turn.after?.day,
+        phase: turn.after?.phase,
+        queuePhase: turn.after?.queuePhase,
+        gameOver: Boolean(turn.after?.gameOver),
+        revealedZones: Number(turn.after?.activeZones?.count || 0),
+        players: (turn.after?.players || []).map((player) => ({
+          playerId: String(player.playerId || ''),
+          active: player.active !== false,
+          location: player.location,
+          stats: player.stats,
+          artifactCount: (player.artifacts?.length || 0) + (player.inventory?.relic ? 1 : 0),
+        })),
+      },
+    })),
+    outcome: summary.outcome,
+  });
+}
+
 function mergeTuningConfig(base, override = {}) {
   return {
     targets: { ...(base.targets || {}), ...(override.targets || {}) },
@@ -307,9 +350,31 @@ function mergeBalanceConfig(base, override = {}) {
 }
 
 function loadBalanceConfig(path = config.balance) {
-  const resolved = resolve(root, String(path || balanceConfigPath));
-  if (!existsSync(resolved)) return { ...DEFAULT_BALANCE_CONFIG, path: null };
-  return { ...mergeBalanceConfig(DEFAULT_BALANCE_CONFIG, readJson(resolved)), path: resolved };
+  if (path) {
+    const resolved = resolve(root, String(path));
+    if (!existsSync(resolved)) return { ...DEFAULT_BALANCE_CONFIG, path: null, mode: 'missing-legacy' };
+    return { ...mergeBalanceConfig(DEFAULT_BALANCE_CONFIG, readJson(resolved)), path: resolved, mode: 'legacy' };
+  }
+  const policyPath = resolve(root, config.agentPolicy);
+  const rubricPath = resolve(root, config.evaluation);
+  const policy = existsSync(policyPath) ? readJson(policyPath) : { knobs: {} };
+  const evaluation = existsSync(rubricPath) ? readJson(rubricPath) : { knobs: {}, gates: {} };
+  return {
+    ...DEFAULT_BALANCE_CONFIG,
+    description: 'Separated synthetic-player policy and immutable evaluation rubric.',
+    knobs: {
+      ...DEFAULT_BALANCE_CONFIG.knobs,
+      ...(evaluation.knobs || {}),
+      ...(policy.knobs || {}),
+    },
+    gates: { ...DEFAULT_BALANCE_CONFIG.gates, ...(evaluation.gates || {}) },
+    policy: policy.knobs || {},
+    evaluation: evaluation.knobs || {},
+    policyPath,
+    evaluationPath: rubricPath,
+    path: null,
+    mode: 'separated',
+  };
 }
 
 function readEnvFile(path) {
@@ -329,6 +394,7 @@ function readBroadcastAddresses() {
   }
   if (gameTokens[0]) byName.DAY_NIGHT_TOKEN = gameTokens[0];
   if (gameTokens[3]) byName.ITEM_TOKEN = gameTokens[3];
+  if (gameTokens[5]) byName.RELIC_TOKEN = gameTokens[5];
   return byName;
 }
 
@@ -354,6 +420,7 @@ function loadAddresses() {
     TOKEN_INVENTORY: env.VITE_TOKEN_INVENTORY_ADDRESS || broadcast.TokenInventory,
     ITEM_TOKEN: env.VITE_ITEM_TOKEN_ADDRESS || broadcast.ITEM_TOKEN,
     DAY_NIGHT_TOKEN: env.VITE_DAY_NIGHT_TOKEN_ADDRESS || broadcast.DAY_NIGHT_TOKEN,
+    RELIC_TOKEN: env.VITE_RELIC_TOKEN_ADDRESS || broadcast.RELIC_TOKEN,
   };
 
   for (const key of ['BOARD', 'CONTROLLER', 'GAME_SUMMARY', 'PLAYER_SUMMARY', 'GAME_REGISTRY', 'GAME_SETUP', 'QUEUE', 'GAMEPLAY']) {
@@ -388,7 +455,11 @@ const abis = {
 };
 
 const transport = http(config.rpcUrl);
-const publicClient = createPublicClient({ chain: foundry, transport });
+const publicClient = createPublicClient({
+  chain: foundry,
+  transport,
+  pollingInterval: config.pollingIntervalMs,
+});
 const deployer = privateKeyToAccount(DEPLOYER_KEY);
 const deployerWallet = createWalletClient({ chain: foundry, transport, account: deployer });
 
@@ -476,11 +547,41 @@ function statTotal(player) {
 }
 
 function allArtifacts(snapshotData) {
-  return (snapshotData?.players || []).reduce((sum, player) => sum + (player.artifacts?.length || 0), 0);
+  return (snapshotData?.players || []).reduce((sum, player) => (
+    sum + (player.artifacts?.length || 0) + (player.inventory?.relic ? 1 : 0)
+  ), 0);
 }
 
 function totalStats(snapshotData) {
   return (snapshotData?.players || []).reduce((sum, player) => sum + statTotal(player), 0);
+}
+
+function rescueOutcomesForTurn(before, after, submissions = []) {
+  const statKeys = ['movement', 'agility', 'dexterity'];
+  return submissions
+    .filter((submission) => submission.action === 'Help' && !submission.error && submission.options?.[0])
+    .map((submission) => {
+      const targetId = String(submission.options[0]);
+      const targetBefore = before?.players?.find((player) => String(player.playerId) === targetId);
+      const targetAfter = after?.players?.find((player) => String(player.playerId) === targetId);
+      const beforeValues = statKeys.map((stat) => Number(targetBefore?.stats?.[stat] ?? 0));
+      const afterValues = statKeys.map((stat) => Number(targetAfter?.stats?.[stat] ?? 0));
+      const dangerBefore = Math.min(...beforeValues) <= 2;
+      const criticalBefore = Math.min(...beforeValues) <= 1;
+      const stabilized = criticalBefore && Math.min(...afterValues) > 0;
+      return {
+        helperId: String(submission.playerId),
+        targetId,
+        stat: String(submission.options[1] || ''),
+        dangerBefore,
+        criticalBefore,
+        stabilized,
+        recipientStatDelta: afterValues.reduce((sum, value) => sum + value, 0)
+          - beforeValues.reduce((sum, value) => sum + value, 0),
+        before: Object.fromEntries(statKeys.map((stat, index) => [stat, beforeValues[index]])),
+        after: Object.fromEntries(statKeys.map((stat, index) => [stat, afterValues[index]])),
+      };
+    });
 }
 
 function zeroStatPlayers(snapshotData) {
@@ -719,19 +820,21 @@ async function snapshot(addresses, gameId, seats, label) {
 
   const players = [];
   for (const seat of seats) {
-    const [stats, location, action, movement, active, artifacts] = await Promise.all([
+    const [stats, location, action, movement, active, artifacts, isActive] = await Promise.all([
       readContract(addresses.PLAYER_SUMMARY, abis.playerSummary, 'currentPlayerStats', [addresses.BOARD, gameId, seat.playerId]).catch(() => [0, 0, 0]),
       readContract(addresses.PLAYER_SUMMARY, abis.playerSummary, 'currentLocation', [addresses.BOARD, gameId, seat.playerId]).catch(() => ''),
       readContract(addresses.PLAYER_SUMMARY, abis.playerSummary, 'activeAction', [addresses.BOARD, gameId, seat.playerId]).catch(() => ''),
       readContract(addresses.PLAYER_SUMMARY, abis.playerSummary, 'availableMovement', [addresses.BOARD, gameId, seat.playerId]).catch(() => 0),
       readContract(addresses.PLAYER_SUMMARY, abis.playerSummary, 'activeInventory', [addresses.BOARD, gameId, seat.playerId]).catch(() => ['', '', '', false, false, '', '']),
       readContract(addresses.PLAYER_SUMMARY, abis.playerSummary, 'playerRecoveredArtifacts', [addresses.BOARD, gameId, seat.playerId]).catch(() => []),
+      readContract(addresses.PLAYER_SUMMARY, abis.playerSummary, 'isActive', [addresses.BOARD, gameId, seat.playerId]).catch(() => true),
     ]);
     players.push({
       playerId: seat.playerId,
       address: seat.account.address,
       location,
       action,
+      isActive: Boolean(isActive),
       movement: toNumber(movement),
       stats: {
         movement: toNumber(stats[0]),
@@ -783,21 +886,68 @@ async function snapshot(addresses, gameId, seats, label) {
 }
 
 async function findMovePath(addresses, gameId, player) {
-  const [zones] = await readContract(addresses.GAME_SUMMARY, abis.gameSummary, 'activeZones', [
+  const [zones, tiles] = await readContract(addresses.GAME_SUMMARY, abis.gameSummary, 'activeZones', [
     addresses.BOARD,
     gameId,
-  ]).catch(() => [[]]);
-  const revealed = new Set(Array.from(zones || []));
+  ]).catch(() => [[], []]);
+  const zoneList = Array.from(zones || []);
+  const tileList = Array.from(tiles || []).map(Number);
+  const revealed = new Set(zoneList);
   const adjacent = getAdjacent(player.location);
-  const target = adjacent.find((alias) => revealed.has(alias));
+  const relicMystery = adjacent.find((alias) => {
+    const index = zoneList.indexOf(alias);
+    return index >= 0 && tileList[index] === 6;
+  });
+  const frontier = adjacent.find((alias) => !revealed.has(alias));
+  const target = relicMystery || frontier || adjacent.find((alias) => revealed.has(alias));
   return target ? [target] : [];
+}
+
+function helpPlanFor(player, snapshot) {
+  const stats = ['movement', 'agility', 'dexterity'];
+  const helperValues = stats.map((stat) => Number(player.stats?.[stat] ?? 0));
+  const helperMinimum = Math.min(...helperValues);
+  if (!player.isActive || helperMinimum < 2) return null;
+  const candidates = (snapshot?.players || [])
+    .filter((candidate) => (
+      String(candidate.playerId) !== String(player.playerId)
+      && candidate.isActive
+      && candidate.location === player.location
+      && Math.min(...stats.map((stat) => Number(candidate.stats?.[stat] ?? 0))) < helperMinimum
+      && Math.min(...stats.map((stat) => Number(candidate.stats?.[stat] ?? 0))) <= 2
+      && stats.some((stat) => player.stats?.[stat] > 1 && candidate.stats?.[stat] < 4)
+    ))
+    .sort((left, right) => {
+      const leftStats = stats.map((stat) => Number(left.stats?.[stat] ?? 0));
+      const rightStats = stats.map((stat) => Number(right.stats?.[stat] ?? 0));
+      return Math.min(...leftStats) - Math.min(...rightStats)
+        || leftStats.reduce((sum, value) => sum + value, 0) - rightStats.reduce((sum, value) => sum + value, 0)
+        || Number(left.playerId) - Number(right.playerId);
+    });
+  const recipient = candidates[0];
+  if (!recipient) return null;
+  const stat = stats
+    .filter((key) => player.stats?.[key] > 1 && recipient.stats?.[key] < 4)
+    .sort((left, right) => (
+      Number(recipient.stats?.[left] ?? 0) - Number(recipient.stats?.[right] ?? 0)
+      || Number(player.stats?.[right] ?? 0) - Number(player.stats?.[left] ?? 0)
+    ))[0];
+  return {
+    action: ACTION.HELP,
+    options: [String(recipient.playerId), stat[0].toUpperCase() + stat.slice(1)],
+    reason: `${Number(recipient.stats?.[stat] ?? 0) <= 1 ? 'rescue' : 'support'} P${recipient.playerId} with ${stat} (focused +2, other stats +1)`,
+  };
 }
 
 function plannedActionFor(strategy, turn, playerIndex, player, context) {
   const knobs = context.balance?.knobs || {};
   const offset = stableHash([context.seed, context.runIndex, playerIndex]) % 5;
   if (strategy === 'idle') return { action: ACTION.IDLE, options: [], reason: 'idle baseline' };
-  if (strategy === 'dig') return { action: ACTION.DIG, options: [], reason: 'dig focus' };
+  if (strategy === 'dig') {
+    return turn === 1 && context.movePath.length > 0
+      ? { action: ACTION.MOVE, options: context.movePath, reason: 'move to a discovery site' }
+      : { action: ACTION.DIG, options: [], reason: 'dig focus' };
+  }
   if (strategy === 'rest') return { action: ACTION.REST, options: ['Movement'], reason: 'rest focus' };
   if (strategy === 'move') return { action: ACTION.MOVE, options: context.movePath, reason: 'move focus' };
   if (strategy === 'risky') {
@@ -843,9 +993,38 @@ async function isValidAction(addresses, gameId, playerId, plan) {
   }
 }
 
-async function chooseAction(addresses, gameId, turn, playerIndex, player, runConfig) {
+async function chooseAction(addresses, gameId, turn, playerIndex, player, beforeSnapshot, runConfig) {
   const movePath = await findMovePath(addresses, gameId, player);
   const candidates = [];
+  const statKeys = ['movement', 'agility', 'dexterity'];
+  const weakestStat = statKeys.sort((left, right) => (
+    Number(player.stats?.[left] ?? 0) - Number(player.stats?.[right] ?? 0)
+  ))[0];
+  const isInDanger = Number(player.stats?.[weakestStat] ?? 0) <= 2;
+  const rescueIncoming = isInDanger && (beforeSnapshot?.players || []).some((candidate) => {
+    if (!candidate.isActive || String(candidate.playerId) === String(player.playerId)) return false;
+    const candidatePlan = helpPlanFor(candidate, beforeSnapshot);
+    return candidatePlan
+      && String(candidatePlan.options?.[0]) === String(player.playerId)
+      && String(candidatePlan.options?.[1] || '').toLowerCase() === weakestStat;
+  });
+  const zoneIndex = beforeSnapshot?.activeZones?.zones?.indexOf(player.location) ?? -1;
+  const canRestHere = zoneIndex >= 0 && Boolean(beforeSnapshot?.activeZones?.campsites?.[zoneIndex]);
+  const hasArtifact = Boolean(player.inventory?.artifact) || (player.artifacts?.length || 0) > 0;
+  if (isInDanger) {
+    if (canRestHere) {
+      candidates.push({
+        action: ACTION.REST,
+        options: [weakestStat[0].toUpperCase() + weakestStat.slice(1)],
+        reason: `recover endangered ${weakestStat}`,
+      });
+    }
+    if (rescueIncoming) {
+      candidates.push({ action: ACTION.IDLE, options: [], reason: `hold position for incoming ${weakestStat} rescue` });
+    }
+  }
+  const helpPlan = helpPlanFor(player, beforeSnapshot);
+  if (helpPlan) candidates.push(helpPlan);
   const primary = plannedActionFor(runConfig.strategy, turn, playerIndex, player, {
     movePath,
     seed: runConfig.seed,
@@ -853,19 +1032,27 @@ async function chooseAction(addresses, gameId, turn, playerIndex, player, runCon
     balance: runConfig.balance,
   });
   if (primary.action === ACTION.MOVE) primary.options = movePath;
-  candidates.push(primary);
+  if (primary.action !== ACTION.REST || canRestHere) {
+    if (primary.action !== ACTION.DIG || !hasArtifact) candidates.push(primary);
+  }
   if ((runConfig.balance?.knobs?.movementFallbackPriority || 1) >= 1) {
     candidates.push({ action: ACTION.MOVE, options: movePath, reason: 'valid move fallback' });
   }
-  candidates.push({ action: ACTION.DIG, options: [], reason: 'dig fallback' });
-  candidates.push({ action: ACTION.REST, options: ['Movement'], reason: 'rest fallback' });
+  if (!hasArtifact) candidates.push({ action: ACTION.DIG, options: [], reason: 'dig fallback' });
+  if (canRestHere) candidates.push({ action: ACTION.REST, options: ['Movement'], reason: 'rest fallback' });
   if ((runConfig.balance?.knobs?.movementFallbackPriority || 1) < 1) {
     candidates.push({ action: ACTION.MOVE, options: movePath, reason: 'late move fallback' });
   }
   candidates.push({ action: ACTION.IDLE, options: [], reason: 'idle fallback' });
 
+  const uniqueCandidates = candidates.filter((plan, index, all) => {
+    const key = `${plan.action}:${JSON.stringify(plan.options || [])}`;
+    return all.findIndex((candidate) => `${candidate.action}:${JSON.stringify(candidate.options || [])}` === key) === index;
+  });
   const validityLog = [];
-  for (const plan of candidates) {
+  let selectedPlan = null;
+  let invalidAttemptsBeforeSelection = 0;
+  for (const plan of uniqueCandidates) {
     if (plan.action === ACTION.MOVE && plan.options.length === 0) continue;
     const validity = await isValidAction(addresses, gameId, player.playerId, plan);
     validityLog.push({
@@ -874,15 +1061,16 @@ async function chooseAction(addresses, gameId, turn, playerIndex, player, runCon
       ok: validity.ok,
       reason: validity.reason,
     });
-    if (validity.ok) {
-      return {
-        ...plan,
-        validity,
-        validChoiceCount: validityLog.filter((entry) => entry.ok).length,
-        invalidAttempts: validityLog.filter((entry) => !entry.ok).length,
-        validityLog,
-      };
-    }
+    if (!selectedPlan && validity.ok) selectedPlan = { ...plan, validity };
+    else if (!selectedPlan) invalidAttemptsBeforeSelection += 1;
+  }
+  if (selectedPlan) {
+    return {
+      ...selectedPlan,
+      validChoiceCount: validityLog.filter((entry) => entry.ok).length,
+      invalidAttempts: invalidAttemptsBeforeSelection,
+      validityLog,
+    };
   }
   return {
     action: ACTION.IDLE,
@@ -906,7 +1094,20 @@ async function submitTurnActions(addresses, gameId, queueId, turn, seats, before
     }
 
     const player = beforeSnapshot.players.find((entry) => String(entry.playerId) === String(seat.playerId));
-    const plan = await chooseAction(addresses, gameId, turn, index, player || { playerId: seat.playerId, location: '', stats: {} }, runConfig);
+    if (player && !player.isActive) {
+      submissions.push({
+        playerId: String(seat.playerId),
+        action: ACTION.IDLE,
+        actionName: 'Inactive',
+        options: [],
+        reason: 'player is no longer active',
+        skipped: true,
+        invalidAttempts: 0,
+        validChoiceCount: 0,
+      });
+      continue;
+    }
+    const plan = await chooseAction(addresses, gameId, turn, index, player || { playerId: seat.playerId, location: '', stats: {} }, beforeSnapshot, runConfig);
     try {
       const receipt = await writeContract(seat.wallet, addresses.CONTROLLER, abis.controller, 'submitAction', [
         seat.playerId,
@@ -957,8 +1158,8 @@ async function progressLoop(label, address) {
   const ready = Boolean(result[0]);
   const data = result[1];
   if (!ready) return false;
-  await writeContract(deployerWallet, address, abis.loop, 'progressLoop', [data]);
-  log(`${label} loop progressed`);
+  const receipt = await writeContract(deployerWallet, address, abis.loop, 'progressLoop', [data]);
+  log(`${label} loop progressed (${receipt.transactionHash})`);
   return true;
 }
 
@@ -996,15 +1197,27 @@ function analyzeTurn(turn, previousAnalysis = null) {
   const revealedDelta = (after?.activeZones?.count || 0) - (before?.activeZones?.count || 0);
   const cardDraws = after?.lastDayEvents?.cardsDrawn?.filter(Boolean)?.length || 0;
   const invalidAttempts = submissions.reduce((sum, submission) => sum + (submission.invalidAttempts || 0), 0);
-  const validChoiceCounts = submissions.map((submission) => submission.validChoiceCount || 0).filter((count) => count > 0);
-  const meaningfulChoiceDensity = validChoiceCounts.length > 0
-    ? validChoiceCounts.filter((count) => count > 1).length / validChoiceCounts.length
-    : 0;
+  const choiceProfiles = submissions.map((submission) => {
+    const meaningfulActions = new Set((submission.validityLog || [])
+      .filter((entry) => entry.ok && entry.action && entry.action !== 'Idle')
+      .map((entry) => entry.action));
+    const optionCount = meaningfulActions.size;
+    return {
+      optionCount,
+      opportunity: optionCount >= 2 ? 1 : 0,
+      entropy: optionCount > 0 ? Math.min(1, Math.log2(optionCount + 1) / Math.log2(6)) : 0,
+    };
+  }).filter((profile) => profile.optionCount > 0);
+  const choiceOpportunityRate = average(choiceProfiles.map((profile) => profile.opportunity));
+  const decisionEntropy = average(choiceProfiles.map((profile) => profile.entropy));
   const zeroStats = zeroStatPlayers(after);
   const actions = submissions.map((submission) => submission.action).filter(Boolean);
   const uniqueActions = new Set(actions);
   const errors = submissions.filter((submission) => submission.error);
+  const rescueOutcomes = rescueOutcomesForTurn(before, after, submissions);
   const changed = Math.abs(statDelta) > 0 || artifactDelta > 0 || locationChanges > 0 || revealedDelta > 0 || cardDraws > 0;
+  const consequenceVisibility = changed ? 1 : 0;
+  const meaningfulChoiceDensity = choiceOpportunityRate * (changed ? 1 : 0.35);
   const boring = !turn.skipped && !changed && errors.length === 0;
   const spikeReasons = [];
   if (statDelta <= -3) spikeReasons.push(`stat drop ${statDelta}`);
@@ -1034,6 +1247,11 @@ function analyzeTurn(turn, previousAnalysis = null) {
       value: cardDraws === 0 ? 'No cards' : `${cardDraws} drawn`,
       tone: cardDraws > 0 ? 'gold' : 'neutral',
     },
+    ...(rescueOutcomes.length > 0 ? [{
+      label: 'Rescue',
+      value: `${rescueOutcomes.length} Help; ${rescueOutcomes.filter((outcome) => outcome.stabilized).length} stabilized`,
+      tone: rescueOutcomes.some((outcome) => outcome.stabilized) ? 'green' : 'blue',
+    }] : []),
     {
       label: 'Validity',
       value: invalidAttempts === 0 ? 'No invalid attempts' : `${invalidAttempts} invalid`,
@@ -1122,7 +1340,11 @@ function analyzeTurn(turn, previousAnalysis = null) {
     cardDraws,
     invalidAttempts,
     meaningfulChoiceDensity,
+    choiceOpportunityRate,
+    decisionEntropy,
+    consequenceVisibility,
     zeroStats,
+    rescueOutcomes,
     actions,
     recap,
     funDebugger: {
@@ -1142,6 +1364,9 @@ function analyzeTurn(turn, previousAnalysis = null) {
         cardDraws,
         invalidAttempts,
         meaningfulChoiceDensity,
+        choiceOpportunityRate,
+        decisionEntropy,
+        consequenceVisibility,
         zeroStats,
         repeatedAction,
       },
@@ -1266,7 +1491,11 @@ function analyzeRun(run) {
   const boringTurns = run.turns.filter((turn) => turn.analysis.boring);
   const spikeTurns = run.turns.filter((turn) => turn.analysis.spike);
   const invalidAttempts = turnAnalyses.reduce((sum, item) => sum + item.invalidAttempts, 0);
+  const rescueOutcomes = turnAnalyses.flatMap((item) => item.rescueOutcomes || []);
   const meaningfulChoiceDensity = average(turnAnalyses.map((item) => item.meaningfulChoiceDensity));
+  const choiceOpportunityRate = average(turnAnalyses.map((item) => item.choiceOpportunityRate));
+  const decisionEntropy = average(turnAnalyses.map((item) => item.decisionEntropy));
+  const consequenceVisibility = average(turnAnalyses.map((item) => item.consequenceVisibility));
   const tensionCurve = turnAnalyses.map((item, index) => ({
     turn: index + 1,
     statDelta: item.statDelta,
@@ -1310,17 +1539,39 @@ function analyzeRun(run) {
     finalStatTotal: totalStats(final),
     statTotalDelta: totalStats(final) - totalStats(run.initial),
     zeroStatPlayers: zeroStatPlayers(final),
+    rescueOutcomes: {
+      total: rescueOutcomes.length,
+      danger: rescueOutcomes.filter((outcome) => outcome.dangerBefore).length,
+      critical: rescueOutcomes.filter((outcome) => outcome.criticalBefore).length,
+      stabilized: rescueOutcomes.filter((outcome) => outcome.stabilized).length,
+      recipientStatDelta: rescueOutcomes.reduce((sum, outcome) => sum + outcome.recipientStatDelta, 0),
+    },
     boringTurns: boringTurns.map((turn) => turn.turn),
     spikeTurns: spikeTurns.map((turn) => ({ turn: turn.turn, reasons: turn.analysis.spikeReasons })),
     invalidAttempts,
     meaningfulChoiceDensity,
+    choiceOpportunityRate,
+    decisionEntropy,
+    consequenceVisibility,
     cardOutcomes,
     tensionCurve,
     failureReasons: failureReasons(run),
   };
 
   run.funDebugger = buildRunFunDebugger(run);
-  return {
+  const inactivePlayers = (final.players || []).filter((player) => player.active === false).length;
+  const outcome = summary.gameOver && summary.totalArtifacts > 0 && Number(actions.Flee || 0) > 0
+    ? 'escaped-with-artifact'
+    : summary.gameOver && summary.totalArtifacts > 0
+      ? 'completed-with-artifact'
+      : summary.gameOver && (inactivePlayers === final.players.length || summary.zeroStatPlayers > 0)
+        ? 'collapsed'
+        : summary.gameOver
+          ? 'completed-without-artifact'
+          : run.turns.length >= Number(run.config?.turns || 0)
+            ? 'timed-out'
+            : 'in-progress';
+  const result = {
     ...summary,
     funDebugger: {
       averageLifeScore: run.funDebugger.averageLifeScore,
@@ -1329,8 +1580,12 @@ function analyzeRun(run) {
       topIssue: run.funDebugger.topIssue,
       topExperiment: run.funDebugger.topExperiment,
     },
-    outcome: summary.gameOver && summary.totalArtifacts > 0 ? 'escaped-or-ended-with-artifacts' : summary.failureReasons.length > 0 ? 'needs-attention' : 'in-progress',
+    outcome,
+    terminal: summary.gameOver,
+    timedOut: outcome === 'timed-out',
   };
+  result.traceHash = runTraceHash(run, result);
+  return result;
 }
 
 function aggregateRuns(runs) {
@@ -1354,6 +1609,9 @@ function aggregateRuns(runs) {
       meaningfulChoiceDensity: [],
       invalidAttempts: [],
       zeroStatPlayers: [],
+      outcomes: {},
+      terminalRuns: 0,
+      timedOutRuns: 0,
       actions: {},
     };
     const bucket = strategySummaries[strategy];
@@ -1366,6 +1624,9 @@ function aggregateRuns(runs) {
     bucket.meaningfulChoiceDensity.push(run.summary.meaningfulChoiceDensity);
     bucket.invalidAttempts.push(run.summary.invalidAttempts);
     bucket.zeroStatPlayers.push(run.summary.zeroStatPlayers);
+    bucket.outcomes[run.summary.outcome] = (bucket.outcomes[run.summary.outcome] || 0) + 1;
+    if (run.summary.terminal) bucket.terminalRuns += 1;
+    if (run.summary.timedOut) bucket.timedOutRuns += 1;
     for (const [action, count] of Object.entries(run.summary.actions || {})) {
       bucket.actions[action] = (bucket.actions[action] || 0) + Number(count);
     }
@@ -1383,13 +1644,27 @@ function aggregateRuns(runs) {
       avgMeaningfulChoiceDensity: average(bucket.meaningfulChoiceDensity),
       avgInvalidAttempts: average(bucket.invalidAttempts),
       avgZeroStatPlayers: average(bucket.zeroStatPlayers),
+      terminalRate: bucket.runs > 0 ? bucket.terminalRuns / bucket.runs : 0,
+      timeoutRate: bucket.runs > 0 ? bucket.timedOutRuns / bucket.runs : 0,
     };
   }
 
   const totalActions = Object.values(actionTotals).reduce((sum, count) => sum + Number(count), 0);
+  const rescueTotals = summaries.reduce((totals, summary) => ({
+    total: totals.total + Number(summary.rescueOutcomes?.total || 0),
+    danger: totals.danger + Number(summary.rescueOutcomes?.danger || 0),
+    critical: totals.critical + Number(summary.rescueOutcomes?.critical || 0),
+    stabilized: totals.stabilized + Number(summary.rescueOutcomes?.stabilized || 0),
+    recipientStatDelta: totals.recipientStatDelta + Number(summary.rescueOutcomes?.recipientStatDelta || 0),
+  }), { total: 0, danger: 0, critical: 0, stabilized: 0, recipientStatDelta: 0 });
   const idleShare = totalActions > 0 ? (actionTotals.Idle || 0) / totalActions : 0;
   const restShare = totalActions > 0 ? (actionTotals.Rest || 0) / totalActions : 0;
   const moveShare = totalActions > 0 ? (actionTotals.Move || 0) / totalActions : 0;
+  const outcomeDistribution = summaries.reduce((counts, summary) => {
+    const outcome = summary.outcome || 'unknown';
+    counts[outcome] = (counts[outcome] || 0) + 1;
+    return counts;
+  }, {});
   if (idleShare > 0.2) warnings.push('Idle share is high; strategies or valid-action affordances may be too constrained.');
   if (restShare > 0.35) warnings.push('Rest is dominating; stat pressure may be too punishing.');
   if (moveShare < 0.25 && totalActions > 0) warnings.push('Move is underused; exploration may be blocked or less attractive than alternatives.');
@@ -1401,6 +1676,10 @@ function aggregateRuns(runs) {
     runs: runs.length,
     strategies: strategySummaries,
     actionTotals,
+    rescueTotals,
+    outcomeDistribution,
+    terminalRate: runs.length > 0 ? summaries.filter((summary) => summary.terminal).length / runs.length : 0,
+    timeoutRate: runs.length > 0 ? summaries.filter((summary) => summary.timedOut).length / runs.length : 0,
     actionShares: {
       Idle: idleShare,
       Rest: restShare,
@@ -1413,6 +1692,9 @@ function aggregateRuns(runs) {
       boringTurns: average(summaries.map((summary) => summary.boringTurns.length)),
       spikeTurns: average(summaries.map((summary) => summary.spikeTurns.length)),
       meaningfulChoiceDensity: average(summaries.map((summary) => summary.meaningfulChoiceDensity)),
+      choiceOpportunityRate: average(summaries.map((summary) => summary.choiceOpportunityRate)),
+      decisionEntropy: average(summaries.map((summary) => summary.decisionEntropy)),
+      consequenceVisibility: average(summaries.map((summary) => summary.consequenceVisibility)),
       invalidAttempts: average(summaries.map((summary) => summary.invalidAttempts)),
       zeroStatPlayers: average(summaries.map((summary) => summary.zeroStatPlayers)),
     },
@@ -1757,7 +2039,7 @@ function appendTuningLedger(report, paths) {
 
 function summarize(report) {
   const final = report.turns[report.turns.length - 1]?.after || report.initial;
-  const totalArtifacts = final.players.reduce((sum, player) => sum + player.artifacts.length, 0);
+  const totalArtifacts = allArtifacts(final);
   const actions = {};
   for (const turn of report.turns) {
     for (const submission of turn.submissions || []) {
@@ -1800,6 +2082,64 @@ async function runSimulation(addresses, runConfig) {
     ? normalizeSetupForge(runConfig.scenarioDefinition.setupForge, runConfig.scenarioDefinition)
     : null;
   let setupApplication = null;
+  const preludeTurns = [];
+  const minimumPreludeTurns = setupForge?.scriptedPrelude?.turns || 0;
+  const targetPreludeDay = Number(setupForge?.time?.day || 0);
+  const targetPreludePhase = setupForge?.time?.phase || '';
+  const maximumPreludeTurns = Math.max(minimumPreludeTurns, targetPreludeDay > 1 ? targetPreludeDay * 4 : 0);
+  let preludeGuardApplied = false;
+  if (maximumPreludeTurns > 0) {
+    const guardSetup = normalizeSetupForge({
+      requiredSetupLevel: 'partial',
+      players: seats.map((_, playerIndex) => ({
+        playerIndex,
+        stats: { movement: 4, agility: 4, dexterity: 4 },
+      })),
+    }, runConfig.scenarioDefinition);
+    await applySetupForge({ writeContract, readContract }, {
+      addresses,
+      gameId,
+      seats,
+      scenario: runConfig.scenarioDefinition,
+      deployerWallet,
+      deployerAddress: deployer.address,
+    }, guardSetup, { mode: 'best-effort' });
+    preludeGuardApplied = true;
+    const preludeStrategies = setupForge.scriptedPrelude.strategies?.length > 0 ? setupForge.scriptedPrelude.strategies : [runConfig.strategy];
+    for (let preludeIndex = 0; preludeIndex < maximumPreludeTurns; preludeIndex += 1) {
+      for (const seat of seats) {
+        await writeContract(
+          deployerWallet,
+          addresses.CHARACTER_CARD,
+          SETUP_ABIS.characterCard,
+          'setStats',
+          [[4, 4, 4], gameId, seat.playerId],
+        );
+      }
+      const preludeConfig = {
+        ...runConfig,
+        strategy: preludeStrategies[preludeIndex % preludeStrategies.length] || runConfig.strategy,
+        seed: `${runConfig.seed}:prelude:${preludeIndex + 1}`,
+      };
+      await progressEngine(addresses);
+      const queueId = await currentQueueId(addresses, gameId);
+      const queuePhase = await getPhase(addresses, queueId);
+      const before = await snapshot(addresses, gameId, seats, `setup-prelude-${preludeIndex + 1}-before`);
+      const reachedTarget = preludeIndex >= minimumPreludeTurns
+        && (!targetPreludeDay || Number(before.day) >= targetPreludeDay)
+        && (!targetPreludePhase || before.phase === targetPreludePhase);
+      if (reachedTarget || before.gameOver) break;
+      if (queuePhase === PROCESSING_PHASE.SUBMISSION) {
+        const submissions = await submitTurnActions(addresses, gameId, queueId, preludeIndex + 1, seats, before, preludeConfig);
+        const progressCount = await progressEngine(addresses);
+        const after = await snapshot(addresses, gameId, seats, `setup-prelude-${preludeIndex + 1}-after`);
+        preludeTurns.push({ turn: preludeIndex + 1, queueId, submissions, progressCount, before, after, setupPrelude: true });
+      } else {
+        const after = await snapshot(addresses, gameId, seats, `setup-prelude-${preludeIndex + 1}-after`);
+        preludeTurns.push({ turn: preludeIndex + 1, queueId, skipped: true, reason: `Queue phase is ${PHASE_LABEL[queuePhase] || 'not ready for submission'}`, before, after, setupPrelude: true });
+      }
+    }
+  }
   if (setupForge) {
     setupApplication = await applySetupForge({
       writeContract,
@@ -1814,43 +2154,14 @@ async function runSimulation(addresses, runConfig) {
     }, setupForge, {
       mode: runConfig.setupMode,
     });
-  }
-  const preludeTurns = [];
-  const requestedPreludeTurns = Math.max(
-    setupForge?.scriptedPrelude?.turns || 0,
-    setupForge?.time?.day ? Math.max(0, Number(setupForge.time.day) - 1) : 0,
-  );
-  if (requestedPreludeTurns > 0) {
-    const preludeStrategies = setupForge.scriptedPrelude.strategies?.length > 0 ? setupForge.scriptedPrelude.strategies : [runConfig.strategy];
-    for (let preludeIndex = 0; preludeIndex < requestedPreludeTurns; preludeIndex += 1) {
-      const preludeConfig = {
-        ...runConfig,
-        strategy: preludeStrategies[preludeIndex % preludeStrategies.length] || runConfig.strategy,
-        seed: `${runConfig.seed}:prelude:${preludeIndex + 1}`,
-      };
-      await progressEngine(addresses);
-      const queueId = await currentQueueId(addresses, gameId);
-      const queuePhase = await getPhase(addresses, queueId);
-      const before = await snapshot(addresses, gameId, seats, `setup-prelude-${preludeIndex + 1}-before`);
-      if (queuePhase === PROCESSING_PHASE.SUBMISSION) {
-        const submissions = await submitTurnActions(addresses, gameId, queueId, preludeIndex + 1, seats, before, preludeConfig);
-        const progressCount = await progressEngine(addresses);
-        const after = await snapshot(addresses, gameId, seats, `setup-prelude-${preludeIndex + 1}-after`);
-        preludeTurns.push({ turn: preludeIndex + 1, queueId, submissions, progressCount, before, after, setupPrelude: true });
-      } else {
-        const after = await snapshot(addresses, gameId, seats, `setup-prelude-${preludeIndex + 1}-after`);
-        preludeTurns.push({ turn: preludeIndex + 1, queueId, skipped: true, reason: `Queue phase is ${PHASE_LABEL[queuePhase] || 'not ready for submission'}`, before, after, setupPrelude: true });
-      }
-    }
-    if (setupApplication) {
-      setupApplication.prelude = {
-        turns: preludeTurns.length,
-        requestedTurns: setupForge.scriptedPrelude.turns,
-        targetDay: setupForge.time?.day || null,
-        strategies: preludeStrategies,
-        discardPreludeFromMetrics: setupForge.scriptedPrelude.discardPreludeFromMetrics,
-      };
-    }
+    setupApplication.prelude = {
+      turns: preludeTurns.length,
+      requestedTurns: minimumPreludeTurns,
+      targetDay: setupForge.time?.day || null,
+      strategies: setupForge.scriptedPrelude.strategies,
+      discardPreludeFromMetrics: setupForge.scriptedPrelude.discardPreludeFromMetrics,
+      guardedPlayers: preludeGuardApplied,
+    };
   }
   const initial = await snapshot(addresses, gameId, seats, 'initial');
   if (setupForge && setupApplication) {
@@ -1892,6 +2203,10 @@ async function runSimulation(addresses, runConfig) {
       continue;
     }
     const before = await snapshot(addresses, gameId, seats, `turn-${turn}-before`);
+    if (before.gameOver) {
+      log(`run ended before turn ${turn}: game is already over`);
+      break;
+    }
     const submissions = await submitTurnActions(addresses, gameId, queueId, turn, seats, before, runConfig);
     const progressCount = await progressEngine(addresses);
     const after = await snapshot(addresses, gameId, seats, `turn-${turn}-after`);
@@ -1904,6 +2219,10 @@ async function runSimulation(addresses, runConfig) {
       before,
       after,
     });
+    if (after.gameOver) {
+      log(`run ended after turn ${turn}: game over`);
+      break;
+    }
   }
 
   report.summary = analyzeRun(report);
@@ -1949,6 +2268,11 @@ async function main() {
     config,
     runs,
     aggregate,
+    simulationContract: {
+      agentPolicyHash: stableConfigHash(balanceConfig.policy || balanceConfig.knobs),
+      evaluationHash: stableConfigHash({ knobs: balanceConfig.evaluation || balanceConfig.knobs, gates: balanceConfig.gates }),
+      configurationMode: balanceConfig.mode || 'legacy',
+    },
     funDebugger: buildAggregateFunDebugger(runs),
     summary: latest.summary,
     tuning: {
@@ -1962,6 +2286,9 @@ async function main() {
       scenarioGoals: tuningConfig.scenarioGoals?.[config.scenario] || {},
     },
     balance: balanceConfig,
+    warnings: balanceConfig.mode === 'legacy'
+      ? ['Legacy --balance configuration was used. Prefer --policy and --evaluation so agent behavior cannot modify its own rubric.']
+      : [],
   };
   if (config.scenarioDefinition) {
     const scenarioForReport = normalizeScenario({

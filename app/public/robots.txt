@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://xenovoya.luckymachines.com/sitemap.xml
+Sitemap: https://play.xenovoya.com/sitemap.xml

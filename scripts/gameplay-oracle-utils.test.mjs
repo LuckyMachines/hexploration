@@ -5,6 +5,7 @@ import {
   classifyTurnExperience,
   evaluateOracle,
   evaluateRegressionGate,
+  evaluateTruthGates,
   findDecisiveTurns,
   markdownForOracle,
   normalizeReportForOracle,
@@ -87,6 +88,7 @@ function reportFixture(overrides = {}) {
   return {
     schemaVersion: 2,
     generatedAt: '2026-05-14T00:00:00.000Z',
+    setupLevel: 'metadata',
     config: { scenario: 'artifact-fixture', turns: 3, strategies: ['dig', 'move'] },
     runs: [run, { ...run, config: { strategy: 'move' } }],
     turns,
@@ -154,6 +156,7 @@ test('evaluates Oracle verdict and recommendation', () => {
     tags: ['artifact'],
     players: 1,
     strategies: ['dig', 'move'],
+    requiredSetupLevel: 'metadata',
   });
   const oracle = evaluateOracle(reportFixture(), scenario);
   assert.ok(['strong-pass', 'pass', 'mixed'].includes(oracle.oracleVerdict));
@@ -161,6 +164,71 @@ test('evaluates Oracle verdict and recommendation', () => {
   assert.ok(oracle.smallestNextExperiment.title);
   assert.ok(markdownForOracle(oracle).includes('Gameplay Oracle Report'));
   assert.ok(oracleTaskFromRecommendation(oracle.smallestNextExperiment).source === 'oracle');
+});
+
+test('uses the current scenario setup requirement when a prior report requested exact setup', () => {
+  const scenario = normalizeScenario({
+    id: 'partial-clock-fixture',
+    name: 'Partial Clock Fixture',
+    designQuestion: 'Does the critical setup hold?',
+    players: 1,
+    strategies: ['dig'],
+    requiredSetupLevel: 'partial',
+  });
+  const oracle = evaluateOracle(reportFixture({
+    setupLevel: 'partial',
+    setupForge: { requiredSetupLevel: 'exact' },
+    setupApplication: { skipped: [], failed: [], support: [] },
+  }), scenario);
+
+  assert.equal(oracle.setup.requiredSetupLevel, 'partial');
+  assert.notEqual(oracle.smallestNextExperiment.title, 'Unlock blocked setup support first');
+});
+
+test('blocks confidence inflation when no run reaches a terminal outcome', () => {
+  const scenario = normalizeScenario({
+    id: 'unfinished-fixture',
+    name: 'Unfinished Fixture',
+    designQuestion: 'Does the run finish?',
+    players: 1,
+    strategies: ['dig'],
+    evidenceRequirements: { minRunsPerStrategy: 1, minDistinctSeedsPerStrategy: 0, requireTerminalOutcome: true },
+  });
+  const unfinished = reportFixture({
+    runs: reportFixture().runs.map((run) => ({ ...run, summary: { ...run.summary, outcome: 'in-progress', gameOver: false } })),
+    summary: { ...reportFixture().summary, outcome: 'in-progress', gameOver: false },
+  });
+  const oracle = evaluateOracle(unfinished, scenario);
+  assert.equal(oracle.oracleVerdict, 'blocked');
+  assert.ok(oracle.truthGates.hardFailures.includes('no terminal outcome observed'));
+});
+
+test('requires independent repetitions before a strong pass', () => {
+  const scenario = normalizeScenario({
+    id: 'replication-fixture',
+    name: 'Replication Fixture',
+    designQuestion: 'Does the result replicate?',
+    players: 1,
+    strategies: ['dig', 'move'],
+    evidenceRequirements: { minRunsPerStrategy: 3, minDistinctSeedsPerStrategy: 3, requireTerminalOutcome: true },
+  });
+  const truth = evaluateTruthGates(reportFixture(), scenario);
+  assert.equal(truth.strongPassEligible, false);
+  assert.ok(truth.confidenceFailures.some((failure) => failure.includes('required runs')));
+  assert.ok(evaluateOracle(reportFixture(), scenario).confidence <= 0.59);
+});
+
+test('treats a bounded timeout as inconclusive, not a terminal outcome', () => {
+  const scenario = normalizeScenario({
+    id: 'timeout-fixture', name: 'Timeout Fixture', designQuestion: 'Does it finish?', players: 1, strategies: ['idle'],
+    evidenceRequirements: { minRunsPerStrategy: 1, minDistinctSeedsPerStrategy: 0, requireTerminalOutcome: true },
+  });
+  const report = reportFixture({
+    runs: reportFixture().runs.map((run) => ({ ...run, summary: { ...run.summary, outcome: 'timed-out', terminal: false, gameOver: false } })),
+  });
+  const oracle = evaluateOracle(report, scenario);
+  assert.equal(oracle.oracleVerdict, 'blocked');
+  assert.equal(oracle.scoreConfidenceInterval.status, 'stable');
 });
 
 test('regression gate catches low scores', () => {

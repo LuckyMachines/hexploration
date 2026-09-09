@@ -1,11 +1,11 @@
 # Xenovoya
 
-A cooperative on-chain hex exploration game about voyaging into fog, sharing discoveries, and escaping together.
+Launch the Xenovoya open alpha: a cooperative on-chain hex expedition on Sepolia about exploring, sharing discoveries, and escaping together.
 
 ## Core Pages
 
-- [Xenovoya](https://xenovoya.luckymachines.com): Play Xenovoya, a cooperative on-chain hex exploration game about voyaging into fog, sharing discoveries, and escaping together.
-- [Play Xenovoya](https://play.xenovoya.com): Launch the live Xenovoya expedition client.
+- [Play Xenovoya](https://play.xenovoya.com): Launch the Xenovoya open alpha: a cooperative on-chain hex expedition on Sepolia about exploring, sharing discoveries, and escaping together.
+- [Xenovoya data and privacy](https://play.xenovoya.com/privacy): Understand local storage, optional wallet-linked return history, privacy-safe analytics, export, deletion, and public on-chain records.
 
 ## Scenario Pages
 

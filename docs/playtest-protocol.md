@@ -43,6 +43,10 @@ Example:
 
 ```text
 npm run improve:playtest -- --id=session-001 --scenario=first-expedition --cohort=first-time-player --observations="Reached a valid reveal without help; missed route-home pressure until the consequence panel appeared" --severity=medium --decision="Keep consequence panel; strengthen pre-commit route-home cue" --owner=product-research --next-experiment="Compare a route-home pulse against the current cue"
+
+For gameplay-system calibration, also record the player's 0-100 fun score, the automated score available before review, and whether the automated recommendation matched the observed priority:
+
+`--fun-score=72 --automated-fun-score=68 --recommendation-agreement=agree --unassisted-first-action=yes --return-intent=yes`
 ```
 
 ## Severity rubric

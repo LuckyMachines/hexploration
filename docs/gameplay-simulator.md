@@ -188,7 +188,7 @@ npm run autopilot -- --id=escape-pressure-4p --mode=iterate --iterations=2 --app
 npm run autopilot:latest -- --markdown
 ```
 
-Dry runs do not execute the simulator. Iteration only edits `simulator.scenarios.json` and `simulator.balance.json`, and rejected candidate changes are rolled back from snapshots.
+Dry runs do not execute the simulator. Iteration only edits `simulator.scenarios.json` and `simulator.agent-policies.json`, and rejected candidate changes are rolled back from snapshots. The evaluation rubric remains immutable during a comparison.
 
 See [scenario-autopilot.md](scenario-autopilot.md) for the full workflow and safety model.
 
@@ -324,18 +324,17 @@ The simulator also embeds an Oracle report when it writes `latest-report.json`, 
 
 See [gameplay-oracle.md](gameplay-oracle.md) for the full rubric, outputs, and workflow.
 
-## Balance Surface
+## Policy And Evaluation Surfaces
 
-`simulator.balance.json` is the safe auto-tune surface. It contains simulator-agent behavior knobs and Fun Debugger scoring weights. It does not claim to mutate deployed Solidity contracts; the simulator still submits actions, validates actions, fulfills randomness, and progresses the same local engine.
+`simulator.agent-policies.json` is the only auto-tune surface. It changes synthetic-player action selection, not the game rules. `simulator.evaluation.json` contains the fixed Fun Debugger weights and regression gates. The legacy `simulator.balance.json` remains readable for old reports and explicit compatibility runs, but automatic tuning never writes it.
 
 Important knobs include:
 
 - `moveBias`, `digBias`, `restBias`, `idleBias`, `fleeBias`: action-selection pressure for simulator agents.
 - `recoverAtStat`: the stat threshold where bots prefer recovery.
 - `movementFallbackPriority`: whether movement is tried early or late as a fallback.
-- `quietTurnLifeBonus`, `noBoardDeltaPenalty`, `invalidAttemptPenalty`, `statCollapsePenalty`: Fun Debugger scoring pressure.
-- `discoveryLifeReward`, `movementLifeReward`, `cardLifeReward`, `artifactLifeReward`, `choiceDensityReward`: what the debugger treats as life-giving.
-- `gates`: rejection thresholds for harmful candidates.
+- Evaluation weights such as `noBoardDeltaPenalty`, `artifactLifeReward`, and `choiceDensityReward` live only in `simulator.evaluation.json`.
+- Evaluation `gates` reject harmful candidates and are hashed into every new simulator report.
 
 ## Tuning Targets
 
@@ -376,7 +375,7 @@ npm run local:solo
 npm run sim:autotune
 ```
 
-Apply a passing winner to `simulator.balance.json`:
+Apply a passing winner to `simulator.agent-policies.json`:
 
 ```bash
 npm run sim:autotune -- --apply-winner
@@ -389,7 +388,7 @@ Auto-tune writes:
 - `reports/simulator/experiments/index.json`
 - `app/public/simulator/autotune/latest-report.json`
 
-Each candidate includes a hypothesis, changed knobs, expected effect, blast radius, weighted score, rejection reasons, and report paths. Candidates are rejected if they improve life score while harming flat-turn rate, invalid attempts, zero-stat players, artifacts, or warning count beyond configured gates.
+Each candidate includes a hypothesis, behavior-only knobs, expected effect, blast radius, paired effect evidence, weighted score, rejection reasons, and report paths. Baseline and candidate use the same seeds with 10 repetitions per strategy. Candidates are rejected for an evaluation-hash mismatch, insufficient pairs, or harmful changes to flat-turn rate, invalid attempts, zero-stat players, artifacts, or other guardrails.
 
 ## Recommended Benchmark Loop
 
@@ -397,8 +396,10 @@ Each candidate includes a hypothesis, changed knobs, expected effect, blast radi
 2. Open `/simulator`.
 3. Note failed targets, generated tasks, warnings, and strategy outliers.
 4. Run `npm run sim:autotune:dry` to inspect candidate patches.
-5. Run `npm run sim:autotune` to test candidates with the same scenario, batch, strategies, and seed.
+5. Run `npm run sim:autotune` to test candidates with the same scenario, strategies, 10 paired repetitions, seeds, and immutable rubric.
 6. Inspect `/simulator` Auto-Tune Lab for ranking, winner explanation, rejected reasons, and patch diff.
 7. Optionally run `npm run sim:autotune -- --apply-winner`.
 8. Run `npm run sim:compare -- --changed="short description"`.
 9. Keep or revert the tuning change based on life score, flat-turn rate, artifacts, stat pressure, and target scorecard.
+
+To refresh the complete dependency graph, run `npm run gameplay:refresh`. With a fresh local chain active, `npm run gameplay:refresh:exact` also rebuilds every canonical same-engine scenario before Oracle, feeling, memory, time-machine, lab, tutor, bridge, and fun evidence.

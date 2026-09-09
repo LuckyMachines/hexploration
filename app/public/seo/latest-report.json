@@ -1,18 +1,19 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-07-10T10:24:57.257Z",
+  "generatedAt": "2026-09-08T15:09:36.179Z",
   "ok": true,
   "strict": false,
   "site": {
     "name": "Xenovoya",
-    "url": "https://xenovoya.luckymachines.com",
-    "canonicalHome": "https://xenovoya.luckymachines.com"
+    "url": "https://play.xenovoya.com",
+    "canonicalHome": "https://play.xenovoya.com"
   },
   "routes": {
-    "total": 1,
-    "public": 1,
+    "total": 2,
+    "public": 2,
     "byType": {
-      "home": 1
+      "home": 1,
+      "privacy": 1
     }
   },
   "routeSummaries": [
@@ -22,17 +23,35 @@
       "ok": true,
       "errors": 0,
       "warnings": 0,
-      "title": "Xenovoya",
-      "description": "Play Xenovoya, a cooperative on-chain hex exploration game about voyaging into fog, sharing discoveries, and escaping together.",
-      "canonicalUrl": "https://xenovoya.luckymachines.com"
+      "title": "Play Xenovoya | Xenovoya",
+      "description": "Launch the Xenovoya open alpha: a cooperative on-chain hex expedition on Sepolia about exploring, sharing discoveries, and escaping together.",
+      "canonicalUrl": "https://play.xenovoya.com"
+    },
+    {
+      "path": "/privacy",
+      "type": "privacy",
+      "ok": true,
+      "errors": 0,
+      "warnings": 0,
+      "title": "Xenovoya data and privacy | Xenovoya",
+      "description": "Understand local storage, optional wallet-linked return history, privacy-safe analytics, export, deletion, and public on-chain records.",
+      "canonicalUrl": "https://play.xenovoya.com/privacy"
     }
   ],
   "socialPreview": [
     {
       "path": "/",
-      "title": "Xenovoya",
-      "url": "https://xenovoya.luckymachines.com",
-      "image": "https://xenovoya.luckymachines.com/seo/xenovoya-share-card.svg",
+      "title": "Play Xenovoya | Xenovoya",
+      "url": "https://play.xenovoya.com",
+      "image": "https://play.xenovoya.com/seo/xenovoya-share-card.png",
+      "ok": true,
+      "missing": []
+    },
+    {
+      "path": "/privacy",
+      "title": "Xenovoya data and privacy | Xenovoya",
+      "url": "https://play.xenovoya.com/privacy",
+      "image": "https://play.xenovoya.com/seo/xenovoya-share-card.png",
       "ok": true,
       "missing": []
     }

@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "description": "Simulator-agent behavior only. These knobs change which actions synthetic players try; they never change evaluation scores or deployed game rules.",
+  "knobs": {
+    "moveBias": 1,
+    "digBias": 1,
+    "restBias": 1,
+    "idleBias": 1,
+    "fleeBias": 1,
+    "recoverAtStat": 1,
+    "movementFallbackPriority": 1
+  }
+}

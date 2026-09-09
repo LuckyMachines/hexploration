@@ -1,0 +1,351 @@
+{
+  "schemaVersion": 1,
+  "systemVersion": "1.2.0",
+  "generatedAt": "2026-09-09T08:08:23.737Z",
+  "grade": "B+",
+  "grades": {
+    "architecture": "A",
+    "evidenceReadiness": "B+"
+  },
+  "evaluationMode": "automated-only",
+  "qualityPassed": false,
+  "checks": {
+    "splitPolicyAndEvaluation": true,
+    "scenarioCoverage": true,
+    "canonicalEvidenceComplete": false,
+    "pipelineFresh": true,
+    "productionEvidenceClean": true,
+    "pairedExperimentContract": true,
+    "selfManagedExactRunner": true
+  },
+  "coverage": {
+    "scenarioCount": 6,
+    "scenarioIds": [
+      "solo-artifact-hunt",
+      "escape-pressure-4p",
+      "first-discovery-solo",
+      "cooperative-rescue-2p",
+      "artifact-extraction-2p",
+      "three-player-regroup-3p"
+    ],
+    "playerCounts": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "loops": [
+      "dig-reward-risk",
+      "explore-decide-resolve",
+      "failure-recovery",
+      "flee-extract",
+      "help-recover",
+      "return-continuity"
+    ],
+    "externalLoops": [
+      "return-continuity"
+    ],
+    "missingPlayerCounts": [],
+    "missingLoops": []
+  },
+  "exactRun": {
+    "reportPath": "reports/gameplay-improvement/exact-runner/latest-report.json",
+    "exists": true,
+    "passed": true,
+    "generatedAt": "2026-09-09T06:57:42.457Z",
+    "batch": 10,
+    "managedRpc": true,
+    "scenarioIds": [
+      "solo-artifact-hunt",
+      "escape-pressure-4p",
+      "first-discovery-solo",
+      "cooperative-rescue-2p",
+      "artifact-extraction-2p",
+      "three-player-regroup-3p"
+    ],
+    "passedScenarioIds": [
+      "solo-artifact-hunt",
+      "escape-pressure-4p",
+      "first-discovery-solo",
+      "cooperative-rescue-2p",
+      "artifact-extraction-2p",
+      "three-player-regroup-3p"
+    ],
+    "failedScenarioIds": [],
+    "cachedScenarioIds": [
+      "solo-artifact-hunt",
+      "first-discovery-solo",
+      "cooperative-rescue-2p",
+      "artifact-extraction-2p"
+    ],
+    "sourceDrift": []
+  },
+  "scenarioEvidence": [
+    {
+      "scenarioId": "solo-artifact-hunt",
+      "simulatorPath": "reports/simulator/scenarios/solo-artifact-hunt/latest-report.json",
+      "oraclePath": "reports/simulator/scenarios/solo-artifact-hunt/latest-oracle.json",
+      "hasSimulatorReport": true,
+      "hasOracleReport": true,
+      "simulatorEvidenceFresh": true,
+      "verdict": "pass",
+      "truthGatesPassed": true,
+      "truthGateFailures": []
+    },
+    {
+      "scenarioId": "escape-pressure-4p",
+      "simulatorPath": "reports/simulator/scenarios/escape-pressure-4p/latest-report.json",
+      "oraclePath": "reports/simulator/scenarios/escape-pressure-4p/latest-oracle.json",
+      "hasSimulatorReport": true,
+      "hasOracleReport": true,
+      "simulatorEvidenceFresh": true,
+      "verdict": "blocked",
+      "truthGatesPassed": false,
+      "truthGateFailures": [
+        "no terminal outcome observed"
+      ]
+    },
+    {
+      "scenarioId": "first-discovery-solo",
+      "simulatorPath": "reports/simulator/scenarios/first-discovery-solo/latest-report.json",
+      "oraclePath": "reports/simulator/scenarios/first-discovery-solo/latest-oracle.json",
+      "hasSimulatorReport": true,
+      "hasOracleReport": true,
+      "simulatorEvidenceFresh": true,
+      "verdict": "pass",
+      "truthGatesPassed": true,
+      "truthGateFailures": []
+    },
+    {
+      "scenarioId": "cooperative-rescue-2p",
+      "simulatorPath": "reports/simulator/scenarios/cooperative-rescue-2p/latest-report.json",
+      "oraclePath": "reports/simulator/scenarios/cooperative-rescue-2p/latest-oracle.json",
+      "hasSimulatorReport": true,
+      "hasOracleReport": true,
+      "simulatorEvidenceFresh": true,
+      "verdict": "blocked",
+      "truthGatesPassed": false,
+      "truthGateFailures": [
+        "no terminal outcome observed"
+      ]
+    },
+    {
+      "scenarioId": "artifact-extraction-2p",
+      "simulatorPath": "reports/simulator/scenarios/artifact-extraction-2p/latest-report.json",
+      "oraclePath": "reports/simulator/scenarios/artifact-extraction-2p/latest-oracle.json",
+      "hasSimulatorReport": true,
+      "hasOracleReport": true,
+      "simulatorEvidenceFresh": true,
+      "verdict": "blocked",
+      "truthGatesPassed": false,
+      "truthGateFailures": [
+        "no terminal outcome observed"
+      ]
+    },
+    {
+      "scenarioId": "three-player-regroup-3p",
+      "simulatorPath": "reports/simulator/scenarios/three-player-regroup-3p/latest-report.json",
+      "oraclePath": "reports/simulator/scenarios/three-player-regroup-3p/latest-oracle.json",
+      "hasSimulatorReport": true,
+      "hasOracleReport": true,
+      "simulatorEvidenceFresh": true,
+      "verdict": "blocked",
+      "truthGatesPassed": false,
+      "truthGateFailures": [
+        "no terminal outcome observed"
+      ]
+    }
+  ],
+  "pipeline": [
+    {
+      "id": "simulator",
+      "output": "reports/simulator/latest-report.json",
+      "inputs": [
+        "scripts/gameplay-simulator.mjs",
+        "simulator.scenarios.json",
+        "simulator.agent-policies.json",
+        "simulator.evaluation.json"
+      ],
+      "outputExists": true,
+      "missingInputs": [],
+      "fresh": true,
+      "outputHash": "aae88fae2e9eb4ac0187869a7f4a4ef0d3370d644cf0a3f4bab987b0e8a75c46",
+      "outputModifiedAt": "2026-09-09T08:06:19.398Z",
+      "newestInputAt": "2026-09-09T05:22:55.521Z"
+    },
+    {
+      "id": "oracle",
+      "output": "reports/simulator/oracle/project-latest.json",
+      "inputs": [
+        "scripts/gameplay-oracle-utils.mjs",
+        "simulator.scenarios.json",
+        "reports/simulator/latest-report.json"
+      ],
+      "outputExists": true,
+      "missingInputs": [],
+      "fresh": true,
+      "outputHash": "1b58f856a8d744ab4c7fcbfbe7de09496bab1301a8f422f3eed0ec768f56612f",
+      "outputModifiedAt": "2026-09-09T08:07:16.837Z",
+      "newestInputAt": "2026-09-09T08:06:19.398Z"
+    },
+    {
+      "id": "feeling",
+      "output": "reports/simulator/feeling-black-box/index.json",
+      "inputs": [
+        "scripts/player-feeling-black-box-utils.mjs",
+        "reports/simulator/oracle/project-latest.json"
+      ],
+      "outputExists": true,
+      "missingInputs": [],
+      "fresh": true,
+      "outputHash": "3b85c3d9b1c5da94a2436ffd0f1765b48dd6054bff5ba9f0f64dd88ade500094",
+      "outputModifiedAt": "2026-09-09T08:07:26.370Z",
+      "newestInputAt": "2026-09-09T08:07:16.837Z"
+    },
+    {
+      "id": "memory",
+      "output": "reports/simulator/memory/index.json",
+      "inputs": [
+        "scripts/playable-design-memory-utils.mjs",
+        "reports/simulator/oracle/project-latest.json",
+        "reports/simulator/feeling-black-box/index.json"
+      ],
+      "outputExists": true,
+      "missingInputs": [],
+      "fresh": true,
+      "outputHash": "7cf85feac74b7d6c046c57250ecd4fe92565c1b8e467d6f2bd30445f9d6ff6e8",
+      "outputModifiedAt": "2026-09-09T08:07:29.066Z",
+      "newestInputAt": "2026-09-09T08:07:26.370Z"
+    },
+    {
+      "id": "time-machine",
+      "output": "reports/simulator/time-machine/index.json",
+      "inputs": [
+        "scripts/scenario-time-machine-utils.mjs",
+        "reports/simulator/memory/index.json"
+      ],
+      "outputExists": true,
+      "missingInputs": [],
+      "fresh": true,
+      "outputHash": "353d411ce79f05e8b59dda9bcbb8e787e9a59bd4f98d1f408c86e127a6ae5f54",
+      "outputModifiedAt": "2026-09-09T08:07:32.305Z",
+      "newestInputAt": "2026-09-09T08:07:29.066Z"
+    },
+    {
+      "id": "lab",
+      "output": "reports/simulator/lab-notebook/index.json",
+      "inputs": [
+        "scripts/scenario-lab-notebook-utils.mjs",
+        "reports/simulator/memory/index.json",
+        "reports/simulator/time-machine/index.json"
+      ],
+      "outputExists": true,
+      "missingInputs": [],
+      "fresh": true,
+      "outputHash": "ba5fd0233a2556ebde812c7b3335abb1fd97c0341016f65424831cad0da237ad",
+      "outputModifiedAt": "2026-09-09T08:08:00.319Z",
+      "newestInputAt": "2026-09-09T08:07:32.305Z"
+    },
+    {
+      "id": "tutor",
+      "output": "reports/simulator/tutor/latest-curriculum.json",
+      "inputs": [
+        "scripts/scenario-self-driving-tutor-utils.mjs",
+        "reports/simulator/lab-notebook/index.json",
+        "reports/simulator/memory/index.json"
+      ],
+      "outputExists": true,
+      "missingInputs": [],
+      "fresh": true,
+      "outputHash": "f6863e229fb2be4d2eb1a2b080ef9cfa3f4500ec7a89b587ee8383995c4383a5",
+      "outputModifiedAt": "2026-09-09T08:08:04.859Z",
+      "newestInputAt": "2026-09-09T08:08:00.319Z"
+    },
+    {
+      "id": "bridge",
+      "output": "reports/bridge/latest-report.json",
+      "inputs": [
+        "scripts/scenario-evidence-bridge-utils.mjs",
+        "reports/simulator/oracle/project-latest.json",
+        "reports/simulator/feeling-black-box/index.json",
+        "reports/simulator/tutor/latest-curriculum.json"
+      ],
+      "outputExists": true,
+      "missingInputs": [],
+      "fresh": true,
+      "outputHash": "3616ec93f4aa2f5dd92002dbd24b959c81b7ad42a7eb26b42acb1d4c05f3c41c",
+      "outputModifiedAt": "2026-09-09T08:08:05.225Z",
+      "newestInputAt": "2026-09-09T08:08:04.859Z"
+    },
+    {
+      "id": "fun",
+      "output": "reports/fun/latest-report.json",
+      "inputs": [
+        "scripts/fun-report-utils.mjs",
+        "reports/simulator/feeling-black-box/index.json",
+        "reports/simulator/time-machine/index.json",
+        "reports/bridge/latest-report.json"
+      ],
+      "outputExists": true,
+      "missingInputs": [],
+      "fresh": true,
+      "outputHash": "f3ba70f9883225b1f00624b58d442a4ad68272136b4ce82eada5655b8f3d8957",
+      "outputModifiedAt": "2026-09-09T08:08:05.645Z",
+      "newestInputAt": "2026-09-09T08:08:05.225Z"
+    }
+  ],
+  "calibration": {
+    "sessions": 0,
+    "minimumSessions": 5,
+    "enoughSessions": false,
+    "pairedRatings": 0,
+    "recommendationAgreementRate": null,
+    "funScoreCorrelation": null,
+    "minimumFunScoreCorrelation": 0.5,
+    "calibrated": false
+  },
+  "effectiveness": {
+    "experiments": 2,
+    "resolvedExperiments": 0,
+    "experimentResolutionRate": 0,
+    "recommendationAcceptanceRate": null,
+    "recordedDecisions": 2,
+    "regressionsCaught": 1,
+    "productionBlockers": 1,
+    "falsePositiveRate": null,
+    "medianTimeToLearningHours": null,
+    "note": "False-positive rate and time-to-learning require completed experiments with timestamps."
+  },
+  "nextActions": [
+    {
+      "priority": "P0",
+      "title": "Repair truth-gated gameplay loops",
+      "command": "npm run oracle:scenario -- --id=escape-pressure-4p",
+      "reason": "escape-pressure-4p: no terminal outcome observed | cooperative-rescue-2p: no terminal outcome observed | artifact-extraction-2p: no terminal outcome observed | three-player-regroup-3p: no terminal outcome observed",
+      "estimatedMinutes": 30
+    },
+    {
+      "priority": "P1",
+      "title": "Resolve the first pre-registered experiment",
+      "command": "npm run gameplay:experiment -- --strict --baseline=<path> --candidate=<path>",
+      "reason": "2 experiments are planned and none are resolved",
+      "estimatedMinutes": 20
+    }
+  ],
+  "sourceHashes": {
+    "simulator.scenarios.json": "4679ab8afd67ad00043c29c19278f07e4118ed061d606ff228d31c1fc436e985",
+    "simulator.agent-policies.json": "19362093cff6f6c2e6cb6c53ce826c7230fae923306ccf37ef330d7ef4470387",
+    "simulator.evaluation.json": "16a42578121a2998ecc8d4b2e7c9202f1f60aacee49c6c56baf024cce735f0ff",
+    "gameplay.quality-contract.json": "372abeea3898c14b85e1b34f573e5cf337f0fe542631f80dacccb4508ee14b9d",
+    "gameplay.experiments.json": "dec015a673a4bfa8d92fd07cb36942cc5bf2dc7c0714916b29c257b7744cdd30",
+    "scripts/gameplay-simulator.mjs": "c90656a73908918d26bf5169f317c8dc44f4221f567d3adb703bc7d3f9980d08",
+    "scripts/gameplay-oracle-utils.mjs": "f39319b156f3f9ee0e4b903b23aef614b9c16c1c1414db2a09425ddf225ce186",
+    "scripts/gameplay-exact-runner.mjs": "32f6be5ad275f98f591b890d719c711cfc0c786eaf6963560ecbb2702436f22d"
+  },
+  "blockers": [
+    "truth gates incomplete: escape-pressure-4p (no terminal outcome observed)",
+    "truth gates incomplete: cooperative-rescue-2p (no terminal outcome observed)",
+    "truth gates incomplete: artifact-extraction-2p (no terminal outcome observed)",
+    "truth gates incomplete: three-player-regroup-3p (no terminal outcome observed)"
+  ]
+}

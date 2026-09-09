@@ -72,7 +72,7 @@ Sitemap: ${sitemap}
 }
 
 function llmsTxt(routes, config) {
-  const featured = routes.filter((route) => ['home'].includes(route.type));
+  const featured = routes.filter((route) => ['home', 'privacy'].includes(route.type));
   const scenarios = routes.filter((route) => route.type === 'scenario');
   const topics = routes.filter((route) => route.type === 'topic');
   return `# ${config.siteName}
@@ -82,7 +82,6 @@ ${config.defaultDescription}
 ## Core Pages
 
 ${featured.map((route) => `- [${route.title}](${buildCanonicalUrl(route.path, config)}): ${route.description}`).join('\n')}
-- [Play Xenovoya](https://play.xenovoya.com): Launch the live Xenovoya expedition client.
 
 ## Scenario Pages
 

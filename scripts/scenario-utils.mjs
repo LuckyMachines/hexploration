@@ -10,7 +10,7 @@ export const scenarioReportRoot = resolve(root, 'reports', 'simulator', 'scenari
 export const publicScenarioRoot = resolve(root, 'app', 'public', 'simulator', 'scenarios');
 
 export const ALLOWED_STRATEGIES = ['balanced', 'risky', 'dig', 'move', 'rest', 'idle'];
-export const SUPPORTED_TAGS = ['solo', 'multiplayer', 'cooperation', 'escape', 'artifact', 'exploration', 'survival', 'chaos', 'benchmark', 'regression', 'smoke'];
+export const SUPPORTED_TAGS = ['solo', 'multiplayer', 'cooperation', 'escape', 'extraction', 'artifact', 'exploration', 'survival', 'chaos', 'benchmark', 'regression', 'smoke', 'boundary', 'night', 'timeout', 'inventory'];
 
 export const SETUP_SUPPORT = {
   playerStats: 'exact',
@@ -385,6 +385,14 @@ export function validateScenario(scenario, allScenarios = []) {
   if (scenario.requiredSetupLevel && !['metadata', 'partial', 'exact'].includes(scenario.requiredSetupLevel)) {
     errors.push(`invalid requiredSetupLevel: ${scenario.requiredSetupLevel}`);
   }
+  if (scenario.productionEligible === true) {
+    if (!Array.isArray(scenario.loopCoverage) || scenario.loopCoverage.length === 0) errors.push('production scenario requires loopCoverage');
+    if (!scenario.evidenceRequirements) errors.push('production scenario requires evidenceRequirements');
+    if (scenario.evidenceRequirements?.requireTerminalOutcome !== true) errors.push('production scenario must require a terminal outcome');
+    if (Number(scenario.evidenceRequirements?.minRunsPerStrategy || 0) < 10) errors.push('production scenario requires at least 10 runs per strategy');
+    if (Number(scenario.evidenceRequirements?.minDistinctSeedsPerStrategy || 0) < 10) errors.push('production scenario requires at least 10 distinct seeds per strategy');
+  }
+  if (scenario.testFixture === true && scenario.productionEligible !== false) errors.push('test fixture cannot be production eligible');
   return { ok: errors.length === 0, errors, warnings };
 }
 
@@ -416,16 +424,19 @@ export function compileScenarioArgs(scenario, extra = {}) {
     `--scenario-id=${normalized.id}`,
     `--scenario=${normalized.id}`,
     `--players=${normalized.players}`,
-    `--turns=${normalized.turns}`,
-    `--batch=${normalized.batch}`,
-    `--seed=${normalized.seed}`,
-    `--strategies=${normalized.strategies.join(',')}`,
+    `--turns=${extra.turns ?? normalized.turns}`,
+    `--batch=${extra.batch ?? normalized.batch}`,
+    `--seed=${extra.seed ?? normalized.seed}`,
+    `--strategies=${extra.strategies ?? normalized.strategies.join(',')}`,
     `--scenario-file=${extra.scenarioFile || scenarioStorePath}`,
     `--design-question=${normalized.designQuestion}`,
     `--tags=${normalized.tags.join(',')}`,
   ];
   if (extra.quiet) args.push('--quiet');
   if (extra.balance) args.push(`--balance=${extra.balance}`);
+  if (extra.rpc) args.push(`--rpc=${extra.rpc}`);
+  if (extra.policy) args.push(`--policy=${extra.policy}`);
+  if (extra.evaluation) args.push(`--evaluation=${extra.evaluation}`);
   if (normalized.setupForge && extra.setupForge !== false) {
     args.push('--setup-forge');
     args.push(`--setup-mode=${extra.setupMode || normalized.setupForge.modeHint || 'best-effort'}`);
@@ -467,6 +478,9 @@ export function metricValue(report, metric) {
     helpActions: Number(actionTotals.Help || 0),
     fleeActions: Number(actionTotals.Flee || 0),
     flatStreak,
+    terminalRate: report.aggregate?.terminalRate || 0,
+    timeoutRate: report.aggregate?.timeoutRate || 0,
+    recipientStatDelta: report.aggregate?.rescueTotals?.recipientStatDelta || 0,
   };
   return values[metric] ?? 0;
 }
@@ -575,13 +589,14 @@ export function writeScenarioReport(report, scenario) {
 
 export function runSimulatorForScenario(scenario, extra = {}) {
   const args = [resolve(root, 'scripts', 'gameplay-simulator.mjs'), ...compileScenarioArgs(scenario, extra)];
-  const timeout = Number(extra.timeoutMs || extra.timeout || 180_000);
+  const timeout = Number(extra.timeoutMs || extra.timeout || 600_000);
   const result = spawnSync(process.execPath, args, {
     cwd: root,
     encoding: 'utf8',
     maxBuffer: 1024 * 1024 * 20,
     stdio: ['ignore', 'pipe', 'pipe'],
-    timeout: Number.isFinite(timeout) && timeout > 0 ? timeout : 180_000,
+    windowsHide: true,
+    timeout: Number.isFinite(timeout) && timeout > 0 ? timeout : 600_000,
   });
   return result;
 }

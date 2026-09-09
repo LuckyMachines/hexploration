@@ -223,7 +223,8 @@ contract PlayerSummary is Utilities, GameWallets {
 
         (leftHandItem, rightHandItem) = currentHandInventory(
             gameBoardAddress,
-            gameID
+            gameID,
+            playerID
         );
     }
 
@@ -249,7 +250,7 @@ contract PlayerSummary is Utilities, GameWallets {
 
         XenovoyaZone.Tile currentTile = hexZone.tile(
             gameID,
-            currentLocation(gameBoardAddress, gameID)
+            currentLocation(gameBoardAddress, gameID, playerID)
         );
         if (stringsMatch(currentPhase(gameBoardAddress, gameID), "Day")) {
             /*
@@ -319,7 +320,7 @@ contract PlayerSummary is Utilities, GameWallets {
             cc.leftHandItem(gameID, playerID),
             board.tokenInventory(),
             gameID,
-            PlayerRegistry(board.prAddress()).playerID(gameID, tx.origin)
+            playerID
         )
             ? cc.leftHandItem(gameID, playerID)
             : "";
@@ -328,7 +329,7 @@ contract PlayerSummary is Utilities, GameWallets {
             cc.rightHandItem(gameID, playerID),
             board.tokenInventory(),
             gameID,
-            PlayerRegistry(board.prAddress()).playerID(gameID, tx.origin)
+            playerID
         )
             ? cc.rightHandItem(gameID, playerID)
             : "";
