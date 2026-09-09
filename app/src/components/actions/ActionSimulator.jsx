@@ -83,7 +83,12 @@ export default function ActionSimulator({
   }
 
   const canLikelySubmit = checks.every((check) => check.ok);
-  const statusLabel = hasSubmitted ? 'Intent Locked' : canLikelySubmit ? 'Likely Valid' : 'Likely Revert';
+  const statusLabel = hasSubmitted ? 'Intent Locked' : canLikelySubmit ? 'Action Available' : 'Needs Revision';
+  const statusClass = hasSubmitted
+    ? 'border-compass/35 bg-compass/10 text-compass-bright'
+    : canLikelySubmit
+      ? 'border-blueprint/35 bg-blueprint/10 text-blueprint-bright'
+      : 'border-signal-red/35 bg-signal-red/10 text-signal-red-bright';
 
   return (
     <div className="border border-exp-border/60 rounded bg-exp-dark/40 p-3 space-y-2">
@@ -91,7 +96,7 @@ export default function ActionSimulator({
         <h4 className="font-mono text-xs tracking-[0.3em] text-exp-text-dim uppercase">
           Action Simulation
         </h4>
-        <span className={`font-mono text-xs uppercase tracking-wider ${canLikelySubmit ? 'text-oxide-green' : 'text-signal-red'}`}>
+        <span className={`rounded border px-2 py-1 font-mono text-[10px] uppercase tracking-wider ${statusClass}`}>
           {statusLabel}
         </span>
       </div>

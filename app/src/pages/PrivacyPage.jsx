@@ -7,7 +7,7 @@ const sections = [
   },
   {
     title: 'Privacy-safe measurement',
-    body: 'The self-hosted Plausible service receives page routes and an allowlisted set of journey milestones. Events use random installation and session journey IDs. The player rejects wallet addresses, email addresses, signatures, tokens, URLs, and unregistered properties before an event can be sent. Browser Do Not Track and Global Privacy Control signals are respected.',
+    body: 'The self-hosted Plausible service receives page routes and an allowlisted set of journey, help, error-category, recovery, experiment-exposure, and performance-bucket events. Timing is bucketed before transport. Events use random installation and session journey IDs. The player rejects wallet addresses, email addresses, signatures, tokens, URLs, free-form error messages, and unregistered properties before an event can be sent. Browser Do Not Track and Global Privacy Control signals are respected.',
   },
   {
     title: 'When you choose cross-device history',

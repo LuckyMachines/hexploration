@@ -1,0 +1,61 @@
+{
+  "$schema": "./quality-contract.schema.json",
+  "version": "1.1.0",
+  "name": "Xenovoya UX evidence contract",
+  "automatedEvidence": {
+    "maxAgeDays": 14,
+    "suites": [
+      { "id": "input", "label": "Keyboard, reflow, forced colors, and reduced motion", "requiredProjects": ["chromium-desktop"] },
+      { "id": "assistive", "label": "Screen-reader semantics and focus continuity", "requiredProjects": ["chromium-desktop", "firefox-desktop", "webkit-desktop"] },
+      { "id": "touch", "label": "Touch completion and target sizing", "requiredProjects": ["pixel-7", "iphone-13"] }
+    ]
+  },
+  "journeys": [
+    {
+      "id": "first-meaningful-decision",
+      "label": "Homepage to first meaningful decision",
+      "requiredEvents": ["starter_opened", "role_selected", "meaningful_choice", "visible_consequence", "starter_completed"],
+      "budgets": { "maxActions": 3, "maxBacktracks": 0, "maxErrors": 0, "maxFirstActionMs": 8000, "maxCompletionMs": 30000, "maxRecoveryMs": 5000 }
+    },
+    {
+      "id": "return-to-unresolved-thread",
+      "label": "Return to an unresolved expedition",
+      "requiredEvents": ["resume", "recap", "second_expedition_start"],
+      "budgets": { "maxActions": 3, "maxBacktracks": 1, "maxErrors": 0, "maxFirstActionMs": 6000, "maxCompletionMs": 20000, "maxRecoveryMs": 5000 }
+    }
+  ],
+  "research": {
+    "maxAgeDays": 30,
+    "minimumSessions": 5,
+    "minimumCohorts": { "first-time": 3, "returning": 2 },
+    "requiredTaskIds": ["explain-promise", "make-first-decision", "predict-consequence", "recover-from-error", "name-return-reason"],
+    "requiredFields": ["id", "cohort", "observations", "tasks", "delight", "returnIntent", "severity", "decision", "owner", "consentSafe", "recordedAt"]
+  },
+  "frictionRules": [
+    { "id": "starter-abandonment", "severity": "high", "start": "starter_opened", "missingAfter": "meaningful_choice", "title": "Starter opened without a meaningful choice" },
+    { "id": "choice-without-consequence", "severity": "high", "start": "meaningful_choice", "missingAfter": "visible_consequence", "title": "Choice made without a visible consequence" },
+    { "id": "unrecovered-error", "severity": "critical", "start": "ux_error", "missingAfter": "ux_recovery", "title": "Player error without a recorded recovery" },
+    { "id": "repeated-help", "severity": "medium", "event": "ux_help", "minimumCount": 2, "title": "Repeated help use in one journey" },
+    { "id": "slow-first-action", "severity": "medium", "event": "ux_timing", "where": { "metric": "first_action", "rating": "poor" }, "minimumCount": 1, "title": "First action exceeded its time budget" }
+  ],
+  "copy": {
+    "scanRoots": ["app/src/components", "app/src/pages"],
+    "excludePatterns": ["DesignSystemPage.jsx", "GameUILab.jsx", ".test.", "__tests__"],
+    "prohibited": [
+      { "text": "Something went wrong", "reason": "Name what failed and give a recovery action." },
+      { "text": "An error occurred", "reason": "Name what failed and give a recovery action." },
+      { "text": "Please wait", "reason": "Explain what is happening and whether progress is safe." },
+      { "text": "Are you sure?", "reason": "State the consequence in the confirmation prompt." },
+      { "text": "Click here", "reason": "Link text must describe its destination or action." },
+      { "text": "Success!", "reason": "Describe the successful outcome." }
+    ],
+    "terms": {
+      "expedition": "A shared run from launch through departure.",
+      "survey": "Reveal useful information on the shared map.",
+      "depart": "Leave the sector and resolve the run.",
+      "relic": "A discovered object that changes value, risk, or story.",
+      "pressure": "The visible cost of staying in the sector.",
+      "crew": "The players sharing one expedition."
+    }
+  }
+}

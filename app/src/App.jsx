@@ -1,4 +1,4 @@
-import { lazy, Suspense, useState } from 'react';
+import { lazy, Suspense, useRef, useState } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
@@ -9,6 +9,7 @@ import ErrorBoundary from './components/shared/ErrorBoundary';
 import { useFeedbackEffects } from './hooks/useFeedbackEffects';
 import { useUserPreferences } from './hooks/useUserPreferences';
 import { internalToolsEnabled } from './lib/internalTools';
+import { trackUXHelp } from './lib/uxTelemetry';
 import HomePage from './pages/HomePage';
 
 const FieldManual = lazy(() => import('./components/help/FieldManual'));
@@ -57,6 +58,7 @@ function InternalRoute({ component: Component }) {
 
 export default function App() {
   const [isHelpOpen, setIsHelpOpen] = useState(false);
+  const helpTriggerRef = useRef(null);
   const location = useLocation();
   const isPseudoLocaleEnabled = new URLSearchParams(location.search).get('pseudo') === '1';
   const audio = useFeedbackEffects(location);
@@ -70,10 +72,14 @@ export default function App() {
           <PseudoLocale />
         </Suspense>
       )}
-      <a href="#main-content" className="fixed left-3 top-3 z-[200] -translate-y-24 rounded bg-compass px-4 py-3 font-display text-xs font-semibold uppercase tracking-wider text-exp-dark shadow-xl transition-transform focus:translate-y-0">
+      <a href="#main-content" data-capture-hide className="fixed left-3 top-3 z-[200] -translate-y-24 rounded bg-compass px-4 py-3 font-display text-xs font-semibold uppercase tracking-wider text-exp-dark shadow-xl transition-transform focus:translate-y-0">
         Skip to content
       </a>
-      <Header onHelpClick={() => setIsHelpOpen(true)} audio={audio} />
+      <Header onHelpClick={(event) => {
+        helpTriggerRef.current = event.currentTarget;
+        trackUXHelp('help');
+        setIsHelpOpen(true);
+      }} audio={audio} />
       <main id="main-content" tabIndex={-1} className="min-h-[100svh] flex-1">
         <ErrorBoundary>
           <Suspense fallback={<RouteFallback />}>
@@ -108,6 +114,7 @@ export default function App() {
       <Modal
         isOpen={isHelpOpen}
         onClose={() => setIsHelpOpen(false)}
+        returnFocusRef={helpTriggerRef}
         ariaLabel="Field Manual"
       >
         <Suspense fallback={<p className="px-5 py-8 font-mono text-sm text-exp-text-dim" role="status">Opening field manual...</p>}>

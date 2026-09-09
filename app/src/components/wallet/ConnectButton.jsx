@@ -1,5 +1,6 @@
 import { useWallet } from '../../contexts/WalletContext';
 import { useState } from 'react';
+import { trackUXError, trackUXRecovery } from '../../lib/uxTelemetry';
 
 function truncateAddress(address) {
   if (!address) return '';
@@ -11,10 +12,13 @@ export default function ConnectButton() {
   const [error, setError] = useState('');
 
   const handleConnect = async () => {
+    const recovering = Boolean(error);
     setError('');
     try {
       await connect();
+      if (recovering) trackUXRecovery({ surface: 'lobby', recovery: 'retry' });
     } catch (err) {
+      trackUXError({ surface: 'lobby', errorType: 'wallet', severity: 'high' });
       setError(err?.message === 'No wallet found'
         ? 'No wallet extension was detected. Install or unlock a wallet, then try again.'
         : err?.shortMessage || err?.message || 'Wallet connection failed.');

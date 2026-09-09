@@ -343,11 +343,11 @@ function addTerrainLandmarks(THREE, tile, mesh, propTexture, campsiteTexture) {
 function createPawn(THREE, color, isCurrent, standeeTexture) {
   const group = new THREE.Group();
   const contactShadow = new THREE.Mesh(
-    new THREE.CircleGeometry(0.28, 24),
-    new THREE.MeshBasicMaterial({ color: '#010302', transparent: true, opacity: 0.48, depthWrite: false }),
+    new THREE.CircleGeometry(0.34, 24),
+    new THREE.MeshBasicMaterial({ color: '#010302', transparent: true, opacity: 0.62, depthWrite: false }),
   );
   contactShadow.rotation.x = -Math.PI / 2;
-  contactShadow.scale.set(1, 0.4, 1);
+  contactShadow.scale.set(1, 0.48, 1);
   contactShadow.position.y = 0.006;
   group.add(contactShadow);
 
@@ -388,7 +388,7 @@ function createPawn(THREE, color, isCurrent, standeeTexture) {
     }));
     backing.center.set(0.5, 0);
     backing.position.y = 0.095;
-    backing.scale.set(1.93, 2.2, 1);
+    backing.scale.set(2.08, 2.36, 1);
     backing.renderOrder = 2;
     group.add(backing);
 
@@ -405,7 +405,7 @@ function createPawn(THREE, color, isCurrent, standeeTexture) {
     }));
     standee.center.set(0.5, 0);
     standee.position.y = 0.1;
-    standee.scale.set(1.82, 2.08, 1);
+    standee.scale.set(1.96, 2.22, 1);
     standee.renderOrder = 3;
     group.add(standee);
   } else {

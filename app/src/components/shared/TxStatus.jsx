@@ -1,4 +1,19 @@
+import { useEffect, useRef } from 'react';
+import { trackUXError, trackUXRecovery } from '../../lib/uxTelemetry';
+
 export default function TxStatus({ hash, isPending, isConfirming, isSuccess, error }) {
+  const failureRecorded = useRef(false);
+
+  useEffect(() => {
+    if (error && !failureRecorded.current) {
+      failureRecorded.current = true;
+      trackUXError({ surface: 'action', errorType: 'transaction', severity: 'high' });
+    } else if (isSuccess && failureRecorded.current) {
+      failureRecorded.current = false;
+      trackUXRecovery({ surface: 'action', recovery: 'retry' });
+    }
+  }, [error, isSuccess]);
+
   if (!isPending && !isConfirming && !isSuccess && !error) return null;
 
   const truncateHash = (h) => h ? `${h.slice(0, 6)}...${h.slice(-4)}` : '';

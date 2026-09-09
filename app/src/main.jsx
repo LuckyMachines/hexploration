@@ -5,10 +5,12 @@ import { WalletProvider } from './contexts/WalletContext';
 import { UIScaleProvider } from './contexts/UIScaleContext';
 import App from './App';
 import { initAnalytics } from './lib/analytics';
+import { initUXTelemetry } from './lib/uxTelemetry';
 import './fonts.css';
 import './index.css';
 
 initAnalytics();
+initUXTelemetry();
 
 createRoot(document.getElementById('root')).render(
   <React.StrictMode>

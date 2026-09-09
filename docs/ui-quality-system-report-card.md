@@ -4,16 +4,19 @@ Review date: 2026-09-08
 
 ## Outcome
 
-The UI improvement system moved from B+ to A for automated enforcement. The product evidence remains A- until representative observed-player sessions validate comprehension and delight.
+The UI and UX improvement system is A for automated enforcement. Product evidence remains A- until representative observed-player sessions and imported production telemetry validate comprehension, delight, recovery, and real-world performance.
 
 | Dimension | Before | Now | Evidence |
 | --- | --- | --- | --- |
-| Visual regression | B | A | Six deterministic, approved screenshot contracts with exact pixel diff evidence |
+| Visual regression | B | A | Nine deterministic, approved screenshot contracts with exact pixel diff evidence |
 | Accessibility | B+ | A | Every canonical scene rejects serious and critical axe findings; effective targets must be at least 44 px |
 | Responsive behavior | B | A | Desktop/mobile scene matrix plus ten passing contracts across five browser/device projects |
-| Performance stability | B | A- | CLS, transfer, navigation, DOM, and frame pacing captured; no production RUM yet |
+| Performance stability | B | A- | CLS, transfer, navigation, DOM, frame pacing, and privacy-safe Web Vitals instrumentation; production export still needed |
 | Governance | B | A | Source hashes and baseline hashes are bound to an owner, reason, and approval time |
-| Improvement automation | B+ | A | Control plane can regenerate evidence and diagnose stale approval but cannot silently approve pixels |
+| Journey efficiency | C | A | First and return paths enforce action, time, backtrack, error, recovery, and event-sequence budgets |
+| Input resilience | B | A | Keyboard, 200% text reflow, forced colors, reduced motion, and axe contracts pass |
+| Copy governance | C | A | Player-facing source rejects vague error, progress, confirmation, link, and success language |
+| Improvement automation | B+ | A | Control plane regenerates journey and visual evidence, ranks friction, and cannot silently approve pixels or human evidence |
 | Human validation | C | C | Deliberately unchanged; genuine player observation is still required |
 
 ## Stricter A Bar
@@ -22,9 +25,8 @@ An A UI system must detect an impacted surface, render the relevant state and vi
 
 ## Findings Converted Into Repairs
 
-The first enforced run found and fixed a keyboard-inaccessible horizontal region, undersized section navigation and challenge actions, incorrectly measured labeled checkbox targets, low-contrast blueprint and expedition-arc labels, low-contrast recovery actions, low-contrast state examples, and low-contrast memory badges. Baselines were approved only after all six scenes passed.
+The first enforced run found and fixed a keyboard-inaccessible horizontal region, undersized controls, incorrectly measured labeled checkbox targets, and multiple low-contrast states. This UX pass additionally caught vague crash copy, missing behavioral telemetry, and a Windows High Contrast failure. Baselines were approved only after all nine scenes passed.
 
 ## Highest-Leverage Next Action
 
-Run five consent-safe observed sessions using the first-action, error-recovery, depart, and return-intent script, then attach those decisions to the improvement control plane. Do not raise the automated thresholds or approval grade to stand in for that evidence.
-
+Run three consent-safe first-time sessions and two returning-player sessions, import a production telemetry export, then attach the resulting decision to the improvement control plane. Do not raise the automated thresholds or approval grade to stand in for that evidence.

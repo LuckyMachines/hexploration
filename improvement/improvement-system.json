@@ -1,6 +1,6 @@
 {
   "$schema": "./schema/improvement-system.schema.json",
-  "version": "1.2.1",
+  "version": "1.3.0",
   "name": "Xenovoya Improvement Control Plane",
   "defaultStaleDays": 14,
   "promotionStates": ["idea", "baseline", "candidate", "verified", "selected", "shipped", "validated", "rework-required", "retired"],
@@ -95,6 +95,36 @@
       "args": ["run", "ui:quality:report"],
       "timeoutMs": 120000
     },
+    "ux.system-tests": {
+      "label": "UX evidence, telemetry, experiment, and friction tests",
+      "command": "npm",
+      "args": ["run", "ux:test"],
+      "timeoutMs": 180000
+    },
+    "ux.journey-budgets": {
+      "label": "First-play and return-play journey budgets",
+      "command": "npm",
+      "args": ["run", "ux:journeys"],
+      "timeoutMs": 300000
+    },
+    "ux.input-audit": {
+      "label": "Keyboard, reflow, forced-color, and reduced-motion audit",
+      "command": "npm",
+      "args": ["run", "ux:input"],
+      "timeoutMs": 300000
+    },
+    "ux.evidence-refresh": {
+      "label": "Refresh journey budgets and UX evidence report",
+      "command": "npm",
+      "args": ["run", "ux:refresh"],
+      "timeoutMs": 360000
+    },
+    "ux.evidence-doctor": {
+      "label": "UX evidence contract doctor",
+      "command": "npm",
+      "args": ["run", "ux:doctor"],
+      "timeoutMs": 120000
+    },
     "art.tests": {
       "label": "Art pipeline tests",
       "command": "npm",
@@ -182,6 +212,18 @@
       "auto": true
     },
     {
+      "id": "refresh-ux-evidence",
+      "label": "Regenerate stale or missing UX journey evidence",
+      "surfaceIds": ["ux-onboarding"],
+      "actionTypes": ["missing", "invalid", "stale-evidence"],
+      "evidencePaths": ["reports/ux/latest.json"],
+      "commandId": "ux.evidence-refresh",
+      "verifyCommandIds": ["ux.system-tests", "ux.evidence-doctor"],
+      "writePaths": ["reports/ux/", "app/public/ux/"],
+      "risk": "low",
+      "auto": true
+    },
+    {
       "id": "refresh-marketing-readiness",
       "label": "Regenerate stale or missing marketing evidence",
       "surfaceIds": ["marketing-discovery"],
@@ -244,16 +286,17 @@
       "currentGrade": "A-",
       "objective": "A first-time player can understand the board, choose a valid action, predict stakes, and recover from errors without outside explanation.",
       "stricterABar": "Fresh desktop and mobile evidence proves a first meaningful action, readable state hierarchy, keyboard access, reduced motion, and actionable error recovery.",
-      "pathPatterns": ["^app/src/(components|hooks|pages|design-system|index\\.css|fonts\\.css)", "^app/e2e/", "^scripts/(ui-quality|game-ui-density)", "^ui-quality/", "^docs/(game-ui-readability-audit|ui-quality)"],
+      "pathPatterns": ["^app/src/(components|hooks|pages|design-system|index\\.css|fonts\\.css|lib/(analytics|uxTelemetry|experiments)|config/experiments)", "^app/e2e/", "^scripts/(ui-quality|game-ui-density|ux-system)", "^ui-quality/", "^ux/", "^docs/(game-ui-readability-audit|ui-quality|ux-)"],
       "evidence": [
         { "path": "docs/game-ui-readability-audit.md", "kind": "audit", "required": true, "maxAgeDays": 30 },
         { "path": "reports/ui-density/latest.json", "kind": "automated-report", "required": true, "maxAgeDays": 14 },
         { "path": "reports/ui-quality/latest.json", "kind": "rendered-quality", "required": true, "maxAgeDays": 14 },
+        { "path": "reports/ux/latest.json", "kind": "journey-quality", "required": true, "maxAgeDays": 14 },
         { "path": "ui-quality/visual-approvals.json", "kind": "visual-approval-ledger", "required": true, "maxAgeDays": 30 },
         { "path": "app/test-results", "kind": "visual-proof", "required": false, "maxAgeDays": 14 }
       ],
-      "quickCommands": ["ux.board-tests", "ux.ui-quality-doctor"],
-      "fullCommands": ["ux.board-tests", "ux.ui-quality-capture", "ux.ui-quality-cross-browser", "ux.app-build", "reliability.hard"]
+      "quickCommands": ["ux.board-tests", "ux.ui-quality-doctor", "ux.system-tests", "ux.evidence-doctor"],
+      "fullCommands": ["ux.board-tests", "ux.system-tests", "ux.journey-budgets", "ux.input-audit", "ux.ui-quality-capture", "ux.ui-quality-cross-browser", "ux.app-build", "reliability.hard"]
     },
     {
       "id": "visual-art",

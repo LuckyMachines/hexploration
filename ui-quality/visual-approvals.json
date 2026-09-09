@@ -2,10 +2,10 @@
   "schemaVersion": 1,
   "scenes": {
     "home-desktop": {
-      "approvedAt": "2026-09-08T17:50:29.157Z",
-      "owner": "product-design",
-      "reason": "Initial deterministic baseline after UI quality system implementation",
-      "sourceHash": "86b65eb83e951ca3b486a9d8478ebac97b1310717412f98548806f5e0072d0a7",
+      "approvedAt": "2026-09-09T02:13:32.339Z",
+      "owner": "codex-ux-evidence-review",
+      "reason": "Renew source-bound baselines after semantic accessibility, touch-target, and evidence-label updates; all nine scenes reviewed with no visual regression",
+      "sourceHash": "07531cdb34b824fc790a57c0860a0315461fb5fd070ca4f66cd4de18c9c9b5f8",
       "baselineHash": "1d2cb993a59cf6bf2bc8632735db907c152e0a31e5f3ef2149a830ae1d598fd0",
       "sources": [
         "src/pages/HomePage.jsx",
@@ -14,10 +14,10 @@
       ]
     },
     "home-mobile": {
-      "approvedAt": "2026-09-08T17:50:29.157Z",
-      "owner": "product-design",
-      "reason": "Initial deterministic baseline after UI quality system implementation",
-      "sourceHash": "31ddc814a52af670d19646b13ca346da7b4c064d2f4362f6ac979594b19e3ba1",
+      "approvedAt": "2026-09-09T02:13:32.339Z",
+      "owner": "codex-ux-evidence-review",
+      "reason": "Renew source-bound baselines after semantic accessibility, touch-target, and evidence-label updates; all nine scenes reviewed with no visual regression",
+      "sourceHash": "0284e6a8d67842ae807139aae95d64f0819161dc48a15025546c58e2148d0e43",
       "baselineHash": "8b412326d8ad2e569a03555e3c9814157f0ee47a90d65873a708dda966156355",
       "sources": [
         "src/pages/HomePage.jsx",
@@ -26,11 +26,11 @@
       ]
     },
     "board-ready": {
-      "approvedAt": "2026-09-08T17:50:29.157Z",
-      "owner": "product-design",
-      "reason": "Initial deterministic baseline after UI quality system implementation",
-      "sourceHash": "6563640a7f9200a8c5c91300a866fcf320480ac50ff827fab1c2b425c5fbbc75",
-      "baselineHash": "3f3f9cc7e70c995b14215b92bf50e0132d10979743b524c7c6a310306389f70e",
+      "approvedAt": "2026-09-09T02:13:32.339Z",
+      "owner": "codex-ux-evidence-review",
+      "reason": "Renew source-bound baselines after semantic accessibility, touch-target, and evidence-label updates; all nine scenes reviewed with no visual regression",
+      "sourceHash": "a877b192e2a9a5930f1199b8646c1bce3a068fd912906eb93586b24cb153aa18",
+      "baselineHash": "4e18a8e6d3229034da9ca3d866ccdcf8304a5a06297b55ebdcca4134d17dd4f8",
       "sources": [
         "src/pages/DesignSystemPage.jsx",
         "src/components/board/ThreeBoard.jsx",
@@ -43,11 +43,11 @@
       ]
     },
     "board-danger-comparison": {
-      "approvedAt": "2026-09-08T17:50:29.157Z",
-      "owner": "product-design",
-      "reason": "Initial deterministic baseline after UI quality system implementation",
-      "sourceHash": "92ec82827f512e9d4720dc540c3a95508882a511e849ccbb3f47f98df6f43bb5",
-      "baselineHash": "efa6e5697503c3e1e412a8090a5eaeffbaf102bba0c079554a58fdaf668b3f1d",
+      "approvedAt": "2026-09-09T02:13:32.339Z",
+      "owner": "codex-ux-evidence-review",
+      "reason": "Renew source-bound baselines after semantic accessibility, touch-target, and evidence-label updates; all nine scenes reviewed with no visual regression",
+      "sourceHash": "5f152d82b585fe1f65bebe76f4303206f3d0a07582586b88730607ca7e4f2b83",
+      "baselineHash": "37bee94601f6fc85a76f445eb0b4e579449c518b270af062799a1363b403ce19",
       "sources": [
         "src/pages/DesignSystemPage.jsx",
         "src/components/board/ThreeBoard.jsx",
@@ -58,11 +58,11 @@
       ]
     },
     "recovery-mobile": {
-      "approvedAt": "2026-09-08T17:50:29.157Z",
-      "owner": "product-design",
-      "reason": "Initial deterministic baseline after UI quality system implementation",
-      "sourceHash": "85f3b52bd4e3af8bbb53bffc7f7e717308de60ec9e4e7b3df3c4442ffdafbd00",
-      "baselineHash": "ed7fd8b1262ba06dc48ff0b9655375df4f467b30319338c47d8a16267d18f712",
+      "approvedAt": "2026-09-09T02:13:32.339Z",
+      "owner": "codex-ux-evidence-review",
+      "reason": "Renew source-bound baselines after semantic accessibility, touch-target, and evidence-label updates; all nine scenes reviewed with no visual regression",
+      "sourceHash": "c60b351fef18df0d6ce74f90c77914c954d8ba5ddb970bf125276d4de89aa5f0",
+      "baselineHash": "b5a609263af82b5f845ee5f97cd807512a0bf040bd6d4308fc254b58c1403a0f",
       "sources": [
         "src/pages/DesignSystemPage.jsx",
         "src/components/shared/TxStatus.jsx",
@@ -72,11 +72,11 @@
       ]
     },
     "responsive-contracts": {
-      "approvedAt": "2026-09-08T17:50:29.157Z",
-      "owner": "product-design",
-      "reason": "Initial deterministic baseline after UI quality system implementation",
-      "sourceHash": "20deaef50a170d0466069cf813fce4aa16cf88d72f808b12401d320421f9d181",
-      "baselineHash": "0bad6336a09ff3e409ae1a57c463e16c2456b58fea3a6a23e5d19bdaf6ff0c05",
+      "approvedAt": "2026-09-09T02:13:32.339Z",
+      "owner": "codex-ux-evidence-review",
+      "reason": "Renew source-bound baselines after semantic accessibility, touch-target, and evidence-label updates; all nine scenes reviewed with no visual regression",
+      "sourceHash": "a32a7a1f91225ff0fa374ec5a3d3a98b0dd7de97c78a78a38ce0204ebe33818e",
+      "baselineHash": "1a53f5a085e0a90de5de4cb44cbc03b8a42fa07f97f9a353d6bdeaee89bb5534",
       "sources": [
         "src/pages/DesignSystemPage.jsx",
         "src/components/actions/ActionSimulator.jsx",
@@ -86,7 +86,46 @@
         "src/design-system/catalog.js",
         "src/index.css"
       ]
+    },
+    "return-loop-desktop": {
+      "approvedAt": "2026-09-09T02:13:32.339Z",
+      "owner": "codex-ux-evidence-review",
+      "reason": "Renew source-bound baselines after semantic accessibility, touch-target, and evidence-label updates; all nine scenes reviewed with no visual regression",
+      "sourceHash": "d3c0fe4139f30d8fdba452431d2060ce3e9d5c741dfc432e3fe66b98865154f3",
+      "baselineHash": "a629fdde54da370c203515ab0301710b5d58de9468d938fa98b0fdfa321c5c1b",
+      "sources": [
+        "src/pages/HomePage.jsx",
+        "src/components/expedition/ReturnLoopPanel.jsx",
+        "src/lib/returnLoop.js",
+        "src/index.css"
+      ]
+    },
+    "board-waiting": {
+      "approvedAt": "2026-09-09T02:13:32.339Z",
+      "owner": "codex-ux-evidence-review",
+      "reason": "Renew source-bound baselines after semantic accessibility, touch-target, and evidence-label updates; all nine scenes reviewed with no visual regression",
+      "sourceHash": "e1200bc57390f0fc618d1c2f4701d52d169cdfa701515d6ba98ee25feb8a034c",
+      "baselineHash": "0e1df0a0339e51f9d9a17483de1400e5936d1956b811efa26317660f047e3f36",
+      "sources": [
+        "src/pages/DesignSystemPage.jsx",
+        "src/components/board/ThreeBoard.jsx",
+        "src/components/expedition/MissionStatus.jsx",
+        "src/index.css"
+      ]
+    },
+    "aftermath-complete": {
+      "approvedAt": "2026-09-09T02:13:32.339Z",
+      "owner": "codex-ux-evidence-review",
+      "reason": "Renew source-bound baselines after semantic accessibility, touch-target, and evidence-label updates; all nine scenes reviewed with no visual regression",
+      "sourceHash": "e54efd895b7190afbb9fb5169af16bf1beeaa1b98cb6963e252eda48a90f988c",
+      "baselineHash": "9fc845346efcf4b881d9ecb7094c8925bb13274138e1ba79170fe15de40da611",
+      "sources": [
+        "src/pages/DesignSystemPage.jsx",
+        "src/components/memory/BadgeShelf.jsx",
+        "src/components/memory/BeatThisChallenge.jsx",
+        "src/index.css"
+      ]
     }
   },
-  "updatedAt": "2026-09-08T17:50:29.157Z"
+  "updatedAt": "2026-09-09T02:13:32.339Z"
 }

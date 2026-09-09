@@ -31,7 +31,7 @@ export default function MissionStatus({
   const toneClass = {
     gold: 'border-compass/40 bg-compass/10 text-compass-bright',
     green: 'border-oxide-green/40 bg-oxide-green/10 text-oxide-green',
-    blue: 'border-blueprint/40 bg-blueprint/10 text-blueprint',
+    blue: 'border-blueprint/45 bg-blueprint/10 text-blueprint-bright',
     red: 'border-signal-red/40 bg-signal-red/10 text-signal-red',
     neutral: 'border-exp-border bg-exp-dark/35 text-exp-text-dim',
   }[escapeCostPreview?.tone === 'red' ? 'red' : departPressure?.band?.tone === 'red' ? 'red' : toneForTurnState(turnState)];

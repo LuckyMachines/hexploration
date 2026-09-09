@@ -1,4 +1,4 @@
-export const UI_QUALITY_VERSION = '1.0.0';
+export const UI_QUALITY_VERSION = '1.1.0';
 
 export const uiQualityBudgets = Object.freeze({
   maxHorizontalOverflowPx: 1,
@@ -110,6 +110,53 @@ export const uiQualityScenes = Object.freeze([
       'src/components/memory/BadgeShelf.jsx',
       'src/components/memory/BeatThisChallenge.jsx',
       'src/design-system/catalog.js',
+      'src/index.css',
+    ],
+  },
+  {
+    id: 'return-loop-desktop',
+    label: 'First-play and return-loop handoff',
+    route: '/',
+    viewport: { width: 1440, height: 1000 },
+    capture: 'element',
+    selector: '[data-testid="return-loop-panel"]',
+    maxDomNodes: 2800,
+    sources: [
+      'src/pages/HomePage.jsx',
+      'src/components/expedition/ReturnLoopPanel.jsx',
+      'src/lib/returnLoop.js',
+      'src/index.css',
+    ],
+  },
+  {
+    id: 'board-waiting',
+    label: 'Board hierarchy - waiting on crew',
+    route: '/design-system?view=gameplay&lens=waiting&motion=reduce',
+    viewport: { width: 1440, height: 1000 },
+    capture: 'element',
+    selector: '[data-design-section="board"]',
+    waitForRenderer: true,
+    maxFrameP95Ms: 50,
+    maxDomNodes: 3300,
+    sources: [
+      'src/pages/DesignSystemPage.jsx',
+      'src/components/board/ThreeBoard.jsx',
+      'src/components/expedition/MissionStatus.jsx',
+      'src/index.css',
+    ],
+  },
+  {
+    id: 'aftermath-complete',
+    label: 'Completed expedition and return invitation',
+    route: '/design-system?view=journeys&lens=complete&motion=reduce',
+    viewport: { width: 1280, height: 960 },
+    capture: 'element',
+    selector: '[data-design-section="journeys"]',
+    maxDomNodes: 3600,
+    sources: [
+      'src/pages/DesignSystemPage.jsx',
+      'src/components/memory/BadgeShelf.jsx',
+      'src/components/memory/BeatThisChallenge.jsx',
       'src/index.css',
     ],
   },

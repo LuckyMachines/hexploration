@@ -12,15 +12,22 @@ export default function Modal({
   isOpen,
   onClose,
   children,
+  returnFocusRef,
   ariaLabel = 'Dialog',
 }) {
   const panelRef = useRef(null);
   const closeButtonRef = useRef(null);
   const previousFocusRef = useRef(null);
+  const onCloseRef = useRef(onClose);
+
+  useEffect(() => {
+    onCloseRef.current = onClose;
+  }, [onClose]);
 
   const handleKeyDown = useCallback((e) => {
     if (e.key === 'Escape') {
-      onClose();
+      e.preventDefault();
+      onCloseRef.current();
       return;
     }
 
@@ -38,7 +45,7 @@ export default function Modal({
       e.preventDefault();
       first.focus();
     }
-  }, [onClose]);
+  }, []);
 
   useEffect(() => {
     if (!isOpen) return undefined;
@@ -49,11 +56,14 @@ export default function Modal({
     closeButtonRef.current?.focus();
 
     return () => {
+      const previousFocus = returnFocusRef?.current || previousFocusRef.current;
       document.body.style.overflow = '';
       document.removeEventListener('keydown', handleKeyDown);
-      previousFocusRef.current?.focus?.();
+      window.requestAnimationFrame(() => {
+        if (previousFocus?.isConnected) previousFocus.focus({ preventScroll: true });
+      });
     };
-  }, [isOpen, handleKeyDown]);
+  }, [isOpen, handleKeyDown, returnFocusRef]);
 
   if (!isOpen) return null;
 
@@ -73,9 +83,10 @@ export default function Modal({
         onClick={(e) => e.stopPropagation()}
       >
         <button
+          type="button"
           ref={closeButtonRef}
           onClick={onClose}
-          className="absolute top-3 right-3 z-10 w-7 h-7 flex items-center justify-center
+          className="absolute right-2 top-2 z-10 flex h-11 w-11 items-center justify-center
                      text-exp-text-dim hover:text-exp-text transition-colors"
           aria-label="Close"
         >

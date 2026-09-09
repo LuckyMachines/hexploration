@@ -8,6 +8,7 @@
     { "id": "marketing-readiness", "owner": "growth", "path": "reports/marketing/latest-report.json", "purpose": "marketing readiness evidence", "reviewCadenceDays": 14, "canonical": true },
     { "id": "ui-density", "owner": "product-design", "path": "reports/ui-density/latest.json", "purpose": "interface density evidence", "reviewCadenceDays": 14, "canonical": true },
     { "id": "ui-quality", "owner": "product-design", "path": "reports/ui-quality/latest.json", "purpose": "rendered visual, accessibility, responsiveness, and source-freshness evidence", "reviewCadenceDays": 14, "canonical": true },
+    { "id": "ux-quality", "owner": "product-research", "path": "reports/ux/latest.json", "purpose": "journey budgets, input resilience, copy governance, telemetry, friction, and observed-player evidence", "reviewCadenceDays": 14, "canonical": true },
     { "id": "art-3d-review", "owner": "art-direction", "path": "app/src/art-pipeline/asset-3d-review.json", "purpose": "3D candidate selection and rejection evidence", "reviewCadenceDays": 30, "canonical": true },
     { "id": "marketing-report-card", "owner": "growth", "path": "docs/marketing-site-report-card.md", "purpose": "human-readable historical marketing grade", "reviewCadenceDays": 30, "canonical": false, "supersededBy": "improvement-portfolio" }
   ]

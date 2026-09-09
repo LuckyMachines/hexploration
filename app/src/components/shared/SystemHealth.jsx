@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useWallet } from '../../contexts/WalletContext';
 import { getRuntimeMode } from '../../lib/runtimeMode';
 import {
@@ -11,6 +11,7 @@ import {
   GAME_SETUP_ADDRESS,
   GAME_REGISTRY_ADDRESS,
 } from '../../config/contracts';
+import { trackUXError, trackUXRecovery } from '../../lib/uxTelemetry';
 
 const REQUIRED = [
   ['BOARD', BOARD_ADDRESS],
@@ -34,6 +35,7 @@ export default function SystemHealth() {
   const targetChain = runtime.chain;
   const targetRpc = runtime.rpcUrl;
   const [rpcCheck, setRpcCheck] = useState({ status: 'checking', chainId: null, error: '' });
+  const rpcFailed = useRef(false);
   const wrongChain = isConnected && chainId !== targetChain.id;
 
   const checkRpc = useCallback(async () => {
@@ -59,8 +61,12 @@ export default function SystemHealth() {
       if (checkedChainId !== targetChain.id) {
         throw new Error(`Read-only endpoint returned chain ${checkedChainId}; expected ${targetChain.id}.`);
       }
+      if (rpcFailed.current) trackUXRecovery({ surface: 'lobby', recovery: 'retry' });
+      rpcFailed.current = false;
       setRpcCheck({ status: 'online', chainId: checkedChainId, error: '' });
     } catch (error) {
+      if (!rpcFailed.current) trackUXError({ surface: 'lobby', errorType: 'network', severity: 'high' });
+      rpcFailed.current = true;
       setRpcCheck({
         status: 'offline',
         chainId: null,

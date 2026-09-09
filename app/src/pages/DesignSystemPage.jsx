@@ -4,6 +4,7 @@ import EmptyState from '../components/shared/EmptyState';
 import Spinner from '../components/shared/Spinner';
 import TxStatus from '../components/shared/TxStatus';
 import UIQualityStatus from '../components/shared/UIQualityStatus';
+import UXQualityStatus from '../components/shared/UXQualityStatus';
 import SurveyTabletFrame from '../components/layout/SurveyTabletFrame';
 import ActionSimulator from '../components/actions/ActionSimulator';
 import ThreeBoard from '../components/board/ThreeBoard';
@@ -171,6 +172,52 @@ function ResolvedTokenValue({ cssVar }) {
   return <code className="font-mono text-[9px] uppercase text-exp-text-dim">{value}</code>;
 }
 
+function parseColor(value) {
+  const match = String(value).trim().match(/^#([0-9a-f]{6})$/i);
+  if (match) return [0, 2, 4].map((offset) => Number.parseInt(match[1].slice(offset, offset + 2), 16));
+  const rgb = String(value).match(/rgba?\((\d+)[,\s]+(\d+)[,\s]+(\d+)/i);
+  return rgb ? rgb.slice(1, 4).map(Number) : null;
+}
+
+function contrastRatio(foreground, background) {
+  const luminance = (value) => {
+    const rgb = parseColor(value);
+    if (!rgb) return null;
+    const channels = rgb.map((channel) => {
+      const normalized = channel / 255;
+      return normalized <= 0.03928 ? normalized / 12.92 : ((normalized + 0.055) / 1.055) ** 2.4;
+    });
+    return (0.2126 * channels[0]) + (0.7152 * channels[1]) + (0.0722 * channels[2]);
+  };
+  const a = luminance(foreground);
+  const b = luminance(background);
+  if (a == null || b == null) return null;
+  return (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
+}
+
+function ContrastBadge({ backgroundVar, foregroundVar, foregroundLabel }) {
+  const [ratio, setRatio] = useState(null);
+  useEffect(() => {
+    const styles = window.getComputedStyle(document.documentElement);
+    setRatio(contrastRatio(styles.getPropertyValue(foregroundVar), styles.getPropertyValue(backgroundVar)));
+  }, [backgroundVar, foregroundVar]);
+  const passes = ratio >= 4.5;
+  return (
+    <span className={`rounded border px-1.5 py-1 font-mono text-[9px] uppercase tracking-[0.1em] ${passes ? 'border-oxide-green/35 text-oxide-green-bright' : 'border-compass/35 text-compass-bright'}`}>
+      {ratio ? `${ratio.toFixed(1)}:1` : '--'} / {foregroundLabel}
+    </span>
+  );
+}
+
+const lifecycleArt = [
+  '/images/art/environments/glassroot-cavern.webp',
+  '/images/art/characters/signal-cartographer.png',
+  '/images/art/terrain/verdant-signal-base.webp',
+  '/images/art/props/route-fork-marker.png',
+  '/images/art/fx/redline-pressure.png',
+  '/images/art/relics/sunstone-lens.png',
+];
+
 function SystemHero() {
   return (
     <header
@@ -291,26 +338,33 @@ function CritiqueDeck({
 function SystemMap() {
   return (
     <>
-      <div className="grid gap-px overflow-hidden rounded-md border border-exp-border bg-exp-border lg:grid-cols-6">
+      <div className="grid gap-px overflow-hidden rounded-md border border-exp-border bg-exp-border lg:grid-cols-[0.9fr_0.95fr_1fr_1.15fr_1.25fr_1.05fr]">
         {lifecycle.map(([step, title, feeling, body], index) => (
-          <div key={title} className="relative bg-exp-panel p-4">
+          <div key={title} className={`group relative min-h-56 overflow-hidden bg-exp-panel p-4 pt-24 ${index === 3 ? 'bg-compass/10' : ''} ${index === 4 ? 'bg-signal-red/10' : ''}`}>
+            <img src={lifecycleArt[index]} alt="" className={`absolute inset-x-0 top-0 h-20 w-full object-cover opacity-55 saturate-[0.8] transition duration-300 group-hover:opacity-75 ${index === 1 || index === 5 ? 'object-contain' : ''}`} />
+            <span aria-hidden="true" className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-transparent via-exp-panel/25 to-exp-panel" />
             {index < lifecycle.length - 1 && <span aria-hidden="true" className="absolute right-[-5px] top-7 z-10 hidden h-2 w-2 rotate-45 border-r border-t border-compass/50 bg-exp-panel lg:block" />}
-            <div className="flex items-center justify-between gap-2">
+            <div className="relative flex items-center justify-between gap-2">
               <span className="font-mono text-[10px] text-compass">{step}</span>
               <span className="font-mono text-[9px] uppercase tracking-[0.16em] text-exp-text-dim">{feeling}</span>
             </div>
-            <h3 className="mt-5 font-display text-xl uppercase tracking-[0.14em] text-exp-text">{title}</h3>
-            <p className="ds-copy mt-2 text-xs text-exp-text-dim">{body}</p>
+            <h3 className={`relative mt-4 font-display uppercase tracking-[0.14em] ${index === 3 || index === 4 ? 'text-2xl text-compass-bright' : 'text-xl text-exp-text'}`}>{title}</h3>
+            <p className="ds-copy relative mt-2 text-xs text-exp-text-dim">{body}</p>
           </div>
         ))}
       </div>
-      <div className="mt-4 grid gap-3 lg:grid-cols-3">
+      <div className="mx-auto flex max-w-3xl items-center justify-center gap-3 py-3 text-center text-compass" aria-label="Remembered expeditions create the next discovery">
+        <span className="h-px flex-1 bg-gradient-to-r from-transparent to-compass/45" />
+        <span className="font-mono text-[10px] uppercase tracking-[0.2em]">Remember <span aria-hidden="true">-&gt;</span> share <span aria-hidden="true">-&gt;</span> invite <span aria-hidden="true">-&gt;</span> discover again</span>
+        <span className="h-px flex-1 bg-gradient-to-l from-transparent to-compass/45" />
+      </div>
+      <div className="grid gap-3 lg:grid-cols-[0.9fr_1.2fr_0.9fr]">
         {[
           ['Quiet until useful', 'Persistent UI earns its place. The board, objective, current state, and one next action lead.'],
           ['Consequences before commitment', 'Cost, risk, eligibility, and route impact appear while the choice is still reversible.'],
           ['A run becomes a story', 'Resolution names what changed; memory preserves why the decision mattered.'],
         ].map(([title, body], index) => (
-          <Surface key={title}>
+          <Surface key={title} className={index === 1 ? 'border-compass/45 bg-compass/10 lg:-translate-y-1' : 'border-exp-border/65 bg-exp-panel/50'}>
             <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-compass">Principle 0{index + 1}</p>
             <h3 className="mt-2 font-display text-xl uppercase tracking-[0.12em] text-exp-text">{title}</h3>
             <p className="ds-copy mt-2 text-sm text-exp-text-dim">{body}</p>
@@ -324,10 +378,15 @@ function SystemMap() {
 function Foundations() {
   return (
     <div className="space-y-4">
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {colorTokens.map(([name, role, cssVar, className]) => (
+      <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+        {colorTokens.map(([name, role, cssVar, className]) => {
+          const surface = ['Void', 'Surface', 'Panel', 'Border'].includes(name);
+          const terrain = ['Jungle', 'Desert'].includes(name);
+          return (
           <Surface key={name} className="p-3">
-            <div className={`h-16 rounded border border-white/10 ${className}`} />
+            <div className={`grid h-12 place-items-center rounded border border-white/10 ${className}`}>
+              <span className={`${surface ? 'text-exp-text' : 'text-exp-dark'} font-display text-lg uppercase tracking-[0.12em]`}>{terrain ? 'Map' : 'Aa'}</span>
+            </div>
             <div className="mt-3 flex items-start justify-between gap-2">
               <div>
                 <p className="font-mono text-xs uppercase tracking-[0.14em] text-exp-text">{name}</p>
@@ -335,8 +394,16 @@ function Foundations() {
               </div>
               <ResolvedTokenValue cssVar={cssVar} />
             </div>
+            <div className="mt-2">
+              {terrain ? <span className="rounded border border-exp-border px-1.5 py-1 font-mono text-[9px] uppercase tracking-[0.1em] text-exp-text-dim">Non-text / terrain</span> : <ContrastBadge
+                backgroundVar={cssVar}
+                foregroundVar={surface ? '--color-exp-text' : '--color-exp-dark'}
+                foregroundLabel={surface ? 'Text' : 'Void'}
+              />}
+            </div>
           </Surface>
-        ))}
+          );
+        })}
       </div>
       <Surface>
         <MiniLabel>Semantic aliases</MiniLabel>
@@ -367,7 +434,21 @@ function Foundations() {
           <p className="ds-copy mt-4 text-sm text-exp-text-dim">Glyphs reinforce a written label. They never become the only path to meaning.</p>
         </Surface>
       </div>
-      <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+      <div className="grid gap-3 md:grid-cols-3">
+        <div className="rounded border border-exp-border/60 bg-exp-dark/35 p-4">
+          <MiniLabel>Resting</MiniLabel>
+          <button type="button" className="mt-3 min-h-11 w-full rounded border border-exp-border bg-exp-panel px-3 font-mono text-xs uppercase tracking-[0.14em] text-exp-text-dim">Inspect route</button>
+        </div>
+        <div className="rounded border border-blueprint/45 bg-blueprint/5 p-4">
+          <MiniLabel>Keyboard focus</MiniLabel>
+          <button type="button" className="mt-3 min-h-11 w-full rounded border-2 border-blueprint bg-exp-panel px-3 font-mono text-xs uppercase tracking-[0.14em] text-blueprint-bright ring-2 ring-blueprint/25 ring-offset-2 ring-offset-exp-dark">Inspect route</button>
+        </div>
+        <div className="rounded border border-compass/45 bg-compass/5 p-4">
+          <MiniLabel>Pressed / committed</MiniLabel>
+          <button type="button" className="mt-3 min-h-11 w-full translate-y-px rounded border border-compass bg-compass/20 px-3 font-mono text-xs uppercase tracking-[0.14em] text-compass-bright shadow-inner">Route locked</button>
+        </div>
+      </div>
+      <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
         {scaleTokens.map(([name, cssVar, value, rule]) => (
           <Surface key={name}>
             <div className="flex items-baseline justify-between gap-3"><p className="font-mono text-[10px] uppercase tracking-[0.22em] text-compass">{name}</p><code className="text-right font-mono text-[9px] text-exp-text-dim">{value}</code></div>
@@ -392,7 +473,7 @@ function ActionConsoleSpec() {
       <div className="grid gap-px bg-exp-border sm:grid-cols-3 xl:grid-cols-6">
         {actionPatterns.map(([label, , glyph, className]) => (
           <button key={label} type="button" aria-pressed={active === label} onClick={() => setActive(label)} className={`min-h-20 bg-exp-dark px-4 py-3 text-left transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-3px] focus-visible:outline-compass ${active === label ? className : 'text-exp-text-dim hover:bg-exp-panel hover:text-exp-text'}`}>
-            <span className="block font-display text-2xl uppercase tracking-[0.12em]">{glyph}</span><span className="mt-1 block font-mono text-[10px] uppercase tracking-[0.16em]">{label}</span>
+            <span className="block font-display text-xl uppercase tracking-[0.12em]">{label}</span><kbd className="mt-2 inline-flex min-w-6 justify-center rounded border border-current/30 px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-[0.12em]">{glyph}</kbd>
           </button>
         ))}
       </div>
@@ -402,7 +483,11 @@ function ActionConsoleSpec() {
           <p className="mt-2 font-mono text-sm leading-relaxed text-exp-text">{selected[1]}</p>
           <div className="mt-3 flex flex-wrap gap-2"><ToneBadge>Cost 1 turn</ToneBadge><ToneBadge>Risk visible</ToneBadge><ToneBadge>Undo available</ToneBadge></div>
         </div>
-        <button type="button" className="min-h-14 rounded border border-compass/60 bg-compass/15 px-4 py-3 font-display text-base font-semibold uppercase tracking-[0.18em] text-compass-bright shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-compass">Submit {selected[0]}</button>
+        <div className="rounded border border-compass/45 bg-compass/10 p-3">
+          <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-compass">One next action</p>
+          <button type="button" className="mt-2 min-h-14 w-full rounded border border-compass bg-compass px-4 py-3 font-display text-base font-semibold uppercase tracking-[0.18em] text-exp-dark shadow-[0_0_24px_rgba(196,166,74,0.18)] hover:bg-compass-bright focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-compass">Submit {selected[0]}</button>
+          <p className="mt-2 font-mono text-[9px] leading-relaxed text-exp-text-dim">Enter submits only while this command has focus.</p>
+        </div>
       </div>
     </Surface>
   );
@@ -410,25 +495,49 @@ function ActionConsoleSpec() {
 
 function ControlMatrix() {
   return (
-    <div className="mt-4 grid gap-4 lg:grid-cols-2">
-      <Surface>
-        <MiniLabel>Button hierarchy</MiniLabel>
-        <div className="mt-4 grid gap-3 sm:grid-cols-2">
-          <button type="button" className="min-h-11 rounded border border-compass/60 bg-compass/15 px-4 font-mono text-xs uppercase tracking-[0.16em] text-compass-bright">Primary command</button>
-          <button type="button" className="min-h-11 rounded border border-blueprint/50 bg-blueprint/10 px-4 font-mono text-xs uppercase tracking-[0.16em] text-blueprint">Inspect details</button>
-          <button type="button" className="min-h-11 rounded border border-signal-red/50 bg-signal-red/10 px-4 font-mono text-xs uppercase tracking-[0.16em] text-signal-red">Abandon run</button>
-          <button type="button" disabled className="min-h-11 cursor-not-allowed rounded border border-exp-border bg-exp-dark/45 px-4 font-mono text-xs uppercase tracking-[0.16em] text-exp-text-dim opacity-45">Unavailable</button>
+    <div className="mt-4 space-y-4">
+      <div className="grid gap-4 lg:grid-cols-2">
+        <Surface>
+          <MiniLabel>Button hierarchy</MiniLabel>
+          <div className="mt-4 grid gap-3 sm:grid-cols-2">
+            <button type="button" className="min-h-11 rounded border border-compass bg-compass px-4 font-mono text-xs font-semibold uppercase tracking-[0.16em] text-exp-dark">Primary command</button>
+            <button type="button" className="min-h-11 rounded border border-blueprint/50 bg-blueprint/10 px-4 font-mono text-xs uppercase tracking-[0.16em] text-blueprint">Inspect details</button>
+            <button type="button" className="min-h-11 rounded border border-signal-red/50 bg-signal-red/10 px-4 font-mono text-xs uppercase tracking-[0.16em] text-signal-red">Abandon run</button>
+            <button type="button" disabled className="min-h-11 cursor-not-allowed rounded border border-exp-border bg-exp-dark/45 px-4 font-mono text-xs uppercase tracking-[0.16em] text-exp-text-dim opacity-45">Unavailable</button>
+          </div>
+        </Surface>
+        <Surface>
+          <MiniLabel>Inputs and selection</MiniLabel>
+          <label className="mt-4 block font-mono text-[10px] uppercase tracking-[0.18em] text-exp-text-dim" htmlFor="design-system-call-sign">Explorer call sign</label>
+          <input id="design-system-call-sign" defaultValue="Lantern Keeper" className="mt-2 min-h-11 w-full rounded border border-exp-border bg-exp-dark/60 px-3 font-mono text-sm text-exp-text outline-none focus:border-blueprint focus:ring-2 focus:ring-blueprint/25" />
+          <div className="mt-3 flex flex-wrap gap-2">
+            <label className="flex min-h-11 cursor-pointer items-center gap-2 rounded border border-exp-border bg-exp-dark/45 px-3 font-mono text-[10px] uppercase tracking-[0.14em] text-exp-text"><input type="checkbox" defaultChecked className="accent-[#e8c860]" /> Show route costs</label>
+            <label className="flex min-h-11 cursor-pointer items-center gap-2 rounded border border-exp-border bg-exp-dark/45 px-3 font-mono text-[10px] uppercase tracking-[0.14em] text-exp-text"><input type="checkbox" className="accent-[#e8c860]" /> Compact HUD</label>
+          </div>
+        </Surface>
+      </div>
+      <div className="overflow-hidden rounded border border-exp-border/70 bg-exp-dark/35">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-exp-border/70 px-4 py-3">
+          <div><MiniLabel>Interaction state lifecycle</MiniLabel><p className="ds-copy mt-1 text-sm text-exp-text-dim">Every command exposes input, processing, outcome, and recovery - not just an ideal resting state.</p></div>
+          <ToneBadge>keyboard K / controller A</ToneBadge>
         </div>
-      </Surface>
-      <Surface>
-        <MiniLabel>Inputs and selection</MiniLabel>
-        <label className="mt-4 block font-mono text-[10px] uppercase tracking-[0.18em] text-exp-text-dim" htmlFor="design-system-call-sign">Explorer call sign</label>
-        <input id="design-system-call-sign" defaultValue="Lantern Keeper" className="mt-2 min-h-11 w-full rounded border border-exp-border bg-exp-dark/60 px-3 font-mono text-sm text-exp-text outline-none focus:border-blueprint focus:ring-2 focus:ring-blueprint/25" />
-        <div className="mt-3 flex flex-wrap gap-2">
-          <label className="flex min-h-11 cursor-pointer items-center gap-2 rounded border border-exp-border bg-exp-dark/45 px-3 font-mono text-[10px] uppercase tracking-[0.14em] text-exp-text"><input type="checkbox" defaultChecked className="accent-[#e8c860]" /> Show route costs</label>
-          <label className="flex min-h-11 cursor-pointer items-center gap-2 rounded border border-exp-border bg-exp-dark/45 px-3 font-mono text-[10px] uppercase tracking-[0.14em] text-exp-text"><input type="checkbox" className="accent-[#e8c860]" /> Compact HUD</label>
+        <div className="grid gap-px bg-exp-border/70 sm:grid-cols-2 xl:grid-cols-7">
+          {[
+            ['Resting', 'Inspect', 'border-exp-border text-exp-text-dim'],
+            ['Hover', 'Inspect', 'border-compass/45 bg-compass/5 text-exp-text'],
+            ['Focused', 'Inspect', 'border-blueprint bg-blueprint/10 text-blueprint-bright ring-2 ring-inset ring-blueprint/40'],
+            ['Pressed', 'Inspect', 'translate-y-px border-compass bg-compass/15 text-compass-bright shadow-inner'],
+            ['Pending', 'Sending...', 'border-relic/50 bg-relic/10 text-relic-bright'],
+            ['Confirmed', 'Route saved', 'border-oxide-green/50 bg-oxide-green/10 text-oxide-green-bright'],
+            ['Failed', 'Try again', 'border-signal-red/50 bg-signal-red/10 text-signal-red-bright'],
+          ].map(([state, label, className]) => (
+            <div key={state} className="bg-exp-panel/95 p-3">
+              <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-exp-text-dim">{state}</p>
+              <button type="button" className={`mt-3 min-h-11 w-full rounded border px-2 font-mono text-[10px] uppercase tracking-[0.12em] ${className}`}>{label}</button>
+            </div>
+          ))}
         </div>
-      </Surface>
+      </div>
     </div>
   );
 }
@@ -448,12 +557,12 @@ function BoardScene({ lens = 'ready' }) {
     hasCampsite: alias === '2,0',
   }));
   return (
-    <div className="overflow-hidden rounded-md border border-exp-border bg-exp-dark/75">
+    <div className="self-start overflow-hidden rounded-md border border-exp-border bg-exp-dark/75">
       <div className="flex flex-wrap items-center justify-between gap-2 border-b border-exp-border px-3 py-2">
         <div className="flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-compass-bright" /><p className="font-mono text-[10px] uppercase tracking-[0.2em] text-exp-text">Board / {lens}</p></div>
         <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-exp-text-dim">route, presence, pressure</p>
       </div>
-      <div className="h-[24rem] w-full">
+      <div className={`h-[25rem] w-full ${lens === 'danger' ? 'xl:h-[43rem]' : 'xl:h-[38rem]'}`}>
         <ThreeBoard
           cells={cells}
           currentLocation="0,0"
@@ -502,7 +611,7 @@ function StateSummary({ lens, eyebrow }) {
         {Object.entries({ World: signals.world, Route: signals.route, Pressure: signals.pressure }).map(([label, value]) => (
           <div key={label} className="min-w-0">
             <dt className="font-mono text-[8px] uppercase tracking-[0.16em] text-exp-text-dim">{label}</dt>
-            <dd className="mt-1 truncate font-mono text-[9px] uppercase tracking-[0.1em] text-current">{value}</dd>
+            <dd className="mt-1 break-words font-mono text-[9px] uppercase tracking-[0.1em] text-current">{value}</dd>
           </div>
         ))}
       </dl>
@@ -547,10 +656,10 @@ function GameplayState({ lens }) {
   };
   return (
     <div className="space-y-4">
-      <MissionStatus turnState={turnState} movePathLength={lens === 'ready' ? 2 : 0} moveValidation={{ ok: true, reason: 'Path is valid.' }} crewCount={4} departPressure={departPressure} escapeCostPreview={danger ? escapePreviewFixture : null} />
-      <div className="grid gap-4 xl:grid-cols-[minmax(0,1.15fr)_minmax(19rem,0.85fr)]">
+      <MissionStatus turnState={turnState} movePathLength={lens === 'ready' ? 2 : 0} moveValidation={{ ok: true, reason: 'Path is valid.' }} crewCount={4} departPressure={departPressure} />
+      <div className="grid gap-4 xl:grid-cols-[minmax(0,1.85fr)_minmax(19rem,0.72fr)]">
         <BoardScene lens={lens} />
-        <div className="space-y-4">
+        <div className="space-y-3">
           <ActionSimulator
             activeTab={danger ? Action.FLEE : waiting ? Action.HELP : Action.MOVE}
             movement={danger ? 2 : 4}
@@ -569,7 +678,34 @@ function GameplayState({ lens }) {
               isRescue: true,
             } : null}
           />
-          <EscapeCostPreview preview={danger ? escapePreviewFixture : { ...escapePreviewFixture, tone: 'gold', label: 'Close window', headline: 'A clean departure is still possible', body: 'The crew can leave with its current value if it protects the return route.', nextDelayWarning: 'Further delay raises pressure by at least one band.' }} />
+          {danger && (
+            <div className="relative overflow-hidden rounded border border-signal-red/45 bg-signal-red/10 p-3 pl-24">
+              <img src="/images/art/relics/sunstone-lens.png" alt="Sunstone Lens at risk" className="absolute -bottom-3 left-0 h-24 w-24 object-contain drop-shadow-[0_10px_18px_rgba(0,0,0,0.65)]" />
+              <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-signal-red-bright">Threatened relic</p>
+              <p className="mt-1 font-display text-xl uppercase tracking-[0.1em] text-exp-text">Sunstone Lens</p>
+              <p className="ds-copy mt-1 text-xs text-exp-text-dim">One more delay puts the crew's rarest find at risk.</p>
+            </div>
+          )}
+          {!complete && <EscapeCostPreview preview={danger ? escapePreviewFixture : { ...escapePreviewFixture, tone: 'gold', label: 'Close window', headline: 'A clean departure is still possible', body: 'The crew can leave with its current value if it protects the return route.', nextDelayWarning: 'Further delay raises pressure by at least one band.' }} />}
+          {complete && (
+            <div className="rounded border border-relic/45 bg-relic/10 p-4">
+              <MiniLabel>Outcome preserved</MiniLabel>
+              <p className="mt-2 font-display text-2xl uppercase tracking-[0.12em] text-relic-bright">The Lantern Route</p>
+              <p className="ds-copy mt-2 text-sm text-exp-text-dim">All four explorers returned with the Sunstone Lens.</p>
+            </div>
+          )}
+          <div className={`rounded border p-3 ${danger ? 'border-signal-red/55 bg-signal-red/10' : complete ? 'border-relic/45 bg-relic/10' : 'border-compass/45 bg-compass/10'}`}>
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-exp-text-dim">Next action</p>
+                <p className="mt-1 font-mono text-xs text-exp-text">{danger ? 'Keep the relic or accept the next cost.' : complete ? 'Turn the outcome into a story.' : waiting ? 'Your intent is safe while you inspect.' : resolving ? 'Follow the result; do not resubmit.' : 'The route and cost are ready to commit.'}</p>
+              </div>
+              <kbd className="rounded border border-current/30 px-2 py-1 font-mono text-[9px] text-exp-text-dim">Enter</kbd>
+            </div>
+            <button type="button" disabled={waiting || resolving} className={`mt-3 min-h-12 w-full rounded border px-4 font-display text-base font-semibold uppercase tracking-[0.16em] disabled:cursor-not-allowed disabled:opacity-55 ${danger ? 'border-signal-red bg-signal-red text-exp-dark' : complete ? 'border-relic bg-relic text-exp-dark' : 'border-compass bg-compass text-exp-dark'}`}>
+              {danger ? 'Depart with Sunstone Lens' : complete ? 'Open Run Relic' : waiting ? 'Waiting for crew' : resolving ? 'Resolving actions' : 'Submit move'}
+            </button>
+          </div>
         </div>
       </div>
       <ExpeditionArcTrack arc={selectedArc} />
@@ -656,11 +792,52 @@ function StageComposition() {
 }
 
 function JourneyCompositions({ lens }) {
+  const complete = lens === 'complete';
+  if (complete) {
+    return (
+      <div className="space-y-4">
+        <Surface className="overflow-hidden border-relic/45 bg-relic/5 p-3">
+          <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
+            <div><MiniLabel>06 / Outcome first</MiniLabel><h3 className="mt-2 font-display text-3xl uppercase tracking-[0.12em] text-relic-bright">The expedition became a story</h3></div>
+            <ToneBadge className="border-relic/45 bg-relic/10 text-relic-bright">all four returned</ToneBadge>
+          </div>
+          <RunRelicCard card={relicCardFixture} compact />
+          <blockquote className="mx-auto mt-4 max-w-4xl border-l-2 border-compass/55 pl-4 font-display text-2xl uppercase tracking-[0.08em] text-exp-text">
+            "We left the easy route behind so nobody had to leave alone."
+          </blockquote>
+        </Surface>
+        <div className="grid items-start gap-4 xl:grid-cols-[1.08fr_0.92fr]">
+          <Surface className="self-start"><div className="mb-4 flex items-center justify-between gap-3"><MiniLabel>05 / What changed</MiniLabel><ToneBadge className="border-compass/45 bg-compass/10 text-compass-bright">drama resolved</ToneBadge></div><AftermathMoment moment={aftermathFixture} departPressure={{ pressure: 0, band: { label: 'Safe' } }} escapeCostPreview={escapePreviewFixture} expeditionArc={arcFixture} /></Surface>
+          <Surface className="self-start"><div className="mb-4 flex items-center justify-between gap-3"><MiniLabel>06 / What remains</MiniLabel><ToneBadge className="border-relic/45 bg-relic/10 text-exp-text">meaning</ToneBadge></div><MemoryCard memory={memoryFixture} label="Latest expedition" /><div className="mt-3"><BeatThisChallenge challenge={challengeFixture} compact /></div><button type="button" className="mt-3 min-h-12 w-full rounded border border-compass bg-compass px-4 font-display text-base font-semibold uppercase tracking-[0.16em] text-exp-dark hover:bg-compass-bright">Challenge the Lantern Route</button></Surface>
+        </div>
+        <div className="overflow-hidden rounded border border-exp-border/70 bg-exp-dark/35">
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-exp-border/70 px-4 py-3"><div><MiniLabel>Expedition receipt</MiniLabel><p className="ds-copy mt-1 text-sm text-exp-text-dim">The path remains inspectable without making the player relive every setup panel.</p></div><ToneBadge>6 moments / 1 memory</ToneBadge></div>
+          <div className="grid gap-px bg-exp-border/70 sm:grid-cols-3 xl:grid-cols-6">
+            {lifecycle.map(([step, title, feeling]) => (
+              <div key={title} className="bg-exp-panel/95 p-3">
+                <div className="flex items-center justify-between gap-2"><span className="font-mono text-[9px] text-compass">{step}</span><span className="h-1.5 w-1.5 rounded-full bg-oxide-green" /></div>
+                <p className="mt-3 font-display text-lg uppercase tracking-[0.12em] text-exp-text">{title}</p>
+                <p className="mt-1 font-mono text-[9px] uppercase tracking-[0.14em] text-exp-text-dim">{feeling} / preserved</p>
+              </div>
+            ))}
+          </div>
+        </div>
+        <details className="rounded border border-exp-border/70 bg-exp-panel/45 p-4">
+          <summary className="cursor-pointer font-mono text-[10px] uppercase tracking-[0.2em] text-exp-text-dim">Inspect emotional pattern library</summary>
+          <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+            {emotionalBeats.map(([title, glyph, promise, motion, still, className]) => (
+              <div key={title} className={`rounded border p-3 ${className}`}><div className="flex items-center justify-between gap-3"><p className="font-display text-lg uppercase tracking-[0.12em] text-exp-text">{title}</p><span className="grid h-8 w-8 place-items-center rounded-full border border-current/40 bg-exp-dark/30 font-mono text-sm" aria-hidden="true">{glyph}</span></div><p className="ds-copy mt-3 text-sm text-exp-text">{promise}</p><p className="mt-3 font-mono text-[9px] uppercase tracking-[0.14em]">Motion</p><p className="ds-copy mt-1 text-xs text-exp-text-dim">{motion}</p><p className="mt-2 font-mono text-[9px] uppercase tracking-[0.14em]">Reduced motion</p><p className="ds-copy mt-1 text-xs text-exp-text-dim">{still}</p></div>
+            ))}
+          </div>
+        </details>
+      </div>
+    );
+  }
   return (
     <div className="space-y-4">
-      <div className="grid gap-4 xl:grid-cols-2">
-        <Surface className="p-3"><div className="mb-3 flex items-center justify-between gap-3"><MiniLabel>02 / Stage</MiniLabel><ToneBadge>belonging</ToneBadge></div><StageComposition /></Surface>
-        <Surface className="p-3"><div className="mb-3 flex items-center justify-between gap-3"><MiniLabel>03-04 / Plan and commit</MiniLabel><ToneBadge className="border-blueprint/45 bg-blueprint/10 text-blueprint">agency + trust</ToneBadge></div><StateSummary lens={lens === 'complete' ? 'ready' : lens} eyebrow="Board state" /></Surface>
+      <div className="grid items-start gap-4 xl:grid-cols-2">
+        <Surface className="self-start p-3"><div className="mb-3 flex items-center justify-between gap-3"><MiniLabel>02 / Stage</MiniLabel><ToneBadge>belonging</ToneBadge></div><StageComposition /></Surface>
+        <Surface className="self-start p-3"><div className="mb-3 flex items-center justify-between gap-3"><MiniLabel>03-04 / Plan and commit</MiniLabel><ToneBadge className="border-blueprint/45 bg-blueprint/10 text-blueprint">agency + trust</ToneBadge></div><StateSummary lens={lens} eyebrow="Board state" /></Surface>
       </div>
       <div className="grid gap-4 xl:grid-cols-[0.82fr_1.18fr]">
         <Surface><div className="mb-4 flex items-center justify-between gap-3"><MiniLabel>05 / Resolve</MiniLabel><ToneBadge className="border-compass/45 bg-compass/10 text-compass-bright">drama</ToneBadge></div><AftermathMoment moment={aftermathFixture} departPressure={{ pressure: 78, band: { label: 'Redline' } }} escapeCostPreview={escapePreviewFixture} expeditionArc={arcFixture} /></Surface>
@@ -689,7 +866,7 @@ function ResponsiveContracts({ lens }) {
   const [playerFocused, setPlayerFocused] = useState(true);
   return (
     <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_22rem] xl:items-start">
-      <Surface className="overflow-hidden p-3">
+      <Surface className="hidden overflow-hidden p-3 xl:block">
         <div className="mb-3 flex items-center justify-between gap-3"><MiniLabel>Wide cockpit / 1440+</MiniLabel><ToneBadge>real components</ToneBadge></div>
         <div className="overflow-hidden rounded border border-exp-border bg-exp-dark p-3">
           <MissionStatus turnState={responsiveState} movePathLength={lens === 'ready' ? 2 : 0} moveValidation={{ ok: true }} crewCount={4} />
@@ -704,14 +881,24 @@ function ResponsiveContracts({ lens }) {
         </div>
         <p className="ds-copy mt-3 text-sm text-exp-text-dim">Real player, inventory, board, mission, and action components preserve their hierarchy inside the wide composition.</p>
       </Surface>
-      <div className="mx-auto w-full max-w-[22rem] rounded-[2rem] border-4 border-exp-border bg-exp-dark p-2 shadow-xl">
-        <div className="overflow-hidden rounded-[1.45rem] border border-exp-border bg-exp-surface">
-          <div className="mx-auto mt-2 h-1.5 w-16 rounded-full bg-exp-border" />
-          <div className="space-y-3 p-3">
-            <div className="flex items-center justify-between border-b border-exp-border pb-2"><MiniLabel>Phone / active turn</MiniLabel><span className="h-2 w-2 rounded-full bg-oxide-green" /></div>
+      <div className="ds-mobile-proof mx-auto w-full max-w-[22rem] bg-exp-dark sm:rounded-[2rem] sm:border-4 sm:border-exp-border sm:p-2 sm:shadow-xl">
+        <div className="overflow-hidden bg-exp-surface sm:rounded-[1.45rem] sm:border sm:border-exp-border">
+          <div className="mx-auto mt-2 hidden h-1.5 w-16 rounded-full bg-exp-border sm:block" />
+          <div className="space-y-3 p-2 sm:p-3">
+            <div className="flex items-center justify-between border-b border-exp-border pb-2"><div><MiniLabel>Phone / active turn</MiniLabel><p className="mt-1 text-sm text-exp-text">One decision, thumb distance.</p></div><span className="h-2 w-2 rounded-full bg-oxide-green" /></div>
             <MissionStatus turnState={responsiveState} movePathLength={lens === 'ready' ? 1 : 0} moveValidation={{ ok: true }} crewCount={4} />
+            <div className="relative h-40 overflow-hidden rounded border border-exp-border bg-exp-dark">
+              <img src="/images/art/environments/glassroot-cavern.webp" alt="Glassroot cavern route" className="h-full w-full object-cover opacity-75" />
+              <span className="absolute inset-0 bg-gradient-to-t from-exp-dark via-transparent to-transparent" />
+              <img src="/images/art/characters/routekeeper-wounded.png" alt="The Routekeeper holding the escape route" className="absolute bottom-0 left-3 h-32 w-28 object-contain drop-shadow-[0_10px_10px_rgba(0,0,0,0.8)]" />
+              <img src="/images/art/relics/sunstone-lens.png" alt="Sunstone Lens at risk" className="absolute bottom-2 right-3 h-20 w-20 object-contain drop-shadow-[0_8px_12px_rgba(0,0,0,0.75)]" />
+              <p className="absolute bottom-2 left-32 right-20 font-mono text-[10px] uppercase tracking-[0.14em] text-compass-bright">Route open / relic exposed</p>
+            </div>
             <StateSummary lens={lens} eyebrow="Compact board state" />
             <ActionSimulator activeTab={Action.MOVE} movement={4} currentLocation="0,0" path={['1,0']} hasCampsiteKit hasSubmitted={false} isSpectator={false} />
+            <div className="sticky bottom-2 z-20 rounded border border-compass bg-exp-dark/95 p-2 shadow-[0_-12px_28px_rgba(0,0,0,0.55)] backdrop-blur">
+              <button type="button" className="min-h-12 w-full rounded border border-compass bg-compass px-4 font-display text-base font-semibold uppercase tracking-[0.15em] text-exp-dark">{lens === 'danger' ? 'Depart with relic' : 'Submit move'}</button>
+            </div>
           </div>
         </div>
       </div>
@@ -723,8 +910,18 @@ function Standards() {
   return (
     <div className="space-y-4">
       <UIQualityStatus />
+      <UXQualityStatus />
+      <div className="flex flex-wrap items-center justify-between gap-3 rounded border border-blueprint/35 bg-blueprint/5 px-4 py-3">
+        <div><MiniLabel>Evidence refreshed 2026-09-08</MiniLabel><p className="ds-copy mt-1 text-sm text-exp-text-dim">Automation is repeatable evidence. Manual verification is never implied by a green build.</p></div>
+        <div className="flex flex-wrap gap-2"><code className="rounded border border-exp-border bg-exp-dark/65 px-2 py-1.5 font-mono text-[10px] text-blueprint-bright">npm run ui:quality</code><code className="rounded border border-exp-border bg-exp-dark/65 px-2 py-1.5 font-mono text-[10px] text-blueprint-bright">npm run ux:input</code></div>
+      </div>
       <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-        {accessibilityStandards.map(([title, body]) => <Surface key={title}><div className="flex items-center gap-2"><span className="grid h-6 w-6 place-items-center rounded-full border border-oxide-green/50 bg-oxide-green/10 font-mono text-[10px] text-oxide-green">OK</span><p className="font-display text-lg uppercase tracking-[0.12em] text-exp-text">{title}</p></div><p className="mt-3 font-mono text-[11px] leading-relaxed text-exp-text-dim">{body}</p></Surface>)}
+        {accessibilityStandards.map(([title, body, status, evidence]) => {
+          const automated = status === 'automated';
+          const verified = status === 'manual verified';
+          const badgeClass = automated ? 'border-blueprint/45 bg-blueprint/10 text-blueprint-bright' : verified ? 'border-oxide-green/45 bg-oxide-green/10 text-oxide-green-bright' : 'border-compass/45 bg-compass/10 text-compass-bright';
+          return <Surface key={title} className="border-exp-border/65 bg-exp-panel/55"><div className="flex items-start justify-between gap-2"><p className="font-display text-xl uppercase tracking-[0.12em] text-exp-text">{title}</p><span className={`rounded border px-2 py-1 font-mono text-[9px] uppercase tracking-[0.12em] ${badgeClass}`}>{status}</span></div><p className="mt-3 font-mono text-xs leading-relaxed text-exp-text-dim">{body}</p><p className="mt-3 border-t border-exp-border/60 pt-2 font-mono text-[10px] leading-relaxed text-blueprint-bright">Evidence: {evidence}</p></Surface>;
+        })}
       </div>
       <Surface className="overflow-hidden p-0">
         <div className="border-b border-exp-border p-4"><MiniLabel>Writing system / specific, calm, consequential</MiniLabel></div>

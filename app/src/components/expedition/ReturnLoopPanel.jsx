@@ -14,6 +14,7 @@ import {
   updateExpeditionReturn,
 } from '../../lib/returnLoop';
 import { trackJourneyEvent } from '../../lib/analytics';
+import { trackUXError, trackUXRecovery } from '../../lib/uxTelemetry';
 import {
   ReturnServiceError,
   authenticateReturnService,
@@ -155,9 +156,11 @@ export default function ReturnLoopPanel() {
 
   const saveAcrossDevices = async () => {
     if (!returnServiceEnabled()) {
+      trackUXError({ surface: 'return-loop', errorType: 'network', severity: 'medium' });
       setCloud({ status: 'error', message: 'Cloud return history is not configured in this release.', version: 0 });
       return;
     }
+    const recovering = ['error', 'offline', 'expired'].includes(cloud.status);
     setCloud((current) => ({ ...current, status: 'authenticating', message: 'Preparing wallet-secured history…' }));
     try {
       let activeWallet = address;
@@ -193,6 +196,7 @@ export default function ReturnLoopPanel() {
         message: conflictResolved ? `Conflict resolved safely · cloud version ${saved.version}` : `Synced securely · cloud version ${saved.version}`,
         version: Number(saved.version),
       });
+      if (recovering || conflictResolved) trackUXRecovery({ surface: 'return-loop', recovery: conflictResolved ? 'automatic' : 'retry' });
       if (remote?.state?.expedition) {
         trackJourneyEvent('resume', {
           has_expedition: true,
@@ -211,6 +215,7 @@ export default function ReturnLoopPanel() {
       const expired = error instanceof ReturnServiceError && error.status === 401;
       if (expired) clearReturnSession();
       const offline = typeof navigator !== 'undefined' && !navigator.onLine;
+      trackUXError({ surface: 'return-loop', errorType: expired ? 'wallet' : 'network', severity: offline ? 'medium' : 'high' });
       setCloud({
         status: expired ? 'expired' : offline ? 'offline' : 'error',
         message: expired ? 'Session expired. Sign again to reconnect cloud history.' : offline ? 'Offline. Your expedition remains safe on this device.' : (error.message || 'Cloud history could not sync.'),
@@ -271,17 +276,24 @@ export default function ReturnLoopPanel() {
     setPrivacy({ status: 'done', message: 'Local expedition history cleared. Interface preferences and anonymous analytics identifiers were left unchanged.' });
   };
 
-  return <section id="return-loop" className="rounded border border-compass/35 bg-exp-panel/90 p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]" data-testid="return-loop-panel">
+  const announcement = expedition
+    ? `${lifecycleLabel[expedition.lifecycle]}. ${expedition.lastConsequence} Next: ${recommendation.action}`
+    : state.player.role
+      ? `${RETURN_ROLES[state.player.role].label} selected. Next: ${recommendation.action}`
+      : 'Choose a crew role to start an expedition thread.';
+
+  return <section id="return-loop" aria-labelledby="return-loop-title" className="rounded border border-compass/35 bg-exp-panel/90 p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]" data-testid="return-loop-panel">
+    <p className="sr-only" role="status" aria-live="polite" aria-atomic="true" data-testid="return-loop-announcement">{announcement}</p>
     <div className="flex flex-wrap items-start justify-between gap-4">
       <div>
         <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-compass">Return to the crew</p>
-        <h2 className="mt-2 font-display text-2xl uppercase tracking-[0.14em] text-exp-text">{expedition ? expedition.name : 'Start a story worth returning to'}</h2>
+        <h2 id="return-loop-title" className="mt-2 font-display text-2xl uppercase tracking-[0.14em] text-exp-text">{expedition ? expedition.name : 'Start a story worth returning to'}</h2>
         <p className="mt-2 max-w-2xl font-mono text-xs leading-relaxed text-exp-text-dim">{expedition ? expedition.lastConsequence : 'Choose a role, make a contribution the crew can feel, and keep one unresolved clue for the next session.'}</p>
       </div>
       {expedition && <span className="rounded border border-compass/40 bg-compass/10 px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.18em] text-compass-bright">{lifecycleLabel[expedition.lifecycle]}</span>}
     </div>
     {!state.player.role ? <div className="mt-5 grid gap-3 md:grid-cols-3">
-      {Object.entries(RETURN_ROLES).map(([id, role]) => <button key={id} onClick={() => chooseRole(id)} className="rounded border border-exp-border bg-exp-dark/40 p-4 text-left transition hover:border-compass/50 hover:bg-compass/5">
+      {Object.entries(RETURN_ROLES).map(([id, role]) => <button key={id} type="button" onClick={() => chooseRole(id)} className="min-h-11 rounded border border-exp-border bg-exp-dark/40 p-4 text-left transition hover:border-compass/50 hover:bg-compass/5">
         <p className="font-mono text-xs uppercase tracking-[0.18em] text-exp-text">{role.label}</p>
         <p className="mt-2 font-mono text-[11px] leading-relaxed text-exp-text-dim">{role.contribution}.</p>
       </button>)}
@@ -291,14 +303,14 @@ export default function ReturnLoopPanel() {
         <p className="mt-2 font-display text-lg uppercase tracking-[0.1em] text-exp-text">{recommendation.action}</p>
         <p className="mt-2 font-mono text-xs leading-relaxed text-exp-text-dim">{recommendation.reason}</p>
         <div className="mt-4 flex flex-wrap gap-2">
-          {!expedition && <button onClick={startThread} className="rounded border border-compass/50 bg-compass/10 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.18em] text-compass-bright">Create expedition thread</button>}
-          {expedition && terminalLifecycles.has(expedition.lifecycle) && <button onClick={startNextThread} className="rounded border border-compass/50 bg-compass/10 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.18em] text-compass-bright">Start next expedition thread</button>}
+          {!expedition && <button type="button" onClick={startThread} className="inline-flex min-h-11 items-center rounded border border-compass/50 bg-compass/10 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.18em] text-compass-bright">Create expedition thread</button>}
+          {expedition && terminalLifecycles.has(expedition.lifecycle) && <button type="button" onClick={startNextThread} className="inline-flex min-h-11 items-center rounded border border-compass/50 bg-compass/10 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.18em] text-compass-bright">Start next expedition thread</button>}
           {expedition && !terminalLifecycles.has(expedition.lifecycle) && /^\d+$/.test(expedition.gameId) && <Link to={recommendation.href} onClick={() => {
             persist(recordReturnEvent(state, 'expedition_resumed', { gameId: expedition.gameId }));
             trackJourneyEvent('resume', { has_expedition: true, lifecycle: expedition.lifecycle, resume_source: 'local' }, { dedupeKey: expedition.gameId });
-          }} className="inline-flex rounded border border-compass/50 bg-compass/10 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.18em] text-compass-bright">{recommendation.action}</Link>}
-          {expedition && !terminalLifecycles.has(expedition.lifecycle) && !/^\d+$/.test(expedition.gameId) && expedition.lifecycle === 'waiting-on-crew' && <a href="#live-expedition" className="inline-flex rounded border border-compass/50 bg-compass/10 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.18em] text-compass-bright">Find a live expedition</a>}
-          {expedition && !terminalLifecycles.has(expedition.lifecycle) && expedition.lifecycle !== 'waiting-on-crew' && <button onClick={markReady} className="rounded border border-blueprint/40 bg-blueprint/10 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.18em] text-blueprint">Mark decision ready</button>}
+          }} className="inline-flex min-h-11 items-center rounded border border-compass/50 bg-compass/10 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.18em] text-compass-bright">{recommendation.action}</Link>}
+          {expedition && !terminalLifecycles.has(expedition.lifecycle) && !/^\d+$/.test(expedition.gameId) && expedition.lifecycle === 'waiting-on-crew' && <a href="#live-expedition" className="inline-flex min-h-11 items-center rounded border border-compass/50 bg-compass/10 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.18em] text-compass-bright">Find a live expedition</a>}
+          {expedition && !terminalLifecycles.has(expedition.lifecycle) && expedition.lifecycle !== 'waiting-on-crew' && <button type="button" onClick={markReady} className="inline-flex min-h-11 items-center rounded border border-blueprint/40 bg-blueprint/10 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.18em] text-blueprint">Mark decision ready</button>}
         </div>
       </div>
       <div className="rounded border border-exp-border bg-exp-dark/35 p-4">
@@ -311,7 +323,7 @@ export default function ReturnLoopPanel() {
     {state.player.role && <>
       <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-exp-border pt-4">
         <p className="font-mono text-xs text-exp-text-dim">Crew: {state.crew.map((member) => member.callsign).join(' · ') || 'Invite a second crew member to make the route shared.'}</p>
-        <button onClick={copyInvite} className="rounded border border-blueprint/40 bg-blueprint/10 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.16em] text-blueprint">{copied ? 'Invite copied' : 'Copy crew invite'}</button>
+        <button type="button" onClick={copyInvite} className="inline-flex min-h-11 items-center rounded border border-blueprint/40 bg-blueprint/10 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.16em] text-blueprint">{copied ? 'Invite copied' : 'Copy crew invite'}</button>
       </div>
       <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded border border-exp-border bg-exp-dark/35 p-4" data-testid="cloud-return-controls">
         <div>
@@ -319,8 +331,8 @@ export default function ReturnLoopPanel() {
           <p className="mt-1 font-mono text-xs text-exp-text-dim" aria-live="polite">{cloud.message}</p>
         </div>
         <div className="flex flex-wrap gap-2">
-          <button disabled={['authenticating', 'syncing'].includes(cloud.status)} onClick={saveAcrossDevices} className="rounded border border-compass/50 bg-compass/10 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.16em] text-compass-bright disabled:cursor-wait disabled:opacity-60">{cloud.status === 'synced' ? 'Sync changes' : isConnected ? 'Save across devices' : 'Connect to save'}</button>
-          {loadReturnSession() && <button onClick={disconnectCloud} className="rounded border border-exp-border px-3 py-2 font-mono text-[10px] uppercase tracking-[0.16em] text-exp-text-dim">Remove cloud session</button>}
+          <button type="button" disabled={['authenticating', 'syncing'].includes(cloud.status)} onClick={saveAcrossDevices} className="inline-flex min-h-11 items-center rounded border border-compass/50 bg-compass/10 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.16em] text-compass-bright disabled:cursor-wait disabled:opacity-60">{cloud.status === 'synced' ? 'Sync changes' : isConnected ? 'Save across devices' : 'Connect to save'}</button>
+          {loadReturnSession() && <button type="button" onClick={disconnectCloud} className="inline-flex min-h-11 items-center rounded border border-exp-border px-3 py-2 font-mono text-[10px] uppercase tracking-[0.16em] text-exp-text-dim">Remove cloud session</button>}
         </div>
       </div>
       <div className="mt-3 rounded border border-exp-border bg-exp-dark/35 p-4" data-testid="privacy-controls">
@@ -331,10 +343,10 @@ export default function ReturnLoopPanel() {
             {privacy.message && <p className="mt-2 font-mono text-[11px] leading-relaxed text-exp-text" aria-live="polite">{privacy.message}</p>}
           </div>
           <div className="flex flex-wrap gap-2">
-            {loadReturnSession() && <button disabled={privacy.status === 'working'} onClick={downloadCloudData} className="rounded border border-blueprint/40 bg-blueprint/10 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.16em] text-blueprint disabled:opacity-60">Export cloud data</button>}
-            {loadReturnSession() && <button disabled={privacy.status === 'working'} onClick={eraseCloudData} className="rounded border border-signal-red/45 bg-signal-red/10 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.16em] text-signal-red disabled:opacity-60">{deleteArmed ? 'Confirm cloud delete' : 'Delete cloud data'}</button>}
-            <button disabled={privacy.status === 'working'} onClick={eraseLocalHistory} className="rounded border border-exp-border px-3 py-2 font-mono text-[10px] uppercase tracking-[0.16em] text-exp-text-dim disabled:opacity-60">{localClearArmed ? 'Confirm local clear' : 'Clear local history'}</button>
-            <Link to="/privacy" className="inline-flex rounded border border-exp-border px-3 py-2 font-mono text-[10px] uppercase tracking-[0.16em] text-exp-text-dim">How data works</Link>
+            {loadReturnSession() && <button type="button" disabled={privacy.status === 'working'} onClick={downloadCloudData} className="inline-flex min-h-11 items-center rounded border border-blueprint/40 bg-blueprint/10 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.16em] text-blueprint disabled:opacity-60">Export cloud data</button>}
+            {loadReturnSession() && <button type="button" disabled={privacy.status === 'working'} onClick={eraseCloudData} className="inline-flex min-h-11 items-center rounded border border-signal-red/45 bg-signal-red/10 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.16em] text-signal-red disabled:opacity-60">{deleteArmed ? 'Confirm cloud delete' : 'Delete cloud data'}</button>}
+            <button type="button" disabled={privacy.status === 'working'} onClick={eraseLocalHistory} className="inline-flex min-h-11 items-center rounded border border-exp-border px-3 py-2 font-mono text-[10px] uppercase tracking-[0.16em] text-exp-text-dim disabled:opacity-60">{localClearArmed ? 'Confirm local clear' : 'Clear local history'}</button>
+            <Link to="/privacy" className="inline-flex min-h-11 items-center rounded border border-exp-border px-3 py-2 font-mono text-[10px] uppercase tracking-[0.16em] text-exp-text-dim">How data works</Link>
           </div>
         </div>
       </div>

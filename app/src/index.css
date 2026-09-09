@@ -626,6 +626,17 @@ body {
   animation: three-board-resolution-sweep 1.45s cubic-bezier(0.2, 0.75, 0.25, 1) infinite;
 }
 
+@media (max-width: 639px) {
+  .ds-mobile-proof .text-\[8px\],
+  .ds-mobile-proof .text-\[9px\],
+  .ds-mobile-proof .text-\[10px\],
+  .ds-mobile-proof .text-\[11px\],
+  .ds-mobile-proof .text-xs {
+    font-size: 0.8125rem;
+    line-height: 1.45;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .alive-explorer,
   .alive-explorer-ready,
@@ -660,5 +671,36 @@ body {
   .three-board-resolution-sweep,
   .expedition-loading-orbit {
     animation: none;
+  }
+}
+
+@media (forced-colors: active) {
+  [class] {
+    background-color: Canvas !important;
+    background-image: none !important;
+    border-color: CanvasText !important;
+    box-shadow: none !important;
+    color: CanvasText !important;
+    text-shadow: none !important;
+  }
+
+  a[class] {
+    color: LinkText !important;
+  }
+
+  button[class],
+  input[class],
+  select[class],
+  summary[class],
+  [role="button"][class] {
+    background-color: ButtonFace !important;
+    border-color: ButtonText !important;
+    color: ButtonText !important;
+    forced-color-adjust: auto;
+  }
+
+  :focus-visible {
+    outline: 3px solid Highlight !important;
+    outline-offset: 3px !important;
   }
 }

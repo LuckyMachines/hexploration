@@ -24,6 +24,13 @@ const ENUM_PROPERTIES = Object.freeze({
   share_type: new Set(['crew_invite', 'report_link', 'relic_text', 'relic_image', 'relic_download', 'relic_native']),
   return_interval: new Set(['same_session', 'same_day', 'd1_d3', 'd3_d7', 'd7_plus']),
   persona: new Set(['first-player-v1']),
+  surface: new Set(['home', 'lobby', 'starter', 'board', 'action', 'return-loop', 'help', 'global']),
+  severity: new Set(['low', 'medium', 'high', 'critical']),
+  error_type: new Set(['validation', 'network', 'wallet', 'transaction', 'render', 'unexpected']),
+  recovery: new Set(['retry', 'undo', 'dismiss', 'alternate-path', 'automatic']),
+  metric: new Set(['first_action', 'recovery', 'LCP', 'CLS', 'INP']),
+  rating: new Set(['good', 'needs-improvement', 'poor']),
+  value_bucket: new Set(['under-1s', '1s-2.5s', '2.5s-4s', 'over-4s', 'under-100ms', '100ms-300ms', 'over-300ms', 'under-0.1', '0.1-0.25', 'over-0.25']),
 });
 
 export const JOURNEY_EVENTS = Object.freeze({
@@ -39,6 +46,12 @@ export const JOURNEY_EVENTS = Object.freeze({
   recap: ['lifecycle', 'outcome'],
   share: ['share_type'],
   second_expedition_start: ['return_interval', 'role'],
+  ux_help: ['surface'],
+  ux_error: ['surface', 'error_type', 'severity'],
+  ux_recovery: ['surface', 'recovery'],
+  ux_timing: ['surface', 'metric', 'rating', 'value_bucket'],
+  web_vital: ['metric', 'rating', 'value_bucket'],
+  experiment_exposure: ['experiment_id', 'variant'],
   analytics_canary: ['canary_id'],
 });
 
@@ -134,6 +147,7 @@ function validProperty(key, value) {
   if (key === 'has_expedition') return typeof value === 'boolean';
   if (key === 'cloud_version') return Number.isSafeInteger(value) && value >= 0;
   if (key === 'journey_sequence') return Number.isSafeInteger(value) && value > 0 && value <= 1_000_000;
+  if (key === 'experiment_id' || key === 'variant') return /^[a-z0-9][a-z0-9_-]{0,63}$/.test(value);
   return false;
 }
 

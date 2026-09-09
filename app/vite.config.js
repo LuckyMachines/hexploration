@@ -4,7 +4,7 @@ import tailwindcss from '@tailwindcss/vite';
 import { rmSync } from 'node:fs';
 import { resolve } from 'node:path';
 
-const internalPublicDirs = ['simulator', 'bridge', 'growth', 'fun', 'local-stack', 'verification', 'ui-quality'];
+const internalPublicDirs = ['simulator', 'bridge', 'growth', 'fun', 'local-stack', 'verification', 'ui-quality', 'ux', 'design-system-pngs'];
 const addressKeys = [
   'VITE_BOARD_ADDRESS',
   'VITE_CONTROLLER_ADDRESS',

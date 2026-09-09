@@ -50,12 +50,12 @@ export const copyPairs = [
 ];
 
 export const accessibilityStandards = [
-  ['Keyboard path', 'Visible focus, logical order, Escape closes layers, Enter confirms only focused intent.'],
-  ['Touch and pad', '44 px minimum targets, generous separation, current focus survives state updates.'],
-  ['Color independence', 'Every tone includes a label, icon, border, pattern, or explicit consequence.'],
-  ['Motion choice', 'Reduced motion removes orbit, pulse, scan, shake, and parallax without hiding state.'],
-  ['Readable scale', 'Core play survives 200% text zoom and narrow reflow without clipped actions.'],
-  ['Live feedback', 'Status changes use polite announcements; urgent errors move focus only when necessary.'],
+  ['Keyboard path', 'Visible focus, logical order, Escape closes layers, Enter confirms only focused intent.', 'automated', 'npm run ux:input'],
+  ['Touch and pad', '44 px minimum targets, generous separation, current focus survives state updates.', 'automated', 'npm run ux:touch; hardware session still required'],
+  ['Color independence', 'Every tone includes a label, icon, border, pattern, or explicit consequence.', 'automated', 'npm run ui:quality'],
+  ['Motion choice', 'Reduced motion removes orbit, pulse, scan, shake, and parallax without hiding state.', 'automated', 'npm run ui:quality'],
+  ['Readable scale', 'Core play survives 200% text zoom and narrow reflow without clipped actions.', 'automated', 'npm run ux:input'],
+  ['Live feedback', 'Status changes use polite announcements; urgent errors move focus only when necessary.', 'automated', 'npm run ux:assistive; screen-reader session still required'],
 ];
 
 export const languageTerms = [
@@ -63,7 +63,8 @@ export const languageTerms = [
   ['Survey', 'The live shared session and the act of revealing the map.', 'Use "game" only for technical IDs or platform-level copy.'],
   ['Depart', 'The player-facing commitment to leave the expedition.', '"Flee" remains an internal action enum, never primary interface copy.'],
   ['Pressure', 'The escalating shared risk that makes delay meaningful.', 'Always pair the level with its next concrete consequence.'],
-  ['Run relic', 'The shareable memory artifact created from a finished expedition.', 'Name the people, decision, outcome, and replay invitation.'],
+  ['Relic', 'A rare object recovered during an expedition.', 'Use the object name in play; do not call every reward a relic.'],
+  ['Run Relic', 'The shareable memory artifact created from a finished expedition.', 'Always capitalize the named artifact and include people, decision, outcome, and replay invitation.'],
 ];
 
 export const emotionalBeats = [
