@@ -81,6 +81,41 @@ contract XenovoyaBoard is HexGrid, Utilities {
                 break;
             }
         }
+        if (!zoneHasOutput) {
+            zoneHasOutput = zonesAreAdjacent(fromZone, toZone);
+        }
+    }
+
+    function zonesAreAdjacent(
+        string memory fromZone,
+        string memory toZone
+    ) public view returns (bool) {
+        (bool fromFound, uint256 fromColumn, uint256 fromRow) =
+            _zoneCoordinates(fromZone);
+        (bool toFound, uint256 toColumn, uint256 toRow) =
+            _zoneCoordinates(toZone);
+        if (!fromFound || !toFound) return false;
+        if (fromColumn == toColumn) {
+            return fromRow + 1 == toRow || toRow + 1 == fromRow;
+        }
+        if (fromColumn + 1 != toColumn && toColumn + 1 != fromColumn) {
+            return false;
+        }
+        if (fromColumn % 2 == 1) {
+            return toRow == fromRow || toRow == fromRow + 1;
+        }
+        return toRow == fromRow || fromRow == toRow + 1;
+    }
+
+    function _zoneCoordinates(
+        string memory zone
+    ) internal view returns (bool found, uint256 column, uint256 row) {
+        for (uint256 i = 0; i < zoneAliases.length; i++) {
+            if (stringsMatch(zone, zoneAliases[i])) {
+                return (true, i / gridHeight, i % gridHeight);
+            }
+        }
+        return (false, 0, 0);
     }
 
     // VERIFIED CONTROLLER functions

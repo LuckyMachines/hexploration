@@ -1,0 +1,176 @@
+{
+  "schemaVersion": 1,
+  "comparedScenes": 21,
+  "remountHeapGrowthDeltaMiB": 0,
+  "comparisons": [
+    {
+      "id": "ready-desktop",
+      "drawCallsDelta": 0,
+      "trianglesDelta": 0,
+      "frameP95DeltaMs": 0,
+      "renderP95DeltaMs": 0,
+      "assetFailureDelta": 0
+    },
+    {
+      "id": "hover-desktop",
+      "drawCallsDelta": 0,
+      "trianglesDelta": 0,
+      "frameP95DeltaMs": 0,
+      "renderP95DeltaMs": 0,
+      "assetFailureDelta": 0
+    },
+    {
+      "id": "selected-desktop",
+      "drawCallsDelta": 0,
+      "trianglesDelta": 0,
+      "frameP95DeltaMs": 0,
+      "renderP95DeltaMs": 0,
+      "assetFailureDelta": 0
+    },
+    {
+      "id": "invalid-desktop",
+      "drawCallsDelta": 0,
+      "trianglesDelta": 0,
+      "frameP95DeltaMs": 0,
+      "renderP95DeltaMs": 0,
+      "assetFailureDelta": 0
+    },
+    {
+      "id": "danger-desktop",
+      "drawCallsDelta": 0,
+      "trianglesDelta": 0,
+      "frameP95DeltaMs": 0,
+      "renderP95DeltaMs": 0,
+      "assetFailureDelta": 0
+    },
+    {
+      "id": "committed-desktop",
+      "drawCallsDelta": 0,
+      "trianglesDelta": 0,
+      "frameP95DeltaMs": 0,
+      "renderP95DeltaMs": 0,
+      "assetFailureDelta": 0
+    },
+    {
+      "id": "resolving-desktop",
+      "drawCallsDelta": 0,
+      "trianglesDelta": 0,
+      "frameP95DeltaMs": 0,
+      "renderP95DeltaMs": 0,
+      "assetFailureDelta": 0
+    },
+    {
+      "id": "rescue-desktop",
+      "drawCallsDelta": 0,
+      "trianglesDelta": 0,
+      "frameP95DeltaMs": 0,
+      "renderP95DeltaMs": 0,
+      "assetFailureDelta": 0
+    },
+    {
+      "id": "recovery-desktop",
+      "drawCallsDelta": 0,
+      "trianglesDelta": 0,
+      "frameP95DeltaMs": 0,
+      "renderP95DeltaMs": 0,
+      "assetFailureDelta": 0
+    },
+    {
+      "id": "complete-desktop",
+      "drawCallsDelta": 0,
+      "trianglesDelta": 0,
+      "frameP95DeltaMs": 0,
+      "renderP95DeltaMs": 0,
+      "assetFailureDelta": 0
+    },
+    {
+      "id": "ready-mobile",
+      "drawCallsDelta": 0,
+      "trianglesDelta": 0,
+      "frameP95DeltaMs": 0,
+      "renderP95DeltaMs": 0,
+      "assetFailureDelta": 0
+    },
+    {
+      "id": "hover-mobile",
+      "drawCallsDelta": 0,
+      "trianglesDelta": 0,
+      "frameP95DeltaMs": 0,
+      "renderP95DeltaMs": 0,
+      "assetFailureDelta": 0
+    },
+    {
+      "id": "selected-mobile",
+      "drawCallsDelta": 0,
+      "trianglesDelta": 0,
+      "frameP95DeltaMs": 0,
+      "renderP95DeltaMs": 0,
+      "assetFailureDelta": 0
+    },
+    {
+      "id": "invalid-mobile",
+      "drawCallsDelta": 0,
+      "trianglesDelta": 0,
+      "frameP95DeltaMs": 0,
+      "renderP95DeltaMs": 0,
+      "assetFailureDelta": 0
+    },
+    {
+      "id": "danger-mobile",
+      "drawCallsDelta": 0,
+      "trianglesDelta": 0,
+      "frameP95DeltaMs": 0,
+      "renderP95DeltaMs": 0,
+      "assetFailureDelta": 0
+    },
+    {
+      "id": "committed-mobile",
+      "drawCallsDelta": 0,
+      "trianglesDelta": 0,
+      "frameP95DeltaMs": 0,
+      "renderP95DeltaMs": 0,
+      "assetFailureDelta": 0
+    },
+    {
+      "id": "resolving-mobile",
+      "drawCallsDelta": 0,
+      "trianglesDelta": 0,
+      "frameP95DeltaMs": 0,
+      "renderP95DeltaMs": 0,
+      "assetFailureDelta": 0
+    },
+    {
+      "id": "rescue-mobile",
+      "drawCallsDelta": 0,
+      "trianglesDelta": 0,
+      "frameP95DeltaMs": 0,
+      "renderP95DeltaMs": 0,
+      "assetFailureDelta": 0
+    },
+    {
+      "id": "recovery-mobile",
+      "drawCallsDelta": 0,
+      "trianglesDelta": 0,
+      "frameP95DeltaMs": 0,
+      "renderP95DeltaMs": 0,
+      "assetFailureDelta": 0
+    },
+    {
+      "id": "complete-mobile",
+      "drawCallsDelta": 0,
+      "trianglesDelta": 0,
+      "frameP95DeltaMs": 0,
+      "renderP95DeltaMs": 0,
+      "assetFailureDelta": 0
+    },
+    {
+      "id": "performance-desktop",
+      "drawCallsDelta": 0,
+      "trianglesDelta": 0,
+      "frameP95DeltaMs": 0,
+      "renderP95DeltaMs": 0,
+      "assetFailureDelta": 0
+    }
+  ],
+  "regressions": []
+}

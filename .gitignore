@@ -17,6 +17,9 @@ app/public/local-stack/
 app/public/simulator/
 app/public/verification/
 captures/
+!artifacts/board-system/captures/
+artifacts/board-system/captures/*
+!artifacts/board-system/captures/stress-100-tile-desktop.png
 gameplay-debug.png
 reports/fun/
 reports/growth/

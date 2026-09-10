@@ -39,7 +39,8 @@ contract XenovoyaQueue is RandomnessConsumer {
         BreakDownCamp,
         Dig,
         Rest,
-        Help
+        Help,
+        Flee
     }
 
     bytes32 public constant VERIFIED_CONTROLLER_ROLE =
@@ -201,6 +202,7 @@ contract XenovoyaQueue is RandomnessConsumer {
             currentPhase[_queueID] == ProcessingPhase.Submission,
             "Not submission phase"
         );
+        require(action <= uint8(Action.Flee), "Invalid action index");
         if (!playerSubmitted[_queueID][playerID]) {
             submissionAction[_queueID][playerID] = Action(action);
             submissionOptions[_queueID][playerID] = options;

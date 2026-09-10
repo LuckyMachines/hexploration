@@ -21,6 +21,7 @@ const GameUILab = INCLUDE_INTERNAL_ROUTES ? lazy(() => import('./pages/GameUILab
 const DesignSystemPage = INCLUDE_INTERNAL_ROUTES ? lazy(() => import('./pages/DesignSystemPage')) : null;
 const ArtPipelinePage = INCLUDE_INTERNAL_ROUTES ? lazy(() => import('./pages/ArtPipelinePage')) : null;
 const MaterialLabPage = INCLUDE_INTERNAL_ROUTES ? lazy(() => import('./pages/MaterialLabPage')) : null;
+const BoardLabPage = INCLUDE_INTERNAL_ROUTES ? lazy(() => import('./pages/BoardLabPage')) : null;
 const SimulatorPage = INCLUDE_INTERNAL_ROUTES ? lazy(() => import('./pages/SimulatorPage')) : null;
 const AudioAuditionPage = INCLUDE_INTERNAL_ROUTES ? lazy(() => import('./pages/AudioAuditionPage')) : null;
 const GrowthPlayPage = INCLUDE_INTERNAL_ROUTES ? lazy(() => import('./pages/GrowthPage').then((module) => ({ default: module.GrowthPlayPage }))) : null;
@@ -94,6 +95,7 @@ export default function App() {
                   <Route path="/design-system" element={<InternalRoute component={DesignSystemPage} />} />
                   <Route path="/art-lab" element={<InternalRoute component={ArtPipelinePage} />} />
                   <Route path="/material-lab" element={<InternalRoute component={MaterialLabPage} />} />
+                  <Route path="/board-lab" element={<InternalRoute component={BoardLabPage} />} />
                   <Route path="/simulator" element={<InternalRoute component={SimulatorPage} />} />
                   <Route path="/audio-audition" element={<InternalRoute component={AudioAuditionPage} />} />
                   <Route path="/play" element={<InternalRoute component={GrowthPlayPage} />} />

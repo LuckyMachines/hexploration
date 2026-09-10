@@ -289,12 +289,20 @@ contract XenovoyaController is GameController, GameWallets, AutomationCompatible
         XenovoyaQueue q = XenovoyaQueue(payable(gameBoard.gameplayQueue()));
         uint256 qID = q.queueID(gameID);
         CharacterCard cc = CharacterCard(gameBoard.characterCard());
-        if (readyForUpdate[gameBoardAddress][gameID][qID] == true) {
+        PlayerRegistry pr = PlayerRegistry(gameBoard.prAddress());
+        if (actionIndex > uint8(XenovoyaQueue.Action.Flee)) {
+            isValid = false;
+            invalidError = "Invalid action submitted: Unknown action.";
+        } else if (readyForUpdate[gameBoardAddress][gameID][qID] == true) {
             isValid = false;
             invalidError = "Cannot submit move. Queue already processing.";
-        } else if (gameBoard.gameOver(gameID) || cc.playerIsDead(gameID, playerID)) {
+        } else if (
+            gameBoard.gameOver(gameID) ||
+            cc.playerIsDead(gameID, playerID) ||
+            !pr.isActive(gameID, playerID)
+        ) {
             isValid = false;
-            invalidError = "Invalid action submitted: Game over or player is dead";
+            invalidError = "Invalid action submitted: Game over or player is inactive";
         } else {
             isValid = true;
             invalidError = "";
@@ -319,23 +327,14 @@ contract XenovoyaController is GameController, GameWallets, AutomationCompatible
                     isValid = false;
                     invalidError = "Invalid action submitted: player movement limit exceeded.";
                 } else {
-                    // TODO:
-                    // ensure each movement zone has output to next movement zone
-                    // for (uint256 i = 0; i < options.length; i++) {
-                    //     if (
-                    //         i == 0 && !gameBoard.hasOutput(currentSpace, options[0])
-                    //     ) {
-                    //         isValid = false;
-                    //         break;
-                    //         // check that movement from current zone to option[0] is valid
-                    //     } else if (
-                    //         !gameBoard.hasOutput(options[i - 1], options[i])
-                    //     ) {
-                    //         // check that movement from option[i - 1] to option[i] is valid
-                    //         isValid = false;
-                    //         break;
-                    //     }
-                    // }
+                    for (uint256 i = 0; i < options.length; i++) {
+                        string memory from = i == 0 ? currentSpace : options[i - 1];
+                        if (!gameBoard.hasOutput(from, options[i])) {
+                            isValid = false;
+                            invalidError = "Invalid action submitted: movement path is not connected.";
+                            break;
+                        }
+                    }
                 }
             } else if (actionIndex == 2) {
                 // setup camp
@@ -367,12 +366,25 @@ contract XenovoyaController is GameController, GameWallets, AutomationCompatible
                     isValid = false;
                     invalidError = "Invalid action submitted: Campsite is not on space.";
                 }
+            } else if (actionIndex == 7) {
+                // Flee is the expedition's explicit exit valve. Recovered value
+                // changes the outcome, but is not required to leave alive.
+                if (
+                    XenovoyaZone(gameBoard.hexZoneAddress()).tile(gameID, currentSpace)
+                        != XenovoyaZone.Tile.LandingSite
+                ) {
+                    isValid = false;
+                    invalidError = "Invalid action submitted: Depart from the landing site.";
+                } else if (options.length != 0) {
+                    isValid = false;
+                    invalidError = "Invalid action submitted: Depart takes no options.";
+                }
             } else if (actionIndex == 5) {
                 // rest
                 if (
                     TokenInventory(gameBoard.tokenInventory()).ITEM_TOKEN()
                                 .zoneBalance("Campsite", gameID, zoneIndex(gameBoard.getZoneAliases(), currentSpace))
-                            == 0 || bytes(options[0]).length == 0
+                            == 0 || options.length == 0 || bytes(options[0]).length == 0
                 ) {
                     // campsite is not on board space || options is not ""
                     isValid = false;

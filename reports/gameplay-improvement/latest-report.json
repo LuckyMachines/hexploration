@@ -1,22 +1,23 @@
 {
   "schemaVersion": 1,
   "systemVersion": "1.2.0",
-  "generatedAt": "2026-09-09T08:08:23.737Z",
-  "grade": "B+",
+  "generatedAt": "2026-09-10T05:57:29.880Z",
+  "grade": "A",
   "grades": {
     "architecture": "A",
-    "evidenceReadiness": "B+"
+    "evidenceReadiness": "A"
   },
   "evaluationMode": "automated-only",
-  "qualityPassed": false,
+  "qualityPassed": true,
   "checks": {
     "splitPolicyAndEvaluation": true,
     "scenarioCoverage": true,
-    "canonicalEvidenceComplete": false,
+    "canonicalEvidenceComplete": true,
     "pipelineFresh": true,
     "productionEvidenceClean": true,
     "pairedExperimentContract": true,
-    "selfManagedExactRunner": true
+    "selfManagedExactRunner": true,
+    "exactEvidenceFresh": true
   },
   "coverage": {
     "scenarioCount": 6,
@@ -52,7 +53,7 @@
     "reportPath": "reports/gameplay-improvement/exact-runner/latest-report.json",
     "exists": true,
     "passed": true,
-    "generatedAt": "2026-09-09T06:57:42.457Z",
+    "generatedAt": "2026-09-10T04:12:35.488Z",
     "batch": 10,
     "managedRpc": true,
     "scenarioIds": [
@@ -72,12 +73,7 @@
       "three-player-regroup-3p"
     ],
     "failedScenarioIds": [],
-    "cachedScenarioIds": [
-      "solo-artifact-hunt",
-      "first-discovery-solo",
-      "cooperative-rescue-2p",
-      "artifact-extraction-2p"
-    ],
+    "cachedScenarioIds": [],
     "sourceDrift": []
   },
   "scenarioEvidence": [
@@ -99,11 +95,9 @@
       "hasSimulatorReport": true,
       "hasOracleReport": true,
       "simulatorEvidenceFresh": true,
-      "verdict": "blocked",
-      "truthGatesPassed": false,
-      "truthGateFailures": [
-        "no terminal outcome observed"
-      ]
+      "verdict": "strong-pass",
+      "truthGatesPassed": true,
+      "truthGateFailures": []
     },
     {
       "scenarioId": "first-discovery-solo",
@@ -123,11 +117,9 @@
       "hasSimulatorReport": true,
       "hasOracleReport": true,
       "simulatorEvidenceFresh": true,
-      "verdict": "blocked",
-      "truthGatesPassed": false,
-      "truthGateFailures": [
-        "no terminal outcome observed"
-      ]
+      "verdict": "strong-pass",
+      "truthGatesPassed": true,
+      "truthGateFailures": []
     },
     {
       "scenarioId": "artifact-extraction-2p",
@@ -136,11 +128,9 @@
       "hasSimulatorReport": true,
       "hasOracleReport": true,
       "simulatorEvidenceFresh": true,
-      "verdict": "blocked",
-      "truthGatesPassed": false,
-      "truthGateFailures": [
-        "no terminal outcome observed"
-      ]
+      "verdict": "strong-pass",
+      "truthGatesPassed": true,
+      "truthGateFailures": []
     },
     {
       "scenarioId": "three-player-regroup-3p",
@@ -149,11 +139,9 @@
       "hasSimulatorReport": true,
       "hasOracleReport": true,
       "simulatorEvidenceFresh": true,
-      "verdict": "blocked",
-      "truthGatesPassed": false,
-      "truthGateFailures": [
-        "no terminal outcome observed"
-      ]
+      "verdict": "strong-pass",
+      "truthGatesPassed": true,
+      "truthGateFailures": []
     }
   ],
   "pipeline": [
@@ -169,9 +157,9 @@
       "outputExists": true,
       "missingInputs": [],
       "fresh": true,
-      "outputHash": "aae88fae2e9eb4ac0187869a7f4a4ef0d3370d644cf0a3f4bab987b0e8a75c46",
-      "outputModifiedAt": "2026-09-09T08:06:19.398Z",
-      "newestInputAt": "2026-09-09T05:22:55.521Z"
+      "outputHash": "2d65983d6dc1a08a207929a0f7792265a966ba9a838f8b65ed8efaa5b3c4dfa5",
+      "outputModifiedAt": "2026-09-10T05:54:29.118Z",
+      "newestInputAt": "2026-09-10T01:58:55.939Z"
     },
     {
       "id": "oracle",
@@ -184,9 +172,9 @@
       "outputExists": true,
       "missingInputs": [],
       "fresh": true,
-      "outputHash": "1b58f856a8d744ab4c7fcbfbe7de09496bab1301a8f422f3eed0ec768f56612f",
-      "outputModifiedAt": "2026-09-09T08:07:16.837Z",
-      "newestInputAt": "2026-09-09T08:06:19.398Z"
+      "outputHash": "cce2d89bdfe8b875d3d26a98c54aba3e6ca50857a2d7e880daf7a2b0385c3c03",
+      "outputModifiedAt": "2026-09-10T05:55:21.527Z",
+      "newestInputAt": "2026-09-10T05:54:29.118Z"
     },
     {
       "id": "feeling",
@@ -198,9 +186,9 @@
       "outputExists": true,
       "missingInputs": [],
       "fresh": true,
-      "outputHash": "3b85c3d9b1c5da94a2436ffd0f1765b48dd6054bff5ba9f0f64dd88ade500094",
-      "outputModifiedAt": "2026-09-09T08:07:26.370Z",
-      "newestInputAt": "2026-09-09T08:07:16.837Z"
+      "outputHash": "317391a02ae90c9f0250249f8071a871f650a35bc49f9e90cdb76d213f8252b0",
+      "outputModifiedAt": "2026-09-10T05:55:30.484Z",
+      "newestInputAt": "2026-09-10T05:55:21.527Z"
     },
     {
       "id": "memory",
@@ -213,9 +201,9 @@
       "outputExists": true,
       "missingInputs": [],
       "fresh": true,
-      "outputHash": "7cf85feac74b7d6c046c57250ecd4fe92565c1b8e467d6f2bd30445f9d6ff6e8",
-      "outputModifiedAt": "2026-09-09T08:07:29.066Z",
-      "newestInputAt": "2026-09-09T08:07:26.370Z"
+      "outputHash": "c416eadca35a9a5f250c635abf9e1b81a0b240c6d8eb02ae3769d3537eb1c86b",
+      "outputModifiedAt": "2026-09-10T05:55:32.969Z",
+      "newestInputAt": "2026-09-10T05:55:30.484Z"
     },
     {
       "id": "time-machine",
@@ -227,9 +215,9 @@
       "outputExists": true,
       "missingInputs": [],
       "fresh": true,
-      "outputHash": "353d411ce79f05e8b59dda9bcbb8e787e9a59bd4f98d1f408c86e127a6ae5f54",
-      "outputModifiedAt": "2026-09-09T08:07:32.305Z",
-      "newestInputAt": "2026-09-09T08:07:29.066Z"
+      "outputHash": "032fcec9c6738549419d24510b3b98e00d5bf196d9b9e31c835f1ac36904f8f2",
+      "outputModifiedAt": "2026-09-10T05:55:35.750Z",
+      "newestInputAt": "2026-09-10T05:55:32.969Z"
     },
     {
       "id": "lab",
@@ -242,9 +230,9 @@
       "outputExists": true,
       "missingInputs": [],
       "fresh": true,
-      "outputHash": "ba5fd0233a2556ebde812c7b3335abb1fd97c0341016f65424831cad0da237ad",
-      "outputModifiedAt": "2026-09-09T08:08:00.319Z",
-      "newestInputAt": "2026-09-09T08:07:32.305Z"
+      "outputHash": "d369eb457e2ace9653f42a49d5bc42962be7608ca65756effbe2ab2d2a84f85e",
+      "outputModifiedAt": "2026-09-10T05:56:00.371Z",
+      "newestInputAt": "2026-09-10T05:55:35.750Z"
     },
     {
       "id": "tutor",
@@ -257,9 +245,9 @@
       "outputExists": true,
       "missingInputs": [],
       "fresh": true,
-      "outputHash": "f6863e229fb2be4d2eb1a2b080ef9cfa3f4500ec7a89b587ee8383995c4383a5",
-      "outputModifiedAt": "2026-09-09T08:08:04.859Z",
-      "newestInputAt": "2026-09-09T08:08:00.319Z"
+      "outputHash": "77bb1c89494746b8c91447f2464a8c885ee314ff31599ffe64ad5fe2a7ff722a",
+      "outputModifiedAt": "2026-09-10T05:56:03.176Z",
+      "newestInputAt": "2026-09-10T05:56:00.371Z"
     },
     {
       "id": "bridge",
@@ -273,9 +261,9 @@
       "outputExists": true,
       "missingInputs": [],
       "fresh": true,
-      "outputHash": "3616ec93f4aa2f5dd92002dbd24b959c81b7ad42a7eb26b42acb1d4c05f3c41c",
-      "outputModifiedAt": "2026-09-09T08:08:05.225Z",
-      "newestInputAt": "2026-09-09T08:08:04.859Z"
+      "outputHash": "3f9f2f6c91030144611f5d0ffcae97c5c1baec0dfe4287341d8497934f6128e9",
+      "outputModifiedAt": "2026-09-10T05:56:03.472Z",
+      "newestInputAt": "2026-09-10T05:56:03.176Z"
     },
     {
       "id": "fun",
@@ -289,9 +277,9 @@
       "outputExists": true,
       "missingInputs": [],
       "fresh": true,
-      "outputHash": "f3ba70f9883225b1f00624b58d442a4ad68272136b4ce82eada5655b8f3d8957",
-      "outputModifiedAt": "2026-09-09T08:08:05.645Z",
-      "newestInputAt": "2026-09-09T08:08:05.225Z"
+      "outputHash": "c2e55eb4f4b1bfb58e43ab638d8c012cec9f4a7867e8de45d375e196307e7169",
+      "outputModifiedAt": "2026-09-10T05:56:03.710Z",
+      "newestInputAt": "2026-09-10T05:56:03.472Z"
     }
   ],
   "calibration": {
@@ -306,46 +294,26 @@
   },
   "effectiveness": {
     "experiments": 2,
-    "resolvedExperiments": 0,
-    "experimentResolutionRate": 0,
-    "recommendationAcceptanceRate": null,
+    "resolvedExperiments": 2,
+    "experimentResolutionRate": 1,
+    "recommendationAcceptanceRate": 0,
     "recordedDecisions": 2,
-    "regressionsCaught": 1,
-    "productionBlockers": 1,
-    "falsePositiveRate": null,
+    "regressionsCaught": 6,
+    "productionBlockers": 6,
+    "falsePositiveRate": 0,
     "medianTimeToLearningHours": null,
     "note": "False-positive rate and time-to-learning require completed experiments with timestamps."
   },
-  "nextActions": [
-    {
-      "priority": "P0",
-      "title": "Repair truth-gated gameplay loops",
-      "command": "npm run oracle:scenario -- --id=escape-pressure-4p",
-      "reason": "escape-pressure-4p: no terminal outcome observed | cooperative-rescue-2p: no terminal outcome observed | artifact-extraction-2p: no terminal outcome observed | three-player-regroup-3p: no terminal outcome observed",
-      "estimatedMinutes": 30
-    },
-    {
-      "priority": "P1",
-      "title": "Resolve the first pre-registered experiment",
-      "command": "npm run gameplay:experiment -- --strict --baseline=<path> --candidate=<path>",
-      "reason": "2 experiments are planned and none are resolved",
-      "estimatedMinutes": 20
-    }
-  ],
+  "nextActions": [],
   "sourceHashes": {
     "simulator.scenarios.json": "4679ab8afd67ad00043c29c19278f07e4118ed061d606ff228d31c1fc436e985",
-    "simulator.agent-policies.json": "19362093cff6f6c2e6cb6c53ce826c7230fae923306ccf37ef330d7ef4470387",
+    "simulator.agent-policies.json": "1f8ecb19548fc9961d1f314f01ff0045d7513896ae9409b399347002129d7b3b",
     "simulator.evaluation.json": "16a42578121a2998ecc8d4b2e7c9202f1f60aacee49c6c56baf024cce735f0ff",
     "gameplay.quality-contract.json": "372abeea3898c14b85e1b34f573e5cf337f0fe542631f80dacccb4508ee14b9d",
-    "gameplay.experiments.json": "dec015a673a4bfa8d92fd07cb36942cc5bf2dc7c0714916b29c257b7744cdd30",
-    "scripts/gameplay-simulator.mjs": "c90656a73908918d26bf5169f317c8dc44f4221f567d3adb703bc7d3f9980d08",
+    "gameplay.experiments.json": "2dd39be1d37fe89c21b3feef3b622dd90da5813b0d832ff82b4e393d13d10f07",
+    "scripts/gameplay-simulator.mjs": "4f9268a0bc13ec5ee18b84257077d54363cd86ed8f49bda44f4ed0efebbddd56",
     "scripts/gameplay-oracle-utils.mjs": "f39319b156f3f9ee0e4b903b23aef614b9c16c1c1414db2a09425ddf225ce186",
-    "scripts/gameplay-exact-runner.mjs": "32f6be5ad275f98f591b890d719c711cfc0c786eaf6963560ecbb2702436f22d"
+    "scripts/gameplay-exact-runner.mjs": "3a0378b592fd7157194860e8c9d0cb2e4ca48498671c047f0f0de8d91623f3ed"
   },
-  "blockers": [
-    "truth gates incomplete: escape-pressure-4p (no terminal outcome observed)",
-    "truth gates incomplete: cooperative-rescue-2p (no terminal outcome observed)",
-    "truth gates incomplete: artifact-extraction-2p (no terminal outcome observed)",
-    "truth gates incomplete: three-player-regroup-3p (no terminal outcome observed)"
-  ]
+  "blockers": []
 }

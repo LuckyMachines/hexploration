@@ -8,6 +8,7 @@
     "idleBias": 1,
     "fleeBias": 1,
     "recoverAtStat": 1,
-    "movementFallbackPriority": 1
+    "movementFallbackPriority": 1,
+    "terminalIntentWindowTurns": 4
   }
 }

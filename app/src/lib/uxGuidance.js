@@ -13,6 +13,7 @@ export function getActionBlockReason({
   movePath = [],
   routeStatus,
   activeInventory = {},
+  departPressure,
 } = {}) {
   if (isSpectator) return 'Connect with a registered crew wallet to submit actions.';
   if (hasSubmitted) return 'Your action is already locked for this turn.';
@@ -22,6 +23,9 @@ export function getActionBlockReason({
   if (action === Action.MOVE && movePath.length === 0) return 'Choose at least one reachable tile first.';
   if (action === Action.MOVE && routeStatus?.isValid === false) return routeStatus.invalidReason || 'The current route is invalid.';
   if (action === Action.SETUP_CAMP && !activeInventory.campsite) return 'A campsite kit is required.';
+  if (action === Action.FLEE && departPressure && !departPressure.readiness?.canFlee) {
+    return departPressure.readiness?.body || 'Return to the landing site before departing.';
+  }
   return '';
 }
 
@@ -48,7 +52,7 @@ export function getActionExplanation(action, context = {}) {
         : 'Search your tile for discoveries, with Dexterity influencing the result.',
     [Action.REST]: traitOutcome || mitigationOutcome || 'Recover a chosen stat and stabilize for the next turn.',
     [Action.HELP]: traitOutcome || mitigationOutcome || 'Give 1 selected stat to rally a teammate across all three stats.',
-    [Action.FLEE]: traitOutcome || mitigationOutcome || escapeCostPreview?.body || departPressure?.readiness?.body || 'Depart from the landing site once the crew has enough value and a route home.',
+    [Action.FLEE]: traitOutcome || mitigationOutcome || escapeCostPreview?.body || departPressure?.readiness?.body || 'Depart from the landing site; recovered value determines the quality of the outcome.',
   }[action] || meta.copy;
 
   return {

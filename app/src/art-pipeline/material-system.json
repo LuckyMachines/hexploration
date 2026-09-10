@@ -190,7 +190,7 @@
     "maxShadowClipPercent": 2,
     "maxHighlightClipPercent": 1,
     "minimumRelationalScore": 3,
-    "performance": { "maxDrawCalls": 180, "maxTextures": 96, "maxFrameP95Ms": 24, "maxMaterialTextureMiB": 96 },
+    "performance": { "maxDrawCalls": 180, "maxTextures": 96, "maxFrameP95Ms": 24, "maxHeadlessFrameP95Ms": 110, "maxRenderP95Ms": 12, "maxMaterialTextureMiB": 96 },
     "captureRigs": ["neutral", "danger", "recovery", "relic"],
     "captureQualities": ["high", "efficient"],
     "captureViews": ["default", "quarter", "close"]

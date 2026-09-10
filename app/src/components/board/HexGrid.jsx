@@ -26,6 +26,7 @@ import PathOverlay from './PathOverlay';
 import BoardPresence from './BoardPresence';
 import TerrainLegend from './TerrainLegend';
 import ThreeBoard from './ThreeBoard';
+import { deriveBoardViewModel } from './boardViewModel';
 import Spinner from '../shared/Spinner';
 
 function submittedAction(action) {
@@ -338,6 +339,25 @@ export default function HexGrid({
     namedMoment: funTelemetry?.namedMoment,
     traitPreview: intentTraitPreview,
   };
+  const boardViewModel = deriveBoardViewModel({
+    cells: worldCells,
+    currentLocation,
+    intentAlias,
+    selectedPath,
+    previewPath,
+    reachableAliases,
+    invalidAlias: invalidIntentAlias,
+    landingSite,
+    playerLocationMap,
+    crew,
+    currentPlayerIndex,
+    activeAction,
+    hasSubmitted,
+    isResolving,
+    isDanger: intentIsDanger || controlFeel.risk?.level === 'redline',
+    lowStats: controlFeel.lowStats,
+    phase: turnState?.isComplete ? 'complete' : undefined,
+  });
 
   return (
     <div className="min-w-0">
@@ -359,26 +379,14 @@ export default function HexGrid({
           >
             {!tacticalBoard && (
               <ThreeBoard
-                cells={worldCells}
-                currentLocation={currentLocation}
-                intentAlias={intentAlias}
-                selectedPath={selectedPath}
-                previewPath={previewPath}
-                reachableAliases={reachableAliases}
-                landingSite={landingSite}
-                playerLocationMap={playerLocationMap}
-                crew={crew}
-                currentPlayerIndex={currentPlayerIndex}
-                activeAction={activeAction}
-                hasSubmitted={hasSubmitted}
-                isResolving={isResolving}
-                isDanger={intentIsDanger || controlFeel.risk?.level === 'redline'}
-                lowStats={controlFeel.lowStats}
+                viewModel={boardViewModel}
                 performanceMode={preferences.efficientBoard ? 'efficient' : 'auto'}
                 onTileClick={onTileClick ? handleTileClick : undefined}
                 onTileHover={handleHover}
                 onReady={() => setWorldReady(true)}
                 onUnavailable={() => setWorldReady(false)}
+                onBeat={(beat) => emitFeedbackEvent({ source: 'board', kind: 'board-beat', beatId: beat.id, soundCue: beat.soundCue, motionCue: beat.motionCue })}
+                ariaLabel="Expedition world board"
                 className={`absolute inset-0 transition-opacity duration-500 ${worldReady ? 'opacity-100' : 'pointer-events-none opacity-0'}`}
               />
             )}

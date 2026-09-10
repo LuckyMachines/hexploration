@@ -18,7 +18,7 @@ const STEPS = [
   'When a cost appears, pick the listed reduction action unless you are choosing to gamble.',
   'After resolution, read Turn Aftermath before planning the next action.',
   'Check whether the Expedition Arc changed after aftermath.',
-  'Return to the landing site with enough recovered value.',
+  'Return to the landing site; decide whether to leave safely or risk another turn for value.',
   'Choose Depart to leave and lock in the run.',
   'Read the Expedition Memory created from the outcome.',
   'Use the Run Relic Card when you want to show the run as an image, caption, and challenge.',

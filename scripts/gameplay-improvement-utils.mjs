@@ -25,6 +25,12 @@ export function fingerprint(path) {
   return createHash('sha256').update(readFileSync(target)).digest('hex');
 }
 
+export function findExactSourceDrift(exactRunnerReport = {}, fingerprintForPath = fingerprint) {
+  return Object.entries(exactRunnerReport?.sourceHashes || {})
+    .filter(([path, hash]) => fingerprintForPath(path) !== hash)
+    .map(([path]) => path);
+}
+
 export function productionScenarios(store = {}) {
   return asArray(store.scenarios).filter((scenario) => isProductionScenarioId(scenario.id, store));
 }
@@ -113,7 +119,7 @@ export function evaluateCalibration(playtests = {}, contract = {}) {
 
 export function evaluateEffectiveness({ experiments = {}, decisions = {}, funReport = {} } = {}) {
   const experimentItems = asArray(experiments.experiments);
-  const resolvedItems = experimentItems.filter((item) => ['accepted', 'rejected', 'complete', 'completed'].includes(item.status)
+  const resolvedItems = experimentItems.filter((item) => ['accepted', 'rejected', 'inconclusive', 'complete', 'completed'].includes(item.status)
     || (item.decision && !['pending', 'planned'].includes(item.decision)));
   const acceptedItems = resolvedItems.filter((item) => item.status === 'accepted' || item.decision === 'accepted');
   const measuredDurations = resolvedItems.map((item) => {
@@ -148,9 +154,7 @@ export function buildGameplayImprovementReport({ generatedAt = new Date().toISOS
   const pipeline = inspectPipeline();
   const coverage = evaluateCoverage(store, contract);
   const exactRunnerReport = readJson(absolute('reports/gameplay-improvement/exact-runner/latest-report.json'), null);
-  const exactSourceDrift = Object.entries(exactRunnerReport?.sourceHashes || {})
-    .filter(([path, hash]) => fingerprint(path) !== hash)
-    .map(([path]) => path);
+  const exactSourceDrift = findExactSourceDrift(exactRunnerReport);
   const exactScenarioResults = asArray(exactRunnerReport?.scenarios);
   const exactRun = {
     reportPath: 'reports/gameplay-improvement/exact-runner/latest-report.json',
@@ -199,10 +203,11 @@ export function buildGameplayImprovementReport({ generatedAt = new Date().toISOS
       && !asArray(funReport.scenarioQualities).some((item) => /^autopilot(?:-test)?-/i.test(item.scenarioId || '')),
     pairedExperimentContract: Number(contract.minimumIndependentReplicates || 0) >= 10 && contract.requirePairedSeeds === true,
     selfManagedExactRunner: Boolean(fingerprint('scripts/gameplay-exact-runner.mjs')),
+    exactEvidenceFresh: exactRun.exists && exactRun.passed && exactRun.sourceDrift.length === 0,
     ...(automatedOnly ? {} : { humanCalibration: calibration.calibrated }),
   };
   const architectureChecks = ['splitPolicyAndEvaluation', 'scenarioCoverage', 'productionEvidenceClean', 'pairedExperimentContract', 'selfManagedExactRunner'];
-  const evidenceChecks = ['canonicalEvidenceComplete', 'pipelineFresh'];
+  const evidenceChecks = ['canonicalEvidenceComplete', 'pipelineFresh', 'exactEvidenceFresh'];
   const gradeFor = (ids, ceiling = 'A') => {
     const passed = ids.filter((id) => checks[id]).length;
     if (passed === ids.length) return ceiling;
@@ -228,6 +233,13 @@ export function buildGameplayImprovementReport({ generatedAt = new Date().toISOS
       title: 'Refresh exact same-engine evidence',
       command: 'npm run gameplay:refresh:exact -- --resume',
       reason: `${missingEvidence.length} canonical scenarios are missing or stale`,
+      estimatedMinutes: Math.max(15, scenarioEvidence.length * 8),
+    }] : []),
+    ...(exactSourceDrift.length ? [{
+      priority: 'P0',
+      title: 'Refresh drifted exact-engine evidence',
+      command: 'npm run gameplay:exact -- --resume',
+      reason: `source drift: ${exactSourceDrift.join(', ')}`,
       estimatedMinutes: Math.max(15, scenarioEvidence.length * 8),
     }] : []),
     ...(incompleteTruth.length ? [{
@@ -284,6 +296,7 @@ export function buildGameplayImprovementReport({ generatedAt = new Date().toISOS
       ...scenarioEvidence.filter((item) => !item.hasSimulatorReport).map((item) => `missing same-engine evidence: ${item.scenarioId}`),
       ...scenarioEvidence.filter((item) => item.hasSimulatorReport && !item.simulatorEvidenceFresh).map((item) => `stale same-engine evidence: ${item.scenarioId}`),
       ...scenarioEvidence.filter((item) => item.hasSimulatorReport && !item.truthGatesPassed).map((item) => `truth gates incomplete: ${item.scenarioId} (${item.truthGateFailures.join('; ')})`),
+      ...exactSourceDrift.map((path) => `exact-run evidence source drift: ${path}`),
       ...pipeline.filter((stage) => !stage.fresh).map((stage) => `stale or missing pipeline stage: ${stage.id}`),
       ...(!automatedOnly && !calibration.calibrated ? [`human calibration needs ${Math.max(0, calibration.minimumSessions - calibration.sessions)} more observed sessions and agreement labels`] : []),
     ],

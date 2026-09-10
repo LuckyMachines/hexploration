@@ -1,0 +1,28 @@
+{
+  "source": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\HEXPLORATION_REPOS\\hexploration\\artifacts\\board-system\\visual-review\\actual-board-crop.png",
+  "segments": [
+    [
+      203.0,
+      439.0,
+      294.0,
+      393.0
+    ],
+    [
+      450.0,
+      414.0,
+      520.0,
+      380.0
+    ]
+  ],
+  "vanishingPointPixels": {
+    "x": -4598.333333333329,
+    "y": 2866.047619047617
+  },
+  "vanishingPointNormalized": {
+    "x": -6.722709551656914,
+    "y": 3.457234763628006
+  },
+  "horizonAssumption": "Two inspected left-rising top-plane hex edges represent one family of parallel world-space grid edges; the distant off-frame convergence is consistent with the restrained 34-degree board camera.",
+  "meanLineResidualPixels": 8.526512829121202e-14,
+  "overlay": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\HEXPLORATION_REPOS\\hexploration\\artifacts\\board-system\\visual-review\\perspective-overlay.png"
+}

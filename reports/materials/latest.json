@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-09T17:58:31.380Z",
+  "generatedAt": "2026-09-10T06:00:20.779Z",
   "materialSystemVersion": "1.0.0",
   "passed": true,
   "strict": true,
@@ -1275,28 +1275,29 @@
   ],
   "runtime": {
     "board": {
-      "generatedAt": "2026-09-09T17:55:02.247Z",
+      "generatedAt": "2026-09-10T03:02:36.669Z",
       "materialSystemVersion": "1.0.0",
       "states": [
         {
           "lens": "ready",
-          "drawCalls": 132,
-          "triangles": 5452,
-          "textures": 8,
+          "drawCalls": 74,
+          "triangles": 3444,
+          "textures": 2,
           "lightingRig": "neutral"
         },
         {
           "lens": "danger",
-          "drawCalls": 132,
-          "triangles": 6832,
-          "textures": 2,
+          "drawCalls": 74,
+          "triangles": 4824,
+          "textures": 61,
           "lightingRig": "danger"
         }
       ]
     },
     "frame": {
-      "generatedAt": "2026-09-09T17:42:19.273Z",
+      "generatedAt": "2026-09-10T03:02:53.703Z",
       "frameP95Ms": 100,
+      "renderP95Ms": 1.9,
       "pixelRatio": 1,
       "quality": "balanced"
     }

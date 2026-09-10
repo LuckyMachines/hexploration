@@ -4,6 +4,7 @@ import { Action } from './constants.js';
 export const ESCAPE_COST_LEVELS = {
   CLEAN: 'clean',
   CLOSE: 'close',
+  EMPTY_HANDED: 'empty-handed',
   ARTIFACT_RISK: 'artifact-risk',
   CREW_RISK: 'crew-risk',
   ROUTE_COLLAPSE: 'route-collapse',
@@ -153,7 +154,7 @@ function mitigationTemplate(id, context = {}) {
       actionLabel: 'Depart',
       priority: 10,
       available: Boolean(preview.canEscape),
-      requirement: preview.canEscape ? '' : 'Reach landing with recovered value first.',
+      requirement: preview.canEscape ? '' : 'Reach landing first.',
       effect: 'Locks in the current forecast before another delay raises the cost.',
       reason: 'The run has an escape window.',
       tone: 'red',
@@ -177,9 +178,9 @@ function mitigationTemplate(id, context = {}) {
       actionLabel: 'Dig',
       priority: 20,
       available: !awayFromLanding && !hasRecoveredValue,
-      requirement: awayFromLanding ? 'Return to landing before making departure count.' : 'Search for recovered value.',
-      effect: 'Creates recovered value so Flee can count.',
-      reason: 'Escape is not meaningful without something recovered.',
+      requirement: awayFromLanding ? 'Return to landing before choosing whether to push.' : 'Search for recovered value.',
+      effect: 'Adds recovered value so departure can produce a stronger outcome.',
+      reason: 'Leaving empty-handed is safe, but it gives up the expedition payoff.',
       tone: 'gold',
     },
     [MITIGATION_IDS.SECURE_ARTIFACT]: {
@@ -387,6 +388,7 @@ export function mitigationsForPreview(preview = {}, context = {}) {
   const idsByLevel = {
     [ESCAPE_COST_LEVELS.CLEAN]: [MITIGATION_IDS.DEPART_NOW, MITIGATION_IDS.KEEP_CHARTING],
     [ESCAPE_COST_LEVELS.CLOSE]: [MITIGATION_IDS.DEPART_NOW, MITIGATION_IDS.RETURN_TO_LANDING, MITIGATION_IDS.STOP_DIGGING],
+    [ESCAPE_COST_LEVELS.EMPTY_HANDED]: [MITIGATION_IDS.DEPART_NOW, MITIGATION_IDS.RECOVER_VALUE],
     [ESCAPE_COST_LEVELS.ARTIFACT_RISK]: [MITIGATION_IDS.DEPART_NOW, MITIGATION_IDS.SECURE_ARTIFACT, MITIGATION_IDS.RETURN_TO_LANDING, MITIGATION_IDS.STOP_DIGGING],
     [ESCAPE_COST_LEVELS.CREW_RISK]: [MITIGATION_IDS.DEPART_NOW, MITIGATION_IDS.HELP_WEAKEST, MITIGATION_IDS.REST_CREW, MITIGATION_IDS.REGROUP, MITIGATION_IDS.STOP_DIGGING],
     [ESCAPE_COST_LEVELS.ROUTE_COLLAPSE]: [
@@ -451,6 +453,15 @@ function previewForLevel(level, context = {}) {
       tone: 'gold',
       reportLabel: 'Close',
     },
+    [ESCAPE_COST_LEVELS.EMPTY_HANDED]: {
+      label: 'Empty-handed departure',
+      costType: 'value-forfeit',
+      headline: 'No value recovered',
+      body: 'The crew can leave alive now, or risk another turn to recover value.',
+      nextDelayWarning: 'One more turn may improve the outcome, but it also puts crew safety at risk.',
+      tone: 'gold',
+      reportLabel: 'Empty-handed',
+    },
     [ESCAPE_COST_LEVELS.ARTIFACT_RISK]: {
       label: 'Artifact at risk',
       costType: 'artifact-risk',
@@ -478,7 +489,7 @@ function previewForLevel(level, context = {}) {
       costType: 'route-collapse',
       headline: 'Route collapse projected',
       body: `${bandLabel || 'Collapse Risk'} ${pressure}; ${distanceCopy}. The run itself is on the line.`,
-      nextDelayWarning: 'The next delay may strand recovered value before Flee can matter.',
+      nextDelayWarning: 'The next delay may strand the crew or erase the value of the run.',
       tone: 'red',
       reportLabel: 'Collapsed',
     },
@@ -486,7 +497,7 @@ function previewForLevel(level, context = {}) {
       label: 'Not ready',
       costType: 'not-ready',
       headline: 'Escape not ready',
-      body: readinessBody || 'The crew still needs landing access and recovered value before departure counts.',
+      body: readinessBody || 'The crew still needs landing access before departure is available.',
       nextDelayWarning: 'Waiting without progress still raises the cost.',
       tone: 'neutral',
       reportLabel: 'Not Ready',
@@ -528,6 +539,8 @@ export function deriveEscapeCostPreview({
     level = ESCAPE_COST_LEVELS.ROUTE_COLLAPSE;
   } else if (!canEscape) {
     level = ESCAPE_COST_LEVELS.NOT_READY;
+  } else if (!hasRecoveredValue) {
+    level = ESCAPE_COST_LEVELS.EMPTY_HANDED;
   } else if (bandId === 'collapse') {
     level = atRiskPlayer ? ESCAPE_COST_LEVELS.CREW_RISK : ESCAPE_COST_LEVELS.ARTIFACT_RISK;
   } else if (bandId === 'closing') {

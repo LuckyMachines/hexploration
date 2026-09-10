@@ -9,6 +9,7 @@ import {
   capGrade,
   classifyChangedFiles,
   compactPublicReport,
+  deriveSurfaceGrade,
   evaluateEvidence,
   evaluateReportRegistry,
   markdownForPortfolio,
@@ -96,6 +97,18 @@ test('evaluates missing, stale, and minimum-record evidence', () => {
 test('caps grades without allowing a cap to improve a grade', () => {
   assert.equal(capGrade('A-', 'B'), 'B');
   assert.equal(capGrade('C', 'B'), 'C');
+});
+
+test('derives a surface grade from current evidence instead of stale configuration', () => {
+  const { root, cleanup } = tempRoot();
+  try {
+    writeJson(root, 'reports/board/latest.json', { grade: 'A-' });
+    const evidence = evaluateEvidence(root, { path: 'reports/board/latest.json', required: true, maxAgeDays: 14 }, new Date());
+    assert.deepEqual(
+      deriveSurfaceGrade({ currentGrade: 'B-', gradeSource: { path: 'reports/board/latest.json', jsonPath: 'grade' } }, [evidence]),
+      { grade: 'A-', source: 'reports/board/latest.json' },
+    );
+  } finally { cleanup(); }
 });
 
 test('deduplicates shared verification commands while retaining surface ownership', () => {

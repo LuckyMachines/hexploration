@@ -1,0 +1,180 @@
+{
+  "schemaVersion": 1,
+  "version": "1.0.0",
+  "name": "Xenovoya Board System",
+  "objective": "Turn exact game state into a stable, legible, joyful, and verifiable expedition world.",
+  "stateContract": {
+    "version": 1,
+    "requiredFields": [
+      "cells",
+      "currentLocation",
+      "intentAlias",
+      "selectedPath",
+      "previewPath",
+      "reachableAliases",
+      "playerLocationMap",
+      "crew",
+      "currentPlayerIndex",
+      "activeAction",
+      "phase"
+    ],
+    "phases": [
+      "planning",
+      "committed",
+      "resolving",
+      "danger",
+      "recovery",
+      "complete"
+    ]
+  },
+  "layers": [
+    { "id": "terrain", "lifetime": "world", "mutable": false },
+    { "id": "landmarks", "lifetime": "world", "mutable": false },
+    { "id": "affordances", "lifetime": "interaction", "mutable": true },
+    { "id": "intent", "lifetime": "interaction", "mutable": true },
+    { "id": "route", "lifetime": "interaction", "mutable": true },
+    { "id": "party", "lifetime": "turn", "mutable": true },
+    { "id": "assistance", "lifetime": "turn", "mutable": true },
+    { "id": "atmosphere", "lifetime": "phase", "mutable": true }
+  ],
+  "spatialStability": {
+    "immutableBaseTileTransform": true,
+    "transientStates": ["hover", "focus", "preview", "selected", "invalid"],
+    "allowedSignals": ["outline", "halo", "decal", "emissive-overlay", "route", "label", "lighting"],
+    "forbiddenSignals": ["tile-translation", "tile-scale", "camera-jump"]
+  },
+  "interaction": {
+    "minimumTargetPx": 44,
+    "inputModes": ["pointer", "touch", "keyboard", "gamepad"],
+    "requireEquivalentIntentAndCommit": true,
+    "requireVisibleFocus": true,
+    "requireInvalidRecovery": true
+  },
+  "camera": {
+    "manualOrbit": true,
+    "manualPan": true,
+    "manualZoom": true,
+    "presets": ["default", "overview", "party", "intent"],
+    "autoMoveOnHover": false,
+    "beatCameraIsSuggestionOnly": true,
+    "restoreDefault": true
+  },
+  "performance": {
+    "maxCanvasCount": 1,
+    "maxDrawCalls": 90,
+    "maxTriangles": 12000,
+    "maxFrameP95Ms": 24,
+    "maxHeadlessFrameP95Ms": 110,
+    "maxRenderP95Ms": 12,
+    "minPixelRatio": 1,
+    "maxAssetFailures": 0,
+    "maxContextLosses": 0,
+    "maxRemountHeapGrowthMiB": 8
+  },
+  "requiredEvidence": {
+    "states": [
+      "ready",
+      "hover",
+      "selected",
+      "invalid",
+      "danger",
+      "committed",
+      "resolving",
+      "rescue",
+      "recovery",
+      "complete"
+    ],
+    "viewports": [
+      { "id": "desktop", "width": 1440, "height": 1000 },
+      { "id": "mobile", "width": 390, "height": 844 }
+    ],
+    "preferences": ["default", "reduced-motion", "forced-colors"],
+    "cameraViews": ["default", "overview", "party", "intent"]
+  },
+  "mechanics": [
+    {
+      "id": "move",
+      "actionIndex": 1,
+      "loop": "explore-decide-resolve",
+      "cue": "reachable halo",
+      "preview": "gold route and destination ring",
+      "consequence": "party relocation and discovery bloom",
+      "recovery": "invalid segment and nearest valid route",
+      "soundCue": "board.route.preview",
+      "motionCue": "route-pulse",
+      "reducedMotion": "static route with destination outline"
+    },
+    {
+      "id": "camp",
+      "actionIndex": 2,
+      "loop": "return-continuity",
+      "cue": "campsite landmark",
+      "preview": "warm shelter halo",
+      "consequence": "persistent campsite prop",
+      "recovery": "show eligible campsite tile",
+      "soundCue": "board.camp.prepare",
+      "motionCue": "warm-breathe",
+      "reducedMotion": "steady warm rim"
+    },
+    {
+      "id": "dig",
+      "actionIndex": 4,
+      "loop": "dig-reward-risk",
+      "cue": "relic resonance",
+      "preview": "artifact clue and odds signal",
+      "consequence": "relic reveal ritual",
+      "recovery": "name missing requirement",
+      "soundCue": "board.relic.resonate",
+      "motionCue": "relic-orbit",
+      "reducedMotion": "high-contrast relic corona"
+    },
+    {
+      "id": "rest",
+      "actionIndex": 5,
+      "loop": "failure-recovery",
+      "cue": "low-stat recovery light",
+      "preview": "stat recovery pip",
+      "consequence": "recovery wash",
+      "recovery": "point to valid rest location",
+      "soundCue": "board.recovery.rest",
+      "motionCue": "soft-breathe",
+      "reducedMotion": "steady green recovery light"
+    },
+    {
+      "id": "help",
+      "actionIndex": 6,
+      "loop": "help-recover",
+      "cue": "companion proximity link",
+      "preview": "helper-to-recipient arc",
+      "consequence": "stabilization halo",
+      "recovery": "identify reachable recipient",
+      "soundCue": "board.rescue.link",
+      "motionCue": "rescue-pulse",
+      "reducedMotion": "solid assistance arc"
+    },
+    {
+      "id": "flee",
+      "actionIndex": 7,
+      "loop": "flee-extract",
+      "cue": "landing beacon and redline rig",
+      "preview": "escape route and named cost",
+      "consequence": "extraction flash and party status",
+      "recovery": "route toward landing",
+      "soundCue": "board.escape.commit",
+      "motionCue": "redline-sweep",
+      "reducedMotion": "static redline border"
+    }
+  ],
+  "promotion": {
+    "states": ["baseline", "candidate", "verified", "selected"],
+    "requiredBeforeSelection": [
+      "contract-valid",
+      "unit-tests-pass",
+      "browser-gates-pass",
+      "visual-matrix-current",
+      "performance-budgets-pass",
+      "gameplay-traces-current",
+      "explicit-decision"
+    ]
+  }
+}

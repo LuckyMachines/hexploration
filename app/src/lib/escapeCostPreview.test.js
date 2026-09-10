@@ -98,14 +98,16 @@ describe('escapeCostPreview', () => {
     expect(preview.mitigations.some((item) => item.id === MITIGATION_IDS.STABILIZE_ROUTE)).toBe(true);
   });
 
-  it('returns not-ready when value is missing at landing', () => {
+  it('shows the empty-handed tradeoff while allowing departure at landing', () => {
     const preview = deriveEscapeCostPreview({
       departPressure: pressure({ activeInventory: {} }),
       activeInventory: {},
     });
 
-    expect(preview.level).toBe(ESCAPE_COST_LEVELS.NOT_READY);
-    expect(preview.costType).toBe('not-ready');
+    expect(preview.level).toBe(ESCAPE_COST_LEVELS.EMPTY_HANDED);
+    expect(preview.costType).toBe('value-forfeit');
+    expect(preview.canEscape).toBe(true);
+    expect(preview.mitigations.some((item) => item.id === MITIGATION_IDS.DEPART_NOW)).toBe(true);
     expect(preview.mitigations.some((item) => item.id === MITIGATION_IDS.RECOVER_VALUE)).toBe(true);
   });
 

@@ -91,11 +91,12 @@ export function escapeReadinessFor({
   }
   if (!hasRecoveredValue) {
     return {
-      id: 'recover',
-      label: 'Recover value first',
-      canFlee: false,
-      body: 'The crew is at landing, but the run needs recovered value.',
-      missing: ['value'],
+      id: 'empty',
+      label: 'Empty-handed departure ready',
+      canFlee: true,
+      body: 'The crew can leave alive now, or risk another turn to recover value.',
+      missing: [],
+      missingForReward: ['value'],
     };
   }
   if (band.id === 'collapse') {

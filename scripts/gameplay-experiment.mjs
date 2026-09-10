@@ -20,6 +20,46 @@ if (experimentId && !experiment) {
   console.error(`Unknown pre-registered experiment: ${experimentId}`);
   process.exit(2);
 }
+if (arg('close', false)) {
+  if (!experiment) {
+    console.error('--close requires a registered --id.');
+    process.exit(2);
+  }
+  const decision = String(arg('decision', 'inconclusive'));
+  const reason = String(arg('reason', '')).trim();
+  if (decision !== 'inconclusive' || !reason) {
+    console.error('Manual closure only supports --decision=inconclusive and requires --reason. Accepted or rejected decisions require paired reports.');
+    process.exit(2);
+  }
+  const generatedAt = new Date().toISOString();
+  const outputPath = resolve(root, String(arg('out', `reports/simulator/experiments/${experiment.id}-closure.json`)));
+  const report = {
+    schemaVersion: 1,
+    generatedAt,
+    experimentId: experiment.id,
+    preRegistration: experiment,
+    decision,
+    reason,
+    evidence: String(arg('evidence', '')).split(',').map((value) => value.trim()).filter(Boolean),
+    paired: false,
+    learned: 'The pre-registered change was not isolated into a comparable candidate; no effect claim is made.',
+  };
+  mkdirSync(dirname(outputPath), { recursive: true });
+  writeFileSync(outputPath, `${JSON.stringify(report, null, 2)}\n`);
+  const index = experimentStore.experiments.findIndex((item) => item.id === experiment.id);
+  experimentStore.experiments[index] = {
+    ...experiment,
+    status: decision,
+    decision,
+    resolvedAt: generatedAt,
+    resultPath: outputPath,
+    resolutionReason: reason,
+    falsePositive: false,
+  };
+  writeFileSync(experimentStorePath, `${JSON.stringify(experimentStore, null, 2)}\n`);
+  console.log(JSON.stringify({ outputPath, decision, reason }, null, 2));
+  process.exit(0);
+}
 const baselinePath = resolve(root, String(arg('baseline', 'reports/simulator/baseline-report.json')));
 const candidatePath = resolve(root, String(arg('candidate', 'reports/simulator/latest-report.json')));
 if (!existsSync(baselinePath) || !existsSync(candidatePath)) {

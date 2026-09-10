@@ -71,6 +71,8 @@ Each run:
 
 That means tuning reports reflect the real deployed local contracts, contract validation, queue phases, randomness path, and turn processing.
 
+When a canonical scenario requires terminal evidence, the simulator's final-turn policy routes active survivors toward the board's actual landing tile and submits `Flee` there. Movement remains bounded to valid hex coordinates and every path segment is checked by the Solidity controller. Recovered value changes the result, but it is not a prerequisite for leaving alive.
+
 ## Learning Features
 
 The simulator now emits raw run traces plus aggregate learning data:

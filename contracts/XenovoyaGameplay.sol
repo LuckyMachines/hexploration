@@ -385,7 +385,8 @@ contract XenovoyaGameplay is
                 action == XenovoyaQueue.Action.Help ||
                 action == XenovoyaQueue.Action.SetupCamp ||
                 action == XenovoyaQueue.Action.BreakDownCamp ||
-                action == XenovoyaQueue.Action.Move
+                action == XenovoyaQueue.Action.Move ||
+                action == XenovoyaQueue.Action.Flee
             ) {
                 data.activeActions += 1;
             }
@@ -508,9 +509,8 @@ contract XenovoyaGameplay is
     function processPlayThroughUnsafe(uint256 queueID) public {
         XenovoyaQueue.ProcessingPhase phase = QUEUE.currentPhase(queueID);
         if (QUEUE.getRandomness(queueID).length > 0) {
+            uint256 gameID = QUEUE.game(queueID);
             if (phase == XenovoyaQueue.ProcessingPhase.PlayThrough) {
-                uint256 gameID = QUEUE.game(queueID);
-
                 if (!QUEUE.isDayPhase(queueID)) {
                     // current live phase is opposite of what queue is set to
                     // (we process day phase events with previous night's turn queue)
@@ -526,8 +526,7 @@ contract XenovoyaGameplay is
                     GAME_STATE.postDayPhaseUpdates(dayPhaseUpdates, gameID);
                 }
             }
-            // TODO: set this to true when game is finished
-            bool gameComplete = false;
+            bool gameComplete = GAME_BOARD.gameOver(gameID);
             QUEUE.finishProcessing(
                 queueID,
                 gameComplete,

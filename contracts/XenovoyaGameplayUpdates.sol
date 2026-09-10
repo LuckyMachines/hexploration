@@ -279,6 +279,14 @@ library XenovoyaGameplayUpdates {
                     XenovoyaQueue(payable(queueAddress)).getSubmissionOptions(queueID, playersInQueue[i]);
                 playUpdates.playerActiveActionIDs[position] = playersInQueue[i];
                 position++;
+            } else if (
+                XenovoyaQueue(payable(queueAddress)).submissionAction(queueID, playersInQueue[i])
+                    == XenovoyaQueue.Action.Flee
+            ) {
+                playUpdates.activeActions[position] = "Flee";
+                playUpdates.activeActionOptions[position] = new string[](0);
+                playUpdates.playerActiveActionIDs[position] = playersInQueue[i];
+                position++;
             }
         }
         playUpdates.randomness = XenovoyaQueue(payable(queueAddress)).getRandomness(queueID);

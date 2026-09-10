@@ -1,6 +1,6 @@
 {
   "$schema": "./schema/improvement-system.schema.json",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "name": "Xenovoya Improvement Control Plane",
   "defaultStaleDays": 14,
   "promotionStates": ["idea", "baseline", "candidate", "verified", "selected", "shipped", "validated", "rework-required", "retired"],
@@ -80,6 +80,36 @@
       "command": "npm",
       "args": ["run", "gameplay:regression", "--", "--resume"],
       "timeoutMs": 1800000
+    },
+    "board.system-tests": {
+      "label": "Board contract, projection, scene-state, and renderer tests",
+      "command": "npm",
+      "args": ["run", "board:test"],
+      "timeoutMs": 180000
+    },
+    "board.replay-refresh": {
+      "label": "Transform exact-engine traces into deterministic board replays",
+      "command": "npm",
+      "args": ["run", "board:replay"],
+      "timeoutMs": 180000
+    },
+    "board.system-doctor": {
+      "label": "Board contract, replay, capture, and performance doctor",
+      "command": "npm",
+      "args": ["run", "board:doctor"],
+      "timeoutMs": 180000
+    },
+    "board.browser-gates": {
+      "label": "Single-canvas board state, input, camera, and performance gates",
+      "command": "npm",
+      "args": ["run", "board:capture"],
+      "timeoutMs": 900000
+    },
+    "board.cross-browser": {
+      "label": "Board interaction and WebGL compatibility in Firefox and WebKit",
+      "command": "npm",
+      "args": ["run", "board:cross-browser"],
+      "timeoutMs": 900000
     },
     "ux.board-tests": {
       "label": "Board quality tests",
@@ -230,6 +260,18 @@
   },
   "remediations": [
     {
+      "id": "refresh-board-evidence",
+      "label": "Regenerate exact board replays and board quality evidence",
+      "surfaceIds": ["game-board"],
+      "actionTypes": ["missing", "invalid", "stale-evidence"],
+      "evidencePaths": ["reports/board-system/latest.json"],
+      "commandId": "board.replay-refresh",
+      "verifyCommandIds": ["board.system-tests", "board.system-doctor"],
+      "writePaths": ["reports/board-system/", "app/public/board-system/"],
+      "risk": "low",
+      "auto": true
+    },
+    {
       "id": "refresh-gameplay-simulation",
       "label": "Regenerate stale or missing gameplay simulation evidence",
       "surfaceIds": ["gameplay"],
@@ -333,6 +375,7 @@
       "owner": "product-design",
       "weight": 1.4,
       "currentGrade": "A-",
+      "gradeSource": { "path": "reports/gameplay-improvement/latest-report.json", "jsonPath": "grade" },
       "objective": "Players repeatedly make legible, consequential expedition decisions that produce tension, cooperation, recovery, and memorable outcomes.",
       "stricterABar": "Every flagship scenario passes same-engine simulation, Oracle, feeling-arc, setup-honesty, and observed-player comprehension gates with current evidence.",
       "pathPatterns": ["^contracts/", "^script/", "^scripts/(gameplay|scenario|player-feeling|scenario-time-machine|scenario-lab|scenario-self-driving|playable-design-memory|scenario-evidence-bridge|fun-report|simulator-autotune)", "^(simulator\\.(scenarios|agent-policies|evaluation)|gameplay\\.(quality-contract|experiments))\\.json$"],
@@ -344,6 +387,25 @@
       ],
       "quickCommands": ["gameplay.system-tests", "gameplay.system-doctor"],
       "fullCommands": ["gameplay.system-tests", "gameplay.system-doctor", "gameplay.memory-doctor", "reliability.hard"]
+    },
+    {
+      "id": "game-board",
+      "label": "Game board and state expression",
+      "owner": "product-engineering",
+      "weight": 1.4,
+      "currentGrade": "B-",
+      "gradeSource": { "path": "reports/board-system/latest.json", "jsonPath": "grade" },
+      "objective": "Every exact game state becomes a stable, legible, performant, accessible, and joyful board moment.",
+      "stricterABar": "Exact traces replay through one canonical view model and single-canvas renderer; every critical state, input mode, camera rule, asset, frame budget, and mechanic expression passes current evidence.",
+      "pathPatterns": ["^app/src/board-system/", "^app/src/components/board/", "^app/src/pages/BoardLabPage", "^app/e2e/board-system", "^scripts/board-system", "^docs/game-board-system"],
+      "evidence": [
+        { "path": "app/src/board-system/board-system.json", "kind": "board-contract", "required": true, "maxAgeDays": 90 },
+        { "path": "app/public/board-system/replays.json", "kind": "exact-board-replays", "required": true, "maxAgeDays": 14 },
+        { "path": "reports/board-system/latest.json", "kind": "board-verification", "required": true, "maxAgeDays": 14 },
+        { "path": "artifacts/board-system/metrics/latest.json", "kind": "browser-metrics", "required": true, "maxAgeDays": 14 }
+      ],
+      "quickCommands": ["board.system-tests", "board.system-doctor"],
+      "fullCommands": ["board.system-tests", "board.replay-refresh", "board.browser-gates", "board.cross-browser", "board.system-doctor", "ux.app-build"]
     },
     {
       "id": "ux-onboarding",

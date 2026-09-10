@@ -548,7 +548,7 @@ export default function ActionPanel({
         {activeTab === Action.FLEE && (
           <div className="space-y-3">
             <p className="font-mono text-xs text-exp-text-dim">
-              {escapeCostPreview?.body || departPressure?.readiness?.body || 'Depart from the landing site before pressure closes the route. You need to be at the landing zone with enough recovered value.'}
+              {escapeCostPreview?.body || departPressure?.readiness?.body || 'Depart from the landing site before pressure closes the route. Recovered value determines the quality of the outcome.'}
             </p>
             {departPressure && (
               <div className={`rounded border px-3 py-2 ${
@@ -576,7 +576,7 @@ export default function ActionPanel({
             />
             <button
               onClick={() => requestSubmit(Action.FLEE)}
-              disabled={isLocked}
+              disabled={isLocked || Boolean(blockReason)}
               title={blockReason || 'Review and send departure action'}
               className="px-4 py-2 bg-signal-red/10 border border-signal-red/40 rounded text-signal-red text-xs font-mono tracking-widest uppercase
                          hover:bg-signal-red/20 hover:border-signal-red/60 transition-colors

@@ -117,7 +117,7 @@ function escapeCostForState(run = {}, state = {}) {
   const pressure = clamp(state.departPressure ?? state.danger ?? 0);
   const atLanding = Number(state.distance || 0) <= 0;
   const hasRecoveredValue = artifacts.length > 0;
-  const canEscape = atLanding && hasRecoveredValue;
+  const canEscape = atLanding;
   const band = pressureBandForState(pressure);
   const atRiskItem = artifacts[0]?.name || '';
   const atRiskPlayer = state.savedPlayers < (run.scenario?.players || 1)
@@ -127,6 +127,7 @@ function escapeCostForState(run = {}, state = {}) {
   let level = 'not-ready';
   if (band.id === 'collapse' && !canEscape) level = 'route-collapse';
   else if (!canEscape) level = 'not-ready';
+  else if (!hasRecoveredValue) level = 'empty-handed';
   else if (band.id === 'collapse') level = atRiskPlayer ? 'crew-risk' : 'artifact-risk';
   else if (band.id === 'closing') level = 'artifact-risk';
   else if (band.id === 'stretching') level = 'close';
@@ -135,6 +136,7 @@ function escapeCostForState(run = {}, state = {}) {
   const headline = {
     clean: 'No cost projected',
     close: 'Close escape likely',
+    'empty-handed': 'No value recovered',
     'artifact-risk': atRiskItem ? `${atRiskItem} at risk` : 'Recovered value at risk',
     'crew-risk': atRiskPlayer?.label ? `${atRiskPlayer.label} at risk` : 'Crew at risk',
     'route-collapse': 'Route collapse projected',
@@ -148,6 +150,7 @@ function escapeCostForState(run = {}, state = {}) {
     label: {
       clean: 'Clean departure',
       close: 'Close departure',
+      'empty-handed': 'Empty-handed departure',
       'artifact-risk': 'Artifact at risk',
       'crew-risk': 'Crew at risk',
       'route-collapse': 'Route collapse',
@@ -156,6 +159,7 @@ function escapeCostForState(run = {}, state = {}) {
     reportLabel: {
       clean: 'Clean',
       close: 'Close',
+      'empty-handed': 'Empty-handed',
       'artifact-risk': 'Costly',
       'crew-risk': 'Costly',
       'route-collapse': 'Collapsed',
@@ -422,7 +426,7 @@ export function applyGrowthAction(run, actionId) {
       routeStability: after.routeStability,
       recoveredValue: after.artifacts.length,
       currentDistanceToLanding: after.distance,
-      readiness: { canFlee: after.distance <= 0 && after.artifacts.length > 0 },
+      readiness: { canFlee: after.distance <= 0 },
     },
     escapeCostPreview,
     traitPreview: {

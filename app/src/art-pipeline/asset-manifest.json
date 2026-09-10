@@ -1,10 +1,13 @@
 {
   "$schema": "./schema/asset-manifest.schema.json",
-  "version": "1.7.0",
+  "version": "1.8.0",
   "artDirectionVersion": "1.1.0",
   "managedRoots": [
     "app/public/images/site-refresh",
     "app/public/images/art"
+  ],
+  "delegatedRoots": [
+    "app/public/images/art/materials"
   ],
   "assets": [
     {

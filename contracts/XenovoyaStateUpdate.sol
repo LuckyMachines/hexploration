@@ -103,7 +103,10 @@ contract XenovoyaStateUpdate is
         // switch between night / day
         updatePlayPhase(updates, gameID);
 
-        if (StateUpdateHelpers.checkGameOver(address(CHARACTER_CARD), gameID)) {
+        if (
+            StateUpdateHelpers.checkGameOver(address(CHARACTER_CARD), gameID) ||
+            StateUpdateHelpers.noActiveSurvivors(address(GAME_BOARD), gameID)
+        ) {
             // set game over
             GAME_BOARD.setGameOver(gameID);
             // emit event
@@ -358,6 +361,12 @@ contract XenovoyaStateUpdate is
                 gameID,
                 updates.playerActiveActionIDs[i]
             );
+            if (StateUpdateHelpers.stringsMatch(updates.activeActions[i], "Flee")) {
+                GAME_BOARD.setPlayerInactive(
+                    updates.playerActiveActionIDs[i],
+                    gameID
+                );
+            }
             uint256 cardTypeID = updates.activeActionResults[i];
             string memory cardType;
             if (cardTypeID == 1) {

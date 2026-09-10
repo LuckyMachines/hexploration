@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import { spawn, spawnSync } from 'child_process';
 import { createServer } from 'net';
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
+import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'fs';
 import { dirname, resolve } from 'path';
 import { fileURLToPath } from 'url';
 import { buildExactRunPlan, candidatePorts, classifyExactRunFailure } from './gameplay-exact-runner-utils.mjs';
@@ -149,16 +149,25 @@ function runScenario(item, rpcUrl) {
 async function main() {
   mkdirSync(outputDir, { recursive: true });
   const store = readJson(resolve(root, 'simulator.scenarios.json'), { scenarios: [] });
-  const sourceHashes = Object.fromEntries([
+  const sourcePaths = [
+    'scripts/gameplay-exact-runner.mjs',
     'scripts/gameplay-simulator.mjs',
+    'scripts/gameplay-agent-policy-utils.mjs',
+    'scripts/gameplay-oracle-utils.mjs',
+    'scripts/player-feeling-black-box-utils.mjs',
     'scripts/scenario-utils.mjs',
+    'scripts/setup-forge-utils.mjs',
     'simulator.scenarios.json',
     'simulator.agent-policies.json',
     'simulator.evaluation.json',
+    'gameplay.quality-contract.json',
     'foundry.toml',
-    'contracts/XenovoyaGameplayUpdates.sol',
-    'contracts/XenovoyaController.sol',
-  ].map((path) => [path, fingerprint(path)]));
+    ...readdirSync(resolve(root, 'contracts'))
+      .filter((name) => name.endsWith('.sol'))
+      .sort()
+      .map((name) => `contracts/${name}`),
+  ];
+  const sourceHashes = Object.fromEntries(sourcePaths.map((path) => [path, fingerprint(path)]));
   const checkpoint = resume ? readJson(checkpointPath, { scenarios: {} }) : { scenarios: {} };
   const plan = buildExactRunPlan(store, { scenarioId, batch, sourceHashes, checkpoint, includeRegressions, regressionsOnly });
   if (plan.length === 0) throw new Error(scenarioId ? `Unknown production scenario: ${scenarioId}` : 'No production scenarios configured.');

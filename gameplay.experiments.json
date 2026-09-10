@@ -3,29 +3,54 @@
   "experiments": [
     {
       "id": "escape-pressure-earlier",
-      "status": "planned",
+      "status": "inconclusive",
       "hypothesis": "Earlier readable escape pressure increases tension without reducing recovery or readability.",
       "targetType": "gameplay-mechanic",
-      "targetFiles": ["contracts/XenovoyaGameplayUpdates.sol"],
+      "targetFiles": [
+        "contracts/XenovoyaGameplayUpdates.sol"
+      ],
       "primaryMetric": "tension",
       "primaryDirection": "increase",
       "minimumEffect": 3,
-      "guardrails": ["readability", "recovery", "invalidAttempts"],
-      "scenarioIds": ["escape-pressure-4p"],
-      "minimumReplicates": 10
+      "guardrails": [
+        "readability",
+        "recovery",
+        "invalidAttempts"
+      ],
+      "scenarioIds": [
+        "escape-pressure-4p"
+      ],
+      "minimumReplicates": 10,
+      "decision": "inconclusive",
+      "resolvedAt": "2026-09-10T02:05:16.550Z",
+      "resultPath": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\HEXPLORATION_REPOS\\hexploration\\reports\\simulator\\experiments\\escape-pressure-earlier-closure.json",
+      "resolutionReason": "Superseded by the contract-level Depart repair; no isolated earlier-pressure candidate with paired seeds was produced, so no causal effect claim is valid.",
+      "falsePositive": false
     },
     {
       "id": "artifact-clue-before-payoff",
-      "status": "planned",
+      "status": "inconclusive",
       "hypothesis": "An earlier artifact clue improves outcome legibility without making artifacts trivial.",
       "targetType": "content-mechanic",
-      "targetFiles": ["scripts/populate-decks.mjs"],
+      "targetFiles": [
+        "scripts/populate-decks.mjs"
+      ],
       "primaryMetric": "outcomeLegibility",
       "primaryDirection": "increase",
       "minimumEffect": 0.05,
-      "guardrails": ["tension", "artifactFrequency"],
-      "scenarioIds": ["solo-artifact-hunt"],
-      "minimumReplicates": 10
+      "guardrails": [
+        "tension",
+        "artifactFrequency"
+      ],
+      "scenarioIds": [
+        "solo-artifact-hunt"
+      ],
+      "minimumReplicates": 10,
+      "decision": "inconclusive",
+      "resolvedAt": "2026-09-10T02:05:16.559Z",
+      "resultPath": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\HEXPLORATION_REPOS\\hexploration\\reports\\simulator\\experiments\\artifact-clue-before-payoff-closure.json",
+      "resolutionReason": "The board-system pass improved artifact expression but did not isolate the pre-registered deck-content candidate; paired causal evidence is absent.",
+      "falsePositive": false
     }
   ]
 }

@@ -39,6 +39,11 @@ The strict doctor intentionally exits nonzero when same-engine evidence is stale
 - `gameplay.quality-contract.json` defines the scenario matrix, replicate requirement, and human-calibration bar.
 - `gameplay.experiments.json` records concrete gameplay-mechanic hypotheses rather than disguising bot-policy changes as shipped balance changes.
 - `gameplay:experiment` compares baseline and candidate reports by strategy/run index, requires identical seeds and evaluator hashes, and reports paired effect size, variance, 95% confidence intervals, and guardrail failures.
+- A manual experiment closure may only be `inconclusive`, must include a reason, and makes no causal claim. Accepted or rejected decisions still require paired reports.
+
+## Terminal-outcome policy
+
+Canonical scenarios that require a terminal outcome switch into a bounded evacuation policy during their final configured turns. Active survivors route toward the actual landing tile using revealed adjacency first and the bounded board graph as a fallback, spend their full movement allowance, and submit `Flee` when they arrive. The Solidity engine validates every route edge, accepts `Flee` only at a landing tile, marks that player inactive, and ends the game when no active survivor remains. Empty-handed departure is valid; recovered value determines the outcome rather than permission to leave.
 
 ## Verdict Integrity
 

@@ -60,6 +60,7 @@ export function validateConfig(config = {}) {
     ids.add(surface.id);
     if (!surface.owner) errors.push(`${surface.id || 'surface'} needs an owner`);
     if (!GRADE_POINTS.hasOwnProperty(surface.currentGrade)) errors.push(`${surface.id || 'surface'} has invalid grade`);
+    if (surface.gradeSource && (!surface.gradeSource.path || !surface.gradeSource.jsonPath)) errors.push(`${surface.id || 'surface'} gradeSource needs path and jsonPath`);
     if (!surface.objective || !surface.stricterABar) errors.push(`${surface.id || 'surface'} needs an objective and stricter A bar`);
     for (const pattern of surface.pathPatterns || []) {
       try { new RegExp(pattern); } catch { errors.push(`${surface.id} has invalid path pattern: ${pattern}`); }
@@ -303,7 +304,7 @@ export function checklistProgress(text = '') {
   return { complete, incomplete, total, rate: total ? complete / total : 0 };
 }
 
-function nextActionsForSurface(surface, evidence, checks) {
+function nextActionsForSurface(surface, evidence, checks, effectiveGrade = surface.currentGrade) {
   const actions = [];
   for (const check of checks.filter((entry) => entry.surfaceIds?.includes(surface.id) && !['pass', 'skipped'].includes(entry.status))) {
     actions.push({ priority: 100, type: 'failed-check', surfaceId: surface.id, title: `Fix ${check.label || check.id}`, command: check.retryCommand || check.commandText || null, evidence: check.id });
@@ -317,10 +318,30 @@ function nextActionsForSurface(surface, evidence, checks) {
   for (const item of evidence.filter((entry) => entry.required && entry.status === 'stale')) {
     actions.push({ priority: 70, type: 'stale-evidence', surfaceId: surface.id, title: `Refresh ${item.kind || 'quality'} evidence`, evidence: item.path });
   }
-  if (gradeToPoints(surface.currentGrade) < gradeToPoints('A')) {
-    actions.push({ priority: 40 + Math.max(0, gradeToPoints('A') - gradeToPoints(surface.currentGrade)), type: 'grade-gap', surfaceId: surface.id, title: `Close the ${surface.currentGrade} to A gap for ${surface.label}`, detail: surface.stricterABar });
+  if (gradeToPoints(effectiveGrade) < gradeToPoints('A')) {
+    actions.push({ priority: 40 + Math.max(0, gradeToPoints('A') - gradeToPoints(effectiveGrade)), type: 'grade-gap', surfaceId: surface.id, title: `Close the ${effectiveGrade} to A gap for ${surface.label}`, detail: surface.stricterABar });
   }
   return actions;
+}
+
+function valueAtJsonPath(value, jsonPath = '') {
+  return String(jsonPath).split('.').filter(Boolean).reduce((current, key) => current?.[key], value);
+}
+
+export function deriveSurfaceGrade(surface = {}, evidence = []) {
+  const source = surface.gradeSource;
+  if (!source?.path || !source.jsonPath) return { grade: surface.currentGrade, source: 'configured' };
+  const item = evidence.find((entry) => normalizePath(entry.path) === normalizePath(source.path));
+  if (!item?.exists || item.status === 'invalid') return { grade: surface.currentGrade, source: 'configured-fallback' };
+  try {
+    const json = JSON.parse(readFileSync(item.absolutePath, 'utf8'));
+    const grade = valueAtJsonPath(json, source.jsonPath);
+    return GRADE_POINTS.hasOwnProperty(grade)
+      ? { grade, source: source.path }
+      : { grade: surface.currentGrade, source: 'configured-fallback' };
+  } catch {
+    return { grade: surface.currentGrade, source: 'configured-fallback' };
+  }
 }
 
 function compareGrade(current, previous) {
@@ -349,7 +370,8 @@ export function buildPortfolio({
     const evidence = evidenceBySurface[surface.id] || [];
     const surfaceChecks = checkResults.filter((entry) => entry.surfaceIds?.includes(surface.id));
     const required = evidence.filter((entry) => entry.required);
-    let observedGrade = surface.currentGrade;
+    const derivedGrade = deriveSurfaceGrade(surface, evidence);
+    let observedGrade = derivedGrade.grade;
     const hasFailure = surfaceChecks.some((entry) => ['fail', 'timed-out'].includes(entry.status));
     const hasMissing = required.some((entry) => ['missing', 'invalid', 'insufficient'].includes(entry.status));
     const hasStale = required.some((entry) => entry.status === 'stale');
@@ -357,7 +379,7 @@ export function buildPortfolio({
     else if (hasStale) observedGrade = capGrade(observedGrade, 'B');
     const ranChecks = surfaceChecks.length > 0;
     const confidence = hasFailure || hasMissing ? 'low' : hasStale || !ranChecks ? 'medium' : 'high';
-    const surfaceActions = nextActionsForSurface(surface, evidence, checkResults);
+    const surfaceActions = nextActionsForSurface(surface, evidence, checkResults, observedGrade);
     actions.push(...surfaceActions);
     return {
       id: surface.id,
@@ -366,6 +388,7 @@ export function buildPortfolio({
       objective: surface.objective,
       stricterABar: surface.stricterABar,
       configuredGrade: surface.currentGrade,
+      gradeSource: derivedGrade.source,
       observedGrade,
       confidence,
       changed: changedIds.has(surface.id),

@@ -1,6 +1,6 @@
 # Material and Lighting Verification
 
-Generated: 2026-09-09T17:58:31.380Z
+Generated: 2026-09-10T06:00:20.779Z
 System version: 1.0.0
 Status: PASS
 
@@ -15,8 +15,8 @@ Status: PASS
 
 ## Integrated board metrics
 
-- ready: 132 draw calls, 5452 triangles, 8 resident textures, neutral rig.
-- danger: 132 draw calls, 6832 triangles, 2 resident textures, danger rig.
+- ready: 74 draw calls, 3444 triangles, 2 resident textures, neutral rig.
+- danger: 74 draw calls, 4824 triangles, 61 resident textures, danger rig.
 - Headless frame p95: 100 ms at 1x pixel ratio (balanced).
 
 ## Findings

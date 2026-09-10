@@ -41,7 +41,7 @@ const ACTIONS = [
   {
     name: 'Depart',
     color: 'border-signal-red/40',
-    desc: 'Leave from the landing site when the crew has recovered enough value. Depart is the strongest reduction when the forecast already names value or crew at risk, especially after route traits have shown the way home.',
+    desc: 'Leave from the landing site to end the expedition. Empty-handed departure saves the crew; recovered value determines how strong the outcome is. Depart is the clearest answer when the forecast already names value or crew at risk.',
   },
 ];
 

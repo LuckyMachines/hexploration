@@ -11,7 +11,8 @@ contract CharacterCard is AccessControlEnumerable {
         BreakDownCamp,
         Dig,
         Rest,
-        Help
+        Help,
+        Flee
     }
 
     bytes32 public constant VERIFIED_CONTROLLER_ROLE =
@@ -285,6 +286,8 @@ contract CharacterCard is AccessControlEnumerable {
             a = Action.Rest;
         } else if (compare(_action, "Help")) {
             a = Action.Help;
+        } else if (compare(_action, "Flee")) {
+            a = Action.Flee;
         }
         action[gameID][playerID] = a;
     }

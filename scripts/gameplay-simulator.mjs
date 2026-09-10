@@ -40,6 +40,7 @@ import {
   readOracleHistory,
   writeOracleReport,
 } from './gameplay-oracle-utils.mjs';
+import { terminalIntentPlan } from './gameplay-agent-policy-utils.mjs';
 import {
   applySetupForge,
   compareRequestedToActualSetup,
@@ -521,7 +522,9 @@ function getAdjacent(alias) {
   const pairs = odd
     ? [[col + 1, row], [col + 1, row + 1], [col, row + 1], [col - 1, row + 1], [col - 1, row], [col, row - 1]]
     : [[col + 1, row - 1], [col + 1, row], [col, row + 1], [col - 1, row], [col - 1, row - 1], [col, row - 1]];
-  return pairs.map(([c, r]) => `${c},${r}`);
+  return pairs
+    .filter(([c, r]) => c >= 0 && c < 10 && r >= 0 && r < 10)
+    .map(([c, r]) => `${c},${r}`);
 }
 
 function bigintReplacer(_, value) {
@@ -1010,7 +1013,21 @@ async function chooseAction(addresses, gameId, turn, playerIndex, player, before
   });
   const zoneIndex = beforeSnapshot?.activeZones?.zones?.indexOf(player.location) ?? -1;
   const canRestHere = zoneIndex >= 0 && Boolean(beforeSnapshot?.activeZones?.campsites?.[zoneIndex]);
+  const landingIndex = beforeSnapshot?.activeZones?.tiles?.findIndex((tile) => Number(tile) === 5) ?? -1;
+  const landingAlias = landingIndex >= 0 ? beforeSnapshot.activeZones.zones[landingIndex] : '';
   const hasArtifact = Boolean(player.inventory?.artifact) || (player.artifacts?.length || 0) > 0;
+  const terminalPlan = terminalIntentPlan({
+    turn,
+    totalTurns: runConfig.turns,
+    windowTurns: runConfig.balance?.knobs?.terminalIntentWindowTurns ?? 4,
+    requireTerminalOutcome: runConfig.scenarioDefinition?.evidenceRequirements?.requireTerminalOutcome === true,
+    player,
+    snapshot: beforeSnapshot,
+    adjacentFor: getAdjacent,
+    actionMove: ACTION.MOVE,
+    actionFlee: ACTION.FLEE,
+  });
+  if (terminalPlan) candidates.push(terminalPlan);
   if (isInDanger) {
     if (canRestHere) {
       candidates.push({
@@ -1032,8 +1049,13 @@ async function chooseAction(addresses, gameId, turn, playerIndex, player, before
     balance: runConfig.balance,
   });
   if (primary.action === ACTION.MOVE) primary.options = movePath;
-  if (primary.action !== ACTION.REST || canRestHere) {
-    if (primary.action !== ACTION.DIG || !hasArtifact) candidates.push(primary);
+  if (
+    (primary.action !== ACTION.REST || canRestHere)
+    && (primary.action !== ACTION.DIG || !hasArtifact)
+    && (primary.action !== ACTION.SETUP_CAMP || !canRestHere)
+    && (primary.action !== ACTION.FLEE || player.location === landingAlias)
+  ) {
+    candidates.push(primary);
   }
   if ((runConfig.balance?.knobs?.movementFallbackPriority || 1) >= 1) {
     candidates.push({ action: ACTION.MOVE, options: movePath, reason: 'valid move fallback' });
@@ -1094,7 +1116,10 @@ async function submitTurnActions(addresses, gameId, queueId, turn, seats, before
     }
 
     const player = beforeSnapshot.players.find((entry) => String(entry.playerId) === String(seat.playerId));
-    if (player && !player.isActive) {
+    if (player && (
+      !player.isActive
+      || ['movement', 'agility', 'dexterity'].some((stat) => Number(player.stats?.[stat] ?? 0) <= 0)
+    )) {
       submissions.push({
         playerId: String(seat.playerId),
         action: ACTION.IDLE,

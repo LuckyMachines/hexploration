@@ -117,6 +117,14 @@ describe('art pipeline contracts', () => {
     assert.ok(result.errors.some((error) => error.includes('duplicate output path')));
   });
 
+  test('delegates generated material maps to the material-system registry', () => {
+    const withoutDelegation = structuredClone(manifest);
+    withoutDelegation.delegatedRoots = [];
+    const unmanaged = validateArtSystem(direction, withoutDelegation, { repoRoot, checkFiles: true });
+    assert.ok(unmanaged.errors.some((error) => error.includes('app/public/images/art/materials/')));
+    assert.deepEqual(validateArtSystem(direction, manifest, { repoRoot, checkFiles: true }).errors, []);
+  });
+
   test('approved generated assets fail validation when their selected prompt drifts', () => {
     const changed = structuredClone(manifest);
     const asset = changed.assets.find((item) => item.id === 'relic-sunstone-lens-focal');

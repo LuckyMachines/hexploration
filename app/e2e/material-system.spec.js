@@ -112,13 +112,15 @@ test.describe('material and lighting system', () => {
     await expect(canvas).toBeVisible({ timeout: 60_000 });
     await canvas.scrollIntoViewIfNeeded();
     await expect.poll(() => canvas.getAttribute('data-frame-p95'), { timeout: 60_000 }).not.toBeNull();
+    await expect.poll(() => canvas.getAttribute('data-render-p95'), { timeout: 60_000 }).not.toBeNull();
     const performance = await canvas.evaluate((element) => ({
       frameP95Ms: Number(element.dataset.frameP95),
+      renderP95Ms: Number(element.dataset.renderP95),
       pixelRatio: Number(element.dataset.pixelRatio),
       quality: element.dataset.boardQuality,
     }));
-    const metFrameBudget = performance.frameP95Ms <= materialSystem.qualityContract.performance.maxFrameP95Ms;
-    expect(metFrameBudget || performance.pixelRatio === 1).toBe(true);
+    expect(performance.frameP95Ms).toBeLessThanOrEqual(materialSystem.qualityContract.performance.maxHeadlessFrameP95Ms);
+    expect(performance.renderP95Ms).toBeLessThanOrEqual(materialSystem.qualityContract.performance.maxRenderP95Ms);
     expect(performance.pixelRatio).toBeGreaterThanOrEqual(1);
     expect(performance.quality).toMatch(/high|balanced/);
     await fs.writeFile(

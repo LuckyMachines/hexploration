@@ -3,6 +3,7 @@ pragma solidity 0.8.34;
 
 import "./CharacterCard.sol";
 import "./XenovoyaBoard.sol";
+import "@luckymachines/game-core/contracts/src/v0.0/PlayerRegistry.sol";
 
 library StateUpdateHelpers {
     function checkGameOver(
@@ -23,6 +24,24 @@ library StateUpdateHelpers {
             }
         }
         return allDead;
+    }
+
+    function noActiveSurvivors(
+        address gameBoardAddress,
+        uint256 gameID
+    ) internal view returns (bool) {
+        XenovoyaBoard board = XenovoyaBoard(gameBoardAddress);
+        PlayerRegistry registry = PlayerRegistry(board.prAddress());
+        CharacterCard cc = CharacterCard(board.characterCard());
+        uint256 registrations = registry.totalRegistrations(gameID);
+        if (registrations == 0) return false;
+        for (uint256 playerID = 1; playerID <= registrations; playerID++) {
+            if (
+                registry.isActive(gameID, playerID) &&
+                !cc.playerIsDead(gameID, playerID)
+            ) return false;
+        }
+        return true;
     }
 
     function subToZero(

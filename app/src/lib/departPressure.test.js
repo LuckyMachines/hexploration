@@ -53,7 +53,11 @@ describe('departPressure', () => {
 
   it('explains escape requirements directly', () => {
     expect(escapeReadinessFor({ atLanding: false, recoveredValue: 1, distanceToLanding: 2 }).missing).toContain('landing');
-    expect(escapeReadinessFor({ atLanding: true, recoveredValue: 0, pressure: 10 }).missing).toContain('value');
+    expect(escapeReadinessFor({ atLanding: true, recoveredValue: 0, pressure: 10 })).toMatchObject({
+      id: 'empty',
+      canFlee: true,
+      missingForReward: ['value'],
+    });
     expect(escapeReadinessFor({ atLanding: true, recoveredValue: 1, pressure: 90 }).label).toBe('High-risk escape');
   });
 

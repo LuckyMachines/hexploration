@@ -4,8 +4,12 @@ The expedition board is rendered as a responsive Three.js diorama while retainin
 
 ## Runtime architecture
 
-- `app/src/components/board/HexGrid.jsx` remains the source of gameplay truth. It derives the same cells, routes, reachable zones, players, landing site, and intent state used by both renderers.
-- `app/src/components/board/ThreeBoard.jsx` owns WebGL setup, scene lifecycle, terrain meshes, lighting, picking, route geometry, state effects, player standees, and biome cutouts.
+- `app/src/components/board/boardViewModel.js` is the versioned projection boundary between exact or live game state and every board renderer. `HexGrid.jsx` produces this model; `ThreeBoard.jsx` only renders it.
+- `app/src/components/board/boardSceneState.js` determines which independently reconciled scene layers changed. Terrain and landmarks persist while affordance, intent, route, party, and assistance layers rebuild only when their signatures change.
+- `app/src/components/board/boardBeatDirector.js` turns phase and action state into lighting, sound, motion, announcements, and optional camera suggestions. It never moves the camera automatically.
+- `app/src/components/board/boardInteraction.js` owns picking, drag thresholds, camera bounds, and preset targets.
+- `app/src/components/board/boardAssetRegistry.js` records every expected, loaded, failed, and transferred board asset.
+- `app/src/components/board/ThreeBoard.jsx` owns WebGL setup and lifecycle. Repeated terrain uses instanced meshes and transient marker geometry is pooled.
 - `app/src/components/board/boardWorld.js` owns deterministic grid-to-world placement, terrain elevation tokens, camera fitting, and stable procedural seeds.
 - Three.js is dynamically imported only when a board mounts. It is not part of the initial marketing-site bundle.
 - The design-system route mounts at most one live Three.js board. Comparison, journey, and responsive specimens use lightweight state summaries so the review tool does not multiply render loops and WebGL contexts.
@@ -21,7 +25,7 @@ The expedition board is rendered as a responsive Three.js diorama while retainin
 - Landing sites and campsites use the same cutout language through a survey beacon and a low expedition shelter.
 - Prop scale, horizontal mirroring, and placement vary deterministically by tile. Props hide whenever an explorer occupies their tile so the player silhouette and route remain primary.
 - Approved discovery-bloom and redline-pressure textures are projected into world space for ready and danger emphasis. UI labels, routes, coordinates, and interaction state remain code-native.
-- Confirmed route selection may lift tiles and adds gold rings. Hover and intent previews use light and ring feedback only: they never move or scale the base tiles, swap the environment backplate, or nudge the camera. Reachability adds cyan survey light. Routes rise over the terrain with luminous waypoints. Danger changes the world fog and fill light rather than relying on copy alone.
+- Hover, focus, preview, selection, invalid intent, and committed state use overlays, rings, routes, labels, and light. They never move or scale base tiles, swap the environment backplate, or nudge the camera. Reachability adds cyan survey light. Routes rise over the terrain with luminous waypoints. Danger changes the world fog and fill light rather than relying on copy alone.
 - Reduced-motion preferences stop floating pawns and ambient movement while preserving state clarity. The camera never drifts automatically, regardless of motion preference.
 
 ## Interaction and accessibility
@@ -40,6 +44,11 @@ Terrain materials, state effects, character standees, and biome props are delibe
 
 ## Verification
 
-- Unit tests cover centered world geometry, terrain elevation, camera fitting, and the SVG fallback. Playwright verifies that hover leaves the camera pose unchanged and that rotate, pan, zoom, and reset produce bounded camera state changes.
+- The Board Lab at `/board-lab` exposes ten deterministic board states, exact-engine replay frames, camera presets, quality controls, beat metadata, and a renderer remount control while mounting only one live canvas.
+- Unit tests cover the contract, exact replay projection, view-model normalization, layer signatures, instanced picking, camera bounds, immutable transforms, asset failure retention, board quality, departure policy, and fallback behavior.
+- Playwright captures every required state at desktop and mobile sizes. It verifies accessibility, pointer and keyboard parity, stable terrain and camera state, context restoration, bounded camera controls, renderer remount disposal, asset completion, draw calls, triangles, frame timing, render timing, forced colors, exact-engine replay rendering, and a 100-tile late-game density case.
+- Large boards preserve all gameplay-significant landmarks while deterministically capping decorative cutouts and omitting their secondary backing, contact-shadow, and point-light passes. Terrain remains fully instanced; the 100-tile evidence scene stays inside the same 90-draw-call contract as the normal board.
 - Playwright waits for `data-renderer-state="ready"` after generated textures are loaded before visual comparison captures.
-- The design-system gameplay view is the canonical same-composition review surface for ready, waiting, resolving, danger, and complete states.
+- `npm run board:refresh` regenerates exact replays, captures Chromium evidence, and rebuilds the report. `npm run board:cross-browser` checks critical behavior in Firefox and WebKit. `npm run board:baseline` promotes only passing metrics, and `npm run board:compare` reports regressions against that approved baseline.
+- Use `npm run board:refresh -- --update-snapshots` only after visually reviewing an intentional board change.
+- The canonical evidence and critique live under `artifacts/board-system`, `reports/board-system`, and `docs/game-board-visual-review.md`.

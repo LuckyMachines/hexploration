@@ -200,7 +200,7 @@ export function deriveExpeditionArc(context = {}) {
   if (ctx.recoveredValue > 0) departureReasons.push('value-recovered');
   if (nearLanding) departureReasons.push(ctx.currentDistanceToLanding === 0 ? 'at-landing' : 'near-landing');
   if (stableRoute) departureReasons.push('route-stable');
-  if (['clean', 'close', 'artifact-risk', 'not-ready'].includes(ctx.costType)) departureReasons.push(ctx.costType === 'artifact-risk' ? 'cost-risk' : 'cost-clean');
+  if (['clean', 'close', 'empty-handed', 'artifact-risk', 'not-ready', 'value-forfeit'].includes(ctx.costType)) departureReasons.push(['artifact-risk', 'value-forfeit'].includes(ctx.costType) ? 'cost-risk' : 'cost-clean');
   if (ctx.recoveredValue > 0 && (nearLanding || stableRoute) && ctx.pressure < 70 && ['clean', 'close', 'artifact-risk', 'not-ready', 'unknown'].includes(ctx.costType)) {
     candidates.push(withDefinition(EXPEDITION_ARC_IDS.DEPARTURE_WINDOW, ctx, departureReasons, [
       'value-recovered',

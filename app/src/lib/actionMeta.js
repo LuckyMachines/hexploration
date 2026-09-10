@@ -71,7 +71,7 @@ export const ACTION_META = {
     tone: 'red',
     tool: 'flare',
     stance: 'escape',
-    copy: 'Depart from the landing zone with enough recovered value.',
+    copy: 'Depart from the landing zone; recovered value determines the outcome.',
   },
 };
 

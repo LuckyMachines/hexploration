@@ -134,6 +134,19 @@ export function validateArtSystem(direction, manifest, options = {}) {
   const assetMap = uniqueMap(manifest.assets, 'asset', errors);
   const compositionMap = uniqueMap(manifest.compositions, 'composition', errors);
   const outputPaths = new Set();
+  const normalizedManagedRoots = (manifest.managedRoots || []).map((root) => root.replaceAll('\\', '/').replace(/\/+$/, ''));
+  const delegatedRoots = (manifest.delegatedRoots || []).map((root) => root.replaceAll('\\', '/').replace(/\/+$/, ''));
+
+  for (const delegatedRoot of delegatedRoots) {
+    try {
+      resolveRepoPath(repoRoot, delegatedRoot);
+      if (!normalizedManagedRoots.some((managedRoot) => delegatedRoot === managedRoot || delegatedRoot.startsWith(`${managedRoot}/`))) {
+        errors.push(`Delegated art root is not contained by a managed root: ${delegatedRoot}`);
+      }
+    } catch (error) {
+      errors.push(error.message);
+    }
+  }
 
   if (gateMap.size < 5) errors.push('At least five quality gates are required');
 
@@ -271,6 +284,7 @@ export function validateArtSystem(direction, manifest, options = {}) {
       for (const filePath of walk(absoluteRoot)) {
         if (!imageExtensions.has(path.extname(filePath).toLowerCase())) continue;
         const relativePath = path.relative(repoRoot, filePath).replaceAll('\\', '/');
+        if (delegatedRoots.some((delegatedRoot) => relativePath === delegatedRoot || relativePath.startsWith(`${delegatedRoot}/`))) continue;
         if (!outputPaths.has(relativePath)) errors.push(`Unmanaged art file: ${relativePath}`);
       }
     }

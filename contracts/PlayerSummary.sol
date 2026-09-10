@@ -121,6 +121,8 @@ contract PlayerSummary is Utilities, GameWallets {
             action = "Rest";
         } else if (a == CharacterCard.Action.Help) {
             action = "Help";
+        } else if (a == CharacterCard.Action.Flee) {
+            action = "Flee";
         }
     }
 

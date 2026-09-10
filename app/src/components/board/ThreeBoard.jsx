@@ -23,6 +23,11 @@ import {
   setLightingRig,
   updateLightingSystem,
 } from './lightingRigs';
+import { attachBoardAssetRegistry, createBoardAssetRegistry } from './boardAssetRegistry';
+import { resolveBoardBeat } from './boardBeatDirector';
+import { cameraPresetAliases, clampBoardTarget, pointerExceededDragThreshold, resolvePickedAlias } from './boardInteraction';
+import { boardLayerSignatures, baseTileTransform } from './boardSceneState';
+import { deriveBoardViewModel } from './boardViewModel';
 const STATE_FX_TEXTURES = {
   discovery: '/images/art/fx/discovery-bloom.png',
   danger: '/images/art/fx/redline-pressure.png',
@@ -121,37 +126,34 @@ function addCutoutProp(THREE, group, tile, texture, seed, options = {}) {
   const horizontalOffset = options.x ?? (((seed >> 5) & 7) / 7 - 0.5) * 0.18;
   const depthOffset = options.z ?? (((seed >> 9) & 7) / 7 - 0.5) * 0.12;
 
-  const contactShadow = new THREE.Mesh(
-    new THREE.CircleGeometry(0.37, 24),
-    new THREE.MeshBasicMaterial({
-      color: '#020503',
-      transparent: true,
-      opacity: 0.38,
-      depthWrite: false,
-    }),
-  );
-  contactShadow.rotation.x = -Math.PI / 2;
-  contactShadow.scale.set(baseWidth * 0.92, baseWidth * 0.36, 1);
-  contactShadow.position.set(horizontalOffset, 0.012, depthOffset);
-  prop.add(contactShadow);
+  if (!options.simplified) {
+    const contactShadow = new THREE.Mesh(
+      new THREE.CircleGeometry(0.37, 24),
+      new THREE.MeshBasicMaterial({ color: '#020503', transparent: true, opacity: 0.38, depthWrite: false }),
+    );
+    contactShadow.rotation.x = -Math.PI / 2;
+    contactShadow.scale.set(baseWidth * 0.92, baseWidth * 0.36, 1);
+    contactShadow.position.set(horizontalOffset, 0.012, depthOffset);
+    prop.add(contactShadow);
 
-  const backingTexture = texture.clone();
-  backingTexture.needsUpdate = true;
-  const backing = new THREE.Sprite(new THREE.SpriteMaterial({
-    map: backingTexture,
-    color: '#111913',
-    transparent: true,
-    opacity: 0.92,
-    alphaTest: 0.08,
-    depthWrite: false,
-    toneMapped: true,
-    fog: true,
-  }));
-  backing.center.set(0.5, 0.1);
-  backing.position.set(horizontalOffset, 0.024, depthOffset);
-  backing.scale.set(baseWidth * scaleVariation * 1.055 * mirror, baseHeight * scaleVariation * 1.055, 1);
-  backing.renderOrder = 1;
-  prop.add(backing);
+    const backingTexture = texture.clone();
+    backingTexture.needsUpdate = true;
+    const backing = new THREE.Sprite(new THREE.SpriteMaterial({
+      map: backingTexture,
+      color: '#111913',
+      transparent: true,
+      opacity: 0.92,
+      alphaTest: 0.08,
+      depthWrite: false,
+      toneMapped: true,
+      fog: true,
+    }));
+    backing.center.set(0.5, 0.1);
+    backing.position.set(horizontalOffset, 0.024, depthOffset);
+    backing.scale.set(baseWidth * scaleVariation * 1.055 * mirror, baseHeight * scaleVariation * 1.055, 1);
+    backing.renderOrder = 1;
+    prop.add(backing);
+  }
 
   const faceTexture = texture.clone();
   faceTexture.needsUpdate = true;
@@ -172,7 +174,7 @@ function addCutoutProp(THREE, group, tile, texture, seed, options = {}) {
   prop.add(face);
 
   const lightColor = options.lightColor || (tile.tileType === Tile.RELIC ? '#b994e6' : '');
-  if (lightColor) {
+  if (lightColor && !options.simplified) {
     const relicLight = new THREE.PointLight(lightColor, options.lightIntensity || 0.72, 1.8, 2);
     relicLight.position.set(horizontalOffset, 0.42, depthOffset);
     prop.add(relicLight);
@@ -184,7 +186,7 @@ function addCutoutProp(THREE, group, tile, texture, seed, options = {}) {
   return prop;
 }
 
-function addTerrainLandmarks(THREE, tile, mesh, propTexture, campsiteTexture) {
+function addTerrainLandmarks(THREE, tile, mesh, propTexture, campsiteTexture, { simplified = false } = {}) {
   if (!tile.revealed || tile.tileType === Tile.NONE) return;
   const group = new THREE.Group();
   group.position.y = tile.height / 2 + 0.02;
@@ -197,8 +199,8 @@ function addTerrainLandmarks(THREE, tile, mesh, propTexture, campsiteTexture) {
     propTexture,
     seed,
     tile.tileType === Tile.LANDING
-      ? { x: -0.34, z: 0.12, mirror: false, persistent: true, lightColor: '#4c91db', lightIntensity: 0.58 }
-      : {},
+      ? { x: -0.34, z: 0.12, mirror: false, persistent: true, lightColor: '#4c91db', lightIntensity: 0.58, simplified }
+      : { simplified },
   ) : null;
 
   if (!propTexture && tile.tileType === Tile.JUNGLE) {
@@ -324,6 +326,7 @@ function addTerrainLandmarks(THREE, tile, mesh, propTexture, campsiteTexture) {
       kind: 'campsite-cutout',
       lightColor: '#e8c860',
       lightIntensity: 0.45,
+      simplified,
     });
   } else if (tile.hasCampsite) {
     const tent = new THREE.Mesh(
@@ -360,21 +363,6 @@ function createPawn(THREE, color, isCurrent, standeeTexture, standeeProfile = {}
   base.position.y = 0.06;
   base.castShadow = true;
   group.add(base);
-
-  const baseRim = new THREE.Mesh(
-    new THREE.TorusGeometry(0.235, 0.018, 8, 28),
-    material(THREE, color, {
-      emissive: color,
-      emissiveIntensity: isCurrent ? 1.5 : 0.45,
-      transparent: true,
-      opacity: isCurrent ? 0.92 : 0.62,
-      depthWrite: false,
-      roughness: 0.38,
-    }),
-  );
-  baseRim.rotation.x = Math.PI / 2;
-  baseRim.position.y = 0.125;
-  group.add(baseRim);
 
   if (standeeTexture) {
     const backingTexture = standeeTexture.clone();
@@ -444,7 +432,7 @@ function createPawn(THREE, color, isCurrent, standeeTexture, standeeProfile = {}
   return group;
 }
 
-function addRoute(THREE, group, aliases, worldByAlias, color, opacity = 1) {
+function addRoute(THREE, group, aliases, worldByAlias, color, opacity = 1, showWaypoints = true) {
   const points = aliases
     .map((alias) => worldByAlias.get(alias))
     .filter(Boolean)
@@ -465,7 +453,7 @@ function addRoute(THREE, group, aliases, worldByAlias, color, opacity = 1) {
   );
   route.castShadow = true;
   group.add(route);
-  points.slice(1).forEach((point) => {
+  if (showWaypoints) points.slice(1).forEach((point) => {
     const waypoint = new THREE.Mesh(
       new THREE.SphereGeometry(0.105, 10, 8),
       material(THREE, color, {
@@ -497,10 +485,10 @@ function addRescueLink(THREE, group, tile, helperSlot, targetSlot, total) {
   const start = playerSlotPosition(THREE, tile, helperSlot, total);
   const end = playerSlotPosition(THREE, tile, targetSlot, total);
   const midpoint = start.clone().lerp(end, 0.5);
-  midpoint.y += 0.48;
+  midpoint.y += 1.5;
   const curve = new THREE.QuadraticBezierCurve3(start, midpoint, end);
   const beam = new THREE.Mesh(
-    new THREE.TubeGeometry(curve, 28, 0.035, 8, false),
+    new THREE.TubeGeometry(curve, 32, 0.05, 8, false),
     material(THREE, '#b994e6', {
       emissive: '#9060c0',
       emissiveIntensity: 2.8,
@@ -508,9 +496,25 @@ function addRescueLink(THREE, group, tile, helperSlot, targetSlot, total) {
       transparent: true,
       opacity: 0.92,
       depthWrite: false,
+      depthTest: false,
     }),
   );
+  beam.renderOrder = 50;
   rescue.add(beam);
+
+  const relay = new THREE.Mesh(
+    new THREE.OctahedronGeometry(0.1, 0),
+    material(THREE, '#d8c1f4', {
+      emissive: '#9060c0',
+      emissiveIntensity: 3.4,
+      roughness: 0.18,
+      depthWrite: false,
+      depthTest: false,
+    }),
+  );
+  relay.position.copy(midpoint);
+  relay.renderOrder = 51;
+  rescue.add(relay);
 
   [start, end].forEach((position, index) => {
     const node = new THREE.Mesh(
@@ -519,9 +523,11 @@ function addRescueLink(THREE, group, tile, helperSlot, targetSlot, total) {
         emissive: index === 0 ? '#9060c0' : '#40a080',
         emissiveIntensity: 3,
         roughness: 0.2,
+        depthTest: false,
       }),
     );
     node.position.copy(position);
+    node.renderOrder = 51;
     rescue.add(node);
   });
 
@@ -543,106 +549,88 @@ function addRescueLink(THREE, group, tile, helperSlot, targetSlot, total) {
   return rescue;
 }
 
-function addDynamicWorld(THREE, context, state) {
-  clearGroup(context.dynamicGroup);
-  context.animated = [];
-  context.isResolving = Boolean(state.isResolving);
-  setLightingRig(THREE, context.lighting, resolveLightingRigId(state), { immediate: context.reducedMotion });
+function resetDynamicLayer(context, layerId) {
+  const layer = context.layers[layerId];
+  for (const child of [...layer.children]) {
+    layer.remove(child);
+    const poolKey = child.userData?.poolKey;
+    if (poolKey) {
+      child.visible = false;
+      if (!context.objectPools.has(poolKey)) context.objectPools.set(poolKey, []);
+      context.objectPools.get(poolKey).push(child);
+    } else disposeObject(child);
+  }
+  context.animated = context.animated.filter((entry) => entry.layer !== layerId);
+}
+
+function pooledObject(context, poolKey, create) {
+  const pool = context.objectPools.get(poolKey);
+  const object = pool?.pop() || create();
+  object.userData.poolKey = poolKey;
+  object.visible = true;
+  return object;
+}
+
+function animateInLayer(context, layerId, entry) {
+  context.animated.push({ ...entry, layer: layerId });
+}
+
+function buildAffordanceLayer(THREE, context, state) {
+  const group = context.layers.affordances;
   const selected = new Set(state.selectedPath || []);
   const reachable = new Set(state.reachableAliases || []);
-  const occupiedAliases = new Set(
-    Object.entries(state.playerLocationMap || {})
-      .filter(([, playerIndices]) => playerIndices?.length)
-      .map(([alias]) => alias),
-  );
-  context.propLandmarks.forEach((prop, alias) => {
-    prop.visible = prop.userData.persistent || !occupiedAliases.has(alias);
-  });
-
-  context.tileMeshes.forEach((mesh) => {
-    const tile = mesh.userData.tile;
-    const top = mesh.material[1];
-    mesh.position.y = tile.height / 2;
-    mesh.scale.set(1, 1, 1);
-    top.emissive.set(WORLD_TERRAIN[tile.revealed ? tile.tileType : Tile.NONE].emissive);
-    top.emissiveIntensity = tile.revealed ? 0.08 : 0.015;
+  for (const tile of context.worldByAlias.values()) {
     if (reachable.has(tile.alias)) {
-      top.emissiveIntensity = 0.24;
-      const reachableHalo = new THREE.Mesh(
+      const reachableHalo = pooledObject(context, 'reachable-halo', () => new THREE.Mesh(
         new THREE.CylinderGeometry(0.76, 0.76, 0.016, 6),
-        material(THREE, '#6bd0c4', {
-          emissive: '#4ebcad',
-          emissiveIntensity: 1.4,
-          transparent: true,
-          opacity: 0.16,
-          depthWrite: false,
-        }),
-      );
+        material(THREE, '#6bd0c4', { emissive: '#4ebcad', emissiveIntensity: 1.4, transparent: true, opacity: 0.16, depthWrite: false }),
+      ));
+      reachableHalo.scale.set(1, 1, 1);
       reachableHalo.position.set(tile.x, tile.height + 0.025, tile.z);
       reachableHalo.rotation.y = Math.PI / 6;
-      context.dynamicGroup.add(reachableHalo);
+      group.add(reachableHalo);
     }
     if (selected.has(tile.alias)) {
-      top.emissive.set('#c4a64a');
-      top.emissiveIntensity = 0.48;
-      mesh.position.y += 0.08;
-      const selectedHalo = new THREE.Mesh(
+      const selectedHalo = pooledObject(context, 'selected-halo', () => new THREE.Mesh(
         new THREE.TorusGeometry(0.66, 0.025, 8, 36),
-        material(THREE, '#e8c860', {
-          emissive: '#c4a64a',
-          emissiveIntensity: 1.7,
-          transparent: true,
-          opacity: 0.78,
-          depthWrite: false,
-        }),
-      );
+        material(THREE, '#e8c860', { emissive: '#c4a64a', emissiveIntensity: 1.7, transparent: true, opacity: 0.78, depthWrite: false }),
+      ));
+      selectedHalo.scale.set(1, 1, 1);
       selectedHalo.rotation.x = Math.PI / 2;
       selectedHalo.position.set(tile.x, tile.height + 0.19, tile.z);
-      context.dynamicGroup.add(selectedHalo);
+      group.add(selectedHalo);
     }
     if (tile.alias === state.intentAlias) {
-      top.emissive.set(state.isDanger ? '#d44040' : '#8ad9d1');
-      top.emissiveIntensity = 0.72;
-      const ring = new THREE.Mesh(
-        new THREE.TorusGeometry(0.75, 0.028, 8, 42),
-        material(THREE, state.isDanger ? '#ef6257' : '#8ad9d1', {
-          emissive: state.isDanger ? '#d44040' : '#4ebcad',
-          emissiveIntensity: 2,
-          transparent: true,
-          opacity: 0.84,
-          depthWrite: false,
-        }),
-      );
+      const invalid = tile.alias === state.invalidAlias;
+      const color = invalid || state.isDanger ? '#ef6257' : '#8ad9d1';
+      const ring = pooledObject(context, `intent-ring:${invalid ? 'invalid' : state.isDanger ? 'danger' : 'normal'}`, () => new THREE.Mesh(
+        new THREE.TorusGeometry(invalid ? 0.78 : 0.75, invalid ? 0.045 : 0.028, 8, 42),
+        material(THREE, color, { emissive: color, emissiveIntensity: 2, transparent: true, opacity: 0.84, depthWrite: false }),
+      ));
+      ring.scale.set(1, 1, 1);
       ring.rotation.x = Math.PI / 2;
       ring.position.set(tile.x, tile.height + 0.18, tile.z);
-      ring.userData.kind = 'pulse';
-      context.dynamicGroup.add(ring);
-      context.animated.push({ object: ring, kind: 'pulse', baseY: ring.position.y });
+      group.add(ring);
+      animateInLayer(context, 'affordances', { object: ring, kind: 'pulse', baseY: ring.position.y });
     }
-  });
+  }
+}
 
+function buildIntentLayer(THREE, context, state) {
+  const group = context.layers.intent;
   const intentTile = context.worldByAlias.get(state.intentAlias);
   const stateFxTexture = context.fxTextures[state.isDanger ? 'danger' : 'discovery'];
   if (intentTile && stateFxTexture) {
     const stateFx = new THREE.Mesh(
       new THREE.PlaneGeometry(2.5, 1.66),
-      new THREE.MeshBasicMaterial({
-        map: stateFxTexture.clone(),
-        color: 0xffffff,
-        transparent: true,
-        opacity: state.isDanger ? 0.64 : 0.5,
-        depthWrite: false,
-        blending: THREE.AdditiveBlending,
-        side: THREE.DoubleSide,
-      }),
+      new THREE.MeshBasicMaterial({ map: stateFxTexture.clone(), color: 0xffffff, transparent: true, opacity: state.isDanger ? 0.64 : 0.5, depthWrite: false, blending: THREE.AdditiveBlending, side: THREE.DoubleSide }),
     );
     stateFx.material.map.needsUpdate = true;
     stateFx.rotation.x = -Math.PI / 2;
     stateFx.rotation.z = state.isDanger ? -0.42 : 0.18;
     stateFx.position.set(intentTile.x, intentTile.height + 0.235, intentTile.z);
-    context.dynamicGroup.add(stateFx);
+    group.add(stateFx);
   }
-
   const encounterTexture = state.isDanger && intentTile
     ? intentTile.tileType === Tile.DESERT
       ? context.encounterTextures.emberglassScuttler
@@ -654,133 +642,114 @@ function addDynamicWorld(THREE, context, state) {
     const encounterPreview = new THREE.Group();
     encounterPreview.position.set(intentTile.x, intentTile.height + 0.03, intentTile.z);
     addCutoutProp(THREE, encounterPreview, intentTile, encounterTexture, seedForAlias(intentTile.alias) + 67, {
-      scale: intentTile.tileType === Tile.DESERT ? [0.72, 0.58] : [0.82, 0.58],
-      x: 0.26,
-      z: -0.18,
-      mirror: false,
-      persistent: true,
-      lightColor: intentTile.tileType === Tile.DESERT ? '#e8a243' : '#8ad9d1',
-      lightIntensity: 0.36,
-      kind: 'encounter-preview',
+      scale: intentTile.tileType === Tile.DESERT ? [0.72, 0.58] : [0.82, 0.58], x: 0.26, z: -0.18, mirror: false, persistent: true,
+      lightColor: intentTile.tileType === Tile.DESERT ? '#e8a243' : '#8ad9d1', lightIntensity: 0.36, kind: 'encounter-preview',
     });
-    context.dynamicGroup.add(encounterPreview);
-    context.animated.push({ object: encounterPreview, kind: 'encounter-preview', baseY: encounterPreview.position.y });
+    group.add(encounterPreview);
+    animateInLayer(context, 'intent', { object: encounterPreview, kind: 'encounter-preview', baseY: encounterPreview.position.y });
   }
-
-  const isPreviewingNewStep = (state.previewPath?.length || 0) > (state.selectedPath?.length || 0);
+  const isPreviewingNewStep = state.signals?.isPreviewing ?? ((state.previewPath?.length || 0) > (state.selectedPath?.length || 0));
   if (intentTile && isPreviewingNewStep && context.routeForkTexture) {
     const routeFork = new THREE.Group();
     routeFork.position.set(intentTile.x, intentTile.height + 0.03, intentTile.z);
     addCutoutProp(THREE, routeFork, intentTile, context.routeForkTexture, seedForAlias(intentTile.alias) + 89, {
-      scale: [0.42, 0.72],
-      x: -0.34,
-      z: 0.16,
-      mirror: false,
-      persistent: true,
-      lightColor: '#e8c860',
-      lightIntensity: 0.28,
-      kind: 'route-fork-preview',
+      scale: [0.42, 0.72], x: -0.34, z: 0.16, mirror: false, persistent: true, lightColor: '#e8c860', lightIntensity: 0.28, kind: 'route-fork-preview',
     });
-    context.dynamicGroup.add(routeFork);
+    group.add(routeFork);
   }
-
-  const relicTexture = intentTile && seedForAlias(intentTile.alias) % 2
-    ? context.atlasTexture
-    : context.tideglassTexture;
+  const relicTexture = intentTile && seedForAlias(intentTile.alias) % 2 ? context.atlasTexture : context.tideglassTexture;
   if (intentTile && intentTile.tileType === Tile.RELIC && relicTexture) {
     const relicPreview = new THREE.Group();
     relicPreview.position.set(intentTile.x, intentTile.height + 0.025, intentTile.z);
     addCutoutProp(THREE, relicPreview, intentTile, relicTexture, seedForAlias(intentTile.alias), {
-      scale: state.isResolving ? [0.76, 0.9] : [0.62, 0.76],
-      mirror: false,
-      persistent: true,
-      lightColor: '#b994e6',
-      lightIntensity: state.isResolving ? 1.2 : 0.74,
-      kind: 'atlas-spindle-preview',
+      scale: state.isResolving ? [0.76, 0.9] : [0.62, 0.76], mirror: false, persistent: true,
+      lightColor: '#b994e6', lightIntensity: state.isResolving ? 1.2 : 0.74, kind: 'atlas-spindle-preview',
     });
-    context.dynamicGroup.add(relicPreview);
-    context.animated.push({ object: relicPreview, kind: 'relic-preview', baseY: relicPreview.position.y });
+    group.add(relicPreview);
+    animateInLayer(context, 'intent', { object: relicPreview, kind: 'relic-preview', baseY: relicPreview.position.y });
   }
-
   if (intentTile && state.isResolving) {
     for (let index = 0; index < 3; index += 1) {
       const wave = new THREE.Mesh(
         new THREE.TorusGeometry(0.62, 0.022, 8, 48),
-        material(THREE, state.isDanger ? '#ef6257' : '#e8c860', {
-          emissive: state.isDanger ? '#d44040' : '#c4a64a',
-          emissiveIntensity: 2.2,
-          transparent: true,
-          opacity: 0.72,
-          depthWrite: false,
-        }),
+        material(THREE, state.isDanger ? '#ef6257' : '#e8c860', { emissive: state.isDanger ? '#d44040' : '#c4a64a', emissiveIntensity: 2.2, transparent: true, opacity: 0.72, depthWrite: false }),
       );
       wave.rotation.x = Math.PI / 2;
       wave.position.set(intentTile.x, intentTile.height + 0.2 + index * 0.012, intentTile.z);
-      context.dynamicGroup.add(wave);
-      context.animated.push({ object: wave, kind: 'resolve-wave', baseY: wave.position.y, delay: index / 3 });
+      group.add(wave);
+      animateInLayer(context, 'intent', { object: wave, kind: 'resolve-wave', baseY: wave.position.y, delay: index / 3 });
     }
   }
+}
 
+function buildRouteLayer(THREE, context, state) {
   const routeAliases = [state.currentLocation, ...(state.previewPath || state.selectedPath || [])].filter(Boolean);
-  addRoute(
-    THREE,
-    context.dynamicGroup,
-    [...new Set(routeAliases)],
-    context.worldByAlias,
-    state.isDanger ? '#ef6257' : state.hasSubmitted ? '#55d692' : '#e8c860',
-    state.hasSubmitted ? 1 : 0.82,
-  );
+  addRoute(THREE, context.layers.route, [...new Set(routeAliases)], context.worldByAlias, state.isDanger ? '#ef6257' : state.hasSubmitted ? '#55d692' : '#e8c860', state.hasSubmitted ? 1 : 0.82, !state.isComplete);
+}
 
-  if (state.activeAction === Action.HELP) {
-    const rescueEntry = Object.entries(state.playerLocationMap || {}).find(([, indices]) => (
-      indices?.includes(state.currentPlayerIndex) && indices.length > 1
-    ));
-    if (rescueEntry) {
-      const [alias, indices] = rescueEntry;
-      const tile = context.worldByAlias.get(alias);
-      const helperSlot = indices.indexOf(state.currentPlayerIndex);
-      const targetSlot = indices.findIndex((playerIndex) => playerIndex !== state.currentPlayerIndex);
-      if (tile && helperSlot >= 0 && targetSlot >= 0) {
-        const rescue = addRescueLink(THREE, context.dynamicGroup, tile, helperSlot, targetSlot, indices.length);
-        context.animated.push({ object: rescue, kind: 'rescue-link', baseY: rescue.position.y });
-      }
-    }
+function buildAssistanceLayer(THREE, context, state) {
+  if (state.activeAction !== Action.HELP) return;
+  const rescueEntry = Object.entries(state.playerLocationMap || {}).find(([, indices]) => indices?.includes(state.currentPlayerIndex) && indices.length > 1);
+  if (!rescueEntry) return;
+  const [alias, indices] = rescueEntry;
+  const tile = context.worldByAlias.get(alias);
+  const helperSlot = indices.indexOf(state.currentPlayerIndex);
+  const targetSlot = indices.findIndex((playerIndex) => playerIndex !== state.currentPlayerIndex);
+  if (tile && helperSlot >= 0 && targetSlot >= 0) {
+    const rescue = addRescueLink(THREE, context.layers.assistance, tile, helperSlot, targetSlot, indices.length);
+    animateInLayer(context, 'assistance', { object: rescue, kind: 'rescue-link', baseY: rescue.position.y });
   }
+}
 
+function buildPartyLayer(THREE, context, state) {
   Object.entries(state.playerLocationMap || {}).forEach(([alias, indices]) => {
     const tile = context.worldByAlias.get(alias);
     if (!tile) return;
     indices.forEach((playerIndex, index) => {
       const player = state.crew?.[playerIndex] || {};
       const character = resolvePlayerCharacter(player, playerIndex);
-      const characterState = deriveCharacterState({
-        player,
-        isCurrent: playerIndex === state.currentPlayerIndex,
-        activeAction: state.activeAction,
-        lowStats: state.lowStats,
-        isResolving: state.isResolving,
-        hasArtifact: Boolean(player.hasArtifact),
-      });
+      const characterState = deriveCharacterState({ player, isCurrent: playerIndex === state.currentPlayerIndex, activeAction: state.activeAction, lowStats: state.lowStats, isResolving: state.isResolving, hasArtifact: Boolean(player.hasArtifact || player.inventory?.artifact) });
       const presentation = resolveCharacterVisual({ characterId: character.id, state: characterState });
       const stateTexture = context.characterTextures[presentation.path];
       const standeeTexture = stateTexture || context.characterTextures[character.assets.neutral];
-      const pawn = createPawn(
-        THREE,
-        PLAYER_COLORS[playerIndex] || PLAYER_COLORS[0],
-        playerIndex === state.currentPlayerIndex,
-        standeeTexture,
-        character.standee,
-      );
+      const pawn = createPawn(THREE, PLAYER_COLORS[playerIndex] || PLAYER_COLORS[0], playerIndex === state.currentPlayerIndex, standeeTexture, character.standee);
       pawn.userData.characterId = character.id;
       pawn.userData.characterState = stateTexture ? presentation.resolvedState : 'neutral';
       const angle = (index / Math.max(1, indices.length)) * Math.PI * 2;
       const radius = indices.length > 1 ? 0.28 : 0;
       pawn.position.set(tile.x + Math.cos(angle) * radius, tile.height + 0.04, tile.z + Math.sin(angle) * radius);
       pawn.rotation.y = -0.45;
-      context.dynamicGroup.add(pawn);
-      context.animated.push({ object: pawn, kind: playerIndex === state.currentPlayerIndex ? 'current-pawn' : 'pawn', baseY: pawn.position.y });
+      context.layers.party.add(pawn);
+      animateInLayer(context, 'party', { object: pawn, kind: playerIndex === state.currentPlayerIndex ? 'current-pawn' : 'pawn', baseY: pawn.position.y });
     });
   });
+}
+
+function addDynamicWorld(THREE, context, state) {
+  context.isResolving = Boolean(state.isResolving);
+  setLightingRig(THREE, context.lighting, resolveLightingRigId(state), { immediate: context.reducedMotion });
+  const beat = resolveBoardBeat(state);
+  context.renderer.domElement.dataset.boardBeat = beat.id;
+  context.renderer.domElement.dataset.cameraSuggestion = beat.camera.suggestion;
+  if (context.beatId !== beat.id) context.handlers.current.onBeat?.(beat);
+  context.beatId = beat.id;
+  const occupiedAliases = new Set(Object.entries(state.playerLocationMap || {}).filter(([, playerIndices]) => playerIndices?.length).map(([alias]) => alias));
+  context.propLandmarks.forEach((prop, alias) => { prop.visible = prop.userData.persistent || !occupiedAliases.has(alias); });
+  const nextSignatures = boardLayerSignatures(state);
+  const builders = {
+    affordances: buildAffordanceLayer,
+    intent: buildIntentLayer,
+    route: buildRouteLayer,
+    assistance: buildAssistanceLayer,
+    party: buildPartyLayer,
+  };
+  for (const [layerId, builder] of Object.entries(builders)) {
+    if (context.layerSignatures[layerId] === nextSignatures[layerId]) continue;
+    resetDynamicLayer(context, layerId);
+    builder(THREE, context, state);
+  }
+  context.layerSignatures = nextSignatures;
+  context.state = state;
 }
 
 function createWorld(THREE, OrbitControls, RoomEnvironment, KTX2Loader, mount, world, initialState, handlers, performanceMode) {
@@ -810,6 +779,8 @@ function createWorld(THREE, OrbitControls, RoomEnvironment, KTX2Loader, mount, w
   renderer.domElement.setAttribute('aria-hidden', 'true');
   renderer.domElement.dataset.boardQuality = quality.mode;
   renderer.domElement.dataset.materialSystemVersion = MATERIAL_SYSTEM_VERSION;
+  renderer.domElement.dataset.contextLosses = '0';
+  renderer.domElement.dataset.contextRestored = 'false';
   mount.appendChild(renderer.domElement);
 
   const scene = new THREE.Scene();
@@ -836,6 +807,12 @@ function createWorld(THREE, OrbitControls, RoomEnvironment, KTX2Loader, mount, w
   controls.touches.TWO = THREE.TOUCH.DOLLY_PAN;
   const boardGroup = new THREE.Group();
   const dynamicGroup = new THREE.Group();
+  const layers = Object.fromEntries(['affordances', 'intent', 'route', 'party', 'assistance'].map((id) => {
+    const group = new THREE.Group();
+    group.name = `board-layer:${id}`;
+    dynamicGroup.add(group);
+    return [id, group];
+  }));
   scene.add(boardGroup, dynamicGroup);
 
   const floor = new THREE.Mesh(
@@ -857,6 +834,7 @@ function createWorld(THREE, OrbitControls, RoomEnvironment, KTX2Loader, mount, w
   let resolveTextures;
   const texturesReady = new Promise((resolve) => { resolveTextures = resolve; });
   const loadingManager = new THREE.LoadingManager(() => resolveTextures());
+  const assetRegistry = attachBoardAssetRegistry(loadingManager, createBoardAssetRegistry());
   const textureLoader = new THREE.TextureLoader(loadingManager);
   const compressedTextureLoader = quality.compressedTextures
     ? new KTX2Loader(loadingManager).setTranscoderPath('/basis/').detectSupport(renderer)
@@ -905,6 +883,7 @@ function createWorld(THREE, OrbitControls, RoomEnvironment, KTX2Loader, mount, w
     camera,
     boardGroup,
     dynamicGroup,
+    layers,
     tileMeshes,
     propLandmarks,
     worldByAlias,
@@ -920,58 +899,86 @@ function createWorld(THREE, OrbitControls, RoomEnvironment, KTX2Loader, mount, w
     tideglassTexture,
     controls,
     animated: [],
+    objectPools: new Map(),
+    layerSignatures: {},
+    assetRegistry,
+    handlers,
+    beatId: '',
     reducedMotion: window.matchMedia?.('(prefers-reduced-motion: reduce)').matches || document.documentElement.classList.contains('ux-reduced-motion'),
   };
 
+  const terrainBatches = new Map();
   world.cells.forEach((tile) => {
-    const terrain = WORLD_TERRAIN[tile.revealed ? tile.tileType : Tile.NONE] || WORLD_TERRAIN[Tile.NONE];
-    const profile = tile.revealed ? surfaceProfileForTile(tile.tileType) : null;
-    const textureSet = profile ? surfaceTextureSets.get(tile.tileType) : null;
-    const seed = seedForAlias(tile.alias);
+    const key = tile.revealed ? `tile-${tile.tileType}` : 'tile-fog';
+    if (!terrainBatches.has(key)) terrainBatches.set(key, []);
+    terrainBatches.get(key).push(tile);
+  });
+  const matrixHelper = new THREE.Object3D();
+  const tileTransformEvidence = [];
+  const simplifiedLandmarks = world.cells.length > 32;
+  const landmarkCap = simplifiedLandmarks ? 36 : world.cells.length;
+  const eligibleLandmarks = world.cells.filter((tile) => tile.revealed && tile.tileType !== Tile.NONE);
+  const landmarkAliases = new Set();
+  const prioritizeLandmark = (alias) => {
+    if (alias && eligibleLandmarks.some((tile) => tile.alias === alias)) landmarkAliases.add(alias);
+  };
+  prioritizeLandmark(initialState.currentLocation);
+  prioritizeLandmark(initialState.intentAlias);
+  prioritizeLandmark(initialState.landingSite);
+  Object.keys(initialState.playerLocationMap || {}).forEach(prioritizeLandmark);
+  eligibleLandmarks.filter((tile) => tile.hasCampsite).forEach((tile) => prioritizeLandmark(tile.alias));
+  [...new Set(eligibleLandmarks.map((tile) => tile.tileType))].forEach((tileType) => prioritizeLandmark(eligibleLandmarks.find((tile) => tile.tileType === tileType)?.alias));
+  eligibleLandmarks
+    .filter((tile) => !landmarkAliases.has(tile.alias))
+    .sort((left, right) => seedForAlias(left.alias) - seedForAlias(right.alias))
+    .slice(0, Math.max(0, landmarkCap - landmarkAliases.size))
+    .forEach((tile) => landmarkAliases.add(tile.alias));
+  for (const [batchId, tiles] of terrainBatches) {
+    const sample = tiles[0];
+    const terrain = WORLD_TERRAIN[sample.revealed ? sample.tileType : Tile.NONE] || WORLD_TERRAIN[Tile.NONE];
+    const profile = sample.revealed ? surfaceProfileForTile(sample.tileType) : null;
+    const textureSet = profile ? surfaceTextureSets.get(sample.tileType) : null;
+    const seed = seedForAlias(sample.alias);
     const side = profile
       ? createSurfaceMaterial(THREE, profile, textureSet?.side, quality, { seed, side: true })
       : material(THREE, terrain.side, { roughness: 0.98, metalness: 0 });
     const top = profile
       ? createSurfaceMaterial(THREE, profile, textureSet?.top, quality, { seed })
-      : material(THREE, terrain.top, {
-        roughness: 0.94,
-        metalness: 0,
-        emissive: terrain.emissive,
-        emissiveIntensity: 0.012,
-        transparent: true,
-        opacity: 0.68,
-      });
-    const geometry = new THREE.CylinderGeometry(0.94, 0.88, tile.height, 6, 1, false);
+      : material(THREE, terrain.top, { roughness: 0.94, metalness: 0, emissive: terrain.emissive, emissiveIntensity: 0.012, transparent: true, opacity: 0.68 });
+    const geometry = new THREE.CylinderGeometry(0.94, 0.88, 1, 6, 1, false);
     applySurfaceUvVariation(geometry, profile, seed);
-    const mesh = new THREE.Mesh(geometry, [side, top, side]);
-    mesh.position.set(tile.x, tile.height / 2, tile.z);
-    mesh.rotation.y = Math.PI / 6;
-    mesh.castShadow = tile.revealed;
+    const mesh = new THREE.InstancedMesh(geometry, [side, top, side], tiles.length);
+    mesh.name = `terrain-batch:${batchId}`;
+    mesh.castShadow = sample.revealed;
     mesh.receiveShadow = true;
-    mesh.userData.alias = tile.alias;
-    mesh.userData.tile = tile;
+    mesh.userData.aliasByInstance = tiles.map((tile) => tile.alias);
+    mesh.userData.tiles = tiles;
     mesh.userData.surfaceId = profile?.id || 'unknown';
-
-    if (tile.revealed) {
-      const collarGeometry = new THREE.CylinderGeometry(0.945, 0.92, 0.055, 6, 1, false);
-      applySurfaceUvVariation(collarGeometry, profile, seed + 17);
-      const collar = new THREE.Mesh(collarGeometry, [side, top, side]);
-      collar.position.y = tile.height / 2 + 0.012;
-      collar.castShadow = true;
-      collar.receiveShadow = true;
-      mesh.add(collar);
-    }
-
-    const edges = new THREE.LineSegments(
-      new THREE.EdgesGeometry(geometry, 24),
-      new THREE.LineBasicMaterial({ color: tile.revealed ? 0xa2ab96 : 0x263027, transparent: true, opacity: tile.revealed ? 0.26 : 0.34 }),
-    );
-    mesh.add(edges);
-    const propLandmark = addTerrainLandmarks(THREE, tile, mesh, propTextures.get(tile.tileType), campsiteTexture);
-    if (propLandmark) propLandmarks.set(tile.alias, propLandmark);
+    tiles.forEach((tile, index) => {
+      const transform = baseTileTransform(tile);
+      matrixHelper.position.set(transform.x, transform.y, transform.z);
+      matrixHelper.rotation.set(0, transform.rotationY, 0);
+      matrixHelper.scale.set(transform.scaleX, transform.scaleY, transform.scaleZ);
+      matrixHelper.updateMatrix();
+      mesh.setMatrixAt(index, matrixHelper.matrix);
+      tileTransformEvidence.push([tile.alias, transform.x, transform.y, transform.z, transform.rotationY, transform.scaleX, transform.scaleY, transform.scaleZ]);
+    });
+    mesh.instanceMatrix.needsUpdate = true;
     boardGroup.add(mesh);
     tileMeshes.push(mesh);
-  });
+
+    tiles.forEach((tile) => {
+      const anchor = new THREE.Group();
+      anchor.position.set(tile.x, tile.height / 2, tile.z);
+      anchor.rotation.y = Math.PI / 6;
+      const propLandmark = landmarkAliases.has(tile.alias)
+        ? addTerrainLandmarks(THREE, tile, anchor, propTextures.get(tile.tileType), campsiteTexture, { simplified: simplifiedLandmarks })
+        : null;
+      if (propLandmark) propLandmarks.set(tile.alias, propLandmark);
+      boardGroup.add(anchor);
+    });
+  }
+  renderer.domElement.dataset.tileTransformHash = JSON.stringify(tileTransformEvidence);
 
   const particlesGeometry = new THREE.BufferGeometry();
   const particleCount = Math.max(32, Math.round(Math.min(220, world.cells.length * 3) * quality.particleScale));
@@ -998,7 +1005,7 @@ function createWorld(THREE, OrbitControls, RoomEnvironment, KTX2Loader, mount, w
     pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
     pointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
     raycaster.setFromCamera(pointer, camera);
-    return raycaster.intersectObjects(tileMeshes, false)[0]?.object?.userData?.alias || '';
+    return resolvePickedAlias(raycaster.intersectObjects(tileMeshes, false)[0]);
   };
   const onPointerDown = (event) => {
     drag.pointerId = event.pointerId;
@@ -1008,7 +1015,7 @@ function createWorld(THREE, OrbitControls, RoomEnvironment, KTX2Loader, mount, w
   };
   const onPointerMove = (event) => {
     if (drag.pointerId === event.pointerId && event.buttons) {
-      drag.moved = drag.moved || Math.hypot(event.clientX - drag.startX, event.clientY - drag.startY) > 5;
+      drag.moved = drag.moved || pointerExceededDragThreshold({ x: drag.startX, y: drag.startY }, { x: event.clientX, y: event.clientY });
       if (drag.moved) {
         renderer.domElement.style.cursor = 'grabbing';
         handlers.current.onTileHover?.(null);
@@ -1059,9 +1066,8 @@ function createWorld(THREE, OrbitControls, RoomEnvironment, KTX2Loader, mount, w
   const onControlsChange = () => {
     if (!cameraInitialized || constrainingTarget) return;
     const constrainedTarget = controls.target.clone();
-    constrainedTarget.x = THREE.MathUtils.clamp(constrainedTarget.x, -world.width * 0.42, world.width * 0.42);
-    constrainedTarget.y = THREE.MathUtils.clamp(constrainedTarget.y, 0, 0.9);
-    constrainedTarget.z = THREE.MathUtils.clamp(constrainedTarget.z, -world.depth * 0.42, world.depth * 0.42);
+    const constrained = clampBoardTarget(constrainedTarget, world);
+    constrainedTarget.set(constrained.x, constrained.y, constrained.z);
     if (!constrainedTarget.equals(controls.target)) {
       constrainingTarget = true;
       camera.position.add(constrainedTarget.clone().sub(controls.target));
@@ -1077,11 +1083,20 @@ function createWorld(THREE, OrbitControls, RoomEnvironment, KTX2Loader, mount, w
     requestRender();
   };
   controls.addEventListener('change', onControlsChange);
+  let contextLosses = 0;
   const onContextLost = (event) => {
     event.preventDefault();
+    contextLosses += 1;
+    renderer.domElement.dataset.contextLosses = String(contextLosses);
     handlers.current.onContextLost?.();
   };
+  const onContextRestored = () => {
+    renderer.domElement.dataset.contextRestored = 'true';
+    handlers.current.onContextRestored?.();
+    requestRender();
+  };
   renderer.domElement.addEventListener('webglcontextlost', onContextLost);
+  renderer.domElement.addEventListener('webglcontextrestored', onContextRestored);
 
   const resize = () => {
     const width = Math.max(1, mount.clientWidth);
@@ -1115,8 +1130,10 @@ function createWorld(THREE, OrbitControls, RoomEnvironment, KTX2Loader, mount, w
   addDynamicWorld(THREE, context, initialState);
   const clock = new THREE.Clock();
   const frameSamples = [];
+  const renderSamples = [];
   const cameraRight = new THREE.Vector3();
   let currentPixelRatio = renderer.getPixelRatio();
+  let adaptiveEffectsReduced = false;
   renderer.domElement.dataset.pixelRatio = currentPixelRatio.toFixed(2);
   let frame = 0;
   const animate = () => {
@@ -1147,11 +1164,25 @@ function createWorld(THREE, OrbitControls, RoomEnvironment, KTX2Loader, mount, w
       });
     }
     controls.update();
+    const renderStarted = performance.now();
     renderer.render(scene, camera);
+    renderSamples.push(performance.now() - renderStarted);
+    if (renderSamples.length > 120) renderSamples.shift();
     renderer.domElement.dataset.drawCalls = String(renderer.info.render.calls);
     renderer.domElement.dataset.triangles = String(renderer.info.render.triangles);
     renderer.domElement.dataset.textures = String(renderer.info.memory.textures);
     renderer.domElement.dataset.lightingRig = lighting.activeRigId;
+    if (renderSamples.length >= 30) {
+      const orderedRender = [...renderSamples].sort((a, b) => a - b);
+      renderer.domElement.dataset.renderP95 = orderedRender[Math.floor(orderedRender.length * 0.95)].toFixed(2);
+    }
+    const assetEvidence = assetRegistry.snapshot();
+    renderer.domElement.dataset.assetExpected = String(assetEvidence.expected);
+    renderer.domElement.dataset.assetLoaded = String(assetEvidence.loaded);
+    renderer.domElement.dataset.assetLoading = String(assetEvidence.loading);
+    renderer.domElement.dataset.assetFailures = String(assetEvidence.failed);
+    renderer.domElement.dataset.assetFailureList = JSON.stringify(assetEvidence.failures);
+    renderer.domElement.dataset.assetBytes = String(assetEvidence.transferredBytes);
     if (quality.dynamicResolution && !context.reducedMotion && delta > 0) {
       frameSamples.push(delta * 1000);
       if (frameSamples.length >= 120) {
@@ -1164,6 +1195,13 @@ function createWorld(THREE, OrbitControls, RoomEnvironment, KTX2Loader, mount, w
           renderer.setPixelRatio(currentPixelRatio);
           renderer.domElement.dataset.pixelRatio = currentPixelRatio.toFixed(2);
           resize();
+        }
+        if (p95 > 48 && currentPixelRatio === 1 && !adaptiveEffectsReduced) {
+          adaptiveEffectsReduced = true;
+          renderer.shadowMap.enabled = false;
+          particles.visible = false;
+          lighting.key.castShadow = false;
+          renderer.domElement.dataset.adaptiveMode = 'efficient-effects';
         }
         frameSamples.length = 0;
       }
@@ -1204,6 +1242,17 @@ function createWorld(THREE, OrbitControls, RoomEnvironment, KTX2Loader, mount, w
       if (action === 'reset') {
         camera.position.copy(defaultView.position);
         controls.target.copy(defaultView.target);
+      } else if (['overview', 'party', 'intent'].includes(action)) {
+        const state = context.state || initialState;
+        const aliases = cameraPresetAliases(action, state);
+        const targets = aliases.map((alias) => context.worldByAlias.get(alias)).filter(Boolean);
+        const target = targets.length
+          ? targets.reduce((sum, tile) => sum.add(new THREE.Vector3(tile.x, tile.height * 0.35, tile.z)), new THREE.Vector3()).multiplyScalar(1 / targets.length)
+          : defaultView.target.clone();
+        const distance = action === 'overview' ? defaultView.position.distanceTo(defaultView.target) * 1.18 : defaultView.position.distanceTo(defaultView.target) * 0.78;
+        const direction = camera.position.clone().sub(controls.target).normalize();
+        controls.target.copy(target);
+        camera.position.copy(target).add(direction.multiplyScalar(THREE.MathUtils.clamp(distance, controls.minDistance, controls.maxDistance)));
       } else {
         const offset = camera.position.clone().sub(controls.target);
         if (action === 'rotate-left' || action === 'rotate-right') {
@@ -1256,8 +1305,11 @@ function createWorld(THREE, OrbitControls, RoomEnvironment, KTX2Loader, mount, w
       renderer.domElement.removeEventListener('click', onClick);
       renderer.domElement.removeEventListener('contextmenu', onContextMenu);
       renderer.domElement.removeEventListener('webglcontextlost', onContextLost);
+      renderer.domElement.removeEventListener('webglcontextrestored', onContextRestored);
       disposeLightingSystem(lighting);
       disposeObject(scene);
+      context.objectPools.forEach((pool) => pool.forEach((object) => disposeObject(object)));
+      context.objectPools.clear();
       surfaceTextureSets.forEach((textureSet) => {
         Object.values(textureSet.top).forEach((texture) => texture.dispose());
         Object.values(textureSet.side).forEach((texture) => texture.dispose());
@@ -1319,6 +1371,7 @@ function CameraGlyph({ kind }) {
 const CAMERA_BUTTON_CLASS = 'grid h-11 min-w-11 place-items-center rounded border border-white/10 bg-exp-dark/80 px-2 text-exp-text-dim shadow-sm transition-colors hover:border-compass/45 hover:bg-exp-surface hover:text-compass-bright focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-compass/70 disabled:cursor-default disabled:opacity-40';
 
 export default function ThreeBoard({
+  viewModel = null,
   cells = [],
   currentLocation = '',
   intentAlias = '',
@@ -1333,27 +1386,28 @@ export default function ThreeBoard({
   hasSubmitted = false,
   isResolving = false,
   isDanger = false,
+  isComplete = false,
   lowStats = false,
+  invalidAlias = '',
+  phase,
   performanceMode = 'auto',
   onTileClick,
   onTileHover,
   onReady,
   onUnavailable,
+  onBeat,
   ariaLabel,
   className = '',
 }) {
   const mountRef = useRef(null);
   const worldRef = useRef(null);
-  const handlersRef = useRef({ onTileClick, onTileHover });
+  const handlersRef = useRef({ onTileClick, onTileHover, onBeat });
   const stateRef = useRef(null);
   const [status, setStatus] = useState('loading');
   const [cameraView, setCameraView] = useState('default');
   const [cameraControlsOpen, setCameraControlsOpen] = useState(false);
-  const cellsKey = useMemo(
-    () => cells.map((cell) => `${cell.alias}:${cell.revealed ? cell.tileType : 'fog'}:${cell.hasCampsite ? 1 : 0}`).join('|'),
-    [cells],
-  );
-  const state = useMemo(() => ({
+  const state = useMemo(() => deriveBoardViewModel(viewModel || {
+    cells,
     currentLocation,
     intentAlias,
     selectedPath,
@@ -1367,17 +1421,26 @@ export default function ThreeBoard({
     hasSubmitted,
     isResolving,
     isDanger,
+    isComplete,
     lowStats,
-  }), [activeAction, crew, currentLocation, currentPlayerIndex, hasSubmitted, intentAlias, isDanger, isResolving, landingSite, lowStats, playerLocationMap, previewPath, reachableAliases, selectedPath]);
+    invalidAlias,
+    phase,
+  }), [activeAction, cells, crew, currentLocation, currentPlayerIndex, hasSubmitted, intentAlias, invalidAlias, isComplete, isDanger, isResolving, landingSite, lowStats, phase, playerLocationMap, previewPath, reachableAliases, selectedPath, viewModel]);
+  const cellsKey = useMemo(
+    () => state.cells.map((cell) => `${cell.alias}:${cell.revealed ? cell.tileType : 'fog'}:${cell.hasCampsite ? 1 : 0}`).join('|'),
+    [state.cells],
+  );
 
   handlersRef.current = {
     onTileClick,
     onTileHover,
+    onBeat,
     onCameraChange: setCameraView,
     onContextLost: () => {
       setStatus('unavailable');
       onUnavailable?.();
     },
+    onContextRestored: () => setStatus('ready'),
   };
   stateRef.current = state;
 
@@ -1402,7 +1465,7 @@ export default function ThreeBoard({
     ]).then(([THREE, { OrbitControls }, { RoomEnvironment }, { KTX2Loader }]) => {
       if (disposed || !mountRef.current) return;
       try {
-        worldInstance = createWorld(THREE, OrbitControls, RoomEnvironment, KTX2Loader, mount, buildBoardWorld(cells), stateRef.current, handlersRef, performanceMode);
+        worldInstance = createWorld(THREE, OrbitControls, RoomEnvironment, KTX2Loader, mount, buildBoardWorld(stateRef.current.cells), stateRef.current, handlersRef, performanceMode);
         worldRef.current = worldInstance;
         worldInstance.ready.then(() => {
           if (disposed || worldRef.current !== worldInstance) return;
@@ -1436,9 +1499,9 @@ export default function ThreeBoard({
     worldRef.current?.update(state);
   }, [state]);
 
-  const intentCell = cells.find((cell) => cell.alias === intentAlias);
-  const anchoredCell = cells.find((cell) => cell.alias === currentLocation)
-    || cells.find((cell) => cell.alias === landingSite)
+  const intentCell = state.cells.find((cell) => cell.alias === state.intentAlias);
+  const anchoredCell = state.cells.find((cell) => cell.alias === state.currentLocation)
+    || state.cells.find((cell) => cell.alias === state.landingSite)
     || intentCell;
   const terrainLabel = intentCell?.revealed ? TILE_LABELS[intentCell.tileType] : 'Uncharted';
   const backplate = anchoredCell?.revealed && anchoredCell.tileType === Tile.DESERT
@@ -1458,24 +1521,26 @@ export default function ThreeBoard({
       aria-label={ariaLabel}
       data-renderer-state={status}
       data-camera-view={cameraView}
+      data-board-phase={state.phase}
+      data-view-model-version={state.schemaVersion}
       data-testid="three-board-world"
     >
-      <div className={`pointer-events-none absolute inset-0 z-10 ${isDanger ? 'bg-[radial-gradient(circle_at_58%_48%,rgba(239,98,87,0.17),transparent_28%),linear-gradient(180deg,transparent_62%,rgba(7,9,7,0.76))]' : 'bg-[radial-gradient(circle_at_72%_18%,rgba(104,213,228,0.12),transparent_30%),linear-gradient(180deg,transparent_58%,rgba(5,8,6,0.72))]'}`} />
+      <div className={`pointer-events-none absolute inset-0 z-10 ${state.isDanger ? 'bg-[radial-gradient(circle_at_58%_48%,rgba(239,98,87,0.17),transparent_28%),linear-gradient(180deg,transparent_62%,rgba(7,9,7,0.76))]' : 'bg-[radial-gradient(circle_at_72%_18%,rgba(104,213,228,0.12),transparent_30%),linear-gradient(180deg,transparent_58%,rgba(5,8,6,0.72))]'}`} />
       <div className="pointer-events-none absolute left-3 top-3 z-20 rounded border border-white/10 bg-exp-dark/70 px-2.5 py-2 backdrop-blur-sm">
         <p className="font-mono text-[8px] uppercase tracking-[0.25em] text-exp-text-dim">Living survey</p>
         <p className="mt-1 font-display text-sm uppercase tracking-[0.12em] text-exp-text">
-          {isDanger ? 'Redline terrain' : isResolving ? 'World resolving' : 'Expedition world'}
+          {state.isDanger ? 'Redline terrain' : state.isResolving ? 'World resolving' : state.isComplete ? 'World settled' : 'Expedition world'}
         </p>
       </div>
       <div className="pointer-events-none absolute right-3 top-3 z-20 rounded border border-white/10 bg-exp-dark/70 px-2.5 py-2 text-right backdrop-blur-sm">
         <p className="font-mono text-[8px] uppercase tracking-[0.22em] text-exp-text-dim">Focus</p>
         <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.14em] text-compass-bright">
-          {intentAlias || currentLocation || landingSite || 'Scanning'} / {terrainLabel}
+          {state.intentAlias || state.currentLocation || state.landingSite || 'Scanning'} / {terrainLabel}
         </p>
       </div>
       <div className="pointer-events-none absolute bottom-3 left-3 z-20 max-w-[72%] rounded border border-white/10 bg-exp-dark/75 px-2.5 py-2 backdrop-blur-sm">
         <p className="font-mono text-[8px] uppercase tracking-[0.18em] text-exp-text-dim">
-          {ACTION_LABELS[activeAction] || 'Survey'} / {hasSubmitted ? 'committed' : 'choose a reachable tile'}
+          {ACTION_LABELS[state.activeAction] || 'Survey'} / {state.hasSubmitted ? 'committed' : 'choose a reachable tile'}
         </p>
       </div>
       {status === 'ready' && (
@@ -1486,30 +1551,39 @@ export default function ThreeBoard({
             </p>
           )}
           {cameraControlsOpen && (
-            <div className="grid grid-cols-3 gap-1 rounded-md border border-white/10 bg-exp-dark/65 p-1 backdrop-blur-sm" role="group" aria-label="Map camera controls">
-              {[
-                ['rotate-left', 'Rotate camera left'],
-                ['pan-up', 'Pan camera forward'],
-                ['rotate-right', 'Rotate camera right'],
-                ['pan-left', 'Pan camera left'],
-                ['reset', 'Reset camera view'],
-                ['pan-right', 'Pan camera right'],
-                ['zoom-out', 'Zoom camera out'],
-                ['pan-down', 'Pan camera backward'],
-                ['zoom-in', 'Zoom camera in'],
-              ].map(([action, label]) => (
-                <button
-                  key={action}
-                  type="button"
-                  className={CAMERA_BUTTON_CLASS}
-                  aria-label={label}
-                  title={label}
-                  disabled={action === 'reset' && cameraView === 'default'}
-                  onClick={() => worldRef.current?.cameraAction(action)}
-                >
-                  <CameraGlyph kind={action} />
-                </button>
-              ))}
+            <div className="rounded-md border border-white/10 bg-exp-dark/65 p-1 backdrop-blur-sm" role="group" aria-label="Map camera controls">
+              <div className="grid grid-cols-3 gap-1">
+                {[
+                  ['rotate-left', 'Rotate camera left'],
+                  ['pan-up', 'Pan camera forward'],
+                  ['rotate-right', 'Rotate camera right'],
+                  ['pan-left', 'Pan camera left'],
+                  ['reset', 'Reset camera view'],
+                  ['pan-right', 'Pan camera right'],
+                  ['zoom-out', 'Zoom camera out'],
+                  ['pan-down', 'Pan camera backward'],
+                  ['zoom-in', 'Zoom camera in'],
+                ].map(([action, label]) => (
+                  <button
+                    key={action}
+                    type="button"
+                    className={CAMERA_BUTTON_CLASS}
+                    aria-label={label}
+                    title={label}
+                    disabled={action === 'reset' && cameraView === 'default'}
+                    onClick={() => worldRef.current?.cameraAction(action)}
+                  >
+                    <CameraGlyph kind={action} />
+                  </button>
+                ))}
+              </div>
+              <div className="mt-1 grid grid-cols-3 gap-1">
+                {[['overview', 'Overview'], ['party', 'Party'], ['intent', 'Intent']].map(([action, label]) => (
+                  <button key={action} type="button" className={`${CAMERA_BUTTON_CLASS} font-mono text-[8px] uppercase tracking-[0.08em]`} aria-label={`${label} camera preset`} onClick={() => worldRef.current?.cameraAction(action)}>
+                    {label}
+                  </button>
+                ))}
+              </div>
             </div>
           )}
           <button
@@ -1525,7 +1599,7 @@ export default function ThreeBoard({
           <span className="sr-only" aria-live="polite">Camera view: {cameraView}</span>
         </div>
       )}
-      {isResolving && (
+      {state.isResolving && (
         <div
           className="three-board-resolution pointer-events-none absolute inset-0 z-[15] overflow-hidden"
           data-testid="board-resolution-ritual"
@@ -1546,7 +1620,7 @@ export default function ThreeBoard({
       )}
       {status === 'ready' && onTileClick && (
         <div className="sr-only" aria-label="Board tile controls">
-          {cells.map((cell) => (
+          {state.cells.map((cell) => (
             <button key={cell.alias} type="button" onClick={() => onTileClick?.(cell.alias)} onFocus={() => onTileHover?.(cell.alias)}>
               {cell.alias} {cell.revealed ? TILE_LABELS[cell.tileType] : 'Uncharted'}
             </button>
