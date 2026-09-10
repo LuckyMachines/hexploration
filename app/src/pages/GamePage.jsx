@@ -1,5 +1,5 @@
 import { useParams } from 'react-router-dom';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useWallet } from '../contexts/WalletContext';
 import { useGameState } from '../hooks/useGameState';
 import GameLobby from '../components/game/GameLobby';
@@ -11,6 +11,9 @@ import { ExpeditionProvider } from '../contexts/ExpeditionContext';
 import { useGameOver } from '../hooks/useGameOver';
 import { parseUintId } from '../lib/ids';
 import { ReturnLoopSync } from '../components/expedition/ReturnLoopPanel';
+import SessionStatusBar from '../components/game/SessionStatusBar';
+import { usePlayerSession } from '../contexts/PlayerSessionContext';
+import { markSessionMilestone, measureSessionSpan } from '../lib/sessionTelemetry';
 
 export default function GamePage() {
   const { gameId } = useParams();
@@ -20,6 +23,22 @@ export default function GamePage() {
   const normalizedGameId = parsedGameId?.toString() ?? '';
   const { gameStarted, isLoading, error } = useGameState(normalizedGameId);
   const { isGameOver } = useGameOver(normalizedGameId);
+  const session = usePlayerSession();
+
+  useEffect(() => {
+    if (parsedGameId !== null) {
+      markSessionMilestone('game-load-start');
+      session.beginGame(normalizedGameId);
+    }
+  }, [normalizedGameId, parsedGameId, session.beginGame]);
+
+  useEffect(() => {
+    if (parsedGameId === null || !isConnected || isLoading || error) return;
+    if (isGameOver) session.terminal();
+    else session.hydrated(gameStarted);
+    markSessionMilestone('game-load-ready');
+    measureSessionSpan('cold_resume_ms', 'game-load-start', 'game-load-ready');
+  }, [error, gameStarted, isConnected, isGameOver, isLoading, parsedGameId, session.hydrated, session.terminal]);
 
   return (
     <div className="mx-auto w-full max-w-[100rem] px-3 py-4 sm:px-4 sm:py-8 2xl:px-6">
@@ -29,6 +48,7 @@ export default function GamePage() {
         status={parsedGameId === null ? 'INVALID ID' : isConnected ? 'ONLINE' : 'LOCKED'}
       >
         <div className="space-y-5">
+          {parsedGameId !== null && <SessionStatusBar />}
           {parsedGameId === null && (
             <div className="border border-signal-red/30 rounded bg-exp-panel p-8 text-center">
               <p className="font-mono text-xs text-signal-red tracking-wider uppercase">
@@ -73,8 +93,11 @@ export default function GamePage() {
             <div className="border border-exp-border rounded bg-exp-panel p-12 flex items-center justify-center gap-3">
               <Spinner size="w-5 h-5" />
               <span className="font-mono text-xs text-exp-text-dim tracking-wider uppercase">
-                Loading survey data...
+                Restoring expedition...
               </span>
+              <ol className="sr-only">
+                {(session.state.resumeSteps.length ? session.state.resumeSteps : ['identity', 'party', 'chain']).map((step) => <li key={step}>Checking {step}</li>)}
+              </ol>
             </div>
           )}
 

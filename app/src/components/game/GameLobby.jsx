@@ -9,6 +9,7 @@ import TxStatus from '../shared/TxStatus';
 import Spinner from '../shared/Spinner';
 import EmptyState from '../shared/EmptyState';
 import ShareGameLink from '../shared/ShareGameLink';
+import SocialHub from '../social/SocialHub';
 
 export default function GameLobby({ gameId }) {
   const { address } = useWallet();
@@ -55,6 +56,7 @@ export default function GameLobby({ gameId }) {
       </div>
 
       <div className="px-6 py-5 space-y-5">
+        <SocialHub compact gameId={gameId} />
         <div>
           <h3 className="font-mono text-xs tracking-[0.3em] text-exp-text-dim uppercase mb-3">
             Expedition Crew ({players.length} enrolled)

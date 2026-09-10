@@ -58,6 +58,7 @@ function validateProductionEnvironment(env) {
   if (env.VITE_PLAUSIBLE_DOMAIN !== 'play.xenovoya.com') failures.push('VITE_PLAUSIBLE_DOMAIN must identify the production origin');
   if (env.VITE_APP_ENV !== 'production') failures.push('VITE_APP_ENV must be production');
   if (env.VITE_ANALYTICS_SOURCE !== 'player') failures.push('VITE_ANALYTICS_SOURCE must be player');
+  if (!/^\d+$/.test(env.VITE_GAME_EVENTS_START_BLOCK || '')) failures.push('VITE_GAME_EVENTS_START_BLOCK must identify the deployed GameEvents block');
   if (!/^[a-f0-9]{40}$/.test(env.VITE_RELEASE_SHA || '')) failures.push('VITE_RELEASE_SHA must be the full release commit');
   if (env.VITE_ENABLE_INTERNAL_TOOLS === 'true') failures.push('Internal tools cannot be enabled in the production player build');
   if (failures.length) throw new Error(`Production environment validation failed:\n- ${failures.join('\n- ')}`);
@@ -74,14 +75,16 @@ export default defineConfig(({ mode }) => {
       emitReleaseMetadata(env),
     ],
     build: {
+      manifest: true,
       rollupOptions: {
         output: {
-          onlyExplicitManualChunks: true,
+          onlyExplicitManualChunks: false,
           manualChunks(id) {
             const normalizedId = id.replaceAll('\\', '/');
             if (normalizedId.includes('/node_modules/react/') || normalizedId.includes('/node_modules/react-dom/') || normalizedId.includes('/node_modules/react-router')) return 'react';
             if (normalizedId.includes('/node_modules/@tanstack/react-query/')) return 'query';
             if (normalizedId.includes('/node_modules/viem/')) return 'viem';
+            if (normalizedId.includes('/node_modules/three/')) return 'three';
             if (/\/src\/config\/(clients|contracts)\.js$/.test(normalizedId)) return 'chain-client';
             if (/\/src\/hooks\/use(Contract|AvailableGames|GameActions)/.test(normalizedId)) return 'chain-client';
             return undefined;

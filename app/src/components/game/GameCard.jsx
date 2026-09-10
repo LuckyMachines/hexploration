@@ -8,6 +8,8 @@ export default function GameCard({ gameId, maxPlayers, registered }) {
 
   return (
     <button
+      onPointerEnter={() => { void import('../../pages/GameClientPage'); }}
+      onFocus={() => { void import('../../pages/GameClientPage'); }}
       onClick={() => {
         trackJourneyEvent('live_join', { game_context: isFull ? 'full_registry' : 'open_registry' }, { dedupeKey: String(gameId) });
         navigate(`/game/${gameId}`);

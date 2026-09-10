@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-export default function ShareGameLink({ label = 'Copy game link' }) {
+export default function ShareGameLink({ label = 'Copy game link', url, shareText = 'Join my Xenovoya expedition' }) {
   const [status, setStatus] = useState('idle');
 
   const copy = async () => {
@@ -8,10 +8,10 @@ export default function ShareGameLink({ label = 'Copy game link' }) {
     setStatus('idle');
     try {
       if (navigator.clipboard?.writeText) {
-        await navigator.clipboard.writeText(window.location.href);
+        await navigator.clipboard.writeText(url || window.location.href);
       } else {
         const field = document.createElement('textarea');
-        field.value = window.location.href;
+        field.value = url || window.location.href;
         field.setAttribute('readonly', '');
         field.style.position = 'fixed';
         field.style.opacity = '0';
@@ -29,7 +29,7 @@ export default function ShareGameLink({ label = 'Copy game link' }) {
   };
 
   return (
-    <div className="min-w-0">
+    <div className="flex min-w-0 flex-wrap items-center gap-2">
       <button
         type="button"
         onClick={copy}
@@ -37,9 +37,11 @@ export default function ShareGameLink({ label = 'Copy game link' }) {
       >
         {status === 'copied' ? 'Copied' : status === 'error' ? 'Copy failed' : label}
       </button>
+      {url && navigator.share && <button type="button" onClick={() => navigator.share({ title: 'Xenovoya crew invitation', text: shareText, url }).catch(() => {})} className="min-h-11 rounded border border-exp-border px-3 py-2 font-mono text-[10px] uppercase tracking-[0.18em] text-exp-text-dim">Share</button>}
+      {url && <span className="font-mono text-[9px] uppercase tracking-[0.14em] text-exp-text-dim" data-share-code>{url.slice(-8)}</span>}
       {status === 'error' && (
         <p role="status" className="mt-1 max-w-56 font-mono text-[10px] leading-relaxed text-signal-red">
-          Copy was blocked. Select the address from your browser bar.
+          {url ? 'Copy was blocked. Select and copy the invitation address.' : 'Copy was blocked. Select the address from your browser bar.'}
         </p>
       )}
     </div>

@@ -13,7 +13,9 @@ export function useReadContract({ address, abi, functionName, args, query = {} }
       return client.readContract({ address, abi, functionName, args });
     },
     enabled: enabled && !!address,
-    refetchInterval,
+    refetchInterval: typeof refetchInterval === 'number'
+      ? () => typeof document !== 'undefined' && document.hidden ? false : Math.max(refetchInterval, 15_000)
+      : refetchInterval,
     ...restQuery,
   });
 

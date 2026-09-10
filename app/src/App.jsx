@@ -16,6 +16,7 @@ const FieldManual = lazy(() => import('./components/help/FieldManual'));
 const PseudoLocale = lazy(() => import('./components/shared/PseudoLocale'));
 const GamePage = lazy(() => import('./pages/GameClientPage'));
 const PrivacyPage = lazy(() => import('./pages/PrivacyPage'));
+const PartyInvitePage = lazy(() => import('./pages/PartyInvitePage'));
 const INCLUDE_INTERNAL_ROUTES = import.meta.env.VITE_ENABLE_INTERNAL_TOOLS === 'true';
 const GameUILab = INCLUDE_INTERNAL_ROUTES ? lazy(() => import('./pages/GameUILab')) : null;
 const DesignSystemPage = INCLUDE_INTERNAL_ROUTES ? lazy(() => import('./pages/DesignSystemPage')) : null;
@@ -89,6 +90,7 @@ export default function App() {
               <Route path="/" element={<HomePage />} />
               <Route path="/game/:gameId" element={<GamePage />} />
               <Route path="/privacy" element={<PrivacyPage />} />
+              <Route path="/invite/:inviteToken" element={<PartyInvitePage />} />
               {INCLUDE_INTERNAL_ROUTES && (
                 <>
                   <Route path="/ui-lab" element={<InternalRoute component={GameUILab} />} />

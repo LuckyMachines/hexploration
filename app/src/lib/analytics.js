@@ -24,6 +24,7 @@ const ENUM_PROPERTIES = Object.freeze({
   share_type: new Set(['crew_invite', 'report_link', 'relic_text', 'relic_image', 'relic_download', 'relic_native']),
   return_interval: new Set(['same_session', 'same_day', 'd1_d3', 'd3_d7', 'd7_plus']),
   persona: new Set(['first-player-v1']),
+  visibility: new Set(['public', 'friends', 'private']),
   surface: new Set(['home', 'lobby', 'starter', 'board', 'action', 'return-loop', 'help', 'global']),
   severity: new Set(['low', 'medium', 'high', 'critical']),
   error_type: new Set(['validation', 'network', 'wallet', 'transaction', 'render', 'unexpected']),
@@ -53,6 +54,11 @@ export const JOURNEY_EVENTS = Object.freeze({
   web_vital: ['metric', 'rating', 'value_bucket'],
   experiment_exposure: ['experiment_id', 'variant'],
   analytics_canary: ['canary_id'],
+  party_created: ['visibility', 'party_size'],
+  party_invite_created: ['visibility', 'party_size'],
+  party_invite_opened: ['party_size'],
+  party_joined: ['party_size'],
+  party_ready: ['party_size'],
 });
 
 let ready = false;
@@ -146,6 +152,7 @@ function validProperty(key, value) {
   if (key === 'release') return value === 'unknown' || value === 'e2e-release' || /^[a-f0-9]{40}$/i.test(value);
   if (key === 'has_expedition') return typeof value === 'boolean';
   if (key === 'cloud_version') return Number.isSafeInteger(value) && value >= 0;
+  if (key === 'party_size') return Number.isSafeInteger(value) && value >= 1 && value <= 4;
   if (key === 'journey_sequence') return Number.isSafeInteger(value) && value > 0 && value <= 1_000_000;
   if (key === 'experiment_id' || key === 'variant') return /^[a-z0-9][a-z0-9_-]{0,63}$/.test(value);
   return false;

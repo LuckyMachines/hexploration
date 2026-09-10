@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "evaluationMode": "automated-only",
+  "sessionPhases": ["booting", "hydrating", "lobby", "ready", "active", "backgrounded", "reconnecting", "resumed", "terminal"],
+  "budgets": {
+    "cachedResumeMs": 1000,
+    "coldResumeMs": 3000,
+    "localSaveAckMs": 50,
+    "cloudSaveP95Ms": 1500,
+    "reconnectP95Ms": 5000,
+    "lobbyPropagationP95Ms": 750,
+    "joinSuccessRate": 0.99,
+    "lostConfirmedActions": 0,
+    "duplicatePartyMemberships": 0,
+    "gameRouteRawBytes": 430000,
+    "threeChunkRawBytes": 850000
+  },
+  "requiredScenarios": [
+    "cold-boot", "warm-cache", "offline-boot", "refresh-during-transaction", "replacement-transaction",
+    "reverted-transaction", "stale-cloud-write", "wallet-switch", "background-and-return", "multi-tab-write",
+    "party-create-and-restore", "invite-accept", "expired-or-revoked-invite", "friend-block-and-privacy", "rpc-failover"
+  ],
+  "privacy": {
+    "publicWalletDiscovery": false,
+    "presenceRequiresRelationship": true,
+    "inviteTokensExpire": true,
+    "inviteTokensRevocable": true
+  },
+  "authority": {
+    "gameplay": "chain",
+    "expeditionSummary": "confirmed-projector",
+    "playerDrafts": "indexeddb-outbox",
+    "partyAndFriends": "return-service",
+    "presence": "ephemeral-return-service"
+  }
+}

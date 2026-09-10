@@ -26,9 +26,10 @@
   "dependencies": {
     "@tanstack/react-query": "^5.80.6",
     "clsx": "^2.1.1",
+    "qrcode": "^1.5.4",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "react-router-dom": "^7.6.1",
+    "react-router-dom": "^7.18.2",
     "tailwind-merge": "^3.3.0",
     "three": "^0.180.0",
     "viem": "^2.31.3"

@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { useEffect } from 'react';
+import { useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useWallet } from '../../contexts/WalletContext';
 import { useAvailableGames } from '../../hooks/useAvailableGames';
 import { useGameActions } from '../../hooks/useGameActions';
@@ -9,6 +11,7 @@ import TxStatus from '../shared/TxStatus';
 import EmptyState from '../shared/EmptyState';
 
 export default function GameBrowser() {
+  const navigate = useNavigate();
   const { address } = useWallet();
   const {
     gameIDs,
@@ -28,6 +31,16 @@ export default function GameBrowser() {
   } = useGameActions();
 
   const [playerCount, setPlayerCount] = useState(2);
+  const [crewFilter, setCrewFilter] = useState('all');
+  const [gameSearch, setGameSearch] = useState('');
+  const games = useMemo(() => gameIDs.map((id, index) => ({ id, maxPlayers: maxPlayers[index], registered: currentRegistrations[index] })).filter((game) => {
+    if (gameSearch && !String(game.id).includes(gameSearch.trim())) return false;
+    if (crewFilter === 'solo' && Number(game.maxPlayers) !== 1) return false;
+    if (crewFilter === 'crew' && Number(game.maxPlayers) === 1) return false;
+    if (crewFilter === 'open' && Number(game.registered) >= Number(game.maxPlayers)) return false;
+    return true;
+  }), [crewFilter, currentRegistrations, gameIDs, gameSearch, maxPlayers]);
+  const quickPlay = games.filter((game) => Number(game.registered) < Number(game.maxPlayers)).sort((a, b) => Number(b.registered) - Number(a.registered))[0];
 
   useEffect(() => {
     if (!isSuccess) return;
@@ -91,6 +104,11 @@ export default function GameBrowser() {
 
       {/* Game list */}
       <div className="px-4 py-5 sm:px-6">
+        <div className="mb-4 grid gap-2 sm:grid-cols-[minmax(0,1fr)_auto_auto]">
+          <input value={gameSearch} onChange={(event) => setGameSearch(event.target.value.replace(/\D/g, ''))} inputMode="numeric" aria-label="Find expedition by number" placeholder="Find expedition number" className="min-h-11 rounded border border-exp-border bg-exp-dark px-3 font-mono text-xs text-exp-text placeholder:text-exp-text-dim" />
+          <select value={crewFilter} onChange={(event) => setCrewFilter(event.target.value)} aria-label="Filter expeditions" className="min-h-11 rounded border border-exp-border bg-exp-dark px-3 font-mono text-xs text-exp-text"><option value="all">All expeditions</option><option value="open">Open seats</option><option value="solo">Solo</option><option value="crew">Crew play</option></select>
+          <button type="button" disabled={!quickPlay} onClick={() => navigate(`/game/${quickPlay.id}`)} className="min-h-11 rounded border border-oxide-green/40 bg-oxide-green/5 px-3 font-mono text-[10px] uppercase tracking-[0.16em] text-oxide-green disabled:opacity-40">Quick join</button>
+        </div>
         {isLoading ? (
           <div className="flex items-center justify-center py-14">
             <div className="max-w-md rounded border border-exp-border/70 bg-exp-dark/35 px-4 py-3 text-center">
@@ -111,7 +129,7 @@ export default function GameBrowser() {
             action="Retry"
             onAction={refetch}
           />
-        ) : gameIDs.length === 0 ? (
+        ) : games.length === 0 ? (
           <EmptyState
             tone="gold"
             title="No expeditions found"
@@ -119,12 +137,12 @@ export default function GameBrowser() {
           />
         ) : (
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {gameIDs.map((id, i) => (
+            {games.map((game) => (
               <GameCard
-                key={Number(id)}
-                gameId={Number(id)}
-                maxPlayers={Number(maxPlayers[i])}
-                registered={Number(currentRegistrations[i])}
+                key={Number(game.id)}
+                gameId={Number(game.id)}
+                maxPlayers={Number(game.maxPlayers)}
+                registered={Number(game.registered)}
               />
             ))}
           </div>

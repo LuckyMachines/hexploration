@@ -33,6 +33,13 @@ vi.mock('../hooks/useGameOver', () => ({
   }),
 }));
 
+vi.mock('../contexts/PlayerSessionContext', () => ({
+  usePlayerSession: () => ({
+    state: { phase: 'booting', online: true, softPaused: false, activeGameId: null, saveStatus: 'local', pendingTransactions: [] },
+    beginGame: vi.fn(), hydrated: vi.fn(), terminal: vi.fn(), pause: vi.fn(), resume: vi.fn(),
+  }),
+}));
+
 describe('GamePage', () => {
   it('shows a clear error for invalid game ids', () => {
     render(

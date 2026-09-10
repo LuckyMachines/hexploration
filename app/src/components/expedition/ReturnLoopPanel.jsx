@@ -1,6 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useWallet } from '../../contexts/WalletContext';
+import { usePlayerSession } from '../../contexts/PlayerSessionContext';
+import { acknowledgeSessionMutation, enqueueSessionMutation, listSessionMutations, saveSessionDocument, withSessionLock } from '../../lib/sessionPersistence';
+import { recordSessionMetric } from '../../lib/sessionTelemetry';
 import {
   RETURN_ROLES,
   clearReturnLoop,
@@ -42,6 +45,7 @@ const returnInterval = (updatedAt) => {
 };
 
 export function ReturnLoopSync({ gameId, isGameOver = false }) {
+  const { setSaveStatus } = usePlayerSession();
   useEffect(() => {
     if (!gameId) return;
     const current = loadReturnLoop();
@@ -53,12 +57,14 @@ export function ReturnLoopSync({ gameId, isGameOver = false }) {
       })
       : startReturnableExpedition(current, { gameId, name: `Expedition ${gameId}` });
     saveReturnLoop(next);
-  }, [gameId, isGameOver]);
+    saveSessionDocument('return-loop', next).then(() => setSaveStatus('local')).catch(() => setSaveStatus('queued'));
+  }, [gameId, isGameOver, setSaveStatus]);
   return null;
 }
 
 export default function ReturnLoopPanel() {
   const { address, isConnected, chainId, connect } = useWallet();
+  const { setSaveStatus } = usePlayerSession();
   const [state, setState] = useState(() => loadReturnLoop());
   const [copied, setCopied] = useState(false);
   const [cloud, setCloud] = useState({ status: 'local', message: 'Saved on this device.', version: 0 });
@@ -66,6 +72,7 @@ export default function ReturnLoopPanel() {
   const [deleteArmed, setDeleteArmed] = useState(false);
   const [localClearArmed, setLocalClearArmed] = useState(false);
   const initialState = useRef(state);
+  const saveAcrossDevicesRef = useRef(null);
   const recommendation = useMemo(() => returnRecommendation(state), [state]);
   const expedition = state.expedition;
 
@@ -106,8 +113,11 @@ export default function ReturnLoopPanel() {
   }, [address]);
 
   const persist = (next) => {
+    const startedAt = performance.now();
     const saved = saveReturnLoop(next);
+    recordSessionMetric('local_save_ack_ms', performance.now() - startedAt, { source: 'local-storage-bootstrap' });
     setState(saved);
+    saveSessionDocument('return-loop', saved).then(() => setSaveStatus('local')).catch(() => setSaveStatus('queued'));
     return saved;
   };
 
@@ -155,13 +165,15 @@ export default function ReturnLoopPanel() {
   };
 
   const saveAcrossDevices = async () => {
+    const syncStartedAt = performance.now();
     if (!returnServiceEnabled()) {
       trackUXError({ surface: 'return-loop', errorType: 'network', severity: 'medium' });
       setCloud({ status: 'error', message: 'Cloud return history is not configured in this release.', version: 0 });
       return;
     }
     const recovering = ['error', 'offline', 'expired'].includes(cloud.status);
-    setCloud((current) => ({ ...current, status: 'authenticating', message: 'Preparing wallet-secured history…' }));
+    setSaveStatus('syncing');
+    setCloud((current) => ({ ...current, status: 'authenticating', message: 'Preparing wallet-secured history...' }));
     try {
       let activeWallet = address;
       if (!activeWallet) activeWallet = await connect();
@@ -169,7 +181,7 @@ export default function ReturnLoopPanel() {
       const activeChainId = chainId || Number(await window.ethereum.request({ method: 'eth_chainId' }));
       let session = loadReturnSession();
       if (!session || session.wallet !== activeWallet.toLowerCase()) session = await authenticateReturnService(activeWallet, activeChainId);
-      setCloud((current) => ({ ...current, status: 'syncing', message: 'Reconciling this device with cloud history…' }));
+      setCloud((current) => ({ ...current, status: 'syncing', message: 'Reconciling this device with cloud history...' }));
       let remote = null;
       try {
         remote = await getCloudReturnState(session.token);
@@ -180,22 +192,31 @@ export default function ReturnLoopPanel() {
       let expectedVersion = Number(remote?.version || 0);
       let saved;
       let conflictResolved = false;
+      let queued = await enqueueSessionMutation('return-state', { expectedVersion, state: merged });
       try {
-        saved = await putCloudReturnState(merged, expectedVersion, session.token);
+        saved = await withSessionLock('cloud-return-write', () => putCloudReturnState(merged, expectedVersion, session.token, queued.id));
+        await acknowledgeSessionMutation(queued.id);
       } catch (error) {
         if (!(error instanceof ReturnServiceError) || error.status !== 409 || !error.payload.current) throw error;
+        await acknowledgeSessionMutation(queued.id);
         merged = mergeReturnLoops(merged, error.payload.current.state);
         expectedVersion = Number(error.payload.current.version);
-        saved = await putCloudReturnState(merged, expectedVersion, session.token);
+        queued = await enqueueSessionMutation('return-state', { expectedVersion, state: merged });
+        saved = await withSessionLock('cloud-return-write', () => putCloudReturnState(merged, expectedVersion, session.token, queued.id));
+        await acknowledgeSessionMutation(queued.id);
         conflictResolved = true;
       }
       await updateCloudProfile({ callsign: merged.player.callsign, role: merged.player.role }, session.token);
       persist(merged);
       setCloud({
         status: 'synced',
-        message: conflictResolved ? `Conflict resolved safely · cloud version ${saved.version}` : `Synced securely · cloud version ${saved.version}`,
+        message: conflictResolved ? `Conflict resolved safely - cloud version ${saved.version}` : `Synced securely - cloud version ${saved.version}`,
         version: Number(saved.version),
       });
+      const staleQueued = await listSessionMutations();
+      await Promise.all(staleQueued.filter((item) => item.kind === 'return-state').map((item) => acknowledgeSessionMutation(item.id)));
+      setSaveStatus('cloud');
+      recordSessionMetric('cloud_save_p95_ms', performance.now() - syncStartedAt, { conflictResolved });
       if (recovering || conflictResolved) trackUXRecovery({ surface: 'return-loop', recovery: conflictResolved ? 'automatic' : 'retry' });
       if (remote?.state?.expedition) {
         trackJourneyEvent('resume', {
@@ -221,8 +242,21 @@ export default function ReturnLoopPanel() {
         message: expired ? 'Session expired. Sign again to reconnect cloud history.' : offline ? 'Offline. Your expedition remains safe on this device.' : (error.message || 'Cloud history could not sync.'),
         version: 0,
       });
+      setSaveStatus(offline ? 'queued' : 'local');
     }
   };
+  saveAcrossDevicesRef.current = saveAcrossDevices;
+
+  useEffect(() => {
+    const flush = async () => {
+      if (!loadReturnSession() || !navigator.onLine) return;
+      const queued = await listSessionMutations();
+      if (queued.some((item) => item.kind === 'return-state')) saveAcrossDevicesRef.current?.();
+    };
+    window.addEventListener('online', flush);
+    flush();
+    return () => window.removeEventListener('online', flush);
+  }, []);
 
   const disconnectCloud = async () => {
     await logoutReturnService();
@@ -340,7 +374,7 @@ export default function ReturnLoopPanel() {
     </div>}
     {state.player.role && <>
       <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-exp-border pt-4">
-        <p className="font-mono text-xs text-exp-text-dim">Crew: {state.crew.map((member) => member.callsign).join(' · ') || 'Invite a second crew member to make the route shared.'}</p>
+        <p className="font-mono text-xs text-exp-text-dim">Crew: {state.crew.map((member) => member.callsign).join(' - ') || 'Invite a second crew member to make the route shared.'}</p>
         <button type="button" onClick={copyInvite} className="inline-flex min-h-11 items-center rounded border border-blueprint/40 bg-blueprint/10 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.16em] text-blueprint">{copied ? 'Invite copied' : 'Copy crew invite'}</button>
       </div>
       <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded border border-exp-border bg-exp-dark/35 p-4" data-testid="cloud-return-controls">

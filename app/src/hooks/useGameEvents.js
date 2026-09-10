@@ -2,140 +2,105 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { usePublicClient, useWatchContractEvent } from './useContractEvents';
 import { EventsABI, GAME_EVENTS_ADDRESS } from '../config/contracts';
 import { parseUintId } from '../lib/ids';
+import { useQueryClient } from '@tanstack/react-query';
 
-const EVENT_NAMES = [
-  'ActionSubmit',
-  'EndGameStarted',
-  'GameOver',
-  'GamePhaseChange',
-  'GameRegistration',
-  'GameStart',
-  'LandingSiteSet',
-  'PlayerIdleKick',
-  'ProcessingPhaseChange',
-  'TurnProcessingFail',
-  'TurnProcessingStart',
-];
-
+const EVENT_NAMES = ['ActionSubmit', 'EndGameStarted', 'GameOver', 'GamePhaseChange', 'GameRegistration', 'GameStart', 'LandingSiteSet', 'PlayerIdleKick', 'ProcessingPhaseChange', 'TurnProcessingFail', 'TurnProcessingStart'];
 const MAX_EVENTS = 250;
+const BLOCK_BATCH = 40_000n;
+const CONFIRMATIONS = 3n;
+
+const cacheKey = (gameId) => `xenovoya:game-events:v2:${gameId}`;
+const cursorKey = (gameId) => `xenovoya:game-events-cursor:v2:${gameId}`;
 
 function getEventKey(name, log) {
-  const tx = log.transactionHash || 'unknown';
-  const index = log.logIndex !== undefined ? log.logIndex.toString() : '0';
-  return `${tx}-${index}-${name}`;
+  return `${log.transactionHash || 'unknown'}-${log.logIndex !== undefined ? log.logIndex.toString() : '0'}-${name}`;
 }
 
-function sortByChainOrder(a, b) {
-  const aBlock = Number(a.blockNumber ?? 0n);
-  const bBlock = Number(b.blockNumber ?? 0n);
-  if (aBlock !== bBlock) return aBlock - bBlock;
-  const aIndex = Number(a.logIndex ?? 0n);
-  const bIndex = Number(b.logIndex ?? 0n);
-  return aIndex - bIndex;
+function mapLog(log, fallbackName) {
+  const name = log.eventName || fallbackName;
+  return {
+    key: getEventKey(name, log), name, args: log.args,
+    blockNumber: Number(log.blockNumber ?? 0n), logIndex: Number(log.logIndex ?? 0),
+    transactionHash: log.transactionHash, timestamp: Date.now(),
+  };
 }
+
+function readCache(gameId) {
+  try { return JSON.parse(window.localStorage.getItem(cacheKey(gameId)) || '[]'); }
+  catch { return []; }
+}
+
+function sortByChainOrder(a, b) { return a.blockNumber - b.blockNumber || a.logIndex - b.logIndex; }
 
 export function useGameEvents(gameId) {
   const gid = parseUintId(gameId);
   const publicClient = usePublicClient();
+  const queryClient = useQueryClient();
   const [events, setEvents] = useState([]);
   const [isLoadingFullHistory, setIsLoadingFullHistory] = useState(false);
-
-  const eventDefs = useMemo(
-    () => EventsABI.filter((entry) => entry.type === 'event' && EVENT_NAMES.includes(entry.name)),
-    [],
-  );
+  const [eventSyncStatus, setEventSyncStatus] = useState('live');
+  const eventDefs = useMemo(() => EventsABI.filter((entry) => entry.type === 'event' && EVENT_NAMES.includes(entry.name)), []);
 
   const appendEvents = useCallback((incoming) => {
-    if (incoming.length === 0) return;
-    setEvents((prev) => {
-      const seen = new Set(prev.map((event) => event.key));
-      const appended = [];
-      incoming.forEach((event) => {
-        if (seen.has(event.key)) return;
-        seen.add(event.key);
-        appended.push(event);
-      });
-      if (appended.length === 0) return prev;
-      const next = [...prev, ...appended].sort(sortByChainOrder);
-      return next.length > MAX_EVENTS ? next.slice(next.length - MAX_EVENTS) : next;
+    if (!incoming.length) return;
+    setEvents((previous) => {
+      const byKey = new Map(previous.map((event) => [event.key, event]));
+      incoming.forEach((event) => byKey.set(event.key, event));
+      return [...byKey.values()].sort(sortByChainOrder).slice(-MAX_EVENTS);
     });
   }, []);
 
-  const addLiveLogs = useCallback((name, logs) => {
+  const addLiveLogs = useCallback((logs) => {
     if (gid === null) return;
-    const mapped = logs
-      .filter((log) => {
-        const gameIDFromLog = log.args?.gameID;
-        return gameIDFromLog === undefined || gameIDFromLog === gid;
-      })
-      .map((log) => ({
-        key: getEventKey(name, log),
-        name,
-        args: log.args,
-        blockNumber: log.blockNumber,
-        logIndex: log.logIndex,
-        transactionHash: log.transactionHash,
-        timestamp: Date.now(),
-      }));
-    appendEvents(mapped);
-  }, [appendEvents, gid]);
+    appendEvents(logs.filter((log) => log.args?.gameID === undefined || log.args.gameID === gid).map((log) => mapLog(log)));
+    queryClient.invalidateQueries({ predicate: (query) => JSON.stringify(query.queryKey).includes(gid.toString()) });
+    setEventSyncStatus('live');
+  }, [appendEvents, gid, queryClient]);
 
-  EVENT_NAMES.forEach((eventName) => {
-    useWatchContractEvent({
-      address: GAME_EVENTS_ADDRESS,
-      abi: EventsABI,
-      eventName,
-      enabled: gid !== null,
-      onLogs: (logs) => addLiveLogs(eventName, logs),
-    });
+  useWatchContractEvent({
+    address: GAME_EVENTS_ADDRESS,
+    abi: EventsABI,
+    events: eventDefs,
+    enabled: gid !== null,
+    onLogs: addLiveLogs,
+    onError: () => setEventSyncStatus('polling'),
   });
 
   useEffect(() => {
-    setEvents([]);
+    if (gid === null) { setEvents([]); return; }
+    setEvents(readCache(gid));
   }, [gid]);
+
+  useEffect(() => {
+    if (gid === null || !events.length) return;
+    try { window.localStorage.setItem(cacheKey(gid), JSON.stringify(events.slice(-MAX_EVENTS))); } catch { /* cache is optional */ }
+  }, [events, gid]);
 
   const loadFullHistory = useCallback(async () => {
     if (!publicClient || gid === null) return;
     setIsLoadingFullHistory(true);
+    setEventSyncStatus('backfilling');
     try {
-      const allLogs = await Promise.all(
-        eventDefs.map(async (eventDef) => {
-          const logs = await publicClient.getLogs({
-            address: GAME_EVENTS_ADDRESS,
-            event: eventDef,
-            fromBlock: 0n,
-            toBlock: 'latest',
-          }).catch(() => []);
-          return logs
-            .filter((log) => {
-              const gameIDFromLog = log.args?.gameID;
-              return gameIDFromLog === undefined || gameIDFromLog === gid;
-            })
-            .map((log) => ({
-              key: getEventKey(eventDef.name, log),
-              name: eventDef.name,
-              args: log.args,
-              blockNumber: log.blockNumber,
-              logIndex: log.logIndex,
-              transactionHash: log.transactionHash,
-              timestamp: Date.now(),
-            }));
-        }),
-      );
-      appendEvents(allLogs.flat());
+      const latest = await publicClient.getBlockNumber();
+      const confirmed = latest > CONFIRMATIONS ? latest - CONFIRMATIONS : 0n;
+      const configuredStart = BigInt(import.meta.env.VITE_GAME_EVENTS_START_BLOCK || 0);
+      const boundedStart = configuredStart || (confirmed > 250_000n ? confirmed - 250_000n : 0n);
+      const storedCursor = BigInt(window.localStorage.getItem(cursorKey(gid)) || 0);
+      let fromBlock = storedCursor >= boundedStart ? storedCursor + 1n : boundedStart;
+      while (fromBlock <= confirmed) {
+        const toBlock = fromBlock + BLOCK_BATCH - 1n > confirmed ? confirmed : fromBlock + BLOCK_BATCH - 1n;
+        const logs = await publicClient.getLogs({ address: GAME_EVENTS_ADDRESS, events: eventDefs, fromBlock, toBlock });
+        appendEvents(logs.filter((log) => log.args?.gameID === gid).map((log) => mapLog(log)));
+        window.localStorage.setItem(cursorKey(gid), toBlock.toString());
+        fromBlock = toBlock + 1n;
+      }
+      setEventSyncStatus('live');
+    } catch {
+      setEventSyncStatus('degraded');
     } finally {
       setIsLoadingFullHistory(false);
     }
   }, [appendEvents, eventDefs, gid, publicClient]);
 
-  const clearEvents = useCallback(() => {
-    setEvents([]);
-  }, []);
-
-  return {
-    events,
-    clearEvents,
-    loadFullHistory,
-    isLoadingFullHistory,
-  };
+  return { events, clearEvents: () => setEvents([]), loadFullHistory, isLoadingFullHistory, eventSyncStatus };
 }

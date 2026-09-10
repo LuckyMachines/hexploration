@@ -42,7 +42,7 @@ describe('return service client contract', () => {
       paths[operation.path][operation.method] = { operationId };
     }
     const compatible = { openapi: '3.1.0', info: { version: service.RETURN_API_CONTRACT_VERSION }, paths };
-    expect(service.assertReturnApiContract(compatible)).toEqual({ version: '2026-07-14.1', operations: 13 });
+    expect(service.assertReturnApiContract(compatible)).toEqual({ version: '2026-09-10.1', operations: 39 });
 
     const incompatible = structuredClone(compatible);
     incompatible.info.version = 'obsolete';

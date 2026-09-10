@@ -1,4 +1,4 @@
-import { createPublicClient, http } from 'viem';
+import { createPublicClient, fallback, http } from 'viem';
 import { SUPPORTED_CHAINS, RPC_URLS } from './chains';
 
 const clientCache = new Map();
@@ -19,14 +19,19 @@ export function getPublicClient(chainId) {
   const chain = SUPPORTED_CHAINS.find((c) => c.id === id);
   if (!chain) throw new Error(`Unsupported chain: ${id}`);
 
-  const rpcUrl = RPC_URLS[id];
-  if (!rpcUrl) {
+  const configured = RPC_URLS[id];
+  if (!configured) {
     throw new Error(`Missing RPC URL for chain: ${id}`);
   }
 
+  const rpcUrls = [...new Set([
+    ...String(configured).split(',').map((value) => value.trim()).filter(Boolean),
+    ...(chain.rpcUrls?.default?.http || []),
+  ])];
+
   const client = createPublicClient({
     chain,
-    transport: http(rpcUrl),
+    transport: fallback(rpcUrls.map((url) => http(url, { timeout: 8_000, retryCount: 2, retryDelay: 600 })), { rank: true }),
     batch: { multicall: true },
   });
 

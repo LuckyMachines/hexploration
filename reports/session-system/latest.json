@@ -1,0 +1,120 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-09-10T09:31:34.785Z",
+  "evaluationMode": "automated-only",
+  "implementationGrade": "A",
+  "productionEvidenceGrade": "B",
+  "grade": "A",
+  "passed": 18,
+  "total": 18,
+  "ratio": 1,
+  "checks": [
+    {
+      "id": "contract-valid",
+      "ok": true
+    },
+    {
+      "id": "canonical-session-machine",
+      "ok": true
+    },
+    {
+      "id": "indexeddb-snapshots",
+      "ok": true
+    },
+    {
+      "id": "offline-outbox",
+      "ok": true
+    },
+    {
+      "id": "multi-tab-coordination",
+      "ok": true
+    },
+    {
+      "id": "transaction-recovery",
+      "ok": true
+    },
+    {
+      "id": "query-policy",
+      "ok": true
+    },
+    {
+      "id": "hidden-tab-throttling",
+      "ok": true
+    },
+    {
+      "id": "rpc-failover",
+      "ok": true
+    },
+    {
+      "id": "bounded-event-history",
+      "ok": true
+    },
+    {
+      "id": "party-ui",
+      "ok": true
+    },
+    {
+      "id": "invite-journey",
+      "ok": true
+    },
+    {
+      "id": "social-service-schema",
+      "ok": true
+    },
+    {
+      "id": "privacy-controls",
+      "ok": true
+    },
+    {
+      "id": "soft-pause-copy",
+      "ok": true
+    },
+    {
+      "id": "runtime-performance-evidence",
+      "ok": true
+    },
+    {
+      "id": "gameclientpage--bundle-budget",
+      "ok": true,
+      "value": 369131,
+      "budget": 430000
+    },
+    {
+      "id": "three--bundle-budget",
+      "ok": true,
+      "value": 784069,
+      "budget": 850000
+    }
+  ],
+  "budgets": {
+    "cachedResumeMs": 1000,
+    "coldResumeMs": 3000,
+    "localSaveAckMs": 50,
+    "cloudSaveP95Ms": 1500,
+    "reconnectP95Ms": 5000,
+    "lobbyPropagationP95Ms": 750,
+    "joinSuccessRate": 0.99,
+    "lostConfirmedActions": 0,
+    "duplicatePartyMemberships": 0,
+    "gameRouteRawBytes": 430000,
+    "threeChunkRawBytes": 850000
+  },
+  "requiredScenarios": [
+    "cold-boot",
+    "warm-cache",
+    "offline-boot",
+    "refresh-during-transaction",
+    "replacement-transaction",
+    "reverted-transaction",
+    "stale-cloud-write",
+    "wallet-switch",
+    "background-and-return",
+    "multi-tab-write",
+    "party-create-and-restore",
+    "invite-accept",
+    "expired-or-revoked-invite",
+    "friend-block-and-privacy",
+    "rpc-failover"
+  ],
+  "nextAction": "Deploy API contract 2026-09-10.1, run synthetic multi-context probes, and collect production percentiles."
+}

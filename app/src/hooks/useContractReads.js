@@ -14,29 +14,12 @@ export function useReadContracts({ contracts, query = {} }) {
     ],
     queryFn: async () => {
       const client = getPublicClient(chainId);
-      const results = await Promise.allSettled(
-        contracts.map((contract) =>
-          client.readContract(contract).then((result) => ({
-            status: 'success',
-            result,
-          })),
-        ),
-      );
-
-      return results.map((settled) => {
-        if (settled.status === 'fulfilled') {
-          return settled.value;
-        }
-
-        return {
-          status: 'failure',
-          result: undefined,
-          error: settled.reason,
-        };
-      });
+      return client.multicall({ contracts, allowFailure: true });
     },
     enabled: enabled && contracts.length > 0,
-    refetchInterval,
+    refetchInterval: typeof refetchInterval === 'number'
+      ? () => typeof document !== 'undefined' && document.hidden ? false : Math.max(refetchInterval, 15_000)
+      : refetchInterval,
     ...restQuery,
   });
 

@@ -33,6 +33,7 @@ export function normalizeReturnLoop(value = {}) {
     lifecycle: lifecycles.has(source.lifecycle) ? source.lifecycle : 'active', pressure: Math.max(0, Math.min(100, Number(source.pressure) || 0)),
     clue: text(source.clue, 'A signal remains unresolved beyond the fog.'), lastConsequence: text(source.lastConsequence, 'The crew is ready for the next decision.'),
     nextAction: text(source.nextAction, 'Resume the expedition and read the board.'), nextReason: text(source.nextReason, 'Your contribution keeps the shared route readable.'), updatedAt: source.updatedAt || now(),
+    fieldUpdatedAt: source.fieldUpdatedAt && typeof source.fieldUpdatedAt === 'object' ? source.fieldUpdatedAt : {},
   } : null;
   return { ...base, ...value, version: 2, player, crew: Array.isArray(value.crew) ? value.crew.slice(0, 4) : [], expedition, events: Array.isArray(value.events) ? value.events.slice(-50) : [] };
 }
@@ -66,7 +67,7 @@ export function mergeReturnLoops(localValue, cloudValue) {
   const primary = preferLocal ? local : cloud;
   const secondary = preferLocal ? cloud : local;
   const events = [...cloud.events, ...local.events]
-    .filter((event, index, all) => index === all.findIndex((candidate) => candidate.name === event.name && candidate.at === event.at))
+    .filter((event, index, all) => index === all.findIndex((candidate) => (candidate.id && event.id ? candidate.id === event.id : candidate.name === event.name && candidate.at === event.at)))
     .sort((a, b) => String(a.at).localeCompare(String(b.at)))
     .slice(-50);
   return normalizeReturnLoop({
@@ -82,12 +83,27 @@ export function mergeReturnLoops(localValue, cloudValue) {
       },
     },
     crew: primary.crew.length ? primary.crew : secondary.crew,
-    expedition: primary.expedition || secondary.expedition,
+    expedition: mergeExpedition(local.expedition, cloud.expedition),
     events,
   });
 }
 
-export function recordReturnEvent(state, name, detail = {}) { return normalizeReturnLoop({ ...state, events: [...(state.events || []), { name, at: now(), ...detail }] }); }
+function mergeExpedition(local, cloud) {
+  if (!local) return cloud;
+  if (!cloud) return local;
+  if (local.gameId !== cloud.gameId) return (Date.parse(local.updatedAt) || 0) >= (Date.parse(cloud.updatedAt) || 0) ? local : cloud;
+  const fields = ['name', 'lifecycle', 'pressure', 'clue', 'lastConsequence', 'nextAction', 'nextReason'];
+  const merged = { ...cloud, fieldUpdatedAt: { ...(cloud.fieldUpdatedAt || {}), ...(local.fieldUpdatedAt || {}) } };
+  for (const field of fields) {
+    const localAt = Date.parse(local.fieldUpdatedAt?.[field] || local.updatedAt || 0) || 0;
+    const cloudAt = Date.parse(cloud.fieldUpdatedAt?.[field] || cloud.updatedAt || 0) || 0;
+    if (localAt >= cloudAt) merged[field] = local[field];
+  }
+  merged.updatedAt = new Date(Math.max(Date.parse(local.updatedAt) || 0, Date.parse(cloud.updatedAt) || 0)).toISOString();
+  return merged;
+}
+
+export function recordReturnEvent(state, name, detail = {}) { return normalizeReturnLoop({ ...state, events: [...(state.events || []), { id: crypto.randomUUID(), name, at: now(), ...detail }] }); }
 export function selectRole(state, role) {
   const roleId = normalizeRoleId(role);
   if (!RETURN_ROLES[roleId]) return normalizeReturnLoop(state);
@@ -102,7 +118,7 @@ export function startReturnableExpedition(state, { gameId, name, crew = [], pres
   return recordReturnEvent({ ...current, crew: crew.length ? crew : current.crew.length ? current.crew : [{ callsign: current.player.callsign, role: playerRole, characterId: playerCharacter, status: 'ready' }, { callsign: 'Vex', role: 'guard', characterId: RETURN_ROLES.guard.character.id, status: 'waiting' }], expedition: { gameId: id, name: text(name, `Survey ${id}`), lifecycle: 'active', pressure, clue: 'A relic-frequency is still pointing beyond the first ridge.', lastConsequence: 'The crew has charted a possible route home.', nextAction: 'Read the signal and commit the next crew decision.', nextReason: `${RETURN_ROLES[playerRole].label} contribution: ${RETURN_ROLES[playerRole].contribution}.`, updatedAt: now() }, player: { ...current.player, characterId: playerCharacter, records: { ...current.player.records, expeditions: current.player.records.expeditions + 1 } } }, 'expedition_started', { gameId: id });
 }
 
-export function updateExpeditionReturn(state, patch = {}) { const current = normalizeReturnLoop(state); if (!current.expedition) return current; return recordReturnEvent({ ...current, expedition: { ...current.expedition, ...patch, updatedAt: now() } }, 'expedition_updated', { lifecycle: patch.lifecycle }); }
+export function updateExpeditionReturn(state, patch = {}) { const current = normalizeReturnLoop(state); if (!current.expedition) return current; const updatedAt = now(); const fieldUpdatedAt = { ...current.expedition.fieldUpdatedAt, ...Object.fromEntries(Object.keys(patch).map((key) => [key, updatedAt])) }; return recordReturnEvent({ ...current, expedition: { ...current.expedition, ...patch, updatedAt, fieldUpdatedAt } }, 'expedition_updated', { lifecycle: patch.lifecycle }); }
 
 export function returnRecommendation(state) {
   const current = normalizeReturnLoop(state); const expedition = current.expedition;
