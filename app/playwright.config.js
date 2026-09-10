@@ -9,7 +9,7 @@ export default defineConfig({
   testDir: './e2e',
   timeout: 60_000,
   fullyParallel: true,
-  workers: Number(process.env.E2E_WORKERS || 1),
+  workers: Number(process.env.E2E_WORKERS || (process.env.CI ? 2 : 1)),
   retries: Number(process.env.E2E_RETRIES || 1),
   expect: {
     timeout: 10_000,
@@ -22,22 +22,27 @@ export default defineConfig({
   projects: [
     {
       name: 'chromium-desktop',
+      testIgnore: /ux-touch\.spec\.js/,
       use: { ...devices['Desktop Chrome'] },
     },
     {
       name: 'firefox-desktop',
+      testIgnore: [/return-sync\.spec\.js/, /ux-input\.spec\.js/, /ux-touch\.spec\.js/],
       use: { ...devices['Desktop Firefox'] },
     },
     {
       name: 'webkit-desktop',
+      testIgnore: [/return-sync\.spec\.js/, /ux-input\.spec\.js/, /ux-touch\.spec\.js/],
       use: { ...devices['Desktop Safari'] },
     },
     {
       name: 'pixel-7',
+      testIgnore: [/return-sync\.spec\.js/, /ux-assistive\.spec\.js/, /ux-input\.spec\.js/],
       use: { ...devices['Pixel 7'] },
     },
     {
       name: 'iphone-13',
+      testIgnore: [/return-sync\.spec\.js/, /ux-assistive\.spec\.js/, /ux-input\.spec\.js/],
       use: { ...devices['iPhone 13'] },
     },
   ],

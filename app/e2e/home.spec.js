@@ -56,11 +56,11 @@ test('return loop gives a new player a role and a resumable crew thread', async 
   await page.goto('/', { waitUntil: 'domcontentloaded' });
   const panel = page.getByTestId('return-loop-panel');
   await panel.getByRole('button', { name: /Scout/i }).click();
-  await expect(panel.getByText(/Create your first expedition thread/i)).toBeVisible();
+  await expect(panel.getByText('Create your first expedition thread', { exact: true })).toBeVisible();
   await panel.getByRole('button', { name: /Create expedition thread/i }).click();
   await expect(panel.getByText(/Sector 0 signal/i)).toBeVisible();
   await panel.getByRole('button', { name: /Mark decision ready/i }).click();
-  await expect(panel.getByText(/Waiting on crew/i)).toBeVisible();
+  await expect(panel.getByText('Waiting on crew', { exact: true })).toBeVisible();
 });
 
 test('home page keeps internal tooling language out of the player funnel', async ({ page }) => {

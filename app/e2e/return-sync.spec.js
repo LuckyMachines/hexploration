@@ -118,7 +118,7 @@ async function configureDevice(context, cloud, analyticsEvents) {
 
 async function chooseRoleAndCreateThread(page) {
   const panel = page.getByTestId('return-loop-panel');
-  await panel.getByRole('button', { name: /^Scout/i }).click();
+  await panel.getByRole('button', { name: /Scout/i }).click();
   await panel.getByRole('button', { name: /Create expedition thread/i }).click();
   await expect(panel.getByText(/Sector 0 signal/i)).toBeVisible();
   return panel;
@@ -145,20 +145,20 @@ test('two devices reconcile, survive conflict and offline work, recover expiry, 
     const pageB = await deviceB.newPage();
     await pageB.goto('/', { waitUntil: 'domcontentloaded' });
     const panelB = pageB.getByTestId('return-loop-panel');
-    await panelB.getByRole('button', { name: /^Scout/i }).click();
+    await panelB.getByRole('button', { name: /Scout/i }).click();
     await panelB.getByRole('button', { name: /Save across devices/i }).click();
     await expect(panelB.getByText(/Sector 0 signal/i)).toBeVisible();
     await expect(panelB.getByText(/Synced securely.*cloud version 2/i)).toBeVisible();
 
     await panelA.getByRole('button', { name: /Mark decision ready/i }).click();
-    await expect(panelA.getByText(/Waiting on crew/i)).toBeVisible();
+    await expect(panelA.getByText('Waiting on crew', { exact: true })).toBeVisible();
     cloud.injectConflict();
     await panelA.getByRole('button', { name: /Sync changes/i }).click();
     await expect(panelA.getByText(/Conflict resolved safely.*cloud version 4/i)).toBeVisible();
     expect(cloud.state.expedition.lifecycle).toBe('waiting-on-crew');
 
     await pageA.evaluate(() => {
-      const key = 'xenovoya:return-loop:v1';
+      const key = 'xenovoya:return-loop:v2';
       const local = JSON.parse(localStorage.getItem(key));
       local.expedition.pressure = 73;
       local.expedition.updatedAt = new Date(Date.now() + 60_000).toISOString();

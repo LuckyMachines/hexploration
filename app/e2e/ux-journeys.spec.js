@@ -11,6 +11,7 @@ async function clearState(page) {
     window.__uxCapturedEvents = [];
     window.plausible = (...args) => window.__uxCapturedEvents.push(args);
     try { Object.defineProperty(Navigator.prototype, 'doNotTrack', { configurable: true, get: () => '0' }); } catch { /* browser-owned */ }
+    localStorage.removeItem('xenovoya:return-loop:v2');
     localStorage.removeItem('xenovoya:return-loop:v1');
     localStorage.removeItem('xenovoya:analytics-dedupe:v1');
     sessionStorage.removeItem('xenovoya:analytics-journey:v1');
@@ -44,7 +45,7 @@ test.describe.serial('journey-level UX budgets', () => {
 
   test('returning player can resume the unresolved thread in one action', async ({ page }) => {
     const stored = {
-      version: 1,
+      version: 2,
       player: { callsign: 'Voyager', role: 'scout', records: { expeditions: 1, rescues: 0, relics: 1 } },
       crew: [{ callsign: 'Voyager', role: 'scout', status: 'ready' }],
       expedition: { gameId: 'previous-run', name: 'Signal beneath the ridge', lifecycle: 'complete', pressure: 42, clue: 'A second signal answers from below.', lastConsequence: 'The crew returned with one relic.', nextAction: 'Follow the unresolved clue.', nextReason: 'The answer changes the next route.', updatedAt: new Date().toISOString() },
@@ -55,7 +56,8 @@ test.describe.serial('journey-level UX budgets', () => {
       window.__uxCapturedEvents = [];
       window.plausible = (...args) => window.__uxCapturedEvents.push(args);
       try { Object.defineProperty(Navigator.prototype, 'doNotTrack', { configurable: true, get: () => '0' }); } catch { /* browser-owned */ }
-      localStorage.setItem('xenovoya:return-loop:v1', JSON.stringify(state));
+      localStorage.setItem('xenovoya:return-loop:v2', JSON.stringify(state));
+      localStorage.removeItem('xenovoya:return-loop:v1');
       localStorage.removeItem('xenovoya:analytics-dedupe:v1');
       sessionStorage.removeItem('xenovoya:analytics-journey:v1');
       sessionStorage.removeItem('xenovoya:analytics-journey-sequence:v1');

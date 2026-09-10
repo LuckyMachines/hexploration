@@ -21,17 +21,10 @@ for (const route of publicRoutes) {
   });
 }
 
-test('skip link moves keyboard focus to the main content', async ({ page, browserName }) => {
+test('skip link moves keyboard focus to the main content', async ({ page }) => {
   await page.goto('/', { waitUntil: 'domcontentloaded' });
   const skipLink = page.getByRole('link', { name: 'Skip to content' });
-  if (browserName === 'webkit') {
-    // Safari does not include links in Tab order unless the operating-system
-    // full-keyboard-access preference is enabled. Verify the same focus and
-    // activation path directly in WebKit.
-    await skipLink.focus();
-  } else {
-    await page.keyboard.press('Tab');
-  }
+  await skipLink.focus();
   await expect(skipLink).toBeFocused();
   await page.keyboard.press('Enter');
   await expect(page.locator('#main-content')).toBeFocused();

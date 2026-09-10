@@ -33,18 +33,18 @@ test('first-player journey emits each privacy-safe milestone once through return
   await page.goto('/', { waitUntil: 'domcontentloaded' });
 
   const panel = page.getByTestId('return-loop-panel');
-  await panel.getByRole('button', { name: new RegExp(`^${FIRST_PLAYER_FIXTURE.roleLabel}`, 'i') }).click();
+  await panel.getByRole('button', { name: new RegExp(FIRST_PLAYER_FIXTURE.roleLabel, 'i') }).click();
   await panel.getByRole('button', { name: /Create expedition thread/i }).click();
   await expect(panel.getByText(new RegExp(FIRST_PLAYER_FIXTURE.expeditionName, 'i'))).toBeVisible();
-  await expect(panel.getByText(FIRST_PLAYER_FIXTURE.consequence)).toBeVisible();
+  await expect(panel.getByText(FIRST_PLAYER_FIXTURE.consequence, { exact: true })).toBeVisible();
   await panel.getByRole('button', { name: /Mark decision ready/i }).click();
-  await expect(panel.getByText(/Waiting on crew/i)).toBeVisible();
+  await expect(panel.getByText('Waiting on crew', { exact: true })).toBeVisible();
   await panel.screenshot({ path: testInfo.outputPath('first-meaningful-outcome.png') });
   await panel.getByRole('button', { name: /Copy crew invite/i }).click();
   await expect(panel.getByRole('button', { name: /Invite copied/i })).toBeVisible();
 
   await page.evaluate((elapsedReturnDays) => {
-    const key = 'xenovoya:return-loop:v1';
+    const key = 'xenovoya:return-loop:v2';
     const state = JSON.parse(localStorage.getItem(key));
     state.expedition.lifecycle = 'recoverable';
     state.expedition.updatedAt = new Date(Date.now() - elapsedReturnDays * 24 * 60 * 60 * 1000).toISOString();
@@ -52,7 +52,7 @@ test('first-player journey emits each privacy-safe milestone once through return
   }, FIRST_PLAYER_FIXTURE.elapsedReturnDays);
   await page.reload({ waitUntil: 'domcontentloaded' });
   const returnedPanel = page.getByTestId('return-loop-panel');
-  await expect(returnedPanel.getByText(/Recoverable/i)).toBeVisible();
+  await expect(returnedPanel.getByText('Recoverable', { exact: true })).toBeVisible();
   await returnedPanel.screenshot({ path: testInfo.outputPath('returned-player-recap.png') });
   await returnedPanel.getByRole('button', { name: /Start next expedition thread/i }).click();
 

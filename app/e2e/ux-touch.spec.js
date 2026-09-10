@@ -2,6 +2,7 @@ import { expect, test } from '@playwright/test';
 
 async function clearReturnState(page) {
   await page.addInitScript(() => {
+    localStorage.removeItem('xenovoya:return-loop:v2');
     localStorage.removeItem('xenovoya:return-loop:v1');
     localStorage.removeItem('xenovoya:analytics-dedupe:v1');
     sessionStorage.removeItem('xenovoya:analytics-journey:v1');
