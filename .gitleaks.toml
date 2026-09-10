@@ -9,6 +9,7 @@ paths = [
   '''(?:^|/)app/public/simulator/''',
   '''(?:^|/)reports/local-stack/''',
   '''(?:^|/)reports/simulator/''',
+  '''(?:^|/)reports/gameplay-improvement/exact-runner/(?:checkpoint|latest-report)\.json$''',
   '''(?:^|/)lib/''',
 ]
 regexes = [
