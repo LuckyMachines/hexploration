@@ -76,6 +76,9 @@ jobs:
             if (!/^0x[a-f0-9]{40}$/i.test(value) || /^0x0{40}$/i.test(value)) throw new Error(`${key} is not a deployed address`);
             lines.push(`${name}=${value}`);
           }
+          const eventStartBlock = String(deployment.GAME_EVENTS_START_BLOCK || '');
+          if (!/^\d+$/.test(eventStartBlock)) throw new Error('GAME_EVENTS_START_BLOCK is not configured');
+          lines.push(`VITE_GAME_EVENTS_START_BLOCK=${eventStartBlock}`);
           fs.appendFileSync(process.env.GITHUB_ENV, `${lines.join('\n')}\n`);
           NODE
 
@@ -83,7 +86,7 @@ jobs:
         run: npm ci
 
       - name: Audit root dependencies
-        run: npm audit --audit-level=high
+        run: npm audit --omit=dev --audit-level=high
 
       - name: Build and test contracts
         run: |
@@ -99,13 +102,16 @@ jobs:
 
       - name: Audit player dependencies
         working-directory: app
-        run: npm audit --audit-level=high
+        run: npm audit --omit=dev --audit-level=high
 
       - name: Test and build player
         working-directory: app
         run: |
           npm test
           npm run build
+
+      - name: Enforce session, save, and social quality budgets
+        run: npm run session:doctor
 
       - name: Verify the deployed return API contract
         run: npm run contract:return
@@ -131,6 +137,7 @@ jobs:
             --build-arg VITE_GAME_SUMMARY_ADDRESS \
             --build-arg VITE_PLAYER_SUMMARY_ADDRESS \
             --build-arg VITE_GAME_EVENTS_ADDRESS \
+            --build-arg VITE_GAME_EVENTS_START_BLOCK \
             --build-arg VITE_GAME_REGISTRY_ADDRESS \
             --build-arg VITE_GAME_QUEUE_ADDRESS \
             --build-arg VITE_GAME_SETUP_ADDRESS \
