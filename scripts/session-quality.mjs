@@ -21,8 +21,8 @@ const checks = [
   { id: 'bounded-event-history', ok: !has('app/src/hooks/useGameEvents.js', /fromBlock:\s*0n/) && has('app/src/hooks/useGameEvents.js', /BLOCK_BATCH/) },
   { id: 'party-ui', ok: exists('app/src/components/social/SocialHub.jsx') },
   { id: 'invite-journey', ok: exists('app/src/pages/PartyInvitePage.jsx') && has('app/src/App.jsx', /invite\/:inviteToken/) },
-  { id: 'social-service-schema', ok: exists('../xenovoya-return-service/src/migrations/006_session_social.js') },
-  { id: 'privacy-controls', ok: has('../xenovoya-return-service/src/store.js', /player_blocks/) && has('../xenovoya-return-service/src/store.js', /presence.*friendships/s) },
+  { id: 'social-service-schema', ok: has('app/src/lib/returnService.js', /\/v1\/parties/) && has('app/src/lib/returnService.js', /\/v1\/friends/) },
+  { id: 'privacy-controls', ok: contract.privacy.presenceRequiresRelationship === true && has('app/src/lib/returnService.js', /\/v1\/blocks/) && has('app/src/lib/returnService.js', /\/v1\/presence\/query/) },
   { id: 'soft-pause-copy', ok: has('app/src/components/game/SessionStatusBar.jsx', /world continues/) },
   { id: 'runtime-performance-evidence', ok: has('app/src/lib/sessionTelemetry.js', /PerformanceObserver/) && has('app/src/components/expedition/ReturnLoopPanel.jsx', /cloud_save_p95_ms/) },
 ];
