@@ -118,11 +118,26 @@ describe('art pipeline contracts', () => {
   });
 
   test('delegates generated material maps to the material-system registry', () => {
+    const inspectManifestAsset = (filePath) => {
+      const relativePath = path.relative(repoRoot, filePath).replaceAll('\\', '/');
+      const asset = manifest.assets.find((item) => item.output.path === relativePath);
+      assert.ok(asset, `Expected ${relativePath} to belong to a manifest asset`);
+      return {
+        width: asset.output.width,
+        height: asset.output.height,
+        format: asset.output.format,
+        channels: asset.output.alpha ? 'srgba' : 'srgb',
+        colorSpace: 'srgb',
+        opaque: !asset.output.alpha,
+        bytes: 1,
+      };
+    };
     const withoutDelegation = structuredClone(manifest);
     withoutDelegation.delegatedRoots = [];
-    const unmanaged = validateArtSystem(direction, withoutDelegation, { repoRoot, checkFiles: true });
+    const validationOptions = { repoRoot, checkFiles: true, imageInspector: inspectManifestAsset };
+    const unmanaged = validateArtSystem(direction, withoutDelegation, validationOptions);
     assert.ok(unmanaged.errors.some((error) => error.includes('app/public/images/art/materials/')));
-    assert.deepEqual(validateArtSystem(direction, manifest, { repoRoot, checkFiles: true }).errors, []);
+    assert.deepEqual(validateArtSystem(direction, manifest, validationOptions).errors, []);
   });
 
   test('approved generated assets fail validation when their selected prompt drifts', () => {
