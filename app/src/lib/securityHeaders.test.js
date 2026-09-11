@@ -10,4 +10,10 @@ describe('production security headers', () => {
     expect(headers).toContain('https://static.cloudflareinsights.com');
     expect(headers).toContain('https://cloudflareinsights.com');
   });
+
+  it('allows same-origin blob workers required by the production 3D texture decoder', () => {
+    const headers = readFileSync(resolve(process.cwd(), 'public', '_headers'), 'utf8');
+
+    expect(headers).toContain("worker-src 'self' blob:");
+  });
 });
