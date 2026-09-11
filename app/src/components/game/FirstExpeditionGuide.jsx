@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useWallet } from '../../contexts/WalletContext';
 import { useAvailableGames } from '../../hooks/useAvailableGames';
@@ -45,7 +45,7 @@ function Step({ number, title, detail, active, complete }) {
 
 export default function FirstExpeditionGuide() {
   const navigate = useNavigate();
-  const { address, isConnected, connect } = useWallet();
+  const { address, isConnected } = useWallet();
   const { gameIDs, maxPlayers, currentRegistrations, isLoading, error, refetch } = useAvailableGames();
   const {
     requestNewGame,
@@ -55,9 +55,6 @@ export default function FirstExpeditionGuide() {
     isSuccess,
     error: txError,
   } = useGameActions();
-  const [isConnecting, setIsConnecting] = useState(false);
-  const [connectError, setConnectError] = useState(null);
-
   const firstOpenGame = useMemo(() => {
     const index = gameIDs.findIndex((id, i) => Number(currentRegistrations[i]) < Number(maxPlayers[i]));
     return index >= 0 ? Number(gameIDs[index]) : null;
@@ -68,29 +65,17 @@ export default function FirstExpeditionGuide() {
     refetch();
   }, [isSuccess, refetch]);
 
-  const connectWallet = async () => {
-    setConnectError(null);
-    setIsConnecting(true);
-    try {
-      await connect();
-    } catch (err) {
-      setConnectError(err);
-    } finally {
-      setIsConnecting(false);
-    }
-  };
-
   const canCreate = isConnected && !isPending && !isConfirming;
   const hasOpenGame = firstOpenGame !== null;
   const primaryAction = !isConnected
-    ? 'Connect Wallet'
+    ? hasOpenGame ? 'Observe Expedition' : 'Explore in 3D'
     : hasOpenGame
       ? 'Enter Expedition'
       : 'Create Expedition';
 
   const handlePrimary = () => {
     if (!isConnected) {
-      connectWallet();
+      navigate(hasOpenGame ? `/game/${firstOpenGame}` : '/guest');
       return;
     }
     if (hasOpenGame) {
@@ -118,10 +103,10 @@ export default function FirstExpeditionGuide() {
           </div>
           <button
             onClick={handlePrimary}
-            disabled={isConnecting || isPending || isConfirming}
+            disabled={isPending || isConfirming}
             className="min-h-11 min-w-44 rounded border border-compass/50 bg-compass/10 px-4 py-2.5 font-display text-xs font-semibold uppercase tracking-widest text-compass-bright transition-colors hover:border-compass hover:bg-compass/20 disabled:cursor-not-allowed disabled:opacity-50"
           >
-            {isConnecting || isPending || isConfirming ? (
+            {isPending || isConfirming ? (
               <span className="flex items-center justify-center gap-2">
                 <Spinner size="w-3.5 h-3.5" />
                 Working
@@ -134,35 +119,35 @@ export default function FirstExpeditionGuide() {
       <div className="grid gap-3 p-5 lg:grid-cols-3">
         <Step
           number="1"
-          title="Ready"
-          detail={address ? `Wallet ${address.slice(0, 6)}...${address.slice(-4)} is ready for live expedition actions.` : 'Connect when you are ready to sign joins and actions.'}
+          title="Explore"
+          detail="Open the 3D world or inspect a live board before connecting anything."
           active={!isConnected}
           complete={isConnected}
         />
         <Step
           number="2"
-          title="Board"
-          detail={isLoading ? 'Scanning for an expedition with room aboard.' : hasOpenGame ? `Expedition #${firstOpenGame} is open. Enter and find the route.` : 'Create an expedition to seed a new map.'}
+          title="Join"
+          detail={address ? `Wallet ${address.slice(0, 6)}...${address.slice(-4)} can sign a live crew action.` : 'Connect only when you choose to reserve a live seat or submit a shared action.'}
           active={isConnected && !hasOpenGame}
-          complete={isConnected && hasOpenGame}
+          complete={isConnected}
         />
         <Step
           number="3"
           title="Depart"
-          detail="Start by moving to reveal ground. Keep reading the pressure so the crew can leave cleanly."
+          detail={isLoading ? 'Scanning live expeditions.' : hasOpenGame ? `Expedition #${firstOpenGame} is open. Reveal useful ground, then return before redline.` : 'Reveal useful ground, preserve the route home, and leave with the discovery.'}
           active={isConnected && hasOpenGame}
           complete={false}
         />
       </div>
 
-      {(hash || isPending || txError || connectError || error) && (
+      {(hash || isPending || txError || error) && (
         <div className="px-5 pb-5">
           <TxStatus
             hash={hash}
             isPending={isPending}
             isConfirming={isConfirming}
             isSuccess={isSuccess}
-            error={txError || connectError || error}
+            error={txError || error}
           />
         </div>
       )}

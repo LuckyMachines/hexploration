@@ -1,4 +1,5 @@
 import { lazy, Suspense, useEffect, useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
 import SurveyTabletFrame from '../components/layout/SurveyTabletFrame';
 import { useWallet } from '../contexts/WalletContext';
 
@@ -28,8 +29,8 @@ const firstTurnSteps = [
 
 const faq = [
   {
-    question: 'Can I try it without a wallet?',
-    answer: 'Yes. The three-turn starter expedition on xenovoya.com lets you make the core route and relic decisions before connecting anything.',
+    question: 'Can I explore before connecting?',
+    answer: 'Yes. Enter the wallet-free 3D expedition or observe a live board. A wallet is requested only when you choose to join a crew or submit a shared action.',
   },
   {
     question: 'What does the wallet do?',
@@ -78,32 +79,6 @@ function MarketingCard({ children, className = '' }) {
     <article className={`rounded border border-exp-border bg-exp-panel/80 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.035)] ${className}`}>
       {children}
     </article>
-  );
-}
-
-function StarterHandoff() {
-  const [handoff, setHandoff] = useState(null);
-
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    if (params.get('starter') !== 'complete') return;
-    setHandoff({
-      outcome: params.get('outcome') || 'Expedition complete',
-      pressure: params.get('pressure'),
-    });
-  }, []);
-
-  if (!handoff) return null;
-
-  return (
-    <div className="mt-6 rounded border border-oxide-green/40 bg-oxide-green/10 px-4 py-3" role="status">
-      <p className="font-display text-sm font-semibold uppercase tracking-[0.14em] text-oxide-green">
-        Starter record received
-      </p>
-      <p className="mt-1 font-mono text-sm leading-relaxed text-exp-text">
-        {handoff.outcome}{handoff.pressure ? ` at ${handoff.pressure}% storm pressure` : ''}. Connect below to bring that decision-making into a live crew.
-      </p>
-    </div>
   );
 }
 
@@ -213,9 +188,9 @@ function HomeHero({ onEnterLive }) {
             <a href="#live-expedition" onClick={onEnterLive} className="inline-flex min-h-[48px] items-center rounded border border-compass bg-compass px-5 py-3 font-display text-[14px] font-semibold uppercase tracking-[0.14em] text-exp-dark shadow-[0_0_28px_rgba(196,166,74,0.2)] transition hover:bg-compass-bright sm:min-h-12 sm:px-6 sm:text-base">
               Enter live lobby
             </a>
-            <a href="https://xenovoya.com/first-expedition/" className="inline-flex min-h-[48px] items-center rounded border border-blueprint/60 bg-blueprint/15 px-5 py-3 font-display text-[14px] font-semibold uppercase tracking-[0.14em] text-blueprint transition hover:bg-blueprint/25 sm:min-h-12 sm:px-6 sm:text-base">
-              Try without a wallet
-            </a>
+            <Link to="/guest" className="inline-flex min-h-[48px] items-center rounded border border-blueprint/60 bg-blueprint/15 px-5 py-3 font-display text-[14px] font-semibold uppercase tracking-[0.14em] text-blueprint transition hover:bg-blueprint/25 sm:min-h-12 sm:px-6 sm:text-base">
+              Explore the 3D world
+            </Link>
           </div>
           <p className="mt-5 max-w-2xl font-mono text-sm leading-relaxed text-exp-text-dim">
             Open alpha on Sepolia testnet. Connect only when you are ready to create or join a live expedition.
@@ -242,17 +217,15 @@ function LiveLobby({ isConnected, loadClient }) {
         <div className="flex flex-wrap items-end justify-between gap-4">
           <SectionHeader
             eyebrow="Live expedition lobby"
-            title={isConnected ? 'Choose your crew and depart' : 'Start a live survey in three steps'}
+            title={isConnected ? 'Choose your crew and depart' : 'Browse the live world before connecting'}
             body={isConnected
               ? 'Join an open crew or launch a new survey. Every action below belongs to the playable client.'
-              : 'Check the network, connect a wallet, then join an open crew or create a new testnet expedition.'}
+              : 'Open a live board in observer mode or launch the local 3D expedition. Connect only when you choose to reserve a seat or submit an action.'}
           />
           <span className="rounded border border-blueprint/40 bg-blueprint/10 px-3 py-2 font-mono text-xs uppercase tracking-[0.16em] text-blueprint">
             Open alpha - Sepolia
           </span>
         </div>
-        <StarterHandoff />
-
         <div className="mt-7 grid gap-6 xl:grid-cols-[minmax(0,1fr)_320px]">
           <SurveyTabletFrame
             title="Xenovoya"
@@ -269,11 +242,11 @@ function LiveLobby({ isConnected, loadClient }) {
               <ul className="mt-3 space-y-3 font-mono text-sm leading-relaxed text-exp-text-dim">
                 <li>Live play uses the Sepolia test network.</li>
                 <li>Your wallet signs crew joins and expedition actions.</li>
-                <li>The no-wallet starter remains available at any time.</li>
+                <li>You can explore the production 3D world without connecting.</li>
               </ul>
-              <a href="https://xenovoya.com/first-expedition/" className="mt-4 inline-flex min-h-11 items-center rounded border border-blueprint/45 bg-blueprint/10 px-3 py-2 font-mono text-xs uppercase tracking-[0.14em] text-blueprint">
-                Play the no-wallet expedition
-              </a>
+              <Link to="/guest" className="mt-4 inline-flex min-h-11 items-center rounded border border-blueprint/45 bg-blueprint/10 px-3 py-2 font-mono text-xs uppercase tracking-[0.14em] text-blueprint">
+                Start a local 3D expedition
+              </Link>
             </MarketingCard>
             {faq.map((item) => (
               <details key={item.question} className="rounded border border-exp-border bg-exp-panel/80 p-4">

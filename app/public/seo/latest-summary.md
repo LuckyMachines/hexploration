@@ -1,19 +1,20 @@
 # SEO Growth Discovery Report
 
-Generated: 2026-09-08T15:09:36.179Z
+Generated: 2026-09-11T01:25:32.355Z
 
 Status: pass
 
 ## Routes
 
-- Total: 2
-- Public: 2
+- Total: 3
+- Public: 3
 - Scenario: 0
 - Topic: 0
 
 | Path | Type | Status | Warnings |
 | --- | --- | --- | --- |
 | / | home | pass | 0 |
+| /guest | guest-expedition | pass | 0 |
 | /privacy | privacy | pass | 0 |
 
 ## Failures

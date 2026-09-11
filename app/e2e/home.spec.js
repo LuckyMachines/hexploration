@@ -44,6 +44,8 @@ test('home page renders core surfaces', async ({ page }) => {
   const liveLaunch = page.getByRole('link', { name: /Enter live lobby/i }).first();
   await expect(liveLaunch).toBeVisible();
   await expect(liveLaunch).toHaveAttribute('href', '#live-expedition');
+  const guestLaunch = page.getByRole('link', { name: /Explore the 3D world/i }).first();
+  await expect(guestLaunch).toHaveAttribute('href', '/guest');
   await liveLaunch.click();
   await expect(page.getByText(/One choice should explain the run/i)).toBeVisible();
   await expect(page.getByRole('heading', { name: /^Commit$/i })).toBeVisible();
@@ -95,10 +97,18 @@ test('pseudo-localization loads when explicitly requested', async ({ page }) => 
   await expect(page.getByRole('heading', { level: 1 })).toContainText('Chart the strange.');
 });
 
-test('starter expedition handoff is acknowledged in the live lobby', async ({ page }) => {
-  await page.goto('/?starter=complete&outcome=Relic%20secured&pressure=47#live-expedition', { waitUntil: 'domcontentloaded' });
-  await expect(page.getByText(/Starter record received/i)).toBeVisible();
-  await expect(page.getByText(/Relic secured at 47% storm pressure/i)).toBeVisible();
+test('guest route enters the production 3D expedition without a wallet', async ({ page }) => {
+  await page.goto('/guest', { waitUntil: 'domcontentloaded' });
+  await expect(page.getByRole('heading', { name: /Explore the living survey/i })).toBeVisible();
+  const board = page.getByTestId('three-board-world');
+  await expect(board).toBeVisible();
+  await expect(board).toHaveAttribute('data-renderer-state', 'ready', { timeout: 20_000 });
+  await expect(page.getByText(/No wallet needed/i)).toBeVisible();
+
+  await page.getByRole('group', { name: /Reachable routes/i }).getByRole('button', { name: /3,2 Uncharted/i }).click();
+  await page.getByTestId('commit-guest-route').click();
+  await expect(page.getByText(/A relic answered/i)).toBeVisible();
+  await expect(page.getByText('1', { exact: true }).first()).toBeVisible();
 });
 
 test('internal preview routes are blocked in the public funnel', async ({ page }) => {

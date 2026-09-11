@@ -12,9 +12,9 @@ Make the public Xenovoya experience match the promise a new player hears in the 
 4. Replace proof-heavy language with consequence language first, then explain verification only where it helps the player understand why a run matters.
 5. Make the first scenario feel like the canonical onboarding expedition, not one option among many.
 6. Add a "What happens on your first turn" strip near the first CTA: reveal tile, read risk, choose whether to push or return.
-7. Make the no-wallet path explicit: trying a short expedition should feel like the intended first step, not a lesser demo.
+7. Make the wallet-free path explicit: the first playable experience uses the production 3D world and complete local explore-to-extract loop, not a separate demo.
 8. Keep wallet/on-chain explanation to one plain-English promise: actions and outcomes become inspectable records.
-9. Keep live expedition access lower than the no-wallet first-run path unless the player is already connected.
+9. Let visitors observe live expedition boards before connecting, and request a wallet only when they choose to reserve a seat or submit an action.
 10. Make scenario cards describe player feeling before systems data: danger, payoff, rescue, extraction.
 11. Treat generated images as finished in-world expedition art, not options or production notes.
 12. Add a first-run completion bridge: after a public scenario, point to replay memory, challenge, then live expedition.
@@ -28,7 +28,7 @@ Make the public Xenovoya experience match the promise a new player hears in the 
 - The homepage rendered text does not include internal development or tuning language.
 - The first scenario is presented as the best first expedition.
 - The first turn is explained as a concrete player sequence, not a system overview.
-- No-wallet play is framed as a real expedition path.
+- Wallet-free play uses the real 3D board, camera, terrain, crew art, and core expedition loop.
 - Live wallet play is framed as the next step after learning the loop.
 - Finished public runs create a clear next action: view/share memory, take the challenge, or go live.
 - Tests, build, and focused browser checks pass with no placeholder markers introduced.

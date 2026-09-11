@@ -70,6 +70,83 @@
       }
     ]
   },
+  "/guest": {
+    "schemaVersion": 1,
+    "routePath": "/guest",
+    "routeType": "guest-expedition",
+    "title": "Play the Xenovoya 3D expedition | Xenovoya",
+    "description": "Explore Xenovoya in the production 3D world without a wallet: reveal terrain, recover relics, manage pressure, and return safely.",
+    "canonicalUrl": "https://play.xenovoya.com/guest",
+    "robots": "index,follow,max-image-preview:large",
+    "openGraph": {
+      "type": "website",
+      "siteName": "Xenovoya",
+      "title": "Play the Xenovoya 3D expedition | Xenovoya",
+      "description": "Explore Xenovoya in the production 3D world without a wallet: reveal terrain, recover relics, manage pressure, and return safely.",
+      "url": "https://play.xenovoya.com/guest",
+      "image": "https://play.xenovoya.com/seo/xenovoya-share-card.png",
+      "locale": "en_US"
+    },
+    "twitter": {
+      "card": "summary_large_image",
+      "title": "Play the Xenovoya 3D expedition | Xenovoya",
+      "description": "Explore Xenovoya in the production 3D world without a wallet: reveal terrain, recover relics, manage pressure, and return safely.",
+      "image": "https://play.xenovoya.com/seo/xenovoya-share-card.png"
+    },
+    "jsonLd": [
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Xenovoya",
+        "url": "https://play.xenovoya.com",
+        "description": "Launch the Xenovoya open alpha: a cooperative on-chain hex expedition on Sepolia about exploring, sharing discoveries, and escaping together."
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "VideoGame",
+        "name": "Xenovoya",
+        "url": "https://play.xenovoya.com",
+        "description": "Launch the Xenovoya open alpha: a cooperative on-chain hex expedition on Sepolia about exploring, sharing discoveries, and escaping together.",
+        "genre": [
+          "Turn-based strategy",
+          "Board game",
+          "Exploration"
+        ],
+        "gamePlatform": "Web browser",
+        "applicationCategory": "Game"
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "name": "Play the Xenovoya 3D expedition | Xenovoya",
+        "url": "https://play.xenovoya.com/guest",
+        "description": "Explore Xenovoya in the production 3D world without a wallet: reveal terrain, recover relics, manage pressure, and return safely.",
+        "isPartOf": {
+          "@type": "WebSite",
+          "name": "Xenovoya",
+          "url": "https://play.xenovoya.com"
+        }
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Xenovoya",
+            "item": "https://play.xenovoya.com"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Guest",
+            "item": "https://play.xenovoya.com/guest"
+          }
+        ]
+      }
+    ]
+  },
   "/privacy": {
     "schemaVersion": 1,
     "routePath": "/privacy",

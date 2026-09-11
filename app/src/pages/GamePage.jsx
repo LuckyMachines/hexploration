@@ -1,5 +1,5 @@
 import { useParams } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useWallet } from '../contexts/WalletContext';
 import { useGameState } from '../hooks/useGameState';
 import GameLobby from '../components/game/GameLobby';
@@ -17,8 +17,7 @@ import { markSessionMilestone, measureSessionSpan } from '../lib/sessionTelemetr
 
 export default function GamePage() {
   const { gameId } = useParams();
-  const { isConnected, connect } = useWallet();
-  const [connectError, setConnectError] = useState('');
+  const { isConnected } = useWallet();
   const parsedGameId = parseUintId(gameId);
   const normalizedGameId = parsedGameId?.toString() ?? '';
   const { gameStarted, isLoading, error } = useGameState(normalizedGameId);
@@ -33,19 +32,19 @@ export default function GamePage() {
   }, [normalizedGameId, parsedGameId, session.beginGame]);
 
   useEffect(() => {
-    if (parsedGameId === null || !isConnected || isLoading || error) return;
+    if (parsedGameId === null || isLoading || error) return;
     if (isGameOver) session.terminal();
     else session.hydrated(gameStarted);
     markSessionMilestone('game-load-ready');
     measureSessionSpan('cold_resume_ms', 'game-load-start', 'game-load-ready');
-  }, [error, gameStarted, isConnected, isGameOver, isLoading, parsedGameId, session.hydrated, session.terminal]);
+  }, [error, gameStarted, isGameOver, isLoading, parsedGameId, session.hydrated, session.terminal]);
 
   return (
     <div className="mx-auto w-full max-w-[100rem] px-3 py-4 sm:px-4 sm:py-8 2xl:px-6">
       <SurveyTabletFrame
         title={parsedGameId === null ? 'Survey Tablet' : `Expedition #${normalizedGameId || 'Invalid'}`}
         subtitle="Chart the grid, manage the crew, and depart alive"
-        status={parsedGameId === null ? 'INVALID ID' : isConnected ? 'ONLINE' : 'LOCKED'}
+        status={parsedGameId === null ? 'INVALID ID' : isConnected ? 'ONLINE' : 'OBSERVING'}
       >
         <div className="space-y-5">
           {parsedGameId !== null && <SessionStatusBar />}
@@ -58,38 +57,15 @@ export default function GamePage() {
           )}
 
           {parsedGameId !== null && !isConnected && (
-            <div className="border border-compass/30 rounded bg-exp-panel p-8 text-center space-y-4">
-              <p className="font-mono text-sm text-compass tracking-wider">
-                Connect your wallet to enter this expedition
+            <div className="rounded border border-blueprint/30 bg-blueprint/5 px-4 py-3">
+              <p className="font-mono text-xs uppercase tracking-[0.2em] text-blueprint">Observer access - no wallet needed</p>
+              <p className="mt-1 font-mono text-xs leading-relaxed text-exp-text-dim">
+                The live 3D board, crew, and expedition state are open to inspect. Connect only when you choose to join the crew or submit an action.
               </p>
-              <p className="font-mono text-xs text-exp-text-dim">
-                Live expeditions use wallet-signed joins and actions so the route, discoveries, and outcome can be recorded.
-              </p>
-              <button
-                onClick={async () => {
-                  setConnectError('');
-                  try {
-                    await connect();
-                  } catch (err) {
-                    setConnectError(err?.message === 'No wallet found'
-                      ? 'No wallet was detected. Install or unlock one, then try again.'
-                      : err?.shortMessage || err?.message || 'Wallet connection failed.');
-                  }
-                }}
-                className="px-5 py-2.5 bg-compass/10 border border-compass/50 rounded text-compass text-xs font-display font-semibold tracking-widest uppercase
-                           hover:bg-compass/20 hover:border-compass transition-colors"
-              >
-                Connect Wallet
-              </button>
-              {connectError && (
-                <p className="mx-auto max-w-md rounded border border-signal-red/30 bg-signal-red/5 px-3 py-2 font-mono text-xs text-signal-red">
-                  {connectError}
-                </p>
-              )}
             </div>
           )}
 
-          {parsedGameId !== null && isConnected && isLoading && (
+          {parsedGameId !== null && isLoading && (
             <div className="border border-exp-border rounded bg-exp-panel p-12 flex items-center justify-center gap-3">
               <Spinner size="w-5 h-5" />
               <span className="font-mono text-xs text-exp-text-dim tracking-wider uppercase">
@@ -101,7 +77,7 @@ export default function GamePage() {
             </div>
           )}
 
-          {parsedGameId !== null && isConnected && error && (
+          {parsedGameId !== null && error && (
             <div className="border border-signal-red/30 rounded bg-exp-panel p-8 text-center">
               <p className="font-mono text-xs text-signal-red tracking-wider uppercase">
                 Failed to load survey data
@@ -119,20 +95,20 @@ export default function GamePage() {
             </div>
           )}
 
-          {parsedGameId !== null && isConnected && !isLoading && !error && !gameStarted && (
+          {parsedGameId !== null && !isLoading && !error && !gameStarted && (
             <GameLobby gameId={normalizedGameId} />
           )}
 
-          {parsedGameId !== null && isConnected && !isLoading && !error && gameStarted && !isGameOver && (
+          {parsedGameId !== null && !isLoading && !error && gameStarted && !isGameOver && (
             <ExpeditionProvider gameId={normalizedGameId}>
-              <ReturnLoopSync gameId={normalizedGameId} />
+              {isConnected && <ReturnLoopSync gameId={normalizedGameId} />}
               <ExpeditionBench />
             </ExpeditionProvider>
           )}
 
-          {parsedGameId !== null && isConnected && !isLoading && !error && gameStarted && isGameOver && (
+          {parsedGameId !== null && !isLoading && !error && gameStarted && isGameOver && (
             <ExpeditionProvider gameId={normalizedGameId}>
-              <ReturnLoopSync gameId={normalizedGameId} isGameOver />
+              {isConnected && <ReturnLoopSync gameId={normalizedGameId} isGameOver />}
               <GameOver gameId={normalizedGameId} />
             </ExpeditionProvider>
           )}

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 const sections = [
   {
     title: 'Before you connect a wallet',
-    body: 'The player keeps expedition return history, interface preferences, and random analytics identifiers in this browser. You can clear site data in your browser at any time. No wallet is required for the starter expedition.',
+    body: 'The player keeps local 3D expedition progress, expedition return history, interface preferences, and random analytics identifiers in this browser. You can clear site data in your browser at any time. No wallet is required for the local expedition or to observe live boards.',
   },
   {
     title: 'Privacy-safe measurement',

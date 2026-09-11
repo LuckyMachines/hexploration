@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-const publicRoutes = ['/', '/privacy', '/not-a-public-route'];
+const publicRoutes = ['/', '/guest', '/privacy', '/not-a-public-route'];
 
 for (const route of publicRoutes) {
   test(`${route} keeps a sound document structure without horizontal overflow`, async ({ page }) => {

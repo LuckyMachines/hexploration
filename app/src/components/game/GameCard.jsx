@@ -1,8 +1,10 @@
 import { useNavigate } from 'react-router-dom';
 import { trackJourneyEvent } from '../../lib/analytics';
+import { useWallet } from '../../contexts/WalletContext';
 
 export default function GameCard({ gameId, maxPlayers, registered }) {
   const navigate = useNavigate();
+  const { address } = useWallet();
 
   const isFull = registered >= maxPlayers;
 
@@ -11,7 +13,7 @@ export default function GameCard({ gameId, maxPlayers, registered }) {
       onPointerEnter={() => { void import('../../pages/GameClientPage'); }}
       onFocus={() => { void import('../../pages/GameClientPage'); }}
       onClick={() => {
-        trackJourneyEvent('live_join', { game_context: isFull ? 'full_registry' : 'open_registry' }, { dedupeKey: String(gameId) });
+        if (address) trackJourneyEvent('live_join', { game_context: isFull ? 'full_registry' : 'open_registry' }, { dedupeKey: String(gameId) });
         navigate(`/game/${gameId}`);
       }}
       className="w-full text-left border border-exp-border rounded bg-exp-panel
@@ -45,6 +47,9 @@ export default function GameCard({ gameId, maxPlayers, registered }) {
               {registered} / {maxPlayers}
             </p>
           </div>
+          <span className="ml-auto font-mono text-[9px] uppercase tracking-[0.16em] text-exp-text-dim">
+            {address ? 'Open briefing' : 'Observe board'}
+          </span>
         </div>
       </div>
     </button>

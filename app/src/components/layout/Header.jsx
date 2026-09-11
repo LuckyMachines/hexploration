@@ -19,7 +19,7 @@ export default function Header({ onHelpClick, audio }) {
     ['/scenarios', 'Scenarios'],
     ['/challenge', 'Challenge'],
     ['/progress', 'Progress'],
-  ] : [['/', 'Home']];
+  ] : [['/', 'Home'], ['/guest', '3D Guest']];
 
   return (
     <header className="border-b border-exp-border bg-exp-surface/80 backdrop-blur-sm">

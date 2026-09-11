@@ -12,6 +12,14 @@ const STATIC_ROUTES = [
     changefreq: 'weekly',
   },
   {
+    path: '/guest',
+    type: 'guest-expedition',
+    title: 'Play the Xenovoya 3D expedition',
+    description: 'Explore Xenovoya in the production 3D world without a wallet: reveal terrain, recover relics, manage pressure, and return safely.',
+    priority: 0.9,
+    changefreq: 'weekly',
+  },
+  {
     path: '/privacy',
     type: 'privacy',
     title: 'Xenovoya data and privacy',

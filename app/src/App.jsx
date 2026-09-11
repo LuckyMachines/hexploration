@@ -15,6 +15,7 @@ import HomePage from './pages/HomePage';
 const FieldManual = lazy(() => import('./components/help/FieldManual'));
 const PseudoLocale = lazy(() => import('./components/shared/PseudoLocale'));
 const GamePage = lazy(() => import('./pages/GameClientPage'));
+const GuestExpeditionPage = lazy(() => import('./pages/GuestExpeditionPage'));
 const PrivacyPage = lazy(() => import('./pages/PrivacyPage'));
 const PartyInvitePage = lazy(() => import('./pages/PartyInvitePage'));
 const INCLUDE_INTERNAL_ROUTES = import.meta.env.VITE_ENABLE_INTERNAL_TOOLS === 'true';
@@ -88,6 +89,7 @@ export default function App() {
           <Suspense fallback={<RouteFallback />}>
             <Routes>
               <Route path="/" element={<HomePage />} />
+              <Route path="/guest" element={<GuestExpeditionPage />} />
               <Route path="/game/:gameId" element={<GamePage />} />
               <Route path="/privacy" element={<PrivacyPage />} />
               <Route path="/invite/:inviteToken" element={<PartyInvitePage />} />

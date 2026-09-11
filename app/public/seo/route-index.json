@@ -2,7 +2,7 @@
   {
     "discoverable": true,
     "noindex": false,
-    "lastmod": "2026-09-08T15:09:36.179Z",
+    "lastmod": "2026-09-11T01:25:32.355Z",
     "image": "/seo/xenovoya-share-card.png",
     "path": "/",
     "type": "home",
@@ -14,7 +14,19 @@
   {
     "discoverable": true,
     "noindex": false,
-    "lastmod": "2026-09-08T15:09:36.179Z",
+    "lastmod": "2026-09-11T01:25:32.355Z",
+    "image": "/seo/xenovoya-share-card.png",
+    "path": "/guest",
+    "type": "guest-expedition",
+    "title": "Play the Xenovoya 3D expedition",
+    "description": "Explore Xenovoya in the production 3D world without a wallet: reveal terrain, recover relics, manage pressure, and return safely.",
+    "priority": 0.9,
+    "changefreq": "weekly"
+  },
+  {
+    "discoverable": true,
+    "noindex": false,
+    "lastmod": "2026-09-11T01:25:32.355Z",
     "image": "/seo/xenovoya-share-card.png",
     "path": "/privacy",
     "type": "privacy",

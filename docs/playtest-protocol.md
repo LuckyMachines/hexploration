@@ -11,7 +11,7 @@ Success for the first five-session round means at least four of five participant
 - reach a valid first decision without facilitator intervention;
 - correctly describe reward, danger, and route-home tradeoffs;
 - notice the consequence after committing;
-- understand the no-wallet starter versus wallet-backed live expedition distinction;
+- understand the local 3D expedition, live observer access, and wallet-signed shared action distinction;
 - express a concrete return motive tied to crew, clue, discovery, role, or mastery.
 
 At least two sessions should include a return visit after the first-play session. Include desktop and mobile-sized experiences across the set.
@@ -22,7 +22,7 @@ At least two sessions should include a return visit after the first-play session
 2. Begin at the public homepage. Say: "Please explore this as if you found it on your own. Think aloud when comfortable."
 3. Do not explain controls unless the participant is blocked for 60 seconds. Record the intervention and exact blocker.
 4. Ask after the first committed choice: "What did you choose, what changed, and what do you expect next?"
-5. Complete the no-wallet starter or a representative live expedition segment.
+5. Complete the local 3D expedition or a representative live expedition segment.
 6. Ask: "What felt good? What felt confusing? What would bring you back?"
 7. For return sessions, start with no reminder and observe whether the remembered thread is legible.
 

@@ -107,7 +107,7 @@ export default function GameBrowser() {
         <div className="mb-4 grid gap-2 sm:grid-cols-[minmax(0,1fr)_auto_auto]">
           <input value={gameSearch} onChange={(event) => setGameSearch(event.target.value.replace(/\D/g, ''))} inputMode="numeric" aria-label="Find expedition by number" placeholder="Find expedition number" className="min-h-11 rounded border border-exp-border bg-exp-dark px-3 font-mono text-xs text-exp-text placeholder:text-exp-text-dim" />
           <select value={crewFilter} onChange={(event) => setCrewFilter(event.target.value)} aria-label="Filter expeditions" className="min-h-11 rounded border border-exp-border bg-exp-dark px-3 font-mono text-xs text-exp-text"><option value="all">All expeditions</option><option value="open">Open seats</option><option value="solo">Solo</option><option value="crew">Crew play</option></select>
-          <button type="button" disabled={!quickPlay} onClick={() => navigate(`/game/${quickPlay.id}`)} className="min-h-11 rounded border border-oxide-green/40 bg-oxide-green/5 px-3 font-mono text-[10px] uppercase tracking-[0.16em] text-oxide-green disabled:opacity-40">Quick join</button>
+          <button type="button" disabled={!quickPlay} onClick={() => navigate(`/game/${quickPlay.id}`)} className="min-h-11 rounded border border-oxide-green/40 bg-oxide-green/5 px-3 font-mono text-[10px] uppercase tracking-[0.16em] text-oxide-green disabled:opacity-40">{address ? 'Quick join' : 'Observe live'}</button>
         </div>
         {isLoading ? (
           <div className="flex items-center justify-center py-14">
@@ -133,7 +133,9 @@ export default function GameBrowser() {
           <EmptyState
             tone="gold"
             title="No expeditions found"
-            body={address ? 'Launch a new expedition to seed the map, share discoveries, and race for extraction.' : 'Connect a wallet to create or join a live on-chain expedition.'}
+            body={address ? 'Launch a new expedition to seed the map, share discoveries, and race for extraction.' : 'The live registry is quiet. Enter the local 3D world now; connect later only if you choose a shared action.'}
+            action={!address ? 'Open 3D guest expedition' : undefined}
+            onAction={!address ? () => navigate('/guest') : undefined}
           />
         ) : (
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">

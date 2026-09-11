@@ -56,6 +56,14 @@ export default function GameLobby({ gameId }) {
       </div>
 
       <div className="px-6 py-5 space-y-5">
+        {!address && (
+          <div className="rounded border border-blueprint/30 bg-blueprint/5 px-4 py-3">
+            <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-blueprint">Observer briefing</p>
+            <p className="mt-2 font-mono text-xs leading-relaxed text-exp-text-dim">
+              Inspect this crew and staging state without a wallet. Connect from the header only if you choose to reserve a seat.
+            </p>
+          </div>
+        )}
         <SocialHub compact gameId={gameId} />
         <div>
           <h3 className="font-mono text-xs tracking-[0.3em] text-exp-text-dim uppercase mb-3">

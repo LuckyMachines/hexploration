@@ -96,15 +96,15 @@ function buildReport() {
     }),
     checkText({
       id: 'no-preview-funnel',
-      label: 'Homepage avoids routing players into preview scenarios',
+      label: 'Homepage routes wallet-free players into the production 3D world',
       file: 'app/src/pages/HomePage.jsx',
-      patterns: [/Try without a wallet/i, /first-expedition/i, /Enter live lobby/i],
+      patterns: [/Explore the 3D world/i, /to="\/guest"/i, /Enter live lobby/i],
     }),
     checkText({
       id: 'player-safe-copy',
       label: 'Homepage explains the public player path',
       file: 'app/src/pages/HomePage.jsx',
-      patterns: [/Try without a wallet/i, /Start a live survey in three steps/i, /Every action below belongs to the playable client/i],
+      patterns: [/Browse the live world before connecting/i, /observer mode/i, /Start a local 3D expedition/i],
     }),
     checkText({
       id: 'wallet-context',
@@ -132,16 +132,17 @@ function buildReport() {
     }),
     {
       id: 'route-index',
-      label: 'Public route model excludes preview scenarios and topics',
+      label: 'Public route model exposes only the player journey and privacy',
       required: true,
-      ok: routes.length === 2
+      ok: routes.length === 3
         && routes.some((route) => route.path === '/' && route.type === 'home')
+        && routes.some((route) => route.path === '/guest' && route.type === 'guest-expedition')
         && routes.some((route) => route.path === '/privacy' && route.type === 'privacy')
         && !routeTypes.has('scenario')
         && !routeTypes.has('topic'),
-      missing: routes.length === 2 && routes.some((route) => route.path === '/') && routes.some((route) => route.path === '/privacy')
+      missing: routes.length === 3 && routes.some((route) => route.path === '/') && routes.some((route) => route.path === '/guest') && routes.some((route) => route.path === '/privacy')
         ? []
-        : ['home and privacy-only public route model'],
+        : ['home, 3D guest expedition, and privacy public route model'],
     },
   ];
   const failures = checks.filter((check) => check.required && !check.ok);

@@ -40,6 +40,10 @@ vi.mock('../contexts/PlayerSessionContext', () => ({
   }),
 }));
 
+vi.mock('../components/game/GameLobby', () => ({
+  default: ({ gameId }) => <div data-testid="game-lobby">Lobby {gameId}</div>,
+}));
+
 describe('GamePage', () => {
   it('shows a clear error for invalid game ids', () => {
     render(
@@ -51,5 +55,19 @@ describe('GamePage', () => {
     );
 
     expect(screen.getByText(/Invalid survey id/i)).toBeInTheDocument();
+  });
+
+  it('opens a valid expedition in observer mode without a wallet', () => {
+    render(
+      <MemoryRouter initialEntries={['/game/42']}>
+        <Routes>
+          <Route path="/game/:gameId" element={<GamePage />} />
+        </Routes>
+      </MemoryRouter>,
+    );
+
+    expect(screen.getByText(/Observer access - no wallet needed/i)).toBeInTheDocument();
+    expect(screen.getByTestId('game-lobby')).toHaveTextContent('Lobby 42');
+    expect(screen.queryByText(/Connect your wallet to enter/i)).not.toBeInTheDocument();
   });
 });
