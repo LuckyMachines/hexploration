@@ -11,11 +11,10 @@ describe('production security headers', () => {
     expect(headers).toContain('https://cloudflareinsights.com');
   });
 
-  it('allows same-origin blob workers required by the production 3D texture decoder', () => {
+  it('keeps production scripts free of eval permissions', () => {
     const headers = readFileSync(resolve(process.cwd(), 'public', '_headers'), 'utf8');
 
-    expect(headers).toContain("worker-src 'self' blob:");
-    expect(headers).toContain("script-src 'self' 'wasm-unsafe-eval'");
-    expect(headers).not.toContain("script-src 'self' 'unsafe-eval'");
+    expect(headers).not.toContain("'wasm-unsafe-eval'");
+    expect(headers).not.toContain("'unsafe-eval'");
   });
 });

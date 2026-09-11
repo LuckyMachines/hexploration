@@ -8,7 +8,7 @@ import {
   resolvePlayerCharacter,
 } from '../../lib/characters';
 import { buildBoardWorld, cameraPlan, seedForAlias, WORLD_TERRAIN } from './boardWorld';
-import { nextPixelRatio, resolveBoardQuality } from './boardQuality';
+import { nextPixelRatio, resolveBoardQuality, shouldUseCompressedTextures } from './boardQuality';
 import {
   MATERIAL_SYSTEM_VERSION,
   applySurfaceUvVariation,
@@ -768,6 +768,10 @@ function createWorld(THREE, OrbitControls, RoomEnvironment, KTX2Loader, mount, w
   const quality = {
     ...requestedQuality,
     anisotropy: Math.min(requestedQuality.anisotropy, renderer.capabilities.getMaxAnisotropy()),
+    compressedTextures: shouldUseCompressedTextures({
+      requested: requestedQuality.compressedTextures,
+      production: import.meta.env.PROD,
+    }),
   };
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, quality.pixelRatioCap));
   renderer.outputColorSpace = THREE.SRGBColorSpace;

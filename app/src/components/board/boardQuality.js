@@ -36,6 +36,10 @@ export function resolveBoardQuality({
   };
 }
 
+export function shouldUseCompressedTextures({ requested = true, production = false } = {}) {
+  return Boolean(requested) && !production;
+}
+
 export function nextPixelRatio({ current, frameP95Ms, minimum = 1, maximum = 2, budgetMs = 24 }) {
   if (!Number.isFinite(frameP95Ms) || !Number.isFinite(current)) return current;
   if (frameP95Ms > budgetMs * 2) return minimum;

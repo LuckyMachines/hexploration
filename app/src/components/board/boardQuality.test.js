@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { BOARD_QUALITY_MODES, nextPixelRatio, resolveBoardQuality } from './boardQuality';
+import { BOARD_QUALITY_MODES, nextPixelRatio, resolveBoardQuality, shouldUseCompressedTextures } from './boardQuality';
 
 describe('resolveBoardQuality', () => {
   it('keeps full board quality on capable desktop hardware', () => {
@@ -37,6 +37,12 @@ describe('resolveBoardQuality', () => {
       mode: BOARD_QUALITY_MODES.EFFICIENT,
       shadows: false,
     });
+  });
+
+  it('uses the CSP-safe material path in production', () => {
+    expect(shouldUseCompressedTextures({ requested: true, production: true })).toBe(false);
+    expect(shouldUseCompressedTextures({ requested: true, production: false })).toBe(true);
+    expect(shouldUseCompressedTextures({ requested: false, production: false })).toBe(false);
   });
 
   it('adapts pixel density only when frame pacing leaves the target band', () => {
