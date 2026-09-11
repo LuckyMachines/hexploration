@@ -15,5 +15,7 @@ describe('production security headers', () => {
     const headers = readFileSync(resolve(process.cwd(), 'public', '_headers'), 'utf8');
 
     expect(headers).toContain("worker-src 'self' blob:");
+    expect(headers).toContain("script-src 'self' 'wasm-unsafe-eval'");
+    expect(headers).not.toContain("script-src 'self' 'unsafe-eval'");
   });
 });
