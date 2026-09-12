@@ -15,6 +15,7 @@ import UXStatusPanel from './UXStatusPanel';
 import GuidedFirstTurn from './GuidedFirstTurn';
 import FunStatusPanel from './FunStatusPanel';
 import DiscoveryJournal from './DiscoveryJournal';
+import ExpeditionChronicle from './ExpeditionChronicle';
 import EscapeCostPreview from './EscapeCostPreview';
 import CostReductionActions from './CostReductionActions';
 import TraitPreviewPanel from './TraitPreviewPanel';
@@ -126,6 +127,8 @@ export default function ExpeditionBench() {
     events,
     loadFullHistory,
     isLoadingFullHistory,
+    eventSyncStatus,
+    confirmedBlock,
     queueTelemetry,
     activeTab,
     setActiveTab,
@@ -600,6 +603,12 @@ export default function ExpeditionBench() {
         />
       </ErrorBoundary>
       <DiscoveryJournal entries={funTelemetry.journalEntries} />
+      <ExpeditionChronicle
+        gameId={view.gameId}
+        events={events}
+        eventSyncStatus={eventSyncStatus}
+        confirmedBlock={confirmedBlock}
+      />
 
       <details className="group rounded border border-exp-border bg-exp-panel/70 px-4 py-3">
         <summary className="cursor-pointer list-none flex items-center justify-between gap-3">

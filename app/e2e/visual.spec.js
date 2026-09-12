@@ -110,6 +110,7 @@ async function installRpcWallet(page, rpcUrl, accountAddress) {
             return null;
           }
           if (method === 'eth_sendTransaction') {
+            window.__xvWalletSendCount = (window.__xvWalletSendCount || 0) + 1;
             const tx = params[0] || {};
             const response = await fetch(injectedRpcUrl, {
               method: 'POST',
@@ -354,6 +355,7 @@ async function registerLocalPlayers(env) {
     abi: setupAbi,
     functionName: 'fulfillMockRandomness',
     args: [],
+    gas: 12_000_000n,
   });
   await publicClient.waitForTransactionReceipt({ hash: fulfillHash });
 
@@ -367,7 +369,7 @@ async function registerLocalPlayers(env) {
 
 test('home surface renders cleanly on the game app', async ({ page }, testInfo) => {
   await page.goto('/', { waitUntil: 'domcontentloaded' });
-  await expect(page.getByRole('heading', { name: /Chart the strange/i }).first()).toBeVisible();
+  await expect(page.getByRole('heading', { name: /Choose your expedition/i })).toBeVisible();
 
   await ensureCaptureDir();
   await page.screenshot({
@@ -489,4 +491,32 @@ seededTest('seeded gameplay can be captured from a real local board', async ({ p
     path: path.join(captureDir, `${testInfo.project.name}-gameplay.png`),
     fullPage: true,
   });
+});
+
+seededTest('scoped session submits a sponsored turn without a second wallet transaction', async ({ page }, testInfo) => {
+  testInfo.setTimeout(120_000);
+  test.skip(!captureProjects.has(testInfo.project.name), 'Sponsored relay run uses the primary desktop browser.');
+
+  const env = await readGameEnv();
+  const { rpcUrl, gameId } = await registerLocalPlayers(env);
+  await installRpcWallet(page, rpcUrl, privateKeyToAccount(joinerPk).address);
+  await page.goto(`/game/${gameId}`, { waitUntil: 'domcontentloaded' });
+  await expect(page.getByRole('heading', { name: 'Expedition Crew' })).toBeVisible({ timeout: 45_000 });
+
+  const sponsor = page.getByTestId('sponsored-session-control');
+  await expect(sponsor).toBeVisible();
+  await sponsor.getByRole('button', { name: 'Enable sponsored turns' }).click();
+  await expect(sponsor.getByText(/sponsored turns remain/i)).toBeVisible({ timeout: 45_000 });
+  await expect.poll(() => page.evaluate(() => window.__xvWalletSendCount || 0)).toBe(1);
+
+  await page.getByRole('button', { name: /D Dig/i }).click();
+  await page.getByRole('button', { name: 'Dig', exact: true }).click();
+  await expect(page.getByTestId('chain-preflight')).toContainText('Will execute', { timeout: 30_000 });
+  await page.getByRole('button', { name: 'Sign Action' }).click();
+  await expect(page.getByTestId('action-transaction-status').locator('[data-transaction-phase="confirmed"]')).toBeVisible({ timeout: 45_000 });
+  await expect.poll(() => page.evaluate(() => window.__xvWalletSendCount || 0)).toBe(1);
+
+  await sponsor.getByRole('button', { name: 'Revoke sponsored turns' }).click();
+  await expect(sponsor.getByRole('button', { name: 'Enable sponsored turns' })).toBeVisible({ timeout: 45_000 });
+  await expect.poll(() => page.evaluate(() => window.__xvWalletSendCount || 0)).toBe(2);
 });

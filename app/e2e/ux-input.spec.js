@@ -1,6 +1,12 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test } from '@playwright/test';
 
+async function openReturnLoop(page) {
+  const details = page.getByTestId('return-loop-details');
+  if (!(await details.evaluate((element) => element.open))) await details.locator('summary').click();
+  return page.getByTestId('return-loop-panel');
+}
+
 test('keyboard path exposes skip navigation and completes the starter decision', async ({ page }) => {
   await page.goto('/', { waitUntil: 'networkidle' });
   await page.keyboard.press('Tab');
@@ -9,7 +15,7 @@ test('keyboard path exposes skip navigation and completes the starter decision',
   await page.keyboard.press('Enter');
   await expect(page.locator('#main-content')).toBeFocused();
 
-  const panel = page.getByTestId('return-loop-panel');
+  const panel = await openReturnLoop(page);
   await panel.scrollIntoViewIfNeeded();
   const role = panel.getByRole('button', { name: /Scout/ });
   await role.focus();
@@ -29,7 +35,7 @@ test('200 percent text reflow preserves content and avoids page overflow at 320 
   await page.addStyleTag({ content: 'html { font-size: 200% !important; }' });
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
   expect(overflow).toBeLessThanOrEqual(1);
-  await expect(page.getByRole('heading', { name: /Chart the strange/ })).toBeVisible();
+  await expect(page.getByRole('heading', { name: /Choose your expedition/ })).toBeVisible();
 });
 
 test('forced colors and reduced motion retain accessible structure', async ({ page }) => {

@@ -54,6 +54,7 @@ export default function FirstExpeditionGuide() {
     isConfirming,
     isSuccess,
     error: txError,
+    lifecycle,
   } = useGameActions();
   const firstOpenGame = useMemo(() => {
     const index = gameIDs.findIndex((id, i) => Number(currentRegistrations[i]) < Number(maxPlayers[i]));
@@ -148,6 +149,7 @@ export default function FirstExpeditionGuide() {
             isConfirming={isConfirming}
             isSuccess={isSuccess}
             error={txError || error}
+            lifecycle={lifecycle}
           />
         </div>
       )}

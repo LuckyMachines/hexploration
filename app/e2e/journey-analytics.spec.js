@@ -4,6 +4,12 @@ import { FIRST_PLAYER_FIXTURE } from './fixtures/first-player.js';
 const PLAUSIBLE_SCRIPT = 'https://plausible.racerverse.com/js/script.manual.js';
 const PLAUSIBLE_API = 'https://plausible.racerverse.com/api/event';
 
+async function openReturnLoop(page) {
+  const details = page.getByTestId('return-loop-details');
+  if (!(await details.evaluate((element) => element.open))) await details.locator('summary').click();
+  return page.getByTestId('return-loop-panel');
+}
+
 test('first-player journey emits each privacy-safe milestone once through return and second start', async ({ page, context }, testInfo) => {
   const captured = [];
   await context.addInitScript(() => {
@@ -32,7 +38,7 @@ test('first-player journey emits each privacy-safe milestone once through return
   }));
   await page.goto('/', { waitUntil: 'domcontentloaded' });
 
-  const panel = page.getByTestId('return-loop-panel');
+  const panel = await openReturnLoop(page);
   await panel.getByRole('button', { name: new RegExp(FIRST_PLAYER_FIXTURE.roleLabel, 'i') }).click();
   await panel.getByRole('button', { name: /Create expedition thread/i }).click();
   await expect(panel.getByText(new RegExp(FIRST_PLAYER_FIXTURE.expeditionName, 'i'))).toBeVisible();
@@ -51,7 +57,7 @@ test('first-player journey emits each privacy-safe milestone once through return
     localStorage.setItem(key, JSON.stringify(state));
   }, FIRST_PLAYER_FIXTURE.elapsedReturnDays);
   await page.reload({ waitUntil: 'domcontentloaded' });
-  const returnedPanel = page.getByTestId('return-loop-panel');
+  const returnedPanel = await openReturnLoop(page);
   await expect(returnedPanel.getByText('Recoverable', { exact: true })).toBeVisible();
   await returnedPanel.screenshot({ path: testInfo.outputPath('returned-player-recap.png') });
   await returnedPanel.getByRole('button', { name: /Start next expedition thread/i }).click();

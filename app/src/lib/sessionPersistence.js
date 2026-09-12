@@ -106,12 +106,20 @@ export function savePendingTransaction(transaction, storage = fallbackStorage())
   const current = loadPendingTransactions(storage).filter((item) => item.hash !== transaction.hash);
   const next = [...current, { ...transaction, recordedAt: transaction.recordedAt || new Date().toISOString() }].slice(-20);
   storage?.setItem(PENDING_TX_KEY, JSON.stringify(next));
+  broadcastSessionChange({ type: 'transactions', hash: transaction.hash, status: transaction.status });
   return next;
 }
 
-export function settlePendingTransaction(hash, status, storage = fallbackStorage()) {
-  const next = loadPendingTransactions(storage).map((item) => item.hash === hash ? { ...item, status, settledAt: new Date().toISOString() } : item).filter((item) => !item.settledAt || Date.now() - Date.parse(item.settledAt) < 86_400_000);
+export function settlePendingTransaction(hash, status, storage = fallbackStorage(), details = {}) {
+  const next = loadPendingTransactions(storage).map((item) => item.hash === hash ? {
+    ...item,
+    ...details,
+    status,
+    checkedAt: new Date().toISOString(),
+    ...(['confirmed', 'reverted', 'failed', 'replaced'].includes(status) ? { settledAt: new Date().toISOString() } : {}),
+  } : item).filter((item) => !item.settledAt || Date.now() - Date.parse(item.settledAt) < 86_400_000);
   storage?.setItem(PENDING_TX_KEY, JSON.stringify(next));
+  broadcastSessionChange({ type: 'transactions', hash, status });
   return next;
 }
 

@@ -1,4 +1,7 @@
 import { truncateAddress } from '../../lib/formatting';
+import { getDefaultChainId } from '../../config/clients';
+import { getChainById } from '../../config/chains';
+import { formatEstimatedGas, transactionExplorerUrl } from '../../lib/transactionExperience';
 
 export default function ReceiptDrawer({
   submission,
@@ -7,10 +10,17 @@ export default function ReceiptDrawer({
   isConfirming,
   isSuccess,
   error,
+  simulation,
+  lifecycle,
 }) {
   if (!submission && !hash && !isPending && !isConfirming && !isSuccess && !error) return null;
+  const chain = getChainById(lifecycle?.chainId || getDefaultChainId());
 
-  const state = error
+  const state = lifecycle?.phase === 'simulating'
+    ? 'Preflight'
+    : lifecycle?.phase === 'awaiting_signature'
+      ? 'Signature'
+      : error
     ? 'Failed'
     : isSuccess
       ? 'Confirmed'
@@ -39,6 +49,20 @@ export default function ReceiptDrawer({
           <p className="mt-1 font-mono text-xs text-blueprint">{hash ? truncateAddress(hash) : 'Not sent'}</p>
         </div>
       </div>
+      <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-2 font-mono text-[10px] uppercase tracking-[0.15em] text-exp-text-dim">
+        <span>Preflight: {simulation?.status === 'ready' ? 'passed' : simulation?.status || 'not run'}</span>
+        {simulation?.estimatedGas != null && <span>Estimate: {formatEstimatedGas(simulation.estimatedGas)}</span>}
+        {hash && transactionExplorerUrl(chain, hash) && (
+          <a href={transactionExplorerUrl(chain, hash)} target="_blank" rel="noreferrer" className="text-blueprint underline decoration-blueprint/40 underline-offset-4">
+            Open chain receipt
+          </a>
+        )}
+      </div>
+      {(isPending || isConfirming) && submission && (
+        <p className="mt-2 rounded border border-blueprint/25 bg-blueprint/5 px-3 py-2 font-mono text-[11px] leading-relaxed text-blueprint">
+          Optimistic intent is visible now. Authoritative stats and turn state update only after confirmation.
+        </p>
+      )}
       {submission?.options?.length > 0 && (
         <p className="mt-2 font-mono text-[11px] text-exp-text-dim">
           Options: {submission.options.join(' -> ')}

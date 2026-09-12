@@ -1,0 +1,11 @@
+FROM node:24-alpine@sha256:a0b9bf06e4e6193cf7a0f58816cc935ff8c2a908f81e6f1a95432d679c54fbfd
+WORKDIR /app
+RUN mkdir -p /data && chown node:node /app /data
+USER node
+COPY --chown=node:node package.json package-lock.json ./
+RUN npm ci --omit=optional --ignore-scripts && npm cache clean --force
+COPY --chown=node:node scripts/sponsor-relay-core.mjs scripts/sponsor-relay-ledger.mjs scripts/sponsor-relay-service.mjs scripts/sponsor-relay-server.mjs ./scripts/
+ENV NODE_ENV=production SPONSOR_RELAY_STATE_FILE=/data/sponsor-relay-state.json
+EXPOSE 8787
+HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 CMD wget -qO- http://127.0.0.1:${PORT:-8787}/livez >/dev/null || exit 1
+CMD ["node", "scripts/sponsor-relay-server.mjs"]

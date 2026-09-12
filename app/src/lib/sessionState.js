@@ -54,7 +54,7 @@ export function sessionReducer(state, action) {
     case 'HIDDEN': return { ...state, visible: false, phase: state.activeGameId ? 'backgrounded' : state.phase };
     case 'VISIBLE': return { ...state, visible: true, phase: state.activeGameId ? 'reconnecting' : state.phase };
     case 'PAUSE': return { ...state, softPaused: true };
-    case 'RESUME': return { ...state, softPaused: false, phase: state.activeGameId ? 'resumed' : state.phase, lastResumedAt: at };
+    case 'RESUME': return { ...state, softPaused: action.preservePause ? state.softPaused : false, phase: state.activeGameId ? 'resumed' : state.phase, lastResumedAt: at };
     case 'SAVE_STATUS': return { ...state, saveStatus: action.status, lastSavedAt: action.status === 'cloud' || action.status === 'local' ? at : state.lastSavedAt };
     case 'PENDING_TRANSACTIONS': return { ...state, pendingTransactions: action.transactions.slice(-20) };
     default: return state;

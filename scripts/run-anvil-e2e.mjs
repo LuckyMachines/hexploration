@@ -33,6 +33,9 @@ const windowsCmdSuffix = process.platform === 'win32' ? '.cmd' : '';
 const ANVIL_PK =
   process.env.ANVIL_PRIVATE_KEY
   || '0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80';
+const RELAY_PK =
+  process.env.E2E_SPONSOR_RELAYER_PRIVATE_KEY
+  || '0x2a871d0798f97d79848a013d4936a73bf4cc922c825d33c1cf7073dff6d409c6';
 
 const controllerAbi = [
   {
@@ -80,6 +83,7 @@ function runCommand(command, args, options = {}) {
       env: { ...process.env, ...(options.env || {}) },
       shell: options.shell ?? defaultShell,
       stdio: options.stdio ?? 'inherit',
+      windowsHide: true,
     });
 
     child.on('error', reject);
@@ -176,6 +180,20 @@ async function waitForRpc(rpcUrl, timeoutMs = 25_000) {
   throw new Error(`Timed out waiting for RPC at ${rpcUrl}`);
 }
 
+async function waitForHttp(url, timeoutMs = 25_000) {
+  const start = Date.now();
+  while (Date.now() - start < timeoutMs) {
+    try {
+      const response = await fetch(url);
+      if (response.ok) return;
+    } catch {
+      // Retry
+    }
+    await new Promise((resolve) => setTimeout(resolve, 500));
+  }
+  throw new Error(`Timed out waiting for HTTP service at ${url}`);
+}
+
 async function readDeploymentAddresses() {
   const raw = await fs.readFile(broadcastLatest, 'utf8');
   const json = JSON.parse(raw);
@@ -188,6 +206,7 @@ async function readDeploymentAddresses() {
   const required = {
     VITE_BOARD_ADDRESS: byName.XenovoyaBoard,
     VITE_CONTROLLER_ADDRESS: byName.XenovoyaController,
+    VITE_SESSION_FORWARDER_ADDRESS: byName.XenovoyaSessionForwarder,
     VITE_GAME_SUMMARY_ADDRESS: byName.GameSummary,
     VITE_PLAYER_SUMMARY_ADDRESS: byName.PlayerSummary,
     VITE_GAME_EVENTS_ADDRESS: byName.GameEvents,
@@ -231,12 +250,14 @@ async function readDeckAddresses() {
   return deckAddrs;
 }
 
-async function writeAppEnv(addresses, rpcUrl) {
+async function writeAppEnv(addresses, rpcUrl, relayUrl) {
   const lines = [
     ...Object.entries(addresses).map(([k, v]) => `${k}=${v}`),
     'VITE_WALLETCONNECT_PROJECT_ID=',
     'VITE_RPC_URL=',
     `VITE_FOUNDRY_RPC_URL=${rpcUrl}`,
+    'VITE_CONTROLLER_SUPPORTS_DELEGATION=true',
+    `VITE_SPONSOR_RELAY_URL=${relayUrl}`,
   ];
   await fs.writeFile(appEnvFile, `${lines.join('\n')}\n`, 'utf8');
 }
@@ -420,8 +441,12 @@ async function main() {
     || await findFreePort(43211);
   const appPort = Number(process.env.E2E_APP_PORT)
     || await findFreePort(43311);
+  const relayPort = Number(process.env.E2E_RELAY_PORT)
+    || await findFreePort(43411);
   const rpcUrl = `http://127.0.0.1:${anvilPort}`;
   const baseURL = `http://127.0.0.1:${appPort}`;
+  const relayUrl = `http://127.0.0.1:${relayPort}`;
+  const relayStateFile = path.resolve(repoRoot, 'cache', `sponsor-relay-e2e-${process.pid}.json`);
 
   console.log('[anvil-e2e] Checking contract sizes against EIP-170...');
   await runCommand(resolveFoundryBinary('forge'), ['build', '--sizes']);
@@ -438,8 +463,11 @@ async function main() {
     cwd: repoRoot,
     shell: false,
     stdio: 'inherit',
+    windowsHide: true,
   });
 
+  let relay = null;
+  let miningTimer = null;
   let shuttingDown = false;
   const shutdown = () => {
     if (shuttingDown) return;
@@ -447,6 +475,8 @@ async function main() {
     if (anvil && !anvil.killed) {
       anvil.kill('SIGTERM');
     }
+    if (relay && !relay.killed) relay.kill('SIGTERM');
+    if (miningTimer) clearInterval(miningTimer);
   };
 
   process.on('SIGINT', () => {
@@ -468,6 +498,7 @@ async function main() {
     '--rpc-url',
     rpcUrl,
     '--broadcast',
+    '--slow',
     '--non-interactive',
   ], {
     cwd: repoRoot,
@@ -477,6 +508,7 @@ async function main() {
     },
     shell: false,
     stdio: 'inherit',
+    windowsHide: true,
   });
   const forgeExit = new Promise((resolve, reject) => {
     forge.on('error', reject);
@@ -501,19 +533,51 @@ async function main() {
       },
     });
 
-    await writeAppEnv(addresses, rpcUrl);
+    console.log(`[anvil-e2e] Starting sponsor relay on ${relayUrl}`);
+    relay = spawn('node', ['scripts/sponsor-relay-server.mjs'], {
+      cwd: repoRoot,
+      env: {
+        ...process.env,
+        PORT: String(relayPort),
+        SPONSOR_RELAY_HOST: '127.0.0.1',
+        SPONSOR_RELAY_CHAIN_ID: '31337',
+        SPONSOR_RELAY_RPC_URL: rpcUrl,
+        SPONSOR_RELAY_ALLOW_LOCAL_HTTP: 'true',
+        SPONSOR_RELAY_FORWARDER_ADDRESS: addresses.VITE_SESSION_FORWARDER_ADDRESS,
+        SPONSOR_RELAY_CONTROLLER_ADDRESS: addresses.VITE_CONTROLLER_ADDRESS,
+        SPONSOR_RELAY_BOARD_ADDRESS: addresses.VITE_BOARD_ADDRESS,
+        SPONSOR_RELAYER_PRIVATE_KEY: RELAY_PK,
+        SPONSOR_RELAY_ADMIN_TOKEN: 'anvil-e2e-admin-token-with-at-least-32-characters',
+        SPONSOR_RELAY_ALLOWED_ORIGINS: baseURL,
+        SPONSOR_RELAY_STATE_FILE: relayStateFile,
+        SPONSOR_RELAY_MIN_BALANCE_WEI: '1',
+        SPONSOR_RELAY_EXPLORER_URL: '',
+      },
+      shell: false,
+      stdio: 'inherit',
+      windowsHide: true,
+    });
+    await waitForHttp(`${relayUrl}/healthz`);
+
+    await writeAppEnv(addresses, rpcUrl, relayUrl);
     console.log(`[anvil-e2e] Wrote app env: ${appEnvFile}`);
 
     console.log('[anvil-e2e] Seeding an open expedition...');
     await seedOpenGame(rpcUrl, addresses);
 
     console.log('[anvil-e2e] Running Playwright against local chain...');
-    await runCommand(resolveShellBinary('npx'), [
+    miningTimer = setInterval(() => {
+      rpcRequest(rpcUrl, 'evm_mine').catch(() => {});
+    }, 1_000);
+    const playwrightArgs = [
       'playwright',
       'test',
       '--config',
       'playwright.config.js',
-    ], {
+    ];
+    if (process.env.E2E_PROJECT) playwrightArgs.push('--project', process.env.E2E_PROJECT);
+    if (process.env.E2E_GREP) playwrightArgs.push('--grep', process.env.E2E_GREP);
+    await runCommand(resolveShellBinary('npx'), playwrightArgs, {
       cwd: appDir,
       env: {
         E2E_APP_PORT: String(appPort),
@@ -527,6 +591,7 @@ async function main() {
     console.log(`[anvil-e2e] Success. Anvil RPC: ${rpcUrl}, App URL: ${baseURL}`);
   } finally {
     shutdown();
+    await fs.rm(relayStateFile, { force: true }).catch(() => {});
   }
 }
 

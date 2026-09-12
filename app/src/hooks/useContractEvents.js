@@ -3,7 +3,7 @@ import { getPublicClient } from '../config/clients';
 import { useWallet } from '../contexts/WalletContext';
 
 export function usePublicClient() {
-  const { chainId } = useWallet();
+  const { readChainId: chainId } = useWallet();
   return useMemo(() => getPublicClient(chainId), [chainId]);
 }
 

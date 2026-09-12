@@ -30,6 +30,25 @@ Overall: **A (automated implementation), B (production evidence)**
 | Pause and resume | A- | Soft-pause semantics, background/reconnect states, cached restoration, and unresolved transaction confirmation; production timing is not yet calibrated |
 | Parties | A- | Durable privacy/capacity/state/version model, readiness, leadership, removal, discovery, preferences, game linkage, and reconnect restoration |
 | Friends and presence | A- | Callsign search, requests, favorites, recent co-players, blocks, reports, relationship-scoped TTL presence, and SSE invalidation |
-| Improvement automation | A | Versioned contract, strict doctor, 15 required scenarios, bundle gates, tests, report generation, and registry integration |
+| Improvement automation | A | Versioned contract, strict doctor, 24 required scenarios, bundle gates, tests, report generation, and registry integration |
 
 Migration 006 and its save/social lifecycle have also passed an isolated PostgreSQL 16 run, including a second idempotent migration pass and cascade cleanup. The production-evidence grade remains B until migration deployment, exact contract rollout, synthetic deployed journeys, and enough real runtime samples are recorded. This is deliberately not represented as a completed production A.
+
+## Snapshot 3 - On-chain player experience pass (2026-09-10)
+
+Overall: **A- (local implementation), B (production evidence)**
+
+| Dimension | Grade | Evidence |
+| --- | --- | --- |
+| Wallet-free observation | A | Read-chain and wallet-chain state are separate; public expedition state loads without a connected wallet and custom RPC lists never drift to an implicit endpoint |
+| Action confidence | A | Exact `eth_call` preflight, optional gas estimate, explicit signature/broadcast/confirmation phases, optimistic intent, and readable failure recovery |
+| Receipt recovery | A- | Device-persisted and cross-tab receipts reconcile while disconnected, require two confirmations, handle replacements, and surface unresolved broadcasts |
+| Canonical history | A | Chain-and-contract-scoped cache, bounded backfill, 12-block canonical recheck, removed-log handling, readable chronicle, and explorer proofs |
+| Portable continuity | A- | Resume links and downloadable expedition passports preserve public chain/game/contract proof identifiers; a second production client is not yet verified |
+| Delegated and sponsored actions | A- | Scoped, expiring, usage-limited session forwarder; ephemeral browser session keys; exact preflight; durable replay-safe relay; bounded batches; layered spend limits; low-balance readiness; emergency pause; and a real local grant-use journey with only one wallet approval |
+| Real-chain journey | A | Fresh Anvil deployment, real seeded expedition, live board restoration, and gameplay capture pass end to end |
+| Production release | B | Build and protocol are deployment-ready, but the legacy live controller has not been migrated and no secured sponsor relay is being claimed as live |
+
+### A bar, stricter
+
+Promote the whole experience to A only after the updated controller and forwarder are deployed and role-verified, the single-instance relay is deployed with persistent state and a dedicated funded key, grant-use-expiry-exhaustion-revoke journeys pass against Sepolia, portable resume is proven in a second compatible client, and deployed p75/p95 transaction and restoration evidence meets the quality contract.

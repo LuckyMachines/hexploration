@@ -36,27 +36,35 @@ async function readGameEnv() {
   throw new Error('Unable to read a local game env file');
 }
 
+async function openReturnLoop(page) {
+  const details = page.getByTestId('return-loop-details');
+  if (!(await details.evaluate((element) => element.open))) await details.locator('summary').click();
+  return page.getByTestId('return-loop-panel');
+}
+
+async function openPlayerSettings(page) {
+  await page.getByTestId('player-settings-toggle').click();
+}
+
 test('home page renders core surfaces', async ({ page }) => {
   await page.goto('/', { waitUntil: 'domcontentloaded' });
 
-  await expect(page.getByRole('heading', { name: /Chart the strange/i }).first()).toBeVisible();
-  await expect(page.getByText(/Voyage\. Explore\. Escape\./i)).toBeVisible();
-  const liveLaunch = page.getByRole('link', { name: /Enter live lobby/i }).first();
+  await expect(page.getByRole('heading', { name: /Choose your expedition/i })).toBeVisible();
+  await expect(page.getByText(/You are in the playable client/i)).toBeVisible();
+  const liveLaunch = page.getByRole('link', { name: /Observe live/i });
   await expect(liveLaunch).toBeVisible();
-  await expect(liveLaunch).toHaveAttribute('href', '#live-expedition');
-  const guestLaunch = page.getByRole('link', { name: /Explore the 3D world/i }).first();
+  await expect(liveLaunch).toHaveAttribute('href', '#available-expeditions');
+  const guestLaunch = page.getByRole('link', { name: /Play solo/i }).first();
   await expect(guestLaunch).toHaveAttribute('href', '/guest');
-  await liveLaunch.click();
-  await expect(page.getByText(/One choice should explain the run/i)).toBeVisible();
-  await expect(page.getByRole('heading', { name: /^Commit$/i })).toBeVisible();
-  await expect(page.getByText(/System Health/i)).toBeVisible();
+  await expect(page.getByRole('link', { name: /Join or create/i })).toHaveAttribute('href', '#crew-network');
   await expect(page.getByText(/Available Expeditions/i)).toBeVisible();
-  await expect(page.getByTestId('return-loop-panel')).toBeVisible();
+  await expect(page.getByText(/Network and contract status/i)).toBeVisible();
+  await expect(page.getByTestId('return-loop-details')).toBeVisible();
 });
 
 test('return loop gives a new player a role and a resumable crew thread', async ({ page }) => {
   await page.goto('/', { waitUntil: 'domcontentloaded' });
-  const panel = page.getByTestId('return-loop-panel');
+  const panel = await openReturnLoop(page);
   await panel.getByRole('button', { name: /Scout/i }).click();
   await expect(panel.getByText('Create your first expedition thread', { exact: true })).toBeVisible();
   await panel.getByRole('button', { name: /Create expedition thread/i }).click();
@@ -67,7 +75,7 @@ test('return loop gives a new player a role and a resumable crew thread', async 
 
 test('home page keeps internal tooling language out of the player funnel', async ({ page }) => {
   await page.goto('/', { waitUntil: 'domcontentloaded' });
-  await expect(page.getByText(/Voyage\. Explore\. Escape\./i)).toBeVisible();
+  await expect(page.getByText(/You are in the playable client/i)).toBeVisible();
 
   const bodyText = (await page.locator('body').innerText()).toLowerCase();
   const internalTerms = [
@@ -94,7 +102,7 @@ test('pseudo-localization loads when explicitly requested', async ({ page }) => 
   await page.goto('/?pseudo=1', { waitUntil: 'domcontentloaded' });
 
   await expect(page.locator('html')).toHaveClass(/xv-pseudo-locale/);
-  await expect(page.getByRole('heading', { level: 1 })).toContainText('Chart the strange.');
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('Choose your expedition.');
 });
 
 test('guest route enters the production 3D expedition without a wallet', async ({ page }, testInfo) => {
@@ -221,13 +229,14 @@ seededTest('seeded anvil mode shows at least one expedition', async ({ page }) =
   }
 
   expect(result[0].length).toBeGreaterThan(0);
-  await page.goto('/', { waitUntil: 'domcontentloaded' });
-  await expect(page.getByText(/Available Surveys/i)).toBeVisible();
+  await page.goto('/#live-expedition', { waitUntil: 'domcontentloaded' });
+  await expect(page.getByRole('heading', { name: /Available Expeditions/i })).toBeVisible();
 });
 
 test('field manual modal opens and closes with Escape', async ({ page }) => {
   await page.goto('/', { waitUntil: 'domcontentloaded' });
 
+  await openPlayerSettings(page);
   const helpButton = page.getByRole('button', { name: /Open Field Manual/i });
   await expect(helpButton).toBeVisible();
   await helpButton.focus();

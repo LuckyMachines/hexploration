@@ -3,7 +3,7 @@ import { SUPPORTED_CHAINS, RPC_URLS } from './chains';
 
 const clientCache = new Map();
 
-function getDefaultChainId() {
+export function getDefaultChainId() {
   const preferredChain = [...SUPPORTED_CHAINS].sort((left, right) => (left.id === 11155111 ? -1 : right.id === 11155111 ? 1 : 0)).find((chain) => {
     const rpcUrl = RPC_URLS[chain.id];
     return typeof rpcUrl === 'string' && rpcUrl.length > 0;
@@ -24,10 +24,10 @@ export function getPublicClient(chainId) {
     throw new Error(`Missing RPC URL for chain: ${id}`);
   }
 
-  const rpcUrls = [...new Set([
-    ...String(configured).split(',').map((value) => value.trim()).filter(Boolean),
-    ...(chain.rpcUrls?.default?.http || []),
-  ])];
+  // The configured endpoint list is authoritative. Appending a chain default here can
+  // silently route local/test reads to a different node (for example :8545 instead of
+  // the dynamically allocated Anvil port) and leave a valid query waiting on retries.
+  const rpcUrls = [...new Set(String(configured).split(',').map((value) => value.trim()).filter(Boolean))];
 
   const client = createPublicClient({
     chain,

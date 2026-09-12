@@ -20,6 +20,8 @@ import { useUserPreferences } from '../../hooks/useUserPreferences';
 import EscapeCostPreview from '../expedition/EscapeCostPreview';
 import CostReductionActions from '../expedition/CostReductionActions';
 import TraitPreviewPanel from '../expedition/TraitPreviewPanel';
+import SponsoredSessionControl from './SponsoredSessionControl';
+import { useSponsoredSession } from '../../hooks/useSponsoredSession';
 
 const TABS = [
   Action.MOVE,
@@ -78,7 +80,19 @@ export default function ActionPanel({
   const [lastSubmission, setLastSubmission] = useState(null);
   const [optimisticSubmitted, setOptimisticSubmitted] = useState(null);
   const activeTab = controlledActiveTab ?? localActiveTab;
-  const { submitAction, hash, isPending, isConfirming, isSuccess, error } = useGameActions();
+  const sponsoredSession = useSponsoredSession({ gameId, playerID });
+  const {
+    submitAction,
+    simulateAction,
+    resetSimulation,
+    simulation = { status: 'idle', estimatedGas: null, error: null },
+    lifecycle,
+    hash,
+    isPending,
+    isConfirming,
+    isSuccess,
+    error,
+  } = useGameActions({ sponsoredSession });
   const { active: activeInv } = usePlayerInventory(gameId, playerID);
   const { preferences, setPreference } = useUserPreferences();
 
@@ -171,7 +185,7 @@ export default function ActionPanel({
 
   const requestSubmit = (actionIndex, options = [], leftHand = '', rightHand = '', metadata = {}) => {
     if (!playerID || !gameId) return;
-    setPendingSubmission({
+    const submission = {
       playerID,
       actionIndex,
       label: getActionMeta(actionIndex).label,
@@ -198,15 +212,21 @@ export default function ActionPanel({
         escapeCostPreview,
         traitPreview,
       }),
-    });
+    };
+    resetSimulation?.();
+    setPendingSubmission(submission);
+    if (simulateAction) {
+      Promise.resolve(simulateAction(playerID, actionIndex, options, leftHand, rightHand, gameId)).catch(() => {});
+    }
   };
 
   const confirmSubmit = () => {
     if (!pendingSubmission) return;
+    if (simulateAction && simulation.status !== 'ready') return;
     const submission = pendingSubmission;
     setPendingSubmission(null);
     setLastSubmission(submission);
-    setOptimisticSubmitted({ label: submission.label, options: submission.options });
+    setOptimisticSubmitted({ label: submission.label, options: submission.options, actionIndex: submission.actionIndex });
     Promise.resolve(submitAction(
       submission.playerID,
       submission.actionIndex,
@@ -214,10 +234,11 @@ export default function ActionPanel({
       submission.leftHand,
       submission.rightHand,
       submission.gameId,
-    )).catch(() => {
+    )).then(() => {
+      if (submission.actionIndex === Action.MOVE) onMoveSubmit?.();
+    }).catch(() => {
       setOptimisticSubmitted(null);
     });
-    if (submission.actionIndex === Action.MOVE) onMoveSubmit?.();
   };
 
   return (
@@ -243,6 +264,8 @@ export default function ActionPanel({
           {statusLabel}
         </span>
       </div>
+
+      {!isSpectator && <SponsoredSessionControl sponsored={sponsoredSession} />}
 
       <div className="px-4 pt-3">
         <div className="grid gap-2 grid-cols-2 lg:grid-cols-5">
@@ -616,13 +639,14 @@ export default function ActionPanel({
       </details>
 
       {(hash || isPending || error) && (
-        <div className="px-4 pb-4">
+        <div className="px-4 pb-4" data-testid="action-transaction-status">
           <TxStatus
             hash={hash}
             isPending={isPending}
             isConfirming={isConfirming}
             isSuccess={isSuccess}
             error={error}
+            lifecycle={lifecycle}
           />
         </div>
       )}
@@ -635,6 +659,8 @@ export default function ActionPanel({
           isConfirming={isConfirming}
           isSuccess={isSuccess}
           error={error}
+          simulation={simulation}
+          lifecycle={lifecycle}
         />
       </div>
 
@@ -667,7 +693,11 @@ export default function ActionPanel({
         submission={pendingSubmission}
         routeStatus={routeStatus}
         traitPreview={traitPreview}
-        onCancel={() => setPendingSubmission(null)}
+        simulation={simulateAction ? simulation : null}
+        onCancel={() => {
+          setPendingSubmission(null);
+          resetSimulation?.();
+        }}
         onConfirm={confirmSubmit}
       />
     </div>

@@ -1,12 +1,12 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-10T21:15:30.439Z",
+  "generatedAt": "2026-09-11T08:56:52.869Z",
   "evaluationMode": "automated-only",
   "implementationGrade": "A",
   "productionEvidenceGrade": "B",
   "grade": "A",
-  "passed": 18,
-  "total": 18,
+  "passed": 29,
+  "total": 29,
   "ratio": 1,
   "checks": [
     {
@@ -34,6 +34,14 @@
       "ok": true
     },
     {
+      "id": "authoritative-action-preflight",
+      "ok": true
+    },
+    {
+      "id": "optimistic-action-feedback",
+      "ok": true
+    },
+    {
       "id": "query-policy",
       "ok": true
     },
@@ -47,6 +55,42 @@
     },
     {
       "id": "bounded-event-history",
+      "ok": true
+    },
+    {
+      "id": "reorg-safe-event-history",
+      "ok": true
+    },
+    {
+      "id": "portable-expedition-passport",
+      "ok": true
+    },
+    {
+      "id": "scoped-session-forwarder",
+      "ok": true
+    },
+    {
+      "id": "replay-protected-sponsored-actions",
+      "ok": true
+    },
+    {
+      "id": "secure-sponsor-relay",
+      "ok": true
+    },
+    {
+      "id": "sponsor-budget-controls",
+      "ok": true
+    },
+    {
+      "id": "sponsor-emergency-pause",
+      "ok": true
+    },
+    {
+      "id": "browser-sponsored-actions",
+      "ok": true
+    },
+    {
+      "id": "local-sponsored-stack",
       "ok": true
     },
     {
@@ -76,7 +120,7 @@
     {
       "id": "gameclientpage--bundle-budget",
       "ok": true,
-      "value": 369140,
+      "value": 329664,
       "budget": 430000
     },
     {
@@ -114,7 +158,16 @@
     "invite-accept",
     "expired-or-revoked-invite",
     "friend-block-and-privacy",
-    "rpc-failover"
+    "rpc-failover",
+    "preflight-rejection",
+    "reorg-reconciliation",
+    "delegated-action-expiry",
+    "sponsored-action-replay",
+    "portable-client-resume",
+    "sponsor-relay-budget-exhaustion",
+    "sponsor-relay-emergency-pause",
+    "sponsor-relay-low-balance",
+    "browser-sponsored-grant-use-revoke"
   ],
   "nextAction": "Deploy API contract 2026-09-10.1, run synthetic multi-context probes, and collect production percentiles."
 }

@@ -1,5 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { getChainById, SUPPORTED_CHAINS } from '../config/chains';
+import { getChainById, resolveReadChainId, SUPPORTED_CHAINS } from '../config/chains';
+import { getRuntimeMode } from '../lib/runtimeMode';
+import { trackJourneyEvent } from '../lib/analytics';
 
 const WalletContext = createContext(null);
 
@@ -7,9 +9,17 @@ function parseChainId(hex) {
   return typeof hex === 'string' ? parseInt(hex, 16) : Number(hex);
 }
 
+function preferredReadChainId() {
+  if (typeof window !== 'undefined') {
+    const requested = Number(new URLSearchParams(window.location.search).get('chain'));
+    if (SUPPORTED_CHAINS.some((chain) => chain.id === requested)) return requested;
+  }
+  return getRuntimeMode().chainId;
+}
+
 export function WalletProvider({ children }) {
   const [address, setAddress] = useState(null);
-  const [chainId, setChainId] = useState(null);
+  const [walletChainId, setWalletChainId] = useState(null);
   const [isSwitching, setIsSwitching] = useState(false);
 
   const syncAccounts = useCallback(async () => {
@@ -26,9 +36,9 @@ export function WalletProvider({ children }) {
     if (!window.ethereum) return;
     try {
       const hex = await window.ethereum.request({ method: 'eth_chainId' });
-      setChainId(parseChainId(hex));
+      setWalletChainId(parseChainId(hex));
     } catch {
-      setChainId(null);
+      setWalletChainId(null);
     }
   }, []);
 
@@ -39,7 +49,7 @@ export function WalletProvider({ children }) {
     if (!window.ethereum) return;
 
     const onAccountsChanged = (accounts) => setAddress(accounts[0] ?? null);
-    const onChainChanged = (hex) => setChainId(parseChainId(hex));
+    const onChainChanged = (hex) => setWalletChainId(parseChainId(hex));
 
     window.ethereum.on('accountsChanged', onAccountsChanged);
     window.ethereum.on('chainChanged', onChainChanged);
@@ -50,6 +60,7 @@ export function WalletProvider({ children }) {
   }, [syncAccounts, syncChain]);
 
   const connect = useCallback(async () => {
+    trackJourneyEvent('wallet_requested', { surface: window.location.pathname === '/' ? 'lobby' : 'global' }, { dedupeKey: `wallet-${Date.now()}` });
     if (!window.ethereum) throw new Error('No wallet found');
     const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
     setAddress(accounts[0] ?? null);
@@ -94,12 +105,15 @@ export function WalletProvider({ children }) {
     }
   }, []);
 
-  const chain = useMemo(() => getChainById(chainId) ?? null, [chainId]);
   const isConnected = !!address;
+  const chainId = walletChainId;
+  const readChainId = resolveReadChainId({ isConnected, walletChainId, requestedChainId: preferredReadChainId(), fallbackChainId: getRuntimeMode().chainId });
+  const chain = useMemo(() => getChainById(walletChainId) ?? null, [walletChainId]);
+  const readChain = useMemo(() => getChainById(readChainId) ?? null, [readChainId]);
 
   const value = useMemo(
-    () => ({ address, isConnected, chain, chainId, connect, disconnect, switchChain, isSwitching }),
-    [address, isConnected, chain, chainId, connect, disconnect, switchChain, isSwitching],
+    () => ({ address, isConnected, chain, chainId, walletChainId, readChain, readChainId, connect, disconnect, switchChain, isSwitching }),
+    [address, isConnected, chain, chainId, walletChainId, readChain, readChainId, connect, disconnect, switchChain, isSwitching],
   );
 
   return <WalletContext.Provider value={value}>{children}</WalletContext.Provider>;

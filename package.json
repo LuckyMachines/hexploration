@@ -226,6 +226,9 @@
     "verify:latest": "node scripts/verify-hard.mjs --latest",
     "verify:clean-artifacts": "node scripts/verify-hard.mjs --clean-artifacts",
     "contract:return": "node scripts/verify-return-api-contract.mjs",
+    "relay:start": "node scripts/sponsor-relay-server.mjs",
+    "relay:doctor": "node scripts/sponsor-relay-doctor.mjs",
+    "relay:test": "node --test scripts/sponsor-relay-*.test.mjs",
     "test:e2e:anvil": "node scripts/run-anvil-e2e.mjs"
   },
   "repository": {
@@ -238,7 +241,7 @@
     "url": "https://github.com/LuckyMachines/xenovoya/issues"
   },
   "homepage": "https://github.com/LuckyMachines/xenovoya#readme",
-  "devDependencies": {
+  "dependencies": {
     "dotenv": "^17.4.2",
     "viem": "^2.55.1"
   }

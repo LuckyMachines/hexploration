@@ -18,6 +18,7 @@
  *   --no-bots                    # multi mode but don't register bots
  *                                  (you bring your own keys)
  *   --no-worker                  # skip the automation worker
+ *   --no-relay                   # skip the local gas sponsor relay
  *   --no-vite                    # skip the frontend dev server
  *   ANVIL_PORT=8545 ...          # change anvil port (default 9955)
  */
@@ -57,8 +58,12 @@ const windowsCmdSuffix = process.platform === 'win32' ? '.cmd' : '';
 
 const ANVIL_PORT = Number(process.env.ANVIL_PORT) || 9955;
 const RPC_URL = `http://127.0.0.1:${ANVIL_PORT}`;
+const RELAY_PORT = Number(process.env.SPONSOR_RELAY_PORT) || 9957;
+const RELAY_URL = `http://127.0.0.1:${RELAY_PORT}`;
 const ANVIL_PK =
   '0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80';
+const RELAY_PK =
+  '0x2a871d0798f97d79848a013d4936a73bf4cc922c825d33c1cf7073dff6d409c6';
 
 // ── Args ─────────────────────────────────────────────────────────────
 const args = process.argv.slice(2);
@@ -80,6 +85,7 @@ const players = Math.max(1, Math.min(4, Number(flagVal('players', defaultPlayers
 const wantBots = mode === 'multi' && !flag('no-bots');
 const botCount = wantBots ? Math.max(0, players - 1) : 0;
 const skipWorker = !!flag('no-worker');
+const skipRelay = !!flag('no-relay');
 const skipVite = !!flag('no-vite');
 const deployTimeoutMs = Number(process.env.LOCAL_STACK_DEPLOY_TIMEOUT_MS) || 180_000;
 const commandTimeoutMs = Number(process.env.LOCAL_STACK_COMMAND_TIMEOUT_MS) || 120_000;
@@ -172,6 +178,20 @@ function runCommand(command, args, options = {}) {
       else settle(new Error(`${command} ${args.join(' ')} exited with code ${code}`));
     });
   });
+}
+
+async function waitForHttp(url, timeoutMs = 25_000) {
+  const start = Date.now();
+  while (Date.now() - start < timeoutMs) {
+    try {
+      const response = await fetch(url);
+      if (response.ok) return;
+    } catch {
+      // Retry.
+    }
+    await new Promise((resolve) => setTimeout(resolve, 500));
+  }
+  throw new Error(`Timed out waiting for ${url}`);
 }
 
 function spawnChild(command, args, options = {}) {
@@ -291,6 +311,7 @@ async function readBroadcastAddresses() {
   const appAddrs = {
     VITE_BOARD_ADDRESS: byName.XenovoyaBoard,
     VITE_CONTROLLER_ADDRESS: byName.XenovoyaController,
+    VITE_SESSION_FORWARDER_ADDRESS: byName.XenovoyaSessionForwarder,
     VITE_GAME_SUMMARY_ADDRESS: byName.GameSummary,
     VITE_PLAYER_SUMMARY_ADDRESS: byName.PlayerSummary,
     VITE_GAME_EVENTS_ADDRESS: byName.GameEvents,
@@ -383,6 +404,7 @@ const gameRegistryAbi = [
 const localWiringAbi = [
   { type: 'function', stateMutability: 'nonpayable', name: 'addGameBoard', inputs: [{ name: 'gameBoardAddress', type: 'address' }], outputs: [] },
   { type: 'function', stateMutability: 'nonpayable', name: 'addVerifiedController', inputs: [{ name: 'vcAddress', type: 'address' }], outputs: [] },
+  { type: 'function', stateMutability: 'nonpayable', name: 'addActionForwarder', inputs: [{ name: 'forwarderAddress', type: 'address' }], outputs: [] },
   { type: 'function', stateMutability: 'nonpayable', name: 'addFactory', inputs: [{ name: 'factoryAddress', type: 'address' }], outputs: [] },
   { type: 'function', stateMutability: 'nonpayable', name: 'setCharacterCard', inputs: [{ name: 'characterCardAddress', type: 'address' }], outputs: [] },
   { type: 'function', stateMutability: 'nonpayable', name: 'setTokenInventory', inputs: [{ name: 'tokenInventoryAddress', type: 'address' }], outputs: [] },
@@ -548,6 +570,7 @@ async function ensureLocalWiring({ appAddrs, deckAddrs, byName }) {
   await write(appAddrs.VITE_CONTROLLER_ADDRESS, 'setGameStateUpdate', [byName.XenovoyaStateUpdate]);
   await write(appAddrs.VITE_CONTROLLER_ADDRESS, 'setGameSetup', [appAddrs.VITE_GAME_SETUP_ADDRESS]);
   await write(appAddrs.VITE_CONTROLLER_ADDRESS, 'addVerifiedController', [account.address]);
+  await write(appAddrs.VITE_CONTROLLER_ADDRESS, 'addActionForwarder', [appAddrs.VITE_SESSION_FORWARDER_ADDRESS]);
 
   await write(appAddrs.VITE_GAME_QUEUE_ADDRESS, 'addVerifiedController', [appAddrs.VITE_CONTROLLER_ADDRESS]);
   await write(appAddrs.VITE_GAME_QUEUE_ADDRESS, 'addVerifiedController', [appAddrs.VITE_GAME_SETUP_ADDRESS]);
@@ -607,6 +630,8 @@ async function writeAppEnvLocal(appAddrs) {
     'VITE_WALLETCONNECT_PROJECT_ID=',
     'VITE_RPC_URL=',
     `VITE_FOUNDRY_RPC_URL=${RPC_URL}`,
+    'VITE_CONTROLLER_SUPPORTS_DELEGATION=true',
+    `VITE_SPONSOR_RELAY_URL=${skipRelay ? '' : RELAY_URL}`,
   ];
   await fs.writeFile(envFile, `${lines.join('\n')}\n`, 'utf8');
   log(`Wrote ${envFile}`);
@@ -645,6 +670,9 @@ async function main() {
   await runBootStep('port', 'Check Anvil port', 5_000, async () => {
     if (!(await isPortAvailable(ANVIL_PORT))) {
       throw new Error(`Port ${ANVIL_PORT} is already in use. Set ANVIL_PORT env var or free the port.`);
+    }
+    if (!skipRelay && !(await isPortAvailable(RELAY_PORT))) {
+      throw new Error(`Port ${RELAY_PORT} is already in use. Set SPONSOR_RELAY_PORT env var, use --no-relay, or free the port.`);
     }
   });
 
@@ -787,6 +815,35 @@ async function main() {
     }));
   }
 
+  if (!skipRelay) {
+    const relayStateFile = path.resolve(repoRoot, 'data', `sponsor-relay-local-${RELAY_PORT}.json`);
+    await fs.rm(relayStateFile, { force: true });
+    await runBootStep('relay.start', 'Start local sponsor relay', 25_000, async () => {
+      spawnChild('node', ['scripts/sponsor-relay-server.mjs'], {
+        env: {
+          SPONSOR_RELAY_HOST: '127.0.0.1',
+          SPONSOR_RELAY_PORT: String(RELAY_PORT),
+          SPONSOR_RELAY_CHAIN_ID: '31337',
+          SPONSOR_RELAY_RPC_URL: RPC_URL,
+          SPONSOR_RELAY_ALLOW_LOCAL_HTTP: 'true',
+          SPONSOR_RELAY_FORWARDER_ADDRESS: appAddrs.VITE_SESSION_FORWARDER_ADDRESS,
+          SPONSOR_RELAY_CONTROLLER_ADDRESS: appAddrs.VITE_CONTROLLER_ADDRESS,
+          SPONSOR_RELAY_BOARD_ADDRESS: appAddrs.VITE_BOARD_ADDRESS,
+          SPONSOR_RELAYER_PRIVATE_KEY: RELAY_PK,
+          SPONSOR_RELAY_ADMIN_TOKEN: 'local-stack-admin-token-with-at-least-32-characters',
+          SPONSOR_RELAY_ALLOWED_ORIGINS: 'http://localhost:5502,http://127.0.0.1:5502',
+          SPONSOR_RELAY_STATE_FILE: relayStateFile,
+          SPONSOR_RELAY_MIN_BALANCE_WEI: '1',
+          SPONSOR_RELAY_EXPLORER_URL: '',
+        },
+        label: 'sponsor-relay',
+      });
+      await waitForHttp(`${RELAY_URL}/healthz`);
+    });
+  } else {
+    log('Sponsor relay skipped (--no-relay).');
+  }
+
   // 10. Spawn Vite dev server
   if (!skipVite) {
     await runBootStep('vite.start', 'Start Vite dev server', 10_000, async () => spawnChild(resolveShellBinary('npm'), ['run', 'dev'], {
@@ -821,6 +878,7 @@ async function main() {
   console.log(`  Chain ID:   31337`);
   console.log(`  Frontend:   ${skipVite ? 'Skipped (--no-vite)' : 'http://localhost:5502'}`);
   console.log(`  Worker:     ${skipWorker ? 'Skipped (--no-worker)' : 'Running'}`);
+  console.log(`  Sponsor:    ${skipRelay ? 'Skipped (--no-relay)' : RELAY_URL}`);
   console.log(`  Health:     ${latestHealthPaths.reportJsonPath}`);
   console.log(`  Sentinel:   local-stack-ready`);
   console.log(`  Private Key (Anvil #0):`);

@@ -1,10 +1,10 @@
 import { useUIScale, SCALE_PRESETS } from '../../contexts/UIScaleContext';
 
-export default function ScaleControl() {
+export default function ScaleControl({ alwaysVisible = false }) {
   const { scale, setScale } = useUIScale();
 
   return (
-    <div className="hidden min-h-11 items-center gap-0.5 bg-exp-panel border border-exp-border rounded px-1.5 py-0.5 sm:flex">
+    <div className={`${alwaysVisible ? 'flex' : 'hidden sm:flex'} min-h-11 items-center gap-0.5 bg-exp-panel border border-exp-border rounded px-1.5 py-0.5`}>
       {SCALE_PRESETS.map((preset) => (
         <button
           key={preset.label}

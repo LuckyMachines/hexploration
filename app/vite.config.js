@@ -48,6 +48,16 @@ function validateProductionEnvironment(env) {
   for (const key of addressKeys) {
     if (!/^0x[a-fA-F0-9]{40}$/.test(env[key] || '')) failures.push(`${key} must be a deployed address`);
   }
+  if (env.VITE_CONTROLLER_SUPPORTS_DELEGATION === 'true' && !/^0x[a-fA-F0-9]{40}$/.test(env.VITE_SESSION_FORWARDER_ADDRESS || '')) {
+    failures.push('VITE_SESSION_FORWARDER_ADDRESS must identify the deployed session forwarder when delegation is enabled');
+  }
+  if (env.VITE_CONTROLLER_SUPPORTS_DELEGATION === 'true') {
+    try {
+      if (new URL(env.VITE_SPONSOR_RELAY_URL).protocol !== 'https:') failures.push('VITE_SPONSOR_RELAY_URL must use HTTPS when delegation is enabled');
+    } catch {
+      failures.push('VITE_SPONSOR_RELAY_URL must be an absolute HTTPS URL when delegation is enabled');
+    }
+  }
   for (const key of ['VITE_RPC_URL', 'VITE_LIVE_PLAY_URL', 'VITE_PLAUSIBLE_HOST', 'VITE_RETURN_API_URL']) {
     try {
       if (new URL(env[key]).protocol !== 'https:') failures.push(`${key} must use HTTPS`);

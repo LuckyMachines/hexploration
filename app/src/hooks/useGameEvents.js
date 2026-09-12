@@ -1,58 +1,55 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { usePublicClient, useWatchContractEvent } from './useContractEvents';
 import { EventsABI, GAME_EVENTS_ADDRESS } from '../config/contracts';
 import { parseUintId } from '../lib/ids';
-import { useQueryClient } from '@tanstack/react-query';
+import {
+  mapChainLog,
+  parseEventCache,
+  reconcileChainEvents,
+  serializeEventCache,
+} from '../lib/chainEventStore';
 
 const EVENT_NAMES = ['ActionSubmit', 'EndGameStarted', 'GameOver', 'GamePhaseChange', 'GameRegistration', 'GameStart', 'LandingSiteSet', 'PlayerIdleKick', 'ProcessingPhaseChange', 'TurnProcessingFail', 'TurnProcessingStart'];
 const MAX_EVENTS = 250;
 const BLOCK_BATCH = 40_000n;
 const CONFIRMATIONS = 3n;
+const REORG_RECHECK_BLOCKS = 12n;
+const FAST_HISTORY_BLOCKS = 5_000n;
 
-const cacheKey = (gameId) => `xenovoya:game-events:v2:${gameId}`;
-const cursorKey = (gameId) => `xenovoya:game-events-cursor:v2:${gameId}`;
+const eventScope = (gameId, chainId) => `${chainId || 'unknown'}:${String(GAME_EVENTS_ADDRESS || '').toLowerCase()}:${gameId}`;
+const cacheKey = (gameId, chainId) => `xenovoya:game-events:v3:${eventScope(gameId, chainId)}`;
+const cursorKey = (gameId, chainId) => `xenovoya:game-events-cursor:v3:${eventScope(gameId, chainId)}`;
 
-function getEventKey(name, log) {
-  return `${log.transactionHash || 'unknown'}-${log.logIndex !== undefined ? log.logIndex.toString() : '0'}-${name}`;
+function belongsToGame(log, gameId) {
+  return log.args?.gameID === undefined || String(log.args.gameID) === String(gameId);
 }
 
-function mapLog(log, fallbackName) {
-  const name = log.eventName || fallbackName;
-  return {
-    key: getEventKey(name, log), name, args: log.args,
-    blockNumber: Number(log.blockNumber ?? 0n), logIndex: Number(log.logIndex ?? 0),
-    transactionHash: log.transactionHash, timestamp: Date.now(),
-  };
+function readCache(gameId, chainId) {
+  if (typeof window === 'undefined') return { events: [], confirmedBlock: 0 };
+  return parseEventCache(window.localStorage.getItem(cacheKey(gameId, chainId)) || '');
 }
-
-function readCache(gameId) {
-  try { return JSON.parse(window.localStorage.getItem(cacheKey(gameId)) || '[]'); }
-  catch { return []; }
-}
-
-function sortByChainOrder(a, b) { return a.blockNumber - b.blockNumber || a.logIndex - b.logIndex; }
 
 export function useGameEvents(gameId) {
   const gid = parseUintId(gameId);
   const publicClient = usePublicClient();
+  const chainId = publicClient?.chain?.id;
   const queryClient = useQueryClient();
   const [events, setEvents] = useState([]);
   const [isLoadingFullHistory, setIsLoadingFullHistory] = useState(false);
-  const [eventSyncStatus, setEventSyncStatus] = useState('live');
+  const [eventSyncStatus, setEventSyncStatus] = useState('restoring');
+  const [confirmedBlock, setConfirmedBlock] = useState(0);
+  const syncInFlight = useRef(false);
   const eventDefs = useMemo(() => EventsABI.filter((entry) => entry.type === 'event' && EVENT_NAMES.includes(entry.name)), []);
 
-  const appendEvents = useCallback((incoming) => {
-    if (!incoming.length) return;
-    setEvents((previous) => {
-      const byKey = new Map(previous.map((event) => [event.key, event]));
-      incoming.forEach((event) => byKey.set(event.key, event));
-      return [...byKey.values()].sort(sortByChainOrder).slice(-MAX_EVENTS);
-    });
+  const appendEvents = useCallback((incoming, options = {}) => {
+    if (!incoming.length && options.canonicalFromBlock === undefined) return;
+    setEvents((previous) => reconcileChainEvents(previous, incoming, { max: MAX_EVENTS, ...options }));
   }, []);
 
   const addLiveLogs = useCallback((logs) => {
     if (gid === null) return;
-    appendEvents(logs.filter((log) => log.args?.gameID === undefined || log.args.gameID === gid).map((log) => mapLog(log)));
+    appendEvents(logs.filter((log) => belongsToGame(log, gid)).map((log) => mapChainLog(log)));
     queryClient.invalidateQueries({ predicate: (query) => JSON.stringify(query.queryKey).includes(gid.toString()) });
     setEventSyncStatus('live');
   }, [appendEvents, gid, queryClient]);
@@ -67,40 +64,77 @@ export function useGameEvents(gameId) {
   });
 
   useEffect(() => {
-    if (gid === null) { setEvents([]); return; }
-    setEvents(readCache(gid));
-  }, [gid]);
+    if (gid === null) {
+      setEvents([]);
+      setConfirmedBlock(0);
+      return;
+    }
+    const cached = readCache(gid, chainId);
+    setEvents(cached.events || []);
+    setConfirmedBlock(Number(cached.confirmedBlock || 0));
+  }, [chainId, gid]);
 
   useEffect(() => {
-    if (gid === null || !events.length) return;
-    try { window.localStorage.setItem(cacheKey(gid), JSON.stringify(events.slice(-MAX_EVENTS))); } catch { /* cache is optional */ }
-  }, [events, gid]);
+    if (gid === null || typeof window === 'undefined') return;
+    try { window.localStorage.setItem(cacheKey(gid, chainId), serializeEventCache(events.slice(-MAX_EVENTS), confirmedBlock)); }
+    catch { /* cache is an acceleration layer, never the source of truth */ }
+  }, [chainId, confirmedBlock, events, gid]);
 
-  const loadFullHistory = useCallback(async () => {
-    if (!publicClient || gid === null) return;
-    setIsLoadingFullHistory(true);
-    setEventSyncStatus('backfilling');
+  const synchronizeHistory = useCallback(async ({ full = false } = {}) => {
+    if (!publicClient || gid === null || syncInFlight.current) return;
+    syncInFlight.current = true;
+    if (full) setIsLoadingFullHistory(true);
+    setEventSyncStatus(full ? 'backfilling' : 'syncing');
     try {
       const latest = await publicClient.getBlockNumber();
       const confirmed = latest > CONFIRMATIONS ? latest - CONFIRMATIONS : 0n;
       const configuredStart = BigInt(import.meta.env.VITE_GAME_EVENTS_START_BLOCK || 0);
       const boundedStart = configuredStart || (confirmed > 250_000n ? confirmed - 250_000n : 0n);
-      const storedCursor = BigInt(window.localStorage.getItem(cursorKey(gid)) || 0);
-      let fromBlock = storedCursor >= boundedStart ? storedCursor + 1n : boundedStart;
+      const storedCursor = BigInt(window.localStorage.getItem(cursorKey(gid, chainId)) || 0);
+      const recentFloor = confirmed > FAST_HISTORY_BLOCKS ? confirmed - FAST_HISTORY_BLOCKS : 0n;
+      const recheckFrom = storedCursor > REORG_RECHECK_BLOCKS ? storedCursor - REORG_RECHECK_BLOCKS : 0n;
+      let fromBlock = full
+        ? boundedStart
+        : [boundedStart, storedCursor ? recheckFrom : recentFloor].reduce((highest, value) => value > highest ? value : highest, 0n);
+      const canonicalFromBlock = Number(fromBlock);
+      const canonical = [];
+
       while (fromBlock <= confirmed) {
         const toBlock = fromBlock + BLOCK_BATCH - 1n > confirmed ? confirmed : fromBlock + BLOCK_BATCH - 1n;
         const logs = await publicClient.getLogs({ address: GAME_EVENTS_ADDRESS, events: eventDefs, fromBlock, toBlock });
-        appendEvents(logs.filter((log) => log.args?.gameID === gid).map((log) => mapLog(log)));
-        window.localStorage.setItem(cursorKey(gid), toBlock.toString());
+        canonical.push(...logs.filter((log) => belongsToGame(log, gid)).map((log) => mapChainLog(log)));
         fromBlock = toBlock + 1n;
       }
+
+      appendEvents(canonical, { canonicalFromBlock, canonicalToBlock: Number(confirmed) });
+      window.localStorage.setItem(cursorKey(gid, chainId), confirmed.toString());
+      setConfirmedBlock(Number(confirmed));
       setEventSyncStatus('live');
     } catch {
       setEventSyncStatus('degraded');
     } finally {
-      setIsLoadingFullHistory(false);
+      syncInFlight.current = false;
+      if (full) setIsLoadingFullHistory(false);
     }
-  }, [appendEvents, eventDefs, gid, publicClient]);
+  }, [appendEvents, chainId, eventDefs, gid, publicClient]);
 
-  return { events, clearEvents: () => setEvents([]), loadFullHistory, isLoadingFullHistory, eventSyncStatus };
+  useEffect(() => {
+    if (gid === null) return undefined;
+    void synchronizeHistory();
+    const interval = window.setInterval(() => {
+      if (!document.hidden && navigator.onLine) void synchronizeHistory();
+    }, 20_000);
+    return () => window.clearInterval(interval);
+  }, [gid, synchronizeHistory]);
+
+  const loadFullHistory = useCallback(() => synchronizeHistory({ full: true }), [synchronizeHistory]);
+
+  return {
+    events,
+    clearEvents: () => setEvents([]),
+    loadFullHistory,
+    isLoadingFullHistory,
+    eventSyncStatus,
+    confirmedBlock,
+  };
 }

@@ -23,6 +23,10 @@ vi.mock('../../hooks/usePlayerInventory', () => ({
   }),
 }));
 
+vi.mock('../../hooks/useSponsoredSession', () => ({
+  useSponsoredSession: () => ({ configured: false }),
+}));
+
 describe('ActionPanel', () => {
   beforeEach(() => {
     submitActionMock.mockReset();

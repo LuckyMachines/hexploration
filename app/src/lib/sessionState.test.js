@@ -14,6 +14,9 @@ describe('player session lifecycle', () => {
     expect(state.phase).toBe('backgrounded');
     state = sessionReducer(state, { type: 'ONLINE' });
     expect(state.phase).toBe('reconnecting');
+    state = sessionReducer(state, { type: 'RESUME', preservePause: true });
+    expect(state.phase).toBe('resumed');
+    expect(state.softPaused).toBe(true);
   });
 
   it('normalizes corrupt lifecycle values and caps pending transaction history', () => {

@@ -13,6 +13,7 @@ export const LOCAL_STACK_HEALTH_VERSION = 1;
 export const DEFAULT_REQUIRED_ENV_KEYS = [
   'VITE_BOARD_ADDRESS',
   'VITE_CONTROLLER_ADDRESS',
+  'VITE_SESSION_FORWARDER_ADDRESS',
   'VITE_GAME_SUMMARY_ADDRESS',
   'VITE_PLAYER_SUMMARY_ADDRESS',
   'VITE_GAME_EVENTS_ADDRESS',
@@ -252,6 +253,7 @@ export function addressesFromBroadcastJson(json) {
     appAddrs: normalizeAddressMap({
       VITE_BOARD_ADDRESS: byName.XenovoyaBoard,
       VITE_CONTROLLER_ADDRESS: byName.XenovoyaController,
+      VITE_SESSION_FORWARDER_ADDRESS: byName.XenovoyaSessionForwarder,
       VITE_GAME_SUMMARY_ADDRESS: byName.GameSummary,
       VITE_PLAYER_SUMMARY_ADDRESS: byName.PlayerSummary,
       VITE_GAME_EVENTS_ADDRESS: byName.GameEvents,
@@ -506,4 +508,3 @@ export async function writeLocalStackHealthReports(report, {
     publicJsonPath,
   };
 }
-

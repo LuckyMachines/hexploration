@@ -94,7 +94,7 @@ export default function ActionSimulator({
     <div className="border border-exp-border/60 rounded bg-exp-dark/40 p-3 space-y-2">
       <div className="flex items-center justify-between">
         <h4 className="font-mono text-xs tracking-[0.3em] text-exp-text-dim uppercase">
-          Action Simulation
+          Local Outcome Forecast
         </h4>
         <span className={`rounded border px-2 py-1 font-mono text-[10px] uppercase tracking-wider ${statusClass}`}>
           {statusLabel}
@@ -105,6 +105,9 @@ export default function ActionSimulator({
           <SimulatorRow key={index} ok={check.ok} label={check.label} detail={check.detail} />
         ))}
       </div>
+      <p className="border-t border-exp-border/50 pt-2 font-mono text-[10px] leading-relaxed text-exp-text-dim">
+        This forecast explains likely consequences. The confirmation step separately simulates the exact call against current contract state.
+      </p>
       <div className="grid gap-2 border-t border-exp-border/50 pt-2 sm:grid-cols-3">
         <p className="font-mono text-[11px] leading-relaxed text-exp-text-dim">
           <span className="text-exp-text">Effect:</span> {detail.effect}

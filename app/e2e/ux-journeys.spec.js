@@ -23,11 +23,17 @@ async function analyticsEvents(page) {
   return page.evaluate(() => (window.__uxCapturedEvents || []).map(([name]) => name).filter((name) => name !== 'pageview'));
 }
 
+async function openReturnLoop(page) {
+  const details = page.getByTestId('return-loop-details');
+  if (!(await details.evaluate((element) => element.open))) await details.locator('summary').click();
+  return page.getByTestId('return-loop-panel');
+}
+
 test.describe.serial('journey-level UX budgets', () => {
   test('first player reaches a visible, consequential decision in three actions', async ({ page }) => {
     await clearState(page);
     await page.goto('/', { waitUntil: 'networkidle' });
-    const panel = page.getByTestId('return-loop-panel');
+    const panel = await openReturnLoop(page);
     await panel.scrollIntoViewIfNeeded();
     await expect(panel).toBeVisible();
     const startedAt = Date.now();
@@ -63,7 +69,7 @@ test.describe.serial('journey-level UX budgets', () => {
       sessionStorage.removeItem('xenovoya:analytics-journey-sequence:v1');
     }, stored);
     await page.goto('/', { waitUntil: 'networkidle' });
-    const panel = page.getByTestId('return-loop-panel');
+    const panel = await openReturnLoop(page);
     await panel.scrollIntoViewIfNeeded();
     await expect(panel).toContainText('Signal beneath the ridge');
     const startedAt = Date.now();

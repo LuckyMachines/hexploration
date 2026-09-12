@@ -11,6 +11,12 @@ async function clearReturnState(page) {
   });
 }
 
+async function openReturnLoop(page) {
+  const details = page.getByTestId('return-loop-details');
+  if (!(await details.evaluate((element) => element.open))) await details.locator('summary').click();
+  return page.getByTestId('return-loop-panel');
+}
+
 test('screen-reader structure exposes the promise, landmarks, and named controls', async ({ page }) => {
   await clearReturnState(page);
   await page.goto('/', { waitUntil: 'networkidle' });
@@ -19,9 +25,10 @@ test('screen-reader structure exposes the promise, landmarks, and named controls
   const serious = axe.violations.filter(({ impact }) => ['serious', 'critical'].includes(impact));
   expect(serious, JSON.stringify(serious, null, 2)).toHaveLength(0);
 
-  await expect(page.getByRole('heading', { level: 1, name: /Chart the strange.*Get everyone home/i })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 1, name: /Choose your expedition/i })).toBeVisible();
   await expect(page.getByRole('navigation', { name: 'Player navigation' })).toBeAttached();
-  await expect(page.getByRole('region', { name: 'Expedition highlights' })).toBeAttached();
+  await expect(page.getByRole('region', { name: 'Choose your expedition.' })).toBeAttached();
+  await page.getByTestId('player-settings-toggle').click();
   await expect(page.getByRole('button', { name: 'Open Field Manual' })).toBeVisible();
 
   const headingLevels = await page.locator('#main-content h1, #main-content h2, #main-content h3').evaluateAll((headings) => headings.map((heading) => Number(heading.tagName.slice(1))));
@@ -33,7 +40,7 @@ test('screen-reader structure exposes the promise, landmarks, and named controls
 test('starter changes are announced and the help dialog restores focus', async ({ page }) => {
   await clearReturnState(page);
   await page.goto('/', { waitUntil: 'networkidle' });
-  const panel = page.getByTestId('return-loop-panel');
+  const panel = await openReturnLoop(page);
   await panel.scrollIntoViewIfNeeded();
 
   const announcement = page.getByTestId('return-loop-announcement');
@@ -46,6 +53,7 @@ test('starter changes are announced and the help dialog restores focus', async (
   await panel.getByRole('button', { name: 'Mark decision ready' }).click();
   await expect(announcement).toContainText('Waiting on crew');
 
+  await page.getByTestId('player-settings-toggle').click();
   const help = page.getByRole('button', { name: 'Open Field Manual' });
   await help.focus();
   await help.click();

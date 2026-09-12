@@ -72,6 +72,7 @@ test('addressesFromBroadcastJson maps deployed contracts into app env keys', () 
     transactions: [
       { contractName: 'XenovoyaBoard', contractAddress: '0x1111111111111111111111111111111111111111' },
       { contractName: 'XenovoyaController', contractAddress: '0x2222222222222222222222222222222222222222' },
+      { contractName: 'XenovoyaSessionForwarder', contractAddress: '0xcccccccccccccccccccccccccccccccccccccccc' },
       { contractName: 'GameSummary', contractAddress: '0x3333333333333333333333333333333333333333' },
       { contractName: 'PlayerSummary', contractAddress: '0x4444444444444444444444444444444444444444' },
       { contractName: 'GameEvents', contractAddress: '0x5555555555555555555555555555555555555555' },
@@ -87,6 +88,7 @@ test('addressesFromBroadcastJson maps deployed contracts into app env keys', () 
   const mapped = addressesFromBroadcastJson(broadcast);
   assert.equal(mapped.appAddrs.VITE_BOARD_ADDRESS, '0x1111111111111111111111111111111111111111');
   assert.equal(mapped.appAddrs.VITE_TOKEN_INVENTORY_ADDRESS, '0xbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb');
+  assert.equal(mapped.appAddrs.VITE_SESSION_FORWARDER_ADDRESS, '0xcccccccccccccccccccccccccccccccccccccccc');
   assert.equal(mapped.byName.XenovoyaController, '0x2222222222222222222222222222222222222222');
 });
 
@@ -117,4 +119,3 @@ test('markdownForLocalStackHealth renders check and evidence summaries', () => {
   assert.match(markdown, /Latest game ID: 1/);
   assert.match(markdown, /pass Wait for RPC/);
 });
-

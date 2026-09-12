@@ -7,8 +7,7 @@ COPY app/ ./
 # ABIs live at repo root; app imports them via ../../../abi/
 COPY abi/ /abi/
 
-# Vite inlines VITE_* env vars at build time.
-# Railway passes service variables as Docker build args automatically.
+# Vite inlines VITE_* environment variables supplied as Docker build args.
 ARG VITE_BOARD_ADDRESS
 ARG VITE_CONTROLLER_ADDRESS
 ARG VITE_GAME_SUMMARY_ADDRESS
@@ -18,6 +17,9 @@ ARG VITE_GAME_EVENTS_START_BLOCK
 ARG VITE_GAME_REGISTRY_ADDRESS
 ARG VITE_GAME_QUEUE_ADDRESS
 ARG VITE_GAME_SETUP_ADDRESS
+ARG VITE_SESSION_FORWARDER_ADDRESS
+ARG VITE_CONTROLLER_SUPPORTS_DELEGATION=false
+ARG VITE_SPONSOR_RELAY_URL
 ARG VITE_WALLETCONNECT_PROJECT_ID
 ARG VITE_RPC_URL
 ARG VITE_LIVE_PLAY_URL
@@ -25,11 +27,14 @@ ARG VITE_PLAUSIBLE_HOST
 ARG VITE_PLAUSIBLE_DOMAIN
 ARG VITE_RETURN_API_URL
 ARG VITE_APP_ENV
+ARG SOURCE_COMMIT
 ARG VITE_RELEASE_SHA
 ARG VITE_ANALYTICS_SOURCE
 ARG VITE_ENABLE_INTERNAL_TOOLS=false
 
-RUN npm run build
+# Coolify supplies SOURCE_COMMIT for Git-backed builds. An explicit
+# VITE_RELEASE_SHA still wins for local and CI builds.
+RUN VITE_RELEASE_SHA="${VITE_RELEASE_SHA:-${SOURCE_COMMIT}}" npm run build
 
 # -- Serve stage --
 FROM nginxinc/nginx-unprivileged:1.31.5-alpine3.24@sha256:aa8c9087d36d93e9d650c5365f883b421e8214aedbad24ade52b844c583358f1

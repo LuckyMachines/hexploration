@@ -1,9 +1,11 @@
 import Modal from '../shared/Modal';
+import { formatEstimatedGas } from '../../lib/transactionExperience';
 
 export default function SubmitConfirmation({
   submission,
   routeStatus,
   traitPreview,
+  simulation,
   isOpen,
   onCancel,
   onConfirm,
@@ -86,6 +88,47 @@ export default function SubmitConfirmation({
           </div>
         )}
 
+        {simulation && (
+          <div
+            className={`rounded border px-3 py-3 ${
+              simulation.status === 'ready'
+                ? 'border-oxide-green/40 bg-oxide-green/10'
+                : simulation.status === 'blocked'
+                  ? 'border-signal-red/40 bg-signal-red/10'
+                  : 'border-blueprint/35 bg-blueprint/5'
+            }`}
+            role="status"
+            aria-live="polite"
+            data-testid="chain-preflight"
+          >
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <p className="font-mono text-[10px] uppercase tracking-[0.26em] text-exp-text-dim">
+                Authoritative chain preflight
+              </p>
+              <p className={`font-mono text-[10px] uppercase tracking-[0.18em] ${
+                simulation.status === 'ready'
+                  ? 'text-oxide-green'
+                  : simulation.status === 'blocked'
+                    ? 'text-signal-red'
+                    : 'text-blueprint'
+              }`}>
+                {simulation.status === 'ready'
+                  ? 'Will execute'
+                  : simulation.status === 'blocked'
+                    ? 'Blocked safely'
+                    : 'Checking current state'}
+              </p>
+            </div>
+            <p className="mt-2 font-mono text-xs leading-relaxed text-exp-text">
+              {simulation.status === 'ready'
+                ? `The contract accepted this exact action. Estimated execution: ${formatEstimatedGas(simulation.estimatedGas)}.`
+                : simulation.status === 'blocked'
+                  ? simulation.error?.message || 'The contract rejected this action before any wallet prompt.'
+                  : 'Simulating this exact action against the latest chain state. No signature is being requested yet.'}
+            </p>
+          </div>
+        )}
+
         <div className="grid gap-2 sm:grid-cols-2">
           <div className="rounded border border-exp-border bg-exp-dark/35 px-3 py-2">
             <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-exp-text-dim">
@@ -116,9 +159,16 @@ export default function SubmitConfirmation({
           <button
             type="button"
             onClick={onConfirm}
-            className="rounded border border-compass/45 bg-compass/10 px-4 py-2 font-mono text-xs uppercase tracking-[0.2em] text-compass-bright hover:bg-compass/15"
+            disabled={Boolean(simulation && simulation.status !== 'ready')}
+            className="rounded border border-compass/45 bg-compass/10 px-4 py-2 font-mono text-xs uppercase tracking-[0.2em] text-compass-bright hover:bg-compass/15 disabled:cursor-not-allowed disabled:opacity-45"
           >
-            Send Transaction
+            {!simulation
+              ? 'Send Transaction'
+              : simulation.status === 'ready'
+                ? 'Sign Action'
+                : simulation.status === 'blocked'
+                  ? 'Action Blocked'
+                  : 'Checking Chain...'}
           </button>
         </div>
       </div>

@@ -638,6 +638,14 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.001ms !important;
+  }
+
   .alive-explorer,
   .alive-explorer-ready,
   .alive-explorer-resolving,

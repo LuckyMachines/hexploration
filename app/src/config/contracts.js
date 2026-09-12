@@ -8,6 +8,7 @@ import GameSetupABI from '../../../abi/GameSetup.json';
 
 export const BOARD_ADDRESS = import.meta.env.VITE_BOARD_ADDRESS;
 export const CONTROLLER_ADDRESS = import.meta.env.VITE_CONTROLLER_ADDRESS;
+export const SESSION_FORWARDER_ADDRESS = import.meta.env.VITE_SESSION_FORWARDER_ADDRESS;
 export const GAME_SUMMARY_ADDRESS = import.meta.env.VITE_GAME_SUMMARY_ADDRESS;
 export const PLAYER_SUMMARY_ADDRESS = import.meta.env.VITE_PLAYER_SUMMARY_ADDRESS;
 export const GAME_EVENTS_ADDRESS = import.meta.env.VITE_GAME_EVENTS_ADDRESS;

@@ -19,6 +19,7 @@ contract XenovoyaController is GameController, GameWallets, AutomationCompatible
     // we are adding the ability of a Controller Admin or Keeper to
     // execute the game aspects not directly controlled by players
     bytes32 public constant VERIFIED_CONTROLLER_ROLE = keccak256("VERIFIED_CONTROLLER_ROLE");
+    bytes32 public constant ACTION_FORWARDER_ROLE = keccak256("ACTION_FORWARDER_ROLE");
 
     XenovoyaStateUpdate GAME_STATE;
     GameEvents GAME_EVENTS;
@@ -61,6 +62,10 @@ contract XenovoyaController is GameController, GameWallets, AutomationCompatible
         grantRole(VERIFIED_CONTROLLER_ROLE, vcAddress);
     }
 
+    function addActionForwarder(address forwarderAddress) public onlyRole(DEFAULT_ADMIN_ROLE) {
+        grantRole(ACTION_FORWARDER_ROLE, forwarderAddress);
+    }
+
     function setTimeLimit(uint256 timeInSeconds) public onlyRole(DEFAULT_ADMIN_ROLE) {
         timeLimit = timeInSeconds;
     }
@@ -79,12 +84,13 @@ contract XenovoyaController is GameController, GameWallets, AutomationCompatible
     function registerForGame(uint256 gameID, address boardAddress) public {
         XenovoyaBoard board = XenovoyaBoard(boardAddress);
         PlayerRegistry pr = PlayerRegistry(board.prAddress());
-        board.registerPlayer(tx.origin, gameID);
-        uint256 playerID = pr.playerID(gameID, tx.origin);
+        address player = _msgSender();
+        board.registerPlayer(player, gameID);
+        uint256 playerID = pr.playerID(gameID, player);
         // TODO: set to official values
         CharacterCard(board.characterCard()).setStats([4, 4, 4], gameID, playerID);
         // emit player joined
-        GAME_EVENTS.emitGameRegistration(gameID, tx.origin, playerID);
+        GAME_EVENTS.emitGameRegistration(gameID, player, playerID);
 
         // If registry is full we can kick off game start...
         if (pr.totalRegistrations(gameID) == pr.registrationLimit(gameID)) {
@@ -101,11 +107,41 @@ contract XenovoyaController is GameController, GameWallets, AutomationCompatible
         uint256 gameID,
         address boardAddress
     ) public {
+        XenovoyaBoard board = XenovoyaBoard(boardAddress);
+        PlayerRegistry pr = PlayerRegistry(board.prAddress());
+        address player = pr.playerAddress(gameID, playerID);
+        require(player == _msgSender(), "PlayerID is not sender");
+        _submitActionFor(player, playerID, actionIndex, options, leftHand, rightHand, gameID, boardAddress);
+    }
+
+    function submitActionFor(
+        address player,
+        uint256 playerID,
+        uint8 actionIndex,
+        string[] memory options,
+        string memory leftHand,
+        string memory rightHand,
+        uint256 gameID,
+        address boardAddress
+    ) external onlyRole(ACTION_FORWARDER_ROLE) {
+        _submitActionFor(player, playerID, actionIndex, options, leftHand, rightHand, gameID, boardAddress);
+    }
+
+    function _submitActionFor(
+        address player,
+        uint256 playerID,
+        uint8 actionIndex,
+        string[] memory options,
+        string memory leftHand,
+        string memory rightHand,
+        uint256 gameID,
+        address boardAddress
+    ) internal {
         _checkAction(actionIndex, options, leftHand, rightHand, gameID, boardAddress, playerID);
         XenovoyaBoard board = XenovoyaBoard(boardAddress);
         XenovoyaQueue q = XenovoyaQueue(payable(board.gameplayQueue()));
         PlayerRegistry pr = PlayerRegistry(board.prAddress());
-        require(pr.playerAddress(gameID, playerID) == tx.origin, "PlayerID is not sender");
+        require(pr.playerAddress(gameID, playerID) == player, "PlayerID is not authorized");
         uint256 qID = q.queueID(gameID);
         if (qID == 0) {
             uint256 totalRegistrations = pr.totalRegistrations(gameID);

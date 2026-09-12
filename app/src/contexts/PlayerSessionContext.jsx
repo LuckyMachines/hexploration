@@ -10,11 +10,12 @@ import {
   subscribeSessionChanges,
 } from '../lib/sessionPersistence';
 import { initialSessionState, normalizeSessionState, sessionReducer } from '../lib/sessionState';
+import { isTransactionActive, TRANSACTION_PHASES } from '../lib/transactionExperience';
 
 const PlayerSessionContext = createContext(null);
 
 export function PlayerSessionProvider({ children }) {
-  const { address, chainId } = useWallet();
+  const { address } = useWallet();
   const [state, dispatch] = useReducer(sessionReducer, initialSessionState);
   const skipNextSave = useRef(false);
 
@@ -28,6 +29,7 @@ export function PlayerSessionProvider({ children }) {
       online: typeof navigator === 'undefined' ? true : navigator.onLine,
       visible: typeof document === 'undefined' ? true : !document.hidden,
     });
+    dispatch({ type: 'PENDING_TRANSACTIONS', transactions: loadPendingTransactions() });
   }, [address]);
 
   useEffect(() => {
@@ -40,6 +42,9 @@ export function PlayerSessionProvider({ children }) {
     document.addEventListener('visibilitychange', visibility);
     const unsubscribe = subscribeSessionChanges((event) => {
       if (event.data?.type === 'snapshot' && event.data.key === 'player-session') restore(true);
+      if (event.data?.type === 'transactions') {
+        dispatch({ type: 'PENDING_TRANSACTIONS', transactions: loadPendingTransactions() });
+      }
     });
     return () => {
       window.removeEventListener('online', online);
@@ -64,25 +69,44 @@ export function PlayerSessionProvider({ children }) {
   }, [address]);
 
   useEffect(() => {
-    if (!address || !chainId || !state.online) return;
+    if (!state.online || !state.visible) return;
     let cancelled = false;
     const recover = async () => {
-      const client = getPublicClient(chainId);
       const pending = loadPendingTransactions();
-      for (const transaction of pending.filter((item) => item.chainId === chainId && item.account === address.toLowerCase() && item.status === 'confirming')) {
+      for (const transaction of pending.filter((item) => (
+        isTransactionActive(item.status)
+        && item.hash
+      ))) {
         try {
+          const client = getPublicClient(transaction.chainId);
           const receipt = await client.getTransactionReceipt({ hash: transaction.hash });
-          settlePendingTransaction(transaction.hash, receipt.status === 'success' ? 'confirmed' : 'reverted');
-        } catch { /* still pending or temporarily unreachable */ }
+          const latestBlock = await client.getBlockNumber();
+          const confirmations = latestBlock >= receipt.blockNumber
+            ? latestBlock - receipt.blockNumber + 1n
+            : 0n;
+          if (confirmations < 2n) continue;
+          settlePendingTransaction(
+            transaction.hash,
+            receipt.status === 'success' ? TRANSACTION_PHASES.CONFIRMED : TRANSACTION_PHASES.REVERTED,
+            undefined,
+            { blockNumber: receipt.blockNumber?.toString?.(), confirmations: Number(confirmations), recovered: true },
+          );
+        } catch {
+          const submittedAt = Date.parse(transaction.submittedAt || transaction.recordedAt || 0);
+          if (submittedAt && Date.now() - submittedAt > 120_000 && transaction.status !== TRANSACTION_PHASES.UNRESOLVED) {
+            settlePendingTransaction(transaction.hash, TRANSACTION_PHASES.UNRESOLVED, undefined, { recovered: true });
+          }
+        }
       }
       if (!cancelled) {
         dispatch({ type: 'PENDING_TRANSACTIONS', transactions: loadPendingTransactions() });
-        dispatch({ type: 'RESUME' });
+        if (state.phase === 'reconnecting') dispatch({ type: 'RESUME', preservePause: true });
       }
     };
     recover();
-    return () => { cancelled = true; };
-  }, [address, chainId, state.online]);
+    const interval = window.setInterval(recover, 15_000);
+    return () => { cancelled = true; window.clearInterval(interval); };
+  }, [state.online, state.phase, state.visible]);
 
   const actions = useMemo(() => ({
     beginGame: (gameId) => dispatch({ type: 'BEGIN_GAME', gameId, online: state.online }),
@@ -93,7 +117,10 @@ export function PlayerSessionProvider({ children }) {
     resume: () => dispatch({ type: 'RESUME' }),
     setSaveStatus: (status) => dispatch({ type: 'SAVE_STATUS', status }),
     recordPendingTransaction: (transaction) => dispatch({ type: 'PENDING_TRANSACTIONS', transactions: savePendingTransaction(transaction) }),
-    settleTransaction: (hash, status) => dispatch({ type: 'PENDING_TRANSACTIONS', transactions: settlePendingTransaction(hash, status) }),
+    settleTransaction: (hash, status, details = {}) => dispatch({
+      type: 'PENDING_TRANSACTIONS',
+      transactions: settlePendingTransaction(hash, status, undefined, details),
+    }),
   }), [state.online]);
 
   const value = useMemo(() => ({ state, ...actions }), [actions, state]);

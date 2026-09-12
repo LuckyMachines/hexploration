@@ -116,8 +116,14 @@ async function configureDevice(context, cloud, analyticsEvents) {
   }));
 }
 
+async function openReturnLoop(page) {
+  const details = page.getByTestId('return-loop-details');
+  if (!(await details.evaluate((element) => element.open))) await details.locator('summary').click();
+  return page.getByTestId('return-loop-panel');
+}
+
 async function chooseRoleAndCreateThread(page) {
-  const panel = page.getByTestId('return-loop-panel');
+  const panel = await openReturnLoop(page);
   await panel.getByRole('button', { name: /Scout/i }).click();
   await panel.getByRole('button', { name: /Create expedition thread/i }).click();
   await expect(panel.getByText(/Sector 0 signal/i)).toBeVisible();
@@ -144,7 +150,7 @@ test('two devices reconcile, survive conflict and offline work, recover expiry, 
 
     const pageB = await deviceB.newPage();
     await pageB.goto('/', { waitUntil: 'domcontentloaded' });
-    const panelB = pageB.getByTestId('return-loop-panel');
+    const panelB = await openReturnLoop(pageB);
     await panelB.getByRole('button', { name: /Scout/i }).click();
     await panelB.getByRole('button', { name: /Save across devices/i }).click();
     await expect(panelB.getByText(/Sector 0 signal/i)).toBeVisible();
@@ -166,6 +172,7 @@ test('two devices reconcile, survive conflict and offline work, recover expiry, 
       localStorage.setItem(key, JSON.stringify(local));
     });
     await pageA.reload({ waitUntil: 'domcontentloaded' });
+    await openReturnLoop(pageA);
     await expect(pageA.getByTestId('return-loop-panel')).toBeVisible();
     cloud.setUnavailable(true);
     await deviceA.setOffline(true);

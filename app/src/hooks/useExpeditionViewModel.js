@@ -29,7 +29,7 @@ export function useExpeditionViewModel(gameId) {
   const { stats, location, action } = usePlayerSummary(gameId, playerID);
   const { movement } = usePlayerMovement(gameId, playerID);
   const { active: activeInventory } = usePlayerInventory(gameId, playerID);
-  const { events, loadFullHistory, isLoadingFullHistory } = useGameEvents(gameId);
+  const { events, loadFullHistory, isLoadingFullHistory, eventSyncStatus, confirmedBlock } = useGameEvents(gameId);
   const queueTelemetry = useQueueTelemetry(gameId);
   const { isGameOver } = useGameOver(gameId);
 
@@ -148,6 +148,8 @@ export function useExpeditionViewModel(gameId) {
     events,
     loadFullHistory,
     isLoadingFullHistory,
+    eventSyncStatus,
+    confirmedBlock,
     queueTelemetry,
     isGameOver,
     activeTab,

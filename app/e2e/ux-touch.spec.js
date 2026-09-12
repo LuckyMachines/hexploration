@@ -18,11 +18,17 @@ async function expectTouchTargets(locator) {
   expect(small, JSON.stringify(small, null, 2)).toHaveLength(0);
 }
 
+async function openReturnLoop(page) {
+  const details = page.getByTestId('return-loop-details');
+  if (!(await details.evaluate((element) => element.open))) await details.locator('summary').tap();
+  return page.getByTestId('return-loop-panel');
+}
+
 test('touch player completes the starter decision without hover or overflow', async ({ page, isMobile }) => {
   expect(isMobile).toBe(true);
   await clearReturnState(page);
   await page.goto('/', { waitUntil: 'networkidle' });
-  const panel = page.getByTestId('return-loop-panel');
+  const panel = await openReturnLoop(page);
   await panel.scrollIntoViewIfNeeded();
   await expectTouchTargets(panel);
 
@@ -40,6 +46,7 @@ test('touch player completes the starter decision without hover or overflow', as
 test('touch dialog and destructive confirmation remain deliberate', async ({ page }) => {
   await clearReturnState(page);
   await page.goto('/', { waitUntil: 'networkidle' });
+  await page.getByTestId('player-settings-toggle').tap();
   const help = page.getByRole('button', { name: 'Open Field Manual' });
   await help.tap();
   const close = page.getByRole('dialog', { name: 'Field Manual' }).getByRole('button', { name: 'Close' });
@@ -48,7 +55,7 @@ test('touch dialog and destructive confirmation remain deliberate', async ({ pag
   expect(closeBox.height).toBeGreaterThanOrEqual(44);
   await close.tap();
 
-  const panel = page.getByTestId('return-loop-panel');
+  const panel = await openReturnLoop(page);
   await panel.scrollIntoViewIfNeeded();
   await panel.getByRole('button', { name: /Scout/ }).tap();
   await panel.getByRole('button', { name: 'Create expedition thread' }).tap();

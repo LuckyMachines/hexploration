@@ -30,3 +30,9 @@ export const RPC_URLS = {
 export function getChainById(chainId) {
   return SUPPORTED_CHAINS.find((c) => c.id === chainId);
 }
+
+export function resolveReadChainId({ isConnected = false, walletChainId, requestedChainId, fallbackChainId = sepolia.id } = {}) {
+  if (isConnected && getChainById(walletChainId)) return Number(walletChainId);
+  if (getChainById(Number(requestedChainId))) return Number(requestedChainId);
+  return getChainById(fallbackChainId)?.id ?? SUPPORTED_CHAINS[0].id;
+}

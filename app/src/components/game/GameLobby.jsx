@@ -24,6 +24,7 @@ export default function GameLobby({ gameId }) {
     isConfirming,
     isSuccess,
     error,
+    lifecycle,
   } = useGameActions();
 
   const isRegisteredByRoster = (players || []).some(
@@ -138,6 +139,7 @@ export default function GameLobby({ gameId }) {
           isConfirming={isConfirming}
           isSuccess={isSuccess}
           error={error}
+          lifecycle={lifecycle}
         />
       </div>
     </div>

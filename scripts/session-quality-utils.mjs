@@ -2,6 +2,9 @@ export const REQUIRED_SCENARIOS = [
   'cold-boot', 'warm-cache', 'offline-boot', 'refresh-during-transaction', 'replacement-transaction',
   'reverted-transaction', 'stale-cloud-write', 'wallet-switch', 'background-and-return', 'multi-tab-write',
   'party-create-and-restore', 'invite-accept', 'expired-or-revoked-invite', 'friend-block-and-privacy', 'rpc-failover',
+  'preflight-rejection', 'reorg-reconciliation', 'delegated-action-expiry', 'sponsored-action-replay', 'portable-client-resume',
+  'sponsor-relay-budget-exhaustion', 'sponsor-relay-emergency-pause', 'sponsor-relay-low-balance',
+  'browser-sponsored-grant-use-revoke',
 ];
 
 export function gradeSessionChecks(checks) {

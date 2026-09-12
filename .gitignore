@@ -10,6 +10,9 @@ node_modules/
 app/coverage/
 app/dist/
 app/test-results/
+data/sponsor-relay-state.json
+data/sponsor-relay-state.json.*.tmp
+data/sponsor-relay-local-*.json*
 app/public/fun/
 app/public/growth/
 app/public/bridge/
@@ -41,3 +44,4 @@ app/public/improvement/
 app/public/ui-quality/
 app/public/ux/
 app/public/audio/*.zip
+__pycache__/

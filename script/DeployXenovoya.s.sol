@@ -25,6 +25,7 @@ import "../contracts/XenovoyaDisputeResolver.sol";
 import "../contracts/XenovoyaStateUpdate.sol";
 import "../contracts/XenovoyaQueue.sol";
 import "../contracts/XenovoyaController.sol";
+import "../contracts/XenovoyaSessionForwarder.sol";
 import "../contracts/GameSummary.sol";
 import "../contracts/PlayerSummary.sol";
 import "../contracts/PlayZoneSummary.sol";
@@ -63,6 +64,7 @@ contract DeployXenovoya is Script {
     address public s_gameplay;
     address payable public s_gameSetup;
     address public s_controller;
+    address public s_sessionForwarder;
     address payable public s_queue;
     address public s_playerSummary;
     address public s_disputeResolver;
@@ -145,6 +147,7 @@ contract DeployXenovoya is Script {
         // Mock VRF: subscriptionId=0, keyHash=0 → useMockVRF=true
         s_gameSetup = payable(address(new GameSetup(0, deployer, bytes32(0))));
         s_controller = address(new XenovoyaController(deployer));
+        s_sessionForwarder = address(new XenovoyaSessionForwarder(s_controller));
     }
 
     // ── Phase 5: Queue (depends on gameplay) ────────────────────────
@@ -212,6 +215,7 @@ contract DeployXenovoya is Script {
         XenovoyaController(s_controller).setGameStateUpdate(s_stateUpdate);
         XenovoyaController(s_controller).setGameSetup(s_gameSetup);
         XenovoyaController(s_controller).addVerifiedController(deployer);
+        XenovoyaController(s_controller).addActionForwarder(s_sessionForwarder);
 
         // Queue
         XenovoyaQueue(s_queue).addVerifiedController(s_controller);
@@ -380,6 +384,7 @@ contract DeployXenovoya is Script {
         console.log("STRING_TO_UINT:          ", s_stringToUint);
         console.log("XENOVOYA_BOARD:      ", s_board);
         console.log("XENOVOYA_CONTROLLER: ", s_controller);
+        console.log("SESSION_FORWARDER:   ", s_sessionForwarder);
         console.log("GAME_RULES:              ", s_rules);
         console.log("PLAY_ZONE:               ", s_zone);
         console.log("PLAYER_REGISTRY:         ", s_playerRegistry);

@@ -3,7 +3,7 @@ import { getPublicClient } from '../config/clients';
 import { useWallet } from '../contexts/WalletContext';
 
 export function useReadContract({ address, abi, functionName, args, query = {} }) {
-  const { chainId } = useWallet();
+  const { readChainId: chainId } = useWallet();
   const { enabled = true, refetchInterval, ...restQuery } = query;
 
   const result = useQuery({

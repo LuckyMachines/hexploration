@@ -24,6 +24,7 @@ const ENUM_PROPERTIES = Object.freeze({
   share_type: new Set(['crew_invite', 'report_link', 'relic_text', 'relic_image', 'relic_download', 'relic_native']),
   return_interval: new Set(['same_session', 'same_day', 'd1_d3', 'd3_d7', 'd7_plus']),
   persona: new Set(['first-player-v1']),
+  mode: new Set(['solo', 'observe', 'join', 'resume']),
   visibility: new Set(['public', 'friends', 'private']),
   surface: new Set(['home', 'lobby', 'starter', 'board', 'action', 'return-loop', 'help', 'global']),
   severity: new Set(['low', 'medium', 'high', 'critical']),
@@ -59,6 +60,8 @@ export const JOURNEY_EVENTS = Object.freeze({
   party_invite_opened: ['party_size'],
   party_joined: ['party_size'],
   party_ready: ['party_size'],
+  mode_selected: ['mode', 'surface'],
+  wallet_requested: ['surface'],
 });
 
 let ready = false;

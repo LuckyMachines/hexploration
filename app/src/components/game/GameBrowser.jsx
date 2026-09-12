@@ -28,6 +28,7 @@ export default function GameBrowser() {
     isConfirming,
     isSuccess,
     error: txError,
+    lifecycle,
   } = useGameActions();
 
   const [playerCount, setPlayerCount] = useState(2);
@@ -48,7 +49,7 @@ export default function GameBrowser() {
   }, [isSuccess, refetch]);
 
   return (
-    <div className="border border-exp-border rounded bg-exp-surface">
+    <div id="available-expeditions" className="scroll-mt-24 border border-exp-border rounded bg-exp-surface">
       {/* Header bar */}
       <div className="border-b border-exp-border px-4 py-4 sm:px-6 flex flex-wrap items-center justify-between gap-3">
         <h2 className="font-mono text-xs tracking-[0.3em] text-exp-text-dim uppercase">
@@ -98,6 +99,7 @@ export default function GameBrowser() {
             isConfirming={isConfirming}
             isSuccess={isSuccess}
             error={txError}
+            lifecycle={lifecycle}
           />
         </div>
       )}

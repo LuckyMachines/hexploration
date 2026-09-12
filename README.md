@@ -302,7 +302,7 @@ node scripts/xenovoya-worker.mjs
 
 ## Local Development
 
-Run the entire stack locally with a single command -- Anvil chain, deployed contracts, populated card decks, a seeded game, the automation worker, and the Vite frontend:
+Run the entire stack locally with a single command -- Anvil chain, deployed contracts, populated card decks, a seeded game, the gas sponsor relay, the automation worker, and the Vite frontend:
 
 ```bash
 npm run local
@@ -317,8 +317,9 @@ This takes about 60 seconds to boot. When you see the `Local Stack Running` bann
 3. Populates all 5 card decks from `onchain-data.json`
 4. Seeds an open 2-player game so you can join immediately
 5. Writes `app/.env.local` with the deployed addresses
-6. Starts the automation worker (2s poll interval)
-7. Starts the Vite dev server on port 5502
+6. Starts the local sponsor relay on port 9957 with Anvil account 9
+7. Starts the automation worker (2s poll interval)
+8. Starts the Vite dev server on port 5502
 
 ### MetaMask setup
 
@@ -358,7 +359,37 @@ Press `Ctrl+C` to cleanly shut down Anvil, the worker, and the dev server.
 - `app/.env.local` is gitignored (covered by the `.env.*` pattern) and is overwritten on each run
 - The existing `npm run worker` and `npm run dev` commands still work unchanged for Sepolia
 
+### Sponsored turns
+
+The optional sponsor relay lets a player approve one board-and-game-scoped session, then play later turns without repeated wallet prompts. The browser signs short-lived EIP-712 actions; a dedicated server wallet pays gas only after on-chain authorization, exact simulation, replay, and spend-budget checks pass.
+
+```bash
+# Validate the focused relay security and service suite
+npm run relay:test
+
+# Configure server-only secrets from the example, then verify the chain wiring
+cp sponsor-relay.env.example .env.sponsor-relay
+DOTENV_CONFIG_PATH=.env.sponsor-relay npm run relay:doctor
+
+# Start one persistent relay instance
+DOTENV_CONFIG_PATH=.env.sponsor-relay npm run relay:start
+```
+
+Deploy the relay as a separate Coolify application on Hetzner using `Dockerfile.sponsor-relay`. Keep `SPONSOR_RELAYER_PRIVATE_KEY` server-only, use a dedicated low-balance Sepolia wallet, mount persistent storage at `/data`, run one replica, and read `docs/onchain-player-experience.md` before activation.
+
 ## Deployment
+
+### Player application
+
+The production deployment target is Coolify on Hetzner. Once the application is registered, Coolify watches `LuckyMachines/hexploration` branch `main`, builds the root `Dockerfile`, health-checks port `8080`, and serves `https://play.xenovoya.com`. Normal application deployment is a Git push:
+
+```bash
+git push origin main
+```
+
+Coolify owns the build and rollout directly from the Git source. Build-time configuration and resource settings are documented in [`docs/coolify-deployment.md`](docs/coolify-deployment.md).
+
+The on-chain contract deployment below is a separate, explicit operation and is never triggered by an application push.
 
 ### Prerequisites
 

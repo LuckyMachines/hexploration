@@ -7,7 +7,7 @@ const qualityTest = enabled ? test : test.skip;
 qualityTest('public promise reflows without serious accessibility defects', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce', colorScheme: 'dark' });
   await page.goto('/', { waitUntil: 'networkidle' });
-  await expect(page.locator('h1')).toContainText('Chart the strange');
+  await expect(page.locator('h1')).toContainText('Choose your expedition');
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
   expect(overflow).toBeLessThanOrEqual(1);
   const axe = await new AxeBuilder({ page }).include('#main-content').analyze();
@@ -23,4 +23,3 @@ qualityTest('board review keeps its hierarchy and renderer contract', async ({ p
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
   expect(overflow).toBeLessThanOrEqual(1);
 });
-

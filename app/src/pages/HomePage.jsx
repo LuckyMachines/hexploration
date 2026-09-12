@@ -1,285 +1,190 @@
-import { lazy, Suspense, useEffect, useRef, useState } from 'react';
+import { lazy, Suspense, useState } from 'react';
 import { Link } from 'react-router-dom';
 import SurveyTabletFrame from '../components/layout/SurveyTabletFrame';
 import { useWallet } from '../contexts/WalletContext';
+import { usePlayerSession } from '../contexts/PlayerSessionContext';
+import { trackJourneyEvent } from '../lib/analytics';
 
 const LiveClientStack = lazy(() => import('../components/game/LiveClientStack'));
 const ReturnLoopPanel = lazy(() => import('../components/expedition/ReturnLoopPanel'));
 
-const actionLoop = [
-  { verb: 'Launch', detail: 'Assemble a crew and enter a sector nobody has mapped.', tone: 'blueprint' },
-  { verb: 'Survey', detail: 'Lift shared fog and turn each discovery into a new decision.', tone: 'compass' },
-  { verb: 'Coordinate', detail: 'Balance relics, hazards, routes, and crew pressure together.', tone: 'oxide' },
-  { verb: 'Depart', detail: 'Get home before one more discovery becomes the cost of the run.', tone: 'signal' },
-];
-
-const proofMetrics = [
-  ['Crew', 'Together'],
-  ['Map', 'Shared'],
-  ['Network', 'Sepolia'],
-  ['Status', 'Open alpha'],
-];
-
-const firstTurnSteps = [
-  { label: '1', title: 'Reveal', detail: 'Step into fog and add one new fact to the shared map.' },
-  { label: '2', title: 'Read', detail: 'See the route, reward, danger, and distance home.' },
-  { label: '3', title: 'Commit', detail: 'Lock the choice that best protects the crew.' },
-  { label: '4', title: 'Depart', detail: 'Leave with the discovery before pressure becomes loss.' },
-];
-
 const faq = [
   {
-    question: 'Can I explore before connecting?',
-    answer: 'Yes. Enter the wallet-free 3D expedition or observe a live board. A wallet is requested only when you choose to join a crew or submit a shared action.',
+    question: 'Can I play without a wallet?',
+    answer: 'Yes. Play a complete solo 3D expedition without connecting. A wallet is only requested when you choose a shared action.',
   },
   {
     question: 'What does the wallet do?',
-    answer: 'The live alpha uses wallet signatures to create or join a crew and submit actions to the shared Sepolia testnet expedition.',
+    answer: 'It signs crew joins and expedition actions on the Sepolia test network. Browsing and observing remain public.',
   },
   {
-    question: 'What should I do first?',
-    answer: 'Connect, enter an open expedition or create one, then reveal useful ground while preserving a route back to extraction.',
+    question: 'Where are the rules?',
+    answer: 'Open the field manual from Settings, or begin solo and learn each action in context.',
   },
 ];
-
-const HERO_IMAGE = '/images/site-refresh/hero-bg.webp';
-
-function toneClasses(tone) {
-  return {
-    blueprint: 'border-blueprint/35 bg-blueprint/10 text-blueprint',
-    compass: 'border-compass/35 bg-compass/10 text-compass-bright',
-    oxide: 'border-oxide-green/35 bg-oxide-green/10 text-oxide-green',
-    signal: 'border-signal-red/35 bg-signal-red/10 text-signal-red',
-  }[tone] || 'border-exp-border bg-exp-dark/35 text-exp-text-dim';
-}
 
 function HeroBoardScene() {
   return (
     <div aria-hidden className="absolute inset-0 overflow-hidden">
-      <img src={HERO_IMAGE} alt="" width="2400" height="1000" fetchPriority="high" className="h-full w-full object-cover opacity-95" />
-      <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(13,15,10,0.92),rgba(13,15,10,0.58)_48%,rgba(13,15,10,0.12)_84%)]" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_32%_44%,rgba(76,145,219,0.14),transparent_36%)]" />
-      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(13,15,10,0.04),rgba(13,15,10,0.9))]" />
+      <img src="/images/site-refresh/hero-bg.webp" alt="" width="2400" height="1000" fetchPriority="high" className="h-full w-full object-cover opacity-45" />
+      <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(13,15,10,0.98),rgba(13,15,10,0.86)_58%,rgba(13,15,10,0.55))]" />
+      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(13,15,10,0.18),rgba(13,15,10,0.98))]" />
     </div>
-  );
-}
-
-function SectionHeader({ eyebrow, title, body }) {
-  return (
-    <div className="max-w-3xl">
-      <p className="font-mono text-xs uppercase tracking-[0.24em] text-compass">{eyebrow}</p>
-      <h2 className="mt-2 font-display text-3xl uppercase tracking-[0.1em] text-exp-text sm:text-4xl">{title}</h2>
-      {body && <p className="mt-3 font-mono text-sm leading-relaxed text-exp-text-dim">{body}</p>}
-    </div>
-  );
-}
-
-function MarketingCard({ children, className = '' }) {
-  return (
-    <article className={`rounded border border-exp-border bg-exp-panel/80 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.035)] ${className}`}>
-      {children}
-    </article>
   );
 }
 
 function LiveClientLoading() {
   return (
-    <div className="grid min-h-[24rem] place-items-center rounded border border-exp-border bg-[radial-gradient(circle_at_50%_42%,rgba(76,145,219,0.12),transparent_38%),linear-gradient(180deg,rgba(26,32,22,0.9),rgba(13,15,10,0.72))] px-6 py-10 text-center" role="status">
-      <div className="max-w-lg">
-        <div className="relative mx-auto grid h-20 w-20 place-items-center rounded-full border border-compass/45 bg-exp-dark/70 shadow-[0_0_32px_rgba(76,145,219,0.12)]" aria-hidden="true">
-          <div className="expedition-loading-orbit absolute inset-2 rounded-full border border-dashed border-blueprint/55" />
-          <div className="h-7 w-7 rotate-45 border border-compass bg-compass/10" />
-          <span className="absolute h-2 w-2 rounded-full bg-compass-bright shadow-[0_0_12px_rgba(232,200,96,0.65)]" />
-        </div>
-        <p className="mt-6 font-mono text-xs uppercase tracking-[0.24em] text-compass">Live instruments</p>
-        <h3 className="mt-2 font-display text-2xl uppercase tracking-[0.12em] text-exp-text">Opening the crew channel</h3>
-        <p className="mx-auto mt-3 max-w-md font-mono text-sm leading-relaxed text-exp-text-dim">
-          Loading network health, open surveys, and the controls for your first live decision.
-        </p>
-        <div className="mt-6 flex flex-wrap justify-center gap-2 font-mono text-[10px] uppercase tracking-[0.16em] text-exp-text-dim" aria-hidden="true">
-          {['Network', 'Wallet', 'Lobby'].map((label) => (
-            <span key={label} className="rounded-full border border-exp-border bg-exp-dark/55 px-3 py-2">{label}</span>
-          ))}
-        </div>
+    <div className="grid min-h-56 place-items-center rounded border border-exp-border bg-exp-dark/45 px-6 py-10 text-center" role="status">
+      <div>
+        <p className="font-mono text-xs uppercase tracking-[0.24em] text-compass">Scanning live expeditions</p>
+        <p className="mt-2 font-mono text-xs text-exp-text-dim">Loading the public registry and available routes.</p>
       </div>
     </div>
   );
 }
 
 function ReturnLoopLoading() {
-  return (
-    <div className="grid gap-3 lg:grid-cols-[minmax(0,1.25fr)_minmax(280px,0.75fr)]" role="status">
-      <article className="min-h-56 rounded border border-compass/25 bg-[linear-gradient(135deg,rgba(196,166,74,0.08),rgba(26,32,22,0.82))] p-5">
-        <p className="font-mono text-xs uppercase tracking-[0.22em] text-compass">Expedition memory</p>
-        <h3 className="mt-3 font-display text-2xl uppercase tracking-[0.1em] text-exp-text">Restoring your latest signal</h3>
-        <p className="mt-3 max-w-2xl font-mono text-sm leading-relaxed text-exp-text-dim">
-          Checking this device for your crew role, unresolved clue, and next best decision.
-        </p>
-        <div className="mt-7 flex items-center gap-3" aria-hidden="true">
-          {[0, 1, 2].map((step) => (
-            <span key={step} className="h-2.5 w-2.5 rounded-full border border-compass/55 bg-compass/15" />
-          ))}
-          <span className="h-px flex-1 bg-gradient-to-r from-compass/45 to-transparent" />
-        </div>
-      </article>
-      <article className="min-h-56 rounded border border-blueprint/25 bg-blueprint/5 p-5">
-        <p className="font-mono text-xs uppercase tracking-[0.22em] text-blueprint">What returns</p>
-        <ul className="mt-4 space-y-3 font-mono text-sm leading-relaxed text-exp-text-dim">
-          <li>Role and crew thread</li>
-          <li>Last consequence</li>
-          <li>The clue that still needs you</li>
-        </ul>
-      </article>
-    </div>
-  );
+  return <p className="p-5 font-mono text-xs text-exp-text-dim" role="status">Restoring expedition history...</p>;
 }
 
-function DeferredLiveClientStack({ forceReady }) {
-  const [isReady, setIsReady] = useState(false);
-  const loadingRef = useRef(null);
-
-  useEffect(() => {
-    if (forceReady) {
-      setIsReady(true);
-      return undefined;
-    }
-
-    const target = loadingRef.current;
-    if (!target || !('IntersectionObserver' in window)) {
-      setIsReady(true);
-      return undefined;
-    }
-
-    const observer = new IntersectionObserver(([entry]) => {
-      if (!entry.isIntersecting) return;
-      setIsReady(true);
-      observer.disconnect();
-    });
-    observer.observe(target);
-    return () => observer.disconnect();
-  }, [forceReady]);
-
-  return (
-    <div ref={loadingRef}>
-      {isReady ? (
-        <Suspense fallback={<LiveClientLoading />}>
-          <LiveClientStack />
-        </Suspense>
-      ) : <LiveClientLoading />}
-    </div>
+function ModeLink({ eyebrow, title, detail, to, href, tone = 'compass', onClick, analyticsMode }) {
+  const palette = tone === 'blueprint'
+    ? 'border-blueprint/45 bg-blueprint/10 hover:bg-blueprint/20'
+    : tone === 'oxide'
+      ? 'border-oxide-green/45 bg-oxide-green/10 hover:bg-oxide-green/20'
+      : 'border-compass/45 bg-compass/10 hover:bg-compass/20';
+  const content = (
+    <>
+      <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-exp-text-dim">{eyebrow}</span>
+      <span className="mt-1.5 block font-display text-xl uppercase tracking-[0.08em] text-exp-text sm:mt-2 sm:text-2xl">{title}</span>
+      <span className="mt-1.5 line-clamp-1 block font-mono text-[10px] leading-relaxed text-exp-text-dim sm:mt-2 sm:line-clamp-none sm:text-xs">{detail}</span>
+    </>
   );
+  const className = `min-h-0 rounded border p-3.5 text-left transition-colors sm:min-h-40 sm:p-5 ${palette}`;
+  const handleClick = (event) => {
+    trackJourneyEvent('mode_selected', { mode: analyticsMode, surface: 'home' }, { dedupeKey: analyticsMode });
+    onClick?.(event);
+  };
+
+  if (to) return <Link to={to} onClick={handleClick} className={className}>{content}</Link>;
+  return <a href={href} onClick={handleClick} className={className}>{content}</a>;
 }
 
-function HomeHero({ onEnterLive }) {
+function PlayOptions({ onOpenLobby, onOpenCrew }) {
+  const { state } = usePlayerSession();
+
   return (
-    <section className="relative isolate min-h-[min(640px,82svh)] overflow-hidden border-b border-exp-border">
+    <section id="play-options" aria-labelledby="play-options-title" className="relative isolate scroll-mt-20 overflow-hidden border-b border-exp-border">
       <HeroBoardScene />
-      <div className="relative mx-auto flex min-h-[min(640px,82svh)] max-w-7xl flex-col justify-center px-4 pb-20 pt-16 sm:px-6">
-        <div className="max-w-4xl">
-          <p className="font-mono text-[11px] uppercase tracking-[0.28em] text-compass-bright sm:text-xs">Voyage. Explore. Escape.</p>
-          <h1 className="mt-5 max-w-4xl font-display text-[42px] uppercase leading-[0.9] tracking-[0.04em] text-exp-text sm:text-7xl lg:text-[5.5rem]">
-            Chart the strange.
-            <span className="mt-1 block text-blueprint">Get everyone home.</span>
+      <div className="relative mx-auto max-w-7xl px-4 py-7 sm:px-6 sm:py-14">
+        <div className="max-w-3xl">
+          <p className="font-mono text-[11px] uppercase tracking-[0.28em] text-compass-bright">Expedition console / Sepolia</p>
+          <h1 id="play-options-title" className="mt-2 font-display text-3xl uppercase leading-none tracking-[0.06em] text-exp-text sm:mt-3 sm:text-6xl">
+            Choose your expedition.
           </h1>
-          <p className="mt-6 max-w-2xl font-display text-[18px] leading-relaxed tracking-[0.02em] text-exp-text sm:text-2xl">
-            A cooperative push-your-luck expedition across an alien hex grid. Share discoveries, weigh the danger, and get the crew home before the route closes.
-          </p>
-          <div className="mt-8 flex flex-wrap gap-3">
-            <a href="#live-expedition" onClick={onEnterLive} className="inline-flex min-h-[48px] items-center rounded border border-compass bg-compass px-5 py-3 font-display text-[14px] font-semibold uppercase tracking-[0.14em] text-exp-dark shadow-[0_0_28px_rgba(196,166,74,0.2)] transition hover:bg-compass-bright sm:min-h-12 sm:px-6 sm:text-base">
-              Enter live lobby
-            </a>
-            <Link to="/guest" className="inline-flex min-h-[48px] items-center rounded border border-blueprint/60 bg-blueprint/15 px-5 py-3 font-display text-[14px] font-semibold uppercase tracking-[0.14em] text-blueprint transition hover:bg-blueprint/25 sm:min-h-12 sm:px-6 sm:text-base">
-              Explore the 3D world
-            </Link>
-          </div>
-          <p className="mt-5 max-w-2xl font-mono text-sm leading-relaxed text-exp-text-dim">
-            Open alpha on Sepolia testnet. Connect only when you are ready to create or join a live expedition.
+          <p className="mt-3 max-w-2xl font-mono text-xs leading-relaxed text-exp-text-dim sm:mt-4 sm:text-base">
+            <span className="sm:hidden">Start solo, observe live, or join a crew.</span>
+            <span className="hidden sm:inline">You are in the playable client. Start solo, observe a live route, or connect when you are ready to join a crew.</span>
           </p>
         </div>
-      </div>
-      <div className="absolute bottom-0 left-0 right-0 h-14 border-t border-exp-border/50 bg-exp-dark/70 backdrop-blur-sm">
-        <div className="mx-auto flex h-full max-w-7xl items-center gap-5 overflow-x-auto px-4 sm:px-6" role="region" aria-label="Expedition highlights" tabIndex={0}>
-          {proofMetrics.map(([label, value]) => (
-            <div key={label} className="shrink-0 font-mono text-xs uppercase tracking-[0.14em] text-exp-text-dim">
-              <span className="text-compass-bright">{value}</span> {label}
-            </div>
-          ))}
+
+        <div className={`mt-6 grid gap-2.5 sm:mt-8 sm:gap-3 ${state.activeGameId ? 'sm:grid-cols-2 xl:grid-cols-4' : 'sm:grid-cols-3'}`}>
+          {state.activeGameId ? (
+            <ModeLink
+              eyebrow="Continue"
+              title={`Resume #${state.activeGameId}`}
+              detail="Return directly to your active expedition."
+              to={`/game/${state.activeGameId}`}
+              tone="oxide"
+              analyticsMode="resume"
+            />
+          ) : null}
+          <ModeLink
+            eyebrow="No wallet"
+            title="Play solo"
+            detail="Enter the complete 3D expedition immediately."
+            to="/guest"
+            tone="blueprint"
+            analyticsMode="solo"
+          />
+          <ModeLink
+            eyebrow="Public board"
+            title="Observe live"
+            detail="Inspect an open expedition before taking a seat."
+            href="#available-expeditions"
+            onClick={onOpenLobby}
+            analyticsMode="observe"
+          />
+          <ModeLink
+            eyebrow="Shared play"
+            title="Join or create"
+            detail="Connect only when you choose a crew action."
+            href="#crew-network"
+            onClick={onOpenCrew}
+            tone="oxide"
+            analyticsMode="join"
+          />
+        </div>
+
+        <div className="mt-4 flex flex-wrap gap-x-4 gap-y-1.5 font-mono text-[9px] uppercase tracking-[0.16em] text-exp-text-dim sm:mt-6 sm:gap-x-6 sm:gap-y-2 sm:text-[10px] sm:tracking-[0.18em]">
+          <span><span className="text-oxide-green">Online</span> network</span>
+          <span><span className="text-compass-bright">Open alpha</span> status</span>
+          <span><span className="text-blueprint">Wallet-free</span> solo</span>
         </div>
       </div>
     </section>
   );
 }
 
-function LiveLobby({ isConnected, loadClient }) {
+function LiveLobby({ isConnected, crewOpen, onCrewToggle }) {
   return (
-    <section id="live-expedition" className="scroll-mt-24 border-b border-exp-border bg-exp-surface/35">
-      <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14">
-        <div className="flex flex-wrap items-end justify-between gap-4">
-          <SectionHeader
-            eyebrow="Live expedition lobby"
-            title={isConnected ? 'Choose your crew and depart' : 'Browse the live world before connecting'}
-            body={isConnected
-              ? 'Join an open crew or launch a new survey. Every action below belongs to the playable client.'
-              : 'Open a live board in observer mode or launch the local 3D expedition. Connect only when you choose to reserve a seat or submit an action.'}
-          />
-          <span className="rounded border border-blueprint/40 bg-blueprint/10 px-3 py-2 font-mono text-xs uppercase tracking-[0.16em] text-blueprint">
-            Open alpha - Sepolia
-          </span>
+    <section id="live-expedition" aria-labelledby="live-expedition-title" className="scroll-mt-20 border-b border-exp-border bg-exp-surface/35">
+      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10">
+        <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
+          <div>
+            <p className="font-mono text-xs uppercase tracking-[0.24em] text-compass">Live expedition lobby</p>
+            <h2 id="live-expedition-title" className="mt-2 font-display text-3xl uppercase tracking-[0.1em] text-exp-text sm:text-4xl">Choose a live route</h2>
+          </div>
+          <p className="max-w-xl font-mono text-xs leading-relaxed text-exp-text-dim">
+            Observe freely. Connect only to join a crew or create an expedition.
+          </p>
         </div>
-        <div className="mt-7 grid gap-6 xl:grid-cols-[minmax(0,1fr)_320px]">
+
+        <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_280px]">
           <SurveyTabletFrame
-            title="Xenovoya"
-            subtitle="Chart, decide, depart, and remember the run"
-            status={isConnected ? 'CREW LINKED' : 'LOBBY READY'}
+            title="Expedition lobby"
+            subtitle="Observe, join, or create"
+            status={isConnected ? 'CREW LINKED' : 'PUBLIC ACCESS'}
             headingLevel={3}
           >
-            <DeferredLiveClientStack forceReady={loadClient} />
+            <Suspense fallback={<LiveClientLoading />}>
+              <LiveClientStack crewOpen={crewOpen} onCrewToggle={onCrewToggle} />
+            </Suspense>
           </SurveyTabletFrame>
 
           <aside className="space-y-3">
-            <MarketingCard className="border-compass/35 bg-compass/5">
-              <p className="font-mono text-xs uppercase tracking-[0.2em] text-compass">Before you connect</p>
-              <ul className="mt-3 space-y-3 font-mono text-sm leading-relaxed text-exp-text-dim">
-                <li>Live play uses the Sepolia test network.</li>
-                <li>Your wallet signs crew joins and expedition actions.</li>
-                <li>You can explore the production 3D world without connecting.</li>
-              </ul>
-              <Link to="/guest" className="mt-4 inline-flex min-h-11 items-center rounded border border-blueprint/45 bg-blueprint/10 px-3 py-2 font-mono text-xs uppercase tracking-[0.14em] text-blueprint">
-                Start a local 3D expedition
+            <div className="rounded border border-blueprint/35 bg-blueprint/5 p-4">
+              <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-blueprint">Wallet only when needed</p>
+              <p className="mt-3 font-mono text-xs leading-relaxed text-exp-text-dim">
+                Solo play and observation are open. Joining or creating a shared expedition asks for a wallet signature.
+              </p>
+              <Link to="/guest" className="mt-4 inline-flex min-h-11 w-full items-center justify-center rounded border border-blueprint/45 bg-blueprint/10 px-3 py-2 font-mono text-xs uppercase tracking-[0.14em] text-blueprint">
+                Play solo - no wallet
               </Link>
-            </MarketingCard>
-            {faq.map((item) => (
-              <details key={item.question} className="rounded border border-exp-border bg-exp-panel/80 p-4">
-                <summary className="min-h-11 cursor-pointer py-2 font-mono text-sm uppercase tracking-[0.12em] text-exp-text">{item.question}</summary>
-                <p className="mt-2 font-mono text-sm leading-relaxed text-exp-text-dim">{item.answer}</p>
-              </details>
-            ))}
+            </div>
+            <details className="rounded border border-exp-border bg-exp-panel/80 p-4">
+              <summary className="min-h-11 cursor-pointer py-2 font-mono text-xs uppercase tracking-[0.12em] text-exp-text">Need help choosing?</summary>
+              <div className="space-y-4 pt-3">
+                {faq.map((item) => (
+                  <div key={item.question}>
+                    <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-compass-bright">{item.question}</p>
+                    <p className="mt-1 font-mono text-xs leading-relaxed text-exp-text-dim">{item.answer}</p>
+                  </div>
+                ))}
+              </div>
+            </details>
           </aside>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function FirstTurnStrip() {
-  return (
-    <section id="first-turn" className="border-b border-exp-border bg-exp-surface/55">
-      <div className="mx-auto grid max-w-7xl gap-6 px-4 py-10 sm:px-6 lg:grid-cols-[minmax(0,0.72fr)_minmax(320px,0.78fr)]">
-        <div>
-          <p className="font-mono text-xs uppercase tracking-[0.24em] text-compass">The first turn</p>
-          <h2 className="mt-2 font-display text-3xl uppercase tracking-[0.1em] text-exp-text">One choice should explain the run</h2>
-          <p className="mt-3 font-mono text-sm leading-relaxed text-exp-text-dim">
-            Reveal a tile, see what changed, commit as a crew, and leave before the route turns against you.
-          </p>
-        </div>
-        <div className="grid gap-3 sm:grid-cols-4">
-          {firstTurnSteps.map((step) => (
-            <article key={step.title} className="rounded border border-exp-border bg-exp-panel/80 p-4">
-              <div className="grid h-9 w-9 place-items-center rounded border border-compass/45 bg-compass/10 font-mono text-sm text-compass-bright">{step.label}</div>
-              <h3 className="mt-3 font-mono text-sm uppercase tracking-[0.14em] text-exp-text">{step.title}</h3>
-              <p className="mt-2 font-mono text-xs leading-relaxed text-exp-text-dim">{step.detail}</p>
-            </article>
-          ))}
         </div>
       </div>
     </section>
@@ -288,43 +193,30 @@ function FirstTurnStrip() {
 
 export default function HomePage() {
   const { isConnected } = useWallet();
-  const [loadClient, setLoadClient] = useState(() => window.location.hash === '#live-expedition');
+  const { state } = usePlayerSession();
+  const [crewOpen, setCrewOpen] = useState(false);
 
   return (
     <div>
-      <HomeHero onEnterLive={() => setLoadClient(true)} />
-      <LiveLobby isConnected={isConnected} loadClient={loadClient} />
-      <FirstTurnStrip />
+      <PlayOptions onOpenLobby={() => setCrewOpen(false)} onOpenCrew={() => setCrewOpen(true)} />
+      <LiveLobby isConnected={isConnected} crewOpen={crewOpen} onCrewToggle={setCrewOpen} />
 
-      <section className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14">
-        <SectionHeader
-          eyebrow="Why crews return"
-          title="The next decision belongs to someone"
-          body="Choose a role, leave a useful clue, and give the crew a reason to reopen the expedition together."
-        />
-        <div className="mt-6">
-          <Suspense fallback={<ReturnLoopLoading />}>
-            <ReturnLoopPanel />
-          </Suspense>
-        </div>
-      </section>
-
-      <section className="border-y border-exp-border bg-exp-surface/45">
-        <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14">
-          <SectionHeader
-            eyebrow="Chart and depart"
-            title="A shared map, a closing exit, one remembered run"
-            body="The board is the source of truth. Every reveal should create a clearer opportunity, a sharper danger, or a harder decision about going home."
-          />
-          <div className="mt-6 grid gap-3 md:grid-cols-4">
-            {actionLoop.map((action) => (
-              <MarketingCard key={action.verb} className={toneClasses(action.tone)}>
-                <h3 className="font-display text-xl uppercase tracking-[0.1em]">{action.verb}</h3>
-                <p className="mt-2 font-mono text-sm leading-relaxed text-exp-text-dim">{action.detail}</p>
-              </MarketingCard>
-            ))}
+      <section className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10">
+        <details
+          data-testid="return-loop-details"
+          defaultOpen={Boolean(state.activeGameId)}
+          className="rounded border border-exp-border bg-exp-surface/55"
+        >
+          <summary className="flex min-h-14 cursor-pointer items-center justify-between gap-3 px-5 py-4 font-mono text-xs uppercase tracking-[0.18em] text-exp-text">
+            <span>{state.activeGameId ? `Continue expedition #${state.activeGameId}` : 'Expedition history and return tools'}</span>
+            <span className="text-exp-text-dim">Optional</span>
+          </summary>
+          <div className="border-t border-exp-border p-4 sm:p-5">
+            <Suspense fallback={<ReturnLoopLoading />}>
+              <ReturnLoopPanel />
+            </Suspense>
           </div>
-        </div>
+        </details>
       </section>
     </div>
   );

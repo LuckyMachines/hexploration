@@ -16,6 +16,23 @@
 - [x] Define measurable performance, save, reconnect, lobby, and integrity budgets and collect browser samples.
 - [x] Add an automated-only quality contract, strict doctor, scenario coverage, and report registry entry.
 
+## On-chain player experience
+
+- [x] Keep public observation available without connecting a wallet.
+- [x] Simulate the exact contract request before opening the wallet.
+- [x] Keep optimistic player intent visible through confirmation without presenting it as final chain state.
+- [x] Persist, reconcile, and explain submitted, replaced, reverted, failed, unresolved, and confirmed receipts.
+- [x] Require two confirmations before recovered transactions become final in the UI.
+- [x] Scope cached events by chain, GameEvents contract, and game; re-read the reorg window before presenting canonical history.
+- [x] Turn raw events into a readable expedition chronicle with proof links and a downloadable portable passport.
+- [x] Add a narrowly authorized session forwarder with board/game scope, expiry, action limits, revocation, typed signatures, nonces, deadlines, and bounded batches.
+- [x] Deploy and exercise the forwarder in the fresh-chain end-to-end harness.
+- [x] Add the server-side sponsor relay with signature recovery, exact chain simulation, nonce and authorization checks, durable idempotency, single and batch submission, receipt tracking, and readiness checks.
+- [x] Add per-IP, per-session, per-player, gas, transaction-cost, and global daily sponsorship limits plus authenticated pause and resume controls.
+- [x] Add the browser grant, sponsored-use, receipt-recovery, expiry/exhaustion disclosure, and revoke experience with an ephemeral per-tab session key.
+- [x] Prove locally that one wallet grant can be followed by a real sponsored game action without a second wallet transaction.
+- [x] Verify the real seeded expedition restores into the playable board rather than waiting on an undeclared Multicall3 contract.
+
 ## Verification and release gates
 
 - [x] Apply migrations 001-006 twice to a fresh isolated PostgreSQL database and prove the social/save lifecycle with cleanup.
@@ -23,3 +40,7 @@
 - [ ] Deploy return API contract `2026-09-10.1` before deploying the matching player bundle.
 - [ ] Run synthetic 1-4 browser-context recovery and social journeys against the deployed release.
 - [ ] Collect sufficient deployed p75/p95 samples to promote measured performance from provisional to verified.
+- [ ] Migrate the production controller and deploy and role-verify `XenovoyaSessionForwarder`.
+- [ ] Deploy the sponsor relay as one persistent Sepolia instance, fund its dedicated wallet, connect HTTPS monitoring, and complete an independent security review.
+- [ ] Verify browser grant, sponsored-use, expiry, exhaustion, and revoke journeys against the deployed forwarder.
+- [ ] Prove expedition-passport restoration in a second compatible client.
