@@ -98,6 +98,12 @@ describe('turnAftermath', () => {
     expect(moment.receipts.length).toBeGreaterThan(0);
   });
 
+  it('gives rescue, camp, and departure their own authored beats', () => {
+    expect(deriveTurnAftermath({ playerActions: [{ currentAction: Action.HELP }], statUpdates: [[-1, 2, 1]] })).toMatchObject({ category: AFTERMATH_CATEGORIES.CREW_SAVE, title: 'A Hand Across the Storm' });
+    expect(deriveTurnAftermath({ playerActions: [{ currentAction: Action.SETUP_CAMP }] })).toMatchObject({ category: AFTERMATH_CATEGORIES.CAMP_RECOVERY, title: 'Shelter Took Root' });
+    expect(deriveTurnAftermath({ playerActions: [{ currentAction: Action.FLEE }] })).toMatchObject({ category: AFTERMATH_CATEGORIES.DEPARTURE, title: 'The Crew Chose an Ending' });
+  });
+
   it('provides action and card copy helpers', () => {
     expect(actionAftermathCopy(Action.HELP)).toMatch(/teammate/);
     expect(cardAftermathTone({ cardResult: 'Lost movement', statUpdate: [-1, 0, 0] })).toBe('red');

@@ -46,6 +46,15 @@ export function normalizeTransactionError(error) {
   if (lower.includes('user rejected') || lower.includes('user denied')) {
     return { code: 'rejected', title: 'Signature cancelled', message: 'Nothing was submitted. Review the action and try again when ready.', retryable: true };
   }
+  if (lower.includes('wrong network') || lower.includes('unsupported chain') || lower.includes('chain mismatch') || lower.includes('chain id')) {
+    return { code: 'wrong-network', title: 'Switch expedition network', message: 'Your planned action is preserved. Switch to the expedition network, then try the same action again.', retryable: true };
+  }
+  if (lower.includes('expired') || lower.includes('deadline')) {
+    return { code: 'expired', title: 'Authorization expired safely', message: 'Nothing new was submitted. Renew the scoped authorization or use a direct wallet action.', retryable: true };
+  }
+  if (lower.includes('relay') || lower.includes('sponsor')) {
+    return { code: 'relay', title: 'Sponsored route unavailable', message: 'The action was not sponsored. Your intent is preserved and a direct wallet action remains available.', retryable: true };
+  }
   if (lower.includes('insufficient funds')) {
     return { code: 'funds', title: 'Not enough network funds', message: 'This account cannot currently cover the network fee.', retryable: false };
   }

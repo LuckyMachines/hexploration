@@ -22,6 +22,9 @@ export function useReadContract({ address, abi, functionName, args, query = {} }
   return {
     data: result.data,
     isLoading: result.isLoading,
+    isFetching: result.isFetching,
+    fetchStatus: result.fetchStatus,
+    dataUpdatedAt: result.dataUpdatedAt,
     error: result.error,
     refetch: result.refetch,
   };

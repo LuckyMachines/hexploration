@@ -1,8 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import ThreeBoard from '../components/board/ThreeBoard';
+import AftermathMoment from '../components/resolution/AftermathMoment';
 import { deriveBoardViewModel } from '../components/board/boardViewModel';
+import { useUserPreferences } from '../hooks/useUserPreferences';
 import {
+  GUEST_TERRAIN,
   canDepartGuestExpedition,
   clearGuestExpedition,
   commitGuestMove,
@@ -11,7 +14,9 @@ import {
   emergencyExtractGuestExpedition,
   guestBoardInput,
   guestDistanceToLanding,
+  guestEmotionalBeat,
   guestReachableAliases,
+  guestRouteRecommendation,
   guestTerrainLabel,
   loadGuestExpedition,
   saveGuestExpedition,
@@ -21,14 +26,50 @@ import {
 function StatCard({ label, value, detail, tone = 'text-exp-text' }) {
   return (
     <div className="rounded border border-exp-border bg-exp-dark/45 p-3">
-      <p className="font-mono text-[9px] uppercase tracking-[0.24em] text-exp-text-dim">{label}</p>
+      <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-exp-text-dim">{label}</p>
       <p className={`mt-1 font-display text-xl uppercase tracking-[0.1em] ${tone}`}>{value}</p>
-      <p className="mt-1 font-mono text-[10px] leading-relaxed text-exp-text-dim">{detail}</p>
+      <p className="mt-1 font-mono text-[11px] leading-relaxed text-exp-text-dim">{detail}</p>
+    </div>
+  );
+}
+
+function GuestTacticalBoard({ expedition, reachableAliases, recommendation, onSelect }) {
+  const revealed = new Set(expedition.revealedAliases);
+  return (
+    <div className="absolute inset-0 overflow-auto bg-[radial-gradient(circle_at_center,rgba(76,145,219,0.08),transparent_55%),#0d0f0a] p-4 sm:p-8" data-testid="guest-tactical-board">
+      <div className="mx-auto grid min-h-full max-w-3xl grid-cols-5 grid-rows-4 gap-2" role="grid" aria-label="Tactical guest expedition map">
+        {GUEST_TERRAIN.map((cell) => {
+          const [column, row] = cell.alias.split(',').map(Number);
+          const canSelect = reachableAliases.includes(cell.alias);
+          const isCurrent = expedition.currentLocation === cell.alias;
+          const isSelected = expedition.selectedAlias === cell.alias;
+          const isRecommended = recommendation?.alias === cell.alias;
+          return (
+            <button
+              key={cell.alias}
+              type="button"
+              role="gridcell"
+              disabled={!canSelect}
+              onClick={() => onSelect(cell.alias)}
+              aria-label={`${cell.alias} ${revealed.has(cell.alias) ? guestTerrainLabel(cell.alias, expedition) : 'Uncharted'}${isCurrent ? ', current position' : ''}${isRecommended ? ', recommended route' : ''}`}
+              aria-pressed={isSelected}
+              style={{ gridColumn: column + 1, gridRow: row + 1, transform: column % 2 ? 'translateY(1.25rem)' : undefined }}
+              className={`relative min-h-20 rounded-lg border p-2 font-mono text-[11px] transition-colors ${isCurrent ? 'border-oxide-green bg-oxide-green/15 text-oxide-green' : isSelected ? 'border-blueprint bg-blueprint/20 text-blueprint' : isRecommended ? 'border-compass bg-compass/10 text-compass-bright' : revealed.has(cell.alias) ? 'border-exp-border bg-exp-panel text-exp-text' : 'border-exp-border/70 bg-exp-dark/70 text-exp-text-dim'} disabled:cursor-default disabled:opacity-75`}
+            >
+              <span className="block text-xs">{isCurrent ? 'YOU' : cell.alias}</span>
+              <span className="mt-1 block normal-case leading-tight tracking-normal">{revealed.has(cell.alias) ? guestTerrainLabel(cell.alias, expedition) : 'Fog'}</span>
+              {isRecommended && <span className="mt-1 block text-[10px] uppercase text-compass-bright">Recommended</span>}
+            </button>
+          );
+        })}
+      </div>
     </div>
   );
 }
 
 export default function GuestExpeditionPage() {
+  const [searchParams] = useSearchParams();
+  const { preferences, setPreference } = useUserPreferences();
   const [expedition, setExpedition] = useState(loadGuestExpedition);
   const [isResolving, setIsResolving] = useState(false);
   const [rendererState, setRendererState] = useState('building');
@@ -49,6 +90,10 @@ export default function GuestExpeditionPage() {
   const reachableAliases = guestReachableAliases(expedition);
   const distanceHome = guestDistanceToLanding(expedition);
   const canDepart = canDepartGuestExpedition(expedition);
+  const recommendation = useMemo(() => guestRouteRecommendation(expedition), [expedition]);
+  const emotionalBeat = useMemo(() => guestEmotionalBeat(expedition), [expedition]);
+  const isPractice = searchParams.get('mode') === 'practice';
+  const tacticalBoard = preferences.tacticalBoard || rendererState === 'unavailable';
   const pressureTone = expedition.pressure >= 65 ? 'text-signal-red' : expedition.pressure >= 40 ? 'text-compass-bright' : 'text-oxide-green';
 
   const commitRoute = () => {
@@ -70,18 +115,18 @@ export default function GuestExpeditionPage() {
   };
 
   return (
-    <section data-testid="guest-expedition" className="mx-auto w-full max-w-[100rem] px-3 py-5 sm:px-5 sm:py-8 2xl:px-6">
+    <section data-testid="guest-expedition" className="player-readable mx-auto w-full max-w-[100rem] px-3 py-5 sm:px-5 sm:py-8 2xl:px-6">
       <div className="rounded-xl border border-exp-border bg-[radial-gradient(circle_at_72%_8%,rgba(76,145,219,0.12),transparent_30%),linear-gradient(180deg,rgba(25,31,21,0.96),rgba(10,14,10,0.98))] shadow-[0_24px_90px_rgba(0,0,0,0.35)]">
         <header className="border-b border-exp-border px-4 py-5 sm:px-6">
           <div className="flex flex-wrap items-end justify-between gap-4">
             <div className="max-w-3xl">
-              <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-blueprint">Wallet-free 3D expedition</p>
+              <p className="font-mono text-[11px] uppercase tracking-[0.24em] text-blueprint">{isPractice ? 'Always-available practice expedition' : 'Wallet-free 3D expedition'}</p>
               <h1 className="mt-2 font-display text-3xl uppercase tracking-[0.1em] text-exp-text sm:text-5xl">Explore the living survey</h1>
               <p className="mt-3 font-mono text-sm leading-relaxed text-exp-text-dim">
                 Play a complete local route on the production 3D board. Reveal terrain, recover relics, manage pressure, and return to the landing beacon before the storm closes.
               </p>
             </div>
-            <div className="flex flex-wrap gap-2 font-mono text-[9px] uppercase tracking-[0.16em]">
+            <div className="flex flex-wrap gap-2 font-mono text-[11px] uppercase tracking-[0.14em]">
               <span className="rounded border border-blueprint/35 bg-blueprint/10 px-3 py-2 text-blueprint">Production 3D</span>
               <span className="rounded border border-oxide-green/35 bg-oxide-green/10 px-3 py-2 text-oxide-green">Saved locally</span>
               <span className="rounded border border-exp-border bg-exp-dark/50 px-3 py-2 text-exp-text-dim">No wallet needed</span>
@@ -90,26 +135,25 @@ export default function GuestExpeditionPage() {
         </header>
 
         <div className="grid gap-5 p-3 sm:p-5 xl:grid-cols-[minmax(0,1.7fr)_minmax(310px,0.65fr)]">
-          <div>
+          <div className="xl:sticky xl:top-24 xl:self-start">
             <div className="relative h-[58svh] min-h-[32rem] max-h-[48rem] overflow-hidden rounded-xl border border-exp-border bg-exp-dark">
-              <ThreeBoard
-                viewModel={boardViewModel}
-                onTileClick={(alias) => setExpedition((current) => selectGuestTile(current, alias))}
-                onTileHover={() => {}}
-                onReady={() => setRendererState('ready')}
-                onUnavailable={() => setRendererState('unavailable')}
-                ariaLabel="Interactive 3D guest expedition board"
-              />
-              {rendererState === 'unavailable' && (
-                <div className="absolute inset-x-4 bottom-4 z-40 rounded border border-signal-red/45 bg-exp-dark/95 p-4 text-center" role="alert">
-                  <p className="font-mono text-xs uppercase tracking-[0.2em] text-signal-red">3D renderer unavailable</p>
-                  <p className="mt-2 font-mono text-xs text-exp-text-dim">Enable hardware acceleration or try a current browser to enter the world.</p>
-                </div>
+              {tacticalBoard ? (
+                <GuestTacticalBoard expedition={expedition} reachableAliases={reachableAliases} recommendation={recommendation} onSelect={(alias) => setExpedition((current) => selectGuestTile(current, alias))} />
+              ) : (
+                <ThreeBoard
+                  viewModel={boardViewModel}
+                  onTileClick={(alias) => setExpedition((current) => selectGuestTile(current, alias))}
+                  onTileHover={() => {}}
+                  onReady={() => setRendererState('ready')}
+                  onUnavailable={() => setRendererState('unavailable')}
+                  ariaLabel="Interactive 3D guest expedition board"
+                />
               )}
             </div>
-            <div className="mt-3 flex flex-wrap items-center justify-between gap-2 px-1 font-mono text-[10px] uppercase tracking-[0.15em] text-exp-text-dim">
-              <span>{rendererState === 'ready' ? 'World ready' : rendererState === 'unavailable' ? 'Renderer unavailable' : 'Building terrain'}</span>
-              <span>Drag to orbit / right-drag to pan / scroll to zoom</span>
+            <div className="mt-3 flex flex-wrap items-center justify-between gap-2 px-1 font-mono text-[11px] uppercase tracking-[0.12em] text-exp-text-dim">
+              <span>{tacticalBoard ? rendererState === 'unavailable' ? 'Tactical fallback - 3D unavailable' : 'Tactical map ready' : rendererState === 'ready' ? 'World ready' : 'Building terrain'}</span>
+              <button type="button" onClick={() => { setRendererState('building'); setPreference('tacticalBoard', !tacticalBoard); }} className="min-h-11 rounded border border-exp-border bg-exp-dark/70 px-3 py-2 text-exp-text hover:border-blueprint/50">{tacticalBoard ? 'Try 3D diorama' : 'Use tactical map'}</button>
+              {!tacticalBoard && <span>Drag to orbit / right-drag to pan / scroll to zoom</span>}
             </div>
           </div>
 
@@ -121,17 +165,22 @@ export default function GuestExpeditionPage() {
               <StatCard label="Route home" value={distanceHome === 0 ? 'Here' : `${distanceHome} step${distanceHome === 1 ? '' : 's'}`} detail={`Turn ${expedition.turns}`} tone={distanceHome === 0 ? 'text-oxide-green' : 'text-compass-bright'} />
             </div>
 
-            <div className={`rounded border p-4 ${expedition.status === 'redline' ? 'border-signal-red/45 bg-signal-red/5' : expedition.status === 'complete' ? 'border-oxide-green/40 bg-oxide-green/5' : 'border-compass/35 bg-compass/5'}`} role="status" aria-live="polite">
-              <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-compass-bright">
-                {expedition.status === 'complete' ? 'Expedition complete' : expedition.status === 'redline' ? 'Emergency' : 'Crew signal'}
-              </p>
-              <p className="mt-2 font-mono text-xs leading-relaxed text-exp-text">{expedition.message}</p>
-            </div>
+            {emotionalBeat ? (
+              <div key={emotionalBeat.id} className="guest-emotional-beat" data-guest-beat={emotionalBeat.category} aria-live="polite">
+                <AftermathMoment moment={emotionalBeat} />
+              </div>
+            ) : (
+              <div className="rounded border border-blueprint/40 bg-blueprint/5 p-4" role="status" aria-live="polite">
+                <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-blueprint">First signal</p>
+                <p className="mt-2 font-mono text-xs leading-relaxed text-exp-text">{expedition.message}</p>
+                {recommendation && <p className="mt-2 font-mono text-[11px] leading-relaxed text-exp-text-dim"><span className="text-blueprint">Recommended {recommendation.alias}:</span> {recommendation.reason}</p>}
+              </div>
+            )}
 
             {expedition.status === 'exploring' && (
               <div className="rounded border border-exp-border bg-exp-panel/75 p-4">
                 <h2 className="font-display text-lg uppercase tracking-[0.12em] text-exp-text">Choose the next crossing</h2>
-                <p className="mt-2 font-mono text-[11px] leading-relaxed text-exp-text-dim">Select an adjacent hex in the world or use a route control below. Unknown ground is a real risk.</p>
+                <p className="mt-2 font-mono text-[11px] leading-relaxed text-exp-text-dim">Select an adjacent hex in the world or use a route control below. The recommendation is guidance, not an automatic move.</p>
                 <div className="mt-3 grid grid-cols-2 gap-2" role="group" aria-label="Reachable routes">
                   {reachableAliases.map((alias) => (
                     <button
@@ -139,9 +188,9 @@ export default function GuestExpeditionPage() {
                       type="button"
                       onClick={() => setExpedition((current) => selectGuestTile(current, alias))}
                       aria-pressed={expedition.selectedAlias === alias}
-                      className={`min-h-11 rounded border px-3 py-2 text-left font-mono text-[10px] uppercase tracking-[0.12em] transition-colors ${expedition.selectedAlias === alias ? 'border-blueprint bg-blueprint/15 text-blueprint' : 'border-exp-border bg-exp-dark/45 text-exp-text hover:border-blueprint/50'}`}
+                      className={`min-h-11 rounded border px-3 py-2 text-left font-mono text-[11px] uppercase tracking-[0.1em] transition-colors ${expedition.selectedAlias === alias ? 'border-blueprint bg-blueprint/15 text-blueprint' : recommendation?.alias === alias ? 'border-compass/60 bg-compass/10 text-compass-bright' : 'border-exp-border bg-exp-dark/45 text-exp-text hover:border-blueprint/50'}`}
                     >
-                      <span className="block">{alias}</span>
+                      <span className="flex items-center justify-between gap-2"><span>{alias}</span>{recommendation?.alias === alias && <span className="text-[10px] tracking-[0.08em]">Recommended</span>}</span>
                       <span className="mt-1 block text-exp-text-dim">{guestTerrainLabel(alias, expedition)}</span>
                     </button>
                   ))}
@@ -157,7 +206,7 @@ export default function GuestExpeditionPage() {
                 </button>
                 {canDepart && (
                   <button type="button" onClick={() => setExpedition((current) => departGuestExpedition(current))} className="mt-2 min-h-11 w-full rounded border border-oxide-green/55 bg-oxide-green/10 px-4 py-2 font-mono text-xs uppercase tracking-[0.16em] text-oxide-green hover:bg-oxide-green/20">
-                    Depart with findings
+                    {expedition.relics ? `Depart with ${expedition.relics} relic${expedition.relics === 1 ? '' : 's'}` : 'Depart with the completed map'}
                   </button>
                 )}
               </div>
@@ -174,8 +223,8 @@ export default function GuestExpeditionPage() {
                 <p className="font-display text-xl uppercase tracking-[0.12em] text-oxide-green">{expedition.result === 'safe' ? 'Findings secured' : 'Crew recovered'}</p>
                 <p className="mt-2 font-mono text-xs leading-relaxed text-exp-text-dim">Your local run is complete. A live expedition adds a shared crew and persistent on-chain actions only when you choose to join.</p>
                 <div className="mt-4 flex flex-wrap gap-2">
-                  <Link to="/#live-expedition" className="inline-flex min-h-11 items-center rounded border border-compass/50 bg-compass/10 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.15em] text-compass-bright">Find a live crew</Link>
-                  <button type="button" onClick={restart} className="min-h-11 rounded border border-exp-border bg-exp-dark/45 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.15em] text-exp-text">Explore again</button>
+                  <Link to="/?mode=join" className="inline-flex min-h-11 items-center rounded border border-compass/50 bg-compass/10 px-3 py-2 font-mono text-[11px] uppercase tracking-[0.12em] text-compass-bright">Find a live crew</Link>
+                  <button type="button" onClick={restart} className="min-h-11 rounded border border-exp-border bg-exp-dark/45 px-3 py-2 font-mono text-[11px] uppercase tracking-[0.12em] text-exp-text">Explore another route</button>
                 </div>
               </div>
             )}

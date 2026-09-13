@@ -61,6 +61,7 @@ export default function Header({ onHelpClick, audio }) {
     ['/challenge', 'Challenge'],
     ['/progress', 'Progress'],
   ] : [['/#play-options', 'Play'], ['/guest', 'Solo']];
+  const showConnect = isConnected || pathname.startsWith('/game/') || pathname.startsWith('/invite/');
 
   return (
     <header className="sticky top-0 z-40 border-b border-exp-border bg-exp-surface/90 backdrop-blur-md">
@@ -96,7 +97,7 @@ export default function Header({ onHelpClick, audio }) {
             </div>
           )}
           {isConnected && <NetworkBadge />}
-          {(pathname !== '/' || isConnected) && <ConnectButton />}
+          {showConnect && <ConnectButton />}
         </div>
       </div>
     </header>

@@ -51,13 +51,14 @@ export function createGuestExpedition() {
     result: null,
     currentLocation: GUEST_LANDING_SITE,
     selectedAlias: '',
-    revealedAliases: [GUEST_LANDING_SITE, '1,2', '2,1'],
+    revealedAliases: [GUEST_LANDING_SITE, '1,2', '2,1', '1,3', '3,3'],
     visitedAliases: [GUEST_LANDING_SITE],
     collectedAliases: [],
     pressure: 10,
     supplies: 8,
     relics: 0,
     turns: 0,
+    lastEvent: 'arrival',
     message: 'The landing beacon is stable. Choose an adjacent route and reveal the world.',
   };
 }
@@ -82,6 +83,7 @@ export function normalizeGuestExpedition(value) {
     supplies: Math.min(8, Math.max(0, Number(value.supplies) || 0)),
     relics: Math.max(0, Number(value.relics) || 0),
     turns: Math.max(0, Number(value.turns) || 0),
+    lastEvent: ['arrival', 'reveal', 'relic', 'danger', 'return', 'safe-departure', 'emergency'].includes(value.lastEvent) ? value.lastEvent : fallback.lastEvent,
     message: typeof value.message === 'string' && value.message.trim() ? value.message : fallback.message,
   };
 }
@@ -157,10 +159,11 @@ export function commitGuestMove(state) {
     supplies,
     relics: normalized.relics + (foundRelic ? 1 : 0),
     turns: normalized.turns + 1,
+    lastEvent: redline ? 'danger' : foundRelic ? 'relic' : destination.alias === GUEST_LANDING_SITE ? 'return' : pressure >= 65 ? 'danger' : 'reveal',
     message: redline
       ? 'The route has crossed redline. Call emergency extraction before the storm closes.'
       : foundRelic
-        ? `A relic answered beneath the ${terrain.toLowerCase()}. Decide whether to push farther or carry it home.`
+        ? 'The Tideglass Cradle answered beneath a basalt shelf. Decide whether to push farther or carry it home.'
         : destination.alias === GUEST_LANDING_SITE
           ? 'The landing beacon is underfoot. Depart now, or risk one more discovery.'
           : `${terrain} revealed. The way home is still open, but pressure is rising.`,
@@ -182,6 +185,7 @@ export function departGuestExpedition(state) {
     status: 'complete',
     result: 'safe',
     selectedAlias: '',
+    lastEvent: 'safe-departure',
     message: normalized.relics > 0
       ? `Safe departure. The crew brought ${normalized.relics} relic${normalized.relics === 1 ? '' : 's'} home.`
       : 'Safe departure. The crew returned with a map that will make the next voyage stronger.',
@@ -199,6 +203,7 @@ export function emergencyExtractGuestExpedition(state) {
     currentLocation: GUEST_LANDING_SITE,
     selectedAlias: '',
     relics: normalized.relics - lostRelics,
+    lastEvent: 'emergency',
     message: lostRelics
       ? 'Emergency extraction succeeded, but the crew had to leave one relic behind.'
       : 'Emergency extraction succeeded. The crew is safe, but the route was lost.',
@@ -222,6 +227,105 @@ export function guestDistanceToLanding(state) {
     }
   }
   return null;
+}
+
+function distanceBetween(start, targets) {
+  if (targets.has(start)) return 0;
+  const queue = [[start, 0]];
+  const visited = new Set([start]);
+  while (queue.length) {
+    const [alias, distance] = queue.shift();
+    const coord = parseAlias(alias);
+    if (!coord) continue;
+    for (const neighbor of getAdjacent(coord.col, coord.row)) {
+      if (!VALID_ALIASES.has(neighbor) || visited.has(neighbor)) continue;
+      if (targets.has(neighbor)) return distance + 1;
+      visited.add(neighbor);
+      queue.push([neighbor, distance + 1]);
+    }
+  }
+  return Number.POSITIVE_INFINITY;
+}
+
+export function guestRouteRecommendation(state) {
+  const normalized = normalizeGuestExpedition(state);
+  if (normalized.status !== 'exploring' || canDepartGuestExpedition(normalized)) return null;
+  const reachable = guestReachableAliases(normalized);
+  if (!reachable.length) return null;
+  const shouldReturn = normalized.relics > 0 || normalized.pressure >= 55 || normalized.supplies <= 3;
+  const targets = shouldReturn
+    ? new Set([GUEST_LANDING_SITE])
+    : new Set(GUEST_TERRAIN.filter((cell) => cell.tileType === Tile.RELIC && !normalized.collectedAliases.includes(cell.alias)).map((cell) => cell.alias));
+  const ranked = [...reachable].sort((left, right) => (
+    distanceBetween(left, targets) - distanceBetween(right, targets) || left.localeCompare(right)
+  ));
+  const alias = ranked[0];
+  return {
+    alias,
+    label: shouldReturn ? 'Safest route home' : 'Strongest signal',
+    reason: shouldReturn
+      ? `Protect ${normalized.relics ? `${normalized.relics} recovered relic${normalized.relics === 1 ? '' : 's'}` : 'the crew'} before pressure closes the route.`
+      : 'This crossing leads toward the nearest relic signal while the return route is still forgiving.',
+  };
+}
+
+export function guestEmotionalBeat(state) {
+  const normalized = normalizeGuestExpedition(state);
+  if (normalized.turns === 0 && normalized.status === 'exploring') return null;
+  const common = {
+    id: `guest-${normalized.lastEvent}-${normalized.turns}`,
+    category: normalized.lastEvent,
+    receipts: [
+      { label: 'Pressure', value: `${normalized.pressure}%` },
+      { label: 'Supplies', value: String(normalized.supplies) },
+      { label: 'Relics', value: String(normalized.relics) },
+    ],
+  };
+  const beats = {
+    relic: {
+      tone: 'gold',
+      title: 'Tideglass Answered',
+      summary: normalized.message,
+      whyItMatters: 'The objective has changed from finding value to bringing it home intact.',
+      nextPrompt: 'Follow the highlighted route back to the landing beacon, or wager the relic on one more reveal.',
+    },
+    danger: {
+      tone: 'red',
+      title: 'The Storm Found the Route',
+      summary: 'Pressure crossed the safe band and every extra step now threatens the way home.',
+      whyItMatters: 'The risk is specific: redline forces an emergency extraction and may cost a relic.',
+      nextPrompt: 'Take the safest highlighted crossing toward the beacon.',
+    },
+    return: {
+      tone: 'green',
+      title: 'The Beacon Is Underfoot',
+      summary: 'The route closed behind the crew, but the departure window is open now.',
+      whyItMatters: 'Departing converts the route and every recovered relic into a completed expedition.',
+      nextPrompt: 'Depart with the findings, or knowingly risk one final crossing.',
+    },
+    'safe-departure': {
+      tone: 'gold',
+      title: 'The Impossible Came Home',
+      summary: normalized.message,
+      whyItMatters: 'The expedition is now a complete memory: route, pressure, choice, and recovered value.',
+      nextPrompt: 'Run a different route or carry this understanding into a live crew.',
+    },
+    emergency: {
+      tone: 'green',
+      title: 'The Crew Came Home Lighter',
+      summary: normalized.message,
+      whyItMatters: 'Recovery protected the explorers even when the route and some value were lost.',
+      nextPrompt: 'Try again and turn back one decision earlier.',
+    },
+    reveal: {
+      tone: 'blue',
+      title: 'The Map Became Real',
+      summary: normalized.message,
+      whyItMatters: 'Every reveal changes both the opportunity ahead and the cost of returning.',
+      nextPrompt: normalized.pressure >= 55 ? 'Start home while the route is still open.' : 'Follow the next signal or preserve an easier route home.',
+    },
+  };
+  return beats[normalized.lastEvent] ? { ...common, ...beats[normalized.lastEvent] } : null;
 }
 
 export function guestBoardInput(state, { isResolving = false } = {}) {

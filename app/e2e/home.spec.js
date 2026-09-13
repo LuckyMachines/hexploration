@@ -62,6 +62,30 @@ test('home page renders core surfaces', async ({ page }) => {
   await expect(page.getByTestId('return-loop-details')).toBeVisible();
 });
 
+test('cross-domain play intent opens and focuses the requested mode', async ({ page }) => {
+  await page.goto('/?mode=observe', { waitUntil: 'domcontentloaded' });
+  await expect(page.locator('#available-expeditions')).toBeFocused();
+
+  await page.goto('/?mode=join', { waitUntil: 'domcontentloaded' });
+  await expect(page.getByTestId('crew-network-details')).toHaveJSProperty('open', true);
+  await expect(page.locator('#crew-network')).toBeFocused();
+
+  await page.goto('/?mode=solo', { waitUntil: 'domcontentloaded' });
+  await expect(page).toHaveURL(/\/guest\?source=marketing$/);
+  await expect(page.getByRole('heading', { name: /Explore the living survey/i })).toBeVisible();
+});
+
+test('offline lobby preserves a playable route and a retry', async ({ page, context }) => {
+  await page.goto('/', { waitUntil: 'domcontentloaded' });
+  await expect(page.locator('#available-expeditions')).toBeVisible();
+  await context.setOffline(true);
+  await page.evaluate(() => window.dispatchEvent(new Event('offline')));
+  await expect(page.getByText('You are offline', { exact: true })).toBeVisible();
+  await expect(page.getByRole('link', { name: /Enter practice world/i })).toHaveAttribute('href', '/guest?mode=practice');
+  await expect(page.getByRole('button', { name: /Retry live registry/i })).toBeVisible();
+  await context.setOffline(false);
+});
+
 test('return loop gives a new player a role and a resumable crew thread', async ({ page }) => {
   await page.goto('/', { waitUntil: 'domcontentloaded' });
   const panel = await openReturnLoop(page);
@@ -118,8 +142,20 @@ test('guest route enters the production 3D expedition without a wallet', async (
 
   await page.getByRole('group', { name: /Reachable routes/i }).getByRole('button', { name: /3,2 Uncharted/i }).click();
   await page.getByTestId('commit-guest-route').click();
-  await expect(page.getByText(/A relic answered/i)).toBeVisible();
+  await expect(page.getByText(/Tideglass Cradle answered/i)).toBeVisible();
+  await expect(page.getByRole('heading', { name: /Tideglass Answered/i })).toBeVisible();
+  await expect(page.getByText(/Follow the highlighted route back/i)).toBeVisible();
   await expect(page.getByText('1', { exact: true }).first()).toBeVisible();
+});
+
+test('guest route has a persistent tactical fallback with the same choices', async ({ page }) => {
+  await page.goto('/guest?mode=practice', { waitUntil: 'domcontentloaded' });
+  await expect(page.getByText(/Always-available practice expedition/i)).toBeVisible();
+  await page.getByRole('button', { name: /Use tactical map/i }).click();
+  await expect(page.getByTestId('guest-tactical-board')).toBeVisible();
+  await expect(page.getByRole('gridcell', { name: /recommended route/i }).first()).toBeEnabled();
+  await page.reload();
+  await expect(page.getByTestId('guest-tactical-board')).toBeVisible();
 });
 
 test('internal preview routes are blocked in the public funnel', async ({ page }) => {

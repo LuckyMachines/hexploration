@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useWallet } from '../../contexts/WalletContext';
 import {
   authenticateReturnService,
@@ -126,15 +127,19 @@ export default function SocialHub({ compact = false, gameId = null }) {
   };
 
   const inviteUrl = useMemo(() => invite?.token && typeof window !== 'undefined' ? `${window.location.origin}/invite/${invite.token}` : '', [invite]);
-  if (!returnServiceEnabled()) return compact ? null : (
-    <section className="rounded border border-exp-border bg-exp-panel p-5">
-      <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-exp-text-dim">Crew network</p>
-      <p className="mt-2 font-mono text-xs text-exp-text-dim">Party and friend services become available when the return API is configured.</p>
+  if (!returnServiceEnabled()) return (
+    <section className={`player-readable rounded border border-exp-border bg-exp-panel ${compact ? 'p-4' : 'p-5'}`} data-testid="crew-network-unavailable">
+      <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-exp-text">Crew network unavailable</p>
+      <p className="mt-2 font-mono text-xs leading-relaxed text-exp-text-dim">Parties and friend recovery are not connected in this build. Solo play and public observation still work, and no wallet action is required.</p>
+      <div className="mt-3 flex flex-wrap gap-2">
+        <Link to="/guest" className="inline-flex min-h-11 items-center rounded border border-blueprint/45 bg-blueprint/10 px-3 py-2 font-mono text-[11px] uppercase tracking-[0.14em] text-blueprint">Play solo</Link>
+        {!compact && <a href="#available-expeditions" className="inline-flex min-h-11 items-center rounded border border-exp-border px-3 py-2 font-mono text-[11px] uppercase tracking-[0.14em] text-exp-text">Observe live</a>}
+      </div>
     </section>
   );
 
   if (!session?.token || !address || session.wallet !== address.toLowerCase()) return (
-    <section className="rounded border border-blueprint/30 bg-exp-panel p-5">
+    <section className="player-readable rounded border border-blueprint/30 bg-exp-panel p-5">
       <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-blueprint">Private crew network</p>
       <h2 className="mt-2 font-display text-xl uppercase tracking-[0.12em] text-exp-text">Find your people, then keep the party</h2>
       <p className="mt-2 max-w-2xl font-mono text-xs leading-relaxed text-exp-text-dim">One wallet signature restores parties and friends across devices. Public party and invite previews never expose wallet addresses.</p>
@@ -162,7 +167,7 @@ export default function SocialHub({ compact = false, gameId = null }) {
   };
 
   return (
-    <section className="rounded border border-blueprint/30 bg-exp-panel" aria-labelledby="crew-network-title" data-testid="social-hub">
+    <section className="player-readable rounded border border-blueprint/30 bg-exp-panel" aria-labelledby="crew-network-title" data-testid="social-hub">
       <div className="flex flex-wrap items-start justify-between gap-3 border-b border-exp-border px-4 py-4 sm:px-5">
         <div><p className="font-mono text-[10px] uppercase tracking-[0.25em] text-blueprint">Crew network</p><h2 id="crew-network-title" className="mt-1 font-display text-xl uppercase tracking-[0.12em] text-exp-text">{activeParty?.name || 'Create or find a party'}</h2></div>
         {activeParty && <span className="rounded border border-oxide-green/35 bg-oxide-green/5 px-2 py-1 font-mono text-[10px] uppercase tracking-[0.16em] text-oxide-green">{activeParty.memberCount}/{activeParty.capacity} crew</span>}

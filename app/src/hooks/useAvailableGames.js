@@ -10,7 +10,7 @@ import { EventsABI, GAME_EVENTS_ADDRESS } from '../config/contracts';
 
 /** @returns {AvailableGamesResult} */
 export function useAvailableGames() {
-  const { data, isLoading, error, refetch } = useReadContract({
+  const { data, isLoading, isFetching, fetchStatus, dataUpdatedAt, error, refetch } = useReadContract({
     ...gameSummaryRead('getAvailableGames', [GAME_REGISTRY_ADDRESS]),
     query: { refetchInterval: 10000 },
   });
@@ -23,6 +23,9 @@ export function useAvailableGames() {
     maxPlayers: Array.isArray(data?.[1]) ? data[1] : [],
     currentRegistrations: Array.isArray(data?.[2]) ? data[2] : [],
     isLoading,
+    isFetching,
+    fetchStatus,
+    dataUpdatedAt,
     error,
     refetch,
   };

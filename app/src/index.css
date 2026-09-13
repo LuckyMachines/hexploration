@@ -164,6 +164,13 @@ body {
   line-height: 1.55;
 }
 
+/* Critical player paths keep the instrument-panel voice without forcing
+   essential labels below a readable 11px floor. */
+.player-readable .text-\[9px\],
+.player-readable .text-\[10px\] {
+  font-size: 11px;
+}
+
 .game-mono-label {
   font-family: var(--font-mono);
   font-size: 0.625rem;
@@ -202,6 +209,15 @@ body {
 
 .ui-density-high-alert {
   --density-accent: var(--color-signal-red);
+}
+
+@keyframes guest-beat-arrive {
+  from { opacity: 0; transform: translateY(8px); filter: saturate(0.7); }
+  to { opacity: 1; transform: translateY(0); filter: saturate(1); }
+}
+
+.guest-emotional-beat {
+  animation: guest-beat-arrive var(--ds-motion-reveal) ease-out both;
 }
 
 .ux-reduced-motion *,

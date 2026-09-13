@@ -7,9 +7,23 @@ export default function SponsoredSessionControl({ sponsored }) {
     ? new Date(sponsored.authorization.expiresAt * 1000).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })
     : null;
   const busy = sponsored.authorizationTx.isPending || sponsored.authorizationTx.isConfirming;
+  const now = Math.floor(Date.now() / 1000);
+  const recovery = sponsored.relayError
+    ? 'Sponsor relay is unavailable. Your action is preserved; use the direct wallet action below.'
+    : sponsored.relay?.paused
+      ? 'Sponsored turns are paused by the relay. Direct wallet actions remain available.'
+      : sponsored.relayMatches === false
+        ? 'The relay does not match this expedition. Sponsored signing is disabled; direct wallet actions remain available.'
+        : sponsored.session && sponsored.authorization?.expiresAt <= now
+          ? 'This scoped authorization expired safely. Renew it or continue with direct wallet actions.'
+          : sponsored.session && sponsored.authorization?.remainingActions === 0
+            ? 'The sponsored-turn allowance is used up. Renew it or continue with direct wallet actions.'
+            : sponsored.relayStatus === 'pending'
+              ? 'Checking sponsor capacity. Direct wallet actions remain available while this loads.'
+              : '';
 
   return (
-    <div className={`mx-4 mt-3 rounded border px-3 py-3 ${sponsored.isReady ? 'border-oxide-green/35 bg-oxide-green/5' : 'border-blueprint/30 bg-blueprint/5'}`} data-testid="sponsored-session-control">
+    <div className={`player-readable mx-4 mt-3 rounded border px-3 py-3 ${sponsored.isReady ? 'border-oxide-green/35 bg-oxide-green/5' : 'border-blueprint/30 bg-blueprint/5'}`} data-testid="sponsored-session-control">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-blueprint">Gas-sponsored turns</p>
@@ -30,7 +44,7 @@ export default function SponsoredSessionControl({ sponsored }) {
           </button>
         )}
       </div>
-      {sponsored.relayError && <p className="mt-2 font-mono text-[10px] text-signal-red">Sponsor relay is unavailable. Direct wallet actions remain available.</p>}
+      {recovery && <p className="mt-2 rounded border border-signal-red/30 bg-exp-dark/35 px-3 py-2 font-mono text-[11px] leading-relaxed text-signal-red" role="status">{recovery}</p>}
       {(sponsored.authorizationTx.data || busy || sponsored.authorizationTx.error) && (
         <div className="mt-2">
           <TxStatus

@@ -9,7 +9,9 @@ import {
   emergencyExtractGuestExpedition,
   guestBoardInput,
   guestDistanceToLanding,
+  guestEmotionalBeat,
   guestReachableAliases,
+  guestRouteRecommendation,
   loadGuestExpedition,
   saveGuestExpedition,
   selectGuestTile,
@@ -37,10 +39,20 @@ describe('guest expedition', () => {
     expect(moved.supplies).toBe(7);
     expect(moved.pressure).toBeGreaterThan(initial.pressure);
     expect(moved.relics).toBe(1);
+    expect(moved.lastEvent).toBe('relic');
+    expect(guestEmotionalBeat(moved)).toMatchObject({ title: 'Tideglass Answered', tone: 'gold' });
     expect(guestBoardInput(moved).cells.find((cell) => cell.alias === '3,2')).toMatchObject({
       tileType: Tile.RELIC,
       revealed: true,
     });
+  });
+
+  it('guides the first choice toward discovery, then guides the relic home', () => {
+    const initial = createGuestExpedition();
+    expect(guestRouteRecommendation(initial)).toMatchObject({ alias: '1,1', label: 'Strongest signal' });
+
+    const carrying = commitGuestMove(selectGuestTile(initial, '3,2'));
+    expect(guestRouteRecommendation(carrying)).toMatchObject({ alias: GUEST_LANDING_SITE, label: 'Safest route home' });
   });
 
   it('allows a safe departure only after returning to landing', () => {
@@ -49,7 +61,9 @@ describe('guest expedition', () => {
 
     state = commitGuestMove(selectGuestTile(state, GUEST_LANDING_SITE));
     expect(canDepartGuestExpedition(state)).toBe(true);
-    expect(departGuestExpedition(state)).toMatchObject({ status: 'complete', result: 'safe', relics: 1 });
+    const departed = departGuestExpedition(state);
+    expect(departed).toMatchObject({ status: 'complete', result: 'safe', relics: 1, lastEvent: 'safe-departure' });
+    expect(guestEmotionalBeat(departed).nextPrompt).toMatch(/live crew/i);
   });
 
   it('turns a redline route into a consequential emergency extraction', () => {

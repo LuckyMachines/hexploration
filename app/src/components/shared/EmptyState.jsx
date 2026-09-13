@@ -14,7 +14,7 @@ export default function EmptyState({
 
   return (
     <div className={`rounded border px-4 py-3 ${toneClass}`}>
-      <p className="font-mono text-[10px] uppercase tracking-[0.28em]">
+      <p className="font-mono text-[11px] uppercase tracking-[0.2em]">
         {title}
       </p>
       {body && (
@@ -26,7 +26,7 @@ export default function EmptyState({
         <button
           type="button"
           onClick={onAction}
-          className="mt-3 min-h-11 rounded border border-current/40 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.22em] transition-colors hover:bg-exp-dark/35"
+          className="mt-3 min-h-11 rounded border border-current/40 px-3 py-2 font-mono text-[11px] uppercase tracking-[0.16em] transition-colors hover:bg-exp-dark/35"
         >
           {action}
         </button>

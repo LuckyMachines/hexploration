@@ -1,9 +1,10 @@
-import { lazy, Suspense, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { lazy, Suspense, useEffect, useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import SurveyTabletFrame from '../components/layout/SurveyTabletFrame';
 import { useWallet } from '../contexts/WalletContext';
 import { usePlayerSession } from '../contexts/PlayerSessionContext';
 import { trackJourneyEvent } from '../lib/analytics';
+import { normalizePlayMode, playModeTarget } from '../lib/playIntent';
 
 const LiveClientStack = lazy(() => import('../components/game/LiveClientStack'));
 const ReturnLoopPanel = lazy(() => import('../components/expedition/ReturnLoopPanel'));
@@ -56,9 +57,9 @@ function ModeLink({ eyebrow, title, detail, to, href, tone = 'compass', onClick,
       : 'border-compass/45 bg-compass/10 hover:bg-compass/20';
   const content = (
     <>
-      <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-exp-text-dim">{eyebrow}</span>
+      <span className="font-mono text-[11px] uppercase tracking-[0.16em] text-exp-text-dim">{eyebrow}</span>
       <span className="mt-1.5 block font-display text-xl uppercase tracking-[0.08em] text-exp-text sm:mt-2 sm:text-2xl">{title}</span>
-      <span className="mt-1.5 line-clamp-1 block font-mono text-[10px] leading-relaxed text-exp-text-dim sm:mt-2 sm:line-clamp-none sm:text-xs">{detail}</span>
+      <span className="mt-1.5 line-clamp-1 block font-mono text-[11px] leading-relaxed text-exp-text-dim sm:mt-2 sm:line-clamp-none sm:text-xs">{detail}</span>
     </>
   );
   const className = `min-h-0 rounded border p-3.5 text-left transition-colors sm:min-h-40 sm:p-5 ${palette}`;
@@ -75,7 +76,7 @@ function PlayOptions({ onOpenLobby, onOpenCrew }) {
   const { state } = usePlayerSession();
 
   return (
-    <section id="play-options" aria-labelledby="play-options-title" className="relative isolate scroll-mt-20 overflow-hidden border-b border-exp-border">
+    <section id="play-options" tabIndex={-1} aria-labelledby="play-options-title" className="relative isolate scroll-mt-20 overflow-hidden border-b border-exp-border outline-none focus-visible:ring-2 focus-visible:ring-blueprint">
       <HeroBoardScene />
       <div className="relative mx-auto max-w-7xl px-4 py-7 sm:px-6 sm:py-14">
         <div className="max-w-3xl">
@@ -127,8 +128,8 @@ function PlayOptions({ onOpenLobby, onOpenCrew }) {
           />
         </div>
 
-        <div className="mt-4 flex flex-wrap gap-x-4 gap-y-1.5 font-mono text-[9px] uppercase tracking-[0.16em] text-exp-text-dim sm:mt-6 sm:gap-x-6 sm:gap-y-2 sm:text-[10px] sm:tracking-[0.18em]">
-          <span><span className="text-oxide-green">Online</span> network</span>
+        <div className="mt-4 flex flex-wrap gap-x-4 gap-y-1.5 font-mono text-[11px] uppercase tracking-[0.13em] text-exp-text-dim sm:mt-6 sm:gap-x-6 sm:gap-y-2 sm:tracking-[0.16em]">
+          <span><span className="text-oxide-green">Public</span> network</span>
           <span><span className="text-compass-bright">Open alpha</span> status</span>
           <span><span className="text-blueprint">Wallet-free</span> solo</span>
         </div>
@@ -194,10 +195,40 @@ function LiveLobby({ isConnected, crewOpen, onCrewToggle }) {
 export default function HomePage() {
   const { isConnected } = useWallet();
   const { state } = usePlayerSession();
+  const location = useLocation();
+  const navigate = useNavigate();
   const [crewOpen, setCrewOpen] = useState(false);
 
+  useEffect(() => {
+    const mode = normalizePlayMode(new URLSearchParams(location.search).get('mode'));
+    if (!mode) return undefined;
+    trackJourneyEvent('mode_arrived', { mode, surface: 'home' }, { dedupeKey: `${mode}-${location.key}` });
+    if (mode === 'solo') {
+      navigate('/guest?source=marketing', { replace: true });
+      return undefined;
+    }
+    if (mode === 'join') setCrewOpen(true);
+    let attempts = 0;
+    let timer;
+    const focusTarget = () => {
+      const target = document.getElementById(playModeTarget(mode));
+      if (!target) {
+        attempts += 1;
+        if (attempts >= 40) window.clearInterval(timer);
+        return;
+      }
+      const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+      target.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
+      target.focus({ preventScroll: true });
+      window.clearInterval(timer);
+    };
+    timer = window.setInterval(focusTarget, 50);
+    focusTarget();
+    return () => window.clearInterval(timer);
+  }, [location.key, location.search, navigate]);
+
   return (
-    <div>
+    <div className="player-readable">
       <PlayOptions onOpenLobby={() => setCrewOpen(false)} onOpenCrew={() => setCrewOpen(true)} />
       <LiveLobby isConnected={isConnected} crewOpen={crewOpen} onCrewToggle={setCrewOpen} />
 

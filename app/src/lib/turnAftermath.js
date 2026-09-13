@@ -8,6 +8,8 @@ export const AFTERMATH_CATEGORIES = {
   TRAIT_WARNING: 'trait-warning',
   ARTIFACT_PAYOFF: 'artifact-payoff',
   CREW_SAVE: 'crew-save',
+  CAMP_RECOVERY: 'camp-recovery',
+  DEPARTURE: 'departure',
   BAD_LUCK: 'bad-luck',
   CLEAN_TURN: 'clean-turn',
   DESPERATE_TURN: 'desperate-turn',
@@ -58,11 +60,25 @@ const CATEGORY_COPY = {
     nextPrompt: 'Compare one more dig against what the escape forecast puts at risk.',
   },
   [AFTERMATH_CATEGORIES.CREW_SAVE]: {
-    title: 'Someone Stayed in the Run',
+    title: 'A Hand Across the Storm',
     tone: 'green',
     summary: 'Recovery or help turned weakness into another chance.',
     whyItMatters: 'Crew condition decides whether delay costs a teammate.',
     nextPrompt: 'Use the breathing room to move, depart, or stabilize the next weakest explorer.',
+  },
+  [AFTERMATH_CATEGORIES.CAMP_RECOVERY]: {
+    title: 'Shelter Took Root',
+    tone: 'green',
+    summary: 'The crew turned exposed ground into a place to recover and plan.',
+    whyItMatters: 'A camp changes future choices by creating safety before the route becomes desperate.',
+    nextPrompt: 'Use the foothold to recover, regroup, or begin the return while it is still cheap.',
+  },
+  [AFTERMATH_CATEGORIES.DEPARTURE]: {
+    title: 'The Crew Chose an Ending',
+    tone: 'gold',
+    summary: 'Departure converted every route, rescue, and recovered object into an expedition result.',
+    whyItMatters: 'Leaving is the final push-your-luck choice: value only matters when somebody brings it home.',
+    nextPrompt: 'Read the expedition memory, then decide what the next crew should risk differently.',
   },
   [AFTERMATH_CATEGORIES.BAD_LUCK]: {
     title: 'The Turn Bit Back',
@@ -217,6 +233,17 @@ export function deriveTurnAftermath({
     return null;
   }
 
+  if (hasAction(actions, Action.FLEE)) {
+    candidates.push(makeCandidate(AFTERMATH_CATEGORIES.DEPARTURE, 110, {
+      actions: actionLabels,
+      summary: escapeCostPreview?.headline || 'The crew committed to the departure window and turned the route into an outcome.',
+      receipts: [
+        receipt('Decision', 'Depart', 'gold'),
+        receipt('Pressure', pressure === null ? 'resolved' : String(pressure), pressure >= 75 ? 'red' : 'green'),
+      ],
+    }));
+  }
+
   if (traitPreview?.trait && traitPreview.effect?.warning) {
     candidates.push(makeCandidate(AFTERMATH_CATEGORIES.TRAIT_WARNING, 92, {
       trait: traitPreview.trait,
@@ -300,7 +327,7 @@ export function deriveTurnAftermath({
 
   if (hasAction(actions, Action.REST) || hasAction(actions, Action.HELP) || gains >= 2) {
     const helpResolved = hasAction(actions, Action.HELP);
-    candidates.push(makeCandidate(AFTERMATH_CATEGORIES.CREW_SAVE, 68 + Math.min(12, gains * 3), {
+    candidates.push(makeCandidate(AFTERMATH_CATEGORIES.CREW_SAVE, helpResolved ? 98 : 68 + Math.min(12, gains * 3), {
       statDelta,
       actions: actionLabels,
       summary: helpResolved
@@ -332,10 +359,11 @@ export function deriveTurnAftermath({
   }
 
   if (hasAction(actions, Action.SETUP_CAMP) || hasAction(actions, Action.BREAK_DOWN_CAMP)) {
-    candidates.push(makeCandidate(AFTERMATH_CATEGORIES.SETUP_TURN, 54, {
+    const establishing = hasAction(actions, Action.SETUP_CAMP);
+    candidates.push(makeCandidate(establishing ? AFTERMATH_CATEGORIES.CAMP_RECOVERY : AFTERMATH_CATEGORIES.SETUP_TURN, establishing ? 84 : 54, {
       actions: actionLabels,
-      summary: 'The crew spent the turn changing its foothold on the board.',
-      receipts: [receipt('Action', actionLabels.join(' / '), 'blue')],
+      summary: establishing ? 'Canvas, heat, and a reliable recovery point changed the shape of the route.' : 'The crew spent the turn changing its foothold on the board.',
+      receipts: [receipt('Action', actionLabels.join(' / '), establishing ? 'green' : 'blue')],
     }));
   }
 
