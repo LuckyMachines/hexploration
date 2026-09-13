@@ -3,7 +3,10 @@ import { Link, useSearchParams } from 'react-router-dom';
 import ThreeBoard from '../components/board/ThreeBoard';
 import AftermathMoment from '../components/resolution/AftermathMoment';
 import { deriveBoardViewModel } from '../components/board/boardViewModel';
+import { presentationDurationMs } from '../components/board/premiumPresentation';
 import { useUserPreferences } from '../hooks/useUserPreferences';
+import { emitFeedbackEvent } from '../lib/feedbackEvents';
+import { emitMusicDirectorState } from '../lib/musicDirector';
 import {
   GUEST_TERRAIN,
   canDepartGuestExpedition,
@@ -13,6 +16,7 @@ import {
   departGuestExpedition,
   emergencyExtractGuestExpedition,
   guestBoardInput,
+  guestCrewBark,
   guestDistanceToLanding,
   guestEmotionalBeat,
   guestReachableAliases,
@@ -73,7 +77,9 @@ export default function GuestExpeditionPage() {
   const [expedition, setExpedition] = useState(loadGuestExpedition);
   const [isResolving, setIsResolving] = useState(false);
   const [rendererState, setRendererState] = useState('building');
+  const [focusMode, setFocusMode] = useState(false);
   const resolveTimer = useRef(null);
+  const awaitingWorld = useRef(false);
 
   useEffect(() => {
     saveGuestExpedition(expedition);
@@ -82,6 +88,33 @@ export default function GuestExpeditionPage() {
   useEffect(() => () => {
     if (resolveTimer.current) window.clearTimeout(resolveTimer.current);
   }, []);
+
+  useEffect(() => {
+    if (!focusMode) return undefined;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    const closeOnEscape = (event) => {
+      if (event.key === 'Escape') setFocusMode(false);
+    };
+    window.addEventListener('keydown', closeOnEscape);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener('keydown', closeOnEscape);
+    };
+  }, [focusMode]);
+
+  useEffect(() => {
+    const director = expedition.status === 'complete'
+      ? expedition.result === 'safe'
+        ? { trackId: 'xenovoya-victory-extraction', state: 'Victory', reason: 'The guest expedition returned safely.' }
+        : { trackId: 'xenovoya-defeat-lost', state: 'Recovery', reason: 'Emergency extraction protected the crew.' }
+      : expedition.lastEvent === 'relic'
+        ? { trackId: 'xenovoya-relic-discovery', state: 'Relic Discovery', reason: 'The Tideglass Cradle answered.' }
+        : expedition.pressure >= 65
+          ? { trackId: 'xenovoya-expedition-danger', state: 'Danger', reason: 'Storm pressure crossed the safe band.' }
+          : { trackId: 'xenovoya-expedition-calm', state: 'Expedition Calm', reason: 'The crew is surveying the route.' };
+    emitMusicDirectorState(director);
+  }, [expedition.lastEvent, expedition.pressure, expedition.result, expedition.status]);
 
   const boardViewModel = useMemo(
     () => deriveBoardViewModel(guestBoardInput(expedition, { isResolving })),
@@ -92,6 +125,7 @@ export default function GuestExpeditionPage() {
   const canDepart = canDepartGuestExpedition(expedition);
   const recommendation = useMemo(() => guestRouteRecommendation(expedition), [expedition]);
   const emotionalBeat = useMemo(() => guestEmotionalBeat(expedition), [expedition]);
+  const crewBark = useMemo(() => guestCrewBark(expedition), [expedition]);
   const isPractice = searchParams.get('mode') === 'practice';
   const tacticalBoard = preferences.tacticalBoard || rendererState === 'unavailable';
   const pressureTone = expedition.pressure >= 65 ? 'text-signal-red' : expedition.pressure >= 40 ? 'text-compass-bright' : 'text-oxide-green';
@@ -100,30 +134,64 @@ export default function GuestExpeditionPage() {
     if (!expedition.selectedAlias || isResolving || expedition.status !== 'exploring') return;
     setIsResolving(true);
     resolveTimer.current = window.setTimeout(() => {
-      setExpedition((current) => commitGuestMove(current));
+      setExpedition((current) => {
+        const next = commitGuestMove(current);
+        const soundCue = next.lastEvent === 'relic'
+          ? 'board.relic.resonate'
+          : next.lastEvent === 'danger'
+            ? 'board.danger'
+            : next.lastEvent === 'return'
+              ? 'board.return'
+              : 'board.discovery';
+        emitFeedbackEvent({ source: 'guest-expedition', kind: 'board-beat', soundCue, motionCue: next.lastEvent });
+        return next;
+      });
+      if (tacticalBoard) setIsResolving(false);
+      else awaitingWorld.current = true;
+      resolveTimer.current = null;
+    }, presentationDurationMs());
+  };
+
+  const worldReady = () => {
+    setRendererState('ready');
+    if (!awaitingWorld.current) return;
+    awaitingWorld.current = false;
+    resolveTimer.current = window.setTimeout(() => {
       setIsResolving(false);
       resolveTimer.current = null;
-    }, 620);
+    }, presentationDurationMs());
   };
 
   const restart = () => {
     if (resolveTimer.current) window.clearTimeout(resolveTimer.current);
     resolveTimer.current = null;
+    awaitingWorld.current = false;
     setIsResolving(false);
     clearGuestExpedition();
     setExpedition(createGuestExpedition());
+    setFocusMode(false);
+  };
+
+  const depart = () => {
+    setExpedition((current) => departGuestExpedition(current));
+    emitFeedbackEvent({ source: 'guest-expedition', kind: 'board-beat', soundCue: 'board.escape.commit', motionCue: 'extraction' });
+  };
+
+  const emergencyExtract = () => {
+    setExpedition((current) => emergencyExtractGuestExpedition(current));
+    emitFeedbackEvent({ source: 'guest-expedition', kind: 'board-beat', soundCue: 'board.emergency', motionCue: 'recovery' });
   };
 
   return (
-    <section data-testid="guest-expedition" className="player-readable mx-auto w-full max-w-[100rem] px-3 py-5 sm:px-5 sm:py-8 2xl:px-6">
-      <div className="rounded-xl border border-exp-border bg-[radial-gradient(circle_at_72%_8%,rgba(76,145,219,0.12),transparent_30%),linear-gradient(180deg,rgba(25,31,21,0.96),rgba(10,14,10,0.98))] shadow-[0_24px_90px_rgba(0,0,0,0.35)]">
-        <header className="border-b border-exp-border px-4 py-5 sm:px-6">
+    <section data-testid="guest-expedition" data-focus-mode={focusMode ? 'active' : 'standard'} className={`player-readable mx-auto w-full max-w-[110rem] px-3 py-4 sm:px-5 sm:py-5 2xl:px-6 ${focusMode ? 'guest-focus-shell' : ''}`}>
+      <div className={`overflow-hidden rounded-xl border border-exp-border bg-[radial-gradient(circle_at_72%_8%,rgba(76,145,219,0.12),transparent_30%),linear-gradient(180deg,rgba(25,31,21,0.96),rgba(10,14,10,0.98))] shadow-[0_24px_90px_rgba(0,0,0,0.35)] ${focusMode ? 'flex h-full flex-col' : ''}`}>
+        <header className={`border-b border-exp-border px-4 py-4 sm:px-6 ${focusMode ? 'hidden' : ''}`}>
           <div className="flex flex-wrap items-end justify-between gap-4">
             <div className="max-w-3xl">
               <p className="font-mono text-[11px] uppercase tracking-[0.24em] text-blueprint">{isPractice ? 'Always-available practice expedition' : 'Wallet-free 3D expedition'}</p>
-              <h1 className="mt-2 font-display text-3xl uppercase tracking-[0.1em] text-exp-text sm:text-5xl">Explore the living survey</h1>
-              <p className="mt-3 font-mono text-sm leading-relaxed text-exp-text-dim">
-                Play a complete local route on the production 3D board. Reveal terrain, recover relics, manage pressure, and return to the landing beacon before the storm closes.
+              <h1 className="mt-2 font-display text-3xl uppercase tracking-[0.1em] text-exp-text sm:text-4xl">Explore the living survey</h1>
+              <p className="mt-2 font-mono text-sm leading-relaxed text-exp-text-dim">
+                Reveal terrain, recover a relic, and return to the landing beacon before the storm closes.
               </p>
             </div>
             <div className="flex flex-wrap gap-2 font-mono text-[11px] uppercase tracking-[0.14em]">
@@ -134,9 +202,9 @@ export default function GuestExpeditionPage() {
           </div>
         </header>
 
-        <div className="grid gap-5 p-3 sm:p-5 xl:grid-cols-[minmax(0,1.7fr)_minmax(310px,0.65fr)]">
-          <div className="xl:sticky xl:top-24 xl:self-start">
-            <div className="relative h-[58svh] min-h-[32rem] max-h-[48rem] overflow-hidden rounded-xl border border-exp-border bg-exp-dark">
+        <div className={`grid gap-4 p-3 sm:p-4 xl:grid-cols-[minmax(0,2.2fr)_minmax(300px,0.62fr)] ${focusMode ? 'min-h-0 flex-1 xl:grid-cols-[minmax(0,1fr)_22rem]' : ''}`}>
+          <div className={`min-w-0 ${focusMode ? 'min-h-0' : 'xl:sticky xl:top-20 xl:self-start'}`}>
+            <div className={`relative overflow-hidden rounded-xl border border-exp-border bg-exp-dark ${focusMode ? 'h-full min-h-[28rem]' : 'h-[66svh] min-h-[34rem] max-h-[54rem]'}`}>
               {tacticalBoard ? (
                 <GuestTacticalBoard expedition={expedition} reachableAliases={reachableAliases} recommendation={recommendation} onSelect={(alias) => setExpedition((current) => selectGuestTile(current, alias))} />
               ) : (
@@ -144,8 +212,9 @@ export default function GuestExpeditionPage() {
                   viewModel={boardViewModel}
                   onTileClick={(alias) => setExpedition((current) => selectGuestTile(current, alias))}
                   onTileHover={() => {}}
-                  onReady={() => setRendererState('ready')}
+                  onReady={worldReady}
                   onUnavailable={() => setRendererState('unavailable')}
+                  onBeat={(beat) => emitFeedbackEvent({ source: 'guest-board', kind: 'board-beat', beatId: beat.id, soundCue: beat.soundCue, motionCue: beat.motionCue })}
                   ariaLabel="Interactive 3D guest expedition board"
                 />
               )}
@@ -153,6 +222,7 @@ export default function GuestExpeditionPage() {
             <div className="mt-3 flex flex-wrap items-center justify-between gap-2 px-1 font-mono text-[11px] uppercase tracking-[0.12em] text-exp-text-dim">
               <span>{tacticalBoard ? rendererState === 'unavailable' ? 'Tactical fallback - 3D unavailable' : 'Tactical map ready' : rendererState === 'ready' ? 'World ready' : 'Building terrain'}</span>
               <button type="button" onClick={() => { setRendererState('building'); setPreference('tacticalBoard', !tacticalBoard); }} className="min-h-11 rounded border border-exp-border bg-exp-dark/70 px-3 py-2 text-exp-text hover:border-blueprint/50">{tacticalBoard ? 'Try 3D diorama' : 'Use tactical map'}</button>
+              <button type="button" aria-pressed={focusMode} onClick={() => setFocusMode((active) => !active)} className="hidden min-h-11 rounded border border-compass/35 bg-compass/10 px-3 py-2 text-compass-bright hover:border-compass sm:inline-flex sm:items-center">{focusMode ? 'Exit focus' : 'Focus world'}</button>
               {!tacticalBoard && <span>Drag to orbit / right-drag to pan / scroll to zoom</span>}
             </div>
           </div>
@@ -176,6 +246,11 @@ export default function GuestExpeditionPage() {
                 {recommendation && <p className="mt-2 font-mono text-[11px] leading-relaxed text-exp-text-dim"><span className="text-blueprint">Recommended {recommendation.alias}:</span> {recommendation.reason}</p>}
               </div>
             )}
+
+            <div className="rounded border border-exp-border/75 bg-exp-dark/50 px-4 py-3" aria-live="polite" data-testid="guest-crew-bark">
+              <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-oxide-green">Field comms / {crewBark.speaker}</p>
+              <p className="mt-1 font-mono text-[11px] leading-relaxed text-exp-text">"{crewBark.line}"</p>
+            </div>
 
             {expedition.status === 'exploring' && (
               <div className="rounded border border-exp-border bg-exp-panel/75 p-4">
@@ -205,7 +280,7 @@ export default function GuestExpeditionPage() {
                   {isResolving ? 'World resolving...' : expedition.selectedAlias ? `Commit route to ${expedition.selectedAlias}` : 'Select a reachable route'}
                 </button>
                 {canDepart && (
-                  <button type="button" onClick={() => setExpedition((current) => departGuestExpedition(current))} className="mt-2 min-h-11 w-full rounded border border-oxide-green/55 bg-oxide-green/10 px-4 py-2 font-mono text-xs uppercase tracking-[0.16em] text-oxide-green hover:bg-oxide-green/20">
+                  <button type="button" onClick={depart} className="mt-2 min-h-11 w-full rounded border border-oxide-green/55 bg-oxide-green/10 px-4 py-2 font-mono text-xs uppercase tracking-[0.16em] text-oxide-green hover:bg-oxide-green/20">
                     {expedition.relics ? `Depart with ${expedition.relics} relic${expedition.relics === 1 ? '' : 's'}` : 'Depart with the completed map'}
                   </button>
                 )}
@@ -213,7 +288,7 @@ export default function GuestExpeditionPage() {
             )}
 
             {expedition.status === 'redline' && (
-              <button type="button" onClick={() => setExpedition((current) => emergencyExtractGuestExpedition(current))} className="min-h-12 w-full rounded border border-signal-red bg-signal-red/15 px-4 py-3 font-display text-sm font-semibold uppercase tracking-[0.14em] text-signal-red hover:bg-signal-red/25">
+              <button type="button" onClick={emergencyExtract} className="min-h-12 w-full rounded border border-signal-red bg-signal-red/15 px-4 py-3 font-display text-sm font-semibold uppercase tracking-[0.14em] text-signal-red hover:bg-signal-red/25">
                 Call emergency extraction
               </button>
             )}
@@ -237,7 +312,7 @@ export default function GuestExpeditionPage() {
           </aside>
         </div>
 
-        <footer className="grid gap-3 border-t border-exp-border px-4 py-5 font-mono text-xs leading-relaxed text-exp-text-dim sm:grid-cols-3 sm:px-6">
+        <footer className={`grid gap-3 border-t border-exp-border px-4 py-5 font-mono text-xs leading-relaxed text-exp-text-dim sm:grid-cols-3 sm:px-6 ${focusMode ? 'hidden' : ''}`}>
           <p><span className="text-blueprint">Reveal:</span> move into fog to discover terrain and relics.</p>
           <p><span className="text-compass-bright">Read:</span> every move consumes supplies and raises pressure.</p>
           <p><span className="text-oxide-green">Depart:</span> return to the blue landing beacon and leave before redline.</p>

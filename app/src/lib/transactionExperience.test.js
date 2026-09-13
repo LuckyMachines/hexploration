@@ -5,6 +5,7 @@ import {
   normalizeTransactionError,
   transactionExplorerUrl,
   transactionRequestKey,
+  transactionSignalSequence,
 } from './transactionExperience';
 
 describe('transaction experience', () => {
@@ -30,5 +31,16 @@ describe('transaction experience', () => {
     expect(transactionExplorerUrl({ blockExplorers: { default: { url: 'https://scan.test/' } } }, '0x123')).toBe('https://scan.test/tx/0x123');
     expect(isTransactionActive('confirming')).toBe(true);
     expect(isTransactionActive('confirmed')).toBe(false);
+  });
+
+  it('keeps confirmation readable as an expedition signal', () => {
+    const sequence = transactionSignalSequence('confirming');
+    expect(sequence.map((stage) => stage.state)).toEqual(['complete', 'complete', 'active', 'upcoming']);
+    expect(sequence[2].label).toBe('Transmit signal');
+  });
+
+  it('marks an interrupted stage without claiming later completion', () => {
+    const sequence = transactionSignalSequence('failed', { hasError: true });
+    expect(sequence.map((stage) => stage.state)).toEqual(['complete', 'failed', 'upcoming', 'upcoming']);
   });
 });

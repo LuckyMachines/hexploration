@@ -140,3 +140,68 @@ export const FEEDBACK_FALLBACK = {
   'tx-success': { frequency: 520, type: 'triangle', gain: 0.016, vibrate: 18 },
   'tx-error': { frequency: 100, type: 'square', gain: 0.02, vibrate: 30 },
 };
+
+export const BOARD_CUE_PROFILES = Object.freeze({
+  'board.ready': [
+    { frequency: 176, frequencyEnd: 220, type: 'sine', gain: 0.008, duration: 0.18 },
+  ],
+  'board.route.preview': [
+    { frequency: 294, frequencyEnd: 392, type: 'triangle', gain: 0.012, duration: 0.12 },
+    { frequency: 587, type: 'sine', gain: 0.006, delayMs: 68, duration: 0.14, pan: 0.18 },
+  ],
+  'board.commit': [
+    { frequency: 110, frequencyEnd: 82, type: 'sine', gain: 0.024, duration: 0.24 },
+    { frequency: 330, frequencyEnd: 495, type: 'triangle', gain: 0.012, delayMs: 42, duration: 0.18 },
+  ],
+  'board.resolve': [
+    { frequency: 146, frequencyEnd: 220, type: 'sawtooth', gain: 0.009, duration: 0.48, pan: -0.2 },
+    { frequency: 440, frequencyEnd: 660, type: 'sine', gain: 0.009, delayMs: 150, duration: 0.34, pan: 0.22 },
+    { frequency: 880, type: 'sine', gain: 0.005, delayMs: 430, duration: 0.16 },
+  ],
+  'board.discovery': [
+    { frequency: 392, frequencyEnd: 523, type: 'triangle', gain: 0.012, duration: 0.24, pan: -0.12 },
+    { frequency: 784, frequencyEnd: 1047, type: 'sine', gain: 0.006, delayMs: 105, duration: 0.32, pan: 0.16 },
+  ],
+  'board.relic.resonate': [
+    { frequency: 196, frequencyEnd: 147, type: 'sine', gain: 0.018, duration: 0.64 },
+    { frequency: 587, frequencyEnd: 880, type: 'triangle', gain: 0.01, delayMs: 80, duration: 0.56, pan: -0.22 },
+    { frequency: 1175, frequencyEnd: 1568, type: 'sine', gain: 0.006, delayMs: 260, duration: 0.46, pan: 0.26 },
+  ],
+  'board.danger': [
+    { frequency: 92, frequencyEnd: 74, type: 'sawtooth', gain: 0.018, duration: 0.46 },
+    { frequency: 138, type: 'square', gain: 0.008, delayMs: 180, duration: 0.15, pan: 0.2 },
+  ],
+  'board.recovery': [
+    { frequency: 220, frequencyEnd: 330, type: 'sine', gain: 0.012, duration: 0.36 },
+    { frequency: 440, type: 'triangle', gain: 0.006, delayMs: 130, duration: 0.34, pan: -0.16 },
+  ],
+  'board.camp.prepare': [
+    { frequency: 196, frequencyEnd: 247, type: 'triangle', gain: 0.012, duration: 0.32 },
+    { frequency: 98, type: 'sine', gain: 0.008, delayMs: 90, duration: 0.44 },
+  ],
+  'board.recovery.rest': [
+    { frequency: 220, frequencyEnd: 294, type: 'sine', gain: 0.011, duration: 0.42 },
+    { frequency: 440, type: 'sine', gain: 0.005, delayMs: 180, duration: 0.3 },
+  ],
+  'board.rescue.link': [
+    { frequency: 330, frequencyEnd: 440, type: 'triangle', gain: 0.011, duration: 0.28, pan: -0.3 },
+    { frequency: 440, frequencyEnd: 660, type: 'triangle', gain: 0.011, delayMs: 110, duration: 0.32, pan: 0.3 },
+  ],
+  'board.return': [
+    { frequency: 262, frequencyEnd: 392, type: 'sine', gain: 0.012, duration: 0.38 },
+    { frequency: 523, type: 'triangle', gain: 0.006, delayMs: 150, duration: 0.28 },
+  ],
+  'board.escape.commit': [
+    { frequency: 131, frequencyEnd: 196, type: 'sawtooth', gain: 0.014, duration: 0.46 },
+    { frequency: 523, frequencyEnd: 784, type: 'triangle', gain: 0.012, delayMs: 140, duration: 0.46, pan: -0.18 },
+    { frequency: 1047, type: 'sine', gain: 0.007, delayMs: 420, duration: 0.4, pan: 0.2 },
+  ],
+  'board.emergency': [
+    { frequency: 104, frequencyEnd: 78, type: 'square', gain: 0.015, duration: 0.34 },
+    { frequency: 294, frequencyEnd: 220, type: 'triangle', gain: 0.009, delayMs: 190, duration: 0.4 },
+  ],
+  'board.complete': [
+    { frequency: 262, frequencyEnd: 392, type: 'triangle', gain: 0.011, duration: 0.38 },
+    { frequency: 523, frequencyEnd: 784, type: 'sine', gain: 0.007, delayMs: 170, duration: 0.42 },
+  ],
+});

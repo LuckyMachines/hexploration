@@ -13,6 +13,8 @@ const TERRAIN_PRESSURE = Object.freeze({
   [Tile.RELIC]: 10,
 });
 
+const RELIC_WAKE_PRESSURE = 28;
+
 export const GUEST_TERRAIN = Object.freeze([
   { alias: '0,0', tileType: Tile.MOUNTAIN },
   { alias: '0,1', tileType: Tile.PLAINS },
@@ -140,7 +142,7 @@ export function commitGuestMove(state) {
 
   const firstVisit = !normalized.visitedAliases.includes(destination.alias);
   const foundRelic = firstVisit && destination.tileType === Tile.RELIC;
-  const pressure = Math.min(100, normalized.pressure + (TERRAIN_PRESSURE[destination.tileType] || 8));
+  const pressure = Math.min(100, normalized.pressure + (TERRAIN_PRESSURE[destination.tileType] || 8) + (foundRelic ? RELIC_WAKE_PRESSURE : 0));
   const supplies = Math.max(0, normalized.supplies - 1);
   const redline = (pressure >= 100 || supplies === 0) && destination.alias !== GUEST_LANDING_SITE;
   const terrain = TILE_LABELS[destination.tileType];
@@ -163,7 +165,7 @@ export function commitGuestMove(state) {
     message: redline
       ? 'The route has crossed redline. Call emergency extraction before the storm closes.'
       : foundRelic
-        ? 'The Tideglass Cradle answered beneath a basalt shelf. Decide whether to push farther or carry it home.'
+        ? 'The Tideglass Cradle answered beneath a basalt shelf, and the storm answered with it. Decide whether to push farther or carry it home.'
         : destination.alias === GUEST_LANDING_SITE
           ? 'The landing beacon is underfoot. Depart now, or risk one more discovery.'
           : `${terrain} revealed. The way home is still open, but pressure is rising.`,
@@ -286,7 +288,7 @@ export function guestEmotionalBeat(state) {
       tone: 'gold',
       title: 'Tideglass Answered',
       summary: normalized.message,
-      whyItMatters: 'The objective has changed from finding value to bringing it home intact.',
+      whyItMatters: 'The objective has changed from finding value to bringing it home intact, and the awakened storm has made every extra crossing expensive.',
       nextPrompt: 'Follow the highlighted route back to the landing beacon, or wager the relic on one more reveal.',
     },
     danger: {
@@ -326,6 +328,20 @@ export function guestEmotionalBeat(state) {
     },
   };
   return beats[normalized.lastEvent] ? { ...common, ...beats[normalized.lastEvent] } : null;
+}
+
+export function guestCrewBark(state) {
+  const normalized = normalizeGuestExpedition(state);
+  const barks = {
+    arrival: { speaker: 'Signal Cartographer', line: 'The nearest echo has a glass note. I can mark the crossing; you decide how much weather we owe it.' },
+    reveal: { speaker: 'Signal Cartographer', line: normalized.pressure >= 55 ? 'The map is sharpening, but the return signal is thinning.' : 'New ground. The beacon still answers behind us.' },
+    relic: { speaker: 'Routekeeper', line: 'We found what called us. I can hold the homeward crossing, but not forever.' },
+    danger: { speaker: 'Routekeeper', line: 'The storm is on the route now. Choose home before it chooses for us.' },
+    return: { speaker: 'Signal Cartographer', line: 'Beacon underfoot. We can leave with a true map, or listen once more.' },
+    'safe-departure': { speaker: 'Routekeeper', line: 'Route closed. Promise kept. The Tideglass is coming home.' },
+    emergency: { speaker: 'Routekeeper', line: 'Count people first. We can mourn the lost route after everyone is breathing.' },
+  };
+  return Object.freeze(barks[normalized.lastEvent] || barks.arrival);
 }
 
 export function guestBoardInput(state, { isResolving = false } = {}) {

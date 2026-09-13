@@ -110,3 +110,39 @@ export function formatEstimatedGas(value) {
   if (value === null || value === undefined) return 'Estimating';
   return `${Number(value).toLocaleString()} gas`;
 }
+
+const SIGNAL_STAGES = Object.freeze([
+  { id: 'preflight', label: 'Read the world', detail: 'Check the action against current expedition state.' },
+  { id: 'authorization', label: 'Authorize intent', detail: 'Your wallet approves only this prepared action.' },
+  { id: 'transmission', label: 'Transmit signal', detail: 'The action is traveling to the expedition contract.' },
+  { id: 'memory', label: 'Write memory', detail: 'Confirmation makes the result authoritative and recoverable.' },
+]);
+
+const SIGNAL_PHASE_INDEX = Object.freeze({
+  idle: 0,
+  simulating: 0,
+  ready: 1,
+  awaiting_signature: 1,
+  submitted: 2,
+  confirming: 2,
+  replaced: 2,
+  unresolved: 2,
+  confirmed: 3,
+  reverted: 2,
+  failed: 1,
+});
+
+export function transactionSignalSequence(phase = 'idle', { hasError = false } = {}) {
+  const activeIndex = SIGNAL_PHASE_INDEX[phase] ?? 0;
+  const failed = hasError || phase === 'failed' || phase === 'reverted';
+  return SIGNAL_STAGES.map((stage, index) => ({
+    ...stage,
+    state: failed && index === activeIndex
+      ? 'failed'
+      : index < activeIndex || phase === 'confirmed'
+        ? 'complete'
+        : index === activeIndex
+          ? 'active'
+          : 'upcoming',
+  }));
+}

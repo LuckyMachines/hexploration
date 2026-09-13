@@ -1,7 +1,7 @@
 import { truncateAddress } from '../../lib/formatting';
 import { getDefaultChainId } from '../../config/clients';
 import { getChainById } from '../../config/chains';
-import { formatEstimatedGas, transactionExplorerUrl } from '../../lib/transactionExperience';
+import { formatEstimatedGas, transactionExplorerUrl, transactionSignalSequence } from '../../lib/transactionExperience';
 
 export default function ReceiptDrawer({
   submission,
@@ -29,6 +29,10 @@ export default function ReceiptDrawer({
         : isPending
           ? 'Signature'
           : 'Prepared';
+  const signalSequence = transactionSignalSequence(
+    lifecycle?.phase || (error ? 'failed' : isSuccess ? 'confirmed' : isConfirming ? 'confirming' : isPending ? 'awaiting_signature' : 'ready'),
+    { hasError: Boolean(error) },
+  );
 
   return (
     <details open className="rounded border border-blueprint/25 bg-blueprint/5 px-4 py-3">
@@ -49,6 +53,17 @@ export default function ReceiptDrawer({
           <p className="mt-1 font-mono text-xs text-blueprint">{hash ? truncateAddress(hash) : 'Not sent'}</p>
         </div>
       </div>
+      <ol className="mt-3 grid gap-1 sm:grid-cols-4" aria-label="Expedition signal progress">
+        {signalSequence.map((stage, index) => (
+          <li key={stage.id} className={`relative rounded border px-2.5 py-2 ${stage.state === 'failed' ? 'border-signal-red/55 bg-signal-red/10' : stage.state === 'active' ? 'border-blueprint/55 bg-blueprint/10' : stage.state === 'complete' ? 'border-oxide-green/35 bg-oxide-green/5' : 'border-exp-border/50 bg-exp-dark/20'}`}>
+            <div className="flex items-center gap-2">
+              <span className={`grid h-5 w-5 shrink-0 place-items-center rounded-full border font-mono text-[9px] ${stage.state === 'failed' ? 'border-signal-red text-signal-red' : stage.state === 'active' ? 'alive-tx-pulse border-blueprint text-blueprint' : stage.state === 'complete' ? 'border-oxide-green text-oxide-green' : 'border-exp-border text-exp-text-dim'}`}>{stage.state === 'complete' ? 'OK' : index + 1}</span>
+              <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-exp-text">{stage.label}</span>
+            </div>
+            <p className="mt-1 font-mono text-[10px] leading-relaxed text-exp-text-dim">{stage.detail}</p>
+          </li>
+        ))}
+      </ol>
       <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-2 font-mono text-[10px] uppercase tracking-[0.15em] text-exp-text-dim">
         <span>Preflight: {simulation?.status === 'ready' ? 'passed' : simulation?.status || 'not run'}</span>
         {simulation?.estimatedGas != null && <span>Estimate: {formatEstimatedGas(simulation.estimatedGas)}</span>}

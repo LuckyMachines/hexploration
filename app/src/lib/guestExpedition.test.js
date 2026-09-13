@@ -8,6 +8,7 @@ import {
   departGuestExpedition,
   emergencyExtractGuestExpedition,
   guestBoardInput,
+  guestCrewBark,
   guestDistanceToLanding,
   guestEmotionalBeat,
   guestReachableAliases,
@@ -53,6 +54,7 @@ describe('guest expedition', () => {
 
     const carrying = commitGuestMove(selectGuestTile(initial, '3,2'));
     expect(guestRouteRecommendation(carrying)).toMatchObject({ alias: GUEST_LANDING_SITE, label: 'Safest route home' });
+    expect(guestCrewBark(carrying)).toMatchObject({ speaker: 'Routekeeper' });
   });
 
   it('allows a safe departure only after returning to landing', () => {
