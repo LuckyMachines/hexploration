@@ -1,0 +1,33 @@
+{
+  "assetId": "environment-furnace-scar",
+  "candidate": "app/public/images/art/environments/furnace-scar.webp",
+  "reviewer": "Codex final art QA",
+  "reviewedAt": "2026-09-13",
+  "scores": {
+    "recognition": 4,
+    "agency": 4,
+    "specificity": 4,
+    "restraint": 4,
+    "continuity": 4,
+    "reusability": 4,
+    "accessibility": 4
+  },
+  "notes": {
+    "recognition": "The location's terrain silhouette and single environmental phenomenon remain readable at thumbnail size and behind the 3D board.",
+    "agency": "A navigable foreground, route threshold, cover line, or return trace makes player movement and consequence legible.",
+    "specificity": "Weathered basalt, mineral relief, restrained field instruments, and localized signal light place the scene in Xenovoya.",
+    "restraint": "One focal event is protected by quiet atmosphere and broad board-safe space.",
+    "continuity": "Field-ink depth and the cyan, gold, green, red, and violet signal grammar remain disciplined.",
+    "reusability": "The wide crop supports location backplates, narrative framing, and marketing detail crops.",
+    "accessibility": "Value structure, terrain silhouette, and route depth communicate without relying on hue alone."
+  },
+  "decision": "approved",
+  "candidateSha256": "5f367cfb24949dacbf42ca5a6f961ab5d40d48b94e8973e8dc78e7cb5129f812",
+  "generation": {
+    "mode": "azure-image-generation",
+    "tool": "azure-foundry",
+    "model": "gpt-image-2",
+    "promptSha256": "f23b77ddb7511f5b3dbbaad6888fa630e7b9e6a659a13330d08edb0890a06874"
+  },
+  "joyScore": 10
+}

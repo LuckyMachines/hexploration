@@ -1,6 +1,6 @@
 {
   "$schema": "./schema/asset-manifest.schema.json",
-  "version": "1.9.0",
+  "version": "1.10.0",
   "artDirectionVersion": "1.2.0",
   "managedRoots": [
     "app/public/images/site-refresh",
@@ -2840,6 +2840,694 @@
         "sha256": "45da55e87e255a2a419a81b07df4db369c4eb014f13f08797126dbd12d63c09e",
         "review": "app/src/art-pipeline/reviews/relic-stormglass-seed.json",
         "promptSha256": "acb477b7a9cddb09179e7315289a19330cffafeb2d9a981a0378e9a399d47ba3"
+      }
+    },
+    {
+      "id": "environment-glassroot-choir",
+      "name": "Glassroot Choir",
+      "family": "environment",
+      "status": "approved",
+      "emotionalBeat": "cooperation",
+      "assetType": "feature-landscape",
+      "partRole": "backplate",
+      "output": {
+        "path": "app/public/images/art/environments/glassroot-choir.webp",
+        "width": 1024,
+        "height": 700,
+        "format": "webp",
+        "alpha": false,
+        "maxBytes": 180000,
+        "safeZone": "center"
+      },
+      "prompt": {
+        "primaryRequest": "Glassroot Choir, where translucent roots under the soil carry a chord that follows the crew's lantern",
+        "scene": "A traversable rain-dark basalt grove with a few large glass roots surfacing like instrument strings, one living cyan-green pulse traveling under the ground, distant low ridges",
+        "subject": "Glassroot Choir, where translucent roots under the soil carry a chord that follows the crew's lantern",
+        "composition": "Wide human-eye-level route view, clear foreground crossing, three layered root planes, calm center for the 3D board, deep quiet horizon",
+        "lighting": "Cool field-ink mist, restrained cyan signal and oxide-green living response",
+        "constraints": [
+          "no characters, no text, no interface, no logos, no decorative hex wallpaper, no giant portal, no fantasy castle, no full-frame neon, no watermark",
+          "Preserve the Xenovoya field-ink palette and keep signal color localized",
+          "Maintain one readable focal event and production-safe negative space"
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/site-refresh/feature-expedition.webp",
+          "role": "approved Xenovoya material, palette, silhouette, and composition reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-generation",
+        "reviewedAt": "2026-09-13",
+        "sha256": "d955d89bad426d8d2f1fefed0e6becf72622395e601b3bb1195719c53b8665d9",
+        "review": "app/src/art-pipeline/reviews/environment-glassroot-choir.json",
+        "promptSha256": "f8266cab478858c83f83a9a1a046eff3f34ed6cea541e8b72e6650f939f05e63"
+      }
+    },
+    {
+      "id": "environment-cinderwake-flats",
+      "name": "Cinderwake Flats",
+      "family": "environment",
+      "status": "approved",
+      "emotionalBeat": "jeopardy",
+      "assetType": "feature-landscape",
+      "partRole": "backplate",
+      "output": {
+        "path": "app/public/images/art/environments/cinderwake-flats.webp",
+        "width": 1024,
+        "height": 700,
+        "format": "webp",
+        "alpha": false,
+        "maxBytes": 180000,
+        "safeZone": "center"
+      },
+      "prompt": {
+        "primaryRequest": "Cinderwake Flats, where matte black sand rises in slow ribbons around a buried ember seam moving against the wind",
+        "scene": "A shallow alien basin of dark glass sand, low basalt cover, a narrow warm seam below the surface, sparse emberglass fragments at believable human scale",
+        "subject": "Cinderwake Flats, where matte black sand rises in slow ribbons around a buried ember seam moving against the wind",
+        "composition": "Wide low crossing, readable safe route behind cover and exposed shortcut across the seam, large quiet sky for interface",
+        "lighting": "Cold storm ambient with localized amber and one signal-red warning fracture",
+        "constraints": [
+          "no characters, no text, no interface, no logos, no decorative hex wallpaper, no giant portal, no fantasy castle, no full-frame neon, no watermark",
+          "Preserve the Xenovoya field-ink palette and keep signal color localized",
+          "Maintain one readable focal event and production-safe negative space"
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/site-refresh/feature-expedition.webp",
+          "role": "approved Xenovoya material, palette, silhouette, and composition reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-generation",
+        "reviewedAt": "2026-09-13",
+        "sha256": "a6eb14f3731b980428937a6e369db3c84cda488513a894c6de31063f4219907e",
+        "review": "app/src/art-pipeline/reviews/environment-cinderwake-flats.json",
+        "promptSha256": "4d2b1d1565628b6a2f41d9bbf1e18b64207d6c37e950cb0ff91f1060058afaf8"
+      }
+    },
+    {
+      "id": "environment-mossglass-gate",
+      "name": "Mossglass Gate",
+      "family": "environment",
+      "status": "approved",
+      "emotionalBeat": "discovery",
+      "assetType": "feature-landscape",
+      "partRole": "backplate",
+      "output": {
+        "path": "app/public/images/art/environments/mossglass-gate.webp",
+        "width": 1024,
+        "height": 700,
+        "format": "webp",
+        "alpha": false,
+        "maxBytes": 180000,
+        "safeZone": "center"
+      },
+      "prompt": {
+        "primaryRequest": "Mossglass Gate, a living threshold whose mineral fronds close behind each footstep and bloom open again",
+        "scene": "A human-scale arch grown from dark basalt and translucent mossglass, one path passing through, wet ground, restrained foliage and distant cyan mist",
+        "subject": "Mossglass Gate, a living threshold whose mineral fronds close behind each footstep and bloom open again",
+        "composition": "Wide threshold composition, clear route through and route home, two strong layered leaf silhouettes, open central board area",
+        "lighting": "Oxide-green life light with a faint cyan route edge against deep field-ink shadow",
+        "constraints": [
+          "no characters, no text, no interface, no logos, no decorative hex wallpaper, no giant portal, no fantasy castle, no full-frame neon, no watermark",
+          "Preserve the Xenovoya field-ink palette and keep signal color localized",
+          "Maintain one readable focal event and production-safe negative space"
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/site-refresh/feature-expedition.webp",
+          "role": "approved Xenovoya material, palette, silhouette, and composition reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-generation",
+        "reviewedAt": "2026-09-13",
+        "sha256": "025c00b62df8bbd456d7f9e2bedf9bdb84c69cd524aef01003577af4d43eae7f",
+        "review": "app/src/art-pipeline/reviews/environment-mossglass-gate.json",
+        "promptSha256": "b7e76d1027fc225aee133596e20a4d1504bdc4f561827b89545b25544387c582"
+      }
+    },
+    {
+      "id": "environment-quiet-step",
+      "name": "Quiet Step",
+      "family": "environment",
+      "status": "approved",
+      "emotionalBeat": "trust",
+      "assetType": "feature-landscape",
+      "partRole": "backplate",
+      "output": {
+        "path": "app/public/images/art/environments/quiet-step.webp",
+        "width": 1024,
+        "height": 700,
+        "format": "webp",
+        "alpha": false,
+        "maxBytes": 180000,
+        "safeZone": "center"
+      },
+      "prompt": {
+        "primaryRequest": "Quiet Step, a dependable terrace of low stone that holds the landing light until the storm turns",
+        "scene": "A series of broad rain-dark basalt steps with old boot impressions, shallow water, a tiny distant landing beacon, no monumental structures",
+        "subject": "Quiet Step, a dependable terrace of low stone that holds the landing light until the storm turns",
+        "composition": "Wide calm traversal view, terraces create readable depth, protected middle ground, quiet upper half for interface",
+        "lighting": "Soft compass-gold residual landing light and restrained green safety reflection",
+        "constraints": [
+          "no characters, no text, no interface, no logos, no decorative hex wallpaper, no giant portal, no fantasy castle, no full-frame neon, no watermark",
+          "Preserve the Xenovoya field-ink palette and keep signal color localized",
+          "Maintain one readable focal event and production-safe negative space"
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/site-refresh/feature-expedition.webp",
+          "role": "approved Xenovoya material, palette, silhouette, and composition reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-generation",
+        "reviewedAt": "2026-09-13",
+        "sha256": "8c118f5d2d1524bcd14219c3efda8dc09cb793238daefe1459bf44ca3c22ba13",
+        "review": "app/src/art-pipeline/reviews/environment-quiet-step.json",
+        "promptSha256": "1f40d513d497e3ef7453ab263b7f282dc9eb9b6d988c5dc6a5c8b2f71828c3f6"
+      }
+    },
+    {
+      "id": "environment-stormneedle-pass",
+      "name": "Stormneedle Pass",
+      "family": "environment",
+      "status": "approved",
+      "emotionalBeat": "jeopardy",
+      "assetType": "feature-landscape",
+      "partRole": "backplate",
+      "output": {
+        "path": "app/public/images/art/environments/stormneedle-pass.webp",
+        "width": 1024,
+        "height": 700,
+        "format": "webp",
+        "alpha": false,
+        "maxBytes": 180000,
+        "safeZone": "center"
+      },
+      "prompt": {
+        "primaryRequest": "Stormneedle Pass, where slate fins divide the cloudbank into narrow channels and static crawls over every exposed edge",
+        "scene": "A navigable high pass between a handful of thin basalt fins, one sheltered line and one faster exposed line, storm layers beyond",
+        "subject": "Stormneedle Pass, where slate fins divide the cloudbank into narrow channels and static crawls over every exposed edge",
+        "composition": "Wide uphill route view, strong diagonal passage, human-scale cover, quiet lower center for the 3D board",
+        "lighting": "Cold cyan storm haze with localized signal-red static and a thin gold safe-route trace",
+        "constraints": [
+          "no characters, no text, no interface, no logos, no decorative hex wallpaper, no giant portal, no fantasy castle, no full-frame neon, no watermark",
+          "Preserve the Xenovoya field-ink palette and keep signal color localized",
+          "Maintain one readable focal event and production-safe negative space"
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/site-refresh/feature-expedition.webp",
+          "role": "approved Xenovoya material, palette, silhouette, and composition reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-generation",
+        "reviewedAt": "2026-09-13",
+        "sha256": "849a6cd404c2940e0973348b655c21b8b0724d0c725d1bd71849a173df55fde9",
+        "review": "app/src/art-pipeline/reviews/environment-stormneedle-pass.json",
+        "promptSha256": "0f82878382c9463260c5fa40ece3a7bd28cac5df779bc5e82ecbf7201cd828f3"
+      }
+    },
+    {
+      "id": "environment-furnace-scar",
+      "name": "Furnace Scar",
+      "family": "environment",
+      "status": "approved",
+      "emotionalBeat": "jeopardy",
+      "assetType": "feature-landscape",
+      "partRole": "backplate",
+      "output": {
+        "path": "app/public/images/art/environments/furnace-scar.webp",
+        "width": 1024,
+        "height": 700,
+        "format": "webp",
+        "alpha": false,
+        "maxBytes": 180000,
+        "safeZone": "center"
+      },
+      "prompt": {
+        "primaryRequest": "Furnace Scar, a cooled glass plate split by a red seam that flares one breath earlier each time",
+        "scene": "A believable traversal-scale scar across black basalt, low ledges, thin smoke, restrained warm glass below the crack and no lava ocean",
+        "subject": "Furnace Scar, a cooled glass plate split by a red seam that flares one breath earlier each time",
+        "composition": "Wide environmental hazard frame, visible crossing options around one contained fracture, generous dark negative space",
+        "lighting": "Deep blue-black ambient, localized red-orange pressure signal, no global warm wash",
+        "constraints": [
+          "no characters, no text, no interface, no logos, no decorative hex wallpaper, no giant portal, no fantasy castle, no full-frame neon, no watermark",
+          "Preserve the Xenovoya field-ink palette and keep signal color localized",
+          "Maintain one readable focal event and production-safe negative space"
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/site-refresh/feature-expedition.webp",
+          "role": "approved Xenovoya material, palette, silhouette, and composition reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-generation",
+        "reviewedAt": "2026-09-13",
+        "sha256": "5f367cfb24949dacbf42ca5a6f961ab5d40d48b94e8973e8dc78e7cb5129f812",
+        "review": "app/src/art-pipeline/reviews/environment-furnace-scar.json",
+        "promptSha256": "f23b77ddb7511f5b3dbbaad6888fa630e7b9e6a659a13330d08edb0890a06874"
+      }
+    },
+    {
+      "id": "environment-pale-compass-field",
+      "name": "Pale Compass Field",
+      "family": "environment",
+      "status": "approved",
+      "emotionalBeat": "discovery",
+      "assetType": "feature-landscape",
+      "partRole": "backplate",
+      "output": {
+        "path": "app/public/images/art/environments/pale-compass-field.webp",
+        "width": 1024,
+        "height": 700,
+        "format": "webp",
+        "alpha": false,
+        "maxBytes": 180000,
+        "safeZone": "center"
+      },
+      "prompt": {
+        "primaryRequest": "Pale Compass Field, where needle-shaped flowers rotate toward buried metal and change direction when relics answer",
+        "scene": "A sparse plain of tall ivory mineral flowers rooted in slate soil, all leaning toward one small buried signal point, distant low ridge",
+        "subject": "Pale Compass Field, where needle-shaped flowers rotate toward buried metal and change direction when relics answer",
+        "composition": "Wide low panorama, flowers make clear directional rhythm without becoming arrows, open center and horizon for gameplay",
+        "lighting": "Cool dawn cyan with a single restrained violet relic response and green homeward echo",
+        "constraints": [
+          "no characters, no text, no interface, no logos, no decorative hex wallpaper, no giant portal, no fantasy castle, no full-frame neon, no watermark",
+          "Preserve the Xenovoya field-ink palette and keep signal color localized",
+          "Maintain one readable focal event and production-safe negative space"
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/site-refresh/feature-expedition.webp",
+          "role": "approved Xenovoya material, palette, silhouette, and composition reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-generation",
+        "reviewedAt": "2026-09-13",
+        "sha256": "449ca250d9183abf6f61e3dd44c11cff300d3d53883ad7ec7eca402ac2b1c261",
+        "review": "app/src/art-pipeline/reviews/environment-pale-compass-field.json",
+        "promptSha256": "dc09b796344e24a13d6a0f0f886a0137a34c8f81a1678ad3d24e2e7d2a8b014a"
+      }
+    },
+    {
+      "id": "environment-split-needle",
+      "name": "Split Needle",
+      "family": "environment",
+      "status": "approved",
+      "emotionalBeat": "jeopardy",
+      "assetType": "feature-landscape",
+      "partRole": "backplate",
+      "output": {
+        "path": "app/public/images/art/environments/split-needle.webp",
+        "width": 1024,
+        "height": 700,
+        "format": "webp",
+        "alpha": false,
+        "maxBytes": 180000,
+        "safeZone": "center"
+      },
+      "prompt": {
+        "primaryRequest": "Split Needle, a fractured basalt spire that frames the landing beacon while lightning narrows the way home",
+        "scene": "A human-scale sheltered ledge below one split dark spire, the distant beacon visible through its gap, storm rain beyond",
+        "subject": "Split Needle, a fractured basalt spire that frames the landing beacon while lightning narrows the way home",
+        "composition": "Wide route frame through the fracture, obvious protected ledge, strong silhouette, navigable foreground and open board space",
+        "lighting": "Cold storm blue with a localized red lightning warning and distant cyan beacon",
+        "constraints": [
+          "no characters, no text, no interface, no logos, no decorative hex wallpaper, no giant portal, no fantasy castle, no full-frame neon, no watermark",
+          "Preserve the Xenovoya field-ink palette and keep signal color localized",
+          "Maintain one readable focal event and production-safe negative space"
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/site-refresh/feature-expedition.webp",
+          "role": "approved Xenovoya material, palette, silhouette, and composition reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-generation",
+        "reviewedAt": "2026-09-13",
+        "sha256": "18accd5102832c6c672145cb03960668b0292c96c7fd46f576c1c0f87eacccea",
+        "review": "app/src/art-pipeline/reviews/environment-split-needle.json",
+        "promptSha256": "e54b68f548dcdc2546be9434752e185c18bcc7f363124359aef67bb52b5d6b5a"
+      }
+    },
+    {
+      "id": "environment-rootlight-vale",
+      "name": "Rootlight Vale",
+      "family": "environment",
+      "status": "approved",
+      "emotionalBeat": "relief",
+      "assetType": "feature-landscape",
+      "partRole": "backplate",
+      "output": {
+        "path": "app/public/images/art/environments/rootlight-vale.webp",
+        "width": 1024,
+        "height": 700,
+        "format": "webp",
+        "alpha": false,
+        "maxBytes": 180000,
+        "safeZone": "center"
+      },
+      "prompt": {
+        "primaryRequest": "Rootlight Vale, where green lantern pods reveal a living shortcut only while the crew keeps looking",
+        "scene": "A shallow alien valley with a restrained number of large root arches and hanging mineral pods illuminating wet stepping stones",
+        "subject": "Rootlight Vale, where green lantern pods reveal a living shortcut only while the crew keeps looking",
+        "composition": "Wide inviting traversal view, clear S-curve shortcut, three parallax layers, uncluttered center and dark quiet margins",
+        "lighting": "Contained oxide-green pod light, subtle cyan depth, one gold invitation point",
+        "constraints": [
+          "no characters, no text, no interface, no logos, no decorative hex wallpaper, no giant portal, no fantasy castle, no full-frame neon, no watermark",
+          "Preserve the Xenovoya field-ink palette and keep signal color localized",
+          "Maintain one readable focal event and production-safe negative space"
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/site-refresh/feature-expedition.webp",
+          "role": "approved Xenovoya material, palette, silhouette, and composition reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-generation",
+        "reviewedAt": "2026-09-13",
+        "sha256": "a53fbec5e8deaf7dbeaf10316bf98a6fe2d755ca50d57cc0e023a0de2693fc93",
+        "review": "app/src/art-pipeline/reviews/environment-rootlight-vale.json",
+        "promptSha256": "c86c1b027ffd06d8b988369391dafa81fa1418dbd3100aed33d8ab5b47b87588"
+      }
+    },
+    {
+      "id": "environment-atlas-spindle",
+      "name": "Atlas Spindle",
+      "family": "environment",
+      "status": "approved",
+      "emotionalBeat": "discovery",
+      "assetType": "feature-landscape",
+      "partRole": "backplate",
+      "output": {
+        "path": "app/public/images/art/environments/atlas-spindle.webp",
+        "width": 1024,
+        "height": 700,
+        "format": "webp",
+        "alpha": false,
+        "maxBytes": 180000,
+        "safeZone": "center"
+      },
+      "prompt": {
+        "primaryRequest": "Atlas Spindle, a violet navigation mechanism that turns above the stone without touching it and remembers a vanished north",
+        "scene": "A small ancient instrument at human scale hovering inches above a circular weathered basalt socket, open ridge and distant storm",
+        "subject": "Atlas Spindle, a violet navigation mechanism that turns above the stone without touching it and remembers a vanished north",
+        "composition": "Wide discovery composition, clear approach and retreat routes, mechanism occupies less than one sixth of frame, quiet terrain for the board",
+        "lighting": "Contained relic-violet rotation light with thin compass-gold geometry and deep cyan distance",
+        "constraints": [
+          "no characters, no text, no interface, no logos, no decorative hex wallpaper, no giant portal, no fantasy castle, no full-frame neon, no watermark",
+          "Preserve the Xenovoya field-ink palette and keep signal color localized",
+          "Maintain one readable focal event and production-safe negative space"
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/site-refresh/feature-expedition.webp",
+          "role": "approved Xenovoya material, palette, silhouette, and composition reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-generation",
+        "reviewedAt": "2026-09-13",
+        "sha256": "1399c9ed91136861bbe36fe2bc19e8969a86ce12cc9c09d2f63a196dab19cbe9",
+        "review": "app/src/art-pipeline/reviews/environment-atlas-spindle.json",
+        "promptSha256": "4b51139cc11412d78ac0c66113f821332654aa710ec8a9117f6f385b7364af36"
+      }
+    },
+    {
+      "id": "environment-veilwood-fringe",
+      "name": "Veilwood Fringe",
+      "family": "environment",
+      "status": "approved",
+      "emotionalBeat": "discovery",
+      "assetType": "feature-landscape",
+      "partRole": "backplate",
+      "output": {
+        "path": "app/public/images/art/environments/veilwood-fringe.webp",
+        "width": 1024,
+        "height": 700,
+        "format": "webp",
+        "alpha": false,
+        "maxBytes": 180000,
+        "safeZone": "center"
+      },
+      "prompt": {
+        "primaryRequest": "Veilwood Fringe, where layered leaves erase depth until a passing lantern reveals a luminous route",
+        "scene": "A dark sparse alien woodland built from large paper-cut mineral leaves, one readable opening through the veil, subtle trace of a withdrawn grazer but no visible creature",
+        "subject": "Veilwood Fringe, where layered leaves erase depth until a passing lantern reveals a luminous route",
+        "composition": "Wide threshold frame with three strong depth layers, clean route opening, negative space around the gameplay center",
+        "lighting": "Oxide-green route reveal, dim cyan atmosphere, no saturated jungle glow",
+        "constraints": [
+          "no characters, no text, no interface, no logos, no decorative hex wallpaper, no giant portal, no fantasy castle, no full-frame neon, no watermark",
+          "Preserve the Xenovoya field-ink palette and keep signal color localized",
+          "Maintain one readable focal event and production-safe negative space"
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/site-refresh/feature-expedition.webp",
+          "role": "approved Xenovoya material, palette, silhouette, and composition reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-generation",
+        "reviewedAt": "2026-09-13",
+        "sha256": "d579494f7b2fc55517e8f6d197aa768e08922e00617192ad65d7c48469704663",
+        "review": "app/src/art-pipeline/reviews/environment-veilwood-fringe.json",
+        "promptSha256": "840a9ffeab8d56187a49240fdff706a295b7806e0a5d44bb45a5001a7128351f"
+      }
+    },
+    {
+      "id": "environment-far-slate",
+      "name": "Far Slate",
+      "family": "environment",
+      "status": "approved",
+      "emotionalBeat": "jeopardy",
+      "assetType": "feature-landscape",
+      "partRole": "backplate",
+      "output": {
+        "path": "app/public/images/art/environments/far-slate.webp",
+        "width": 1024,
+        "height": 700,
+        "format": "webp",
+        "alpha": false,
+        "maxBytes": 180000,
+        "safeZone": "center"
+      },
+      "prompt": {
+        "primaryRequest": "Far Slate, blue-black shelves beyond the easy return line where the beacon arrives only as a tremor",
+        "scene": "A severe open shelf of layered basalt above a storm basin, a few compact survey stones vibrating in concentric dust rings, no shelter",
+        "subject": "Far Slate, blue-black shelves beyond the easy return line where the beacon arrives only as a tremor",
+        "composition": "Wide exposed overlook, readable path along the shelf, huge quiet storm horizon, one clear scale anchor",
+        "lighting": "Desaturated blue-gray storm light with a faint cyan tremor and restrained gold return line",
+        "constraints": [
+          "no characters, no text, no interface, no logos, no decorative hex wallpaper, no giant portal, no fantasy castle, no full-frame neon, no watermark",
+          "Preserve the Xenovoya field-ink palette and keep signal color localized",
+          "Maintain one readable focal event and production-safe negative space"
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/site-refresh/feature-expedition.webp",
+          "role": "approved Xenovoya material, palette, silhouette, and composition reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-generation",
+        "reviewedAt": "2026-09-13",
+        "sha256": "40448f746e4a4374b89e75a0c41b410a4005e30069504bae96e242f37500f782",
+        "review": "app/src/art-pipeline/reviews/environment-far-slate.json",
+        "promptSha256": "f643bc05761180947e9e2e2f8bd681920916cf4ccc21f21a88650d54d689aa4c"
+      }
+    },
+    {
+      "id": "relic-bellstone-clapper",
+      "name": "Bellstone Clapper",
+      "family": "relic",
+      "status": "approved",
+      "emotionalBeat": "agency",
+      "assetType": "transparent-focal",
+      "partRole": "focal",
+      "output": {
+        "path": "app/public/images/art/relics/bellstone-clapper.png",
+        "width": 1024,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "12-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "Bellstone Clapper, a palm-size tuning relic that predicts a pressure wave by ringing silently",
+        "scene": "perfectly uniform pure white isolation background, no floor, no stand, no cast shadow",
+        "subject": "One asymmetric hollow slate capsule wrapped around a suspended translucent gold mineral tongue, weathered dark metal fasteners, tiny red stress notch, strong silhouette",
+        "composition": "centered three-quarter museum-object view, one complete object only, generous margin, readable at 96 pixels",
+        "lighting": "controlled neutral edge light with localized Xenovoya signal color only",
+        "constraints": [
+          "one object only, no text, no runes, no logo, no watermark, no frame, no floor, no cast shadow, no conventional Earth artifact cliche",
+          "Preserve the Xenovoya field-ink palette and keep signal color localized",
+          "Maintain one readable focal event and production-safe negative space"
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/relics/echo-compass.png",
+          "role": "approved Xenovoya material, palette, silhouette, and composition reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-generation",
+        "reviewedAt": "2026-09-13",
+        "sha256": "392a72411d764413f06bb0b7ca637c8c697f3b676d2c87c3a8ca8ec1d9998c0c",
+        "review": "app/src/art-pipeline/reviews/relic-bellstone-clapper.json",
+        "promptSha256": "83b4286f91007ffae4e90d173b22387ce7295b646e039c0807b47941adafa3d5"
+      }
+    },
+    {
+      "id": "relic-veilglass-map",
+      "name": "Veilglass Map",
+      "family": "relic",
+      "status": "approved",
+      "emotionalBeat": "discovery",
+      "assetType": "transparent-focal",
+      "partRole": "focal",
+      "output": {
+        "path": "app/public/images/art/relics/veilglass-map.png",
+        "width": 1024,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "12-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "Veilglass Map, a folding hand-scale relic whose translucent layers reveal a safe path only when aligned",
+        "scene": "perfectly uniform pure white isolation background, no floor, no stand, no cast shadow",
+        "subject": "Three offset dark-metal leaves holding thin cyan-green glass strata that form one coherent route through their overlap, compact and clearly portable",
+        "composition": "centered three-quarter museum-object view, one complete object only, generous margin, readable at 96 pixels",
+        "lighting": "controlled neutral edge light with localized Xenovoya signal color only",
+        "constraints": [
+          "one object only, no text, no runes, no logo, no watermark, no frame, no floor, no cast shadow, no conventional Earth artifact cliche",
+          "Preserve the Xenovoya field-ink palette and keep signal color localized",
+          "Maintain one readable focal event and production-safe negative space"
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/relics/echo-compass.png",
+          "role": "approved Xenovoya material, palette, silhouette, and composition reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-generation",
+        "reviewedAt": "2026-09-13",
+        "sha256": "7de405ccc01d3230f6e884f05333a6ffc840489e4feeab63a1143bb182c6bf94",
+        "review": "app/src/art-pipeline/reviews/relic-veilglass-map.json",
+        "promptSha256": "87e0e0cf7f05a20898965207c43a0127d65d4c0c373dd091bb994f7d715adeb3"
+      }
+    },
+    {
+      "id": "relic-ashwake-key",
+      "name": "Ashwake Key",
+      "family": "relic",
+      "status": "approved",
+      "emotionalBeat": "remembrance",
+      "assetType": "transparent-focal",
+      "partRole": "focal",
+      "output": {
+        "path": "app/public/images/art/relics/ashwake-key.png",
+        "width": 1024,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "12-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "Ashwake Key, a compact alien observation relic that turns only when no one is looking",
+        "scene": "perfectly uniform pure white isolation background, no floor, no stand, no cast shadow",
+        "subject": "One dense black basalt ring with an off-center violet mechanical iris and a narrow amber wake, mysterious but clearly hand-scale, no conventional key teeth",
+        "composition": "centered three-quarter museum-object view, one complete object only, generous margin, readable at 96 pixels",
+        "lighting": "controlled neutral edge light with localized Xenovoya signal color only",
+        "constraints": [
+          "one object only, no text, no runes, no logo, no watermark, no frame, no floor, no cast shadow, no conventional Earth artifact cliche",
+          "Preserve the Xenovoya field-ink palette and keep signal color localized",
+          "Maintain one readable focal event and production-safe negative space"
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/relics/echo-compass.png",
+          "role": "approved Xenovoya material, palette, silhouette, and composition reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-generation",
+        "reviewedAt": "2026-09-13",
+        "sha256": "714b23ec9003cd92674d9b1475e66d6b80cd488b99c97d34fe95e76210ef3a81",
+        "review": "app/src/art-pipeline/reviews/relic-ashwake-key.json",
+        "promptSha256": "e4733151e4c17086d586bbdb5e3976c335c902f73f988ce1385e6c5aa68fc727"
+      }
+    },
+    {
+      "id": "relic-hushgrass-spindle",
+      "name": "Hushgrass Spindle",
+      "family": "relic",
+      "status": "approved",
+      "emotionalBeat": "trust",
+      "assetType": "transparent-focal",
+      "partRole": "focal",
+      "output": {
+        "path": "app/public/images/art/relics/hushgrass-spindle.png",
+        "width": 1024,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "12-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "Hushgrass Spindle, a small acoustic relic that stores unheard movement in silver mineral fibers",
+        "scene": "perfectly uniform pure white isolation background, no floor, no stand, no cast shadow",
+        "subject": "One tapered weathered survey-metal spindle carrying a restrained bundle of pale glass filaments bent around a cyan core, clean memorable silhouette",
+        "composition": "centered three-quarter museum-object view, one complete object only, generous margin, readable at 96 pixels",
+        "lighting": "controlled neutral edge light with localized Xenovoya signal color only",
+        "constraints": [
+          "one object only, no text, no runes, no logo, no watermark, no frame, no floor, no cast shadow, no conventional Earth artifact cliche",
+          "Preserve the Xenovoya field-ink palette and keep signal color localized",
+          "Maintain one readable focal event and production-safe negative space"
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/relics/echo-compass.png",
+          "role": "approved Xenovoya material, palette, silhouette, and composition reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-generation",
+        "reviewedAt": "2026-09-13",
+        "sha256": "4a0990782ecf532e2c44fef19a5ab1cb20dca7f7b8db36501c3bc21d9e9d5f13",
+        "review": "app/src/art-pipeline/reviews/relic-hushgrass-spindle.json",
+        "promptSha256": "5c43e842b4118a602466dad841501b29e11284eb639fdaa50e9ef7f753a7a6af"
       }
     }
   ],

@@ -1,7 +1,9 @@
 import finalArtExpansion from './final-art-expansion.json';
+import finalArtExpansion2 from './final-art-expansion-2.json';
 
 export const FINAL_ART_EXPANSION_MANIFEST = Object.freeze(finalArtExpansion);
-export const FINAL_ART_EXPANSION_VERSION = FINAL_ART_EXPANSION_MANIFEST.version;
+export const FINAL_ART_EXPANSION_2_MANIFEST = Object.freeze(finalArtExpansion2);
+export const FINAL_ART_EXPANSION_VERSION = FINAL_ART_EXPANSION_2_MANIFEST.version;
 
 export const GUEST_LOCATION_ART = Object.freeze({
   'Beaconfall Basin': '/images/art/environments/beaconfall-basin.webp',
@@ -12,6 +14,18 @@ export const GUEST_LOCATION_ART = Object.freeze({
   'Memory Ferns': '/images/art/environments/memory-ferns.webp',
   'Bellstone Rise': '/images/art/environments/bellstone-rise.webp',
   'Ashwake Verge': '/images/art/environments/ashwake-verge.webp',
+  'Glassroot Choir': '/images/art/environments/glassroot-choir.webp',
+  'Cinderwake Flats': '/images/art/environments/cinderwake-flats.webp',
+  'Mossglass Gate': '/images/art/environments/mossglass-gate.webp',
+  'Quiet Step': '/images/art/environments/quiet-step.webp',
+  'Stormneedle Pass': '/images/art/environments/stormneedle-pass.webp',
+  'Furnace Scar': '/images/art/environments/furnace-scar.webp',
+  'Pale Compass Field': '/images/art/environments/pale-compass-field.webp',
+  'Split Needle': '/images/art/environments/split-needle.webp',
+  'Rootlight Vale': '/images/art/environments/rootlight-vale.webp',
+  'Atlas Spindle': '/images/art/environments/atlas-spindle.webp',
+  'Veilwood Fringe': '/images/art/environments/veilwood-fringe.webp',
+  'Far Slate': '/images/art/environments/far-slate.webp',
 });
 
 export const GUEST_ENCOUNTER_ART = Object.freeze({
@@ -41,6 +55,30 @@ export const FUTURE_RELIC_SIGNALS = Object.freeze([
     name: 'Stormglass Seed',
     image: '/images/art/relics/stormglass-seed.png',
     promise: 'Store the instant before lightning and release a safe-route pulse.',
+  }),
+  Object.freeze({
+    id: 'bellstone-clapper',
+    name: 'Bellstone Clapper',
+    image: '/images/art/relics/bellstone-clapper.png',
+    promise: 'Feel the next pressure wave before the ridge begins to ring.',
+  }),
+  Object.freeze({
+    id: 'veilglass-map',
+    name: 'Veilglass Map',
+    image: '/images/art/relics/veilglass-map.png',
+    promise: 'Align three mineral leaves to reveal one living shortcut.',
+  }),
+  Object.freeze({
+    id: 'ashwake-key',
+    name: 'Ashwake Key',
+    image: '/images/art/relics/ashwake-key.png',
+    promise: 'Record what the buried machine changes while no one watches.',
+  }),
+  Object.freeze({
+    id: 'hushgrass-spindle',
+    name: 'Hushgrass Spindle',
+    image: '/images/art/relics/hushgrass-spindle.png',
+    promise: 'Store unheard movement and replay it as a safe crossing.',
   }),
 ]);
 

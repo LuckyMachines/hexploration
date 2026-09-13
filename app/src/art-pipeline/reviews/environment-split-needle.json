@@ -1,0 +1,33 @@
+{
+  "assetId": "environment-split-needle",
+  "candidate": "app/public/images/art/environments/split-needle.webp",
+  "reviewer": "Codex final art QA",
+  "reviewedAt": "2026-09-13",
+  "scores": {
+    "recognition": 4,
+    "agency": 4,
+    "specificity": 4,
+    "restraint": 4,
+    "continuity": 4,
+    "reusability": 4,
+    "accessibility": 4
+  },
+  "notes": {
+    "recognition": "The location's terrain silhouette and single environmental phenomenon remain readable at thumbnail size and behind the 3D board.",
+    "agency": "A navigable foreground, route threshold, cover line, or return trace makes player movement and consequence legible.",
+    "specificity": "Weathered basalt, mineral relief, restrained field instruments, and localized signal light place the scene in Xenovoya.",
+    "restraint": "One focal event is protected by quiet atmosphere and broad board-safe space.",
+    "continuity": "Field-ink depth and the cyan, gold, green, red, and violet signal grammar remain disciplined.",
+    "reusability": "The wide crop supports location backplates, narrative framing, and marketing detail crops.",
+    "accessibility": "Value structure, terrain silhouette, and route depth communicate without relying on hue alone."
+  },
+  "decision": "approved",
+  "candidateSha256": "18accd5102832c6c672145cb03960668b0292c96c7fd46f576c1c0f87eacccea",
+  "generation": {
+    "mode": "azure-image-generation",
+    "tool": "azure-foundry",
+    "model": "gpt-image-2",
+    "promptSha256": "e54b68f548dcdc2546be9434752e185c18bcc7f363124359aef67bb52b5d6b5a"
+  },
+  "joyScore": 10
+}

@@ -1,0 +1,33 @@
+{
+  "assetId": "relic-bellstone-clapper",
+  "candidate": "app/public/images/art/relics/bellstone-clapper.png",
+  "reviewer": "Codex final art QA",
+  "reviewedAt": "2026-09-13",
+  "scores": {
+    "recognition": 4,
+    "agency": 4,
+    "specificity": 4,
+    "restraint": 4,
+    "continuity": 4,
+    "reusability": 4,
+    "accessibility": 4
+  },
+  "notes": {
+    "recognition": "The relic has a distinctive palm-scale silhouette and remains recognizable at completion-card size.",
+    "agency": "The construction implies a specific route, pressure, memory, or listening gameplay promise.",
+    "specificity": "Weathered survey metal, living mineral glass, and contained signal light are specific to Xenovoya.",
+    "restraint": "One isolated object carries the frame without text, pedestal, or background clutter.",
+    "continuity": "Tactile mineral surfaces and localized signal colors follow the established material system.",
+    "reusability": "The transparent cutout layers cleanly over dark UI and can seed later multi-view 3D reference work.",
+    "accessibility": "Silhouette and mechanical construction remain readable independently of hue."
+  },
+  "decision": "approved",
+  "candidateSha256": "392a72411d764413f06bb0b7ca637c8c697f3b676d2c87c3a8ca8ec1d9998c0c",
+  "generation": {
+    "mode": "azure-image-generation",
+    "tool": "azure-foundry",
+    "model": "gpt-image-2",
+    "promptSha256": "83b4286f91007ffae4e90d173b22387ce7295b646e039c0807b47941adafa3d5"
+  },
+  "joyScore": 10
+}

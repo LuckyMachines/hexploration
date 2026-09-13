@@ -1,0 +1,33 @@
+{
+  "assetId": "relic-hushgrass-spindle",
+  "candidate": "app/public/images/art/relics/hushgrass-spindle.png",
+  "reviewer": "Codex final art QA",
+  "reviewedAt": "2026-09-13",
+  "scores": {
+    "recognition": 4,
+    "agency": 4,
+    "specificity": 4,
+    "restraint": 4,
+    "continuity": 4,
+    "reusability": 4,
+    "accessibility": 4
+  },
+  "notes": {
+    "recognition": "The relic has a distinctive palm-scale silhouette and remains recognizable at completion-card size.",
+    "agency": "The construction implies a specific route, pressure, memory, or listening gameplay promise.",
+    "specificity": "Weathered survey metal, living mineral glass, and contained signal light are specific to Xenovoya.",
+    "restraint": "One isolated object carries the frame without text, pedestal, or background clutter.",
+    "continuity": "Tactile mineral surfaces and localized signal colors follow the established material system.",
+    "reusability": "The transparent cutout layers cleanly over dark UI and can seed later multi-view 3D reference work.",
+    "accessibility": "Silhouette and mechanical construction remain readable independently of hue."
+  },
+  "decision": "approved",
+  "candidateSha256": "4a0990782ecf532e2c44fef19a5ab1cb20dca7f7b8db36501c3bc21d9e9d5f13",
+  "generation": {
+    "mode": "azure-image-generation",
+    "tool": "azure-foundry",
+    "model": "gpt-image-2",
+    "promptSha256": "5c43e842b4118a602466dad841501b29e11284eb639fdaa50e9ef7f753a7a6af"
+  },
+  "joyScore": 10
+}

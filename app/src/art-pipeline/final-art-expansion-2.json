@@ -1,0 +1,188 @@
+{
+  "version": "2026-09-13.2",
+  "generatedAt": "2026-09-13",
+  "model": "gpt-image-2",
+  "provider": "azure-foundry",
+  "quality": "high",
+  "generationMode": "Azure GPT Image 2 through ~/.codex/azure-image.sh",
+  "styleLock": "Xenovoya final production art: handcrafted layered paper-cut miniature diorama with painterly mineral textures, subtle fiber edges, sculpted geological relief, tactile weathered basalt, restrained expedition technology, and deep atmospheric parallax. Light behaves as information: cyan reveals, gold invites, green reassures, red warns, violet marks the rare. One unmistakable focal event, strong silhouette, quiet negative space, premium game key-art finish. Not photorealistic and not flat vector art.",
+  "reviewPolicy": "All outputs were validated for dimensions, reviewed on a labeled contact sheet, and inspected for scale, route readability, silhouette, palette discipline, and UI-safe space. Relic alpha edges were reviewed on a dark field.",
+  "assets": [
+    {
+      "id": "environment-glassroot-choir",
+      "family": "environment",
+      "status": "approved",
+      "requestedSize": "1536x1024",
+      "rawEvidence": "artifacts/art/final-expansion-2-2026-09-13/raw/environment-glassroot-choir.png",
+      "productionPath": "app/public/images/art/environments/glassroot-choir.webp",
+      "prompt": "Use case: stylized-concept. Asset type: game environment backplate. Primary request: Glassroot Choir, where translucent roots under the soil carry a chord that follows the crew's lantern. Scene/backdrop: A traversable rain-dark basalt grove with a few large glass roots surfacing like instrument strings, one living cyan-green pulse traveling under the ground, distant low ridges. Style/medium: Xenovoya final production art: handcrafted layered paper-cut miniature diorama with painterly mineral textures, subtle fiber edges, sculpted geological relief, tactile weathered basalt, restrained expedition technology, and deep atmospheric parallax. Light behaves as information: cyan reveals, gold invites, green reassures, red warns, violet marks the rare. One unmistakable focal event, strong silhouette, quiet negative space, premium game key-art finish. Not photorealistic and not flat vector art. Composition/framing: Wide human-eye-level route view, clear foreground crossing, three layered root planes, calm center for the 3D board, deep quiet horizon. Lighting/mood: Cool field-ink mist, restrained cyan signal and oxide-green living response. Constraints: no characters, no text, no interface, no logos, no decorative hex wallpaper, no giant portal, no fantasy castle, no full-frame neon, no watermark.",
+      "integration": "Guest expedition ThreeBoard location backplate",
+      "review": "Distinct map identity, navigable foreground, one focal phenomenon, restrained signal color, and board-safe composition approved."
+    },
+    {
+      "id": "environment-cinderwake-flats",
+      "family": "environment",
+      "status": "approved",
+      "requestedSize": "1536x1024",
+      "rawEvidence": "artifacts/art/final-expansion-2-2026-09-13/raw/environment-cinderwake-flats.png",
+      "productionPath": "app/public/images/art/environments/cinderwake-flats.webp",
+      "prompt": "Use case: stylized-concept. Asset type: game environment backplate. Primary request: Cinderwake Flats, where matte black sand rises in slow ribbons around a buried ember seam moving against the wind. Scene/backdrop: A shallow alien basin of dark glass sand, low basalt cover, a narrow warm seam below the surface, sparse emberglass fragments at believable human scale. Style/medium: Xenovoya final production art: handcrafted layered paper-cut miniature diorama with painterly mineral textures, subtle fiber edges, sculpted geological relief, tactile weathered basalt, restrained expedition technology, and deep atmospheric parallax. Light behaves as information: cyan reveals, gold invites, green reassures, red warns, violet marks the rare. One unmistakable focal event, strong silhouette, quiet negative space, premium game key-art finish. Not photorealistic and not flat vector art. Composition/framing: Wide low crossing, readable safe route behind cover and exposed shortcut across the seam, large quiet sky for interface. Lighting/mood: Cold storm ambient with localized amber and one signal-red warning fracture. Constraints: no characters, no text, no interface, no logos, no decorative hex wallpaper, no giant portal, no fantasy castle, no full-frame neon, no watermark.",
+      "integration": "Guest expedition ThreeBoard location backplate",
+      "review": "Distinct map identity, navigable foreground, one focal phenomenon, restrained signal color, and board-safe composition approved."
+    },
+    {
+      "id": "environment-mossglass-gate",
+      "family": "environment",
+      "status": "approved",
+      "requestedSize": "1536x1024",
+      "rawEvidence": "artifacts/art/final-expansion-2-2026-09-13/raw/environment-mossglass-gate.png",
+      "productionPath": "app/public/images/art/environments/mossglass-gate.webp",
+      "prompt": "Use case: stylized-concept. Asset type: game environment backplate. Primary request: Mossglass Gate, a living threshold whose mineral fronds close behind each footstep and bloom open again. Scene/backdrop: A human-scale arch grown from dark basalt and translucent mossglass, one path passing through, wet ground, restrained foliage and distant cyan mist. Style/medium: Xenovoya final production art: handcrafted layered paper-cut miniature diorama with painterly mineral textures, subtle fiber edges, sculpted geological relief, tactile weathered basalt, restrained expedition technology, and deep atmospheric parallax. Light behaves as information: cyan reveals, gold invites, green reassures, red warns, violet marks the rare. One unmistakable focal event, strong silhouette, quiet negative space, premium game key-art finish. Not photorealistic and not flat vector art. Composition/framing: Wide threshold composition, clear route through and route home, two strong layered leaf silhouettes, open central board area. Lighting/mood: Oxide-green life light with a faint cyan route edge against deep field-ink shadow. Constraints: no characters, no text, no interface, no logos, no decorative hex wallpaper, no giant portal, no fantasy castle, no full-frame neon, no watermark.",
+      "integration": "Guest expedition ThreeBoard location backplate",
+      "review": "Distinct map identity, navigable foreground, one focal phenomenon, restrained signal color, and board-safe composition approved."
+    },
+    {
+      "id": "environment-quiet-step",
+      "family": "environment",
+      "status": "approved",
+      "requestedSize": "1536x1024",
+      "rawEvidence": "artifacts/art/final-expansion-2-2026-09-13/raw/environment-quiet-step.png",
+      "productionPath": "app/public/images/art/environments/quiet-step.webp",
+      "prompt": "Use case: stylized-concept. Asset type: game environment backplate. Primary request: Quiet Step, a dependable terrace of low stone that holds the landing light until the storm turns. Scene/backdrop: A series of broad rain-dark basalt steps with old boot impressions, shallow water, a tiny distant landing beacon, no monumental structures. Style/medium: Xenovoya final production art: handcrafted layered paper-cut miniature diorama with painterly mineral textures, subtle fiber edges, sculpted geological relief, tactile weathered basalt, restrained expedition technology, and deep atmospheric parallax. Light behaves as information: cyan reveals, gold invites, green reassures, red warns, violet marks the rare. One unmistakable focal event, strong silhouette, quiet negative space, premium game key-art finish. Not photorealistic and not flat vector art. Composition/framing: Wide calm traversal view, terraces create readable depth, protected middle ground, quiet upper half for interface. Lighting/mood: Soft compass-gold residual landing light and restrained green safety reflection. Constraints: no characters, no text, no interface, no logos, no decorative hex wallpaper, no giant portal, no fantasy castle, no full-frame neon, no watermark.",
+      "integration": "Guest expedition ThreeBoard location backplate",
+      "review": "Distinct map identity, navigable foreground, one focal phenomenon, restrained signal color, and board-safe composition approved."
+    },
+    {
+      "id": "environment-stormneedle-pass",
+      "family": "environment",
+      "status": "approved",
+      "requestedSize": "1536x1024",
+      "rawEvidence": "artifacts/art/final-expansion-2-2026-09-13/raw/environment-stormneedle-pass.png",
+      "productionPath": "app/public/images/art/environments/stormneedle-pass.webp",
+      "prompt": "Use case: stylized-concept. Asset type: game environment backplate. Primary request: Stormneedle Pass, where slate fins divide the cloudbank into narrow channels and static crawls over every exposed edge. Scene/backdrop: A navigable high pass between a handful of thin basalt fins, one sheltered line and one faster exposed line, storm layers beyond. Style/medium: Xenovoya final production art: handcrafted layered paper-cut miniature diorama with painterly mineral textures, subtle fiber edges, sculpted geological relief, tactile weathered basalt, restrained expedition technology, and deep atmospheric parallax. Light behaves as information: cyan reveals, gold invites, green reassures, red warns, violet marks the rare. One unmistakable focal event, strong silhouette, quiet negative space, premium game key-art finish. Not photorealistic and not flat vector art. Composition/framing: Wide uphill route view, strong diagonal passage, human-scale cover, quiet lower center for the 3D board. Lighting/mood: Cold cyan storm haze with localized signal-red static and a thin gold safe-route trace. Constraints: no characters, no text, no interface, no logos, no decorative hex wallpaper, no giant portal, no fantasy castle, no full-frame neon, no watermark.",
+      "integration": "Guest expedition ThreeBoard location backplate",
+      "review": "Distinct map identity, navigable foreground, one focal phenomenon, restrained signal color, and board-safe composition approved."
+    },
+    {
+      "id": "environment-furnace-scar",
+      "family": "environment",
+      "status": "approved",
+      "requestedSize": "1536x1024",
+      "rawEvidence": "artifacts/art/final-expansion-2-2026-09-13/raw/environment-furnace-scar.png",
+      "productionPath": "app/public/images/art/environments/furnace-scar.webp",
+      "prompt": "Use case: stylized-concept. Asset type: game environment backplate. Primary request: Furnace Scar, a cooled glass plate split by a red seam that flares one breath earlier each time. Scene/backdrop: A believable traversal-scale scar across black basalt, low ledges, thin smoke, restrained warm glass below the crack and no lava ocean. Style/medium: Xenovoya final production art: handcrafted layered paper-cut miniature diorama with painterly mineral textures, subtle fiber edges, sculpted geological relief, tactile weathered basalt, restrained expedition technology, and deep atmospheric parallax. Light behaves as information: cyan reveals, gold invites, green reassures, red warns, violet marks the rare. One unmistakable focal event, strong silhouette, quiet negative space, premium game key-art finish. Not photorealistic and not flat vector art. Composition/framing: Wide environmental hazard frame, visible crossing options around one contained fracture, generous dark negative space. Lighting/mood: Deep blue-black ambient, localized red-orange pressure signal, no global warm wash. Constraints: no characters, no text, no interface, no logos, no decorative hex wallpaper, no giant portal, no fantasy castle, no full-frame neon, no watermark.",
+      "integration": "Guest expedition ThreeBoard location backplate",
+      "review": "Distinct map identity, navigable foreground, one focal phenomenon, restrained signal color, and board-safe composition approved."
+    },
+    {
+      "id": "environment-pale-compass-field",
+      "family": "environment",
+      "status": "approved",
+      "requestedSize": "1536x1024",
+      "rawEvidence": "artifacts/art/final-expansion-2-2026-09-13/raw/environment-pale-compass-field.png",
+      "productionPath": "app/public/images/art/environments/pale-compass-field.webp",
+      "prompt": "Use case: stylized-concept. Asset type: game environment backplate. Primary request: Pale Compass Field, where needle-shaped flowers rotate toward buried metal and change direction when relics answer. Scene/backdrop: A sparse plain of tall ivory mineral flowers rooted in slate soil, all leaning toward one small buried signal point, distant low ridge. Style/medium: Xenovoya final production art: handcrafted layered paper-cut miniature diorama with painterly mineral textures, subtle fiber edges, sculpted geological relief, tactile weathered basalt, restrained expedition technology, and deep atmospheric parallax. Light behaves as information: cyan reveals, gold invites, green reassures, red warns, violet marks the rare. One unmistakable focal event, strong silhouette, quiet negative space, premium game key-art finish. Not photorealistic and not flat vector art. Composition/framing: Wide low panorama, flowers make clear directional rhythm without becoming arrows, open center and horizon for gameplay. Lighting/mood: Cool dawn cyan with a single restrained violet relic response and green homeward echo. Constraints: no characters, no text, no interface, no logos, no decorative hex wallpaper, no giant portal, no fantasy castle, no full-frame neon, no watermark.",
+      "integration": "Guest expedition ThreeBoard location backplate",
+      "review": "Distinct map identity, navigable foreground, one focal phenomenon, restrained signal color, and board-safe composition approved."
+    },
+    {
+      "id": "environment-split-needle",
+      "family": "environment",
+      "status": "approved",
+      "requestedSize": "1536x1024",
+      "rawEvidence": "artifacts/art/final-expansion-2-2026-09-13/raw/environment-split-needle.png",
+      "productionPath": "app/public/images/art/environments/split-needle.webp",
+      "prompt": "Use case: stylized-concept. Asset type: game environment backplate. Primary request: Split Needle, a fractured basalt spire that frames the landing beacon while lightning narrows the way home. Scene/backdrop: A human-scale sheltered ledge below one split dark spire, the distant beacon visible through its gap, storm rain beyond. Style/medium: Xenovoya final production art: handcrafted layered paper-cut miniature diorama with painterly mineral textures, subtle fiber edges, sculpted geological relief, tactile weathered basalt, restrained expedition technology, and deep atmospheric parallax. Light behaves as information: cyan reveals, gold invites, green reassures, red warns, violet marks the rare. One unmistakable focal event, strong silhouette, quiet negative space, premium game key-art finish. Not photorealistic and not flat vector art. Composition/framing: Wide route frame through the fracture, obvious protected ledge, strong silhouette, navigable foreground and open board space. Lighting/mood: Cold storm blue with a localized red lightning warning and distant cyan beacon. Constraints: no characters, no text, no interface, no logos, no decorative hex wallpaper, no giant portal, no fantasy castle, no full-frame neon, no watermark.",
+      "integration": "Guest expedition ThreeBoard location backplate",
+      "review": "Distinct map identity, navigable foreground, one focal phenomenon, restrained signal color, and board-safe composition approved."
+    },
+    {
+      "id": "environment-rootlight-vale",
+      "family": "environment",
+      "status": "approved",
+      "requestedSize": "1536x1024",
+      "rawEvidence": "artifacts/art/final-expansion-2-2026-09-13/raw/environment-rootlight-vale.png",
+      "productionPath": "app/public/images/art/environments/rootlight-vale.webp",
+      "prompt": "Use case: stylized-concept. Asset type: game environment backplate. Primary request: Rootlight Vale, where green lantern pods reveal a living shortcut only while the crew keeps looking. Scene/backdrop: A shallow alien valley with a restrained number of large root arches and hanging mineral pods illuminating wet stepping stones. Style/medium: Xenovoya final production art: handcrafted layered paper-cut miniature diorama with painterly mineral textures, subtle fiber edges, sculpted geological relief, tactile weathered basalt, restrained expedition technology, and deep atmospheric parallax. Light behaves as information: cyan reveals, gold invites, green reassures, red warns, violet marks the rare. One unmistakable focal event, strong silhouette, quiet negative space, premium game key-art finish. Not photorealistic and not flat vector art. Composition/framing: Wide inviting traversal view, clear S-curve shortcut, three parallax layers, uncluttered center and dark quiet margins. Lighting/mood: Contained oxide-green pod light, subtle cyan depth, one gold invitation point. Constraints: no characters, no text, no interface, no logos, no decorative hex wallpaper, no giant portal, no fantasy castle, no full-frame neon, no watermark.",
+      "integration": "Guest expedition ThreeBoard location backplate",
+      "review": "Distinct map identity, navigable foreground, one focal phenomenon, restrained signal color, and board-safe composition approved."
+    },
+    {
+      "id": "environment-atlas-spindle",
+      "family": "environment",
+      "status": "approved",
+      "requestedSize": "1536x1024",
+      "rawEvidence": "artifacts/art/final-expansion-2-2026-09-13/raw/environment-atlas-spindle.png",
+      "productionPath": "app/public/images/art/environments/atlas-spindle.webp",
+      "prompt": "Use case: stylized-concept. Asset type: game environment backplate. Primary request: Atlas Spindle, a violet navigation mechanism that turns above the stone without touching it and remembers a vanished north. Scene/backdrop: A small ancient instrument at human scale hovering inches above a circular weathered basalt socket, open ridge and distant storm. Style/medium: Xenovoya final production art: handcrafted layered paper-cut miniature diorama with painterly mineral textures, subtle fiber edges, sculpted geological relief, tactile weathered basalt, restrained expedition technology, and deep atmospheric parallax. Light behaves as information: cyan reveals, gold invites, green reassures, red warns, violet marks the rare. One unmistakable focal event, strong silhouette, quiet negative space, premium game key-art finish. Not photorealistic and not flat vector art. Composition/framing: Wide discovery composition, clear approach and retreat routes, mechanism occupies less than one sixth of frame, quiet terrain for the board. Lighting/mood: Contained relic-violet rotation light with thin compass-gold geometry and deep cyan distance. Constraints: no characters, no text, no interface, no logos, no decorative hex wallpaper, no giant portal, no fantasy castle, no full-frame neon, no watermark.",
+      "integration": "Guest expedition ThreeBoard location backplate",
+      "review": "Distinct map identity, navigable foreground, one focal phenomenon, restrained signal color, and board-safe composition approved."
+    },
+    {
+      "id": "environment-veilwood-fringe",
+      "family": "environment",
+      "status": "approved",
+      "requestedSize": "1536x1024",
+      "rawEvidence": "artifacts/art/final-expansion-2-2026-09-13/raw/environment-veilwood-fringe.png",
+      "productionPath": "app/public/images/art/environments/veilwood-fringe.webp",
+      "prompt": "Use case: stylized-concept. Asset type: game environment backplate. Primary request: Veilwood Fringe, where layered leaves erase depth until a passing lantern reveals a luminous route. Scene/backdrop: A dark sparse alien woodland built from large paper-cut mineral leaves, one readable opening through the veil, subtle trace of a withdrawn grazer but no visible creature. Style/medium: Xenovoya final production art: handcrafted layered paper-cut miniature diorama with painterly mineral textures, subtle fiber edges, sculpted geological relief, tactile weathered basalt, restrained expedition technology, and deep atmospheric parallax. Light behaves as information: cyan reveals, gold invites, green reassures, red warns, violet marks the rare. One unmistakable focal event, strong silhouette, quiet negative space, premium game key-art finish. Not photorealistic and not flat vector art. Composition/framing: Wide threshold frame with three strong depth layers, clean route opening, negative space around the gameplay center. Lighting/mood: Oxide-green route reveal, dim cyan atmosphere, no saturated jungle glow. Constraints: no characters, no text, no interface, no logos, no decorative hex wallpaper, no giant portal, no fantasy castle, no full-frame neon, no watermark.",
+      "integration": "Guest expedition ThreeBoard location backplate",
+      "review": "Distinct map identity, navigable foreground, one focal phenomenon, restrained signal color, and board-safe composition approved."
+    },
+    {
+      "id": "environment-far-slate",
+      "family": "environment",
+      "status": "approved",
+      "requestedSize": "1536x1024",
+      "rawEvidence": "artifacts/art/final-expansion-2-2026-09-13/raw/environment-far-slate.png",
+      "productionPath": "app/public/images/art/environments/far-slate.webp",
+      "prompt": "Use case: stylized-concept. Asset type: game environment backplate. Primary request: Far Slate, blue-black shelves beyond the easy return line where the beacon arrives only as a tremor. Scene/backdrop: A severe open shelf of layered basalt above a storm basin, a few compact survey stones vibrating in concentric dust rings, no shelter. Style/medium: Xenovoya final production art: handcrafted layered paper-cut miniature diorama with painterly mineral textures, subtle fiber edges, sculpted geological relief, tactile weathered basalt, restrained expedition technology, and deep atmospheric parallax. Light behaves as information: cyan reveals, gold invites, green reassures, red warns, violet marks the rare. One unmistakable focal event, strong silhouette, quiet negative space, premium game key-art finish. Not photorealistic and not flat vector art. Composition/framing: Wide exposed overlook, readable path along the shelf, huge quiet storm horizon, one clear scale anchor. Lighting/mood: Desaturated blue-gray storm light with a faint cyan tremor and restrained gold return line. Constraints: no characters, no text, no interface, no logos, no decorative hex wallpaper, no giant portal, no fantasy castle, no full-frame neon, no watermark.",
+      "integration": "Guest expedition ThreeBoard location backplate",
+      "review": "Distinct map identity, navigable foreground, one focal phenomenon, restrained signal color, and board-safe composition approved."
+    },
+    {
+      "id": "relic-bellstone-clapper",
+      "family": "relic",
+      "status": "approved",
+      "requestedSize": "1024x1024",
+      "rawEvidence": "artifacts/art/final-expansion-2-2026-09-13/raw/relic-bellstone-clapper.png",
+      "productionPath": "app/public/images/art/relics/bellstone-clapper.png",
+      "prompt": "Use case: stylized-concept. Asset type: isolated game relic focal. Primary request: Bellstone Clapper, a palm-size tuning relic that predicts a pressure wave by ringing silently. Subject: One asymmetric hollow slate capsule wrapped around a suspended translucent gold mineral tongue, weathered dark metal fasteners, tiny red stress notch, strong silhouette. Style/medium: Xenovoya final production art: handcrafted layered paper-cut miniature diorama with painterly mineral textures, subtle fiber edges, sculpted geological relief, tactile weathered basalt, restrained expedition technology, and deep atmospheric parallax. Light behaves as information: cyan reveals, gold invites, green reassures, red warns, violet marks the rare. One unmistakable focal event, strong silhouette, quiet negative space, premium game key-art finish. Not photorealistic and not flat vector art. Scene/backdrop: perfectly uniform pure white isolation background, no floor, no stand, no cast shadow. Composition/framing: centered three-quarter museum-object view, one complete object only, generous margin, readable at 96 pixels. Lighting/mood: controlled neutral edge light with localized Xenovoya signal color only. Constraints: one object only, no text, no runes, no logo, no watermark, no frame, no floor, no cast shadow, no conventional Earth artifact cliche.",
+      "integration": "Completion-screen future relic signal and 3D-reference source",
+      "review": "Strong small-scale silhouette; chroma key removed and alpha edge inspected on a dark field."
+    },
+    {
+      "id": "relic-veilglass-map",
+      "family": "relic",
+      "status": "approved",
+      "requestedSize": "1024x1024",
+      "rawEvidence": "artifacts/art/final-expansion-2-2026-09-13/raw/relic-veilglass-map.png",
+      "productionPath": "app/public/images/art/relics/veilglass-map.png",
+      "prompt": "Use case: stylized-concept. Asset type: isolated game relic focal. Primary request: Veilglass Map, a folding hand-scale relic whose translucent layers reveal a safe path only when aligned. Subject: Three offset dark-metal leaves holding thin cyan-green glass strata that form one coherent route through their overlap, compact and clearly portable. Style/medium: Xenovoya final production art: handcrafted layered paper-cut miniature diorama with painterly mineral textures, subtle fiber edges, sculpted geological relief, tactile weathered basalt, restrained expedition technology, and deep atmospheric parallax. Light behaves as information: cyan reveals, gold invites, green reassures, red warns, violet marks the rare. One unmistakable focal event, strong silhouette, quiet negative space, premium game key-art finish. Not photorealistic and not flat vector art. Scene/backdrop: perfectly uniform pure white isolation background, no floor, no stand, no cast shadow. Composition/framing: centered three-quarter museum-object view, one complete object only, generous margin, readable at 96 pixels. Lighting/mood: controlled neutral edge light with localized Xenovoya signal color only. Constraints: one object only, no text, no runes, no logo, no watermark, no frame, no floor, no cast shadow, no conventional Earth artifact cliche.",
+      "integration": "Completion-screen future relic signal and 3D-reference source",
+      "review": "Strong small-scale silhouette; chroma key removed and alpha edge inspected on a dark field."
+    },
+    {
+      "id": "relic-ashwake-key",
+      "family": "relic",
+      "status": "approved",
+      "requestedSize": "1024x1024",
+      "rawEvidence": "artifacts/art/final-expansion-2-2026-09-13/raw/relic-ashwake-key.png",
+      "productionPath": "app/public/images/art/relics/ashwake-key.png",
+      "prompt": "Use case: stylized-concept. Asset type: isolated game relic focal. Primary request: Ashwake Key, a compact alien observation relic that turns only when no one is looking. Subject: One dense black basalt ring with an off-center violet mechanical iris and a narrow amber wake, mysterious but clearly hand-scale, no conventional key teeth. Style/medium: Xenovoya final production art: handcrafted layered paper-cut miniature diorama with painterly mineral textures, subtle fiber edges, sculpted geological relief, tactile weathered basalt, restrained expedition technology, and deep atmospheric parallax. Light behaves as information: cyan reveals, gold invites, green reassures, red warns, violet marks the rare. One unmistakable focal event, strong silhouette, quiet negative space, premium game key-art finish. Not photorealistic and not flat vector art. Scene/backdrop: perfectly uniform pure white isolation background, no floor, no stand, no cast shadow. Composition/framing: centered three-quarter museum-object view, one complete object only, generous margin, readable at 96 pixels. Lighting/mood: controlled neutral edge light with localized Xenovoya signal color only. Constraints: one object only, no text, no runes, no logo, no watermark, no frame, no floor, no cast shadow, no conventional Earth artifact cliche.",
+      "integration": "Completion-screen future relic signal and 3D-reference source",
+      "review": "Strong small-scale silhouette; chroma key removed and alpha edge inspected on a dark field."
+    },
+    {
+      "id": "relic-hushgrass-spindle",
+      "family": "relic",
+      "status": "approved",
+      "requestedSize": "1024x1024",
+      "rawEvidence": "artifacts/art/final-expansion-2-2026-09-13/raw/relic-hushgrass-spindle.png",
+      "productionPath": "app/public/images/art/relics/hushgrass-spindle.png",
+      "prompt": "Use case: stylized-concept. Asset type: isolated game relic focal. Primary request: Hushgrass Spindle, a small acoustic relic that stores unheard movement in silver mineral fibers. Subject: One tapered weathered survey-metal spindle carrying a restrained bundle of pale glass filaments bent around a cyan core, clean memorable silhouette. Style/medium: Xenovoya final production art: handcrafted layered paper-cut miniature diorama with painterly mineral textures, subtle fiber edges, sculpted geological relief, tactile weathered basalt, restrained expedition technology, and deep atmospheric parallax. Light behaves as information: cyan reveals, gold invites, green reassures, red warns, violet marks the rare. One unmistakable focal event, strong silhouette, quiet negative space, premium game key-art finish. Not photorealistic and not flat vector art. Scene/backdrop: perfectly uniform pure white isolation background, no floor, no stand, no cast shadow. Composition/framing: centered three-quarter museum-object view, one complete object only, generous margin, readable at 96 pixels. Lighting/mood: controlled neutral edge light with localized Xenovoya signal color only. Constraints: one object only, no text, no runes, no logo, no watermark, no frame, no floor, no cast shadow, no conventional Earth artifact cliche.",
+      "integration": "Completion-screen future relic signal and 3D-reference source",
+      "review": "Strong small-scale silhouette; chroma key removed and alpha edge inspected on a dark field."
+    }
+  ]
+}

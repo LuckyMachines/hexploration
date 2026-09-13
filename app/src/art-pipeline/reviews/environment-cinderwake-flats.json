@@ -1,0 +1,33 @@
+{
+  "assetId": "environment-cinderwake-flats",
+  "candidate": "app/public/images/art/environments/cinderwake-flats.webp",
+  "reviewer": "Codex final art QA",
+  "reviewedAt": "2026-09-13",
+  "scores": {
+    "recognition": 4,
+    "agency": 4,
+    "specificity": 4,
+    "restraint": 4,
+    "continuity": 4,
+    "reusability": 4,
+    "accessibility": 4
+  },
+  "notes": {
+    "recognition": "The location's terrain silhouette and single environmental phenomenon remain readable at thumbnail size and behind the 3D board.",
+    "agency": "A navigable foreground, route threshold, cover line, or return trace makes player movement and consequence legible.",
+    "specificity": "Weathered basalt, mineral relief, restrained field instruments, and localized signal light place the scene in Xenovoya.",
+    "restraint": "One focal event is protected by quiet atmosphere and broad board-safe space.",
+    "continuity": "Field-ink depth and the cyan, gold, green, red, and violet signal grammar remain disciplined.",
+    "reusability": "The wide crop supports location backplates, narrative framing, and marketing detail crops.",
+    "accessibility": "Value structure, terrain silhouette, and route depth communicate without relying on hue alone."
+  },
+  "decision": "approved",
+  "candidateSha256": "a6eb14f3731b980428937a6e369db3c84cda488513a894c6de31063f4219907e",
+  "generation": {
+    "mode": "azure-image-generation",
+    "tool": "azure-foundry",
+    "model": "gpt-image-2",
+    "promptSha256": "4d2b1d1565628b6a2f41d9bbf1e18b64207d6c37e950cb0ff91f1060058afaf8"
+  },
+  "joyScore": 10
+}
