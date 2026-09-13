@@ -19,6 +19,7 @@ export function boardLayerSignatures(state = {}) {
       intent: state.intentAlias || '',
       action: state.activeAction,
       danger: Boolean(state.isDanger),
+      encounter: state.encounterId || '',
       resolving: Boolean(state.isResolving),
       previewing: Boolean(state.signals?.isPreviewing ?? ((state.previewPath?.length || 0) > (state.selectedPath?.length || 0))),
     }),

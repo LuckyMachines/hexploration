@@ -1,0 +1,33 @@
+{
+  "assetId": "environment-bellstone-rise",
+  "candidate": "app/public/images/art/environments/bellstone-rise.webp",
+  "reviewer": "Codex final art QA",
+  "reviewedAt": "2026-09-13",
+  "scores": {
+    "recognition": 4,
+    "agency": 4,
+    "specificity": 4,
+    "restraint": 4,
+    "continuity": 4,
+    "reusability": 4,
+    "accessibility": 4
+  },
+  "notes": {
+    "recognition": "The location silhouette and its single environmental event remain readable in the labeled library sheet and behind the 3D board.",
+    "agency": "A navigable foreground, route threshold, or return trace makes player movement and consequence legible.",
+    "specificity": "Weathered basalt, restrained expedition traces, mineral relief, and localized signal light place the image in Xenovoya.",
+    "restraint": "One focal event is protected by quiet atmosphere and broad UI-safe areas.",
+    "continuity": "Field-ink depth and the cyan, gold, green, red, and violet signal grammar remain disciplined.",
+    "reusability": "The wide crop supports board backplates, encounter framing, and marketing detail crops.",
+    "accessibility": "Value structure, terrain silhouette, and route depth communicate without relying on hue alone."
+  },
+  "decision": "approved",
+  "candidateSha256": "e808e5b81987a84d68eae30b11c73beaad0a00f8c852d20f65813e26b0f5286d",
+  "generation": {
+    "mode": "azure-image-generation",
+    "tool": "azure-foundry",
+    "model": "gpt-image-2",
+    "promptSha256": "b0edba624c8a481080f8fd69d60c7bb03d58ff3bb89201b43849c78531dd8fed"
+  },
+  "joyScore": 10
+}

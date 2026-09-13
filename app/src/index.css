@@ -666,6 +666,39 @@ body {
   mix-blend-mode: soft-light;
 }
 
+.three-board-weather {
+  opacity: calc(0.12 + var(--world-intensity, 0) * 0.36);
+  transition: opacity 480ms ease, background-position 1.2s ease;
+}
+
+.three-board-weather-glass-mist {
+  background:
+    linear-gradient(104deg, transparent 0 38%, rgba(113, 211, 205, 0.08) 44%, transparent 51% 100%),
+    radial-gradient(ellipse at 18% 78%, rgba(161, 223, 205, 0.12), transparent 34%);
+  background-size: 190% 100%, 100% 100%;
+}
+
+.three-board-weather-rising-static {
+  background:
+    repeating-linear-gradient(106deg, transparent 0 19px, rgba(232, 200, 96, 0.04) 20px, transparent 22px 42px),
+    radial-gradient(ellipse at 74% 22%, rgba(232, 154, 72, 0.14), transparent 38%);
+  mix-blend-mode: screen;
+}
+
+.three-board-weather-redline-storm {
+  background:
+    linear-gradient(112deg, transparent 0 38%, rgba(239, 98, 87, 0.12) 43%, transparent 49% 100%),
+    radial-gradient(ellipse at 50% 104%, rgba(161, 38, 42, 0.22), transparent 58%);
+  background-size: 170% 100%, 100% 100%;
+  mix-blend-mode: screen;
+  animation: three-board-weather-shear 3.6s linear infinite;
+}
+
+@keyframes three-board-weather-shear {
+  from { background-position: 120% 0, center; }
+  to { background-position: -80% 0, center; }
+}
+
 @keyframes three-board-impact-flare {
   0%, 42% { opacity: 0; transform: translate(-50%, -50%) scale(0.24); }
   72% { opacity: 0.82; transform: translate(-50%, -50%) scale(1.15); }
@@ -781,6 +814,7 @@ body {
   .three-board-stage,
   .three-board-danger-frame,
   .three-board-extraction-light,
+  .three-board-weather,
   .expedition-loading-orbit {
     animation: none;
   }

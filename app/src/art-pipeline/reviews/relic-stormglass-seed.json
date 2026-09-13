@@ -1,0 +1,33 @@
+{
+  "assetId": "relic-stormglass-seed",
+  "candidate": "app/public/images/art/relics/stormglass-seed.png",
+  "reviewer": "Codex final art QA",
+  "reviewedAt": "2026-09-13",
+  "scores": {
+    "recognition": 4,
+    "agency": 4,
+    "specificity": 4,
+    "restraint": 4,
+    "continuity": 4,
+    "reusability": 4,
+    "accessibility": 4
+  },
+  "notes": {
+    "recognition": "The relic has a strong palm-scale silhouette and remains distinct at completion-card size.",
+    "agency": "Its construction visually implies a specific route-reading or stored-storm gameplay promise.",
+    "specificity": "Weathered survey metal, living mineral glass, and contained signal light are uniquely Xenovoya.",
+    "restraint": "One isolated object carries the frame with no text, pedestal, or background clutter.",
+    "continuity": "Tactile mineral surfaces and localized cyan, gold, green, and violet light follow the established material system.",
+    "reusability": "The transparent cutout layers cleanly over dark UI, cards, and future 3D-reference turntables.",
+    "accessibility": "Silhouette, nested construction, and seam direction remain readable independently of hue."
+  },
+  "decision": "approved",
+  "candidateSha256": "45da55e87e255a2a419a81b07df4db369c4eb014f13f08797126dbd12d63c09e",
+  "generation": {
+    "mode": "azure-image-generation",
+    "tool": "azure-foundry",
+    "model": "gpt-image-2",
+    "promptSha256": "acb477b7a9cddb09179e7315289a19330cffafeb2d9a981a0378e9a399d47ba3"
+  },
+  "joyScore": 10
+}

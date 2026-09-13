@@ -48,6 +48,15 @@ async function settleScene(page, scene) {
     await expect(page.locator('[data-testid="three-board-world"]')).toHaveAttribute('data-renderer-state', 'ready', { timeout: 30_000 });
   }
   const target = page.locator(scene.selector).first();
+  if (scene.expandDetails) {
+    await target.evaluate((element) => {
+      let ancestor = element.parentElement;
+      while (ancestor) {
+        if (ancestor instanceof HTMLDetailsElement) ancestor.open = true;
+        ancestor = ancestor.parentElement;
+      }
+    });
+  }
   await expect(target).toBeVisible();
   if (scene.capture === 'element') await target.scrollIntoViewIfNeeded();
   await page.waitForTimeout(100);
@@ -57,6 +66,7 @@ async function settleScene(page, scene) {
 async function renderedMetrics(page, scene) {
   return page.evaluate(async ({ selector, minTarget }) => {
     const visible = (element) => {
+      if (element.closest('.sr-only, [aria-hidden="true"]')) return false;
       const style = getComputedStyle(element);
       const rect = element.getBoundingClientRect();
       return style.visibility !== 'hidden' && style.display !== 'none' && rect.width > 0 && rect.height > 0;
@@ -103,6 +113,15 @@ async function renderedMetrics(page, scene) {
   }, { selector: scene.selector, minTarget: uiQualityBudgets.minInteractiveTargetPx });
 }
 
+async function releaseWebGlContexts(page) {
+  await page.evaluate(() => {
+    document.querySelectorAll('canvas').forEach((canvas) => {
+      const context = canvas.getContext('webgl2') || canvas.getContext('webgl');
+      context?.getExtension('WEBGL_lose_context')?.loseContext();
+    });
+  });
+}
+
 test.describe.serial('UI quality evidence', () => {
   test.beforeAll(async () => {
     await fs.mkdir(captureRoot, { recursive: true });
@@ -114,12 +133,13 @@ test.describe.serial('UI quality evidence', () => {
       await installStabilityHarness(page);
       const target = await settleScene(page, scene);
       const measurements = await renderedMetrics(page, scene);
-      const axe = await new AxeBuilder({ page }).include('#main-content').analyze();
-      const serious = axe.violations.filter(({ impact }) => impact === 'serious');
-      const critical = axe.violations.filter(({ impact }) => impact === 'critical');
       const screenshot = scene.capture === 'viewport'
         ? await page.screenshot({ animations: 'disabled', fullPage: false })
         : await target.screenshot({ animations: 'disabled' });
+      await releaseWebGlContexts(page);
+      const axe = await new AxeBuilder({ page }).include('#main-content').analyze();
+      const serious = axe.violations.filter(({ impact }) => impact === 'serious');
+      const critical = axe.violations.filter(({ impact }) => impact === 'critical');
 
       await fs.writeFile(path.join(captureRoot, `${scene.id}.png`), screenshot);
       metrics.push({
@@ -139,6 +159,8 @@ test.describe.serial('UI quality evidence', () => {
       expect(measurements.smallInteractiveTargets, JSON.stringify(measurements.smallInteractiveTargets, null, 2)).toHaveLength(uiQualityBudgets.maxSmallInteractiveTargets);
       expect(measurements.cumulativeLayoutShift).toBeLessThanOrEqual(uiQualityBudgets.maxCumulativeLayoutShift);
       if (scene.maxFrameP95Ms) expect(measurements.frameP95Ms).toBeLessThanOrEqual(scene.maxFrameP95Ms);
+      if (scene.maxTransferBytes) expect(measurements.transferBytes).toBeLessThanOrEqual(scene.maxTransferBytes);
+      if (scene.maxNavigationDurationMs) expect(measurements.navigationDurationMs).toBeLessThanOrEqual(scene.maxNavigationDurationMs);
       expect(serious, JSON.stringify(serious, null, 2)).toHaveLength(uiQualityBudgets.maxSeriousAccessibilityViolations);
       expect(critical, JSON.stringify(critical, null, 2)).toHaveLength(uiQualityBudgets.maxCriticalAccessibilityViolations);
       expect(screenshot).toMatchSnapshot(['ui-quality', `${scene.id}.png`], { maxDiffPixelRatio: 0.01, threshold: 0.2 });

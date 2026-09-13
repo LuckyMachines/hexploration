@@ -1,0 +1,33 @@
+{
+  "assetId": "encounter-wind-vault-decision",
+  "candidate": "app/public/images/art/encounters/wind-vault-decision.webp",
+  "reviewer": "Codex final art QA",
+  "reviewedAt": "2026-09-13",
+  "scores": {
+    "recognition": 4,
+    "agency": 4,
+    "specificity": 4,
+    "restraint": 4,
+    "continuity": 4,
+    "reusability": 4,
+    "accessibility": 4
+  },
+  "notes": {
+    "recognition": "The two-second read is a consequential fork with one unmistakable decision event.",
+    "agency": "The image makes the alternatives spatially distinct while leaving the actual choice code-native.",
+    "specificity": "Layered mineral paper relief and restrained survey-light geometry are specific to Xenovoya.",
+    "restraint": "The lower action region stays quiet and no baked interface competes with copy.",
+    "continuity": "The scene preserves tactile basalt, cyan information, gold agency, and rare violet discovery.",
+    "reusability": "The landscape crop works as a decision-panel backplate and as a wider story beat.",
+    "accessibility": "The alternatives differ by silhouette, position, and value in addition to color."
+  },
+  "decision": "approved",
+  "candidateSha256": "7f95afce2eed800edc59207552ead94fc3fac8340937cec3cc091f94175e2faf",
+  "generation": {
+    "mode": "azure-image-generation",
+    "tool": "azure-foundry",
+    "model": "gpt-image-2",
+    "promptSha256": "691ce6be0a21a2bc73fb0d99f3c6337111785852569f8b0844f50e52de503ff7"
+  },
+  "joyScore": 10
+}

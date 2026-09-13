@@ -1,0 +1,33 @@
+{
+  "assetId": "relic-echo-compass",
+  "candidate": "app/public/images/art/relics/echo-compass.png",
+  "reviewer": "Codex final art QA",
+  "reviewedAt": "2026-09-13",
+  "scores": {
+    "recognition": 4,
+    "agency": 4,
+    "specificity": 4,
+    "restraint": 4,
+    "continuity": 4,
+    "reusability": 4,
+    "accessibility": 4
+  },
+  "notes": {
+    "recognition": "The relic has a strong palm-scale silhouette and remains distinct at completion-card size.",
+    "agency": "Its construction visually implies a specific route-reading or stored-storm gameplay promise.",
+    "specificity": "Weathered survey metal, living mineral glass, and contained signal light are uniquely Xenovoya.",
+    "restraint": "One isolated object carries the frame with no text, pedestal, or background clutter.",
+    "continuity": "Tactile mineral surfaces and localized cyan, gold, green, and violet light follow the established material system.",
+    "reusability": "The transparent cutout layers cleanly over dark UI, cards, and future 3D-reference turntables.",
+    "accessibility": "Silhouette, nested construction, and seam direction remain readable independently of hue."
+  },
+  "decision": "approved",
+  "candidateSha256": "088b2ceb99216cf550818333f95ebcf4af652bfdafd225b119ab5f5476666f4d",
+  "generation": {
+    "mode": "azure-image-generation",
+    "tool": "azure-foundry",
+    "model": "gpt-image-2",
+    "promptSha256": "fab08650349350f4f8ae80df1f4720469844ed919180255ff0a42f1dfd57f1e4"
+  },
+  "joyScore": 10
+}

@@ -1,0 +1,33 @@
+{
+  "assetId": "environment-memory-ferns",
+  "candidate": "app/public/images/art/environments/memory-ferns.webp",
+  "reviewer": "Codex final art QA",
+  "reviewedAt": "2026-09-13",
+  "scores": {
+    "recognition": 4,
+    "agency": 4,
+    "specificity": 4,
+    "restraint": 4,
+    "continuity": 4,
+    "reusability": 4,
+    "accessibility": 4
+  },
+  "notes": {
+    "recognition": "The location silhouette and its single environmental event remain readable in the labeled library sheet and behind the 3D board.",
+    "agency": "A navigable foreground, route threshold, or return trace makes player movement and consequence legible.",
+    "specificity": "Weathered basalt, restrained expedition traces, mineral relief, and localized signal light place the image in Xenovoya.",
+    "restraint": "One focal event is protected by quiet atmosphere and broad UI-safe areas.",
+    "continuity": "Field-ink depth and the cyan, gold, green, red, and violet signal grammar remain disciplined.",
+    "reusability": "The wide crop supports board backplates, encounter framing, and marketing detail crops.",
+    "accessibility": "Value structure, terrain silhouette, and route depth communicate without relying on hue alone."
+  },
+  "decision": "approved",
+  "candidateSha256": "d7c31579d05fb2f3106dc6b7ad1c3f97d3df500da7fe57b6cc07efb9326f2e38",
+  "generation": {
+    "mode": "azure-image-generation",
+    "tool": "azure-foundry",
+    "model": "gpt-image-2",
+    "promptSha256": "060f1f7f943b59d8ebd2df9bf8be2a6478bbf86620ef2cfa9107a4bcbb5832b1"
+  },
+  "joyScore": 10
+}

@@ -60,6 +60,7 @@ export function deriveBoardViewModel(input = {}) {
   const phase = deriveBoardPhase(input);
   const playerLocationMap = normalizeLocationMap(input.playerLocationMap, crew);
   const invalidAlias = aliases.has(String(input.invalidAlias || '')) ? String(input.invalidAlias) : '';
+  const encounterId = input.encounterId ? String(input.encounterId) : '';
 
   return Object.freeze({
     schemaVersion: BOARD_VIEW_MODEL_VERSION,
@@ -68,6 +69,10 @@ export function deriveBoardViewModel(input = {}) {
       scenarioId: input.source?.scenarioId || null,
       traceHash: input.source?.traceHash || null,
       turn: Number(input.source?.turn || 0),
+      chapter: input.source?.chapter || null,
+      weather: input.source?.weather || null,
+      intensity: Math.min(100, Math.max(0, Number(input.source?.intensity || 0))),
+      locationName: input.source?.locationName || null,
     }),
     cells,
     currentLocation,
@@ -76,6 +81,7 @@ export function deriveBoardViewModel(input = {}) {
     previewPath,
     reachableAliases,
     invalidAlias,
+    encounterId,
     landingSite,
     playerLocationMap,
     crew,
@@ -91,6 +97,7 @@ export function deriveBoardViewModel(input = {}) {
       hasRoute: selectedPath.length > 0 || previewPath.length > 0,
       isPreviewing: previewPath.length > selectedPath.length,
       hasInvalidIntent: Boolean(invalidAlias),
+      hasEncounter: Boolean(encounterId),
       occupiedAliases: Object.keys(playerLocationMap),
     }),
   });
@@ -106,10 +113,12 @@ export function boardViewModelKey(viewModel = {}) {
     previewPath: viewModel.previewPath,
     reachableAliases: viewModel.reachableAliases,
     invalidAlias: viewModel.invalidAlias,
+    encounterId: viewModel.encounterId,
     playerLocationMap: viewModel.playerLocationMap,
     currentPlayerIndex: viewModel.currentPlayerIndex,
     activeAction: viewModel.activeAction,
     phase: viewModel.phase,
+    source: viewModel.source,
   });
 }
 

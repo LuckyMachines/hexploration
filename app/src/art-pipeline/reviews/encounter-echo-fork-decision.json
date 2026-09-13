@@ -1,0 +1,33 @@
+{
+  "assetId": "encounter-echo-fork-decision",
+  "candidate": "app/public/images/art/encounters/echo-fork-decision.webp",
+  "reviewer": "Codex final art QA",
+  "reviewedAt": "2026-09-13",
+  "scores": {
+    "recognition": 4,
+    "agency": 4,
+    "specificity": 4,
+    "restraint": 4,
+    "continuity": 4,
+    "reusability": 4,
+    "accessibility": 4
+  },
+  "notes": {
+    "recognition": "The two-second read is a consequential fork with one unmistakable decision event.",
+    "agency": "The image makes the alternatives spatially distinct while leaving the actual choice code-native.",
+    "specificity": "Layered mineral paper relief and restrained survey-light geometry are specific to Xenovoya.",
+    "restraint": "The lower action region stays quiet and no baked interface competes with copy.",
+    "continuity": "The scene preserves tactile basalt, cyan information, gold agency, and rare violet discovery.",
+    "reusability": "The landscape crop works as a decision-panel backplate and as a wider story beat.",
+    "accessibility": "The alternatives differ by silhouette, position, and value in addition to color."
+  },
+  "decision": "approved",
+  "candidateSha256": "411d493e879366058e2889db95964d2eae8e755cca39a81463fb5cfb79291aba",
+  "generation": {
+    "mode": "azure-image-generation",
+    "tool": "azure-foundry",
+    "model": "gpt-image-2",
+    "promptSha256": "5ab4bfddc6fd3ce8b61122e105707c2a298336bb238e8ef595f44676703b49cd"
+  },
+  "joyScore": 10
+}

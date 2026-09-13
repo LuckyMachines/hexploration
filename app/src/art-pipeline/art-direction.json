@@ -1,6 +1,6 @@
 {
   "$schema": "./schema/art-direction.schema.json",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "name": "Xenovoya Expedition Art Direction",
   "promise": "Alien wonder made legible through a calm field instrument, then made memorable through consequence and crew care.",
   "visualDna": [
@@ -121,6 +121,7 @@
     { "id": "feature-landscape", "useCase": "stylized-concept", "width": 1024, "height": 700, "format": "webp", "alpha": false, "maxBytes": 180000 },
     { "id": "gameplay-proof", "useCase": "ui-mockup", "width": 1216, "height": 832, "format": "webp", "alpha": false, "maxBytes": 240000 },
     { "id": "social-square", "useCase": "stylized-concept", "width": 1200, "height": 1200, "format": "webp", "alpha": false, "maxBytes": 450000 },
+    { "id": "character-vignette", "useCase": "identity-preserving character moment", "width": 1024, "height": 1024, "format": "webp", "alpha": false, "maxBytes": 250000 },
     { "id": "transparent-focal", "useCase": "stylized-concept", "width": 1024, "height": 1024, "format": "png", "alpha": true, "maxBytes": 1800000 },
     { "id": "transparent-prop", "useCase": "stylized-concept", "width": 1024, "height": 1024, "format": "png", "alpha": true, "maxBytes": 1800000 },
     { "id": "fx-overlay", "useCase": "stylized-concept", "width": 1536, "height": 1024, "format": "png", "alpha": true, "maxBytes": 1800000 },

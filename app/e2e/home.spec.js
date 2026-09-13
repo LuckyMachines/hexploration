@@ -72,7 +72,7 @@ test('cross-domain play intent opens and focuses the requested mode', async ({ p
 
   await page.goto('/?mode=solo', { waitUntil: 'domcontentloaded' });
   await expect(page).toHaveURL(/\/guest\?source=marketing$/);
-  await expect(page.getByRole('heading', { name: /Explore the living survey/i })).toBeVisible();
+  await expect(page.getByRole('heading', { name: /The Living Survey/i })).toBeVisible();
 });
 
 test('offline lobby preserves a playable route and a retry', async ({ page, context }) => {
@@ -129,31 +129,47 @@ test('pseudo-localization loads when explicitly requested', async ({ page }) => 
   await expect(page.getByRole('heading', { level: 1 })).toContainText('Choose your expedition.');
 });
 
-test('guest route enters the production 3D expedition without a wallet', async ({ page }, testInfo) => {
+test('solo prologue enters the production 3D expedition and reaches an authored relic arc', async ({ page }, testInfo) => {
   await page.goto('/guest', { waitUntil: 'domcontentloaded' });
-  await expect(page.getByRole('heading', { name: /Explore the living survey/i })).toBeVisible();
+  await expect(page.getByRole('heading', { name: /The Living Survey/i })).toBeVisible();
   const board = page.getByTestId('three-board-world');
   await expect(board).toBeVisible();
   await expect.poll(() => board.getAttribute('data-renderer-state'), { timeout: 20_000 }).toMatch(/ready|unavailable/);
   if (testInfo.project.name !== 'firefox-desktop') {
     await expect(board).toHaveAttribute('data-renderer-state', 'ready');
   }
-  await expect(page.getByText(/No wallet needed/i)).toBeVisible();
+  await expect(page.getByText(/Progress remembered/i)).toBeVisible();
 
-  await page.getByRole('group', { name: /Reachable routes/i }).getByRole('button', { name: /3,2 Uncharted/i }).click();
+  await page.getByRole('group', { name: /Reachable routes/i }).getByRole('button', { name: /Echo Fork/i }).click();
   await page.getByTestId('commit-guest-route').click();
-  await expect(page.getByText(/Tideglass Cradle answered/i)).toBeVisible();
-  await expect(page.getByRole('heading', { name: /Tideglass Answered/i })).toBeVisible();
+  await expect(page.getByRole('heading', { name: /Echo Fork Answers Three Times/i })).toBeVisible();
+  await page.getByRole('button', { name: /Mark only the sure route/i }).click();
+  await page.getByRole('group', { name: /Reachable routes/i }).getByRole('button', { name: /Hushgrass Shelf/i }).click();
+  await page.getByTestId('commit-guest-route').click();
+  await page.getByRole('group', { name: /Reachable routes/i }).getByRole('button', { name: /Tideglass Cradle/i }).click();
+  await page.getByTestId('commit-guest-route').click();
+  await expect(page.getByRole('heading', { name: /Tideglass Cradle Answered/i })).toBeVisible();
   await expect(page.getByText(/Follow the highlighted route back/i)).toBeVisible();
   await expect(page.getByText('1', { exact: true }).first()).toBeVisible();
+
+  for (const [location, alias] of [[/Hushgrass Shelf/i, '0,1'], [/Echo Fork/i, '1,1'], [/Beaconfall Basin/i, '2,2']]) {
+    await page.getByRole('group', { name: /Reachable routes/i }).getByRole('button', { name: location }).click();
+    await page.getByTestId('commit-guest-route').click();
+    await expect(page.getByTestId('guest-expedition')).toHaveAttribute('data-current-location', alias);
+    await expect(page.getByTestId('guest-expedition')).toHaveAttribute('data-resolving', 'false');
+  }
+  await page.getByRole('button', { name: /Depart with 1 relic/i }).click();
+  await expect(page.getByTestId('guest-outcome')).toContainText('Relic Homecoming');
+  await expect(page.getByTestId('guest-memory-reward')).toBeVisible();
+  await expect(page.getByText(/Share the expedition as a relic/i)).toBeVisible();
 });
 
 test('guest route has a persistent tactical fallback with the same choices', async ({ page }) => {
   await page.goto('/guest?mode=practice', { waitUntil: 'domcontentloaded' });
-  await expect(page.getByText(/Always-available practice expedition/i)).toBeVisible();
+  await expect(page.getByText(/Replayable training voyage/i)).toBeVisible();
   await page.getByRole('button', { name: /Use tactical map/i }).click();
   await expect(page.getByTestId('guest-tactical-board')).toBeVisible();
-  await expect(page.getByRole('gridcell', { name: /recommended route/i }).first()).toBeEnabled();
+  await expect(page.getByRole('button', { name: /recommended route/i }).first()).toBeEnabled();
   await page.reload();
   await expect(page.getByTestId('guest-tactical-board')).toBeVisible();
 });

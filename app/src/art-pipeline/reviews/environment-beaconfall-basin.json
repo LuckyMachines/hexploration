@@ -1,0 +1,33 @@
+{
+  "assetId": "environment-beaconfall-basin",
+  "candidate": "app/public/images/art/environments/beaconfall-basin.webp",
+  "reviewer": "Codex final art QA",
+  "reviewedAt": "2026-09-13",
+  "scores": {
+    "recognition": 4,
+    "agency": 4,
+    "specificity": 4,
+    "restraint": 4,
+    "continuity": 4,
+    "reusability": 4,
+    "accessibility": 4
+  },
+  "notes": {
+    "recognition": "The location silhouette and its single environmental event remain readable in the labeled library sheet and behind the 3D board.",
+    "agency": "A navigable foreground, route threshold, or return trace makes player movement and consequence legible.",
+    "specificity": "Weathered basalt, restrained expedition traces, mineral relief, and localized signal light place the image in Xenovoya.",
+    "restraint": "One focal event is protected by quiet atmosphere and broad UI-safe areas.",
+    "continuity": "Field-ink depth and the cyan, gold, green, red, and violet signal grammar remain disciplined.",
+    "reusability": "The wide crop supports board backplates, encounter framing, and marketing detail crops.",
+    "accessibility": "Value structure, terrain silhouette, and route depth communicate without relying on hue alone."
+  },
+  "decision": "approved",
+  "candidateSha256": "178d6b5080444a3b63281e4991f038de2dc7c1e04ee02e38728176c9e7300305",
+  "generation": {
+    "mode": "azure-image-generation",
+    "tool": "azure-foundry",
+    "model": "gpt-image-2",
+    "promptSha256": "eb6f0d69b89cec242f56df21b2ac0dbb2798e92fc5d88b4b7552547e766aa948"
+  },
+  "joyScore": 10
+}

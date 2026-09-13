@@ -1,15 +1,25 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
+import { FUTURE_RELIC_SIGNALS, GUEST_ABILITY_ART, GUEST_ENCOUNTER_ART } from '../art-pipeline/finalArtCatalog';
 import ThreeBoard from '../components/board/ThreeBoard';
 import AftermathMoment from '../components/resolution/AftermathMoment';
+import DiscoveryJournal from '../components/expedition/DiscoveryJournal';
+import ExpeditionMemoryPanel from '../components/memory/ExpeditionMemoryPanel';
+import RunRelicSharePanel from '../components/memory/RunRelicSharePanel';
 import { deriveBoardViewModel } from '../components/board/boardViewModel';
 import { presentationDurationMs } from '../components/board/premiumPresentation';
 import { useUserPreferences } from '../hooks/useUserPreferences';
 import { emitFeedbackEvent } from '../lib/feedbackEvents';
 import { emitMusicDirectorState } from '../lib/musicDirector';
+import { deriveNextChallenge } from '../lib/expeditionChallenges';
+import { recordExpeditionMemory } from '../lib/expeditionMemory';
+import { memoryFromGuestExpedition } from '../lib/guestExpeditionMemory';
+import { ARC_ORDER, ARC_DEFINITIONS } from '../lib/expeditionArc';
 import {
+  GUEST_CREW_ABILITIES,
   GUEST_TERRAIN,
   canDepartGuestExpedition,
+  canUseGuestCrewAbility,
   clearGuestExpedition,
   commitGuestMove,
   createGuestExpedition,
@@ -19,12 +29,19 @@ import {
   guestCrewBark,
   guestDistanceToLanding,
   guestEmotionalBeat,
+  guestExpeditionArc,
+  guestLocationProfile,
+  guestOutcome,
+  guestPendingEncounter,
   guestReachableAliases,
+  guestRouteForecast,
   guestRouteRecommendation,
   guestTerrainLabel,
   loadGuestExpedition,
+  resolveGuestEncounter,
   saveGuestExpedition,
   selectGuestTile,
+  useGuestCrewAbility,
 } from '../lib/guestExpedition';
 
 function StatCard({ label, value, detail, tone = 'text-exp-text' }) {
@@ -37,31 +54,78 @@ function StatCard({ label, value, detail, tone = 'text-exp-text' }) {
   );
 }
 
+function GuestArcRail({ arc }) {
+  const currentIndex = ARC_ORDER.indexOf(arc.id);
+  return (
+    <div className="rounded border border-exp-border/75 bg-exp-dark/50 px-3 py-3" aria-label={`Expedition chapter: ${arc.label}`}>
+      <div className="flex items-center justify-between gap-3">
+        <div>
+          <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-exp-text-dim">Expedition arc</p>
+          <p className="mt-1 font-display text-base uppercase tracking-[0.12em] text-compass-bright">{arc.label}</p>
+        </div>
+        <p className="max-w-[13rem] text-right font-mono text-[10px] leading-relaxed text-exp-text-dim">{arc.playerQuestion}</p>
+      </div>
+      <div className="mt-3 grid grid-cols-5 gap-1" role="list" aria-label="Expedition chapters">
+        {ARC_ORDER.map((id, index) => (
+          <div key={id} role="listitem" aria-current={id === arc.id ? 'step' : undefined} className={`rounded border px-1 py-1.5 text-center font-mono text-[9px] uppercase tracking-[0.08em] ${id === arc.id ? 'border-compass bg-compass/15 text-compass-bright' : index < currentIndex ? 'border-oxide-green/30 bg-oxide-green/5 text-oxide-green' : 'border-exp-border/50 text-exp-text-dim'}`}>
+            {ARC_DEFINITIONS[id].shortLabel}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function EncounterDecision({ encounter, isResolving, onChoose }) {
+  if (!encounter) return null;
+  const artwork = GUEST_ENCOUNTER_ART[encounter.id];
+  return (
+    <section
+      className="guest-encounter rounded border border-compass/55 bg-[rgba(20,24,17,0.96)] bg-cover bg-center p-4"
+      aria-labelledby="guest-encounter-title"
+      data-encounter-art={encounter.id}
+      style={artwork ? { backgroundImage: `linear-gradient(90deg, rgba(14,18,12,0.98) 0%, rgba(14,18,12,0.92) 54%, rgba(14,18,12,0.32) 100%), url('${artwork}')` } : undefined}
+    >
+      <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-compass">Landmark decision / {encounter.speaker}</p>
+      <h2 id="guest-encounter-title" className="mt-2 font-display text-xl uppercase tracking-[0.1em] text-exp-text">{encounter.title}</h2>
+      <p className="mt-2 font-mono text-xs leading-relaxed text-exp-text-dim">{encounter.prompt}</p>
+      <div className="mt-4 grid gap-2">
+        {encounter.choices.map((choice) => (
+          <button key={choice.id} type="button" disabled={isResolving} onClick={() => onChoose(choice.id)} className="min-h-14 rounded border border-exp-border bg-exp-dark/55 px-3 py-3 text-left transition hover:border-compass/65 hover:bg-compass/10 disabled:cursor-wait disabled:opacity-55">
+            <span className="block font-display text-sm uppercase tracking-[0.12em] text-compass-bright">{choice.label}</span>
+            <span className="mt-1 block font-mono text-[10px] leading-relaxed text-exp-text-dim">{choice.detail}</span>
+          </button>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 function GuestTacticalBoard({ expedition, reachableAliases, recommendation, onSelect }) {
   const revealed = new Set(expedition.revealedAliases);
   return (
     <div className="absolute inset-0 overflow-auto bg-[radial-gradient(circle_at_center,rgba(76,145,219,0.08),transparent_55%),#0d0f0a] p-4 sm:p-8" data-testid="guest-tactical-board">
-      <div className="mx-auto grid min-h-full max-w-3xl grid-cols-5 grid-rows-4 gap-2" role="grid" aria-label="Tactical guest expedition map">
+      <div className="mx-auto grid min-h-full max-w-3xl grid-cols-5 grid-rows-4 gap-2" role="group" aria-label="Tactical guest expedition map">
         {GUEST_TERRAIN.map((cell) => {
           const [column, row] = cell.alias.split(',').map(Number);
           const canSelect = reachableAliases.includes(cell.alias);
           const isCurrent = expedition.currentLocation === cell.alias;
           const isSelected = expedition.selectedAlias === cell.alias;
           const isRecommended = recommendation?.alias === cell.alias;
+          const location = guestLocationProfile(cell.alias);
           return (
             <button
               key={cell.alias}
               type="button"
-              role="gridcell"
               disabled={!canSelect}
               onClick={() => onSelect(cell.alias)}
-              aria-label={`${cell.alias} ${revealed.has(cell.alias) ? guestTerrainLabel(cell.alias, expedition) : 'Uncharted'}${isCurrent ? ', current position' : ''}${isRecommended ? ', recommended route' : ''}`}
+              aria-label={`${location?.name || cell.alias}, ${revealed.has(cell.alias) ? guestTerrainLabel(cell.alias, expedition) : 'Uncharted'}${isCurrent ? ', current position' : ''}${isRecommended ? ', recommended route' : ''}`}
               aria-pressed={isSelected}
               style={{ gridColumn: column + 1, gridRow: row + 1, transform: column % 2 ? 'translateY(1.25rem)' : undefined }}
               className={`relative min-h-20 rounded-lg border p-2 font-mono text-[11px] transition-colors ${isCurrent ? 'border-oxide-green bg-oxide-green/15 text-oxide-green' : isSelected ? 'border-blueprint bg-blueprint/20 text-blueprint' : isRecommended ? 'border-compass bg-compass/10 text-compass-bright' : revealed.has(cell.alias) ? 'border-exp-border bg-exp-panel text-exp-text' : 'border-exp-border/70 bg-exp-dark/70 text-exp-text-dim'} disabled:cursor-default disabled:opacity-75`}
             >
               <span className="block text-xs">{isCurrent ? 'YOU' : cell.alias}</span>
-              <span className="mt-1 block normal-case leading-tight tracking-normal">{revealed.has(cell.alias) ? guestTerrainLabel(cell.alias, expedition) : 'Fog'}</span>
+              <span className="mt-1 block normal-case leading-tight tracking-normal">{revealed.has(cell.alias) ? location?.name || guestTerrainLabel(cell.alias, expedition) : 'Fog'}</span>
               {isRecommended && <span className="mt-1 block text-[10px] uppercase text-compass-bright">Recommended</span>}
             </button>
           );
@@ -78,8 +142,10 @@ export default function GuestExpeditionPage() {
   const [isResolving, setIsResolving] = useState(false);
   const [rendererState, setRendererState] = useState('building');
   const [focusMode, setFocusMode] = useState(false);
+  const [memoryState, setMemoryState] = useState(null);
   const resolveTimer = useRef(null);
   const awaitingWorld = useRef(false);
+  const recordedMemoryId = useRef(null);
 
   useEffect(() => {
     saveGuestExpedition(expedition);
@@ -116,6 +182,14 @@ export default function GuestExpeditionPage() {
     emitMusicDirectorState(director);
   }, [expedition.lastEvent, expedition.pressure, expedition.result, expedition.status]);
 
+  const completedMemory = useMemo(() => memoryFromGuestExpedition(expedition), [expedition]);
+
+  useEffect(() => {
+    if (!completedMemory || recordedMemoryId.current === completedMemory.id) return;
+    recordedMemoryId.current = completedMemory.id;
+    setMemoryState(recordExpeditionMemory(completedMemory));
+  }, [completedMemory]);
+
   const boardViewModel = useMemo(
     () => deriveBoardViewModel(guestBoardInput(expedition, { isResolving })),
     [expedition, isResolving],
@@ -126,6 +200,16 @@ export default function GuestExpeditionPage() {
   const recommendation = useMemo(() => guestRouteRecommendation(expedition), [expedition]);
   const emotionalBeat = useMemo(() => guestEmotionalBeat(expedition), [expedition]);
   const crewBark = useMemo(() => guestCrewBark(expedition), [expedition]);
+  const currentLocation = useMemo(() => guestLocationProfile(expedition.currentLocation), [expedition.currentLocation]);
+  const selectedLocation = useMemo(() => guestLocationProfile(expedition.selectedAlias), [expedition.selectedAlias]);
+  const selectedForecast = useMemo(() => guestRouteForecast(expedition, expedition.selectedAlias), [expedition]);
+  const pendingEncounter = useMemo(() => guestPendingEncounter(expedition), [expedition]);
+  const expeditionArc = useMemo(() => guestExpeditionArc(expedition), [expedition]);
+  const outcome = useMemo(() => guestOutcome(expedition), [expedition]);
+  const nextChallenge = useMemo(
+    () => (memoryState && completedMemory ? deriveNextChallenge(memoryState, completedMemory) : null),
+    [completedMemory, memoryState],
+  );
   const isPractice = searchParams.get('mode') === 'practice';
   const tacticalBoard = preferences.tacticalBoard || rendererState === 'unavailable';
   const pressureTone = expedition.pressure >= 65 ? 'text-signal-red' : expedition.pressure >= 40 ? 'text-compass-bright' : 'text-oxide-green';
@@ -146,9 +230,17 @@ export default function GuestExpeditionPage() {
         emitFeedbackEvent({ source: 'guest-expedition', kind: 'board-beat', soundCue, motionCue: next.lastEvent });
         return next;
       });
-      if (tacticalBoard) setIsResolving(false);
-      else awaitingWorld.current = true;
-      resolveTimer.current = null;
+      if (tacticalBoard) {
+        setIsResolving(false);
+        resolveTimer.current = null;
+      } else {
+        awaitingWorld.current = true;
+        resolveTimer.current = window.setTimeout(() => {
+          awaitingWorld.current = false;
+          setIsResolving(false);
+          resolveTimer.current = null;
+        }, presentationDurationMs());
+      }
     }, presentationDurationMs());
   };
 
@@ -156,6 +248,7 @@ export default function GuestExpeditionPage() {
     setRendererState('ready');
     if (!awaitingWorld.current) return;
     awaitingWorld.current = false;
+    if (resolveTimer.current) window.clearTimeout(resolveTimer.current);
     resolveTimer.current = window.setTimeout(() => {
       setIsResolving(false);
       resolveTimer.current = null;
@@ -169,37 +262,61 @@ export default function GuestExpeditionPage() {
     setIsResolving(false);
     clearGuestExpedition();
     setExpedition(createGuestExpedition());
+    setMemoryState(null);
+    recordedMemoryId.current = null;
     setFocusMode(false);
   };
 
   const depart = () => {
     setExpedition((current) => departGuestExpedition(current));
+    setFocusMode(false);
     emitFeedbackEvent({ source: 'guest-expedition', kind: 'board-beat', soundCue: 'board.escape.commit', motionCue: 'extraction' });
   };
 
   const emergencyExtract = () => {
     setExpedition((current) => emergencyExtractGuestExpedition(current));
+    setFocusMode(false);
     emitFeedbackEvent({ source: 'guest-expedition', kind: 'board-beat', soundCue: 'board.emergency', motionCue: 'recovery' });
   };
 
+  const chooseEncounter = (choiceId) => {
+    setExpedition((current) => resolveGuestEncounter(current, choiceId));
+    emitFeedbackEvent({ source: 'guest-expedition', kind: 'board-beat', soundCue: choiceId === 'anchor' || choiceId === 'mark' ? 'board.recovery' : 'board.discovery', motionCue: choiceId });
+  };
+
+  const useCrewAbility = (abilityId) => {
+    setExpedition((current) => useGuestCrewAbility(current, abilityId));
+    emitFeedbackEvent({ source: 'guest-expedition', kind: 'board-beat', soundCue: abilityId === 'anchor' ? 'board.recovery' : 'board.discovery', motionCue: abilityId });
+  };
+
   return (
-    <section data-testid="guest-expedition" data-focus-mode={focusMode ? 'active' : 'standard'} className={`player-readable mx-auto w-full max-w-[110rem] px-3 py-4 sm:px-5 sm:py-5 2xl:px-6 ${focusMode ? 'guest-focus-shell' : ''}`}>
+    <section data-testid="guest-expedition" data-focus-mode={focusMode ? 'active' : 'standard'} data-current-location={expedition.currentLocation} data-expedition-status={expedition.status} data-resolving={isResolving ? 'true' : 'false'} className={`player-readable mx-auto w-full max-w-[110rem] px-3 py-4 sm:px-5 sm:py-5 2xl:px-6 ${focusMode ? 'guest-focus-shell' : ''}`}>
       <div className={`overflow-hidden rounded-xl border border-exp-border bg-[radial-gradient(circle_at_72%_8%,rgba(76,145,219,0.12),transparent_30%),linear-gradient(180deg,rgba(25,31,21,0.96),rgba(10,14,10,0.98))] shadow-[0_24px_90px_rgba(0,0,0,0.35)] ${focusMode ? 'flex h-full flex-col' : ''}`}>
-        <header className={`border-b border-exp-border px-4 py-4 sm:px-6 ${focusMode ? 'hidden' : ''}`}>
-          <div className="flex flex-wrap items-end justify-between gap-4">
-            <div className="max-w-3xl">
-              <p className="font-mono text-[11px] uppercase tracking-[0.24em] text-blueprint">{isPractice ? 'Always-available practice expedition' : 'Wallet-free 3D expedition'}</p>
-              <h1 className="mt-2 font-display text-3xl uppercase tracking-[0.1em] text-exp-text sm:text-4xl">Explore the living survey</h1>
-              <p className="mt-2 font-mono text-sm leading-relaxed text-exp-text-dim">
-                Reveal terrain, recover a relic, and return to the landing beacon before the storm closes.
-              </p>
+        <header className={`border-b border-exp-border px-4 sm:px-6 ${expedition.turns > 0 ? 'py-2.5' : 'py-4'} ${focusMode ? 'hidden' : ''}`}>
+          {expedition.turns === 0 ? (
+            <div className="flex flex-wrap items-end justify-between gap-4">
+              <div className="max-w-3xl">
+                <p className="font-mono text-[11px] uppercase tracking-[0.24em] text-blueprint">{isPractice ? 'Replayable training voyage' : 'Playable solo prologue'}</p>
+                <h1 className="mt-2 font-display text-3xl uppercase tracking-[0.1em] text-exp-text sm:text-4xl">The Living Survey</h1>
+                <p className="mt-2 font-mono text-sm leading-relaxed text-exp-text-dim">
+                  Read the world, survive its landmark choices, recover a relic, and bring the whole story home.
+                </p>
+              </div>
+              <div className="flex flex-wrap gap-2 font-mono text-[11px] uppercase tracking-[0.14em]">
+                <span className="rounded border border-blueprint/35 bg-blueprint/10 px-3 py-2 text-blueprint">Living 3D world</span>
+                <span className="rounded border border-oxide-green/35 bg-oxide-green/10 px-3 py-2 text-oxide-green">Progress remembered</span>
+                <span className="rounded border border-exp-border bg-exp-dark/50 px-3 py-2 text-exp-text-dim">Two crew abilities</span>
+              </div>
             </div>
-            <div className="flex flex-wrap gap-2 font-mono text-[11px] uppercase tracking-[0.14em]">
-              <span className="rounded border border-blueprint/35 bg-blueprint/10 px-3 py-2 text-blueprint">Production 3D</span>
-              <span className="rounded border border-oxide-green/35 bg-oxide-green/10 px-3 py-2 text-oxide-green">Saved locally</span>
-              <span className="rounded border border-exp-border bg-exp-dark/50 px-3 py-2 text-exp-text-dim">No wallet needed</span>
+          ) : (
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div className="flex min-w-0 items-baseline gap-3">
+                <p className="font-display text-lg uppercase tracking-[0.12em] text-exp-text">The Living Survey</p>
+                <p className="truncate font-mono text-[10px] uppercase tracking-[0.18em] text-blueprint">{currentLocation?.name} / {expeditionArc.label}</p>
+              </div>
+              <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-exp-text-dim">Turn {expedition.turns} / {expedition.status === 'complete' ? 'Memory secured' : 'Route active'}</p>
             </div>
-          </div>
+          )}
         </header>
 
         <div className={`grid gap-4 p-3 sm:p-4 xl:grid-cols-[minmax(0,2.2fr)_minmax(300px,0.62fr)] ${focusMode ? 'min-h-0 flex-1 xl:grid-cols-[minmax(0,1fr)_22rem]' : ''}`}>
@@ -235,7 +352,38 @@ export default function GuestExpeditionPage() {
               <StatCard label="Route home" value={distanceHome === 0 ? 'Here' : `${distanceHome} step${distanceHome === 1 ? '' : 's'}`} detail={`Turn ${expedition.turns}`} tone={distanceHome === 0 ? 'text-oxide-green' : 'text-compass-bright'} />
             </div>
 
-            {emotionalBeat ? (
+            {pendingEncounter && <EncounterDecision encounter={pendingEncounter} isResolving={isResolving} onChoose={chooseEncounter} />}
+
+            {expedition.status !== 'complete' && <GuestArcRail arc={expeditionArc} />}
+
+            {currentLocation && expedition.status !== 'complete' && (
+              <div className="rounded border border-exp-border/75 bg-[linear-gradient(135deg,rgba(76,145,219,0.08),rgba(13,16,12,0.72))] px-4 py-3" data-testid="guest-location-identity">
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-blueprint">Current location / {currentLocation.terrain}</p>
+                    <h2 className="mt-1 font-display text-lg uppercase tracking-[0.12em] text-exp-text">{currentLocation.name}</h2>
+                  </div>
+                  <span className="rounded border border-exp-border/60 px-2 py-1 font-mono text-[9px] uppercase tracking-[0.14em] text-exp-text-dim">{expedition.visitedAliases.length}/{GUEST_TERRAIN.length} charted</span>
+                </div>
+                <p className="mt-2 font-mono text-[11px] leading-relaxed text-exp-text-dim">{currentLocation.motif}</p>
+              </div>
+            )}
+
+            {selectedLocation && selectedForecast && (
+              <div className="rounded border border-compass/35 bg-compass/5 px-4 py-3" data-testid="guest-route-forecast">
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-compass">Route forecast</p>
+                    <p className="mt-1 font-display text-base uppercase tracking-[0.1em] text-exp-text">{selectedLocation.name}</p>
+                  </div>
+                  <span className={`rounded border px-2 py-1 font-mono text-[10px] uppercase ${selectedForecast.projectedPressure >= 65 ? 'border-signal-red/45 text-signal-red' : 'border-compass/35 text-compass-bright'}`}>+{selectedForecast.pressure} pressure</span>
+                </div>
+                <p className="mt-2 font-mono text-[11px] leading-relaxed text-exp-text-dim">{selectedLocation.omen}</p>
+                <p className="mt-2 font-mono text-[10px] uppercase tracking-[0.12em] text-exp-text-dim">1 supply / {selectedForecast.warning}{selectedForecast.encounter ? ' / landmark decision' : ''}</p>
+              </div>
+            )}
+
+            {!pendingEncounter && expedition.status !== 'complete' && (emotionalBeat ? (
               <div key={emotionalBeat.id} className="guest-emotional-beat" data-guest-beat={emotionalBeat.category} aria-live="polite">
                 <AftermathMoment moment={emotionalBeat} />
               </div>
@@ -245,30 +393,66 @@ export default function GuestExpeditionPage() {
                 <p className="mt-2 font-mono text-xs leading-relaxed text-exp-text">{expedition.message}</p>
                 {recommendation && <p className="mt-2 font-mono text-[11px] leading-relaxed text-exp-text-dim"><span className="text-blueprint">Recommended {recommendation.alias}:</span> {recommendation.reason}</p>}
               </div>
-            )}
+            ))}
 
             <div className="rounded border border-exp-border/75 bg-exp-dark/50 px-4 py-3" aria-live="polite" data-testid="guest-crew-bark">
               <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-oxide-green">Field comms / {crewBark.speaker}</p>
               <p className="mt-1 font-mono text-[11px] leading-relaxed text-exp-text">"{crewBark.line}"</p>
             </div>
 
-            {expedition.status === 'exploring' && (
+            {expedition.status === 'exploring' && !pendingEncounter && (
+              <div className="rounded border border-exp-border/75 bg-exp-panel/45 p-3" data-testid="guest-crew-abilities">
+                <div className="flex items-center justify-between gap-3">
+                  <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-exp-text-dim">Crew abilities</p>
+                  <span className="font-mono text-[9px] uppercase tracking-[0.12em] text-exp-text-dim">Once per voyage</span>
+                </div>
+                <div className="mt-2 grid gap-2 sm:grid-cols-2 xl:grid-cols-1 2xl:grid-cols-2">
+                  {Object.values(GUEST_CREW_ABILITIES).map((ability) => {
+                    const used = expedition.usedAbilities.includes(ability.id);
+                    const available = canUseGuestCrewAbility(expedition, ability.id);
+                    const artwork = GUEST_ABILITY_ART[ability.id];
+                    return (
+                      <button
+                        key={ability.id}
+                        type="button"
+                        disabled={!available}
+                        onClick={() => useCrewAbility(ability.id)}
+                        className="min-h-20 rounded border border-exp-border bg-exp-dark/50 bg-cover bg-center px-3 py-2 text-left transition hover:border-blueprint/55 disabled:cursor-not-allowed disabled:opacity-45"
+                        style={artwork ? { backgroundImage: `linear-gradient(90deg, rgba(8,12,9,0.97) 0%, rgba(8,12,9,0.88) 62%, rgba(8,12,9,0.28) 100%), url('${artwork}')` } : undefined}
+                      >
+                        <span className="block font-mono text-[9px] uppercase tracking-[0.16em] text-blueprint">{ability.speaker}{used ? ' / spent' : ''}</span>
+                        <span className="mt-1 block font-display text-xs uppercase tracking-[0.1em] text-exp-text">{ability.label}</span>
+                        <span className="mt-1 block font-mono text-[9px] leading-relaxed text-exp-text-dim">{ability.detail}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {expedition.status === 'exploring' && !pendingEncounter && (
               <div className="rounded border border-exp-border bg-exp-panel/75 p-4">
                 <h2 className="font-display text-lg uppercase tracking-[0.12em] text-exp-text">Choose the next crossing</h2>
                 <p className="mt-2 font-mono text-[11px] leading-relaxed text-exp-text-dim">Select an adjacent hex in the world or use a route control below. The recommendation is guidance, not an automatic move.</p>
                 <div className="mt-3 grid grid-cols-2 gap-2" role="group" aria-label="Reachable routes">
-                  {reachableAliases.map((alias) => (
-                    <button
-                      key={alias}
-                      type="button"
-                      onClick={() => setExpedition((current) => selectGuestTile(current, alias))}
-                      aria-pressed={expedition.selectedAlias === alias}
-                      className={`min-h-11 rounded border px-3 py-2 text-left font-mono text-[11px] uppercase tracking-[0.1em] transition-colors ${expedition.selectedAlias === alias ? 'border-blueprint bg-blueprint/15 text-blueprint' : recommendation?.alias === alias ? 'border-compass/60 bg-compass/10 text-compass-bright' : 'border-exp-border bg-exp-dark/45 text-exp-text hover:border-blueprint/50'}`}
-                    >
-                      <span className="flex items-center justify-between gap-2"><span>{alias}</span>{recommendation?.alias === alias && <span className="text-[10px] tracking-[0.08em]">Recommended</span>}</span>
-                      <span className="mt-1 block text-exp-text-dim">{guestTerrainLabel(alias, expedition)}</span>
-                    </button>
-                  ))}
+                  {reachableAliases.map((alias) => {
+                    const profile = guestLocationProfile(alias);
+                    const forecast = guestRouteForecast(expedition, alias);
+                    return (
+                      <button
+                        key={alias}
+                        type="button"
+                        data-route-alias={alias}
+                        disabled={isResolving}
+                        onClick={() => setExpedition((current) => selectGuestTile(current, alias))}
+                        aria-pressed={expedition.selectedAlias === alias}
+                        className={`min-h-14 rounded border px-3 py-2 text-left font-mono text-[11px] uppercase tracking-[0.1em] transition-colors ${expedition.selectedAlias === alias ? 'border-blueprint bg-blueprint/15 text-blueprint' : recommendation?.alias === alias ? 'border-compass/60 bg-compass/10 text-compass-bright' : 'border-exp-border bg-exp-dark/45 text-exp-text hover:border-blueprint/50'}`}
+                      >
+                        <span className="flex items-center justify-between gap-2"><span>{profile?.name || alias}</span>{recommendation?.alias === alias && <span className="text-[9px] tracking-[0.06em]">Recommended</span>}</span>
+                        <span className="mt-1 flex items-center justify-between gap-2 normal-case tracking-normal text-exp-text-dim"><span>{guestTerrainLabel(alias, expedition)}</span><span>{forecast ? `+${forecast.pressure} pressure` : ''}</span></span>
+                      </button>
+                    );
+                  })}
                 </div>
                 <button
                   type="button"
@@ -277,7 +461,7 @@ export default function GuestExpeditionPage() {
                   disabled={!expedition.selectedAlias || isResolving}
                   className="mt-3 min-h-12 w-full rounded border border-compass bg-compass px-4 py-3 font-display text-sm font-semibold uppercase tracking-[0.14em] text-exp-dark transition hover:bg-compass-bright disabled:cursor-not-allowed disabled:border-exp-border disabled:bg-exp-dark disabled:text-exp-text-dim"
                 >
-                  {isResolving ? 'World resolving...' : expedition.selectedAlias ? `Commit route to ${expedition.selectedAlias}` : 'Select a reachable route'}
+                  {isResolving ? 'World resolving...' : expedition.selectedAlias ? `Commit route to ${selectedLocation?.name || expedition.selectedAlias}` : 'Select a reachable route'}
                 </button>
                 {canDepart && (
                   <button type="button" onClick={depart} className="mt-2 min-h-11 w-full rounded border border-oxide-green/55 bg-oxide-green/10 px-4 py-2 font-mono text-xs uppercase tracking-[0.16em] text-oxide-green hover:bg-oxide-green/20">
@@ -294,15 +478,42 @@ export default function GuestExpeditionPage() {
             )}
 
             {expedition.status === 'complete' && (
-              <div className="rounded border border-oxide-green/35 bg-oxide-green/5 p-4">
-                <p className="font-display text-xl uppercase tracking-[0.12em] text-oxide-green">{expedition.result === 'safe' ? 'Findings secured' : 'Crew recovered'}</p>
-                <p className="mt-2 font-mono text-xs leading-relaxed text-exp-text-dim">Your local run is complete. A live expedition adds a shared crew and persistent on-chain actions only when you choose to join.</p>
+              <div className="rounded border border-oxide-green/35 bg-[radial-gradient(circle_at_top_right,rgba(64,160,128,0.14),transparent_46%),rgba(64,160,128,0.04)] p-4" data-testid="guest-outcome">
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-oxide-green">Expedition record</p>
+                    <p className="mt-1 font-display text-xl uppercase tracking-[0.12em] text-exp-text">{outcome?.title || (expedition.result === 'safe' ? 'Findings secured' : 'Crew recovered')}</p>
+                  </div>
+                  {outcome && <div className="text-right"><p className="font-display text-4xl leading-none text-compass-bright">{outcome.grade}</p><p className="font-mono text-[9px] uppercase tracking-[0.16em] text-exp-text-dim">{outcome.score} score</p></div>}
+                </div>
+                <p className="mt-3 font-mono text-xs leading-relaxed text-exp-text-dim">{outcome?.summary}</p>
+                <p className="mt-2 font-mono text-[11px] leading-relaxed text-exp-text-dim">The route, discoveries, crew choices, and extraction cost are now part of your persistent expedition memory.</p>
                 <div className="mt-4 flex flex-wrap gap-2">
                   <Link to="/?mode=join" className="inline-flex min-h-11 items-center rounded border border-compass/50 bg-compass/10 px-3 py-2 font-mono text-[11px] uppercase tracking-[0.12em] text-compass-bright">Find a live crew</Link>
                   <button type="button" onClick={restart} className="min-h-11 rounded border border-exp-border bg-exp-dark/45 px-3 py-2 font-mono text-[11px] uppercase tracking-[0.12em] text-exp-text">Explore another route</button>
                 </div>
               </div>
             )}
+
+            {expedition.status === 'complete' && (
+              <section className="rounded border border-relic/30 bg-relic/5 p-3" aria-labelledby="future-relic-signals-title">
+                <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-relic" id="future-relic-signals-title">Signals beyond this survey</p>
+                <div className="mt-3 grid grid-cols-2 gap-2">
+                  {FUTURE_RELIC_SIGNALS.map((relic) => (
+                    <article key={relic.id} className="rounded border border-exp-border/70 bg-exp-dark/65 p-2 text-center">
+                      <img src={relic.image} alt={relic.name} loading="lazy" className="mx-auto h-20 w-20 object-contain drop-shadow-[0_8px_14px_rgba(0,0,0,0.8)]" />
+                      <p className="mt-1 font-display text-xs uppercase tracking-[0.1em] text-exp-text">{relic.name}</p>
+                      <p className="mt-1 font-mono text-[9px] leading-relaxed text-exp-text-dim">{relic.promise}</p>
+                    </article>
+                  ))}
+                </div>
+              </section>
+            )}
+
+            <details className="rounded border border-exp-border/70 bg-exp-dark/45 p-3" data-testid="guest-field-journal">
+              <summary className="flex min-h-11 cursor-pointer items-center font-mono text-[10px] uppercase tracking-[0.2em] text-exp-text-dim">Open field journal / {expedition.journal.length} entries</summary>
+              <div className="mt-3"><DiscoveryJournal entries={expedition.journal} /></div>
+            </details>
 
             {expedition.status !== 'complete' && (
               <button type="button" onClick={restart} className="min-h-11 w-full rounded border border-exp-border px-3 py-2 font-mono text-[10px] uppercase tracking-[0.18em] text-exp-text-dim hover:border-compass/40 hover:text-exp-text">
@@ -313,11 +524,18 @@ export default function GuestExpeditionPage() {
         </div>
 
         <footer className={`grid gap-3 border-t border-exp-border px-4 py-5 font-mono text-xs leading-relaxed text-exp-text-dim sm:grid-cols-3 sm:px-6 ${focusMode ? 'hidden' : ''}`}>
-          <p><span className="text-blueprint">Reveal:</span> move into fog to discover terrain and relics.</p>
-          <p><span className="text-compass-bright">Read:</span> every move consumes supplies and raises pressure.</p>
-          <p><span className="text-oxide-green">Depart:</span> return to the blue landing beacon and leave before redline.</p>
+          <p><span className="text-blueprint">Read:</span> reveal omens before committing to a route.</p>
+          <p><span className="text-compass-bright">Choose:</span> spend pressure, supplies, and crew abilities deliberately.</p>
+          <p><span className="text-oxide-green">Remember:</span> bring the route home as a scored expedition relic.</p>
         </footer>
       </div>
+
+      {completedMemory && memoryState && !focusMode && (
+        <div className="mt-4 grid gap-4 2xl:grid-cols-[minmax(0,1.2fr)_minmax(340px,0.8fr)]" data-testid="guest-memory-reward">
+          <RunRelicSharePanel memory={completedMemory} challenge={nextChallenge} title="Living Survey Relic" />
+          <ExpeditionMemoryPanel initialMemory={memoryState} latestMemory={completedMemory} compact title="Voyage Memory" />
+        </div>
+      )}
     </section>
   );
 }

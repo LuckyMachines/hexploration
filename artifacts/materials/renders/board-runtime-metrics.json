@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-13T09:33:38.645Z",
+  "generatedAt": "2026-09-13T12:29:46.759Z",
   "materialSystemVersion": "1.0.0",
   "states": [
     {
@@ -12,7 +12,7 @@
     {
       "lens": "danger",
       "drawCalls": 75,
-      "triangles": 22824,
+      "triangles": 9824,
       "textures": 63,
       "lightingRig": "danger"
     }

@@ -17,6 +17,8 @@ describe('UI quality scene matrix', () => {
       expect(scene.sources.length).toBeGreaterThan(0);
       for (const source of scene.sources) expect(existsSync(resolve(process.cwd(), source)), source).toBe(true);
       expect(scene.maxDomNodes).toBeGreaterThan(0);
+      if (scene.maxTransferBytes) expect(scene.maxTransferBytes).toBeGreaterThan(0);
+      if (scene.maxNavigationDurationMs) expect(scene.maxNavigationDurationMs).toBeGreaterThan(0);
     }
   });
 

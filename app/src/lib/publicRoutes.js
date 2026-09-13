@@ -14,8 +14,8 @@ const STATIC_ROUTES = [
   {
     path: '/guest',
     type: 'guest-expedition',
-    title: 'Play the Xenovoya 3D expedition',
-    description: 'Explore Xenovoya in the production 3D world without a wallet: reveal terrain, recover relics, manage pressure, and return safely.',
+    title: 'Play The Living Survey',
+    description: 'Enter Xenovoya\'s playable solo prologue: read a living 3D world, survive landmark choices, recover a relic, and bring the route home.',
     priority: 0.9,
     changefreq: 'weekly',
   },

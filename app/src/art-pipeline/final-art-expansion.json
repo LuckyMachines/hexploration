@@ -1,0 +1,212 @@
+{
+  "version": "2026-09-13.1",
+  "generatedAt": "2026-09-13",
+  "model": "gpt-image-2",
+  "provider": "azure-foundry",
+  "quality": "high",
+  "generationMode": "Azure GPT Image 2 through ~/.codex/azure-image.sh and ~/.codex/azure-image-edit.sh",
+  "styleLock": "Xenovoya final production art: handcrafted layered paper-cut miniature diorama with painterly mineral textures, subtle fiber edges, sculpted geological relief, tactile weathered basalt, restrained expedition technology, and deep atmospheric parallax. Light behaves as information: cyan reveals, gold invites, green reassures, red warns, violet marks the rare. One unmistakable focal event, strong silhouette, quiet negative space, premium game key-art finish. Not photorealistic and not flat vector art.",
+  "reviewPolicy": "Every promoted asset was inspected individually or on a labeled contact sheet; identity edits were compared against canonical character references; transparent relics were reviewed on a dark field.",
+  "rejectedEvidence": [
+    {
+      "id": "environment-tideglass-cradle-v1",
+      "rawEvidence": "artifacts/art/final-expansion-2026-09-13/raw/environment-tideglass-cradle.png",
+      "disposition": "rejected",
+      "reason": "The first candidate read as a monumental portal rather than a backpack-scale relic chamber."
+    }
+  ],
+  "assets": [
+    {
+      "id": "environment-beaconfall-basin",
+      "family": "environment",
+      "status": "approved",
+      "requestedSize": "1536x1024",
+      "sourceImage": null,
+      "rawEvidence": "artifacts/art/final-expansion-2026-09-13/raw/environment-beaconfall-basin.png",
+      "productionPath": "app/public/images/art/environments/beaconfall-basin.webp",
+      "prompt": "Use case: stylized-concept. Asset type: game environment backplate. Primary request: Beaconfall Basin, the crew's dependable landing sanctuary inside an alien storm. Scene: a shallow bowl of rain-dark basalt, a human-scale cyan landing beacon reflected in thin water, low slate terraces, sparse compass flowers, distant folded mineral ridges. Composition: wide low camera, clear foreground threshold, beacon slightly off center, navigable midground, deep calm horizon, generous quiet area for game UI. Lighting: cool fog and localized cyan beacon with one restrained oxide-green safety echo. Constraints: no characters, no text, no interface, no logos, no giant portal, no decorative hex wallpaper, no full-frame neon, no watermark.",
+      "integration": "Guest expedition ThreeBoard location backplate",
+      "review": "Composition, navigability, focal hierarchy, UI-safe space, palette discipline, and artifact cleanliness approved."
+    },
+    {
+      "id": "environment-echo-fork",
+      "family": "environment",
+      "status": "approved",
+      "requestedSize": "1536x1024",
+      "sourceImage": null,
+      "rawEvidence": "artifacts/art/final-expansion-2026-09-13/raw/environment-echo-fork.png",
+      "productionPath": "app/public/images/art/environments/echo-fork.webp",
+      "prompt": "Use case: stylized-concept. Asset type: game environment backplate. Primary request: Echo Fork, where one true relic signal divides into three readable paths and two are weather reflections. Scene: dark basalt shelf with three human-scale passages separated by translucent mineral fins; one passage carries a precise cyan harmonic, two carry faint broken reflections. Composition: wide eye-level route fork, one calm gold decision point, strong foreground path, restrained depth layers, central quiet space for choice UI. Lighting: misty blue-black ambient with localized cyan and gold only. Constraints: no characters, no arrows, no signs, no text, no interface, no giant structures, no saturation, no watermark.",
+      "integration": "Guest expedition ThreeBoard location backplate",
+      "review": "Composition, navigability, focal hierarchy, UI-safe space, palette discipline, and artifact cleanliness approved."
+    },
+    {
+      "id": "environment-hushgrass-shelf",
+      "family": "environment",
+      "status": "approved",
+      "requestedSize": "1536x1024",
+      "sourceImage": null,
+      "rawEvidence": "artifacts/art/final-expansion-2026-09-13/raw/environment-hushgrass-shelf.png",
+      "productionPath": "app/public/images/art/environments/hushgrass-shelf.webp",
+      "prompt": "Use case: stylized-concept. Asset type: game environment backplate. Primary request: Hushgrass Shelf, a quiet elevated route where silver alien grass bends toward sounds the crew cannot hear. Scene: layered basalt ledges, tactile pale grass ribbons, small weathered survey stones, fog opening toward a distant cyan landing signal. Composition: wide restrained panorama, readable path across the shelf, foreground grass framing without clutter, calm midground, large dark negative-space sky. Lighting: dim cyan dawn with a thin green homeward trace. Constraints: no characters, no text, no interface, no giant portal, no fantasy castle, no full-frame glow, no watermark.",
+      "integration": "Guest expedition ThreeBoard location backplate",
+      "review": "Composition, navigability, focal hierarchy, UI-safe space, palette discipline, and artifact cleanliness approved."
+    },
+    {
+      "id": "environment-tideglass-cradle",
+      "family": "environment",
+      "status": "approved",
+      "requestedSize": "1536x1024",
+      "sourceImage": null,
+      "rawEvidence": "artifacts/art/final-expansion-2026-09-13/raw/environment-tideglass-cradle-v2.png",
+      "productionPath": "app/public/images/art/environments/tideglass-cradle.webp",
+      "prompt": "Use case: stylized-concept\nAsset type: game environment backplate\nPrimary request: Tideglass Cradle, a small discoverable relic basin at human traversal scale, containing one backpack-size crescent of sea-glass that pulls a thin ribbon of mist around itself.\nScene: open rain-dark basalt shelf, ankle-high nested mineral cradle, wet stepping stones, sparse oxide-green moss, distant storm veil. The relic is an object on the ground, not an opening in the rock.\nStyle: Xenovoya final production art; handcrafted layered paper-cut miniature diorama with painterly mineral textures, subtle fiber edges, strong geological relief, tactile weathered basalt, restrained expedition technology, and deep atmospheric parallax. Not photorealistic and not flat vector art.\nComposition: wide low camera, clear route entering from foreground and continuing home into the distance, relic slightly off center as the only focal object, substantial quiet negative space for game UI.\nLighting: contained relic-violet and oxide-green inner light with a faint cyan rim; deep field-ink darkness elsewhere.\nConstraints: no people; no arch; no cave mouth; no doorway; no portal; no altar; no monumental circular form; relic no larger than a backpack; no text; no interface; no logo; no watermark; no full-frame neon.",
+      "integration": "Guest expedition ThreeBoard location backplate",
+      "review": "Composition, navigability, focal hierarchy, UI-safe space, palette discipline, and artifact cleanliness approved."
+    },
+    {
+      "id": "environment-wind-vault",
+      "family": "environment",
+      "status": "approved",
+      "requestedSize": "1536x1024",
+      "sourceImage": null,
+      "rawEvidence": "artifacts/art/final-expansion-2026-09-13/raw/environment-wind-vault.png",
+      "productionPath": "app/public/images/art/environments/wind-vault.webp",
+      "prompt": "Use case: stylized-concept. Asset type: game environment backplate. Primary request: Wind Vault, a roofless alien ruin holding one pocket of perfectly still air while the storm bends around it. Scene: three weathered slate walls at human scale, a circular floor depression, hanging mineral threads frozen motionless, distant rain sweeping sideways outside. Composition: wide threshold view, sheltered quiet center, two legible routes around the chamber, restrained architectural silhouette and layered storm depth. Lighting: soft compass-gold shelter glow against cold blue storm haze. Constraints: no characters, no text, no interface, no temple, no giant columns, no decorative runes, no watermark.",
+      "integration": "Guest expedition ThreeBoard location backplate",
+      "review": "Composition, navigability, focal hierarchy, UI-safe space, palette discipline, and artifact cleanliness approved."
+    },
+    {
+      "id": "environment-memory-ferns",
+      "family": "environment",
+      "status": "approved",
+      "requestedSize": "1536x1024",
+      "sourceImage": null,
+      "rawEvidence": "artifacts/art/final-expansion-2026-09-13/raw/environment-memory-ferns.png",
+      "productionPath": "app/public/images/art/environments/memory-ferns.webp",
+      "prompt": "Use case: stylized-concept. Asset type: game environment backplate. Primary request: Memory Ferns, an alien grove where each translucent frond repeats the crew as a delayed abstract silhouette without showing literal people. Scene: layered dark fern forms rooted in rain-polished basalt, ghostlike cyan echoes offset through depth, one navigable path and a distant beacon reflection. Composition: wide low journey frame, fronds create three clean parallax planes, path remains readable, center-left quiet for UI. Lighting: cool cyan informational echoes with a very restrained relic-violet afterglow. Constraints: no literal characters, no faces, no horror, no text, no interface, no excessive plants, no watermark.",
+      "integration": "Guest expedition ThreeBoard location backplate",
+      "review": "Composition, navigability, focal hierarchy, UI-safe space, palette discipline, and artifact cleanliness approved."
+    },
+    {
+      "id": "environment-bellstone-rise",
+      "family": "environment",
+      "status": "approved",
+      "requestedSize": "1536x1024",
+      "sourceImage": null,
+      "rawEvidence": "artifacts/art/final-expansion-2026-09-13/raw/environment-bellstone-rise.png",
+      "productionPath": "app/public/images/art/environments/bellstone-rise.webp",
+      "prompt": "Use case: stylized-concept. Asset type: game environment backplate. Primary request: Bellstone Rise, a traversable ridge of hollow slate pillars that ring when storm pressure crosses the route. Scene: a handful of human-scale weathered basalt chimes, narrow sheltered trail, windblown mineral dust, one distant lightning front. Composition: wide uphill crossing, two or three strong pillar silhouettes only, obvious cover route, open horizon and quiet lower-left space for UI. Lighting: cold atmospheric blue with one localized signal-red fracture on the most endangered pillar and a thin gold safe line. Constraints: no characters, no text, no interface, no musical notation, no giant fantasy architecture, no global red wash, no watermark.",
+      "integration": "Guest expedition ThreeBoard location backplate",
+      "review": "Composition, navigability, focal hierarchy, UI-safe space, palette discipline, and artifact cleanliness approved."
+    },
+    {
+      "id": "environment-ashwake-verge",
+      "family": "environment",
+      "status": "approved",
+      "requestedSize": "1536x1024",
+      "sourceImage": null,
+      "rawEvidence": "artifacts/art/final-expansion-2026-09-13/raw/environment-ashwake-verge.png",
+      "productionPath": "app/public/images/art/environments/ashwake-verge.webp",
+      "prompt": "Use case: stylized-concept. Asset type: game environment backplate. Primary request: Ashwake Verge, the far edge of the survey where warm dust spirals around a buried machine that moves only when unobserved. Scene: matte black ash basin, two offset basalt shelves, a partially buried restrained alien mechanism, sparse emberglass splinters, storm wall beyond. Composition: wide ominous exploration frame, one readable route to the machine, large quiet sky, layered foreground dust ribbons, single focal object. Lighting: low amber underglow and tiny relic-violet signal inside deep field-ink shadow. Constraints: no characters, no text, no interface, no robot, no spaceship, no huge machine, no orange flood, no watermark.",
+      "integration": "Guest expedition ThreeBoard location backplate",
+      "review": "Composition, navigability, focal hierarchy, UI-safe space, palette discipline, and artifact cleanliness approved."
+    },
+    {
+      "id": "encounter-echo-fork-decision",
+      "family": "encounter",
+      "status": "approved",
+      "requestedSize": "1536x1024",
+      "sourceImage": null,
+      "rawEvidence": "artifacts/art/final-expansion-2026-09-13/raw/encounter-echo-fork-decision.png",
+      "productionPath": "app/public/images/art/encounters/echo-fork-decision.webp",
+      "prompt": "Use case: stylized-concept. Asset type: in-game encounter illustration. Primary request: the decisive instant at Echo Fork when one real relic harmonic separates from two storm reflections. Scene: close environmental study of three layered mineral passages; one signal resolves into a coherent cyan-gold thread while two fragment into mist. Composition: wide choice-card crop, single clear left-to-right visual comparison, low-detail lower third for code-native buttons, tactile cut-paper depth. Lighting: localized cyan information and compass-gold agency. Constraints: no characters, no text, no labels, no arrows, no interface, no logos, no watermark.",
+      "integration": "Echo Fork landmark decision panel",
+      "review": "Composition, navigability, focal hierarchy, UI-safe space, palette discipline, and artifact cleanliness approved."
+    },
+    {
+      "id": "encounter-wind-vault-decision",
+      "family": "encounter",
+      "status": "approved",
+      "requestedSize": "1536x1024",
+      "sourceImage": null,
+      "rawEvidence": "artifacts/art/final-expansion-2026-09-13/raw/encounter-wind-vault-decision.png",
+      "productionPath": "app/public/images/art/encounters/wind-vault-decision.webp",
+      "prompt": "Use case: stylized-concept. Asset type: in-game encounter illustration. Primary request: the Wind Vault choice between anchoring the safe route and opening the listening chamber. Scene: one still-air shelter divided naturally by a gold floor anchor on one side and a barely open violet-cyan chamber on the other, storm moving outside. Composition: wide balanced decision frame with two legible but unequal options, quiet lower third for code-native buttons, one continuous basalt setting. Lighting: warm gold safety against rare violet discovery, never equally loud. Constraints: no characters, no text, no symbols, no interface, no portal, no watermark.",
+      "integration": "Wind Vault landmark decision panel",
+      "review": "Composition, navigability, focal hierarchy, UI-safe space, palette discipline, and artifact cleanliness approved."
+    },
+    {
+      "id": "character-cartographer-surveying",
+      "family": "character",
+      "status": "approved",
+      "requestedSize": "1024x1024",
+      "sourceImage": "app/public/images/art/characters/signal-cartographer.png",
+      "rawEvidence": "artifacts/art/final-expansion-2026-09-13/raw/character-cartographer-surveying.png",
+      "productionPath": "app/public/images/art/characters/signal-cartographer-surveying.webp",
+      "prompt": "Use case: identity-preserve. Asset type: full-body game character cutout. Input image 1 is the canonical Signal Cartographer identity and costume reference. Primary request: the exact same Signal Cartographer actively reading a hidden route, one hand holding the established survey instrument while the other traces a small cyan harmonic in the air; alert curiosity, practical balanced stance. Preserve face, hair, body proportions, clothing, palette, equipment language, and painterly cut-paper rendering from Image 1. Scene: perfectly uniform pure white isolation background, no floor or cast shadow. Composition: complete full body, hands and boots visible, generous margin, strong silhouette at 96 pixels. Constraints: one adult only, no redesign, no extra equipment, no weapon, no text, no logo, no watermark.",
+      "integration": "Trace ability action vignette",
+      "review": "Identity preserved; promoted as an action vignette because the generated environment is intentionally retained."
+    },
+    {
+      "id": "character-routekeeper-anchoring",
+      "family": "character",
+      "status": "approved",
+      "requestedSize": "1024x1024",
+      "sourceImage": "app/public/images/art/characters/routekeeper.png",
+      "rawEvidence": "artifacts/art/final-expansion-2026-09-13/raw/character-routekeeper-anchoring.png",
+      "productionPath": "app/public/images/art/characters/routekeeper-anchoring.webp",
+      "prompt": "Use case: identity-preserve. Asset type: full-body game character cutout. Input image 1 is the canonical Routekeeper identity and costume reference. Primary request: the exact same Routekeeper planting a compact field anchor with one grounded hand while keeping the established square brass route lantern raised; calm protective focus, resilient kneeling three-quarter pose. Preserve face, hair, proportions, asymmetrical charcoal mantle, lantern, hip instrument, palette, and painterly cut-paper rendering from Image 1. Scene: perfectly uniform pure white isolation background, no floor or cast shadow. Composition: complete silhouette, both hands and boots legible, generous margin. Constraints: one adult only, no redesign, no second lantern, no weapon, no heavy armor, no text, no logo, no watermark.",
+      "integration": "Anchor ability action vignette",
+      "review": "Identity preserved; promoted as an action vignette because the generated environment is intentionally retained."
+    },
+    {
+      "id": "character-relic-tender-discovery",
+      "family": "character",
+      "status": "approved",
+      "requestedSize": "1024x1024",
+      "sourceImage": "app/public/images/art/characters/relic-tender.png",
+      "rawEvidence": "artifacts/art/final-expansion-2026-09-13/raw/character-relic-tender-discovery.png",
+      "productionPath": "app/public/images/art/characters/relic-tender-discovery.webp",
+      "prompt": "Use case: identity-preserve. Asset type: full-body game character cutout. Input image 1 is the canonical Relic Tender identity and costume reference. Primary request: the exact same Relic Tender carefully cradling a newly awakened hand-scale glass relic at chest height, expression of disciplined wonder rather than celebration. Preserve face, hair, body proportions, clothing, equipment, palette, and painterly cut-paper rendering from Image 1. Scene: perfectly uniform pure white isolation background, no floor or cast shadow. Composition: complete full body, hands and boots visible, contained relic-violet glow, generous margin. Constraints: one adult and one small relic only, no redesign, no trophy pose, no text, no logo, no watermark.",
+      "integration": "Approved character moment library",
+      "review": "Identity preserved; promoted as an action vignette because the generated environment is intentionally retained."
+    },
+    {
+      "id": "character-field-mender-redline",
+      "family": "character",
+      "status": "approved",
+      "requestedSize": "1024x1024",
+      "sourceImage": "app/public/images/art/characters/field-mender.png",
+      "rawEvidence": "artifacts/art/final-expansion-2026-09-13/raw/character-field-mender-redline.png",
+      "productionPath": "app/public/images/art/characters/field-mender-redline.webp",
+      "prompt": "Use case: identity-preserve. Asset type: full-body game character cutout. Input image 1 is the canonical Field Mender identity and costume reference. Primary request: the exact same Field Mender in a controlled redline rescue stance, bracing a compact repair line with one hand and signaling the crew to move with the other; specific urgency, not panic. Preserve face, hair, proportions, clothing, tool language, palette, and painterly cut-paper rendering from Image 1. Scene: perfectly uniform pure white isolation background, no floor or cast shadow. Composition: complete full body, readable diagonal action, one localized signal-red tool light, generous margin. Constraints: one adult only, no redesign, no injury, no weapon, no gore, no text, no logo, no watermark.",
+      "integration": "Approved character moment library",
+      "review": "Identity preserved; promoted as an action vignette because the generated environment is intentionally retained."
+    },
+    {
+      "id": "relic-echo-compass",
+      "family": "relic",
+      "status": "approved",
+      "requestedSize": "1024x1024",
+      "sourceImage": null,
+      "rawEvidence": "artifacts/art/final-expansion-2026-09-13/raw/relic-echo-compass.png",
+      "productionPath": "app/public/images/art/relics/echo-compass.png",
+      "prompt": "Use case: stylized-concept. Asset type: isolated game relic focal. Primary request: the Echo Compass, a palm-size asymmetric alien navigation relic that separates one true signal from two false reflections. Subject: weathered dark survey metal holding three nested translucent glass vanes, one coherent cyan-gold vane and two dim fractured echoes, strong readable silhouette. Style: tactile painterly cut-paper miniature object with subtle fiber and mineral texture. Scene: perfectly uniform pure white isolation background, no floor, no stand, no cast shadow. Composition: centered three-quarter museum view, one object only, generous margin, readable at 96 pixels. Constraints: no conventional compass face, no letters, no runes, no text, no logo, no watermark.",
+      "integration": "Completion-screen future relic signal",
+      "review": "Strong small-scale silhouette; chroma key removed and alpha edge inspected on a dark field."
+    },
+    {
+      "id": "relic-stormglass-seed",
+      "family": "relic",
+      "status": "approved",
+      "requestedSize": "1024x1024",
+      "sourceImage": null,
+      "rawEvidence": "artifacts/art/final-expansion-2026-09-13/raw/relic-stormglass-seed.png",
+      "productionPath": "app/public/images/art/relics/stormglass-seed.png",
+      "prompt": "Use case: stylized-concept. Asset type: isolated game relic focal. Primary request: the Stormglass Seed, a hand-scale living mineral relic that stores the instant before lightning and releases it as a safe route pulse. Subject: one rounded basalt husk split by a translucent violet-blue seam, restrained inner storm filament, small oxide-green return notch, strong silhouette. Style: tactile painterly cut-paper miniature object with subtle fiber and mineral texture. Scene: perfectly uniform pure white isolation background, no floor, no stand, no cast shadow. Composition: centered three-quarter museum view, one object only, generous margin, readable at 96 pixels. Constraints: no plant seed cliche, no egg, no weapon, no text, no runes, no logo, no watermark.",
+      "integration": "Completion-screen future relic signal",
+      "review": "Strong small-scale silhouette; chroma key removed and alpha edge inspected on a dark field."
+    }
+  ]
+}

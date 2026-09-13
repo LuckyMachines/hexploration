@@ -12,8 +12,16 @@ const PHASE_BEATS = Object.freeze({
   planning: { id: 'planning-open', lightingRig: 'neutral', soundCue: 'board.ready', motionCue: 'none', announcement: 'Planning is open.' },
 });
 
+const ENCOUNTER_BEAT = Object.freeze({
+  id: 'landmark-decision',
+  lightingRig: 'discovery',
+  soundCue: 'board.discovery',
+  motionCue: 'encounter-reveal',
+  announcement: 'A landmark encounter is waiting for the crew decision.',
+});
+
 export function resolveBoardBeat(viewModel = {}) {
-  const phaseBeat = PHASE_BEATS[viewModel.phase] || PHASE_BEATS.planning;
+  const phaseBeat = viewModel.encounterId ? ENCOUNTER_BEAT : PHASE_BEATS[viewModel.phase] || PHASE_BEATS.planning;
   const mechanic = MECHANIC_BY_ACTION.get(viewModel.activeAction);
   const previewing = Boolean(viewModel.signals?.isPreviewing);
   const id = previewing && mechanic ? `${mechanic.id}-preview` : phaseBeat.id;

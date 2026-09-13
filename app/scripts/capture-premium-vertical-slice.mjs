@@ -30,7 +30,16 @@ async function capture(page, name, options = {}) {
 }
 
 async function selectRoute(page, alias) {
-  await page.getByRole('group', { name: /Reachable routes/i }).getByRole('button', { name: new RegExp(`^${alias.replace(',', ',?\\s*')}`) }).click();
+  await page.locator(`[data-route-alias="${alias}"]`).click();
+}
+
+async function commitRoute(page, alias) {
+  await selectRoute(page, alias);
+  await page.getByTestId('commit-guest-route').click();
+  await page.waitForFunction((destination) => {
+    const expedition = document.querySelector('[data-testid="guest-expedition"]');
+    return expedition?.dataset.currentLocation === destination && expedition?.dataset.resolving === 'false';
+  }, alias, { timeout: 30_000 });
 }
 
 try {
@@ -45,7 +54,7 @@ try {
     await capture(page, '02-focus-world-desktop.png');
     await page.getByRole('button', { name: /Exit focus/i }).click();
 
-    await selectRoute(page, '3,2');
+    await selectRoute(page, '1,1');
     await page.getByTestId('commit-guest-route').click();
     await page.evaluate(() => window.scrollTo(0, 0));
     await page.waitForFunction(() => {
@@ -54,19 +63,30 @@ try {
         && world.querySelector('canvas')?.dataset.presentationStage === 'impact';
     });
     await capture(page, '03-crossing-impact-desktop.png', { animations: 'allow' });
-    await page.getByRole('heading', { name: /Tideglass Answered/i }).waitFor();
+    await page.getByRole('heading', { name: /Echo Fork Answers Three Times/i }).waitFor();
     await waitForWorld(page);
     await page.evaluate(() => window.scrollTo(0, 0));
-    await capture(page, '04-relic-awakened-desktop.png');
+    await capture(page, '04-landmark-decision-desktop.png');
 
-    await selectRoute(page, '2,2');
-    await page.getByTestId('commit-guest-route').click();
+    await page.getByRole('button', { name: /Mark only the sure route/i }).click();
+    await commitRoute(page, '0,1');
+    await page.getByRole('heading', { name: /The Map Became Real/i }).waitFor();
+    await commitRoute(page, '0,0');
+    await page.getByRole('heading', { name: /Tideglass Cradle Answered/i }).waitFor();
+    await waitForWorld(page);
+    await page.evaluate(() => window.scrollTo(0, 0));
+    await capture(page, '05-relic-awakened-desktop.png');
+
+    await commitRoute(page, '0,1');
+    await commitRoute(page, '1,1');
+    await commitRoute(page, '2,2');
     await page.getByRole('button', { name: /Depart with 1 relic/i }).waitFor();
     await page.getByRole('button', { name: /Depart with 1 relic/i }).click();
     await page.getByText(/Expedition memory secured/i).waitFor();
     await waitForWorld(page);
     await page.evaluate(() => window.scrollTo(0, 0));
-    await capture(page, '05-safe-extraction-desktop.png', { animations: 'allow' });
+    await capture(page, '06-safe-extraction-desktop.png', { animations: 'allow' });
+    await capture(page, '08-safe-extraction-full-page.png', { animations: 'allow', fullPage: true });
     await context.close();
   }
 
@@ -76,7 +96,7 @@ try {
     await page.getByRole('button', { name: /Use tactical map/i }).click();
     await page.getByTestId('guest-tactical-board').waitFor();
     await page.evaluate(() => window.scrollTo(0, 0));
-    await capture(page, '06-tactical-mobile-reduced-motion.png');
+    await capture(page, '07-tactical-mobile-reduced-motion.png');
     await context.close();
   }
 } finally {

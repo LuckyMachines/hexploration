@@ -1,7 +1,7 @@
 {
   "$schema": "./schema/asset-manifest.schema.json",
-  "version": "1.8.0",
-  "artDirectionVersion": "1.1.0",
+  "version": "1.9.0",
+  "artDirectionVersion": "1.2.0",
   "managedRoots": [
     "app/public/images/site-refresh",
     "app/public/images/art"
@@ -2104,6 +2104,742 @@
       ],
       "provenance": {
         "origin": "planned-azure-image-generation"
+      }
+    },
+    {
+      "id": "environment-beaconfall-basin",
+      "name": "Beaconfall Basin",
+      "family": "environment",
+      "status": "approved",
+      "emotionalBeat": "trust",
+      "assetType": "feature-landscape",
+      "partRole": "backplate",
+      "output": {
+        "path": "app/public/images/art/environments/beaconfall-basin.webp",
+        "width": 1024,
+        "height": 700,
+        "format": "webp",
+        "alpha": false,
+        "maxBytes": 180000,
+        "safeZone": "center"
+      },
+      "prompt": {
+        "primaryRequest": "Beaconfall Basin, the crew's dependable landing sanctuary inside an alien storm",
+        "scene": "a shallow bowl of rain-dark basalt, a human-scale cyan landing beacon reflected in thin water, low slate terraces, sparse compass flowers, distant folded mineral ridges",
+        "subject": "Beaconfall Basin, the crew's dependable landing sanctuary inside an alien storm",
+        "composition": "wide low camera, clear foreground threshold, beacon slightly off center, navigable midground, deep calm horizon, generous quiet area for game UI",
+        "lighting": "cool fog and localized cyan beacon with one restrained oxide-green safety echo",
+        "constraints": [
+          "no characters, no text, no interface, no logos, no giant portal, no decorative hex wallpaper, no full-frame neon, no watermark",
+          "Preserve the Xenovoya field-ink palette and keep signal color localized",
+          "Maintain one readable focal event and production-safe negative space"
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/site-refresh/feature-expedition.webp",
+          "role": "approved Xenovoya material, palette, and composition reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-generation",
+        "reviewedAt": "2026-09-13",
+        "sha256": "178d6b5080444a3b63281e4991f038de2dc7c1e04ee02e38728176c9e7300305",
+        "review": "app/src/art-pipeline/reviews/environment-beaconfall-basin.json",
+        "promptSha256": "eb6f0d69b89cec242f56df21b2ac0dbb2798e92fc5d88b4b7552547e766aa948"
+      }
+    },
+    {
+      "id": "environment-echo-fork",
+      "name": "Echo Fork",
+      "family": "environment",
+      "status": "approved",
+      "emotionalBeat": "agency",
+      "assetType": "feature-landscape",
+      "partRole": "backplate",
+      "output": {
+        "path": "app/public/images/art/environments/echo-fork.webp",
+        "width": 1024,
+        "height": 700,
+        "format": "webp",
+        "alpha": false,
+        "maxBytes": 180000,
+        "safeZone": "center"
+      },
+      "prompt": {
+        "primaryRequest": "Echo Fork, where one true relic signal divides into three readable paths and two are weather reflections",
+        "scene": "dark basalt shelf with three human-scale passages separated by translucent mineral fins; one passage carries a precise cyan harmonic, two carry faint broken reflections",
+        "subject": "Echo Fork, where one true relic signal divides into three readable paths and two are weather reflections",
+        "composition": "wide eye-level route fork, one calm gold decision point, strong foreground path, restrained depth layers, central quiet space for choice UI",
+        "lighting": "misty blue-black ambient with localized cyan and gold only",
+        "constraints": [
+          "no characters, no arrows, no signs, no text, no interface, no giant structures, no saturation, no watermark",
+          "Preserve the Xenovoya field-ink palette and keep signal color localized",
+          "Maintain one readable focal event and production-safe negative space"
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/site-refresh/feature-expedition.webp",
+          "role": "approved Xenovoya material, palette, and composition reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-generation",
+        "reviewedAt": "2026-09-13",
+        "sha256": "1a4e380d01d3c4358788c6d2f3d17ffcc532e20466edb0db4530dcb2b8b73761",
+        "review": "app/src/art-pipeline/reviews/environment-echo-fork.json",
+        "promptSha256": "781649fec14e60951623288b58e19633737b775ff73c4cb6360e94f3e166db93"
+      }
+    },
+    {
+      "id": "environment-hushgrass-shelf",
+      "name": "Hushgrass Shelf",
+      "family": "environment",
+      "status": "approved",
+      "emotionalBeat": "discovery",
+      "assetType": "feature-landscape",
+      "partRole": "backplate",
+      "output": {
+        "path": "app/public/images/art/environments/hushgrass-shelf.webp",
+        "width": 1024,
+        "height": 700,
+        "format": "webp",
+        "alpha": false,
+        "maxBytes": 180000,
+        "safeZone": "center"
+      },
+      "prompt": {
+        "primaryRequest": "Hushgrass Shelf, a quiet elevated route where silver alien grass bends toward sounds the crew cannot hear",
+        "scene": "layered basalt ledges, tactile pale grass ribbons, small weathered survey stones, fog opening toward a distant cyan landing signal",
+        "subject": "Hushgrass Shelf, a quiet elevated route where silver alien grass bends toward sounds the crew cannot hear",
+        "composition": "wide restrained panorama, readable path across the shelf, foreground grass framing without clutter, calm midground, large dark negative-space sky",
+        "lighting": "dim cyan dawn with a thin green homeward trace",
+        "constraints": [
+          "no characters, no text, no interface, no giant portal, no fantasy castle, no full-frame glow, no watermark",
+          "Preserve the Xenovoya field-ink palette and keep signal color localized",
+          "Maintain one readable focal event and production-safe negative space"
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/site-refresh/feature-expedition.webp",
+          "role": "approved Xenovoya material, palette, and composition reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-generation",
+        "reviewedAt": "2026-09-13",
+        "sha256": "86728660c05288390257a16608e95e49f0962f687ec9de4ab3b830085819da85",
+        "review": "app/src/art-pipeline/reviews/environment-hushgrass-shelf.json",
+        "promptSha256": "009e8077d660a9f2e715f697e49ece061d93c94f3fb1e432a223cc6cfd08b2c5"
+      }
+    },
+    {
+      "id": "environment-tideglass-cradle",
+      "name": "Tideglass Cradle",
+      "family": "environment",
+      "status": "approved",
+      "emotionalBeat": "discovery",
+      "assetType": "feature-landscape",
+      "partRole": "backplate",
+      "output": {
+        "path": "app/public/images/art/environments/tideglass-cradle.webp",
+        "width": 1024,
+        "height": 700,
+        "format": "webp",
+        "alpha": false,
+        "maxBytes": 180000,
+        "safeZone": "center"
+      },
+      "prompt": {
+        "primaryRequest": "Tideglass Cradle, a small discoverable relic basin at human traversal scale, containing one backpack-size crescent of sea-glass that pulls a thin ribbon of mist around itself. Scene: open rain-dark basalt shelf, ankle-high nested mineral cradle, wet stepping stones, sparse oxide-green moss, distant storm veil. The relic is an object on the ground, not an opening in the rock. Style: Xenovoya final production art; handcrafted layered paper-cut miniature diorama with painterly mineral textures, subtle fiber edges, strong geological relief, tactile weathered basalt, restrained expedition technology, and deep atmospheric parallax. Not photorealistic and not flat vector art. Composition: wide low camera, clear route entering from foreground and continuing home into the distance, relic slightly off center as the only focal object, substantial quiet negative space for game UI. Lighting: contained relic-violet and oxide-green inner light with a faint cyan rim; deep field-ink darkness elsewhere. Constraints: no people; no arch; no cave mouth; no doorway; no portal; no altar; no monumental circular form; relic no larger than a backpack; no text; no interface; no logo; no watermark; no full-frame neon",
+        "scene": "open rain-dark basalt shelf, ankle-high nested mineral cradle, wet stepping stones, sparse oxide-green moss, distant storm veil. The relic is an object on the ground, not an opening in the rock. Style: Xenovoya final production art; handcrafted layered paper-cut miniature diorama with painterly mineral textures, subtle fiber edges, strong geological relief, tactile weathered basalt, restrained expedition technology, and deep atmospheric parallax. Not photorealistic and not flat vector art. Composition: wide low camera, clear route entering from foreground and continuing home into the distance, relic slightly off center as the only focal object, substantial quiet negative space for game UI. Lighting: contained relic-violet and oxide-green inner light with a faint cyan rim; deep field-ink darkness elsewhere. Constraints: no people; no arch; no cave mouth; no doorway; no portal; no altar; no monumental circular form; relic no larger than a backpack; no text; no interface; no logo; no watermark; no full-frame neon",
+        "subject": "Tideglass Cradle, a small discoverable relic basin at human traversal scale, containing one backpack-size crescent of sea-glass that pulls a thin ribbon of mist around itself. Scene: open rain-dark basalt shelf, ankle-high nested mineral cradle, wet stepping stones, sparse oxide-green moss, distant storm veil. The relic is an object on the ground, not an opening in the rock. Style: Xenovoya final production art; handcrafted layered paper-cut miniature diorama with painterly mineral textures, subtle fiber edges, strong geological relief, tactile weathered basalt, restrained expedition technology, and deep atmospheric parallax. Not photorealistic and not flat vector art. Composition: wide low camera, clear route entering from foreground and continuing home into the distance, relic slightly off center as the only focal object, substantial quiet negative space for game UI. Lighting: contained relic-violet and oxide-green inner light with a faint cyan rim; deep field-ink darkness elsewhere. Constraints: no people; no arch; no cave mouth; no doorway; no portal; no altar; no monumental circular form; relic no larger than a backpack; no text; no interface; no logo; no watermark; no full-frame neon",
+        "composition": "wide low camera, clear route entering from foreground and continuing home into the distance, relic slightly off center as the only focal object, substantial quiet negative space for game UI. Lighting: contained relic-violet and oxide-green inner light with a faint cyan rim; deep field-ink darkness elsewhere. Constraints: no people; no arch; no cave mouth; no doorway; no portal; no altar; no monumental circular form; relic no larger than a backpack; no text; no interface; no logo; no watermark; no full-frame neon",
+        "lighting": "contained relic-violet and oxide-green inner light with a faint cyan rim; deep field-ink darkness elsewhere. Constraints: no people; no arch; no cave mouth; no doorway; no portal; no altar; no monumental circular form; relic no larger than a backpack; no text; no interface; no logo; no watermark; no full-frame neon",
+        "constraints": [
+          "no people; no arch; no cave mouth; no doorway; no portal; no altar; no monumental circular form; relic no larger than a backpack; no text; no interface; no logo; no watermark; no full-frame neon",
+          "Preserve the Xenovoya field-ink palette and keep signal color localized",
+          "Maintain one readable focal event and production-safe negative space"
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/site-refresh/feature-expedition.webp",
+          "role": "approved Xenovoya material, palette, and composition reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-generation",
+        "reviewedAt": "2026-09-13",
+        "sha256": "70256a07cb85aed2dd64f053c0a86d8cae2f1f06a34be4103c678a38bf07806b",
+        "review": "app/src/art-pipeline/reviews/environment-tideglass-cradle.json",
+        "promptSha256": "a8f8c1115bcd692d45b0bde7c9f339c5578dda94c09dc90c4fa3fbbf2eb9ceb5"
+      }
+    },
+    {
+      "id": "environment-wind-vault",
+      "name": "Wind Vault",
+      "family": "environment",
+      "status": "approved",
+      "emotionalBeat": "relief",
+      "assetType": "feature-landscape",
+      "partRole": "backplate",
+      "output": {
+        "path": "app/public/images/art/environments/wind-vault.webp",
+        "width": 1024,
+        "height": 700,
+        "format": "webp",
+        "alpha": false,
+        "maxBytes": 180000,
+        "safeZone": "center"
+      },
+      "prompt": {
+        "primaryRequest": "Wind Vault, a roofless alien ruin holding one pocket of perfectly still air while the storm bends around it",
+        "scene": "three weathered slate walls at human scale, a circular floor depression, hanging mineral threads frozen motionless, distant rain sweeping sideways outside",
+        "subject": "Wind Vault, a roofless alien ruin holding one pocket of perfectly still air while the storm bends around it",
+        "composition": "wide threshold view, sheltered quiet center, two legible routes around the chamber, restrained architectural silhouette and layered storm depth",
+        "lighting": "soft compass-gold shelter glow against cold blue storm haze",
+        "constraints": [
+          "no characters, no text, no interface, no temple, no giant columns, no decorative runes, no watermark",
+          "Preserve the Xenovoya field-ink palette and keep signal color localized",
+          "Maintain one readable focal event and production-safe negative space"
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/site-refresh/feature-expedition.webp",
+          "role": "approved Xenovoya material, palette, and composition reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-generation",
+        "reviewedAt": "2026-09-13",
+        "sha256": "fc6f1e8f7a9e8ac7cd15b521a7b6e91344522d9fe2874129c80babb078fd9f5d",
+        "review": "app/src/art-pipeline/reviews/environment-wind-vault.json",
+        "promptSha256": "905441c71a691d0ee9f2c30d9f5f7d784da9055e4ac0a5cd14d730cb506f0d50"
+      }
+    },
+    {
+      "id": "environment-memory-ferns",
+      "name": "Memory Ferns",
+      "family": "environment",
+      "status": "approved",
+      "emotionalBeat": "remembrance",
+      "assetType": "feature-landscape",
+      "partRole": "backplate",
+      "output": {
+        "path": "app/public/images/art/environments/memory-ferns.webp",
+        "width": 1024,
+        "height": 700,
+        "format": "webp",
+        "alpha": false,
+        "maxBytes": 180000,
+        "safeZone": "center"
+      },
+      "prompt": {
+        "primaryRequest": "Memory Ferns, an alien grove where each translucent frond repeats the crew as a delayed abstract silhouette without showing literal people",
+        "scene": "layered dark fern forms rooted in rain-polished basalt, ghostlike cyan echoes offset through depth, one navigable path and a distant beacon reflection",
+        "subject": "Memory Ferns, an alien grove where each translucent frond repeats the crew as a delayed abstract silhouette without showing literal people",
+        "composition": "wide low journey frame, fronds create three clean parallax planes, path remains readable, center-left quiet for UI",
+        "lighting": "cool cyan informational echoes with a very restrained relic-violet afterglow",
+        "constraints": [
+          "no literal characters, no faces, no horror, no text, no interface, no excessive plants, no watermark",
+          "Preserve the Xenovoya field-ink palette and keep signal color localized",
+          "Maintain one readable focal event and production-safe negative space"
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/site-refresh/feature-expedition.webp",
+          "role": "approved Xenovoya material, palette, and composition reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-generation",
+        "reviewedAt": "2026-09-13",
+        "sha256": "d7c31579d05fb2f3106dc6b7ad1c3f97d3df500da7fe57b6cc07efb9326f2e38",
+        "review": "app/src/art-pipeline/reviews/environment-memory-ferns.json",
+        "promptSha256": "060f1f7f943b59d8ebd2df9bf8be2a6478bbf86620ef2cfa9107a4bcbb5832b1"
+      }
+    },
+    {
+      "id": "environment-bellstone-rise",
+      "name": "Bellstone Rise",
+      "family": "environment",
+      "status": "approved",
+      "emotionalBeat": "jeopardy",
+      "assetType": "feature-landscape",
+      "partRole": "backplate",
+      "output": {
+        "path": "app/public/images/art/environments/bellstone-rise.webp",
+        "width": 1024,
+        "height": 700,
+        "format": "webp",
+        "alpha": false,
+        "maxBytes": 180000,
+        "safeZone": "center"
+      },
+      "prompt": {
+        "primaryRequest": "Bellstone Rise, a traversable ridge of hollow slate pillars that ring when storm pressure crosses the route",
+        "scene": "a handful of human-scale weathered basalt chimes, narrow sheltered trail, windblown mineral dust, one distant lightning front",
+        "subject": "Bellstone Rise, a traversable ridge of hollow slate pillars that ring when storm pressure crosses the route",
+        "composition": "wide uphill crossing, two or three strong pillar silhouettes only, obvious cover route, open horizon and quiet lower-left space for UI",
+        "lighting": "cold atmospheric blue with one localized signal-red fracture on the most endangered pillar and a thin gold safe line",
+        "constraints": [
+          "no characters, no text, no interface, no musical notation, no giant fantasy architecture, no global red wash, no watermark",
+          "Preserve the Xenovoya field-ink palette and keep signal color localized",
+          "Maintain one readable focal event and production-safe negative space"
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/site-refresh/feature-expedition.webp",
+          "role": "approved Xenovoya material, palette, and composition reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-generation",
+        "reviewedAt": "2026-09-13",
+        "sha256": "e808e5b81987a84d68eae30b11c73beaad0a00f8c852d20f65813e26b0f5286d",
+        "review": "app/src/art-pipeline/reviews/environment-bellstone-rise.json",
+        "promptSha256": "b0edba624c8a481080f8fd69d60c7bb03d58ff3bb89201b43849c78531dd8fed"
+      }
+    },
+    {
+      "id": "environment-ashwake-verge",
+      "name": "Ashwake Verge",
+      "family": "environment",
+      "status": "approved",
+      "emotionalBeat": "discovery",
+      "assetType": "feature-landscape",
+      "partRole": "backplate",
+      "output": {
+        "path": "app/public/images/art/environments/ashwake-verge.webp",
+        "width": 1024,
+        "height": 700,
+        "format": "webp",
+        "alpha": false,
+        "maxBytes": 180000,
+        "safeZone": "center"
+      },
+      "prompt": {
+        "primaryRequest": "Ashwake Verge, the far edge of the survey where warm dust spirals around a buried machine that moves only when unobserved",
+        "scene": "matte black ash basin, two offset basalt shelves, a partially buried restrained alien mechanism, sparse emberglass splinters, storm wall beyond",
+        "subject": "Ashwake Verge, the far edge of the survey where warm dust spirals around a buried machine that moves only when unobserved",
+        "composition": "wide ominous exploration frame, one readable route to the machine, large quiet sky, layered foreground dust ribbons, single focal object",
+        "lighting": "low amber underglow and tiny relic-violet signal inside deep field-ink shadow",
+        "constraints": [
+          "no characters, no text, no interface, no robot, no spaceship, no huge machine, no orange flood, no watermark",
+          "Preserve the Xenovoya field-ink palette and keep signal color localized",
+          "Maintain one readable focal event and production-safe negative space"
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/site-refresh/feature-expedition.webp",
+          "role": "approved Xenovoya material, palette, and composition reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-generation",
+        "reviewedAt": "2026-09-13",
+        "sha256": "af7d05700086ee6572a67491ba0d6019e9f85505bf7954415f5bec82a0a9531a",
+        "review": "app/src/art-pipeline/reviews/environment-ashwake-verge.json",
+        "promptSha256": "8f395303eb9725ba9ac5784a53da5b811b7d8e2b3b715d91c573145f97c18102"
+      }
+    },
+    {
+      "id": "encounter-echo-fork-decision",
+      "name": "Echo Fork Decision",
+      "family": "encounter",
+      "status": "approved",
+      "emotionalBeat": "agency",
+      "assetType": "feature-landscape",
+      "partRole": "backplate",
+      "output": {
+        "path": "app/public/images/art/encounters/echo-fork-decision.webp",
+        "width": 1024,
+        "height": 700,
+        "format": "webp",
+        "alpha": false,
+        "maxBytes": 180000,
+        "safeZone": "lower-35-percent"
+      },
+      "prompt": {
+        "primaryRequest": "the decisive instant at Echo Fork when one real relic harmonic separates from two storm reflections",
+        "scene": "close environmental study of three layered mineral passages; one signal resolves into a coherent cyan-gold thread while two fragment into mist",
+        "subject": "the decisive instant at Echo Fork when one real relic harmonic separates from two storm reflections",
+        "composition": "wide choice-card crop, single clear left-to-right visual comparison, low-detail lower third for code-native buttons, tactile cut-paper depth",
+        "lighting": "localized cyan information and compass-gold agency",
+        "constraints": [
+          "no characters, no text, no labels, no arrows, no interface, no logos, no watermark",
+          "Preserve the Xenovoya field-ink palette and keep signal color localized",
+          "Maintain one readable focal event and production-safe negative space"
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/environments/echo-fork.webp",
+          "role": "approved Xenovoya material, palette, and composition reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-generation",
+        "reviewedAt": "2026-09-13",
+        "sha256": "411d493e879366058e2889db95964d2eae8e755cca39a81463fb5cfb79291aba",
+        "review": "app/src/art-pipeline/reviews/encounter-echo-fork-decision.json",
+        "promptSha256": "5ab4bfddc6fd3ce8b61122e105707c2a298336bb238e8ef595f44676703b49cd"
+      }
+    },
+    {
+      "id": "encounter-wind-vault-decision",
+      "name": "Wind Vault Decision",
+      "family": "encounter",
+      "status": "approved",
+      "emotionalBeat": "agency",
+      "assetType": "feature-landscape",
+      "partRole": "backplate",
+      "output": {
+        "path": "app/public/images/art/encounters/wind-vault-decision.webp",
+        "width": 1024,
+        "height": 700,
+        "format": "webp",
+        "alpha": false,
+        "maxBytes": 180000,
+        "safeZone": "lower-35-percent"
+      },
+      "prompt": {
+        "primaryRequest": "the Wind Vault choice between anchoring the safe route and opening the listening chamber",
+        "scene": "one still-air shelter divided naturally by a gold floor anchor on one side and a barely open violet-cyan chamber on the other, storm moving outside",
+        "subject": "the Wind Vault choice between anchoring the safe route and opening the listening chamber",
+        "composition": "wide balanced decision frame with two legible but unequal options, quiet lower third for code-native buttons, one continuous basalt setting",
+        "lighting": "warm gold safety against rare violet discovery, never equally loud",
+        "constraints": [
+          "no characters, no text, no symbols, no interface, no portal, no watermark",
+          "Preserve the Xenovoya field-ink palette and keep signal color localized",
+          "Maintain one readable focal event and production-safe negative space"
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/environments/wind-vault.webp",
+          "role": "approved Xenovoya material, palette, and composition reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-generation",
+        "reviewedAt": "2026-09-13",
+        "sha256": "7f95afce2eed800edc59207552ead94fc3fac8340937cec3cc091f94175e2faf",
+        "review": "app/src/art-pipeline/reviews/encounter-wind-vault-decision.json",
+        "promptSha256": "691ce6be0a21a2bc73fb0d99f3c6337111785852569f8b0844f50e52de503ff7"
+      }
+    },
+    {
+      "id": "character-cartographer-surveying",
+      "name": "Surveying Signal Cartographer",
+      "family": "character-condition",
+      "character": {
+        "id": "signal-cartographer",
+        "state": "surveying",
+        "baseAssetId": "character-signal-cartographer-focal"
+      },
+      "status": "approved",
+      "emotionalBeat": "discovery",
+      "assetType": "character-vignette",
+      "partRole": "focal",
+      "output": {
+        "path": "app/public/images/art/characters/signal-cartographer-surveying.webp",
+        "width": 1024,
+        "height": 1024,
+        "format": "webp",
+        "alpha": false,
+        "maxBytes": 250000,
+        "safeZone": "8-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "the exact same Signal Cartographer actively reading a hidden route, one hand holding the established survey instrument while the other traces a small cyan harmonic in the air; alert curiosity, practical balanced stance",
+        "scene": "perfectly uniform pure white isolation background, no floor or cast shadow",
+        "subject": "the exact same Signal Cartographer actively reading a hidden route, one hand holding the established survey instrument while the other traces a small cyan harmonic in the air; alert curiosity, practical balanced stance",
+        "composition": "complete full body, hands and boots visible, generous margin, strong silhouette at 96 pixels",
+        "lighting": "Soft neutral character key with only the localized action signal from the approved palette",
+        "constraints": [
+          "one adult only, no redesign, no extra equipment, no weapon, no text, no logo, no watermark",
+          "Preserve the Xenovoya field-ink palette and keep signal color localized",
+          "Maintain one readable focal event and production-safe negative space"
+        ],
+        "identityLocks": [
+          "Preserve the exact same adult face, age, hair, skin tone, and body proportions from the canonical reference",
+          "Preserve the canonical costume construction, palette, silhouette, and material treatment",
+          "Preserve all established equipment shapes and their placement",
+          "Keep the full action readable at small gameplay-card scale",
+          "Do not add weapons, armor, companions, duplicate tools, text, logos, or watermarks"
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/characters/signal-cartographer.png",
+          "role": "canonical character identity and costume reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-edit",
+        "reviewedAt": "2026-09-13",
+        "sha256": "f7f775d865b2b04fce14978ec5e41b24b3f0b55d493ade003b1a7ff44889e6df",
+        "review": "app/src/art-pipeline/reviews/character-cartographer-surveying.json",
+        "promptSha256": "8e28dad43b18156016f83e9b7b1f38c627143d6dec8b8bcfb8572ef2861a9728"
+      }
+    },
+    {
+      "id": "character-routekeeper-anchoring",
+      "name": "Anchoring Routekeeper",
+      "family": "character-condition",
+      "character": {
+        "id": "routekeeper",
+        "state": "anchoring",
+        "baseAssetId": "character-routekeeper-focal"
+      },
+      "status": "approved",
+      "emotionalBeat": "trust",
+      "assetType": "character-vignette",
+      "partRole": "focal",
+      "output": {
+        "path": "app/public/images/art/characters/routekeeper-anchoring.webp",
+        "width": 1024,
+        "height": 1024,
+        "format": "webp",
+        "alpha": false,
+        "maxBytes": 250000,
+        "safeZone": "8-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "the exact same Routekeeper planting a compact field anchor with one grounded hand while keeping the established square brass route lantern raised; calm protective focus, resilient kneeling three-quarter pose",
+        "scene": "perfectly uniform pure white isolation background, no floor or cast shadow",
+        "subject": "the exact same Routekeeper planting a compact field anchor with one grounded hand while keeping the established square brass route lantern raised; calm protective focus, resilient kneeling three-quarter pose",
+        "composition": "complete silhouette, both hands and boots legible, generous margin",
+        "lighting": "Soft neutral character key with only the localized action signal from the approved palette",
+        "constraints": [
+          "one adult only, no redesign, no second lantern, no weapon, no heavy armor, no text, no logo, no watermark",
+          "Preserve the Xenovoya field-ink palette and keep signal color localized",
+          "Maintain one readable focal event and production-safe negative space"
+        ],
+        "identityLocks": [
+          "Preserve the exact same adult face, age, hair, skin tone, and body proportions from the canonical reference",
+          "Preserve the canonical costume construction, palette, silhouette, and material treatment",
+          "Preserve all established equipment shapes and their placement",
+          "Keep the full action readable at small gameplay-card scale",
+          "Do not add weapons, armor, companions, duplicate tools, text, logos, or watermarks"
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/characters/routekeeper.png",
+          "role": "canonical character identity and costume reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-edit",
+        "reviewedAt": "2026-09-13",
+        "sha256": "2b6f8886ef25d3aefee5cc92de9bef879d703582028a8a2cf519196d8869801b",
+        "review": "app/src/art-pipeline/reviews/character-routekeeper-anchoring.json",
+        "promptSha256": "010749da74ba53bba7141a8033b06d50be095f063bcb966a5182595496376877"
+      }
+    },
+    {
+      "id": "character-relic-tender-discovery",
+      "name": "Discovering Relic Tender",
+      "family": "character-condition",
+      "character": {
+        "id": "relic-tender",
+        "state": "discovery",
+        "baseAssetId": "character-relic-tender-focal"
+      },
+      "status": "approved",
+      "emotionalBeat": "discovery",
+      "assetType": "character-vignette",
+      "partRole": "focal",
+      "output": {
+        "path": "app/public/images/art/characters/relic-tender-discovery.webp",
+        "width": 1024,
+        "height": 1024,
+        "format": "webp",
+        "alpha": false,
+        "maxBytes": 250000,
+        "safeZone": "8-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "the exact same Relic Tender carefully cradling a newly awakened hand-scale glass relic at chest height, expression of disciplined wonder rather than celebration",
+        "scene": "perfectly uniform pure white isolation background, no floor or cast shadow",
+        "subject": "the exact same Relic Tender carefully cradling a newly awakened hand-scale glass relic at chest height, expression of disciplined wonder rather than celebration",
+        "composition": "complete full body, hands and boots visible, contained relic-violet glow, generous margin",
+        "lighting": "Soft neutral character key with only the localized action signal from the approved palette",
+        "constraints": [
+          "one adult and one small relic only, no redesign, no trophy pose, no text, no logo, no watermark",
+          "Preserve the Xenovoya field-ink palette and keep signal color localized",
+          "Maintain one readable focal event and production-safe negative space"
+        ],
+        "identityLocks": [
+          "Preserve the exact same adult face, age, hair, skin tone, and body proportions from the canonical reference",
+          "Preserve the canonical costume construction, palette, silhouette, and material treatment",
+          "Preserve all established equipment shapes and their placement",
+          "Keep the full action readable at small gameplay-card scale",
+          "Do not add weapons, armor, companions, duplicate tools, text, logos, or watermarks"
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/characters/relic-tender.png",
+          "role": "canonical character identity and costume reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-edit",
+        "reviewedAt": "2026-09-13",
+        "sha256": "4935f7b22ce732d0b02f09dac5582a28bdc9aee0c7f36cf3d54aac7847c86d48",
+        "review": "app/src/art-pipeline/reviews/character-relic-tender-discovery.json",
+        "promptSha256": "90aa2411ffeeb308fb58a8ecd2526f32624386c4c5fb4d357f90774aa454f3f3"
+      }
+    },
+    {
+      "id": "character-field-mender-redline",
+      "name": "Redline Field Mender",
+      "family": "character-condition",
+      "character": {
+        "id": "field-mender",
+        "state": "redline",
+        "baseAssetId": "character-field-mender-focal"
+      },
+      "status": "approved",
+      "emotionalBeat": "jeopardy",
+      "assetType": "character-vignette",
+      "partRole": "focal",
+      "output": {
+        "path": "app/public/images/art/characters/field-mender-redline.webp",
+        "width": 1024,
+        "height": 1024,
+        "format": "webp",
+        "alpha": false,
+        "maxBytes": 250000,
+        "safeZone": "8-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "the exact same Field Mender in a controlled redline rescue stance, bracing a compact repair line with one hand and signaling the crew to move with the other; specific urgency, not panic",
+        "scene": "perfectly uniform pure white isolation background, no floor or cast shadow",
+        "subject": "the exact same Field Mender in a controlled redline rescue stance, bracing a compact repair line with one hand and signaling the crew to move with the other; specific urgency, not panic",
+        "composition": "complete full body, readable diagonal action, one localized signal-red tool light, generous margin",
+        "lighting": "Soft neutral character key with only the localized action signal from the approved palette",
+        "constraints": [
+          "one adult only, no redesign, no injury, no weapon, no gore, no text, no logo, no watermark",
+          "Preserve the Xenovoya field-ink palette and keep signal color localized",
+          "Maintain one readable focal event and production-safe negative space"
+        ],
+        "identityLocks": [
+          "Preserve the exact same adult face, age, hair, skin tone, and body proportions from the canonical reference",
+          "Preserve the canonical costume construction, palette, silhouette, and material treatment",
+          "Preserve all established equipment shapes and their placement",
+          "Keep the full action readable at small gameplay-card scale",
+          "Do not add weapons, armor, companions, duplicate tools, text, logos, or watermarks"
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/characters/field-mender.png",
+          "role": "canonical character identity and costume reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-edit",
+        "reviewedAt": "2026-09-13",
+        "sha256": "2c24038b9aae58b4ccca17a126cdee6c6faf66a06c275150b808667c64b5be08",
+        "review": "app/src/art-pipeline/reviews/character-field-mender-redline.json",
+        "promptSha256": "0307871c5c50ccbc86e7ff239d6fa8dd5e16c7c165e574ae4e03ca5f989ce927"
+      }
+    },
+    {
+      "id": "relic-echo-compass",
+      "name": "Echo Compass",
+      "family": "relic",
+      "status": "approved",
+      "emotionalBeat": "agency",
+      "assetType": "transparent-focal",
+      "partRole": "focal",
+      "output": {
+        "path": "app/public/images/art/relics/echo-compass.png",
+        "width": 1024,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "12-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "the Echo Compass, a palm-size asymmetric alien navigation relic that separates one true signal from two false reflections",
+        "scene": "perfectly uniform pure white isolation background, no floor, no stand, no cast shadow",
+        "subject": "weathered dark survey metal holding three nested translucent glass vanes, one coherent cyan-gold vane and two dim fractured echoes, strong readable silhouette",
+        "composition": "centered three-quarter museum view, one object only, generous margin, readable at 96 pixels",
+        "lighting": "Controlled neutral object light with contained relic color and a readable outer silhouette",
+        "constraints": [
+          "no conventional compass face, no letters, no runes, no text, no logo, no watermark",
+          "Preserve the Xenovoya field-ink palette and keep signal color localized",
+          "Maintain one readable focal event and production-safe negative space"
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/relics/choir-seed.png",
+          "role": "approved Xenovoya material, palette, and composition reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-generation",
+        "reviewedAt": "2026-09-13",
+        "sha256": "088b2ceb99216cf550818333f95ebcf4af652bfdafd225b119ab5f5476666f4d",
+        "review": "app/src/art-pipeline/reviews/relic-echo-compass.json",
+        "promptSha256": "fab08650349350f4f8ae80df1f4720469844ed919180255ff0a42f1dfd57f1e4"
+      }
+    },
+    {
+      "id": "relic-stormglass-seed",
+      "name": "Stormglass Seed",
+      "family": "relic",
+      "status": "approved",
+      "emotionalBeat": "remembrance",
+      "assetType": "transparent-focal",
+      "partRole": "focal",
+      "output": {
+        "path": "app/public/images/art/relics/stormglass-seed.png",
+        "width": 1024,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "12-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "the Stormglass Seed, a hand-scale living mineral relic that stores the instant before lightning and releases it as a safe route pulse",
+        "scene": "perfectly uniform pure white isolation background, no floor, no stand, no cast shadow",
+        "subject": "one rounded basalt husk split by a translucent violet-blue seam, restrained inner storm filament, small oxide-green return notch, strong silhouette",
+        "composition": "centered three-quarter museum view, one object only, generous margin, readable at 96 pixels",
+        "lighting": "Controlled neutral object light with contained relic color and a readable outer silhouette",
+        "constraints": [
+          "no plant seed cliche, no egg, no weapon, no text, no runes, no logo, no watermark",
+          "Preserve the Xenovoya field-ink palette and keep signal color localized",
+          "Maintain one readable focal event and production-safe negative space"
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/relics/choir-seed.png",
+          "role": "approved Xenovoya material, palette, and composition reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-generation",
+        "reviewedAt": "2026-09-13",
+        "sha256": "45da55e87e255a2a419a81b07df4db369c4eb014f13f08797126dbd12d63c09e",
+        "review": "app/src/art-pipeline/reviews/relic-stormglass-seed.json",
+        "promptSha256": "acb477b7a9cddb09179e7315289a19330cffafeb2d9a981a0378e9a399d47ba3"
       }
     }
   ],

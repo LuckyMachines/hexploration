@@ -34,6 +34,18 @@ describe('board view model', () => {
     expect(beat.camera).toEqual({ automatic: false, suggestion: 'intent' });
   });
 
+  it('preserves authored world mood and landmark encounter state', () => {
+    const model = deriveBoardViewModel({
+      cells,
+      currentLocation: '0,0',
+      encounterId: 'echo-fork',
+      source: { chapter: 'survey', weather: 'rising-static', intensity: 48, locationName: 'Echo Fork' },
+    });
+    expect(model.source).toMatchObject({ chapter: 'survey', weather: 'rising-static', intensity: 48, locationName: 'Echo Fork' });
+    expect(model.signals.hasEncounter).toBe(true);
+    expect(resolveBoardBeat(model)).toMatchObject({ id: 'landmark-decision', lightingRig: 'discovery' });
+  });
+
   it('keeps base tile transforms independent from transient interaction state', () => {
     const tile = { x: 2, z: 3, height: 0.75 };
     expect(baseTileTransform(tile)).toEqual(baseTileTransform({ ...tile, hovered: true, selected: true, invalid: true }));

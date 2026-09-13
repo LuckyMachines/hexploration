@@ -1,0 +1,33 @@
+{
+  "assetId": "environment-echo-fork",
+  "candidate": "app/public/images/art/environments/echo-fork.webp",
+  "reviewer": "Codex final art QA",
+  "reviewedAt": "2026-09-13",
+  "scores": {
+    "recognition": 4,
+    "agency": 4,
+    "specificity": 4,
+    "restraint": 4,
+    "continuity": 4,
+    "reusability": 4,
+    "accessibility": 4
+  },
+  "notes": {
+    "recognition": "The location silhouette and its single environmental event remain readable in the labeled library sheet and behind the 3D board.",
+    "agency": "A navigable foreground, route threshold, or return trace makes player movement and consequence legible.",
+    "specificity": "Weathered basalt, restrained expedition traces, mineral relief, and localized signal light place the image in Xenovoya.",
+    "restraint": "One focal event is protected by quiet atmosphere and broad UI-safe areas.",
+    "continuity": "Field-ink depth and the cyan, gold, green, red, and violet signal grammar remain disciplined.",
+    "reusability": "The wide crop supports board backplates, encounter framing, and marketing detail crops.",
+    "accessibility": "Value structure, terrain silhouette, and route depth communicate without relying on hue alone."
+  },
+  "decision": "approved",
+  "candidateSha256": "1a4e380d01d3c4358788c6d2f3d17ffcc532e20466edb0db4530dcb2b8b73761",
+  "generation": {
+    "mode": "azure-image-generation",
+    "tool": "azure-foundry",
+    "model": "gpt-image-2",
+    "promptSha256": "781649fec14e60951623288b58e19633737b775ff73c4cb6360e94f3e166db93"
+  },
+  "joyScore": 10
+}

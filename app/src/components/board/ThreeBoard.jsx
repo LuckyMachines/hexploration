@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { ACTION_LABELS, Action, PLAYER_COLORS, TILE_LABELS, Tile } from '../../lib/constants';
+import { guestLocationArtwork } from '../../art-pipeline/finalArtCatalog';
 import {
   CHARACTER_NEUTRAL_TEXTURE_PATHS,
   CHARACTER_TEXTURE_PATHS,
@@ -60,6 +61,20 @@ const ENCOUNTER_TEXTURES = {
 };
 const ROUTE_FORK_TEXTURE = '/images/art/props/route-fork-marker.png';
 const TIDEGLASS_3D_MODEL = '/models/relic-tideglass-heart.glb';
+const WORLD_MOODS = Object.freeze({
+  'glass-mist': {
+    label: 'Glass mist',
+    overlay: 'bg-[radial-gradient(circle_at_72%_18%,rgba(104,213,228,0.14),transparent_30%),linear-gradient(180deg,transparent_52%,rgba(5,8,6,0.78))]',
+  },
+  'rising-static': {
+    label: 'Rising static',
+    overlay: 'bg-[radial-gradient(circle_at_26%_28%,rgba(232,200,96,0.14),transparent_30%),linear-gradient(180deg,rgba(75,52,20,0.05),rgba(5,8,6,0.82))]',
+  },
+  'redline-storm': {
+    label: 'Redline storm',
+    overlay: 'bg-[radial-gradient(circle_at_58%_48%,rgba(239,98,87,0.17),transparent_28%),linear-gradient(180deg,transparent_54%,rgba(7,9,7,0.82))]',
+  },
+});
 
 function disposeObject(object) {
   const geometries = new Set();
@@ -714,8 +729,12 @@ function buildIntentLayer(THREE, context, state) {
     stateFx.position.set(intentTile.x, intentTile.height + 0.235, intentTile.z);
     group.add(stateFx);
   }
-  const encounterTexture = state.isDanger && intentTile
-    ? intentTile.tileType === Tile.DESERT
+  const encounterTexture = (state.isDanger || state.encounterId) && intentTile
+    ? state.encounterId === 'echo-fork'
+      ? context.routeForkTexture
+      : state.encounterId === 'wind-vault'
+        ? context.encounterTextures.emberglassScuttler
+        : intentTile.tileType === Tile.DESERT
       ? context.encounterTextures.emberglassScuttler
       : intentTile.tileType === Tile.JUNGLE
         ? context.encounterTextures.glassrootGrazer
@@ -799,7 +818,7 @@ function buildPartyLayer(THREE, context, state) {
       pawn.userData.characterId = character.id;
       pawn.userData.characterState = stateTexture ? presentation.resolvedState : 'neutral';
       const angle = (index / Math.max(1, indices.length)) * Math.PI * 2;
-      const radius = indices.length > 1 ? 0.36 : 0;
+      const radius = indices.length > 1 ? (tile.tileType === Tile.RELIC ? 0.54 : 0.42) : 0;
       pawn.position.set(tile.x + Math.cos(angle) * radius, tile.height + 0.04, tile.z + Math.sin(angle) * radius);
       pawn.rotation.y = -0.45;
       context.layers.party.add(pawn);
@@ -966,7 +985,17 @@ function createWorld(THREE, OrbitControls, RoomEnvironment, KTX2Loader, GLTFLoad
     texture.colorSpace = THREE.SRGBColorSpace;
     return [keyName, texture];
   }));
-  const characterTexturePaths = quality.mode === 'efficient' ? CHARACTER_NEUTRAL_TEXTURE_PATHS : CHARACTER_TEXTURE_PATHS;
+  const guestCharacterPaths = [...new Set((initialState.crew || []).flatMap((player, index) => {
+    const character = resolvePlayerCharacter(player, index);
+    return quality.mode === 'efficient'
+      ? [character.assets.neutral]
+      : [character.assets.neutral, ...Object.values(character.assets.states || {})];
+  }))];
+  const characterTexturePaths = initialState.source?.kind === 'guest' && guestCharacterPaths.length
+    ? guestCharacterPaths
+    : quality.mode === 'efficient'
+      ? CHARACTER_NEUTRAL_TEXTURE_PATHS
+      : CHARACTER_TEXTURE_PATHS;
   const characterTextures = Object.fromEntries(characterTexturePaths.map((texturePath) => {
     const texture = textureLoader.load(texturePath);
     texture.colorSpace = THREE.SRGBColorSpace;
@@ -1109,6 +1138,10 @@ function createWorld(THREE, OrbitControls, RoomEnvironment, KTX2Loader, GLTFLoad
           if ('roughness' in refined) refined.roughness = Math.max(0.46, refined.roughness || 0);
           if ('metalness' in refined) refined.metalness = Math.min(0.32, refined.metalness || 0);
           if ('envMapIntensity' in refined) refined.envMapIntensity = 0.72;
+          if (refined.emissive?.set) {
+            refined.emissive.set('#472a63');
+            refined.emissiveIntensity = Math.max(0.28, refined.emissiveIntensity || 0);
+          }
           return refined;
         });
         object.material = Array.isArray(object.material) ? refinedMaterials : refinedMaterials[0];
@@ -1127,12 +1160,12 @@ function createWorld(THREE, OrbitControls, RoomEnvironment, KTX2Loader, GLTFLoad
         model.userData.kind = 'trellis-hero-relic';
         model.userData.baseRotationY = -Math.PI * 0.12;
         model.userData.baseY = modelBaseY;
-        model.position.set(0.3, modelBaseY, -0.04);
+        model.position.set(0, modelBaseY + 0.025, -0.08);
         model.rotation.y = model.userData.baseRotationY;
-        model.scale.setScalar(0.84);
+        model.scale.setScalar(1.28);
         anchor.add(model);
-        const light = new THREE.PointLight('#b994e6', 1.2, 2.5, 2);
-        light.position.set(0.28, tile.height / 2 + 0.54, 0.02);
+        const light = new THREE.PointLight('#c8a2f0', 1.7, 2.8, 2);
+        light.position.set(0, tile.height / 2 + 0.58, -0.02);
         anchor.add(light);
         context.ambientObjects.push(model);
         renderer.domElement.dataset.heroModel = 'tideglass-heart';
@@ -1743,9 +1776,11 @@ export default function ThreeBoard({
     || state.cells.find((cell) => cell.alias === state.landingSite)
     || intentCell;
   const terrainLabel = intentCell?.revealed ? TILE_LABELS[intentCell.tileType] : 'Uncharted';
-  const backplate = anchoredCell?.revealed && anchoredCell.tileType === Tile.DESERT
+  const worldMood = WORLD_MOODS[state.source.weather] || WORLD_MOODS[state.isDanger ? 'redline-storm' : 'glass-mist'];
+  const terrainBackplate = anchoredCell?.revealed && anchoredCell.tileType === Tile.DESERT
     ? EMBERGLASS_BACKPLATE
     : CAVERN_BACKPLATE;
+  const backplate = guestLocationArtwork(state.source.locationName, terrainBackplate);
 
   return (
     <div
@@ -1761,6 +1796,10 @@ export default function ThreeBoard({
       data-renderer-state={status}
       data-camera-view={cameraView}
       data-board-phase={state.phase}
+      data-world-chapter={state.source.chapter || 'untracked'}
+      data-world-weather={state.source.weather || 'glass-mist'}
+      data-world-intensity={state.source.intensity}
+      data-board-encounter={state.encounterId || 'none'}
       data-premium-presentation="true"
       data-view-model-version={state.schemaVersion}
       data-testid="three-board-world"
@@ -1773,13 +1812,14 @@ export default function ThreeBoard({
           </div>
         </div>
       )}
-      <div className={`three-board-color-grade pointer-events-none absolute inset-0 z-10 ${state.isDanger ? 'bg-[radial-gradient(circle_at_58%_48%,rgba(239,98,87,0.17),transparent_28%),linear-gradient(180deg,transparent_54%,rgba(7,9,7,0.82))]' : 'bg-[radial-gradient(circle_at_72%_18%,rgba(104,213,228,0.14),transparent_30%),linear-gradient(180deg,transparent_52%,rgba(5,8,6,0.78))]'}`} />
+      <div className={`three-board-color-grade pointer-events-none absolute inset-0 z-10 ${worldMood.overlay}`} />
+      <div className={`three-board-weather pointer-events-none absolute inset-0 z-10 three-board-weather-${state.source.weather || 'glass-mist'}`} style={{ '--world-intensity': state.source.intensity / 100 }} />
       <div className="three-board-vignette pointer-events-none absolute inset-0 z-[11]" />
       <div className="three-board-grain pointer-events-none absolute inset-0 z-[12] opacity-[0.09]" />
       <div className="pointer-events-none absolute left-3 top-3 z-20 rounded border border-white/10 bg-exp-dark/70 px-2.5 py-2 backdrop-blur-sm">
-        <p className="flex items-center gap-2 font-mono text-[8px] uppercase tracking-[0.25em] text-exp-text-dim"><span className={`h-1.5 w-1.5 rounded-full ${state.isDanger ? 'bg-signal-red' : state.isResolving ? 'bg-compass' : 'bg-oxide-green'}`} />Living survey</p>
+        <p className="flex items-center gap-2 font-mono text-[8px] uppercase tracking-[0.25em] text-exp-text-dim"><span className={`h-1.5 w-1.5 rounded-full ${state.isDanger ? 'bg-signal-red' : state.isResolving ? 'bg-compass' : 'bg-oxide-green'}`} />{worldMood.label}</p>
         <p className="mt-1 font-display text-sm uppercase tracking-[0.12em] text-exp-text">
-          {state.isDanger ? 'Redline terrain' : state.isResolving ? 'World resolving' : state.isComplete ? 'World settled' : 'Expedition world'}
+          {state.source.locationName || (state.isDanger ? 'Redline terrain' : state.isResolving ? 'World resolving' : state.isComplete ? 'World settled' : 'Expedition world')}
         </p>
       </div>
       <div className="pointer-events-none absolute right-3 top-3 z-20 rounded border border-white/10 bg-exp-dark/70 px-2.5 py-2 text-right backdrop-blur-sm">
@@ -1877,6 +1917,12 @@ export default function ThreeBoard({
         <div className="three-board-danger-frame pointer-events-none absolute inset-0 z-[14]" role="status" aria-live="polite">
           <div className="absolute inset-x-0 top-0 h-px bg-signal-red/80 shadow-[0_0_24px_rgba(239,98,87,0.72)]" />
           <p className="absolute left-1/2 top-4 -translate-x-1/2 rounded border border-signal-red/45 bg-exp-dark/80 px-3 py-2 font-mono text-[9px] uppercase tracking-[0.24em] text-signal-red backdrop-blur-sm">Storm pressure rising</p>
+        </div>
+      )}
+      {state.encounterId && !state.isDanger && !state.isResolving && (
+        <div className="pointer-events-none absolute inset-0 z-[14]" role="status" aria-live="polite">
+          <div className="absolute inset-x-[18%] top-0 h-px bg-compass/80 shadow-[0_0_24px_rgba(232,200,96,0.58)]" />
+          <p className="absolute left-1/2 top-4 -translate-x-1/2 rounded border border-compass/45 bg-exp-dark/80 px-3 py-2 font-mono text-[9px] uppercase tracking-[0.24em] text-compass-bright backdrop-blur-sm">Landmark decision</p>
         </div>
       )}
       {state.isComplete && (

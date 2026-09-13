@@ -1,4 +1,4 @@
-export const UI_QUALITY_VERSION = '1.1.0';
+export const UI_QUALITY_VERSION = '1.2.0';
 
 export const uiQualityBudgets = Object.freeze({
   maxHorizontalOverflowPx: 1,
@@ -37,6 +37,44 @@ export const uiQualityScenes = Object.freeze([
       'src/pages/HomePage.jsx',
       'src/index.css',
       'src/components/layout/Header.jsx',
+    ],
+  },
+  {
+    id: 'guest-expedition-desktop',
+    label: 'Living Survey - desktop',
+    route: '/guest',
+    viewport: { width: 1440, height: 1000 },
+    capture: 'viewport',
+    selector: '[data-testid="guest-expedition"]',
+    waitForRenderer: true,
+    maxFrameP95Ms: 50,
+    maxTransferBytes: 18_000_000,
+    maxNavigationDurationMs: 15_000,
+    maxDomNodes: 2200,
+    sources: [
+      'src/pages/GuestExpeditionPage.jsx',
+      'src/components/board/ThreeBoard.jsx',
+      'src/lib/guestExpedition.js',
+      'src/index.css',
+    ],
+  },
+  {
+    id: 'guest-expedition-mobile',
+    label: 'Living Survey - mobile',
+    route: '/guest?mode=practice',
+    viewport: { width: 390, height: 844 },
+    capture: 'viewport',
+    selector: '[data-testid="guest-expedition"]',
+    waitForRenderer: true,
+    maxFrameP95Ms: 50,
+    maxTransferBytes: 18_000_000,
+    maxNavigationDurationMs: 15_000,
+    maxDomNodes: 2200,
+    sources: [
+      'src/pages/GuestExpeditionPage.jsx',
+      'src/components/board/ThreeBoard.jsx',
+      'src/lib/guestExpedition.js',
+      'src/index.css',
     ],
   },
   {
@@ -120,6 +158,7 @@ export const uiQualityScenes = Object.freeze([
     viewport: { width: 1440, height: 1000 },
     capture: 'element',
     selector: '[data-testid="return-loop-panel"]',
+    expandDetails: true,
     maxDomNodes: 2800,
     sources: [
       'src/pages/HomePage.jsx',

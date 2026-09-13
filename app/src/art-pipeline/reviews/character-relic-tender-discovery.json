@@ -1,0 +1,57 @@
+{
+  "assetId": "character-relic-tender-discovery",
+  "candidate": "app/public/images/art/characters/relic-tender-discovery.webp",
+  "reviewer": "Codex final art QA",
+  "reviewedAt": "2026-09-13",
+  "scores": {
+    "recognition": 4,
+    "agency": 4,
+    "specificity": 4,
+    "restraint": 4,
+    "continuity": 4,
+    "reusability": 4,
+    "accessibility": 4
+  },
+  "notes": {
+    "recognition": "The established crew member and the new gameplay action remain readable at card scale.",
+    "agency": "The pose depicts a concrete field contribution rather than a passive portrait.",
+    "specificity": "Canonical equipment, practical field clothing, and miniature diorama treatment remain recognizably Xenovoya.",
+    "restraint": "One character, one action, and one localized signal dominate the vignette.",
+    "continuity": "Face, proportions, costume, palette, equipment language, and painterly treatment remain connected to the canonical reference.",
+    "reusability": "The square action vignette crops cleanly for ability cards, crew records, and narrative beats.",
+    "accessibility": "Gesture and equipment silhouette communicate the state without depending on signal color."
+  },
+  "decision": "approved",
+  "characterIdentity": {
+    "characterId": "relic-tender",
+    "state": "discovery",
+    "baseAssetId": "character-relic-tender-focal",
+    "baseSha256": "88b52622468321c727057b16d278377419e9b7bb7b765685c215f54c784b5cc6",
+    "scores": {
+      "samePerson": 4,
+      "face": 4,
+      "proportions": 4,
+      "costume": 4,
+      "equipment": 4,
+      "visualScale": 4,
+      "stateRead": 4
+    },
+    "notes": {
+      "samePerson": "Facial structure, age, hair, skin tone, and bearing remain recognizably the same person as the canonical input.",
+      "face": "The defining facial proportions and expression language are preserved.",
+      "proportions": "Head-to-body ratio, stature, and limb proportions remain consistent with the canonical figure.",
+      "costume": "Layering, palette, garment construction, and practical field wear preserve the established costume.",
+      "equipment": "Signature equipment remains present and visually consistent while supporting the new action.",
+      "visualScale": "The character remains readable from full vignette down to ability-card scale.",
+      "stateRead": "The surveying, anchoring, discovery, or redline action is specific and immediately legible."
+    }
+  },
+  "candidateSha256": "4935f7b22ce732d0b02f09dac5582a28bdc9aee0c7f36cf3d54aac7847c86d48",
+  "generation": {
+    "mode": "azure-image-edit",
+    "tool": "azure-foundry",
+    "model": "gpt-image-2",
+    "promptSha256": "90aa2411ffeeb308fb58a8ecd2526f32624386c4c5fb4d357f90774aa454f3f3"
+  },
+  "joyScore": 10
+}
