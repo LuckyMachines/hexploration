@@ -137,6 +137,31 @@ export function validateArtSystem(direction, manifest, options = {}) {
   const normalizedManagedRoots = (manifest.managedRoots || []).map((root) => root.replaceAll('\\', '/').replace(/\/+$/, ''));
   const delegatedRoots = (manifest.delegatedRoots || []).map((root) => root.replaceAll('\\', '/').replace(/\/+$/, ''));
 
+  for (const managedManifestPath of manifest.managedOutputManifests || []) {
+    try {
+      const absoluteManifestPath = resolveRepoPath(repoRoot, managedManifestPath);
+      if (!existsSync(absoluteManifestPath)) {
+        errors.push(`Managed output manifest does not exist: ${managedManifestPath}`);
+        continue;
+      }
+      const managedManifest = JSON.parse(readFileSync(absoluteManifestPath, 'utf8'));
+      if (!Array.isArray(managedManifest.assets)) {
+        errors.push(`Managed output manifest has no assets array: ${managedManifestPath}`);
+        continue;
+      }
+      for (const managedAsset of managedManifest.assets) {
+        if (!managedAsset?.output) {
+          errors.push(`Managed output manifest asset is missing output: ${managedManifestPath}`);
+          continue;
+        }
+        resolveRepoPath(repoRoot, managedAsset.output);
+        outputPaths.add(managedAsset.output.replaceAll('\\', '/'));
+      }
+    } catch (error) {
+      errors.push(`Managed output manifest is invalid (${managedManifestPath}): ${error.message}`);
+    }
+  }
+
   for (const delegatedRoot of delegatedRoots) {
     try {
       resolveRepoPath(repoRoot, delegatedRoot);

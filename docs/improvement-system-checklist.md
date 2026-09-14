@@ -23,4 +23,22 @@ This checklist is both the implementation record and the source for the portfoli
 - [x] Emit an auditable apply report and assisted repair packet when judgment or human observation is required.
 - [x] Provide changed-surface, explicit-scope, and all-surface apply modes.
 - [ ] Record five recent representative human playtest sessions covering first play and return play.
-- [ ] Add the hard control-plane gate to CI when the repository's CI policy is restored.
+- [x] Keep the hard control-plane gate available as an explicit local/release command without restoring GitHub Actions.
+- [x] Make production verification independent from developer `.env.local` values.
+- [x] Start and health-gate the pruned local chain before chain-dependent hard checks.
+- [x] Preserve exhaustive golden simulations with a realistic hard-tier timeout.
+- [x] Keep smoke, focused, hard, exact, and release verification reports in independent artifacts.
+- [x] Regrade the current cross-discipline portfolio from live evidence; current result is A-.
+- [x] Implement deterministic three-LOD preparation, validation, review, promotion, fingerprint, and runtime-doctor gates for reconstructed 3D assets.
+- [x] Promote the approved Landing Beacon and Route Fork Marker into the live tactical board with cutout fallbacks and state-aware detail budgets.
+- [x] Reconstruct, optimize, approve, and integrate the Atlas Spindle with semantic cardinal inputs and three reviewed runtime LODs.
+- [x] Restore the Tideglass Heart's green-glass identity with a governed runtime material correction and approve all three LODs.
+- [x] Recover the Sunstone Lens identity with a deterministic authored hard-surface fallback while preserving both failed image-driven reconstructions as rejection evidence.
+- [x] Reconstruct, optimize, approve, and integrate the Campsite Shelter without its baked terrain slab, using an evidence-backed high-quality-tier budget.
+- [x] Add fingerprinted lossless WebP runtime delivery for transparent character, prop, effect, encounter, and relic art with dimension and compression gates.
+- [x] Add a deterministic live-release audit covering release identity, required route chunks, deep links, security headers, discovery files, dependent services, Sepolia, and rollback readiness.
+- [x] Recover the stopped Return API and enable its Coolify `/ready` health gate.
+- [x] Make `--help` read-only and isolate `--no-verify` output from canonical verified portfolio evidence.
+- [x] Add a release-candidate gate requiring a clean main checkout, exact SHA, same-commit hard evidence, matching production build metadata, and rollback readiness before deployment.
+- [x] Require exact player and marketing SHAs plus complete security headers on both domains in the strict live-release gate.
+- [ ] Commit the reviewed checkout ahead of the deployed player SHA, run the release tier from that clean commit, and record exact-SHA post-deploy evidence.

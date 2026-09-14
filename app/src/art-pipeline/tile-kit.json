@@ -1,0 +1,77 @@
+{
+  "version": "1.1.0",
+  "generatedAt": "2026-09-13",
+  "model": "gpt-image-2",
+  "provider": "azure-foundry",
+  "generationMode": "Azure GPT Image 2 through ~/.codex/azure-image.sh; concept references translated into deterministic Three.js geometry and approved PBR surfaces",
+  "runtime": {
+    "families": 6,
+    "variantsPerFamily": 3,
+    "familySilhouetteProfiles": 6,
+    "geometryImplementation": "app/src/components/board/tileKit.js",
+    "rendererIntegration": "app/src/components/board/ThreeBoard.jsx",
+    "materialSystem": "app/src/art-pipeline/material-system.json",
+    "specification": "docs/GAME_TILE_KIT.md"
+  },
+  "sharedPrompt": "Create a square orthographic concept plate for a premium science-fantasy expedition game's modular 3D hex terrain. Show exactly three distinct standalone hexagonal tile variants arranged cleanly on a near-black neutral background with no overlap: a broad survey shelf, an asymmetric fractured shelf, and a raised beveled crown. Every tile has the identical regular-hex footprint, visible sculpted sidewalls, tactile low-poly form, hand-painted PBR surface detail, restrained realistic material response, and enough clear top space for routes and cutout character standees. Match a sophisticated botanical-alien field expedition with dark mineral neutrals and selective luminous accents. Soft neutral studio illumination, consistent orthographic three-quarter camera, no directional shadow baked into the surface. No interface, labels, letters, numbers, borders, logos, characters, or surrounding scenery.",
+  "families": [
+    {
+      "id": "landing",
+      "tileType": 5,
+      "output": "app/public/images/art/tile-concepts/landing-variants.webp",
+      "familyPrompt": "Landing family: engineered survey platforms made from weathered blue-gray expedition metal, inset hexagonal enamel panels, fine cyan guidance channels, subtle brass fasteners, and worn edges. Include modular sockets for a beacon and route origin while keeping the center traversable. The result feels field-built, premium, and functional rather than clean sci-fi plastic."
+    },
+    {
+      "id": "plains",
+      "tileType": 2,
+      "output": "app/public/images/art/tile-concepts/plains-variants.webp",
+      "familyPrompt": "Plains family: dry olive mineral loam broken into broad plates, soft islands of lantern moss, tiny restrained warm spores, low route stones, and subtle shallow erosion. Preserve a calm low silhouette and broad navigable top surfaces; avoid generic green grass."
+    },
+    {
+      "id": "jungle",
+      "tileType": 1,
+      "output": "app/public/images/art/tile-concepts/jungle-variants.webp",
+      "familyPrompt": "Jungle family: charcoal weathered basalt crossed by pale glassroot lattices, compact silver-green fronds, shallow root arches, damp deposits, and small mint bioluminescent nodes. Keep foliage clustered around edges so routes and standees remain readable; avoid a conventional tropical jungle."
+    },
+    {
+      "id": "desert",
+      "tileType": 3,
+      "output": "app/public/images/art/tile-concepts/desert-variants.webp",
+      "familyPrompt": "Desert family: burnt umber iron-mineral dust, wind-carved strata, cooled black glass ripples, scattered emberglass shards, and very restrained orange seams under the crust. Make the material dry, dangerous, and geological without turning the whole tile bright orange."
+    },
+    {
+      "id": "mountain",
+      "tileType": 4,
+      "output": "app/public/images/art/tile-concepts/mountain-variants.webp",
+      "familyPrompt": "Mountain family: blue-black slate pressure plates, stepped fractured sidewalls, cold mica edges, small angular spires, and faint cyan mineral inclusions. The crown variant may rise higher, but all three must retain a clear traversable path and the exact shared hex footprint."
+    },
+    {
+      "id": "relic",
+      "tileType": 6,
+      "output": "app/public/images/art/tile-concepts/relic-variants.webp",
+      "familyPrompt": "Relic family: dark ceremonial memory stone, inset rings, translucent violet glass filament, worn gold survey pins, and a central modular reliquary socket. Violet emission is localized and precious, with quiet archaeological mystery rather than neon fantasy clutter."
+    }
+  ],
+  "review": {
+    "status": "approved-reference",
+    "reviewedAt": "2026-09-13",
+    "findings": [
+      "All six families are distinguishable by material and silhouette at contact-sheet scale.",
+      "Landing, plains, and desert preserve the clearest route and standee space.",
+      "Jungle root edges and mountain spires provide strong family identity without relying on color.",
+      "Relic supports the ceremonial crown direction, but runtime height remains constrained for tactical clarity.",
+      "Generated plates guide geometry and modular landmarks; they are not baked runtime tiles or gameplay-state truth."
+    ],
+    "criteria": [
+      "family separation",
+      "shared footprint",
+      "variant silhouette",
+      "route and standee clearance",
+      "sidewall readability",
+      "cutout-character compatibility",
+      "localized emission",
+      "thumbnail readability"
+    ],
+    "contactSheet": "artifacts/tile-kit/tile-concept-contact-sheet.png"
+  }
+}

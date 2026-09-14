@@ -18,6 +18,7 @@
 - [x] Derive portfolio grades from current evidence instead of static configuration alone.
 - [x] Add a restrained beat director with suggestion-only camera direction.
 - [x] Add board diagnose, capture, baseline promotion, compare, attribution, ranked-action, and bounded refresh commands.
+- [x] Bound optional shader warm-up and use the synchronous compile path on Safari/WebKit so a stalled optimization cannot strand the board in its loading state.
 - [x] Run visual comparison, browser checks, builds, and the cross-product improvement gate.
 - [x] Re-grade the completed system under the stricter A bar.
 

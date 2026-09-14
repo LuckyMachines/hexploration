@@ -1,25 +1,25 @@
 {
   "materialSystemVersion": "1.0.0",
   "materialId": "verdant-signal-base",
-  "sourceSha256": "c4537d475dc1cc45339aa8f8aa7b5b381ef0240bfbca90967b0313802e768dfa",
+  "sourceSha256": "9b29dfe117cff121d000e5f85c69be2088b280d08299e23fd8326564d4088198",
   "candidateSha256": {
-    "baseColor": "524e1b82e53f493b21f4290413cc0d9167baa1ea963a1eca0ea6b26dd7d1c34f",
-    "normal": "4ebda82af3b3807dd00eb1d84d1c4df409706b555d7900fbec8123b0a027a268",
-    "roughness": "20486e19976130197a15124de6ae270ae493d2fead3b7f5e7894a083a3afbca4",
-    "ao": "af0fb6a9c071b4912de6a5c6322cd7404d248493f12036d9548dd1bd7b09d3f7",
-    "height": "58c1189b7227389ed3f5a3783ae486ea2cbf1ad1e7cb3a00ba3aa68907de56a6",
+    "baseColor": "cb1a18cfc9271d881eca79a07693ccca0a55ecdf7e24b18822dc353ff36efcb2",
+    "normal": "050cd6240cebd925211ddc455d56a2f36e533f0ca59dd61aa3f14e5f3ee5f365",
+    "roughness": "44ed81774928a7c75d4bc87706af696c2ae51b9413fb6265af22836a73e47d20",
+    "ao": "3adffc74b337c3df60fcad443d76be69e8ce9156a099b7ffd88d61c55f98ccc2",
+    "height": "745484ae2776c1460385a94bf1378bdebd9f7773448da53ab2fa92f39a1f1d98",
     "emissive": "8383219e546eb515dd2e1a8c02557888e126423cc82014fe2eea79006155a62f"
   },
   "reviewer": "Codex visual QA",
-  "reviewedAt": "2026-09-09T17:47:29.129Z",
+  "reviewedAt": "2026-09-14T17:14:20.640Z",
   "scores": {
-    "tileability": 3,
+    "tileability": 4,
     "depthResponse": 3,
     "lightNeutrality": 4,
     "materialIdentity": 3,
-    "stateLegibility": 3,
+    "stateLegibility": 4,
     "accessibility": 4
   },
   "decision": "approved",
-  "notes": "Approved after seam-safe Sobel normal generation; functional and readable with future headroom for stronger manufactured identity."
+  "notes": "Approved GPT Image 2 authored source after localized opposing-edge blending. Numeric seam score passes without whole-field mirroring; neutral look-dev and integrated board keep characters, routes, and state overlays dominant."
 }

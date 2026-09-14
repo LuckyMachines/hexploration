@@ -1,0 +1,411 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-09-14T14:14:54.241Z",
+  "assets": [
+    {
+      "id": "prop-campsite-shelter",
+      "reviewDecision": "approved",
+      "reviewPath": "app/src/art-pipeline/asset-3d-review.json",
+      "contactSheet": "artifacts/art/3d/reviews/prop-campsite-shelter-runtime-contact.png",
+      "models": [
+        {
+          "id": "lod0",
+          "path": "/models/prop-campsite-shelter-lod0.glb",
+          "sha256": "13b67e220d9009104102d8e6cdcbcdfd79e0f2372b38dcf8b673b8ca06ff4471",
+          "bytes": 1007732,
+          "triangles": 16686,
+          "vertices": 22441,
+          "primitives": 1,
+          "materials": 1,
+          "textures": 2,
+          "animations": 0,
+          "extensionsUsed": [
+            "EXT_texture_webp",
+            "KHR_mesh_quantization"
+          ],
+          "extensionsRequired": [
+            "EXT_texture_webp",
+            "KHR_mesh_quantization"
+          ]
+        },
+        {
+          "id": "lod1",
+          "path": "/models/prop-campsite-shelter-lod1.glb",
+          "sha256": "9e9a59c180305dd833b06f02f494a9a23268a364375dd34109db57cb86196d7b",
+          "bytes": 402584,
+          "triangles": 7298,
+          "vertices": 10759,
+          "primitives": 1,
+          "materials": 1,
+          "textures": 2,
+          "animations": 0,
+          "extensionsUsed": [
+            "EXT_texture_webp",
+            "KHR_mesh_quantization"
+          ],
+          "extensionsRequired": [
+            "EXT_texture_webp",
+            "KHR_mesh_quantization"
+          ]
+        },
+        {
+          "id": "lod2",
+          "path": "/models/prop-campsite-shelter-lod2.glb",
+          "sha256": "9e9a59c180305dd833b06f02f494a9a23268a364375dd34109db57cb86196d7b",
+          "bytes": 402584,
+          "triangles": 7298,
+          "vertices": 10759,
+          "primitives": 1,
+          "materials": 1,
+          "textures": 2,
+          "animations": 0,
+          "extensionsUsed": [
+            "EXT_texture_webp",
+            "KHR_mesh_quantization"
+          ],
+          "extensionsRequired": [
+            "EXT_texture_webp",
+            "KHR_mesh_quantization"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "prop-landing-beacon",
+      "reviewDecision": "approved",
+      "reviewPath": "app/src/art-pipeline/asset-3d-review.json",
+      "contactSheet": "artifacts/art/3d/reviews/prop-landing-beacon-runtime-contact.png",
+      "models": [
+        {
+          "id": "lod0",
+          "path": "/models/prop-landing-beacon-lod0.glb",
+          "sha256": "d2373dec80b7c4274c3464016cc6ac7f4996bd9ff0ba33dec45b28b822a735d2",
+          "bytes": 728600,
+          "triangles": 13742,
+          "vertices": 16952,
+          "primitives": 1,
+          "materials": 1,
+          "textures": 2,
+          "animations": 0,
+          "extensionsUsed": [
+            "EXT_texture_webp",
+            "KHR_mesh_quantization"
+          ],
+          "extensionsRequired": [
+            "EXT_texture_webp",
+            "KHR_mesh_quantization"
+          ]
+        },
+        {
+          "id": "lod1",
+          "path": "/models/prop-landing-beacon-lod1.glb",
+          "sha256": "58cee24baac426affb761b629081962342aa118d008ffe28f40cbad23a285f82",
+          "bytes": 293268,
+          "triangles": 6012,
+          "vertices": 8228,
+          "primitives": 1,
+          "materials": 1,
+          "textures": 2,
+          "animations": 0,
+          "extensionsUsed": [
+            "EXT_texture_webp",
+            "KHR_mesh_quantization"
+          ],
+          "extensionsRequired": [
+            "EXT_texture_webp",
+            "KHR_mesh_quantization"
+          ]
+        },
+        {
+          "id": "lod2",
+          "path": "/models/prop-landing-beacon-lod2.glb",
+          "sha256": "a1e1ef2ee7d48e9069b87fae68f0cec03366e63a02043ebd0e16c355e436a77b",
+          "bytes": 213348,
+          "triangles": 3092,
+          "vertices": 5108,
+          "primitives": 1,
+          "materials": 1,
+          "textures": 2,
+          "animations": 0,
+          "extensionsUsed": [
+            "EXT_texture_webp",
+            "KHR_mesh_quantization"
+          ],
+          "extensionsRequired": [
+            "EXT_texture_webp",
+            "KHR_mesh_quantization"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "prop-route-fork-marker",
+      "reviewDecision": "approved",
+      "reviewPath": "app/src/art-pipeline/asset-3d-review.json",
+      "contactSheet": "artifacts/art/3d/reviews/prop-route-fork-marker-runtime-contact.png",
+      "models": [
+        {
+          "id": "lod0",
+          "path": "/models/prop-route-fork-marker-lod0.glb",
+          "sha256": "333e74794ca4e55d65a07e86085dc7b7e6985018edb2d9708fc6ff293146b673",
+          "bytes": 529360,
+          "triangles": 11067,
+          "vertices": 12860,
+          "primitives": 1,
+          "materials": 1,
+          "textures": 2,
+          "animations": 0,
+          "extensionsUsed": [
+            "EXT_texture_webp",
+            "KHR_mesh_quantization"
+          ],
+          "extensionsRequired": [
+            "EXT_texture_webp",
+            "KHR_mesh_quantization"
+          ]
+        },
+        {
+          "id": "lod1",
+          "path": "/models/prop-route-fork-marker-lod1.glb",
+          "sha256": "9ec1a5ecb43d104dc8e7cbc3c2ff66e1446e0fdade614f9337e3802f81f8ed53",
+          "bytes": 229884,
+          "triangles": 4842,
+          "vertices": 6616,
+          "primitives": 1,
+          "materials": 1,
+          "textures": 2,
+          "animations": 0,
+          "extensionsUsed": [
+            "EXT_texture_webp",
+            "KHR_mesh_quantization"
+          ],
+          "extensionsRequired": [
+            "EXT_texture_webp",
+            "KHR_mesh_quantization"
+          ]
+        },
+        {
+          "id": "lod2",
+          "path": "/models/prop-route-fork-marker-lod2.glb",
+          "sha256": "3090a4e0ae6d70867d178056731601142be4c82f394d46f8cc478c3aab2740c6",
+          "bytes": 169444,
+          "triangles": 2490,
+          "vertices": 4299,
+          "primitives": 1,
+          "materials": 1,
+          "textures": 2,
+          "animations": 0,
+          "extensionsUsed": [
+            "EXT_texture_webp",
+            "KHR_mesh_quantization"
+          ],
+          "extensionsRequired": [
+            "EXT_texture_webp",
+            "KHR_mesh_quantization"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "relic-atlas-spindle-focal",
+      "reviewDecision": "approved",
+      "reviewPath": "app/src/art-pipeline/asset-3d-review.json",
+      "contactSheet": "artifacts/art/3d/reviews/relic-atlas-spindle-focal-runtime-contact.png",
+      "models": [
+        {
+          "id": "lod0",
+          "path": "/models/relic-atlas-spindle-focal-lod0.glb",
+          "sha256": "799066662a32d908ab155752e5d8e4ec9164ca7064ef18d2a030a8c478dda53c",
+          "bytes": 576792,
+          "triangles": 12011,
+          "vertices": 15931,
+          "primitives": 1,
+          "materials": 1,
+          "textures": 2,
+          "animations": 0,
+          "extensionsUsed": [
+            "EXT_texture_webp",
+            "KHR_mesh_quantization"
+          ],
+          "extensionsRequired": [
+            "EXT_texture_webp",
+            "KHR_mesh_quantization"
+          ]
+        },
+        {
+          "id": "lod1",
+          "path": "/models/relic-atlas-spindle-focal-lod1.glb",
+          "sha256": "836fab822509f85166b5e08fd633b96edda244fdfeb14ec90d6a08be30c7b374",
+          "bytes": 264776,
+          "triangles": 5254,
+          "vertices": 8055,
+          "primitives": 1,
+          "materials": 1,
+          "textures": 2,
+          "animations": 0,
+          "extensionsUsed": [
+            "EXT_texture_webp",
+            "KHR_mesh_quantization"
+          ],
+          "extensionsRequired": [
+            "EXT_texture_webp",
+            "KHR_mesh_quantization"
+          ]
+        },
+        {
+          "id": "lod2",
+          "path": "/models/relic-atlas-spindle-focal-lod2.glb",
+          "sha256": "0327a49d040403dc8b7590530cacb00a55652caee837e1ffd6d0bf78fa08b8cf",
+          "bytes": 186504,
+          "triangles": 2701,
+          "vertices": 4907,
+          "primitives": 1,
+          "materials": 1,
+          "textures": 2,
+          "animations": 0,
+          "extensionsUsed": [
+            "EXT_texture_webp",
+            "KHR_mesh_quantization"
+          ],
+          "extensionsRequired": [
+            "EXT_texture_webp",
+            "KHR_mesh_quantization"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "relic-sunstone-lens-focal",
+      "reviewDecision": "approved",
+      "reviewPath": "app/src/art-pipeline/asset-3d-review.json",
+      "contactSheet": "artifacts/art/3d/reviews/relic-sunstone-lens-focal-runtime-contact.png",
+      "models": [
+        {
+          "id": "lod0",
+          "path": "/models/relic-sunstone-lens-focal-lod0.glb",
+          "sha256": "b3bce2e017e066239a2bf2854d8259e8ec7794b62ddc09059a050325d2eff03d",
+          "bytes": 139952,
+          "triangles": 3880,
+          "vertices": 7154,
+          "primitives": 2,
+          "materials": 2,
+          "textures": 0,
+          "animations": 0,
+          "extensionsUsed": [
+            "KHR_materials_emissive_strength",
+            "KHR_mesh_quantization"
+          ],
+          "extensionsRequired": [
+            "KHR_mesh_quantization"
+          ]
+        },
+        {
+          "id": "lod1",
+          "path": "/models/relic-sunstone-lens-focal-lod1.glb",
+          "sha256": "2aca4d880f03cf31de2640aa8a155590fc41f343344152d5208edd6c2d732931",
+          "bytes": 104456,
+          "triangles": 2793,
+          "vertices": 5343,
+          "primitives": 2,
+          "materials": 2,
+          "textures": 0,
+          "animations": 0,
+          "extensionsUsed": [
+            "KHR_materials_emissive_strength",
+            "KHR_mesh_quantization"
+          ],
+          "extensionsRequired": [
+            "KHR_mesh_quantization"
+          ]
+        },
+        {
+          "id": "lod2",
+          "path": "/models/relic-sunstone-lens-focal-lod2.glb",
+          "sha256": "7c5d5591ec4bd1e83cc17b12ca4c145f47a50352455c46927ce76fc6abf5a886",
+          "bytes": 68804,
+          "triangles": 1862,
+          "vertices": 3464,
+          "primitives": 2,
+          "materials": 2,
+          "textures": 0,
+          "animations": 0,
+          "extensionsUsed": [
+            "KHR_materials_emissive_strength",
+            "KHR_mesh_quantization"
+          ],
+          "extensionsRequired": [
+            "KHR_mesh_quantization"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "relic-tideglass-heart",
+      "reviewDecision": "approved",
+      "reviewPath": "app/src/art-pipeline/asset-3d-review.json",
+      "contactSheet": "artifacts/art/3d/reviews/relic-tideglass-heart-runtime-contact.png",
+      "models": [
+        {
+          "id": "lod0",
+          "path": "/models/relic-tideglass-heart-lod0.glb",
+          "sha256": "2988b61f878eafe191f68310e626ab4b37af549fb2a8f22f6a24b3bc76600dbf",
+          "bytes": 733496,
+          "triangles": 11321,
+          "vertices": 13753,
+          "primitives": 1,
+          "materials": 1,
+          "textures": 1,
+          "animations": 0,
+          "extensionsUsed": [
+            "EXT_texture_webp",
+            "KHR_mesh_quantization"
+          ],
+          "extensionsRequired": [
+            "EXT_texture_webp",
+            "KHR_mesh_quantization"
+          ]
+        },
+        {
+          "id": "lod1",
+          "path": "/models/relic-tideglass-heart-lod1.glb",
+          "sha256": "1b2dec03417725869d972483f7551145ade870e020f3368df2901e8da6404ce1",
+          "bytes": 254468,
+          "triangles": 4952,
+          "vertices": 6526,
+          "primitives": 1,
+          "materials": 1,
+          "textures": 1,
+          "animations": 0,
+          "extensionsUsed": [
+            "EXT_texture_webp",
+            "KHR_mesh_quantization"
+          ],
+          "extensionsRequired": [
+            "EXT_texture_webp",
+            "KHR_mesh_quantization"
+          ]
+        },
+        {
+          "id": "lod2",
+          "path": "/models/relic-tideglass-heart-lod2.glb",
+          "sha256": "4c18e880e7a71aa04e7d75d9ec7a289ce13f9646e3e63676bfa44036107fbde9",
+          "bytes": 188136,
+          "triangles": 2547,
+          "vertices": 3931,
+          "primitives": 1,
+          "materials": 1,
+          "textures": 1,
+          "animations": 0,
+          "extensionsUsed": [
+            "EXT_texture_webp",
+            "KHR_mesh_quantization"
+          ],
+          "extensionsRequired": [
+            "EXT_texture_webp",
+            "KHR_mesh_quantization"
+          ]
+        }
+      ]
+    }
+  ]
+}

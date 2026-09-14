@@ -15,6 +15,7 @@ const comparisonRoot = resolve(root, 'artifacts', 'ui-quality', 'comparisons');
 const reportPath = resolve(root, 'reports', 'ui-quality', 'latest.json');
 const reportMarkdownPath = resolve(root, 'reports', 'ui-quality', 'latest.md');
 const publicPath = resolve(appRoot, 'public', 'ui-quality', 'latest.json');
+const qualityRunId = `${Date.now()}-${process.pid}`;
 
 function readJson(path, fallback) {
   if (!existsSync(path)) return fallback;
@@ -55,6 +56,7 @@ function run(command, args, { cwd = root, quiet = false } = {}) {
       VITE_ENABLE_INTERNAL_TOOLS: 'true',
       UI_QUALITY_CAPTURE_DIR: captureRoot,
       UI_QUALITY_METRICS_PATH: metricsPath,
+      UI_QUALITY_RUN_ID: qualityRunId,
     },
     encoding: 'utf8',
     windowsHide: true,

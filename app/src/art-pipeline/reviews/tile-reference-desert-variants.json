@@ -1,0 +1,20 @@
+{
+  "assetId": "tile-reference-desert-variants",
+  "candidate": "app/public/images/art/tile-concepts/desert-variants.webp",
+  "reviewer": "Codex visual QA",
+  "reviewedAt": "2026-09-13",
+  "scores": { "recognition": 4, "agency": 3, "specificity": 4, "restraint": 4, "continuity": 4, "reusability": 4, "accessibility": 4 },
+  "notes": {
+    "recognition": "Iron strata and cooled-glass fractures separate desert from every other family.",
+    "agency": "Clear central planes and peripheral shards leave safe route choices readable.",
+    "specificity": "Emberglass geology avoids generic sand-dune shorthand.",
+    "restraint": "Orange seams remain accents rather than a global tint.",
+    "continuity": "Burnt mineral values and contained jeopardy light match the crossing environment.",
+    "reusability": "Layered walls and shard sockets translate into repeatable recipes.",
+    "accessibility": "Strata, fracture lines, and shards communicate the family without orange color."
+  },
+  "decision": "approved",
+  "candidateSha256": "b4847d2193ec4afed150f3edfb89a113107436997bd05895034eb7538ecd574e",
+  "generation": { "mode": "azure-image-generation", "tool": "azure-foundry", "model": "gpt-image-2", "promptSha256": "c6300feaf0dd6d31d59918b96af28c9331fc69295dee3e6b6f97b8af905ebbdf" },
+  "joyScore": 9.5
+}

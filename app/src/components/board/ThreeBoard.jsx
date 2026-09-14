@@ -7,9 +7,16 @@ import {
   deriveCharacterState,
   resolveCharacterVisual,
   resolvePlayerCharacter,
+  runtimeImagePath,
 } from '../../lib/characters';
 import { buildBoardWorld, cameraPlan, seedForAlias, WORLD_TERRAIN } from './boardWorld';
-import { nextPixelRatio, resolveBoardQuality, shouldUseCompressedTextures } from './boardQuality';
+import {
+  nextPixelRatio,
+  resolveBoardQuality,
+  settleRendererWarmup,
+  shouldUseAsyncShaderWarmup,
+  shouldUseCompressedTextures,
+} from './boardQuality';
 import {
   MATERIAL_SYSTEM_VERSION,
   applySurfaceUvVariation,
@@ -30,17 +37,19 @@ import { cameraPresetAliases, clampBoardTarget, pointerExceededDragThreshold, re
 import { boardLayerSignatures, baseTileTransform } from './boardSceneState';
 import { deriveBoardViewModel } from './boardViewModel';
 import { premiumBeatKey, presentationFrame } from './premiumPresentation';
+import { DENSE_BOARD_LANDMARK_CAP, createTileGeometry, tileBatchId, tileFamilyFor, tileLandmarkRecipe, tileVariantFor } from './tileKit';
+import runtimeModels from '../../art-pipeline/runtime-models.json';
 const STATE_FX_TEXTURES = {
-  discovery: '/images/art/fx/discovery-bloom.png',
-  danger: '/images/art/fx/redline-pressure.png',
+  discovery: '/images/art/fx/discovery-bloom.runtime.webp',
+  danger: '/images/art/fx/redline-pressure.runtime.webp',
 };
 const CUTOUT_PROP_TEXTURES = {
-  [Tile.LANDING]: '/images/art/props/landing-beacon.png',
-  [Tile.JUNGLE]: '/images/art/props/glassroot-fronds.png',
-  [Tile.PLAINS]: '/images/art/props/lantern-moss.png',
-  [Tile.DESERT]: '/images/art/props/emberglass-shards.png',
-  [Tile.MOUNTAIN]: '/images/art/props/slate-spires.png',
-  [Tile.RELIC]: '/images/art/props/violet-reliquary.png',
+  [Tile.LANDING]: '/images/art/props/landing-beacon.runtime.webp',
+  [Tile.JUNGLE]: '/images/art/props/glassroot-fronds.runtime.webp',
+  [Tile.PLAINS]: '/images/art/props/lantern-moss.runtime.webp',
+  [Tile.DESERT]: '/images/art/props/emberglass-shards.runtime.webp',
+  [Tile.MOUNTAIN]: '/images/art/props/slate-spires.runtime.webp',
+  [Tile.RELIC]: '/images/art/props/violet-reliquary.runtime.webp',
 };
 const CUTOUT_PROP_SCALES = {
   [Tile.LANDING]: [0.82, 1.08],
@@ -50,17 +59,47 @@ const CUTOUT_PROP_SCALES = {
   [Tile.MOUNTAIN]: [1.18, 1.1],
   [Tile.RELIC]: [1.12, 1.14],
 };
-const CAMPSITE_PROP_TEXTURE = '/images/art/props/campsite-shelter.png';
-const ATLAS_SPINDLE_TEXTURE = '/images/art/relics/atlas-spindle.png';
-const TIDEGLASS_CRADLE_TEXTURE = '/images/art/relics/tideglass-heart.png';
+const CAMPSITE_PROP_TEXTURE = '/images/art/props/campsite-shelter.runtime.webp';
+const SUNSTONE_LENS_TEXTURE = '/images/art/relics/sunstone-lens.runtime.webp';
+const ATLAS_SPINDLE_TEXTURE = '/images/art/relics/atlas-spindle.runtime.webp';
+const TIDEGLASS_CRADLE_TEXTURE = '/images/art/relics/tideglass-heart.runtime.webp';
 const CAVERN_BACKPLATE = '/images/art/environments/glassroot-cavern.webp';
 const EMBERGLASS_BACKPLATE = '/images/art/environments/emberglass-crossing.webp';
 const ENCOUNTER_TEXTURES = {
-  glassrootGrazer: '/images/art/encounters/glassroot-stalker.png',
-  emberglassScuttler: '/images/art/encounters/emberglass-mimic.png',
+  glassrootGrazer: '/images/art/encounters/glassroot-stalker.runtime.webp',
+  emberglassScuttler: '/images/art/encounters/emberglass-mimic.runtime.webp',
 };
-const ROUTE_FORK_TEXTURE = '/images/art/props/route-fork-marker.png';
-const TIDEGLASS_3D_MODEL = '/models/relic-tideglass-heart.glb';
+const ROUTE_FORK_TEXTURE = '/images/art/props/route-fork-marker.runtime.webp';
+const runtimeModelPath = (assetId, lodId = 'lod2') => runtimeModels.assets
+  .find((asset) => asset.id === assetId)?.models
+  .find((model) => model.id === lodId)?.path;
+const HERO_RELICS = Object.freeze([
+  Object.freeze({
+    id: 'sunstone-lens',
+    modelPath: runtimeModelPath('relic-sunstone-lens-focal'),
+    textureKey: 'sunstoneTexture',
+    scale: 1.04,
+    lightColor: '#f0a94f',
+    emissive: '#6f2f0c',
+  }),
+  Object.freeze({
+    id: 'tideglass-heart',
+    modelPath: runtimeModelPath('relic-tideglass-heart'),
+    textureKey: 'tideglassTexture',
+    scale: 1.06,
+    lightColor: '#73d8ab',
+    emissive: '#174d39',
+  }),
+  Object.freeze({
+    id: 'atlas-spindle',
+    modelPath: runtimeModelPath('relic-atlas-spindle-focal'),
+    textureKey: 'atlasTexture',
+    scale: 1.28,
+    lightColor: '#c8a2f0',
+    emissive: '#472a63',
+  }),
+]);
+const heroRelicForAlias = (alias = 'relic') => HERO_RELICS[seedForAlias(alias) % HERO_RELICS.length];
 const WORLD_MOODS = Object.freeze({
   'glass-mist': {
     label: 'Glass mist',
@@ -101,6 +140,40 @@ function clearGroup(group) {
     group.remove(child);
     disposeObject(child);
   }
+}
+
+function cloneRuntimeModel(sourceModel) {
+  const model = sourceModel.clone(true);
+  model.traverse((object) => {
+    if (!object.isMesh) return;
+    object.geometry = object.geometry.clone();
+    const sourceMaterials = Array.isArray(object.material) ? object.material : [object.material];
+    const clonedMaterials = sourceMaterials.map((sourceMaterial) => {
+      const cloned = sourceMaterial.clone();
+      for (const [key, value] of Object.entries(cloned)) {
+        if (value?.isTexture) cloned[key] = value.clone();
+      }
+      return cloned;
+    });
+    object.material = Array.isArray(object.material) ? clonedMaterials : clonedMaterials[0];
+    object.castShadow = true;
+    object.receiveShadow = true;
+  });
+  return model;
+}
+
+function addRuntimeModelProp(THREE, group, sourceModel, options = {}) {
+  const model = options.disposableClone ? cloneRuntimeModel(sourceModel) : sourceModel.clone(true);
+  const bounds = new THREE.Box3().setFromObject(model);
+  const size = bounds.getSize(new THREE.Vector3());
+  const scale = (options.height || 0.9) / Math.max(0.001, size.y);
+  model.scale.setScalar(scale);
+  model.position.set(options.x || 0, options.y || 0, options.z || 0);
+  model.rotation.y = options.rotationY || 0;
+  model.name = options.name || 'runtime-model-prop';
+  model.userData.kind = options.kind || 'runtime-model-prop';
+  group.add(model);
+  return model;
 }
 
 function material(THREE, color, options = {}) {
@@ -277,8 +350,12 @@ function addCutoutProp(THREE, group, tile, texture, seed, options = {}) {
 function addTerrainLandmarks(THREE, tile, mesh, propTexture, campsiteTexture, { simplified = false } = {}) {
   if (!tile.revealed || tile.tileType === Tile.NONE) return;
   const group = new THREE.Group();
-  group.position.y = tile.height / 2 + 0.02;
   const seed = seedForAlias(tile.alias);
+  const recipe = tileLandmarkRecipe(tile.tileType, seed);
+  group.position.set(recipe?.offsetX || 0, tile.height / 2 + 0.02, recipe?.offsetZ || 0);
+  group.rotation.y = recipe?.yaw || 0;
+  group.scale.setScalar(recipe?.scale || 1);
+  group.userData.tileRecipe = recipe;
   const offset = (shift) => (((seed >> shift) & 15) / 15 - 0.5) * 0.52;
   const cutoutProp = propTexture ? addCutoutProp(
     THREE,
@@ -717,6 +794,7 @@ function buildAffordanceLayer(THREE, context, state) {
 function buildIntentLayer(THREE, context, state) {
   const group = context.layers.intent;
   const intentTile = context.worldByAlias.get(state.intentAlias);
+  const useRouteForkModel = Boolean(context.routeForkModel && state.activeAction !== Action.HELP && !state.hasSubmitted && !state.isDanger && !state.isResolving);
   const stateFxTexture = context.fxTextures[state.isDanger ? 'danger' : 'discovery'];
   if (intentTile && stateFxTexture) {
     const stateFx = new THREE.Mesh(
@@ -729,9 +807,10 @@ function buildIntentLayer(THREE, context, state) {
     stateFx.position.set(intentTile.x, intentTile.height + 0.235, intentTile.z);
     group.add(stateFx);
   }
+  const isRouteForkEncounter = state.encounterId === 'echo-fork';
   const encounterTexture = (state.isDanger || state.encounterId) && intentTile
     ? state.encounterId === 'echo-fork'
-      ? context.routeForkTexture
+      ? useRouteForkModel ? null : context.routeForkTexture
       : state.encounterId === 'wind-vault'
         ? context.encounterTextures.emberglassScuttler
         : intentTile.tileType === Tile.DESERT
@@ -750,22 +829,50 @@ function buildIntentLayer(THREE, context, state) {
     group.add(encounterPreview);
     animateInLayer(context, 'intent', { object: encounterPreview, kind: 'encounter-preview', baseY: encounterPreview.position.y });
   }
+  if (intentTile && isRouteForkEncounter && useRouteForkModel) {
+    const encounterModel = new THREE.Group();
+    encounterModel.position.set(intentTile.x, intentTile.height + 0.03, intentTile.z);
+    addRuntimeModelProp(THREE, encounterModel, context.routeForkModel, {
+      height: 0.78,
+      x: 0.22,
+      z: -0.14,
+      rotationY: -0.32,
+      name: 'route-fork-encounter:model',
+      kind: 'route-fork-encounter',
+      disposableClone: true,
+    });
+    group.add(encounterModel);
+    animateInLayer(context, 'intent', { object: encounterModel, kind: 'encounter-preview', baseY: encounterModel.position.y });
+  }
   const isPreviewingNewStep = state.signals?.isPreviewing ?? ((state.previewPath?.length || 0) > (state.selectedPath?.length || 0));
-  if (intentTile && isPreviewingNewStep && context.routeForkTexture) {
+  if (intentTile && isPreviewingNewStep && (useRouteForkModel || context.routeForkTexture)) {
     const routeFork = new THREE.Group();
     routeFork.position.set(intentTile.x, intentTile.height + 0.03, intentTile.z);
-    addCutoutProp(THREE, routeFork, intentTile, context.routeForkTexture, seedForAlias(intentTile.alias) + 89, {
-      scale: [0.42, 0.72], x: -0.34, z: 0.16, mirror: false, persistent: true, lightColor: '#e8c860', lightIntensity: 0.28, kind: 'route-fork-preview',
-    });
+    if (useRouteForkModel) {
+      addRuntimeModelProp(THREE, routeFork, context.routeForkModel, {
+        height: 0.68,
+        x: -0.34,
+        z: 0.16,
+        rotationY: 0.28,
+        name: 'route-fork-preview:model',
+        kind: 'route-fork-preview',
+        disposableClone: true,
+      });
+    } else {
+      addCutoutProp(THREE, routeFork, intentTile, context.routeForkTexture, seedForAlias(intentTile.alias) + 89, {
+        scale: [0.42, 0.72], x: -0.34, z: 0.16, mirror: false, persistent: true, lightColor: '#e8c860', lightIntensity: 0.28, kind: 'route-fork-preview',
+      });
+    }
     group.add(routeFork);
   }
-  const relicTexture = intentTile && seedForAlias(intentTile.alias) % 2 ? context.atlasTexture : context.tideglassTexture;
+  const relicIdentity = intentTile ? heroRelicForAlias(intentTile.alias) : null;
+  const relicTexture = relicIdentity ? context[relicIdentity.textureKey] : null;
   if (intentTile && intentTile.tileType === Tile.RELIC && relicTexture) {
     const relicPreview = new THREE.Group();
     relicPreview.position.set(intentTile.x, intentTile.height + 0.025, intentTile.z);
     addCutoutProp(THREE, relicPreview, intentTile, relicTexture, seedForAlias(intentTile.alias), {
       scale: state.isResolving ? [0.76, 0.9] : [0.62, 0.76], mirror: false, persistent: true,
-      lightColor: '#b994e6', lightIntensity: state.isResolving ? 1.2 : 0.74, kind: 'atlas-spindle-preview',
+      lightColor: relicIdentity.lightColor, lightIntensity: state.isResolving ? 1.2 : 0.74, kind: `${relicIdentity.id}-preview`,
     });
     group.add(relicPreview);
     animateInLayer(context, 'intent', { object: relicPreview, kind: 'relic-preview', baseY: relicPreview.position.y });
@@ -813,7 +920,7 @@ function buildPartyLayer(THREE, context, state) {
       const characterState = deriveCharacterState({ player, isCurrent: playerIndex === state.currentPlayerIndex, activeAction: state.activeAction, lowStats: state.lowStats, isResolving: state.isResolving, hasArtifact: Boolean(player.hasArtifact || player.inventory?.artifact) });
       const presentation = resolveCharacterVisual({ characterId: character.id, state: characterState });
       const stateTexture = context.characterTextures[presentation.path];
-      const standeeTexture = stateTexture || context.characterTextures[character.assets.neutral];
+      const standeeTexture = stateTexture || context.characterTextures[runtimeImagePath(character.assets.neutral)];
       const pawn = createPawn(THREE, PLAYER_COLORS[playerIndex] || PLAYER_COLORS[0], playerIndex === state.currentPlayerIndex, standeeTexture, character.standee);
       pawn.userData.characterId = character.id;
       pawn.userData.characterState = stateTexture ? presentation.resolvedState : 'neutral';
@@ -842,6 +949,15 @@ function buildPartyLayer(THREE, context, state) {
 function addDynamicWorld(THREE, context, state) {
   context.isResolving = Boolean(state.isResolving);
   if (context.particles) context.particles.visible = !state.isComplete;
+  const showDetailedLandmarks = state.activeAction !== Action.HELP && !state.hasSubmitted && !state.isDanger && !state.isResolving && !state.isComplete;
+  context.landingBeaconModels?.forEach(({ model, fallbacks }) => {
+    model.visible = showDetailedLandmarks;
+    fallbacks.forEach((fallback) => { fallback.visible = !showDetailedLandmarks; });
+  });
+  context.campsiteModels?.forEach(({ model, fallbacks }) => {
+    model.visible = showDetailedLandmarks;
+    fallbacks.forEach((fallback) => { fallback.visible = !showDetailedLandmarks; });
+  });
   setLightingRig(THREE, context.lighting, resolveLightingRigId(state), { immediate: context.reducedMotion });
   const beat = resolveBoardBeat(state);
   const beatKey = premiumBeatKey(state, beat);
@@ -988,8 +1104,8 @@ function createWorld(THREE, OrbitControls, RoomEnvironment, KTX2Loader, GLTFLoad
   const guestCharacterPaths = [...new Set((initialState.crew || []).flatMap((player, index) => {
     const character = resolvePlayerCharacter(player, index);
     return quality.mode === 'efficient'
-      ? [character.assets.neutral]
-      : [character.assets.neutral, ...Object.values(character.assets.states || {})];
+      ? [runtimeImagePath(character.assets.neutral)]
+      : [runtimeImagePath(character.assets.neutral), ...Object.values(character.assets.states || {}).map(runtimeImagePath)];
   }))];
   const characterTexturePaths = initialState.source?.kind === 'guest' && guestCharacterPaths.length
     ? guestCharacterPaths
@@ -1015,6 +1131,8 @@ function createWorld(THREE, OrbitControls, RoomEnvironment, KTX2Loader, GLTFLoad
   }));
   const campsiteTexture = hasCampsite ? textureLoader.load(CAMPSITE_PROP_TEXTURE) : null;
   if (campsiteTexture) campsiteTexture.colorSpace = THREE.SRGBColorSpace;
+  const sunstoneTexture = usedTileTypes.has(Tile.RELIC) ? textureLoader.load(SUNSTONE_LENS_TEXTURE) : null;
+  if (sunstoneTexture) sunstoneTexture.colorSpace = THREE.SRGBColorSpace;
   const atlasTexture = usedTileTypes.has(Tile.RELIC) ? textureLoader.load(ATLAS_SPINDLE_TEXTURE) : null;
   if (atlasTexture) atlasTexture.colorSpace = THREE.SRGBColorSpace;
   const tideglassTexture = usedTileTypes.has(Tile.RELIC) ? textureLoader.load(TIDEGLASS_CRADLE_TEXTURE) : null;
@@ -1036,8 +1154,12 @@ function createWorld(THREE, OrbitControls, RoomEnvironment, KTX2Loader, GLTFLoad
     characterTextures,
     encounterTextures,
     routeForkTexture,
+    routeForkModel: null,
+    landingBeaconModels: [],
+    campsiteModels: [],
     propTextures,
     campsiteTexture,
+    sunstoneTexture,
     atlasTexture,
     tideglassTexture,
     controls,
@@ -1055,14 +1177,14 @@ function createWorld(THREE, OrbitControls, RoomEnvironment, KTX2Loader, GLTFLoad
 
   const terrainBatches = new Map();
   world.cells.forEach((tile) => {
-    const key = tile.revealed ? `tile-${tile.tileType}` : 'tile-fog';
+    const key = tileBatchId(tile.tileType, seedForAlias(tile.alias), tile.revealed);
     if (!terrainBatches.has(key)) terrainBatches.set(key, []);
     terrainBatches.get(key).push(tile);
   });
   const matrixHelper = new THREE.Object3D();
   const tileTransformEvidence = [];
   const simplifiedLandmarks = world.cells.length > 32;
-  const landmarkCap = simplifiedLandmarks ? 36 : world.cells.length;
+  const landmarkCap = simplifiedLandmarks ? DENSE_BOARD_LANDMARK_CAP : world.cells.length;
   const eligibleLandmarks = world.cells.filter((tile) => tile.revealed && tile.tileType !== Tile.NONE);
   const landmarkAliases = new Set();
   const prioritizeLandmark = (alias) => {
@@ -1085,13 +1207,16 @@ function createWorld(THREE, OrbitControls, RoomEnvironment, KTX2Loader, GLTFLoad
     const profile = sample.revealed ? surfaceProfileForTile(sample.tileType) : null;
     const textureSet = profile ? surfaceTextureSets.get(sample.tileType) : null;
     const seed = seedForAlias(sample.alias);
+    const variant = tileVariantFor(sample.tileType, seed);
     const side = profile
       ? createSurfaceMaterial(THREE, profile, textureSet?.side, quality, { seed, side: true })
       : material(THREE, terrain.side, { roughness: 0.98, metalness: 0 });
     const top = profile
       ? createSurfaceMaterial(THREE, profile, textureSet?.top, quality, { seed })
       : material(THREE, terrain.top, { roughness: 0.94, metalness: 0, emissive: terrain.emissive, emissiveIntensity: 0.012, transparent: true, opacity: 0.68 });
-    const geometry = new THREE.CylinderGeometry(0.94, 0.88, 1, 6, 1, false);
+    const geometry = profile
+      ? createTileGeometry(THREE, variant, tileFamilyFor(sample.tileType))
+      : new THREE.CylinderGeometry(0.94, 0.88, 1, 6, 1, false);
     applySurfaceUvVariation(geometry, profile, seed);
     const mesh = new THREE.InstancedMesh(geometry, [side, top, side], tiles.length);
     mesh.name = `terrain-batch:${batchId}`;
@@ -1100,6 +1225,7 @@ function createWorld(THREE, OrbitControls, RoomEnvironment, KTX2Loader, GLTFLoad
     mesh.userData.aliasByInstance = tiles.map((tile) => tile.alias);
     mesh.userData.tiles = tiles;
     mesh.userData.surfaceId = profile?.id || 'unknown';
+    mesh.userData.tileVariant = variant?.id || 'fog';
     tiles.forEach((tile, index) => {
       const transform = baseTileTransform(tile);
       matrixHelper.position.set(transform.x, transform.y, transform.z);
@@ -1126,8 +1252,93 @@ function createWorld(THREE, OrbitControls, RoomEnvironment, KTX2Loader, GLTFLoad
     });
   }
 
-  if (usedTileTypes.has(Tile.RELIC) && quality.mode !== 'efficient') {
-    modelLoader.load(TIDEGLASS_3D_MODEL, ({ scene: sourceModel }) => {
+  const landingBeaconModelPath = runtimeModelPath('prop-landing-beacon');
+  if (landingBeaconModelPath && usedTileTypes.has(Tile.LANDING) && !simplifiedLandmarks) {
+    modelLoader.load(landingBeaconModelPath, ({ scene: sourceModel }) => {
+      const landingTiles = world.cells.filter((tile) => tile.revealed && tile.tileType === Tile.LANDING && landmarkAliases.has(tile.alias));
+      landingTiles.forEach((tile) => {
+        const anchor = tileAnchors.get(tile.alias);
+        if (!anchor) return;
+        const fallbacks = [];
+        anchor.traverse((object) => {
+          if (object.userData?.kind === 'cutout-prop') {
+            object.visible = false;
+            fallbacks.push(object);
+          }
+        });
+        const model = addRuntimeModelProp(THREE, anchor, sourceModel, {
+          height: 0.96,
+          x: -0.34,
+          y: tile.height / 2 + 0.02,
+          z: 0.12,
+          rotationY: -0.18,
+          name: `landing-beacon:model:${tile.alias}`,
+          kind: 'landing-beacon-model',
+        });
+        context.landingBeaconModels.push({ model, fallbacks });
+      });
+      renderer.domElement.dataset.landingBeaconModel = 'lod2';
+      addDynamicWorld(THREE, context, context.state || initialState);
+      requestRender();
+    }, undefined, () => {
+      renderer.domElement.dataset.landingBeaconModel = 'cutout-fallback';
+    });
+  }
+
+  const routeForkModelPath = runtimeModelPath('prop-route-fork-marker');
+  if (routeForkModelPath) {
+    modelLoader.load(routeForkModelPath, ({ scene: sourceModel }) => {
+      context.routeForkModel = sourceModel;
+      renderer.domElement.dataset.routeForkModel = 'lod2';
+      addDynamicWorld(THREE, context, context.state || initialState);
+      requestRender();
+    }, undefined, () => {
+      renderer.domElement.dataset.routeForkModel = 'cutout-fallback';
+    });
+  }
+
+  const campsiteModelPath = runtimeModelPath('prop-campsite-shelter');
+  if (campsiteModelPath && hasCampsite && !simplifiedLandmarks && quality.mode === 'high') {
+    modelLoader.load(campsiteModelPath, ({ scene: sourceModel }) => {
+      const campsiteTiles = world.cells.filter((tile) => tile.revealed && tile.hasCampsite && landmarkAliases.has(tile.alias));
+      campsiteTiles.forEach((tile) => {
+        const anchor = tileAnchors.get(tile.alias);
+        if (!anchor) return;
+        const fallbacks = [];
+        anchor.traverse((object) => {
+          if (object.userData?.kind === 'campsite-cutout') {
+            object.visible = false;
+            fallbacks.push(object);
+          }
+        });
+        const model = addRuntimeModelProp(THREE, anchor, sourceModel, {
+          height: 0.66,
+          x: 0.32,
+          y: tile.height / 2 + 0.02,
+          z: -0.24,
+          rotationY: -0.12,
+          name: `campsite-shelter:model:${tile.alias}`,
+          kind: 'campsite-shelter-model',
+        });
+        context.campsiteModels.push({ model, fallbacks });
+      });
+      renderer.domElement.dataset.campsiteModel = 'lod2';
+      addDynamicWorld(THREE, context, context.state || initialState);
+      requestRender();
+    }, undefined, () => {
+      renderer.domElement.dataset.campsiteModel = 'cutout-fallback';
+    });
+  } else if (hasCampsite) {
+    renderer.domElement.dataset.campsiteModel = 'cutout-quality-fallback';
+  }
+
+  const relicTiles = world.cells.filter((tile) => tile.revealed && tile.tileType === Tile.RELIC);
+  const heroTile = relicTiles.find((tile) => [initialState.intentAlias, initialState.currentLocation].includes(tile.alias)) || relicTiles[0];
+  const heroRelic = heroRelicForAlias(heroTile?.alias);
+  const heroModelId = heroRelic.id;
+  const heroModelPath = heroRelic.modelPath;
+  if (heroModelPath && heroTile && quality.mode !== 'efficient') {
+    modelLoader.load(heroModelPath, ({ scene: sourceModel }) => {
       sourceModel.traverse((object) => {
         if (!object.isMesh) return;
         object.castShadow = true;
@@ -1139,15 +1350,13 @@ function createWorld(THREE, OrbitControls, RoomEnvironment, KTX2Loader, GLTFLoad
           if ('metalness' in refined) refined.metalness = Math.min(0.32, refined.metalness || 0);
           if ('envMapIntensity' in refined) refined.envMapIntensity = 0.72;
           if (refined.emissive?.set) {
-            refined.emissive.set('#472a63');
+            refined.emissive.set(heroRelic.emissive);
             refined.emissiveIntensity = Math.max(0.28, refined.emissiveIntensity || 0);
           }
           return refined;
         });
         object.material = Array.isArray(object.material) ? refinedMaterials : refinedMaterials[0];
       });
-      const relicTiles = world.cells.filter((tile) => tile.revealed && tile.tileType === Tile.RELIC);
-      const heroTile = relicTiles.find((tile) => [initialState.intentAlias, initialState.currentLocation].includes(tile.alias)) || relicTiles[0];
       [heroTile].filter(Boolean).forEach((tile) => {
         const anchor = tileAnchors.get(tile.alias);
         if (!anchor) return;
@@ -1156,19 +1365,19 @@ function createWorld(THREE, OrbitControls, RoomEnvironment, KTX2Loader, GLTFLoad
         });
         const model = sourceModel.clone(true);
         const modelBaseY = tile.height / 2 + 0.08;
-        model.name = 'hero-relic:tideglass-heart';
+        model.name = `hero-relic:${heroModelId}`;
         model.userData.kind = 'trellis-hero-relic';
         model.userData.baseRotationY = -Math.PI * 0.12;
         model.userData.baseY = modelBaseY;
         model.position.set(0, modelBaseY + 0.025, -0.08);
         model.rotation.y = model.userData.baseRotationY;
-        model.scale.setScalar(1.28);
+        model.scale.setScalar(heroRelic.scale);
         anchor.add(model);
-        const light = new THREE.PointLight('#c8a2f0', 1.7, 2.8, 2);
+        const light = new THREE.PointLight(heroRelic.lightColor, 1.7, 2.8, 2);
         light.position.set(0, tile.height / 2 + 0.58, -0.02);
         anchor.add(light);
         context.ambientObjects.push(model);
-        renderer.domElement.dataset.heroModel = 'tideglass-heart';
+        renderer.domElement.dataset.heroModel = heroModelId;
         requestRender();
       });
     }, undefined, () => {
@@ -1487,8 +1696,19 @@ function createWorld(THREE, OrbitControls, RoomEnvironment, KTX2Loader, GLTFLoad
   visibilityObserver?.observe(mount);
   requestRender();
   const steadyStateReady = texturesReady.then(async () => {
+    let warmupStatus;
+    if (shouldUseAsyncShaderWarmup(navigator.userAgent)) {
+      warmupStatus = await settleRendererWarmup(() => renderer.compileAsync?.(scene, camera));
+    } else {
+      try {
+        renderer.compile(scene, camera);
+        warmupStatus = 'synchronous';
+      } catch {
+        warmupStatus = 'failed';
+      }
+    }
+    renderer.domElement.dataset.shaderWarmup = warmupStatus;
     try {
-      await renderer.compileAsync?.(scene, camera);
       renderer.render(scene, camera);
     } catch {
       // A compiled warm-up is an optimization; the loaded fallback is still usable.
@@ -1590,6 +1810,7 @@ function createWorld(THREE, OrbitControls, RoomEnvironment, KTX2Loader, GLTFLoad
       routeForkTexture?.dispose();
       propTextures.forEach((texture) => texture.dispose());
       campsiteTexture?.dispose();
+      sunstoneTexture?.dispose();
       atlasTexture?.dispose();
       tideglassTexture?.dispose();
       compressedTextureLoader?.dispose();

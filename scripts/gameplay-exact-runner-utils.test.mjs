@@ -33,6 +33,8 @@ test('regression-only plans exclude production scenarios', () => {
 
 test('failure classifier separates infrastructure from gameplay failures', () => {
   assert.equal(classifyExactRunFailure({ status: 1, stderr: 'RPC is not reachable' }).category, 'infrastructure');
+  assert.equal(classifyExactRunFailure({ status: 1, stderr: 'HTTP request failed.' }).category, 'infrastructure');
+  assert.equal(classifyExactRunFailure({ status: 1, stderr: 'memory allocation of 1048576 bytes failed' }).category, 'infrastructure');
   assert.equal(classifyExactRunFailure({ status: 1, stderr: 'scenario target failed' }).category, 'gameplay-or-contract');
 });
 

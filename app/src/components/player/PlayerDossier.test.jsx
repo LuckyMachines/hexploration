@@ -26,7 +26,7 @@ describe('PlayerDossier character identity', () => {
 
     expect(screen.getByText('Field Mender')).toBeInTheDocument();
     expect(screen.getByText(/Medic \/ 1,1/i)).toBeInTheDocument();
-    expect(container.querySelector('img')).toHaveAttribute('src', '/images/art/characters/field-mender-recovering.png');
+    expect(container.querySelector('img')).toHaveAttribute('src', '/images/art/characters/field-mender-recovering.runtime.webp');
     fireEvent.click(screen.getByRole('button'));
     expect(onFocus).toHaveBeenCalledOnce();
   });

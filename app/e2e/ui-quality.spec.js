@@ -12,7 +12,13 @@ const captureRoot = process.env.UI_QUALITY_CAPTURE_DIR
 const metricsPath = process.env.UI_QUALITY_METRICS_PATH
   ? path.resolve(process.env.UI_QUALITY_METRICS_PATH)
   : path.resolve(process.cwd(), '..', 'artifacts', 'ui-quality', 'metrics', 'latest.json');
+const metricsRunId = process.env.UI_QUALITY_RUN_ID || 'manual';
+const sceneMetricsRoot = path.join(path.dirname(metricsPath), 'scenes');
 const metrics = [];
+
+function sceneMetricsPath(sceneId) {
+  return path.join(sceneMetricsRoot, `${sceneId}.json`);
+}
 
 async function installStabilityHarness(page) {
   await page.addInitScript(() => {
@@ -122,10 +128,11 @@ async function releaseWebGlContexts(page) {
   });
 }
 
-test.describe.serial('UI quality evidence', () => {
+test.describe('UI quality evidence', () => {
   test.beforeAll(async () => {
     await fs.mkdir(captureRoot, { recursive: true });
     await fs.mkdir(path.dirname(metricsPath), { recursive: true });
+    await fs.mkdir(sceneMetricsRoot, { recursive: true });
   });
 
   for (const scene of uiQualityScenes) {
@@ -142,7 +149,7 @@ test.describe.serial('UI quality evidence', () => {
       const critical = axe.violations.filter(({ impact }) => impact === 'critical');
 
       await fs.writeFile(path.join(captureRoot, `${scene.id}.png`), screenshot);
-      metrics.push({
+      const sceneMetrics = {
         id: scene.id,
         label: scene.label,
         route: scene.route,
@@ -152,7 +159,9 @@ test.describe.serial('UI quality evidence', () => {
           serious: serious.map(({ id, help, nodes }) => ({ id, help, nodes: nodes.length })),
           critical: critical.map(({ id, help, nodes }) => ({ id, help, nodes: nodes.length })),
         },
-      });
+      };
+      metrics.push(sceneMetrics);
+      await fs.writeFile(sceneMetricsPath(scene.id), `${JSON.stringify({ runId: metricsRunId, metrics: sceneMetrics }, null, 2)}\n`);
 
       expect(measurements.horizontalOverflowPx).toBeLessThanOrEqual(uiQualityBudgets.maxHorizontalOverflowPx);
       expect(measurements.domNodes).toBeLessThanOrEqual(scene.maxDomNodes);
@@ -168,6 +177,17 @@ test.describe.serial('UI quality evidence', () => {
   }
 
   test.afterAll(async () => {
-    await fs.writeFile(metricsPath, `${JSON.stringify({ generatedAt: new Date().toISOString(), scenes: metrics }, null, 2)}\n`);
+    const persistedMetrics = await Promise.all(uiQualityScenes.map(async (scene) => {
+      try {
+        const entry = JSON.parse(await fs.readFile(sceneMetricsPath(scene.id), 'utf8'));
+        return entry.runId === metricsRunId ? entry.metrics : null;
+      } catch {
+        return null;
+      }
+    }));
+    await fs.writeFile(metricsPath, `${JSON.stringify({
+      generatedAt: new Date().toISOString(),
+      scenes: persistedMetrics.filter(Boolean),
+    }, null, 2)}\n`);
   });
 });

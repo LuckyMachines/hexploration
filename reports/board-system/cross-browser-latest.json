@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-10T03:36:27.281Z",
+  "generatedAt": "2026-09-14T19:36:42.173Z",
   "passed": true,
   "projects": [
     "firefox-desktop",
     "webkit-desktop"
   ],
   "contractVersion": "1.0.0",
-  "sourceHash": "5fdfd89d8f42801e935c48cb22f8ebc4a09f3248d2eff152117933dade6382a9"
+  "sourceHash": "84307bc3a484ce823db9ad4e33dd578495bdc278b7f8c04555dad35ca5b21033"
 }

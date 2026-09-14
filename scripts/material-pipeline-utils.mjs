@@ -66,6 +66,7 @@ export function validateMaterialSystem(system) {
     ids.add(profile.id);
     tileTypes.add(profile.tileType);
     if (!profile.label || !profile.source || !profile.directory) errors.push(`${profile.id}: label, source, and directory are required`);
+    if (profile.seamMode && !['mirrored', 'edge-blend'].includes(profile.seamMode)) errors.push(`${profile.id}: seamMode must be mirrored or edge-blend`);
     if (!Array.isArray(profile.story) || profile.story.length !== 3) errors.push(`${profile.id}: story requires base, deposit, and signal`);
     if (!hexColor.test(profile.tint || '') || !hexColor.test(profile.sideTint || '') || !hexColor.test(profile.emissiveColor || '')) errors.push(`${profile.id}: tint, sideTint, and emissiveColor must be hex colors`);
     if (!Number.isFinite(profile.roughness) || profile.roughness < 0 || profile.roughness > 1) errors.push(`${profile.id}: roughness must be 0..1`);

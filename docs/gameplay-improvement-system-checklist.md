@@ -22,7 +22,10 @@
 - [x] Scope the current grade to automated evidence; do not invent or require real-player observations.
 - [x] Run the exact-engine 10-replicate matrix on a fresh local chain.
 - [x] Run the timeout, inventory-limit, and nightfall boundary fixtures on their own exact regression path.
-- [ ] Make terminal outcomes reachable in every multiplayer canonical scenario, then clear all Oracle truth gates.
+- [x] Make terminal outcomes reachable in every multiplayer canonical scenario, then clear all Oracle truth gates.
+- [x] Refresh all six canonical exact matrices after controller source changes and clear source drift.
+- [x] Bound Anvil state-history memory for long exact runs and classify chain-memory failures as infrastructure.
+- [x] Pre-register and compare an artifact-extraction recovery/pacing experiment without changing evaluator weights. The six-turn terminal-intent candidate was rejected: it increased flat-turn rate and reduced artifact retention despite raising terminal completion.
 
 ## Deferred outside the current automated-only scope
 

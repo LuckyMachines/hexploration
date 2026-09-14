@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-09-14T15:02:27.800Z",
+  "baseUrl": "http://127.0.0.1:11134",
+  "environment": "verified local production build served without compression",
+  "encoding": "lossless WebP via ImageMagick method 6",
+  "routes": [
+    {
+      "route": "/",
+      "observedBytes": 2271387,
+      "projectedCanonicalPngBytes": 3040096,
+      "savedBytes": 768709,
+      "reductionRatio": 0.2528568176794417,
+      "optimizedAssetsLoaded": [
+        "character-signal-cartographer",
+        "character-field-mender",
+        "character-relic-tender",
+        "character-routekeeper"
+      ]
+    },
+    {
+      "route": "/guest",
+      "observedBytes": 6038746,
+      "projectedCanonicalPngBytes": 7946235,
+      "savedBytes": 1907489,
+      "reductionRatio": 0.24004940704623007,
+      "optimizedAssetsLoaded": [
+        "fx-discovery-bloom",
+        "fx-redline-pressure",
+        "character-signal-cartographer",
+        "character-signal-cartographer-helping",
+        "character-routekeeper",
+        "character-routekeeper-strained",
+        "encounter-glassroot-stalker",
+        "prop-route-fork-marker",
+        "prop-glassroot-fronds",
+        "prop-lantern-moss",
+        "prop-slate-spires",
+        "prop-landing-beacon"
+      ]
+    }
+  ]
+}

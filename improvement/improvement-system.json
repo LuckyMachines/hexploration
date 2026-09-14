@@ -197,6 +197,12 @@
       "args": ["run", "art:3d:test"],
       "timeoutMs": 120000
     },
+    "art.runtime-image-doctor": {
+      "label": "Lossless runtime image delivery doctor",
+      "command": "npm",
+      "args": ["run", "art:runtime-images"],
+      "timeoutMs": 120000
+    },
     "art.material-tests": {
       "label": "Material contract and runtime unit tests",
       "command": "npm",
@@ -244,6 +250,12 @@
       "command": "npm",
       "args": ["run", "verify:hard"],
       "timeoutMs": 900000
+    },
+    "ops.release-audit": {
+      "label": "Live production release and rollback audit",
+      "command": "npm",
+      "args": ["run", "release:verify-live"],
+      "timeoutMs": 120000
     },
     "discovery.seo-doctor": {
       "label": "SEO discovery doctor",
@@ -374,7 +386,7 @@
       "label": "Product and gameplay",
       "owner": "product-design",
       "weight": 1.4,
-      "currentGrade": "A-",
+      "currentGrade": "A",
       "gradeSource": { "path": "reports/gameplay-improvement/latest-report.json", "jsonPath": "grade" },
       "objective": "Players repeatedly make legible, consequential expedition decisions that produce tension, cooperation, recovery, and memorable outcomes.",
       "stricterABar": "Every flagship scenario passes same-engine simulation, Oracle, feeling-arc, setup-honesty, and observed-player comprehension gates with current evidence.",
@@ -432,20 +444,22 @@
       "label": "Visual and art direction",
       "owner": "art-direction",
       "weight": 1.1,
-      "currentGrade": "B+",
+      "currentGrade": "A",
       "objective": "Every visual asset is recognizable, emotionally purposeful, reusable, provenance-backed, and proven in the live game context.",
       "stricterABar": "Every shipped asset passes contract, joy, context, performance, and promotion gates; 3D assets additionally pass geometry, pivot, LOD, and runtime-lighting review.",
       "pathPatterns": ["^app/public/images/art/", "^app/public/basis/", "^app/src/art-pipeline/", "^app/src/components/board/(ThreeBoard|MaterialPreviewScene|surfaceCatalog|lightingRigs|boardQuality)", "^app/src/pages/MaterialLabPage", "^app/e2e/material-system", "^scripts/(art-|material-)", "^docs/(ART_PIPELINE|MATERIAL_AND_LIGHTING_SYSTEM|material-lighting-system-)\\.md$"],
       "evidence": [
         { "path": "app/src/art-pipeline/asset-manifest.json", "kind": "manifest", "required": true, "maxAgeDays": 30 },
         { "path": "app/src/art-pipeline/asset-3d-review.json", "kind": "review", "required": true, "maxAgeDays": 30 },
+        { "path": "app/src/art-pipeline/runtime-models.json", "kind": "runtime-promotion-registry", "required": true, "maxAgeDays": 30 },
         { "path": "app/src/art-pipeline/material-system.json", "kind": "material-contract", "required": true, "maxAgeDays": 90 },
         { "path": "reports/materials/latest.json", "kind": "material-verification", "required": true, "maxAgeDays": 14 },
+        { "path": "reports/performance/runtime-image-delivery.json", "kind": "runtime-image-delivery", "required": true, "maxAgeDays": 14 },
         { "path": "artifacts/materials/lookdev-material-contact-sheet.png", "kind": "material-lookdev", "required": false, "maxAgeDays": 30 },
         { "path": "artifacts/art/3d/reviews/all-trellis2-method-comparison.png", "kind": "visual-proof", "required": false, "maxAgeDays": 30 }
       ],
-      "quickCommands": ["art.tests", "art.3d-tests", "art.material-tests", "art.material-doctor"],
-      "fullCommands": ["art.tests", "art.3d-tests", "art.material-tests", "art.material-doctor", "art.material-capture", "art.material-cross-browser", "ux.app-build"]
+      "quickCommands": ["art.tests", "art.3d-tests", "art.runtime-image-doctor", "art.material-tests", "art.material-doctor"],
+      "fullCommands": ["art.tests", "art.3d-tests", "art.runtime-image-doctor", "art.material-tests", "art.material-doctor", "art.material-capture", "art.material-cross-browser", "ux.app-build"]
     },
     {
       "id": "marketing-discovery",
@@ -453,6 +467,7 @@
       "owner": "growth",
       "weight": 1,
       "currentGrade": "B",
+      "gradeSource": { "path": "app/public/marketing/latest-report.json", "jsonPath": "grade" },
       "objective": "A new visitor immediately understands the game, sees truthful gameplay proof, and reaches a playable path with measurable intent.",
       "stricterABar": "Fresh public captures and analytics prove the homepage-to-play-to-return funnel across desktop and mobile, with scenario-specific discovery artifacts.",
       "pathPatterns": ["^app/src/pages/HomePage", "^app/src/lib/(analytics|publicRoutes|seo)", "^app/public/(seo|robots|sitemap|site\\.webmanifest)", "^scripts/(growth|generate-seo|marketing)", "^docs/marketing-"],
@@ -470,6 +485,7 @@
       "owner": "engineering",
       "weight": 1.3,
       "currentGrade": "B+",
+      "gradeSource": { "path": "reports/verification/latest-hard.json", "jsonPath": "hardnessGrade" },
       "objective": "Builds, tests, simulation, local services, and recovery paths are deterministic, observable, and boring to operate.",
       "stricterABar": "The hard suite passes from a clean checkout, failures identify an owner and recovery command, and no critical evidence is stale.",
       "pathPatterns": ["^scripts/", "^app/vite\\.config", "^app/package", "^package\\.json$", "^Dockerfile$", "^\\.dockerignore$"],
@@ -485,16 +501,20 @@
       "label": "Operations and release",
       "owner": "engineering",
       "weight": 1,
-      "currentGrade": "B",
+      "currentGrade": "A-",
+      "gradeSource": { "path": "reports/release/latest-live.json", "jsonPath": "summary.grade" },
       "objective": "Every release candidate has traceable verification, rollback information, runtime health proof, and an explicit promotion decision.",
       "stricterABar": "A release cannot become shipped without exact-stack evidence, browser coverage, security headers, rollback instructions, and post-release validation.",
       "pathPatterns": ["^Dockerfile$", "^\\.dockerignore$", "^app/public/_headers$", "^app/public/_redirects$", "^scripts/run-local-stack", "^scripts/verify-hard", "^\\.github/"],
       "evidence": [
         { "path": "reports/verification/latest-hard.json", "kind": "release-verification", "required": true, "maxAgeDays": 7 },
-        { "path": "app/public/_headers", "kind": "release-config", "required": true, "maxAgeDays": 90 }
+        { "path": "app/public/_headers", "kind": "release-config", "required": true, "maxAgeDays": 90 },
+        { "path": "release/rollback-plan.json", "kind": "rollback-contract", "required": true, "maxAgeDays": 90 },
+        { "path": "reports/release/latest-candidate.json", "kind": "release-candidate-readiness", "required": false, "maxAgeDays": 7 },
+        { "path": "reports/release/latest-live.json", "kind": "post-deploy-verification", "required": true, "maxAgeDays": 7 }
       ],
       "quickCommands": ["reliability.smoke"],
-      "fullCommands": ["reliability.hard"]
+      "fullCommands": ["reliability.hard", "ops.release-audit"]
     },
     {
       "id": "player-validation",
@@ -516,7 +536,7 @@
       "label": "Improvement system",
       "owner": "product-operations",
       "weight": 1.2,
-      "currentGrade": "A-",
+      "currentGrade": "A",
       "objective": "Every meaningful change begins with a falsifiable hypothesis and ends with evidence, a decision, a promotion state, and one ranked next action.",
       "stricterABar": "One command detects impacted surfaces, runs proportionate checks, compares the previous baseline, measures system effectiveness, and records a portfolio snapshot with no stale critical evidence.",
       "pathPatterns": ["^improvement/", "^scripts/improvement-control-plane", "^docs/improvement-system", "^package\\.json$", "^\\.gitignore$"],

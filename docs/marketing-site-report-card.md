@@ -18,3 +18,24 @@ Scope: homepage, public navigation, scenario discovery funnel, marketing readine
 - Add per-scenario Open Graph image generation.
 - Add homepage CTA analytics wired into the growth event capture path.
 - Add dedicated Playwright visual tests for homepage desktop and mobile.
+
+## Snapshot 2026-09-14 - Distinct marketing and player-entry roles
+
+The earlier gaps are complete. The two public domains now have explicit, non-overlapping jobs:
+
+- xenovoya.com explains, proves, and markets Xenovoya with editorial depth and current gameplay evidence.
+- play.xenovoya.com identifies itself as the playable client and immediately presents solo, observe, and crew entry choices.
+- The player homepage no longer duplicates long-form marketing sections or routes people through an artificial preview funnel.
+- Wallet language is contextual: browsing and solo play come first, while crew actions explain when a signature is needed.
+
+| Surface | Grade | Evidence |
+| --- | --- | --- |
+| Site-role clarity | A | Automated presence and absence checks prevent the two domain roles from collapsing together. |
+| Gameplay proof | A | The marketing quality system requires current in-engine visual and interaction evidence. |
+| Conversion handoff | A | Calls to action preserve choose, solo, observe, and join intent. |
+| Crawl and social | A | Canonicals, metadata, public-route coverage, and preview assets are automated release checks. |
+| Responsive evidence | A | Desktop and mobile entry states are captured and reviewed. |
+
+### A bar, stricter
+
+An A requires clear domain roles, current gameplay proof, privacy-safe analytics, crawlable metadata, exact cross-domain handoffs, and responsive browser evidence. Production conversion performance and comprehension remain evidence-bound until aggregate analytics and moderated player sessions are available.

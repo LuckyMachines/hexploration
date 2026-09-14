@@ -70,8 +70,8 @@ The image stages have explicit jobs:
 1. The approved project cutout is the identity reference.
 2. Azure FLUX.2-pro creates an exact 3x2 draft turnaround: front, front-right, back-right, back, back-left, and front-left.
 3. Azure GPT Image 2 edits that draft against the approved identity reference, correcting cross-view drift into one canonical six-view sheet.
-4. The sheet is split into six 512x512 images. A border-sampled, background-aware soft matte removes the isolation field without eroding near-black survey metal.
-5. GPT Image 2 makes a second strict 2x2 cardinal sheet from the approved identity, FLUX draft, and six-view identity sheet. It explicitly separates front, right profile, back, and left profile because reconstruction needs semantic camera truth, not merely six attractive angles.
+4. The sheet is split into six 512x512 images. Each asset can use either a connected-border matte for neutral fields or a soft-color matte for saturated isolation fields. Cardinal and orbit stages can select different matte modes so open frames do not retain enclosed cyan panels while pale objects are not erased.
+5. GPT Image 2 makes a second strict cardinal sheet with front, right profile, back, and left profile because reconstruction needs semantic camera truth, not merely attractive angles. Normal assets use the approved identity, FLUX draft, and six-view identity sheet together. Rework assets can set `cardinalReferenceMode: identity-only` so a corrected six-view object is not pulled back toward a conflicting legacy silhouette.
 6. All six orbit views remain identity and review evidence. TRELLIS.2's native semantic `multiview` path receives the four cardinal images. The local service's experimental six-image token-concatenation path was tested, but it fused the Sunstone Lens views into one elongated object, so it is retained only as rejection evidence and is not the production default.
 
 Run the following from `hexploration` in PowerShell or Git Bash:
@@ -88,11 +88,36 @@ npm run art:3d:render-six -- relic-sunstone-lens-focal --write
 npm run art:3d:all -- prop-landing-beacon --write
 ```
 
-Omit the asset id to process the full manifest. Existing stages are skipped, so interrupted batches resume without repeating paid generation or GPU work. `art:3d:trellis` uses TRELLIS.2's camera-aware four-cardinal mode; `art:3d:trellis-six` separately sends all six orbit images through the experimental multi-image mode so the two reconstructions can be compared without conflating them. Use `--reprocess` to rebuild normalization, crops, and alpha from preserved provider outputs without making new image calls. Add `--replace` only to intentionally regenerate an existing provider stage.
+Omit the asset id to process the full manifest. Existing stages are skipped, so interrupted batches resume without repeating paid generation or GPU work. `art:3d:trellis` uses TRELLIS.2's camera-aware four-cardinal mode; `art:3d:trellis-six` separately sends all six orbit images through the experimental multi-image mode so the two reconstructions can be compared without conflating them. Use `--reprocess` to rebuild normalization, semantic crops, and alpha from preserved provider outputs without making new image calls. Use `--replace-cardinal` to regenerate only a failed cardinal provider stage while preserving the paid FLUX and identity passes. Add `--replace` only to intentionally regenerate every provider stage.
+
+Provider layout is never assumed from the requested format. Inspect the saved cardinal sheet, then encode explicit front/right/back/left crop regions when the model changes layout, swaps cells, or lets a wide object cross a nominal boundary. The pipeline validates every crop against the 1024x1024 provider sheet before reconstruction.
+
+Every extracted transparent view also has a subject-coverage gate. A crop fails before GPU reconstruction when alpha coverage is below 2 percent (usually a wrong or nearly empty crop) or above 85 percent (usually a retained background panel). This prevents tiny, semantically wrong inputs from consuming a TRELLIS job and producing plausible-looking but invalid evidence.
 
 All source candidates live under `artifacts/art/3d/<asset-id>/`. Each folder preserves the raw provider images, normalized sheets, exact prompts, image hashes, six transparent orbit views, four transparent cardinal inputs, local service receipt, performance capture, GLB, and combined pipeline receipt. Review sheets live under `artifacts/art/3d/reviews/`; `art:3d:render` adds deterministic front, side, back, top, and perspective Blender renders plus a contact sheet. These are development candidates, not runtime dependencies: a GLB must still pass visual identity, rear-geometry, scale, orientation, material, pivot, topology, LOD, and in-game performance review before it can move into `app/public/models/`.
 
 The latest per-asset lane selection and review notes are machine-readable in `app/src/art-pipeline/asset-3d-review.json`. A `cleanup-candidate` is suitable as a DCC source but is not permission to ship it directly; `rework-required` means the reconstruction target or source views must change first.
+
+Runtime preparation is a separate, deterministic gate. `npm run art:3d:prepare-runtime -- <asset-id> --write` accepts only a reviewed `cleanup-candidate`, validates generated mesh data, grounds its pivot, creates bounded close-up `lod0`, standard `lod1`, and tactical `lod2` GLBs with quantized geometry and WebP textures, validates every file, and records hashes plus measured byte, triangle, vertex, material, texture, animation, and extension counts. Global budgets remain the default; an asset may declare reviewed per-LOD simplify and budget overrides when a broad soft structure visibly breaks under the hard-surface budget. A manifest-governed `materialOverride` can also correct reconstruction-specific PBR failures with bounded metallic and roughness factors plus an optional luminance-preserving two-color base-map remap; the exact values are written into the receipt. `npm run art:3d:render-runtime -- <asset-id> --write` renders every LOD from five angles into one comparison sheet. Passing these technical gates still does not promote the model: the runtime sheet must prove identity, silhouette, rear construction, ground contact, material response, and acceptable LOD degradation before copying anything into `app/public/models/`.
+
+`npm run art:3d:promote-runtime -- <asset-id> --write` then requires an `approved` runtime review, verifies every reviewed fingerprint and budget again, copies every LOD into the public model library, and updates `runtime-models.json`. `npm run art:3d:runtime-doctor` rejects missing evidence, fingerprint drift, approved-but-unpromoted models, or any rework decision left in the runtime registry. The tactical board deliberately selects the reviewed LOD2 delivery model; LOD0 and LOD1 remain available for close-up and marketing scenes. Authored cutouts remain loading, error, and efficient-mode fallbacks.
+
+Current September 14 review: Landing Beacon, Route Fork Marker, Atlas Spindle, Campsite Shelter, Tideglass Heart, and Sunstone Lens are approved runtime assets. The rebuilt shelter removes the former ground slab and uses an evidence-backed 7,298-triangle far-delivery exception because lower collapse ratios produced visible holes and spikes. Tideglass uses a receipt-backed material correction that restores its emerald chamber and warm cradle across all three LODs. Both image-driven Sunstone reconstructions remain preserved as rejection evidence; its approved runtime lane is a deterministic authored hard-surface fallback derived from the GPT Image 2 four-view identity sheet, preserving the octagonal housing and amber aperture across 3,880, 2,793, and 1,862 triangle LODs.
+
+In the board, balanced quality deterministically selects one approved Sunstone, Tideglass, or Atlas relic model from the tile alias while using the campsite cutout so the captured scene remains within its 12,000-triangle contract. High quality loads the full 3D shelter. Efficient quality uses matching authored relic cutouts. Every path retains deterministic identity selection and loading/error fallbacks.
+
+### Lossless runtime image delivery
+
+Approved transparent PNGs remain the review and identity sources. Runtime delivery uses fingerprinted lossless WebP derivatives so compression never changes the approved pixels or alpha silhouette. `app/src/art-pipeline/runtime-image-delivery.json` maps each source to one `.runtime.webp` file and records dimensions, byte counts, and both fingerprints.
+
+```text
+npm run art:runtime-images:generate -- --write
+npm run art:runtime-images:test
+npm run art:runtime-images
+npm run art:runtime-images:audit -- --base-url=http://127.0.0.1:11134 --write
+```
+
+The generator invokes ImageMagick without a visible helper window, preserves source dimensions, and updates the receipt manifest. The doctor rejects missing outputs, dimension drift, fingerprint drift, duplicate paths, path traversal, or any derivative larger than 70% of its PNG source. The initial 23-asset package reduces 9.52 MiB of transparent source art to 5.68 MiB, a lossless 40.3% reduction. Character and board runtime selectors use the derivatives while authoring, relational review, and provenance continue to reference the canonical PNGs. The browser audit measures a verified production build, records which optimized assets each route actually loads, and writes the observed-versus-canonical projection to `reports/performance/runtime-image-delivery.json`.
 
 ### Azure FLUX.2-pro adapter
 
@@ -129,7 +154,7 @@ The Run Relic experience composes two independently reviewed parts in `RelicMemo
 
 ## Current board composition
 
-The Three.js expedition world composes six approved terrain materials, five transparent biome props, two approved state-effect textures, and four distinct transparent character standees in `ThreeBoard.jsx`. Player identity and condition are resolved from the canonical character catalog rather than seat-index texture arrays. Tile geometry, elevation, lighting, routes, reachability, selection, danger, and interaction remain native 3D systems. Generated art adds surface identity and role character without becoming a screenshot-shaped dependency or replacing live game state. The `prop` role and `transparent-prop` contract keep scenery cutouts distinct from characters and decisive relic focal art.
+The Three.js expedition world composes six approved terrain materials, transparent biome props, two approved state-effect textures, four distinct transparent character standees, and approved runtime models in `ThreeBoard.jsx`. Relic tiles deterministically select the approved Sunstone Lens, Tideglass Heart, or Atlas Spindle, and campsite tiles can load the approved shelter; every model retains a matching lossless WebP cutout for efficient quality and loading failure. Player identity and condition are resolved from the canonical character catalog rather than seat-index texture arrays. Tile geometry, elevation, lighting, routes, reachability, selection, danger, and interaction remain native 3D systems. Generated art adds surface identity and role character without becoming a screenshot-shaped dependency or replacing live game state.
 
 ### Surface and lighting pipeline
 

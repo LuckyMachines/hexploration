@@ -70,7 +70,26 @@ function selectedProfiles() {
   return profiles;
 }
 
-function seamlessBase(source, output, temporary, { side = false } = {}) {
+function edgeBlendSeamlessBase(normalized, output, temporary) {
+  const [width, height] = system.qualityContract.dimensions;
+  const blendBand = Math.max(16, Math.round(width * 0.09375));
+  const horizontalMirror = path.join(temporary, 'edge-horizontal-mirror.png');
+  const verticalMirror = path.join(temporary, 'edge-vertical-mirror.png');
+  const horizontalMask = path.join(temporary, 'edge-horizontal-mask.png');
+  const verticalMask = path.join(temporary, 'edge-vertical-mask.png');
+  const overlay = path.join(temporary, 'edge-overlay.png');
+  const horizontal = path.join(temporary, 'edge-horizontal.png');
+  runMagick([normalized, '-flop', horizontalMirror], 'prepare opposing horizontal edges');
+  runMagick(['-size', `${width}x${height}`, 'xc:black', '-fx', `0.5*(1-min(1,min(i,w-1-i)/${blendBand}))`, horizontalMask], 'author horizontal edge blend');
+  runMagick([horizontalMirror, horizontalMask, '-alpha', 'off', '-compose', 'CopyOpacity', '-composite', overlay], 'mask horizontal edge blend');
+  runMagick([normalized, overlay, '-compose', 'over', '-composite', horizontal], 'apply horizontal edge blend');
+  runMagick([horizontal, '-flip', verticalMirror], 'prepare opposing vertical edges');
+  runMagick(['-size', `${width}x${height}`, 'xc:black', '-fx', `0.5*(1-min(1,min(j,h-1-j)/${blendBand}))`, verticalMask], 'author vertical edge blend');
+  runMagick([verticalMirror, verticalMask, '-alpha', 'off', '-compose', 'CopyOpacity', '-composite', overlay], 'mask vertical edge blend');
+  runMagick([horizontal, overlay, '-compose', 'over', '-composite', '-quality', '84', output], `write ${path.basename(output)}`);
+}
+
+function seamlessBase(source, output, temporary, { side = false, seamMode = 'mirrored' } = {}) {
   const [width, height] = system.qualityContract.dimensions;
   const normalized = path.join(temporary, `${side ? 'side-' : ''}normalized.png`);
   const doubled = path.join(temporary, `${side ? 'side-' : ''}doubled.png`);
@@ -78,6 +97,10 @@ function seamlessBase(source, output, temporary, { side = false } = {}) {
     ? [source, '-auto-orient', '-strip', '-resize', `${Math.round(width * 0.095)}x${height}!`, '-resize', `${width}x${height}!`, '-blur', '0x0.55', '+sigmoidal-contrast', '2.2,50%', '-modulate', '103,82,100', normalized]
     : [source, '-auto-orient', '-strip', '-resize', `${width}x${height}^`, '-gravity', 'center', '-extent', `${width}x${height}`, '+sigmoidal-contrast', '2.2,50%', '-modulate', '103,86,100', normalized];
   runMagick(sourceArgs, `normalize ${path.basename(source)}${side ? ' sidewall' : ''}`);
+  if (!side && seamMode === 'edge-blend') {
+    edgeBlendSeamlessBase(normalized, output, temporary);
+    return;
+  }
   runMagick([normalized, '(', '+clone', '-flop', ')', '+append', '(', '+clone', '-flip', ')', '-append', doubled], 'construct seamless material field');
   runMagick([doubled, '-crop', `${width}x${height}+${width / 2}+${height / 2}`, '+repage', '-quality', '84', output], `write ${path.basename(output)}`);
 }
@@ -121,7 +144,7 @@ function generateProfile(profile) {
   const top = materialOutputPaths(root, profile);
   const side = materialOutputPaths(root, profile, { side: true });
   try {
-    seamlessBase(source, top.baseColor, temporary);
+    seamlessBase(source, top.baseColor, temporary, { seamMode: profile.seamMode });
     scalarMaps(top.baseColor, top);
     normalMap(top.height, top.normal, temporary, 'top');
     seamlessBase(source, side.baseColor, temporary, { side: true });
@@ -141,7 +164,9 @@ function generateProfile(profile) {
       generatedAt: new Date().toISOString(),
       source: profile.source,
       sourceSha256: sha256File(source),
-      process: 'neutralize -> mirrored seamless field -> scalar maps -> tangent normal',
+      process: profile.seamMode === 'edge-blend'
+        ? 'neutralize -> localized opposing-edge blend -> scalar maps -> tangent normal; mirrored sidewall derivation'
+        : 'neutralize -> mirrored seamless field -> scalar maps -> tangent normal',
       top: Object.fromEntries(Object.entries(top).map(([channel, file]) => [channel, { path: path.relative(root, file).replaceAll('\\', '/'), sha256: sha256File(file) }])),
       side: Object.fromEntries(Object.entries(side).map(([channel, file]) => [channel, { path: path.relative(root, file).replaceAll('\\', '/'), sha256: sha256File(file) }])),
       compressedTop: Object.fromEntries(Object.entries(topKtx2).map(([channel, file]) => [channel, { path: path.relative(root, file).replaceAll('\\', '/'), sha256: sha256File(file) }])),

@@ -1,0 +1,20 @@
+{
+  "assetId": "tile-reference-jungle-variants",
+  "candidate": "app/public/images/art/tile-concepts/jungle-variants.webp",
+  "reviewer": "Codex visual QA",
+  "reviewedAt": "2026-09-13",
+  "scores": { "recognition": 4, "agency": 3, "specificity": 4, "restraint": 4, "continuity": 4, "reusability": 4, "accessibility": 4 },
+  "notes": {
+    "recognition": "Pale glassroots and compact edge fronds identify the biome instantly.",
+    "agency": "Open centers keep encounter and route choices legible.",
+    "specificity": "Basalt root lattice reads as alien field ecology rather than tropical foliage.",
+    "restraint": "Growth remains edge-bound and bioluminescence stays localized.",
+    "continuity": "Charcoal stone, pale roots, and mint nodes extend the approved cavern language.",
+    "reusability": "Root arcs and broken crowns yield multiple modular edge recipes.",
+    "accessibility": "Root contrast and irregular silhouette remain clear in grayscale."
+  },
+  "decision": "approved",
+  "candidateSha256": "342db9ab665a99b1e5ca609824020f57c05dfc79c2fd5634757c6541ffa2fdca",
+  "generation": { "mode": "azure-image-generation", "tool": "azure-foundry", "model": "gpt-image-2", "promptSha256": "042398089aa1423533d968ad3bed3e167ca9e845d56666e28d6b142bec25918d" },
+  "joyScore": 9.5
+}

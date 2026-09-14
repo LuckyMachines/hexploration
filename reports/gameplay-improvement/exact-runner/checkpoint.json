@@ -1,86 +1,21 @@
 {
   "scenarios": {
-    "solo-artifact-hunt": {
-      "scenarioId": "solo-artifact-hunt",
-      "signature": "06ccef90e03b823681dfd7f94bb3e202839a772fa2d0895588561fefd325d44d",
-      "status": "passed",
-      "exitCode": 0,
-      "startedAt": "2026-09-10T04:13:24.921Z",
-      "finishedAt": "2026-09-10T04:17:51.607Z",
-      "durationMs": 266686,
-      "failureCategory": null,
-      "retryable": false,
-      "stdoutTail": "   \\\"latestPath\\\": \\\"C:\\\\\\\\Users\\\\\\\\James Pollack\\\\\\\\Desktop\\\\\\\\REBOOT LUCKYSTUFF\\\\\\\\prominent_racerverse\\\\\\\\HEXPLORATION_REPOS\\\\\\\\hexploration\\\\\\\\reports\\\\\\\\simulator\\\\\\\\latest-report.json\\\",\\n    \\\"publicPath\\\": \\\"C:\\\\\\\\Users\\\\\\\\James Pollack\\\\\\\\Desktop\\\\\\\\REBOOT LUCKYSTUFF\\\\\\\\prominent_racerverse\\\\\\\\HEXPLORATION_REPOS\\\\\\\\hexploration\\\\\\\\app\\\\\\\\public\\\\\\\\simulator\\\\\\\\latest-report.json\\\",\\n    \\\"setupLatestPath\\\": \\\"C:\\\\\\\\Users\\\\\\\\James Pollack\\\\\\\\Desktop\\\\\\\\REBOOT LUCKYSTUFF\\\\\\\\prominent_racerverse\\\\\\\\HEXPLORATION_REPOS\\\\\\\\hexploration\\\\\\\\reports\\\\\\\\simulator\\\\\\\\scenarios\\\\\\\\solo-artifact-hunt\\\\\\\\latest-setup-report.json\\\",\\n    \\\"setupPublicPath\\\": \\\"C:\\\\\\\\Users\\\\\\\\James Pollack\\\\\\\\Desktop\\\\\\\\REBOOT LUCKYSTUFF\\\\\\\\prominent_racerverse\\\\\\\\HEXPLORATION_REPOS\\\\\\\\hexploration\\\\\\\\app\\\\\\\\public\\\\\\\\simulator\\\\\\\\setup-forge\\\\\\\\latest-report.json\\\",\\n    \\\"oracleLatestPath\\\": \\\"C:\\\\\\\\Users\\\\\\\\James Pollack\\\\\\\\Desktop\\\\\\\\REBOOT LUCKYSTUFF\\\\\\\\prominent_racerverse\\\\\\\\HEXPLORATION_REPOS\\\\\\\\hexploration\\\\\\\\reports\\\\\\\\simulator\\\\\\\\oracle\\\\\\\\latest-oracle.json\\\",\\n    \\\"oraclePublicPath\\\": \\\"C:\\\\\\\\Users\\\\\\\\James Pollack\\\\\\\\Desktop\\\\\\\\REBOOT LUCKYSTUFF\\\\\\\\prominent_racerverse\\\\\\\\HEXPLORATION_REPOS\\\\\\\\hexploration\\\\\\\\app\\\\\\\\public\\\\\\\\simulator\\\\\\\\oracle\\\\\\\\latest-oracle.json\\\",\\n    \\\"scenarioLatestPath\\\": \\\"C:\\\\\\\\Users\\\\\\\\James Pollack\\\\\\\\Desktop\\\\\\\\REBOOT LUCKYSTUFF\\\\\\\\prominent_racerverse\\\\\\\\HEXPLORATION_REPOS\\\\\\\\hexploration\\\\\\\\reports\\\\\\\\simulator\\\\\\\\scenarios\\\\\\\\solo-artifact-hunt\\\\\\\\latest-report.json\\\",\\n    \\\"scenarioPublicPath\\\": \\\"C:\\\\\\\\Users\\\\\\\\James Pollack\\\\\\\\Desktop\\\\\\\\REBOOT LUCKYSTUFF\\\\\\\\prominent_racerverse\\\\\\\\HEXPLORATION_REPOS\\\\\\\\hexploration\\\\\\\\app\\\\\\\\public\\\\\\\\simulator\\\\\\\\scenarios\\\\\\\\solo-artifact-hunt\\\\\\\\latest-report.json\\\",\\n    \\\"ledgerPath\\\": \\\"C:\\\\\\\\Users\\\\\\\\James Pollack\\\\\\\\Desktop\\\\\\\\REBOOT LUCKYSTUFF\\\\\\\\prominent_racerverse\\\\\\\\HEXPLORATION_REPOS\\\\\\\\hexploration\\\\\\\\reports\\\\\\\\simulator\\\\\\\\tuning-ledger.json\\\",\\n    \\\"baselinePath\\\": null\\n  }\\n}\"\n}\n",
-      "stderrTail": ""
-    },
-    "escape-pressure-4p": {
-      "scenarioId": "escape-pressure-4p",
-      "signature": "33fd270de2e5c6df6f25f5b55c364b6d4194b8b0a66a304fc2ad5c780c835627",
-      "status": "passed",
-      "exitCode": 0,
-      "startedAt": "2026-09-10T04:17:51.611Z",
-      "finishedAt": "2026-09-10T04:42:58.549Z",
-      "durationMs": 1506938,
-      "failureCategory": null,
-      "retryable": false,
-      "stdoutTail": "   \\\"latestPath\\\": \\\"C:\\\\\\\\Users\\\\\\\\James Pollack\\\\\\\\Desktop\\\\\\\\REBOOT LUCKYSTUFF\\\\\\\\prominent_racerverse\\\\\\\\HEXPLORATION_REPOS\\\\\\\\hexploration\\\\\\\\reports\\\\\\\\simulator\\\\\\\\latest-report.json\\\",\\n    \\\"publicPath\\\": \\\"C:\\\\\\\\Users\\\\\\\\James Pollack\\\\\\\\Desktop\\\\\\\\REBOOT LUCKYSTUFF\\\\\\\\prominent_racerverse\\\\\\\\HEXPLORATION_REPOS\\\\\\\\hexploration\\\\\\\\app\\\\\\\\public\\\\\\\\simulator\\\\\\\\latest-report.json\\\",\\n    \\\"setupLatestPath\\\": \\\"C:\\\\\\\\Users\\\\\\\\James Pollack\\\\\\\\Desktop\\\\\\\\REBOOT LUCKYSTUFF\\\\\\\\prominent_racerverse\\\\\\\\HEXPLORATION_REPOS\\\\\\\\hexploration\\\\\\\\reports\\\\\\\\simulator\\\\\\\\scenarios\\\\\\\\escape-pressure-4p\\\\\\\\latest-setup-report.json\\\",\\n    \\\"setupPublicPath\\\": \\\"C:\\\\\\\\Users\\\\\\\\James Pollack\\\\\\\\Desktop\\\\\\\\REBOOT LUCKYSTUFF\\\\\\\\prominent_racerverse\\\\\\\\HEXPLORATION_REPOS\\\\\\\\hexploration\\\\\\\\app\\\\\\\\public\\\\\\\\simulator\\\\\\\\setup-forge\\\\\\\\latest-report.json\\\",\\n    \\\"oracleLatestPath\\\": \\\"C:\\\\\\\\Users\\\\\\\\James Pollack\\\\\\\\Desktop\\\\\\\\REBOOT LUCKYSTUFF\\\\\\\\prominent_racerverse\\\\\\\\HEXPLORATION_REPOS\\\\\\\\hexploration\\\\\\\\reports\\\\\\\\simulator\\\\\\\\oracle\\\\\\\\latest-oracle.json\\\",\\n    \\\"oraclePublicPath\\\": \\\"C:\\\\\\\\Users\\\\\\\\James Pollack\\\\\\\\Desktop\\\\\\\\REBOOT LUCKYSTUFF\\\\\\\\prominent_racerverse\\\\\\\\HEXPLORATION_REPOS\\\\\\\\hexploration\\\\\\\\app\\\\\\\\public\\\\\\\\simulator\\\\\\\\oracle\\\\\\\\latest-oracle.json\\\",\\n    \\\"scenarioLatestPath\\\": \\\"C:\\\\\\\\Users\\\\\\\\James Pollack\\\\\\\\Desktop\\\\\\\\REBOOT LUCKYSTUFF\\\\\\\\prominent_racerverse\\\\\\\\HEXPLORATION_REPOS\\\\\\\\hexploration\\\\\\\\reports\\\\\\\\simulator\\\\\\\\scenarios\\\\\\\\escape-pressure-4p\\\\\\\\latest-report.json\\\",\\n    \\\"scenarioPublicPath\\\": \\\"C:\\\\\\\\Users\\\\\\\\James Pollack\\\\\\\\Desktop\\\\\\\\REBOOT LUCKYSTUFF\\\\\\\\prominent_racerverse\\\\\\\\HEXPLORATION_REPOS\\\\\\\\hexploration\\\\\\\\app\\\\\\\\public\\\\\\\\simulator\\\\\\\\scenarios\\\\\\\\escape-pressure-4p\\\\\\\\latest-report.json\\\",\\n    \\\"ledgerPath\\\": \\\"C:\\\\\\\\Users\\\\\\\\James Pollack\\\\\\\\Desktop\\\\\\\\REBOOT LUCKYSTUFF\\\\\\\\prominent_racerverse\\\\\\\\HEXPLORATION_REPOS\\\\\\\\hexploration\\\\\\\\reports\\\\\\\\simulator\\\\\\\\tuning-ledger.json\\\",\\n    \\\"baselinePath\\\": null\\n  }\\n}\"\n}\n",
-      "stderrTail": ""
-    },
-    "first-discovery-solo": {
-      "scenarioId": "first-discovery-solo",
-      "signature": "d2bff3c8d5c26134494554fbd092c9ecea213e1a2e7c182d443181a011d36a63",
-      "status": "passed",
-      "exitCode": 0,
-      "startedAt": "2026-09-10T04:42:58.552Z",
-      "finishedAt": "2026-09-10T04:48:17.988Z",
-      "durationMs": 319436,
-      "failureCategory": null,
-      "retryable": false,
-      "stdoutTail": "atestPath\\\": \\\"C:\\\\\\\\Users\\\\\\\\James Pollack\\\\\\\\Desktop\\\\\\\\REBOOT LUCKYSTUFF\\\\\\\\prominent_racerverse\\\\\\\\HEXPLORATION_REPOS\\\\\\\\hexploration\\\\\\\\reports\\\\\\\\simulator\\\\\\\\latest-report.json\\\",\\n    \\\"publicPath\\\": \\\"C:\\\\\\\\Users\\\\\\\\James Pollack\\\\\\\\Desktop\\\\\\\\REBOOT LUCKYSTUFF\\\\\\\\prominent_racerverse\\\\\\\\HEXPLORATION_REPOS\\\\\\\\hexploration\\\\\\\\app\\\\\\\\public\\\\\\\\simulator\\\\\\\\latest-report.json\\\",\\n    \\\"setupLatestPath\\\": \\\"C:\\\\\\\\Users\\\\\\\\James Pollack\\\\\\\\Desktop\\\\\\\\REBOOT LUCKYSTUFF\\\\\\\\prominent_racerverse\\\\\\\\HEXPLORATION_REPOS\\\\\\\\hexploration\\\\\\\\reports\\\\\\\\simulator\\\\\\\\scenarios\\\\\\\\first-discovery-solo\\\\\\\\latest-setup-report.json\\\",\\n    \\\"setupPublicPath\\\": \\\"C:\\\\\\\\Users\\\\\\\\James Pollack\\\\\\\\Desktop\\\\\\\\REBOOT LUCKYSTUFF\\\\\\\\prominent_racerverse\\\\\\\\HEXPLORATION_REPOS\\\\\\\\hexploration\\\\\\\\app\\\\\\\\public\\\\\\\\simulator\\\\\\\\setup-forge\\\\\\\\latest-report.json\\\",\\n    \\\"oracleLatestPath\\\": \\\"C:\\\\\\\\Users\\\\\\\\James Pollack\\\\\\\\Desktop\\\\\\\\REBOOT LUCKYSTUFF\\\\\\\\prominent_racerverse\\\\\\\\HEXPLORATION_REPOS\\\\\\\\hexploration\\\\\\\\reports\\\\\\\\simulator\\\\\\\\oracle\\\\\\\\latest-oracle.json\\\",\\n    \\\"oraclePublicPath\\\": \\\"C:\\\\\\\\Users\\\\\\\\James Pollack\\\\\\\\Desktop\\\\\\\\REBOOT LUCKYSTUFF\\\\\\\\prominent_racerverse\\\\\\\\HEXPLORATION_REPOS\\\\\\\\hexploration\\\\\\\\app\\\\\\\\public\\\\\\\\simulator\\\\\\\\oracle\\\\\\\\latest-oracle.json\\\",\\n    \\\"scenarioLatestPath\\\": \\\"C:\\\\\\\\Users\\\\\\\\James Pollack\\\\\\\\Desktop\\\\\\\\REBOOT LUCKYSTUFF\\\\\\\\prominent_racerverse\\\\\\\\HEXPLORATION_REPOS\\\\\\\\hexploration\\\\\\\\reports\\\\\\\\simulator\\\\\\\\scenarios\\\\\\\\first-discovery-solo\\\\\\\\latest-report.json\\\",\\n    \\\"scenarioPublicPath\\\": \\\"C:\\\\\\\\Users\\\\\\\\James Pollack\\\\\\\\Desktop\\\\\\\\REBOOT LUCKYSTUFF\\\\\\\\prominent_racerverse\\\\\\\\HEXPLORATION_REPOS\\\\\\\\hexploration\\\\\\\\app\\\\\\\\public\\\\\\\\simulator\\\\\\\\scenarios\\\\\\\\first-discovery-solo\\\\\\\\latest-report.json\\\",\\n    \\\"ledgerPath\\\": \\\"C:\\\\\\\\Users\\\\\\\\James Pollack\\\\\\\\Desktop\\\\\\\\REBOOT LUCKYSTUFF\\\\\\\\prominent_racerverse\\\\\\\\HEXPLORATION_REPOS\\\\\\\\hexploration\\\\\\\\reports\\\\\\\\simulator\\\\\\\\tuning-ledger.json\\\",\\n    \\\"baselinePath\\\": null\\n  }\\n}\"\n}\n",
-      "stderrTail": ""
-    },
-    "cooperative-rescue-2p": {
-      "scenarioId": "cooperative-rescue-2p",
-      "signature": "facf8a1687f843c4d8e5cc8aa91e86450ed398c57e84e3e2c30782699a1e560b",
-      "status": "passed",
-      "exitCode": 0,
-      "startedAt": "2026-09-10T04:48:17.992Z",
-      "finishedAt": "2026-09-10T05:02:34.653Z",
-      "durationMs": 856661,
-      "failureCategory": null,
-      "retryable": false,
-      "stdoutTail": "stPath\\\": \\\"C:\\\\\\\\Users\\\\\\\\James Pollack\\\\\\\\Desktop\\\\\\\\REBOOT LUCKYSTUFF\\\\\\\\prominent_racerverse\\\\\\\\HEXPLORATION_REPOS\\\\\\\\hexploration\\\\\\\\reports\\\\\\\\simulator\\\\\\\\latest-report.json\\\",\\n    \\\"publicPath\\\": \\\"C:\\\\\\\\Users\\\\\\\\James Pollack\\\\\\\\Desktop\\\\\\\\REBOOT LUCKYSTUFF\\\\\\\\prominent_racerverse\\\\\\\\HEXPLORATION_REPOS\\\\\\\\hexploration\\\\\\\\app\\\\\\\\public\\\\\\\\simulator\\\\\\\\latest-report.json\\\",\\n    \\\"setupLatestPath\\\": \\\"C:\\\\\\\\Users\\\\\\\\James Pollack\\\\\\\\Desktop\\\\\\\\REBOOT LUCKYSTUFF\\\\\\\\prominent_racerverse\\\\\\\\HEXPLORATION_REPOS\\\\\\\\hexploration\\\\\\\\reports\\\\\\\\simulator\\\\\\\\scenarios\\\\\\\\cooperative-rescue-2p\\\\\\\\latest-setup-report.json\\\",\\n    \\\"setupPublicPath\\\": \\\"C:\\\\\\\\Users\\\\\\\\James Pollack\\\\\\\\Desktop\\\\\\\\REBOOT LUCKYSTUFF\\\\\\\\prominent_racerverse\\\\\\\\HEXPLORATION_REPOS\\\\\\\\hexploration\\\\\\\\app\\\\\\\\public\\\\\\\\simulator\\\\\\\\setup-forge\\\\\\\\latest-report.json\\\",\\n    \\\"oracleLatestPath\\\": \\\"C:\\\\\\\\Users\\\\\\\\James Pollack\\\\\\\\Desktop\\\\\\\\REBOOT LUCKYSTUFF\\\\\\\\prominent_racerverse\\\\\\\\HEXPLORATION_REPOS\\\\\\\\hexploration\\\\\\\\reports\\\\\\\\simulator\\\\\\\\oracle\\\\\\\\latest-oracle.json\\\",\\n    \\\"oraclePublicPath\\\": \\\"C:\\\\\\\\Users\\\\\\\\James Pollack\\\\\\\\Desktop\\\\\\\\REBOOT LUCKYSTUFF\\\\\\\\prominent_racerverse\\\\\\\\HEXPLORATION_REPOS\\\\\\\\hexploration\\\\\\\\app\\\\\\\\public\\\\\\\\simulator\\\\\\\\oracle\\\\\\\\latest-oracle.json\\\",\\n    \\\"scenarioLatestPath\\\": \\\"C:\\\\\\\\Users\\\\\\\\James Pollack\\\\\\\\Desktop\\\\\\\\REBOOT LUCKYSTUFF\\\\\\\\prominent_racerverse\\\\\\\\HEXPLORATION_REPOS\\\\\\\\hexploration\\\\\\\\reports\\\\\\\\simulator\\\\\\\\scenarios\\\\\\\\cooperative-rescue-2p\\\\\\\\latest-report.json\\\",\\n    \\\"scenarioPublicPath\\\": \\\"C:\\\\\\\\Users\\\\\\\\James Pollack\\\\\\\\Desktop\\\\\\\\REBOOT LUCKYSTUFF\\\\\\\\prominent_racerverse\\\\\\\\HEXPLORATION_REPOS\\\\\\\\hexploration\\\\\\\\app\\\\\\\\public\\\\\\\\simulator\\\\\\\\scenarios\\\\\\\\cooperative-rescue-2p\\\\\\\\latest-report.json\\\",\\n    \\\"ledgerPath\\\": \\\"C:\\\\\\\\Users\\\\\\\\James Pollack\\\\\\\\Desktop\\\\\\\\REBOOT LUCKYSTUFF\\\\\\\\prominent_racerverse\\\\\\\\HEXPLORATION_REPOS\\\\\\\\hexploration\\\\\\\\reports\\\\\\\\simulator\\\\\\\\tuning-ledger.json\\\",\\n    \\\"baselinePath\\\": null\\n  }\\n}\"\n}\n",
-      "stderrTail": ""
-    },
     "artifact-extraction-2p": {
       "scenarioId": "artifact-extraction-2p",
-      "signature": "f6334a9d1547742cf816579f64578d100b17fda3e4db090018e1ca02d809eb8e",
+      "signature": "892b0589a6dfe7a49c0cbce9d9494cdf35252ab3336d1f3fe5259737b7c66516",
       "status": "passed",
       "exitCode": 0,
-      "startedAt": "2026-09-10T05:02:34.656Z",
-      "finishedAt": "2026-09-10T05:24:25.810Z",
-      "durationMs": 1311154,
+      "startedAt": "2026-09-14T16:35:37.559Z",
+      "finishedAt": "2026-09-14T16:48:03.636Z",
+      "durationMs": 746077,
       "failureCategory": null,
       "retryable": false,
       "stdoutTail": "ath\\\": \\\"C:\\\\\\\\Users\\\\\\\\James Pollack\\\\\\\\Desktop\\\\\\\\REBOOT LUCKYSTUFF\\\\\\\\prominent_racerverse\\\\\\\\HEXPLORATION_REPOS\\\\\\\\hexploration\\\\\\\\reports\\\\\\\\simulator\\\\\\\\latest-report.json\\\",\\n    \\\"publicPath\\\": \\\"C:\\\\\\\\Users\\\\\\\\James Pollack\\\\\\\\Desktop\\\\\\\\REBOOT LUCKYSTUFF\\\\\\\\prominent_racerverse\\\\\\\\HEXPLORATION_REPOS\\\\\\\\hexploration\\\\\\\\app\\\\\\\\public\\\\\\\\simulator\\\\\\\\latest-report.json\\\",\\n    \\\"setupLatestPath\\\": \\\"C:\\\\\\\\Users\\\\\\\\James Pollack\\\\\\\\Desktop\\\\\\\\REBOOT LUCKYSTUFF\\\\\\\\prominent_racerverse\\\\\\\\HEXPLORATION_REPOS\\\\\\\\hexploration\\\\\\\\reports\\\\\\\\simulator\\\\\\\\scenarios\\\\\\\\artifact-extraction-2p\\\\\\\\latest-setup-report.json\\\",\\n    \\\"setupPublicPath\\\": \\\"C:\\\\\\\\Users\\\\\\\\James Pollack\\\\\\\\Desktop\\\\\\\\REBOOT LUCKYSTUFF\\\\\\\\prominent_racerverse\\\\\\\\HEXPLORATION_REPOS\\\\\\\\hexploration\\\\\\\\app\\\\\\\\public\\\\\\\\simulator\\\\\\\\setup-forge\\\\\\\\latest-report.json\\\",\\n    \\\"oracleLatestPath\\\": \\\"C:\\\\\\\\Users\\\\\\\\James Pollack\\\\\\\\Desktop\\\\\\\\REBOOT LUCKYSTUFF\\\\\\\\prominent_racerverse\\\\\\\\HEXPLORATION_REPOS\\\\\\\\hexploration\\\\\\\\reports\\\\\\\\simulator\\\\\\\\oracle\\\\\\\\latest-oracle.json\\\",\\n    \\\"oraclePublicPath\\\": \\\"C:\\\\\\\\Users\\\\\\\\James Pollack\\\\\\\\Desktop\\\\\\\\REBOOT LUCKYSTUFF\\\\\\\\prominent_racerverse\\\\\\\\HEXPLORATION_REPOS\\\\\\\\hexploration\\\\\\\\app\\\\\\\\public\\\\\\\\simulator\\\\\\\\oracle\\\\\\\\latest-oracle.json\\\",\\n    \\\"scenarioLatestPath\\\": \\\"C:\\\\\\\\Users\\\\\\\\James Pollack\\\\\\\\Desktop\\\\\\\\REBOOT LUCKYSTUFF\\\\\\\\prominent_racerverse\\\\\\\\HEXPLORATION_REPOS\\\\\\\\hexploration\\\\\\\\reports\\\\\\\\simulator\\\\\\\\scenarios\\\\\\\\artifact-extraction-2p\\\\\\\\latest-report.json\\\",\\n    \\\"scenarioPublicPath\\\": \\\"C:\\\\\\\\Users\\\\\\\\James Pollack\\\\\\\\Desktop\\\\\\\\REBOOT LUCKYSTUFF\\\\\\\\prominent_racerverse\\\\\\\\HEXPLORATION_REPOS\\\\\\\\hexploration\\\\\\\\app\\\\\\\\public\\\\\\\\simulator\\\\\\\\scenarios\\\\\\\\artifact-extraction-2p\\\\\\\\latest-report.json\\\",\\n    \\\"ledgerPath\\\": \\\"C:\\\\\\\\Users\\\\\\\\James Pollack\\\\\\\\Desktop\\\\\\\\REBOOT LUCKYSTUFF\\\\\\\\prominent_racerverse\\\\\\\\HEXPLORATION_REPOS\\\\\\\\hexploration\\\\\\\\reports\\\\\\\\simulator\\\\\\\\tuning-ledger.json\\\",\\n    \\\"baselinePath\\\": null\\n  }\\n}\"\n}\n",
       "stderrTail": ""
-    },
-    "three-player-regroup-3p": {
-      "scenarioId": "three-player-regroup-3p",
-      "signature": "ba97c85ff82b86433bb426adaef130ab40f74361604103489cfe81d80a0e885c",
-      "status": "passed",
-      "exitCode": 0,
-      "startedAt": "2026-09-10T05:24:25.812Z",
-      "finishedAt": "2026-09-10T05:54:29.548Z",
-      "durationMs": 1803736,
-      "failureCategory": null,
-      "retryable": false,
-      "stdoutTail": "\\\": \\\"C:\\\\\\\\Users\\\\\\\\James Pollack\\\\\\\\Desktop\\\\\\\\REBOOT LUCKYSTUFF\\\\\\\\prominent_racerverse\\\\\\\\HEXPLORATION_REPOS\\\\\\\\hexploration\\\\\\\\reports\\\\\\\\simulator\\\\\\\\latest-report.json\\\",\\n    \\\"publicPath\\\": \\\"C:\\\\\\\\Users\\\\\\\\James Pollack\\\\\\\\Desktop\\\\\\\\REBOOT LUCKYSTUFF\\\\\\\\prominent_racerverse\\\\\\\\HEXPLORATION_REPOS\\\\\\\\hexploration\\\\\\\\app\\\\\\\\public\\\\\\\\simulator\\\\\\\\latest-report.json\\\",\\n    \\\"setupLatestPath\\\": \\\"C:\\\\\\\\Users\\\\\\\\James Pollack\\\\\\\\Desktop\\\\\\\\REBOOT LUCKYSTUFF\\\\\\\\prominent_racerverse\\\\\\\\HEXPLORATION_REPOS\\\\\\\\hexploration\\\\\\\\reports\\\\\\\\simulator\\\\\\\\scenarios\\\\\\\\three-player-regroup-3p\\\\\\\\latest-setup-report.json\\\",\\n    \\\"setupPublicPath\\\": \\\"C:\\\\\\\\Users\\\\\\\\James Pollack\\\\\\\\Desktop\\\\\\\\REBOOT LUCKYSTUFF\\\\\\\\prominent_racerverse\\\\\\\\HEXPLORATION_REPOS\\\\\\\\hexploration\\\\\\\\app\\\\\\\\public\\\\\\\\simulator\\\\\\\\setup-forge\\\\\\\\latest-report.json\\\",\\n    \\\"oracleLatestPath\\\": \\\"C:\\\\\\\\Users\\\\\\\\James Pollack\\\\\\\\Desktop\\\\\\\\REBOOT LUCKYSTUFF\\\\\\\\prominent_racerverse\\\\\\\\HEXPLORATION_REPOS\\\\\\\\hexploration\\\\\\\\reports\\\\\\\\simulator\\\\\\\\oracle\\\\\\\\latest-oracle.json\\\",\\n    \\\"oraclePublicPath\\\": \\\"C:\\\\\\\\Users\\\\\\\\James Pollack\\\\\\\\Desktop\\\\\\\\REBOOT LUCKYSTUFF\\\\\\\\prominent_racerverse\\\\\\\\HEXPLORATION_REPOS\\\\\\\\hexploration\\\\\\\\app\\\\\\\\public\\\\\\\\simulator\\\\\\\\oracle\\\\\\\\latest-oracle.json\\\",\\n    \\\"scenarioLatestPath\\\": \\\"C:\\\\\\\\Users\\\\\\\\James Pollack\\\\\\\\Desktop\\\\\\\\REBOOT LUCKYSTUFF\\\\\\\\prominent_racerverse\\\\\\\\HEXPLORATION_REPOS\\\\\\\\hexploration\\\\\\\\reports\\\\\\\\simulator\\\\\\\\scenarios\\\\\\\\three-player-regroup-3p\\\\\\\\latest-report.json\\\",\\n    \\\"scenarioPublicPath\\\": \\\"C:\\\\\\\\Users\\\\\\\\James Pollack\\\\\\\\Desktop\\\\\\\\REBOOT LUCKYSTUFF\\\\\\\\prominent_racerverse\\\\\\\\HEXPLORATION_REPOS\\\\\\\\hexploration\\\\\\\\app\\\\\\\\public\\\\\\\\simulator\\\\\\\\scenarios\\\\\\\\three-player-regroup-3p\\\\\\\\latest-report.json\\\",\\n    \\\"ledgerPath\\\": \\\"C:\\\\\\\\Users\\\\\\\\James Pollack\\\\\\\\Desktop\\\\\\\\REBOOT LUCKYSTUFF\\\\\\\\prominent_racerverse\\\\\\\\HEXPLORATION_REPOS\\\\\\\\hexploration\\\\\\\\reports\\\\\\\\simulator\\\\\\\\tuning-ledger.json\\\",\\n    \\\"baselinePath\\\": null\\n  }\\n}\"\n}\n",
-      "stderrTail": ""
     }
   },
   "sourceHashes": {
-    "scripts/gameplay-exact-runner.mjs": "3a0378b592fd7157194860e8c9d0cb2e4ca48498671c047f0f0de8d91623f3ed",
+    "scripts/gameplay-exact-runner.mjs": "d70b8cffb31f4009293cca093a6b021dc9afde1b779d2120c6c9e0000c900144",
     "scripts/gameplay-simulator.mjs": "4f9268a0bc13ec5ee18b84257077d54363cd86ed8f49bda44f4ed0efebbddd56",
     "scripts/gameplay-agent-policy-utils.mjs": "2d42dc7e6b5d0685b4bc53faf14ed0b82a6417f579b5255a14a4af2f3006b36c",
     "scripts/gameplay-oracle-utils.mjs": "f39319b156f3f9ee0e4b903b23aef614b9c16c1c1414db2a09425ddf225ce186",
@@ -88,7 +23,7 @@
     "scripts/scenario-utils.mjs": "28d278093975e47ede1e5085888ed3c98b5bdad5c318f08f11e670b11101d949",
     "scripts/setup-forge-utils.mjs": "1336ab8ed310a444630b72a30d806499e65aa393662b684a234f19f80cb8168b",
     "simulator.scenarios.json": "4679ab8afd67ad00043c29c19278f07e4118ed061d606ff228d31c1fc436e985",
-    "simulator.agent-policies.json": "1f8ecb19548fc9961d1f314f01ff0045d7513896ae9409b399347002129d7b3b",
+    "experiments/artifact-extraction-earlier-intent.policy.json": "d97a50a43574f3424e1e94646d7989f48dac4da7c52e370469e84ae7f044a5a4",
     "simulator.evaluation.json": "16a42578121a2998ecc8d4b2e7c9202f1f60aacee49c6c56baf024cce735f0ff",
     "gameplay.quality-contract.json": "372abeea3898c14b85e1b34f573e5cf337f0fe542631f80dacccb4508ee14b9d",
     "foundry.toml": "8250082fd3a7e9dfe40e0b4f87ae451bfdbdc0328a97c4be4a8c54312808daba",
@@ -110,14 +45,15 @@
     "contracts/TokenInventory.sol": "501ff308eeda7ce880493839a67c838658da5e7730cb9be151e7e2e808d949b3",
     "contracts/Utilities.sol": "0a257ba1577be6b1c35bbd426bab8bd3fe203235f03cd8c7b415d0b5024e8ea1",
     "contracts/XenovoyaBoard.sol": "fc78030fd79b189e613e79916e9c7a9a77cd18e3daea25939e24796bf8fbe6c9",
-    "contracts/XenovoyaController.sol": "62033eb7fd609b5a76e63037da1226a05f4fdc40125088166771b38feae0abe4",
+    "contracts/XenovoyaController.sol": "e625c907c76a3c7ab89a88391824d6ee1ed38bf2bda759aa730ff27a68994ee8",
     "contracts/XenovoyaDisputeResolver.sol": "0d44aa9ea490c0a82b31e61f89f749f741b34a6acec77f6aa915339aa609f056",
     "contracts/XenovoyaGameplay.sol": "6470a5bff3d727009efe1c9ff9fb874511f51f88d4b27df2fcaeaaa4a8883e13",
     "contracts/XenovoyaGameplayUpdates.sol": "f2c30f8a751fd4697ccb29c77e2630927bb65d338a88a95b814fd7ab94abfb35",
     "contracts/XenovoyaQueue.sol": "ee376b37011100a07257c0ec8ed86f6ab07e6298e62aca9cf50c76cd4f7dd74f",
     "contracts/XenovoyaRules.sol": "4999895331cdbaf4fb2957ae5a10f2c7e4b4c35d84109aa6ffb4b45c703d6137",
+    "contracts/XenovoyaSessionForwarder.sol": "a5117b6d35569e11d128ac2f18f5ead69b5ea1b26277b781866b16fe7f6c3d24",
     "contracts/XenovoyaStateUpdate.sol": "e4ffcdcbbf909c7fd8bcefca93ba105fc761aac9ff0e24b574eeda4b48f41738",
     "contracts/XenovoyaZone.sol": "890d0858c21bfe9e2f45bf444f5775fd17abf877ec228cd7cf8b6d5633da8900"
   },
-  "updatedAt": "2026-09-10T05:54:29.548Z"
+  "updatedAt": "2026-09-14T16:48:03.636Z"
 }

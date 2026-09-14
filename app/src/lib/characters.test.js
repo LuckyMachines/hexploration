@@ -45,10 +45,10 @@ describe('character system', () => {
     expect(deriveCharacterState({ isCurrent: true, lowStats: true, activeAction: Action.HELP })).toBe('strained');
     expect(deriveCharacterState({ isCurrent: true, activeAction: Action.HELP })).toBe('helping');
     const available = resolveCharacterVisual({ characterId: 'signal-cartographer', state: 'helping' });
-    expect(available.path).toContain('signal-cartographer-helping.png');
+    expect(available.path).toContain('signal-cartographer-helping.runtime.webp');
     expect(available.isFallback).toBe(false);
     const fallback = resolveCharacterVisual({ characterId: 'signal-cartographer', state: 'downed' });
-    expect(fallback.path).toContain('signal-cartographer.png');
+    expect(fallback.path).toContain('signal-cartographer.runtime.webp');
     expect(fallback.isFallback).toBe(true);
   });
 });

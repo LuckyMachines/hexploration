@@ -47,6 +47,12 @@ export function resolveExecutable(name, platform = process.platform) {
   return name;
 }
 
+export function verificationReportBasename({ tier = 'smoke', latest = false, doctor = false } = {}) {
+  if (latest) return 'latest-hard';
+  if (doctor) return 'latest-doctor';
+  return `latest-${tier}`;
+}
+
 export function formatDuration(ms = 0) {
   if (ms < 1000) return `${ms}ms`;
   const seconds = ms / 1000;
@@ -78,7 +84,8 @@ export function scoreReport(steps = []) {
 
 export function gradeHardness(report = {}) {
   const ids = new Set((report.steps || []).filter((step) => step.status === 'pass').map((step) => step.id));
-  const hasSmoke = ids.has('smoke.local-doctor-tests') && ids.has('smoke.ui-density');
+  const hasSmoke = (ids.has('smoke.local-doctor-tests') || ids.has('hard.root-node-tests'))
+    && ids.has('smoke.ui-density');
   const hasBuild = ids.has('hard.forge-build') || ids.has('focused.app-build');
   const hasApp = ids.has('hard.app-test') || ids.has('focused.app-build');
   const hasExact = ids.has('exact.local-doctor-gate');

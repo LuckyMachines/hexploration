@@ -3,17 +3,17 @@
   "materialId": "lantern-moss",
   "sourceSha256": "1db422db5782cf4e08905186a841a2a86f47f8b9cadc1834e56c0e38297ace6d",
   "candidateSha256": {
-    "baseColor": "e78aec133a7a1795766a93050b0f88f87578fa00d1440c85625dab198684f27f",
-    "normal": "a006bdb8ecab10b1943d5b6c814ccfd4d8fe8924b53848f09f0c95b558a349d2",
-    "roughness": "931014fe2c9fdd0c0a611c36806d8b907c2226f033acece279278b40a5e885b7",
-    "ao": "743807e3d9da6ea57634a5a9112fb7c3fb0d3b32ca2bd1d0adb2d8ef268c22b7",
-    "height": "d4b4d4c1327c2136fdb97f854d65c773dc11eb869c12c0c0dde1c4ceb5d99e9a",
+    "baseColor": "ad058fc498b1088392c92cfac3cb91ad5015a1dc941055618eb941b3bcae9f99",
+    "normal": "ff8cfaa9bd395a4349e5409dc64adf718b3162bc23b159efb08cd0dac3db21d8",
+    "roughness": "be260d5ea372068707837cd851c6be95107e5fda3d2e85aafcfdb23236978097",
+    "ao": "13cdfaac7db946ed668f4bcce35d002b3d67d2ce546a1afb88f24d09db1d0384",
+    "height": "8c5a5147478ac2ca8050c8a3b642238674227e321722d0d436b8de0dc7ab833e",
     "emissive": "8383219e546eb515dd2e1a8c02557888e126423cc82014fe2eea79006155a62f"
   },
   "reviewer": "Codex visual QA",
-  "reviewedAt": "2026-09-09T17:47:28.853Z",
+  "reviewedAt": "2026-09-14T17:44:58.479Z",
   "scores": {
-    "tileability": 3,
+    "tileability": 4,
     "depthResponse": 4,
     "lightNeutrality": 4,
     "materialIdentity": 4,
@@ -21,5 +21,5 @@
     "accessibility": 4
   },
   "decision": "approved",
-  "notes": "Approved after seam-safe Sobel normal generation; moss remains readable and subordinate to gameplay markers."
+  "notes": "Approved after localized opposing-edge blending removed whole-field mirrored symmetry. Moss islands remain readable at tile scale without competing with characters or route state."
 }

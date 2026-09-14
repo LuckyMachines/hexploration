@@ -4,6 +4,7 @@
     { "id": "improvement-portfolio", "owner": "product-operations", "path": "reports/improvement/latest-portfolio.json", "purpose": "cross-surface portfolio and next action", "reviewCadenceDays": 14, "canonical": true },
     { "id": "improvement-apply", "owner": "product-operations", "path": "reports/improvement/latest-apply.json", "purpose": "automatic repair attempts, outcomes, touched paths, and human-required handoffs", "reviewCadenceDays": 14, "canonical": true },
     { "id": "verification-hard", "owner": "engineering", "path": "reports/verification/latest-hard.json", "purpose": "technical verification evidence", "reviewCadenceDays": 7, "canonical": true },
+    { "id": "release-live", "owner": "engineering", "path": "reports/release/latest-live.json", "purpose": "deployed release identity, route, dependency, security-header, discovery, chain, and rollback evidence", "reviewCadenceDays": 7, "canonical": true },
     { "id": "playable-memory", "owner": "product-design", "path": "reports/simulator/memory/latest-memory.json", "purpose": "gameplay evidence memory", "reviewCadenceDays": 14, "canonical": true },
     { "id": "gameplay-improvement", "owner": "game-design", "path": "reports/gameplay-improvement/latest-report.json", "purpose": "automated gameplay architecture, exact-evidence readiness, coverage, and next actions", "reviewCadenceDays": 7, "canonical": true },
     { "id": "gameplay-exact-runner", "owner": "engineering", "path": "reports/gameplay-improvement/exact-runner/latest-report.json", "purpose": "self-managed exact-engine execution, checkpoint, and failure evidence", "reviewCadenceDays": 7, "canonical": true },
@@ -14,7 +15,6 @@
     { "id": "ui-quality", "owner": "product-design", "path": "reports/ui-quality/latest.json", "purpose": "rendered visual, accessibility, responsiveness, and source-freshness evidence", "reviewCadenceDays": 14, "canonical": true },
     { "id": "ux-quality", "owner": "product-research", "path": "reports/ux/latest.json", "purpose": "journey budgets, input resilience, copy governance, telemetry, friction, and observed-player evidence", "reviewCadenceDays": 14, "canonical": true },
     { "id": "art-3d-review", "owner": "art-direction", "path": "app/src/art-pipeline/asset-3d-review.json", "purpose": "3D candidate selection and rejection evidence", "reviewCadenceDays": 30, "canonical": true },
-    { "id": "material-verification", "owner": "art-direction", "path": "reports/materials/latest.json", "purpose": "surface channel, compression, seam, provenance, and relational review evidence", "reviewCadenceDays": 14, "canonical": true },
-    { "id": "marketing-report-card", "owner": "growth", "path": "docs/marketing-site-report-card.md", "purpose": "human-readable historical marketing grade", "reviewCadenceDays": 30, "canonical": false, "supersededBy": "improvement-portfolio" }
+    { "id": "material-verification", "owner": "art-direction", "path": "reports/materials/latest.json", "purpose": "surface channel, compression, seam, provenance, and relational review evidence", "reviewCadenceDays": 14, "canonical": true }
   ]
 }

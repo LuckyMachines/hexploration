@@ -7,6 +7,17 @@ const GRADE_POINTS = Object.fromEntries(GRADE_ORDER.map((grade, index) => [grade
 const TIMESTAMP_FIELDS = ['generatedAt', 'reviewedAt', 'updatedAt', 'recordedAt', 'completedAt', 'createdAt', 'timestamp'];
 const RISK_POINTS = { low: 0, medium: 1, high: 2 };
 
+export function parseControlPlaneInvocation(values = []) {
+  const args = [...values];
+  if (['help', '--help', '-h'].includes(args[0])) return { command: 'help', args: args.slice(1) };
+  const command = args[0] && !args[0].startsWith('--') ? args.shift() : 'apply';
+  return { command, args };
+}
+
+export function shouldPersistPortfolio(args = []) {
+  return !args.includes('--no-verify');
+}
+
 export function normalizePath(value = '') {
   return String(value).replace(/\\/g, '/').replace(/^\.\//, '').trim();
 }

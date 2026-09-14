@@ -7,6 +7,39 @@ export const BOARD_QUALITY_MODES = Object.freeze({
   EFFICIENT: 'efficient',
 });
 
+export const BOARD_SHADER_WARMUP_BUDGET_MS = 8_000;
+
+export function shouldUseAsyncShaderWarmup(userAgent = '') {
+  const value = String(userAgent);
+  const webKit = /AppleWebKit/i.test(value);
+  const chromium = /(Chrome|Chromium|CriOS|Edg)/i.test(value);
+  return !webKit || chromium;
+}
+
+export async function settleRendererWarmup(startWarmup, {
+  timeoutMs = BOARD_SHADER_WARMUP_BUDGET_MS,
+} = {}) {
+  if (typeof startWarmup !== 'function') return 'unsupported';
+
+  let warmup;
+  try {
+    warmup = startWarmup();
+  } catch {
+    return 'failed';
+  }
+  if (!warmup || typeof warmup.then !== 'function') return 'unsupported';
+
+  let timeoutId;
+  const result = await Promise.race([
+    Promise.resolve(warmup).then(() => 'complete', () => 'failed'),
+    new Promise((resolve) => {
+      timeoutId = setTimeout(() => resolve('timed-out'), Math.max(0, Number(timeoutMs) || 0));
+    }),
+  ]);
+  clearTimeout(timeoutId);
+  return result;
+}
+
 export function resolveBoardQuality({
   mode = BOARD_QUALITY_MODES.AUTO,
   deviceMemory = 8,

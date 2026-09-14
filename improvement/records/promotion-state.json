@@ -1,11 +1,20 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-09-08T15:05:36.042Z",
+  "updatedAt": "2026-09-14T11:47:14.839Z",
   "surfaces": {
     "gameplay": {
       "state": "candidate",
       "evidence": [],
       "decision": "Awaiting current flagship-scenario evidence."
+    },
+    "game-board": {
+      "state": "verified",
+      "evidence": [
+        "reports/board-system/latest.json",
+        "docs/GAME_TILE_KIT_VISUAL_REVIEW.md"
+      ],
+      "decision": "Board system, sculpted tile kit, stable interaction transforms, and runtime budgets pass current automated and visual review.",
+      "updatedAt": "2026-09-14T10:05:00.000Z"
     },
     "ux-onboarding": {
       "state": "candidate",
@@ -32,9 +41,14 @@
       "decision": "Verification tooling exists; fresh hard evidence remains required."
     },
     "ops-release": {
-      "state": "candidate",
-      "evidence": [],
-      "decision": "Exact-stack and post-release evidence remain required."
+      "state": "verified",
+      "evidence": [
+        "reports/verification/latest-hard.json",
+        "reports/release/latest-live.json",
+        "release/rollback-plan.json"
+      ],
+      "decision": "Hard verification, exact-SHA live checks, dependency readiness, security headers, and rollback contract pass; the next checkout still requires a clean release-tier run before deployment.",
+      "updatedAt": "2026-09-14T11:47:14.839Z"
     },
     "player-validation": {
       "state": "baseline",
@@ -75,6 +89,18 @@
       ],
       "decision": "Bounded automatic repair loop, policy guards, and verification pass",
       "at": "2026-09-08T15:05:36.042Z"
+    },
+    {
+      "surface": "ops-release",
+      "from": "candidate",
+      "to": "verified",
+      "evidence": [
+        "reports/verification/latest-hard.json",
+        "reports/release/latest-live.json",
+        "release/rollback-plan.json"
+      ],
+      "decision": "Hard verification, exact-SHA live checks, dependency readiness, security headers, and rollback contract pass; the next checkout still requires a clean release-tier run before deployment.",
+      "at": "2026-09-14T11:47:14.839Z"
     }
   ]
 }

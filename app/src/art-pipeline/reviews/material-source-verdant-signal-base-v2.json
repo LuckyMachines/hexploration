@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "assetId": "terrain-verdant-signal-base",
+  "reviewedAt": "2026-09-14",
+  "reviewer": "Codex visual QA",
+  "decision": "approved",
+  "selected": {
+    "variant": "seamless-master-v2",
+    "provider": "azure-foundry",
+    "model": "gpt-image-2",
+    "rawCandidateSha256": "281620acb03e4f0073d6609e7055639d9168bae9d9dcb3f0b0364597aa06aad6",
+    "promptSha256": "bded0a889beb5dd7518369cb710548e294bdf984abe06eb1b170989ee9e195d6",
+    "sourcePath": "app/public/images/art/terrain/verdant-signal-base-v2.webp",
+    "sourceSha256": "9b29dfe117cff121d000e5f85c69be2088b280d08299e23fd8326564d4088198",
+    "rawEdgeMeanDifference": 6.23194,
+    "promotedEdgeMeanDifference": 1.921,
+    "seamMode": "edge-blend"
+  },
+  "rejected": [
+    {
+      "variant": "edge-locked-master-v2",
+      "rawCandidateSha256": "a0cbf49380ab1ad048c3730f1a7ec5f63805d989398d65466756487a000d9b7a",
+      "promptSha256": "76b8d33a419fbf0ccd7961e4475f6f7a586014c02bd2c9af726e929d64c797f3",
+      "edgeMeanDifference": 7.33737,
+      "reason": "More surface noise, unintended cyan flecks, and a worse measured edge discontinuity than the selected source."
+    }
+  ],
+  "scores": {
+    "tileability": 4,
+    "depthResponse": 3,
+    "lightNeutrality": 4,
+    "materialIdentity": 3,
+    "stateLegibility": 4,
+    "accessibility": 4
+  },
+  "notes": "Selected for its calm basalt field, localized green and gold signal language, strong hierarchy under character standees, and clean non-mirrored repeat after the governed edge blend."
+}

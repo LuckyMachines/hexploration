@@ -4,6 +4,7 @@ import materialSystem from '../art-pipeline/material-system.json';
 import MaterialPreviewScene from '../components/board/MaterialPreviewScene';
 import { LIGHTING_RIG_IDS, LIGHTING_RIGS } from '../components/board/lightingRigs';
 import { MATERIAL_CHANNELS, materialAssetPath, surfaceProfileById } from '../components/board/surfaceCatalog';
+import { TILE_VARIANTS, tileFamilyFor } from '../components/board/tileKit';
 
 const DEBUG_CHANNELS = ['material', 'albedo', 'normal', 'roughness', 'ao', 'height', 'emissive'];
 const QUALITY_MODES = ['high', 'balanced', 'efficient'];
@@ -26,6 +27,7 @@ export default function MaterialLabPage() {
   const debugChannel = DEBUG_CHANNELS.includes(searchParams.get('debug')) ? searchParams.get('debug') : 'material';
   const qualityMode = QUALITY_MODES.includes(searchParams.get('quality')) ? searchParams.get('quality') : 'high';
   const profile = useMemo(() => surfaceProfileById(materialId), [materialId]);
+  const tileFamily = tileFamilyFor(profile.tileType);
   const setParam = (key, value, fallback) => {
     const next = new URLSearchParams(searchParams);
     if (value === fallback) next.delete(key);
@@ -64,6 +66,26 @@ export default function MaterialLabPage() {
             {[['Roughness', profile.roughness], ['Metalness', profile.metalness], ['Normal', profile.normalScale], ['AO', profile.aoIntensity]].map(([label, value]) => <div key={label} className="rounded border border-exp-border bg-exp-dark/45 p-3"><dt className="uppercase tracking-[0.14em] text-exp-text-dim">{label}</dt><dd className="mt-1 text-compass-bright">{value}</dd></div>)}
           </dl>
         </aside>
+      </section>
+
+      <section className="mt-4 grid gap-4 overflow-hidden rounded-md border border-exp-border bg-exp-panel/85 p-4 lg:grid-cols-[minmax(0,1.15fr)_minmax(18rem,0.85fr)]" data-testid="tile-kit-reference">
+        <figure className="overflow-hidden rounded border border-exp-border bg-exp-dark">
+          <img src={`/images/art/tile-concepts/${tileFamily.id}-variants.webp`} alt={`${profile.label} tile concept plate showing shelf, fracture, and crown variants`} className="aspect-square w-full object-cover" />
+          <figcaption className="border-t border-exp-border px-3 py-2 font-mono text-[9px] uppercase tracking-[0.14em] text-exp-text-dim">GPT Image 2 direction plate / reference only / runtime geometry above</figcaption>
+        </figure>
+        <div className="self-center p-2 sm:p-5">
+          <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-compass">Tile kit / 1.1.0</p>
+          <h2 className="mt-2 font-display text-3xl uppercase tracking-[0.1em] text-exp-text">One family.<br />Three stable forms.</h2>
+          <p className="mt-4 max-w-xl font-sans text-sm leading-relaxed text-exp-text-dim">The reference sets silhouette and material ambition. The live Three.js forms keep the footprint, picking, routes, and performance deterministic.</p>
+          <div className="mt-5 grid gap-2 sm:grid-cols-3 lg:grid-cols-1 xl:grid-cols-3">
+            {TILE_VARIANTS.map((variant, index) => <div key={variant.id} className="rounded border border-exp-border bg-exp-dark/55 p-3"><p className="font-mono text-[9px] uppercase tracking-[0.14em] text-compass">0{index + 1}</p><h3 className="mt-1 font-display text-lg uppercase tracking-[0.1em] text-exp-text">{variant.id}</h3><p className="mt-1 font-sans text-xs leading-relaxed text-exp-text-dim">{variant.label}</p></div>)}
+          </div>
+          <ul className="mt-5 space-y-2 font-mono text-[9px] uppercase tracking-[0.1em] text-exp-text-dim">
+            <li>Stable base matrix in every interaction state</li>
+            <li>Separate PBR top and sculpted sidewall response</li>
+            <li>Deterministic landmark, hazard, route, and relic sockets</li>
+          </ul>
+        </div>
       </section>
 
       <section className="mt-8">

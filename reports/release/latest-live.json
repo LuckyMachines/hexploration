@@ -1,0 +1,184 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-09-14T20:13:53.147Z",
+  "environment": "production",
+  "origins": {
+    "player": "https://play.xenovoya.com",
+    "marketing": "https://xenovoya.com",
+    "returnApi": "https://return-api.xenovoya.com",
+    "rpc": "https://ethereum-sepolia-rpc.publicnode.com",
+    "sponsorRelay": ""
+  },
+  "expectedRelease": null,
+  "expectedMarketingRelease": null,
+  "observedRelease": "eeee333cac319d9d2642ac9e00ffed516f12550f",
+  "observedMarketingRelease": "2a206bfa991ca8b5c5ce7f02a245d42309ca50e6",
+  "localHead": "75c9234c92eec5404ad56872d0a67bd85c46326c",
+  "checkoutRelationship": "local-ahead-of-deployed",
+  "summary": {
+    "status": "fail",
+    "grade": "B",
+    "total": 16,
+    "passed": 12,
+    "failed": 1,
+    "skipped": 3,
+    "requiredFailures": [
+      "marketing.security"
+    ],
+    "optionalGaps": [
+      "player.release-match",
+      "marketing.release-match",
+      "sponsor-relay.scope"
+    ]
+  },
+  "checks": [
+    {
+      "id": "player.homepage",
+      "label": "Player homepage",
+      "required": true,
+      "status": "pass",
+      "detail": "HTTP 200",
+      "startedAt": "2026-09-14T20:13:50.751Z",
+      "durationMs": 529
+    },
+    {
+      "id": "player.bundle",
+      "label": "Current player bundle",
+      "required": true,
+      "status": "pass",
+      "detail": "1 entry bundle(s), 2 required route chunk(s)",
+      "startedAt": "2026-09-14T20:13:51.342Z",
+      "durationMs": 108
+    },
+    {
+      "id": "player.deep-link",
+      "label": "Player deep-link fallback",
+      "required": true,
+      "status": "pass",
+      "detail": "HTTP 200",
+      "startedAt": "2026-09-14T20:13:51.450Z",
+      "durationMs": 51
+    },
+    {
+      "id": "player.security",
+      "label": "Player security headers",
+      "required": true,
+      "status": "pass",
+      "detail": "complete header contract",
+      "startedAt": "2026-09-14T20:13:51.502Z",
+      "durationMs": 0
+    },
+    {
+      "id": "player.release",
+      "label": "Release metadata",
+      "required": true,
+      "status": "pass",
+      "detail": "eeee333cac319d9d2642ac9e00ffed516f12550f",
+      "startedAt": "2026-09-14T20:13:51.502Z",
+      "durationMs": 38
+    },
+    {
+      "id": "player.release-match",
+      "label": "Expected release match",
+      "required": false,
+      "status": "skipped",
+      "detail": "set XENOVOYA_EXPECTED_RELEASE_SHA during promotion",
+      "startedAt": "2026-09-14T20:13:51.540Z",
+      "durationMs": 0
+    },
+    {
+      "id": "player.robots",
+      "label": "Robots policy",
+      "required": true,
+      "status": "pass",
+      "detail": "canonical sitemap declared",
+      "startedAt": "2026-09-14T20:13:51.540Z",
+      "durationMs": 80
+    },
+    {
+      "id": "player.sitemap",
+      "label": "Sitemap",
+      "required": true,
+      "status": "pass",
+      "detail": "home and guest routes declared",
+      "startedAt": "2026-09-14T20:13:51.620Z",
+      "durationMs": 45
+    },
+    {
+      "id": "marketing.homepage",
+      "label": "Marketing homepage",
+      "required": true,
+      "status": "pass",
+      "detail": "HTTP 200",
+      "startedAt": "2026-09-14T20:13:51.665Z",
+      "durationMs": 236
+    },
+    {
+      "id": "marketing.security",
+      "label": "Marketing security headers",
+      "required": true,
+      "status": "fail",
+      "detail": "content-security-policy is missing; strict-transport-security is missing; x-frame-options is missing; permissions-policy is missing; cross-origin-opener-policy is missing; cross-origin-resource-policy is missing",
+      "startedAt": "2026-09-14T20:13:51.901Z",
+      "durationMs": 1
+    },
+    {
+      "id": "marketing.release",
+      "label": "Marketing release metadata",
+      "required": true,
+      "status": "pass",
+      "detail": "2a206bfa991ca8b5c5ce7f02a245d42309ca50e6",
+      "startedAt": "2026-09-14T20:13:51.902Z",
+      "durationMs": 71
+    },
+    {
+      "id": "marketing.release-match",
+      "label": "Expected marketing release match",
+      "required": false,
+      "status": "skipped",
+      "detail": "set XENOVOYA_EXPECTED_MARKETING_RELEASE_SHA during promotion",
+      "startedAt": "2026-09-14T20:13:51.973Z",
+      "durationMs": 0
+    },
+    {
+      "id": "return-api.readiness",
+      "label": "Return API readiness",
+      "required": true,
+      "status": "pass",
+      "detail": "{\"ok\":true}",
+      "startedAt": "2026-09-14T20:13:51.973Z",
+      "durationMs": 649
+    },
+    {
+      "id": "sponsor-relay.scope",
+      "label": "Sponsor relay scope",
+      "required": false,
+      "status": "skipped",
+      "detail": "deployed release predates capability metadata; supply XENOVOYA_SPONSOR_RELAY_URL if delegation is enabled",
+      "startedAt": "2026-09-14T20:13:52.622Z",
+      "durationMs": 0
+    },
+    {
+      "id": "chain.sepolia",
+      "label": "Sepolia RPC",
+      "required": true,
+      "status": "pass",
+      "detail": "chain 11155111",
+      "startedAt": "2026-09-14T20:13:52.622Z",
+      "durationMs": 275
+    },
+    {
+      "id": "rollback.contract",
+      "label": "Rollback contract",
+      "required": true,
+      "status": "pass",
+      "detail": "coolify/xenovoya-player",
+      "startedAt": "2026-09-14T20:13:52.898Z",
+      "durationMs": 0
+    }
+  ],
+  "rollbackPlan": {
+    "path": "release/rollback-plan.json",
+    "sha256": "d9c8d6c4072192e619a2561e0252e3afdaf16e1a368cd332c926d17fb4044420"
+  }
+}

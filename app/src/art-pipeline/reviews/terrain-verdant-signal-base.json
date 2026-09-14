@@ -1,8 +1,8 @@
 {
   "assetId": "terrain-verdant-signal-base",
-  "candidate": "artifacts/art/exports/terrain-verdant-signal-base.webp",
+  "candidate": "app/public/images/art/terrain/verdant-signal-base-v2.webp",
   "reviewer": "Codex visual QA",
-  "reviewedAt": "2026-09-06",
+  "reviewedAt": "2026-09-14",
   "scores": {
     "recognition": 3,
     "agency": 3,
@@ -13,21 +13,21 @@
     "accessibility": 3
   },
   "notes": {
-    "recognition": "Reads immediately as mineral terrain at thumbnail size.",
-    "agency": "Circuit-like seams imply traversable possibility without baking in a route.",
-    "specificity": "Basalt, moss circuitry, and restrained survey marks match Xenovoya's material language.",
-    "restraint": "Low-contrast surface keeps focal objects and UI dominant.",
-    "continuity": "Field ink, oxide green, and small gold traces preserve the signal hierarchy.",
-    "reusability": "Mirrored edge construction is genuinely repeatable on both axes.",
-    "accessibility": "Value texture remains legible without relying on the green and gold accents."
+    "recognition": "Reads immediately as layered mineral terrain at thumbnail size.",
+    "agency": "Sparse circuit-like veins imply traversable possibility without baking in a route.",
+    "specificity": "Calm blue-black basalt, oxide-green circuitry, and tiny gold mineral flecks match Xenovoya's material language.",
+    "restraint": "Quiet contrast and broad plates keep focal objects, board state, and interface signals dominant.",
+    "continuity": "Field ink, oxide green, and rare compass-gold flecks preserve the established signal hierarchy.",
+    "reusability": "Localized opposing-edge blending creates continuous boundaries while preserving the authored, non-mirrored center field.",
+    "accessibility": "Plate boundaries and surface depth remain legible through value and texture without relying on hue."
   },
   "decision": "approved",
-  "candidateSha256": "c4537d475dc1cc45339aa8f8aa7b5b381ef0240bfbca90967b0313802e768dfa",
+  "candidateSha256": "9b29dfe117cff121d000e5f85c69be2088b280d08299e23fd8326564d4088198",
   "generation": {
     "mode": "azure-image-generation",
     "tool": "azure-foundry",
-    "model": "FLUX.2-pro",
-    "promptSha256": "25d2b9850d9c780dcc3e72af11491f7137de23f765e58e066d6803a756c65c43"
+    "model": "gpt-image-2",
+    "promptSha256": "bded0a889beb5dd7518369cb710548e294bdf984abe06eb1b170989ee9e195d6"
   },
   "joyScore": 8.8
 }

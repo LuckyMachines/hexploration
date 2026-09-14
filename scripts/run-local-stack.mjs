@@ -88,6 +88,7 @@ const skipWorker = !!flag('no-worker');
 const skipRelay = !!flag('no-relay');
 const skipVite = !!flag('no-vite');
 const deployTimeoutMs = Number(process.env.LOCAL_STACK_DEPLOY_TIMEOUT_MS) || 180_000;
+const anvilPruneHistory = Number(process.env.ANVIL_PRUNE_HISTORY || 0);
 const commandTimeoutMs = Number(process.env.LOCAL_STACK_COMMAND_TIMEOUT_MS) || 120_000;
 const readinessTimeoutMs = Number(process.env.LOCAL_STACK_READINESS_TIMEOUT_MS) || 30_000;
 
@@ -680,6 +681,9 @@ async function main() {
     '--host', '127.0.0.1',
     '--port', String(ANVIL_PORT),
     '--chain-id', '31337',
+    ...(Number.isInteger(anvilPruneHistory) && anvilPruneHistory > 0
+      ? ['--prune-history', String(anvilPruneHistory)]
+      : []),
     '--silent',
   ], { shell: false, stdio: 'inherit', label: 'anvil' }));
 

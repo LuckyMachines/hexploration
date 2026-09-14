@@ -1,4 +1,5 @@
 import catalog from '../characters/character-catalog.json';
+import runtimeImageDelivery from '../art-pipeline/runtime-image-delivery.json';
 import { Action } from './constants';
 
 export const CHARACTER_CATALOG_VERSION = catalog.version;
@@ -9,11 +10,19 @@ export const ROLE_ROSTER = Object.freeze(catalog.roles.map((role) => Object.free
 const characterById = new Map(CHARACTER_ROSTER.map((character) => [character.id, character]));
 const roleById = new Map(ROLE_ROSTER.map((role) => [role.id, role]));
 const roleAliases = new Map(Object.entries(catalog.roleAliases || {}));
+const runtimeImageBySource = new Map(runtimeImageDelivery.assets.map((asset) => [
+  `/${asset.source.replace(/^app\/public\//, '')}`,
+  `/${asset.output.replace(/^app\/public\//, '')}`,
+]));
 
-export const CHARACTER_NEUTRAL_TEXTURE_PATHS = Object.freeze(CHARACTER_ROSTER.map((character) => character.assets.neutral));
+export function runtimeImagePath(sourcePath = '') {
+  return runtimeImageBySource.get(sourcePath) || sourcePath;
+}
+
+export const CHARACTER_NEUTRAL_TEXTURE_PATHS = Object.freeze(CHARACTER_ROSTER.map((character) => runtimeImagePath(character.assets.neutral)));
 export const CHARACTER_TEXTURE_PATHS = Object.freeze([...new Set(CHARACTER_ROSTER.flatMap((character) => [
-  character.assets.neutral,
-  ...Object.values(character.assets.states || {}),
+  runtimeImagePath(character.assets.neutral),
+  ...Object.values(character.assets.states || {}).map(runtimeImagePath),
 ]))]);
 
 export function normalizeRoleId(value = '') {
@@ -113,7 +122,7 @@ export function resolveCharacterVisual({ characterId, state = 'neutral' } = {}) 
     character,
     state,
     resolvedState: character.assets.states?.[state] ? state : 'neutral',
-    path: character.assets.states?.[state] || character.assets.neutral,
+    path: runtimeImagePath(character.assets.states?.[state] || character.assets.neutral),
     isFallback: state !== 'neutral' && !character.assets.states?.[state],
   };
 }

@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-11T01:25:32.355Z",
+  "generatedAt": "2026-09-14T20:03:08.579Z",
   "ok": true,
-  "strict": true,
+  "strict": false,
   "site": {
     "name": "Xenovoya",
     "url": "https://play.xenovoya.com",
@@ -34,8 +34,8 @@
       "ok": true,
       "errors": 0,
       "warnings": 0,
-      "title": "Play the Xenovoya 3D expedition | Xenovoya",
-      "description": "Explore Xenovoya in the production 3D world without a wallet: reveal terrain, recover relics, manage pressure, and return safely.",
+      "title": "Play The Living Survey | Xenovoya",
+      "description": "Enter Xenovoya's playable solo prologue: read a living 3D world, survive landmark choices, recover a relic, and bring the route home.",
       "canonicalUrl": "https://play.xenovoya.com/guest"
     },
     {
@@ -60,7 +60,7 @@
     },
     {
       "path": "/guest",
-      "title": "Play the Xenovoya 3D expedition | Xenovoya",
+      "title": "Play The Living Survey | Xenovoya",
       "url": "https://play.xenovoya.com/guest",
       "image": "https://play.xenovoya.com/seo/xenovoya-share-card.png",
       "ok": true,

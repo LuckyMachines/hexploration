@@ -3,7 +3,7 @@
   "$id": "https://xenovoya.com/schemas/asset-3d-manifest.schema.json",
   "title": "Xenovoya image-to-3D asset manifest",
   "type": "object",
-  "required": ["version", "artDirectionVersion", "name", "generation", "trellis", "assets"],
+  "required": ["version", "artDirectionVersion", "name", "generation", "trellis", "runtime", "assets"],
   "properties": {
     "$schema": { "type": "string" },
     "version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
@@ -67,6 +67,38 @@
       },
       "additionalProperties": true
     },
+    "runtime": {
+      "type": "object",
+      "required": ["maxMaterials", "maxTextures", "allowedRequiredExtensions", "lods"],
+      "properties": {
+        "maxMaterials": { "type": "integer", "minimum": 1 },
+        "maxTextures": { "type": "integer", "minimum": 1 },
+        "allowedRequiredExtensions": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "uniqueItems": true
+        },
+        "lods": {
+          "type": "array",
+          "minItems": 2,
+          "items": {
+            "type": "object",
+            "required": ["id", "simplifyRatio", "simplifyError", "textureSize", "maxBytes", "maxTriangles", "maxVertices"],
+            "properties": {
+              "id": { "type": "string", "pattern": "^lod[0-9]+$" },
+              "simplifyRatio": { "type": "number", "exclusiveMinimum": 0, "maximum": 1 },
+              "simplifyError": { "type": "number", "exclusiveMinimum": 0, "maximum": 1 },
+              "textureSize": { "type": "integer", "minimum": 1 },
+              "maxBytes": { "type": "integer", "minimum": 1 },
+              "maxTriangles": { "type": "integer", "minimum": 1 },
+              "maxVertices": { "type": "integer", "minimum": 1 }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    },
     "assets": {
       "type": "array",
       "minItems": 1,
@@ -79,6 +111,59 @@
           "seed": { "type": "integer" },
           "decimationTarget": { "type": "integer", "minimum": 10000 },
           "physicalBrief": { "type": "string", "minLength": 1 },
+          "matteMode": { "enum": ["soft-color", "connected-border"] },
+          "orbitMatteMode": { "enum": ["soft-color", "connected-border"] },
+          "cardinalMatteMode": { "enum": ["soft-color", "connected-border"] },
+          "cardinalReferenceMode": { "enum": ["all", "identity-only"] },
+          "lodSimplifyRatios": {
+            "type": "object",
+            "propertyNames": { "pattern": "^lod[0-9]+$" },
+            "additionalProperties": { "type": "number", "exclusiveMinimum": 0, "maximum": 1 }
+          },
+          "lodBudgetOverrides": {
+            "type": "object",
+            "propertyNames": { "pattern": "^lod[0-9]+$" },
+            "additionalProperties": {
+              "type": "object",
+              "properties": {
+                "maxBytes": { "type": "integer", "minimum": 1 },
+                "maxTriangles": { "type": "integer", "minimum": 1 },
+                "maxVertices": { "type": "integer", "minimum": 1 }
+              },
+              "additionalProperties": false
+            }
+          },
+          "materialOverride": {
+            "type": "object",
+            "properties": {
+              "metallicFactor": { "type": "number", "minimum": 0, "maximum": 1 },
+              "roughnessFactor": { "type": "number", "minimum": 0, "maximum": 1 },
+              "baseColorRemap": {
+                "type": "object",
+                "required": ["shadow", "highlight"],
+                "properties": {
+                  "shadow": { "type": "string", "pattern": "^#[0-9A-Fa-f]{6}$" },
+                  "highlight": { "type": "string", "pattern": "^#[0-9A-Fa-f]{6}$" },
+                  "blackPoint": { "type": "number", "minimum": 0, "maximum": 1 },
+                  "whitePoint": { "type": "number", "minimum": 0, "maximum": 1 },
+                  "gamma": { "type": "number", "exclusiveMinimum": 0, "maximum": 4 }
+                },
+                "additionalProperties": false
+              }
+            },
+            "additionalProperties": false
+          },
+          "matteFuzzPercent": { "type": "number", "minimum": 0, "maximum": 30 },
+          "orbitCrop": {
+            "type": "object",
+            "properties": {
+              "topInset": { "type": "integer", "minimum": 0, "maximum": 255 },
+              "rightInset": { "type": "integer", "minimum": 0, "maximum": 255 },
+              "bottomInset": { "type": "integer", "minimum": 0, "maximum": 255 },
+              "leftInset": { "type": "integer", "minimum": 0, "maximum": 255 }
+            },
+            "additionalProperties": false
+          },
           "cardinalCrop": {
             "type": "object",
             "required": ["layout"],

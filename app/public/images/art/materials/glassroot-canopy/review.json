@@ -3,17 +3,17 @@
   "materialId": "glassroot-canopy",
   "sourceSha256": "9cecffde3ed906996ffdd78d6e9d6676fd503c6c6347bb5cda5a93614d8ae7e4",
   "candidateSha256": {
-    "baseColor": "9ec2f50d04d0a1158203203221c057b76ec018176aa5857d1645acd77cffc001",
-    "normal": "71bb793c4285d0e7c51595a3750d7862a64a5f99bb96e90d351f855bfc0b2569",
-    "roughness": "254b492b3f177f1b652624d20a4af9e6d5c00fc23ac7ee847c6440a3cdea911b",
-    "ao": "23c06e64bd22dfeed071830c7b74d2bba2e100cf2efe1d71f88134040ed4bc6e",
-    "height": "37330aff845e1d189b5a61a75fd7531fd1073c0bb59a4d43690d26ee95a041b4",
-    "emissive": "39ddcdbdbfc84677d164ad9d7bea527b8ead8d1d006c214d60660457511fce5a"
+    "baseColor": "959f0a11bf30752c497d42437b2c78cf0de88f8e0f42a74e6c12efa7c8e036fa",
+    "normal": "66a55df6118e6ef93a621d16a837fca22144d9240a1b30a0fff164d136217807",
+    "roughness": "cbb01581a567b457901d087b68fe849f0e8c6d857f28345410cf2dfae4b52cb0",
+    "ao": "4bd1fc0bd35b267e8be30957361ee9a8e459ee833db3bbb4d1978b054a6408ae",
+    "height": "dd6940c8f45a677168478d4a7ae37d9c4588422e4ab10e0ce8b05d3024dc8c32",
+    "emissive": "8383219e546eb515dd2e1a8c02557888e126423cc82014fe2eea79006155a62f"
   },
   "reviewer": "Codex visual QA",
-  "reviewedAt": "2026-09-09T17:47:28.747Z",
+  "reviewedAt": "2026-09-14T17:44:56.828Z",
   "scores": {
-    "tileability": 3,
+    "tileability": 4,
     "depthResponse": 4,
     "lightNeutrality": 4,
     "materialIdentity": 4,
@@ -21,5 +21,5 @@
     "accessibility": 4
   },
   "decision": "approved",
-  "notes": "Approved after seam-safe Sobel normal generation; reviewed in channel, neutral look-dev, and ready/danger board evidence."
+  "notes": "Approved after localized opposing-edge blending removed whole-field mirrored symmetry. Full channel sheet, neutral look-dev, and board-state captures remain coherent; maximum technical seam stays within contract."
 }

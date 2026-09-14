@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "description": "Candidate synthetic-player policy for the pre-registered artifact extraction pacing calibration. This does not change game rules or evaluator weights.",
+  "knobs": {
+    "moveBias": 1,
+    "digBias": 1,
+    "restBias": 1,
+    "idleBias": 1,
+    "fleeBias": 1,
+    "recoverAtStat": 1,
+    "movementFallbackPriority": 1,
+    "terminalIntentWindowTurns": 6
+  }
+}

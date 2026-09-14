@@ -2,7 +2,7 @@
   "assetId": "terrain-lantern-moss",
   "candidate": "artifacts/art/exports/terrain-lantern-moss.webp",
   "reviewer": "Codex visual QA",
-  "reviewedAt": "2026-09-07",
+  "reviewedAt": "2026-09-14",
   "scores": {
     "recognition": 4,
     "agency": 3,
@@ -27,7 +27,7 @@
     "mode": "azure-image-generation",
     "tool": "azure-foundry",
     "model": "FLUX.2-pro",
-    "promptSha256": "feb153d09dbedf6f034800d70bf5e08dce9ab35cfda321ac03f17896be816b92"
+    "promptSha256": "4d8d98dffae4369507d9533f3b2f99bb0fc1851119976b4708154cbd5f61e6e7"
   },
   "joyScore": 9
 }

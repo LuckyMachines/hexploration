@@ -16,7 +16,7 @@ function report(delta = 0, seedPrefix = 'paired') {
         invalidAttempts: 0,
         zeroStatPlayers: 0,
       },
-      funDebugger: { averageLifeScore: 60 + delta * 5 },
+      funDebugger: { averageLifeScore: 60 + delta * 5, flatTurnRate: 0.3 - delta * 0.1 },
     })),
   };
 }
@@ -42,6 +42,17 @@ test('uses a pre-registered primary metric to make a bounded decision', () => {
     primaryDirection: 'increase',
     minimumEffect: 1,
   });
+  assert.equal(result.primaryPassed, true);
+  assert.equal(result.decision, 'accepted');
+});
+
+test('can measure a paired reduction in flat pacing', () => {
+  const result = comparePairedReports(report(0), report(1), {
+    primaryMetric: 'flatTurnRate',
+    primaryDirection: 'decrease',
+    minimumEffect: 0.05,
+  });
+  assert.ok(Math.abs(result.metrics.flatTurnRate.meanDelta + 0.1) < 1e-9);
   assert.equal(result.primaryPassed, true);
   assert.equal(result.decision, 'accepted');
 });

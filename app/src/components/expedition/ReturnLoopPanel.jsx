@@ -17,6 +17,7 @@ import {
   updateExpeditionReturn,
 } from '../../lib/returnLoop';
 import { trackJourneyEvent } from '../../lib/analytics';
+import { runtimeImagePath } from '../../lib/characters';
 import { trackUXError, trackUXRecovery } from '../../lib/uxTelemetry';
 import {
   ReturnServiceError,
@@ -329,7 +330,7 @@ export default function ReturnLoopPanel() {
     {!state.player.role ? <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
       {Object.entries(RETURN_ROLES).map(([id, role]) => <button key={id} type="button" onClick={() => chooseRole(id)} className="group min-h-11 overflow-hidden rounded border border-exp-border bg-exp-dark/40 text-left transition hover:border-compass/50 hover:bg-compass/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-compass/70">
         <div className="relative h-36 overflow-hidden border-b border-exp-border bg-[radial-gradient(circle_at_50%_38%,rgba(232,200,96,0.15),transparent_58%),rgba(8,12,9,0.88)]">
-          <img src={role.character.assets.neutral} alt="" className="h-full w-full object-contain object-bottom transition-transform duration-300 group-hover:scale-[1.03]" />
+          <img src={runtimeImagePath(role.character.assets.neutral)} alt="" className="h-full w-full object-contain object-bottom transition-transform duration-300 group-hover:scale-[1.03]" />
         </div>
         <div className="p-4">
           <p className="font-display text-lg uppercase tracking-[0.12em] text-exp-text">{role.character.name}</p>
@@ -357,7 +358,7 @@ export default function ReturnLoopPanel() {
       </div>
       <div className="overflow-hidden rounded border border-exp-border bg-exp-dark/35">
         <div className="grid grid-cols-[5.5rem_1fr] gap-3 border-b border-exp-border p-3">
-          <div className="h-24 overflow-hidden rounded border border-exp-border bg-exp-dark/70"><img src={RETURN_ROLES[state.player.role].character.assets.neutral} alt="" className="h-full w-full object-contain object-bottom" /></div>
+          <div className="h-24 overflow-hidden rounded border border-exp-border bg-exp-dark/70"><img src={runtimeImagePath(RETURN_ROLES[state.player.role].character.assets.neutral)} alt="" className="h-full w-full object-contain object-bottom" /></div>
           <div className="min-w-0 py-1">
             <p className="font-mono text-[9px] uppercase tracking-[0.22em] text-exp-text-dim">Your contribution</p>
             <p className="mt-1 font-display text-lg uppercase tracking-[0.1em] text-exp-text">{RETURN_ROLES[state.player.role].character.name}</p>

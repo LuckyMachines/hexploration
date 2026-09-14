@@ -51,6 +51,37 @@
       "resultPath": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\HEXPLORATION_REPOS\\hexploration\\reports\\simulator\\experiments\\artifact-clue-before-payoff-closure.json",
       "resolutionReason": "The board-system pass improved artifact expression but did not isolate the pre-registered deck-content candidate; paired causal evidence is absent.",
       "falsePositive": false
+    },
+    {
+      "id": "artifact-extraction-earlier-intent",
+      "status": "rejected",
+      "hypothesis": "Beginning terminal intent six turns before the artifact-extraction horizon reduces flat turns without lowering terminal outcomes, artifact retention, or choice density.",
+      "targetType": "simulator-policy-calibration",
+      "targetFiles": [
+        "simulator.agent-policies.json",
+        "experiments/artifact-extraction-earlier-intent.policy.json"
+      ],
+      "baselinePolicy": "simulator.agent-policies.json",
+      "candidatePolicy": "experiments/artifact-extraction-earlier-intent.policy.json",
+      "evaluation": "simulator.evaluation.json",
+      "primaryMetric": "flatTurnRate",
+      "primaryDirection": "decrease",
+      "minimumEffect": 0.05,
+      "guardrails": [
+        "terminalRate",
+        "artifactFrequency",
+        "meaningfulChoiceDensity",
+        "invalidAttempts"
+      ],
+      "scenarioIds": [
+        "artifact-extraction-2p"
+      ],
+      "minimumReplicates": 10,
+      "interpretationBoundary": "This experiment calibrates synthetic-player coverage. Acceptance does not prove that human players understand extraction timing and does not change deployed game rules.",
+      "decision": "rejected",
+      "resolvedAt": "2026-09-14T16:48:10.389Z",
+      "resultPath": "C:\\Users\\James Pollack\\Desktop\\REBOOT LUCKYSTUFF\\prominent_racerverse\\HEXPLORATION_REPOS\\hexploration\\reports\\simulator\\experiments\\artifact-extraction-earlier-intent\\paired-result.json",
+      "falsePositive": false
     }
   ]
 }

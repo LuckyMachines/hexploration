@@ -74,23 +74,23 @@
     "schemaVersion": 1,
     "routePath": "/guest",
     "routeType": "guest-expedition",
-    "title": "Play the Xenovoya 3D expedition | Xenovoya",
-    "description": "Explore Xenovoya in the production 3D world without a wallet: reveal terrain, recover relics, manage pressure, and return safely.",
+    "title": "Play The Living Survey | Xenovoya",
+    "description": "Enter Xenovoya's playable solo prologue: read a living 3D world, survive landmark choices, recover a relic, and bring the route home.",
     "canonicalUrl": "https://play.xenovoya.com/guest",
     "robots": "index,follow,max-image-preview:large",
     "openGraph": {
       "type": "website",
       "siteName": "Xenovoya",
-      "title": "Play the Xenovoya 3D expedition | Xenovoya",
-      "description": "Explore Xenovoya in the production 3D world without a wallet: reveal terrain, recover relics, manage pressure, and return safely.",
+      "title": "Play The Living Survey | Xenovoya",
+      "description": "Enter Xenovoya's playable solo prologue: read a living 3D world, survive landmark choices, recover a relic, and bring the route home.",
       "url": "https://play.xenovoya.com/guest",
       "image": "https://play.xenovoya.com/seo/xenovoya-share-card.png",
       "locale": "en_US"
     },
     "twitter": {
       "card": "summary_large_image",
-      "title": "Play the Xenovoya 3D expedition | Xenovoya",
-      "description": "Explore Xenovoya in the production 3D world without a wallet: reveal terrain, recover relics, manage pressure, and return safely.",
+      "title": "Play The Living Survey | Xenovoya",
+      "description": "Enter Xenovoya's playable solo prologue: read a living 3D world, survive landmark choices, recover a relic, and bring the route home.",
       "image": "https://play.xenovoya.com/seo/xenovoya-share-card.png"
     },
     "jsonLd": [
@@ -118,9 +118,9 @@
       {
         "@context": "https://schema.org",
         "@type": "WebPage",
-        "name": "Play the Xenovoya 3D expedition | Xenovoya",
+        "name": "Play The Living Survey | Xenovoya",
         "url": "https://play.xenovoya.com/guest",
-        "description": "Explore Xenovoya in the production 3D world without a wallet: reveal terrain, recover relics, manage pressure, and return safely.",
+        "description": "Enter Xenovoya's playable solo prologue: read a living 3D world, survive landmark choices, recover a relic, and bring the route home.",
         "isPartOf": {
           "@type": "WebSite",
           "name": "Xenovoya",

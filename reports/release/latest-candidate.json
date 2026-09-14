@@ -1,0 +1,70 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-09-14T20:17:19.992Z",
+  "localHead": "75c9234c92eec5404ad56872d0a67bd85c46326c",
+  "expectedRelease": "75c9234c92eec5404ad56872d0a67bd85c46326c",
+  "ready": false,
+  "grade": "B",
+  "checks": [
+    {
+      "id": "candidate.branch",
+      "label": "Release branch",
+      "required": true,
+      "status": "pass",
+      "detail": "main"
+    },
+    {
+      "id": "candidate.clean",
+      "label": "Clean checkout",
+      "required": true,
+      "status": "fail",
+      "detail": "tracked or untracked changes are present"
+    },
+    {
+      "id": "candidate.expected-sha",
+      "label": "Expected release SHA",
+      "required": true,
+      "status": "pass",
+      "detail": "75c9234c92eec5404ad56872d0a67bd85c46326c"
+    },
+    {
+      "id": "candidate.head-match",
+      "label": "Expected SHA matches HEAD",
+      "required": true,
+      "status": "pass",
+      "detail": "75c9234c92eec5404ad56872d0a67bd85c46326c"
+    },
+    {
+      "id": "candidate.hard-suite",
+      "label": "Hard verification evidence",
+      "required": true,
+      "status": "pass",
+      "detail": "A evidence from 2026-09-14T15:19:16.169Z"
+    },
+    {
+      "id": "candidate.hard-provenance",
+      "label": "Hard evidence provenance",
+      "required": true,
+      "status": "fail",
+      "detail": "hard evidence must come from this commit and a clean checkout"
+    },
+    {
+      "id": "candidate.build-metadata",
+      "label": "Production build identity",
+      "required": true,
+      "status": "pass",
+      "detail": "75c9234c92eec5404ad56872d0a67bd85c46326c"
+    },
+    {
+      "id": "candidate.rollback",
+      "label": "Rollback contract",
+      "required": true,
+      "status": "pass",
+      "detail": "coolify/xenovoya-player"
+    }
+  ],
+  "failures": [
+    "candidate.clean",
+    "candidate.hard-provenance"
+  ]
+}

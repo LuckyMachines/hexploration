@@ -10,6 +10,7 @@ import {
   scoreReport,
   selectFocusedCommands,
   tailText,
+  verificationReportBasename,
 } from './verify-hard-utils.mjs';
 
 test('parseArgs reads tier, output modes, skips, and jobs', () => {
@@ -30,6 +31,14 @@ test('resolveExecutable uses Windows npm wrappers only on Windows', () => {
   assert.equal(resolveExecutable('npx', 'win32'), 'npx.cmd');
   assert.equal(resolveExecutable('node', 'win32'), 'node');
   assert.equal(resolveExecutable('npm', 'linux'), 'npm');
+});
+
+test('verification tiers keep independent report artifacts', () => {
+  assert.equal(verificationReportBasename({ tier: 'smoke' }), 'latest-smoke');
+  assert.equal(verificationReportBasename({ tier: 'hard' }), 'latest-hard');
+  assert.equal(verificationReportBasename({ tier: 'release' }), 'latest-release');
+  assert.equal(verificationReportBasename({ latest: true }), 'latest-hard');
+  assert.equal(verificationReportBasename({ doctor: true }), 'latest-doctor');
 });
 
 test('formatDuration and tailText keep reports compact', () => {
@@ -113,4 +122,16 @@ test('gradeHardness and compactPublicReport summarize reports', () => {
   assert.deepEqual(compactPublicReport(report).failedSteps, [
     { id: 'bad', label: 'Bad', status: 'fail', hint: 'Run bad' },
   ]);
+});
+
+test('hard aggregate utility coverage satisfies the smoke foundation', () => {
+  assert.equal(gradeHardness({
+    steps: [
+      { id: 'hard.root-node-tests', status: 'pass' },
+      { id: 'smoke.ui-density', status: 'pass' },
+      { id: 'hard.forge-build', status: 'pass' },
+      { id: 'hard.app-test', status: 'pass' },
+      { id: 'exact.local-doctor-gate', status: 'pass' },
+    ],
+  }), 'A');
 });

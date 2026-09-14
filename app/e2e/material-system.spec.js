@@ -18,6 +18,7 @@ test.describe('material and lighting system', () => {
     await page.goto('/material-lab', { waitUntil: 'domcontentloaded' });
     await expect(page.getByTestId('material-lab')).toBeVisible();
     await expect(page.locator('canvas[data-material-preview="ready"]')).toBeVisible({ timeout: 30_000 });
+    await expect(page.getByTestId('tile-kit-reference').getByRole('img')).toBeVisible();
     await expect(page.getByRole('button', { name: 'Glassroot Canopy' })).toHaveAttribute('aria-pressed', 'true');
     for (const channel of ['albedo', 'normal', 'roughness', 'ao', 'height', 'emissive']) {
       await expect(page.getByAltText(`Glassroot Canopy ${channel === 'albedo' ? 'baseColor' : channel} map`)).toBeVisible();

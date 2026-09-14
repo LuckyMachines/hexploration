@@ -24,6 +24,7 @@ function runMetrics(run = {}) {
   const consequenceVisibility = number(run.summary?.consequenceVisibility);
   return {
     lifeScore: number(run.funDebugger?.averageLifeScore || run.summary?.funDebugger?.averageLifeScore),
+    flatTurnRate: number(run.funDebugger?.flatTurnRate || run.summary?.funDebugger?.flatTurnRate),
     artifacts: number(run.summary?.totalArtifacts),
     revealedZones: number(run.summary?.revealedZonesGained),
     meaningfulChoiceDensity: number(run.summary?.meaningfulChoiceDensity),

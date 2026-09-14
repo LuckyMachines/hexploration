@@ -22,6 +22,8 @@
 - [x] Deterministic experiment assignment with control-safe rollout defaults
 - [x] Enforced player-facing copy rules and shared game-language glossary
 - [x] Consent-safe research protocol, record validator, cohort gate, and summary
+- [x] Crash-safe per-scene metrics that survive pixel failures and Playwright worker restarts
+- [x] Eleven current approved scenes, including desktop and mobile guest expeditions
 
 ## Required Per Material UI Change
 

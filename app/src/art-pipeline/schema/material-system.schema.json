@@ -14,7 +14,10 @@
       "minItems": 6,
       "items": {
         "type": "object",
-        "required": ["id", "tileType", "label", "story", "source", "directory", "tint", "sideTint", "roughness", "metalness", "bumpScale", "normalScale", "aoIntensity", "emissiveColor", "emissiveIntensity", "uv"]
+        "required": ["id", "tileType", "label", "story", "source", "directory", "tint", "sideTint", "roughness", "metalness", "bumpScale", "normalScale", "aoIntensity", "emissiveColor", "emissiveIntensity", "uv"],
+        "properties": {
+          "seamMode": { "enum": ["mirrored", "edge-blend"] }
+        }
       }
     },
     "qualityContract": { "type": "object" }

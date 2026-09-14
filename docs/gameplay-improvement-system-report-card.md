@@ -56,3 +56,14 @@ Overall: **B+ evidence readiness / A architecture** after the full exact matrix.
 - Measured exact-run durations informed a 60-minute default per-scenario ceiling; successful scenario checkpoints prevent unnecessary reruns.
 
 The automated A bar is: all six canonical scenarios have fresh 10-replicate exact-engine evidence, every Oracle truth gate passes, every derived stage is fresh, and the experiment/evidence-integrity checks remain green.
+
+## Snapshot 4 - Current exact evidence (2026-09-14)
+
+Overall: **A automated evidence / A architecture**.
+
+- All six canonical scenarios have current exact-engine evidence with ten distinct seeds per strategy.
+- Every Oracle truth gate passes; the strict gameplay doctor reports A with no blockers or source drift.
+- The three-player regroup scenario improved from a 76.7% to an 80% terminal rate and remains strong-pass eligible.
+- Artifact extraction has a 90% terminal rate and passes every global target, but its experience verdict is honestly retained as mixed because one pattern produced a four-turn flat extraction window. Recovery and pacing remain the next focused experiment; no evaluator threshold was weakened to hide this result.
+- Long exact runs can opt into bounded Anvil state-history retention. This removed an infrastructure memory failure without changing contracts, seeds, policies, receipts, or evaluation gates.
+- HTTP/RPC and Anvil memory failures are now classified as retryable infrastructure rather than gameplay defects.

@@ -14,9 +14,11 @@ import {
   evaluateSurfaceEvidence,
   markdownForPortfolio,
   markdownForApplyReport,
+  parseControlPlaneInvocation,
   parseGitStatus,
   pathsOutsideDeclared,
   selectCommands,
+  shouldPersistPortfolio,
   validateConfig,
   validatePromotionTransition,
   validateQualityRecords,
@@ -32,6 +34,8 @@ const PLAYTESTS_PATH = 'improvement/records/playtests.json';
 const CHECKLIST_PATH = 'docs/improvement-system-checklist.md';
 const LATEST_JSON_PATH = 'reports/improvement/latest-portfolio.json';
 const LATEST_MD_PATH = 'reports/improvement/latest-portfolio.md';
+const PREVIEW_JSON_PATH = 'reports/improvement/latest-preview.json';
+const PREVIEW_MD_PATH = 'reports/improvement/latest-preview.md';
 const PUBLIC_PATH = 'app/public/improvement/latest-portfolio.json';
 const HISTORY_PATH = 'reports/improvement/history.json';
 const BASELINE_PATH = 'reports/improvement/baseline.json';
@@ -240,8 +244,13 @@ function runPortfolio(args, { deferExit = false } = {}) {
   });
   const scopedNextAction = report.nextActions.find((action) => scope.includes(action.surfaceId)) || null;
   report.execution = { mode, scope, nextAction: scopedNextAction };
-  persistPortfolio(report);
-  console.log(`\nPortfolio: ${resolve(root, LATEST_MD_PATH)}`);
+  const persist = shouldPersistPortfolio(args);
+  if (persist) persistPortfolio(report);
+  else {
+    writeJson(PREVIEW_JSON_PATH, report);
+    writeText(PREVIEW_MD_PATH, markdownForPortfolio(report));
+  }
+  console.log(`\n${persist ? 'Portfolio' : 'Unverified preview'}: ${resolve(root, persist ? LATEST_MD_PATH : PREVIEW_MD_PATH)}`);
   console.log(`Grade: ${report.aggregate.grade} (${report.aggregate.confidence} confidence)`);
   console.log(`Next: ${scopedNextAction?.title || 'raise the quality bar'}`);
   if (!deferExit && checkResults.some((entry) => entry.status !== 'pass')) process.exitCode = 1;
@@ -618,8 +627,7 @@ Commands:
 }
 
 function main() {
-  const args = process.argv.slice(2);
-  const command = args[0] && !args[0].startsWith('--') ? args.shift() : 'apply';
+  const { command, args } = parseControlPlaneInvocation(process.argv.slice(2));
   if (command === 'apply') applyImprovements(args);
   else if (command === 'run') runPortfolio(args);
   else if (command === 'plan') {

@@ -1,30 +1,30 @@
 {
   "materialSystemVersion": "1.0.0",
   "materialId": "lantern-moss",
-  "generatedAt": "2026-09-09T17:39:47.154Z",
+  "generatedAt": "2026-09-14T17:35:50.536Z",
   "source": "app/public/images/art/terrain/lantern-moss.webp",
   "sourceSha256": "1db422db5782cf4e08905186a841a2a86f47f8b9cadc1834e56c0e38297ace6d",
-  "process": "neutralize -> mirrored seamless field -> scalar maps -> tangent normal",
+  "process": "neutralize -> localized opposing-edge blend -> scalar maps -> tangent normal; mirrored sidewall derivation",
   "top": {
     "baseColor": {
       "path": "app/public/images/art/materials/lantern-moss/baseColor.webp",
-      "sha256": "e78aec133a7a1795766a93050b0f88f87578fa00d1440c85625dab198684f27f"
+      "sha256": "ad058fc498b1088392c92cfac3cb91ad5015a1dc941055618eb941b3bcae9f99"
     },
     "normal": {
       "path": "app/public/images/art/materials/lantern-moss/normal.webp",
-      "sha256": "a006bdb8ecab10b1943d5b6c814ccfd4d8fe8924b53848f09f0c95b558a349d2"
+      "sha256": "ff8cfaa9bd395a4349e5409dc64adf718b3162bc23b159efb08cd0dac3db21d8"
     },
     "roughness": {
       "path": "app/public/images/art/materials/lantern-moss/roughness.webp",
-      "sha256": "931014fe2c9fdd0c0a611c36806d8b907c2226f033acece279278b40a5e885b7"
+      "sha256": "be260d5ea372068707837cd851c6be95107e5fda3d2e85aafcfdb23236978097"
     },
     "ao": {
       "path": "app/public/images/art/materials/lantern-moss/ao.webp",
-      "sha256": "743807e3d9da6ea57634a5a9112fb7c3fb0d3b32ca2bd1d0adb2d8ef268c22b7"
+      "sha256": "13cdfaac7db946ed668f4bcce35d002b3d67d2ce546a1afb88f24d09db1d0384"
     },
     "height": {
       "path": "app/public/images/art/materials/lantern-moss/height.webp",
-      "sha256": "d4b4d4c1327c2136fdb97f854d65c773dc11eb869c12c0c0dde1c4ceb5d99e9a"
+      "sha256": "8c5a5147478ac2ca8050c8a3b642238674227e321722d0d436b8de0dc7ab833e"
     },
     "emissive": {
       "path": "app/public/images/art/materials/lantern-moss/emissive.webp",
@@ -60,23 +60,23 @@
   "compressedTop": {
     "baseColor": {
       "path": "app/public/images/art/materials/lantern-moss/baseColor.ktx2",
-      "sha256": "ed00a141c2c956fd32f49517062266550e630652770d732a32f1ac7b71bb4c1d"
+      "sha256": "acde14a9a8a26da7ee0b30fa1267c3e8dde76542f80f3bda995068664b9f68b6"
     },
     "normal": {
       "path": "app/public/images/art/materials/lantern-moss/normal.ktx2",
-      "sha256": "11d4e3527766f0deae817ab0d28a2a4f472100995e9070ac00e8feeafd817bdf"
+      "sha256": "79a5dffc619ac7eb93b81ac7163e3ebf9a9c62ec11431e41ba794ed1281c9ca7"
     },
     "roughness": {
       "path": "app/public/images/art/materials/lantern-moss/roughness.ktx2",
-      "sha256": "8bdefe31e68a83814356c03c22f9275d3b72a08d4473699daa93ff146b4b3252"
+      "sha256": "5a38b7d2a50709aebd125174705fe2c06f9d44a63cc0547132c12938b7d54fc5"
     },
     "ao": {
       "path": "app/public/images/art/materials/lantern-moss/ao.ktx2",
-      "sha256": "2cd10a71d5b43c17c4ffa5293b3afe8f3884df51e3023b492ce83ccac88ad4d2"
+      "sha256": "f60beb406446e841f43d20e800e2c057b6bd97a2fa35e68d7c5463102764e193"
     },
     "height": {
       "path": "app/public/images/art/materials/lantern-moss/height.ktx2",
-      "sha256": "5dfbf42a61081444aaf99589e3756ae41372380ee13e53ac019eedd54495daf4"
+      "sha256": "7f0ddffcf33b9975ceb3d199938e4911465a0b4fb86e1998b4f86e24ae7ac142"
     },
     "emissive": {
       "path": "app/public/images/art/materials/lantern-moss/emissive.ktx2",

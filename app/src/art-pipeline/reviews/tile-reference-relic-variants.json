@@ -1,0 +1,20 @@
+{
+  "assetId": "tile-reference-relic-variants",
+  "candidate": "app/public/images/art/tile-concepts/relic-variants.webp",
+  "reviewer": "Codex visual QA",
+  "reviewedAt": "2026-09-13",
+  "scores": { "recognition": 4, "agency": 3, "specificity": 4, "restraint": 4, "continuity": 4, "reusability": 4, "accessibility": 4 },
+  "notes": {
+    "recognition": "Ceremonial rings, memory stone, and reliquary sockets read as rare terrain immediately.",
+    "agency": "Central sockets preserve the discovered object as the actionable focal event.",
+    "specificity": "Survey pins, violet filament, and worn archaeology avoid generic magic shrines.",
+    "restraint": "Violet emission remains localized and the broad shelf remains quiet.",
+    "continuity": "Dark mineral stone, restrained gold, and rare violet extend the approved relic language.",
+    "reusability": "Socket, ring, broken shelf, and crown motifs translate into independent modules.",
+    "accessibility": "Concentric geometry and ceremonial elevation survive without violet or gold hue."
+  },
+  "decision": "approved",
+  "candidateSha256": "49ce5fd18231cbef4d755899d9f52ac5f3f2c1d721cb713a6822d199a02f3a57",
+  "generation": { "mode": "azure-image-generation", "tool": "azure-foundry", "model": "gpt-image-2", "promptSha256": "346530c14c99df0498a8c17664ed6d073d1ae81dc9c4d994612b99ab938de58b" },
+  "joyScore": 9.5
+}

@@ -21,7 +21,7 @@
     "test:ui-quality": "vitest run src/design-system/uiQualityMatrix.test.js src/components/shared/UIQualityStatus.test.jsx --pool=threads",
     "test:e2e:anvil": "node ../scripts/run-anvil-e2e.mjs",
     "test:all": "npm run test && npm run test:e2e",
-    "verify:production": "node scripts/verify-production.mjs"
+    "verify:production": "node ../scripts/release-audit.mjs --strict"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.80.6",

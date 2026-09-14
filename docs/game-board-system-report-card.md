@@ -33,3 +33,17 @@ Overall: **A**
 | Cross-system learning | A | Exact traces drive board replays, evidence freshness is enforced, the board report derives its gameplay grade, and strict comparison reports zero regressions across 21 scenes |
 
 The stricter automated A bar is met. The remaining calibration item is not an implementation defect: this project is currently operating in `automated-only` mode by design, with real-player calibration explicitly out of scope.
+
+## Snapshot 3 - Tile kit and renderer-readiness hardening (2026-09-14)
+
+Overall: **A**
+
+| Dimension | Grade | Evidence |
+| --- | --- | --- |
+| Authored terrain | A | Six terrain families combine with three deterministic sculpted forms for eighteen runtime variants; transient state never mutates the base transform |
+| Material fidelity | A | Every family has reviewed top/side PBR channels and localized opposing-edge blending instead of whole-field mirroring |
+| Renderer readiness | A | Generated textures remain a readiness dependency, while optional shader warm-up is bounded; Safari/WebKit uses synchronous compilation to avoid a stalled async completion signal |
+| Browser compatibility | A | Chromium passed 28/28 current board checks and Firefox/WebKit passed 12/12 without retry after the readiness fix |
+| Performance and stability | A | The 100-tile scene remains at 86 draw calls, 10,377 triangles, 64 textures, 2.6 ms render p95, zero asset failures, and 1.24 MiB remount heap growth |
+
+Current source fingerprint: `84307bc3a484ce823db9ad4e33dd578495bdc278b7f8c04555dad35ca5b21033`.

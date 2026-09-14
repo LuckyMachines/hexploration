@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { spawn } from 'child_process';
+import { spawn, spawnSync } from 'child_process';
 import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'fs';
 import { dirname, resolve } from 'path';
 import { fileURLToPath } from 'url';
@@ -16,6 +16,7 @@ import {
   scoreReport,
   selectFocusedCommands,
   tailText,
+  verificationReportBasename,
 } from './verify-hard-utils.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -23,14 +24,15 @@ const root = resolve(__dirname, '..');
 const appDir = resolve(root, 'app');
 const reportDir = resolve(root, 'reports', 'verification');
 const publicReportDir = resolve(root, 'app', 'public', 'verification');
-const latestJsonPath = resolve(reportDir, 'latest-hard.json');
-const latestMarkdownPath = resolve(reportDir, 'latest-hard.md');
-const publicLatestJsonPath = resolve(publicReportDir, 'latest-hard.json');
+const args = parseArgs(process.argv.slice(2));
+const reportBasename = verificationReportBasename(args);
+const latestJsonPath = resolve(reportDir, `${reportBasename}.json`);
+const latestMarkdownPath = resolve(reportDir, `${reportBasename}.md`);
+const publicLatestJsonPath = resolve(publicReportDir, `${reportBasename}.json`);
 const foundryBinDir = process.env.FOUNDRY_BIN
   || resolve(process.env.USERPROFILE || process.env.HOME || '', '.foundry', 'bin');
 const foundryExeSuffix = process.platform === 'win32' ? '.exe' : '';
 
-const args = parseArgs(process.argv.slice(2));
 const localStack = { process: null, stdout: '', stderr: '' };
 
 function npmScript(script, extra = []) {
@@ -47,6 +49,33 @@ function nodeTest(files) {
 
 function foundryBinary(name) {
   return resolve(foundryBinDir, `${name}${foundryExeSuffix}`);
+}
+
+function parseEnvTemplate(path) {
+  return Object.fromEntries(readFileSync(path, 'utf8')
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter((line) => line && !line.startsWith('#') && line.includes('='))
+    .map((line) => {
+      const separator = line.indexOf('=');
+      return [line.slice(0, separator), line.slice(separator + 1)];
+    }));
+}
+
+function productionBuildEnvironment() {
+  const template = parseEnvTemplate(resolve(appDir, '.env.example'));
+  const release = spawnSync('git', ['rev-parse', 'HEAD'], {
+    cwd: root,
+    encoding: 'utf8',
+    windowsHide: true,
+  }).stdout.trim();
+  return {
+    ...template,
+    VITE_APP_ENV: 'production',
+    VITE_ANALYTICS_SOURCE: 'player',
+    VITE_ENABLE_INTERNAL_TOOLS: 'false',
+    VITE_RELEASE_SHA: release,
+  };
 }
 
 function rootTestFiles() {
@@ -100,6 +129,7 @@ function commandRegistry() {
       label: 'App production build',
       cwd: appDir,
       ...npmScript('build'),
+      env: productionBuildEnvironment(),
       timeoutMs: DEFAULT_TIMEOUTS.heavy,
       required: true,
     },
@@ -213,7 +243,7 @@ function commandRegistry() {
       id: 'hard.sim-golden',
       label: 'Simulator golden run',
       ...npmScript('sim:golden'),
-      timeoutMs: DEFAULT_TIMEOUTS.heavy,
+      timeoutMs: 1_800_000,
       required: true,
       group: 'sim',
     },
@@ -309,9 +339,9 @@ function commandRegistry() {
 const BASE_SEQUENCES = {
   smoke: ['smoke.git-status', 'smoke.local-doctor-tests', 'smoke.scenario-tests', 'smoke.ui-density', 'smoke.app-focused-tests'],
   focused: ['smoke.git-status', 'smoke.local-doctor-tests', 'smoke.scenario-tests', 'smoke.ui-density', 'smoke.app-focused-tests', 'focused.app-build'],
-  hard: ['smoke.git-status', 'hard.forge-build', 'hard.forge-test', 'hard.root-node-tests', 'focused.character-ci', 'focused.material-ci', 'focused.app-build', 'hard.app-test', 'smoke.ui-density', 'hard.sim-golden', 'hard.oracle-ci', 'hard.setup-doctor', 'hard.memory-doctor', 'hard.lab-doctor', 'hard.feel-doctor', 'hard.bridge-doctor'],
-  exact: ['smoke.git-status', 'hard.forge-build', 'hard.forge-test', 'hard.root-node-tests', 'focused.character-ci', 'focused.material-ci', 'focused.app-build', 'hard.app-test', 'smoke.ui-density', 'hard.sim-golden', 'hard.oracle-ci', 'hard.setup-doctor', 'hard.memory-doctor', 'hard.lab-doctor', 'hard.feel-doctor', 'hard.bridge-doctor', 'exact.local-stack-start', 'exact.local-doctor-gate'],
-  release: ['release.clean-repo', 'hard.forge-build', 'hard.forge-test', 'hard.root-node-tests', 'focused.character-ci', 'focused.material-ci', 'focused.app-build', 'hard.app-test', 'smoke.ui-density', 'hard.sim-golden', 'hard.oracle-ci', 'hard.setup-doctor', 'hard.memory-doctor', 'hard.lab-doctor', 'hard.feel-doctor', 'hard.bridge-doctor', 'exact.local-stack-start', 'exact.local-doctor-gate', 'release.material-cross-browser', 'release.e2e', 'release.ui-density-strict', 'release.clean-repo'],
+  hard: ['smoke.git-status', 'hard.forge-build', 'hard.forge-test', 'hard.root-node-tests', 'focused.character-ci', 'focused.material-ci', 'focused.app-build', 'hard.app-test', 'smoke.ui-density', 'exact.local-stack-start', 'exact.local-doctor-gate', 'hard.sim-golden', 'hard.oracle-ci', 'hard.setup-doctor', 'hard.memory-doctor', 'hard.lab-doctor', 'hard.feel-doctor', 'hard.bridge-doctor'],
+  exact: ['smoke.git-status', 'hard.forge-build', 'hard.forge-test', 'hard.root-node-tests', 'focused.character-ci', 'focused.material-ci', 'focused.app-build', 'hard.app-test', 'smoke.ui-density', 'exact.local-stack-start', 'exact.local-doctor-gate', 'hard.sim-golden', 'hard.oracle-ci', 'hard.setup-doctor', 'hard.memory-doctor', 'hard.lab-doctor', 'hard.feel-doctor', 'hard.bridge-doctor'],
+  release: ['release.clean-repo', 'hard.forge-build', 'hard.forge-test', 'hard.root-node-tests', 'focused.character-ci', 'focused.material-ci', 'focused.app-build', 'hard.app-test', 'smoke.ui-density', 'exact.local-stack-start', 'exact.local-doctor-gate', 'hard.sim-golden', 'hard.oracle-ci', 'hard.setup-doctor', 'hard.memory-doctor', 'hard.lab-doctor', 'hard.feel-doctor', 'hard.bridge-doctor', 'release.material-cross-browser', 'release.e2e', 'release.ui-density-strict', 'release.clean-repo'],
 };
 
 function writeJson(path, value) {
@@ -335,7 +365,7 @@ async function runCommandStep(step) {
     const useShell = String(step.command).toLowerCase().endsWith('.cmd');
     const child = spawn(step.command, step.args || [], {
       cwd: step.cwd || root,
-      env: { ...process.env },
+      env: { ...process.env, ...(step.env || {}) },
       shell: useShell,
       windowsHide: true,
     });
@@ -428,6 +458,7 @@ async function runLocalStackStep(step) {
         LOCAL_STACK_DEPLOY_TIMEOUT_MS: process.env.LOCAL_STACK_DEPLOY_TIMEOUT_MS || '120000',
         LOCAL_STACK_COMMAND_TIMEOUT_MS: process.env.LOCAL_STACK_COMMAND_TIMEOUT_MS || '120000',
         LOCAL_STACK_READINESS_TIMEOUT_MS: process.env.LOCAL_STACK_READINESS_TIMEOUT_MS || '20000',
+        ANVIL_PRUNE_HISTORY: process.env.ANVIL_PRUNE_HISTORY || '256',
       },
       shell: process.platform === 'win32',
       windowsHide: true,

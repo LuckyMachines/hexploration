@@ -28,6 +28,8 @@ const resume = args.includes('--no-resume') ? false : boolArg('resume', true);
 const continueOnFail = boolArg('continue-on-fail', false);
 const includeRegressions = boolArg('include-regressions', false);
 const regressionsOnly = boolArg('regressions-only', false);
+const policyPath = String(valueArg('policy', 'simulator.agent-policies.json'));
+const evaluationPath = String(valueArg('evaluation', 'simulator.evaluation.json'));
 const timeoutMs = Math.max(60_000, Number(valueArg('timeout-ms', 3_600_000)));
 const outputDir = resolve(root, 'reports', 'gameplay-improvement', 'exact-runner');
 const checkpointPath = resolve(outputDir, regressionsOnly ? 'regression-checkpoint.json' : 'checkpoint.json');
@@ -121,6 +123,8 @@ function runScenario(item, rpcUrl) {
     `--batch=${batch}`,
     `--rpc=${rpcUrl}`,
     `--timeout-ms=${timeoutMs}`,
+    `--policy=${policyPath}`,
+    `--evaluation=${evaluationPath}`,
     '--quiet',
   ], {
     cwd: root,
@@ -158,8 +162,8 @@ async function main() {
     'scripts/scenario-utils.mjs',
     'scripts/setup-forge-utils.mjs',
     'simulator.scenarios.json',
-    'simulator.agent-policies.json',
-    'simulator.evaluation.json',
+    policyPath,
+    evaluationPath,
     'gameplay.quality-contract.json',
     'foundry.toml',
     ...readdirSync(resolve(root, 'contracts'))
@@ -181,6 +185,8 @@ async function main() {
     resume,
     includeRegressions,
     regressionsOnly,
+    policyPath,
+    evaluationPath,
     sourceHashes,
     rpc: { managed: !suppliedRpc, url: null, port: null },
     scenarios: [],

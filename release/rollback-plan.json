@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "platform": "coolify",
+  "application": "xenovoya-player",
+  "hostAlias": "fleet-eu",
+  "repository": "LuckyMachines/hexploration",
+  "branch": "main",
+  "healthUrl": "https://play.xenovoya.com/release.json",
+  "steps": [
+    "Freeze further main-branch promotion and record the failing release SHA plus UTC detection time.",
+    "In Coolify, redeploy the most recent previously validated immutable commit for xenovoya-player; never rebuild an unpinned workspace as a rollback.",
+    "Run npm run release:verify-live with XENOVOYA_EXPECTED_RELEASE_SHA set to the rollback SHA.",
+    "Confirm the player, deep link, security headers, return API, RPC, robots, sitemap, and release metadata checks pass before reopening promotion."
+  ],
+  "validation": [
+    "The deployed release.json contains the exact rollback SHA and production environment.",
+    "The live release audit has no required failures.",
+    "A human verifies the home-to-play route and one safe read-only board load."
+  ],
+  "notes": "Coolify credentials and server secrets are intentionally excluded. The rollback operator selects a previously validated immutable commit from deployment history."
+}

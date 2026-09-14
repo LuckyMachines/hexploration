@@ -23,9 +23,11 @@ Every registered terrain has a 512 x 512 top bundle and a 512 x 512 side bundle:
 
 Each WebP must remain below 180,000 bytes and within a maximum edge-difference score of 4. Every channel also has a KTX2 runtime package. A receipt records source and output hashes; a review records the matching source and candidate hashes, six relational scores, reviewer, decision, and notes.
 
+All six promoted terrain families use `seamMode: edge-blend`. This preserves the authored center of each source and blends only the outer 9.375% against its opposing edge, eliminating the former whole-field mirror pattern while keeping exact, measurable repeatability. `verdant-signal-base` is the reference implementation: its new Azure GPT Image 2 master, exact variation prompt, source fingerprint, and seam-authoring method are recorded directly in the material contract. The legacy `mirrored` mode remains available only for reproducibility of older receipts.
+
 ## Promotion loop
 
-1. Edit the source image or material profile.
+1. Generate or edit the source image and retain provider, model, prompt, and source fingerprints. Use a versioned filename for a replacement master.
 2. Run `npm run material:generate -- --material=<id>`.
 3. Run `npm run material:contact-sheet -- --material=<id>` and inspect all channels.
 4. Run `npm run material:capture` and then `npm run material:render-sheet`.
@@ -40,6 +42,7 @@ Generation intentionally invalidates an older visual approval by changing candid
 A promoted surface must meet all of these conditions:
 
 - It tiles without a visible seam or a single dominant landmark.
+- It does not use whole-field mirroring to manufacture continuity; localized edge blending may alter only the outer seam band.
 - Height and normal response clarify form without making the board noisy.
 - Base color remains readable under neutral light and does not contain baked directional illumination.
 - Its biome identity survives at board scale and in grayscale.

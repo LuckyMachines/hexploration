@@ -16,6 +16,8 @@ Every meaningful change follows the same contract:
 
 The stricter A bar is: every meaningful change begins with a falsifiable hypothesis and ends with automatically captured before/after evidence, an explicit decision, a legal promotion state, and one ranked next action.
 
+Unverified diagnosis is isolated from canonical evidence: `run --no-verify` writes `reports/improvement/latest-preview.json` and `latest-preview.md`, never the verified portfolio, public snapshot, baseline, or history. `--help` is read-only and exits after printing usage.
+
 ## Daily commands
 
 From the repository root in Git Bash or PowerShell:

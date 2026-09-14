@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { resolveBoardQuality } from './boardQuality';
 import { createLightingSystem, disposeLightingSystem, setLightingRig } from './lightingRigs';
 import { applySurfaceUvVariation, createSurfaceMaterial, loadSurfaceTextureSet } from './surfaceCatalog';
+import { TILE_VARIANTS, createTileGeometry, tileFamilyFor } from './tileKit';
 
 function disposeScene(scene) {
   const geometries = new Set();
@@ -62,11 +63,11 @@ export default function MaterialPreviewScene({ profile, rigId = 'neutral', debug
       const scene = new THREE.Scene();
       scene.fog = new THREE.FogExp2(0x09100c, 0.018);
       const camera = new THREE.PerspectiveCamera(34, 1, 0.1, 80);
-      camera.position.set(4.8, 3.25, 6.1);
+      camera.position.set(4.8, 3.85, 6.4);
       const controls = new OrbitControls(camera, renderer.domElement);
       controls.enableDamping = true;
       controls.dampingFactor = 0.08;
-      controls.target.set(0, 0.65, 0);
+      controls.target.set(0, 0.48, 0);
       controls.minDistance = 4.8;
       controls.maxDistance = 14;
       controls.maxPolarAngle = Math.PI * 0.49;
@@ -106,24 +107,28 @@ export default function MaterialPreviewScene({ profile, rigId = 'neutral', debug
       const surfaceMaterial = createSurfaceMaterial(THREE, profile, topTextures, quality, { debugChannel });
       const sideMaterial = createSurfaceMaterial(THREE, profile, sideTextures, quality, { side: true, debugChannel });
 
-      const sphereGeometry = applySurfaceUvVariation(new THREE.SphereGeometry(0.92, 48, 28), profile, 73);
+      const sphereGeometry = applySurfaceUvVariation(new THREE.SphereGeometry(0.62, 40, 24), profile, 73);
       const sphere = new THREE.Mesh(sphereGeometry, surfaceMaterial);
-      sphere.position.set(-2.1, 0.95, 0);
+      sphere.position.set(-2.45, 0.64, -1.3);
       sphere.castShadow = true;
       sphere.receiveShadow = true;
       scene.add(sphere);
 
-      const hexGeometry = applySurfaceUvVariation(new THREE.CylinderGeometry(1.08, 0.98, 0.72, 6, 1, false), profile, 137);
-      const hex = new THREE.Mesh(hexGeometry, [sideMaterial, surfaceMaterial, sideMaterial]);
-      hex.position.set(0, 0.38, 0);
-      hex.rotation.y = Math.PI / 6;
-      hex.castShadow = true;
-      hex.receiveShadow = true;
-      scene.add(hex);
+      TILE_VARIANTS.forEach((variant, index) => {
+        const variantGeometry = applySurfaceUvVariation(createTileGeometry(THREE, variant, tileFamilyFor(profile.tileType)), profile, 137 + index * 47);
+        const tile = new THREE.Mesh(variantGeometry, [sideMaterial, surfaceMaterial, sideMaterial]);
+        tile.name = `tile-variant:${variant.id}`;
+        tile.position.set((index - 1) * 1.64, 0.42, 0.46);
+        tile.rotation.y = Math.PI / 6;
+        tile.scale.set(0.82, 0.88, 0.82);
+        tile.castShadow = true;
+        tile.receiveShadow = true;
+        scene.add(tile);
+      });
 
-      const slabGeometry = applySurfaceUvVariation(new THREE.BoxGeometry(1.35, 1.85, 0.46, 6, 8, 2), profile, 211);
+      const slabGeometry = applySurfaceUvVariation(new THREE.BoxGeometry(0.86, 1.28, 0.34, 4, 6, 2), profile, 211);
       const slab = new THREE.Mesh(slabGeometry, surfaceMaterial);
-      slab.position.set(2.15, 0.94, 0);
+      slab.position.set(2.45, 0.66, -1.3);
       slab.rotation.y = -0.34;
       slab.castShadow = true;
       slab.receiveShadow = true;
@@ -172,6 +177,9 @@ export default function MaterialPreviewScene({ profile, rigId = 'neutral', debug
   return (
     <div className="relative min-h-[28rem] overflow-hidden rounded-md border border-exp-border bg-[radial-gradient(circle_at_50%_24%,rgba(76,145,219,0.09),transparent_42%),#070b08]" data-testid="material-preview-scene" data-renderer-state={status}>
       <div ref={mountRef} className="absolute inset-0" />
+      <div className="pointer-events-none absolute left-3 top-3 flex flex-wrap gap-1.5" aria-hidden="true">
+        {TILE_VARIANTS.map((variant, index) => <span key={variant.id} className="rounded border border-white/10 bg-exp-dark/75 px-2 py-1 font-mono text-[8px] uppercase tracking-[0.14em] text-exp-text-dim backdrop-blur-sm">0{index + 1} / {variant.id}</span>)}
+      </div>
       <div className="pointer-events-none absolute bottom-3 left-3 rounded border border-white/10 bg-exp-dark/75 px-2.5 py-2 font-mono text-[9px] uppercase tracking-[0.14em] text-exp-text-dim backdrop-blur-sm">
         Drag orbit / right-drag pan / scroll zoom
       </div>

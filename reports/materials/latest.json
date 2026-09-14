@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-10T06:00:20.779Z",
+  "generatedAt": "2026-09-14T19:54:06.809Z",
   "materialSystemVersion": "1.0.0",
   "passed": true,
   "strict": true,
@@ -18,17 +18,17 @@
             "height": 512,
             "format": "WEBP",
             "channels": "srgb",
-            "mean": 0.287743,
-            "bytes": 53478,
-            "edgeDifference": 2.58691,
+            "mean": 0.295516,
+            "bytes": 59106,
+            "edgeDifference": 2.64169,
             "clipping": {
-              "shadows": 1.12648,
+              "shadows": 0.0232697,
               "highlights": 0
             },
-            "sha256": "9ec2f50d04d0a1158203203221c057b76ec018176aa5857d1645acd77cffc001",
+            "sha256": "959f0a11bf30752c497d42437b2c78cf0de88f8e0f42a74e6c12efa7c8e036fa",
             "ktx2": {
-              "bytes": 67200,
-              "sha256": "9da806c4682b3748fd1430e44c5d330be7415814e960c7b846c57e7a2a3c8dfb"
+              "bytes": 68815,
+              "sha256": "315fcead9c2aa2509d9df3850d109118b89b9cfca49ac985f4465b2460dd281c"
             }
           },
           "normal": {
@@ -36,14 +36,14 @@
             "height": 512,
             "format": "WEBP",
             "channels": "srgb",
-            "mean": 0.666102,
-            "bytes": 11306,
-            "edgeDifference": 2.73151,
+            "mean": 0.666046,
+            "bytes": 13918,
+            "edgeDifference": 2.96038,
             "clipping": null,
-            "sha256": "71bb793c4285d0e7c51595a3750d7862a64a5f99bb96e90d351f855bfc0b2569",
+            "sha256": "66a55df6118e6ef93a621d16a837fca22144d9240a1b30a0fff164d136217807",
             "ktx2": {
-              "bytes": 151874,
-              "sha256": "0dbafbaa83b29ef71f6d080914c409341f117787536c3e841015e41890faab31"
+              "bytes": 182764,
+              "sha256": "53064f7016addf8165611178eec8f426b7b6bc1d2576d71787fc56af67bd0b1d"
             }
           },
           "roughness": {
@@ -51,14 +51,14 @@
             "height": 512,
             "format": "WEBP",
             "channels": "srgb",
-            "mean": 0.889095,
-            "bytes": 6604,
-            "edgeDifference": 0.84375,
+            "mean": 0.886657,
+            "bytes": 8228,
+            "edgeDifference": 1.24023,
             "clipping": null,
-            "sha256": "254b492b3f177f1b652624d20a4af9e6d5c00fc23ac7ee847c6440a3cdea911b",
+            "sha256": "cbb01581a567b457901d087b68fe849f0e8c6d857f28345410cf2dfae4b52cb0",
             "ktx2": {
-              "bytes": 17822,
-              "sha256": "baa0cd64b6283d8a3164b7a138d55e77bb0e45bf7e6ec652bbefb0c353ea44f8"
+              "bytes": 22359,
+              "sha256": "a36187ab24588f5f74fd60cba1227a41b2c1a1532e93b0eac30e3a70d1a87a5b"
             }
           },
           "ao": {
@@ -66,14 +66,14 @@
             "height": 512,
             "format": "WEBP",
             "channels": "srgb",
-            "mean": 0.812672,
-            "bytes": 1812,
-            "edgeDifference": 0.302734,
+            "mean": 0.814237,
+            "bytes": 2006,
+            "edgeDifference": 0.511719,
             "clipping": null,
-            "sha256": "23c06e64bd22dfeed071830c7b74d2bba2e100cf2efe1d71f88134040ed4bc6e",
+            "sha256": "4bd1fc0bd35b267e8be30957361ee9a8e459ee833db3bbb4d1978b054a6408ae",
             "ktx2": {
-              "bytes": 6505,
-              "sha256": "ca6d0272f96d703f0034eb3ec4e2ca3dcbff49f87b77e3a7a4991505379a1015"
+              "bytes": 7246,
+              "sha256": "56fffebe839b7c9f022aeb355ab31f9661cfcc1bc5d3254d38cc3175f467cc94"
             }
           },
           "height": {
@@ -81,14 +81,14 @@
             "height": 512,
             "format": "WEBP",
             "channels": "srgb",
-            "mean": 0.256702,
-            "bytes": 23838,
-            "edgeDifference": 2.09848,
+            "mean": 0.265273,
+            "bytes": 26796,
+            "edgeDifference": 1.96958,
             "clipping": null,
-            "sha256": "37330aff845e1d189b5a61a75fd7531fd1073c0bb59a4d43690d26ee95a041b4",
+            "sha256": "dd6940c8f45a677168478d4a7ae37d9c4588422e4ab10e0ce8b05d3024dc8c32",
             "ktx2": {
-              "bytes": 48117,
-              "sha256": "365fbb0d59c2a415762006236f50a2dcc436ed241b22ff6f75329d0b75e57544"
+              "bytes": 50695,
+              "sha256": "3ec8758d128b28494717c20cb1e85ca2b5c5cdec6928ff28dfbfe25bd509cac0"
             }
           },
           "emissive": {
@@ -96,14 +96,14 @@
             "height": 512,
             "format": "WEBP",
             "channels": "srgb",
-            "mean": 0.0000122669,
-            "bytes": 548,
+            "mean": 0,
+            "bytes": 528,
             "edgeDifference": 0,
             "clipping": null,
-            "sha256": "39ddcdbdbfc84677d164ad9d7bea527b8ead8d1d006c214d60660457511fce5a",
+            "sha256": "8383219e546eb515dd2e1a8c02557888e126423cc82014fe2eea79006155a62f",
             "ktx2": {
-              "bytes": 1185,
-              "sha256": "30b4fc16c32a50f50dbd773dbde523b65ee2421382d66ee1b7ee152c2a0c41eb"
+              "bytes": 1060,
+              "sha256": "c82f3641a07391bb1c756915400def6390a6ea48eeb33422412afea225b122d3"
             }
           }
         },
@@ -205,10 +205,10 @@
       },
       "review": {
         "reviewer": "Codex visual QA",
-        "reviewedAt": "2026-09-09T17:47:28.747Z",
+        "reviewedAt": "2026-09-14T17:44:56.828Z",
         "decision": "approved",
         "scores": {
-          "tileability": 3,
+          "tileability": 4,
           "depthResponse": 4,
           "lightNeutrality": 4,
           "materialIdentity": 4,
@@ -229,17 +229,17 @@
             "height": 512,
             "format": "WEBP",
             "channels": "srgb",
-            "mean": 0.314154,
-            "bytes": 83372,
-            "edgeDifference": 2.78236,
+            "mean": 0.315671,
+            "bytes": 78544,
+            "edgeDifference": 2.47253,
             "clipping": {
               "shadows": 0,
               "highlights": 0
             },
-            "sha256": "e78aec133a7a1795766a93050b0f88f87578fa00d1440c85625dab198684f27f",
+            "sha256": "ad058fc498b1088392c92cfac3cb91ad5015a1dc941055618eb941b3bcae9f99",
             "ktx2": {
-              "bytes": 71374,
-              "sha256": "ed00a141c2c956fd32f49517062266550e630652770d732a32f1ac7b71bb4c1d"
+              "bytes": 71089,
+              "sha256": "acde14a9a8a26da7ee0b30fa1267c3e8dde76542f80f3bda995068664b9f68b6"
             }
           },
           "normal": {
@@ -247,14 +247,14 @@
             "height": 512,
             "format": "WEBP",
             "channels": "srgb",
-            "mean": 0.665851,
-            "bytes": 23094,
-            "edgeDifference": 2.9538,
+            "mean": 0.665926,
+            "bytes": 19010,
+            "edgeDifference": 2.60116,
             "clipping": null,
-            "sha256": "a006bdb8ecab10b1943d5b6c814ccfd4d8fe8924b53848f09f0c95b558a349d2",
+            "sha256": "ff8cfaa9bd395a4349e5409dc64adf718b3162bc23b159efb08cd0dac3db21d8",
             "ktx2": {
-              "bytes": 263195,
-              "sha256": "11d4e3527766f0deae817ab0d28a2a4f472100995e9070ac00e8feeafd817bdf"
+              "bytes": 248760,
+              "sha256": "79a5dffc619ac7eb93b81ac7163e3ebf9a9c62ec11431e41ba794ed1281c9ca7"
             }
           },
           "roughness": {
@@ -262,14 +262,14 @@
             "height": 512,
             "format": "WEBP",
             "channels": "srgb",
-            "mean": 0.875956,
-            "bytes": 11222,
-            "edgeDifference": 1.4043,
+            "mean": 0.875562,
+            "bytes": 10196,
+            "edgeDifference": 1.0625,
             "clipping": null,
-            "sha256": "931014fe2c9fdd0c0a611c36806d8b907c2226f033acece279278b40a5e885b7",
+            "sha256": "be260d5ea372068707837cd851c6be95107e5fda3d2e85aafcfdb23236978097",
             "ktx2": {
-              "bytes": 28762,
-              "sha256": "8bdefe31e68a83814356c03c22f9275d3b72a08d4473699daa93ff146b4b3252"
+              "bytes": 25268,
+              "sha256": "5a38b7d2a50709aebd125174705fe2c06f9d44a63cc0547132c12938b7d54fc5"
             }
           },
           "ao": {
@@ -277,14 +277,14 @@
             "height": 512,
             "format": "WEBP",
             "channels": "srgb",
-            "mean": 0.82098,
-            "bytes": 2088,
-            "edgeDifference": 0.324219,
+            "mean": 0.821136,
+            "bytes": 1928,
+            "edgeDifference": 0.203125,
             "clipping": null,
-            "sha256": "743807e3d9da6ea57634a5a9112fb7c3fb0d3b32ca2bd1d0adb2d8ef268c22b7",
+            "sha256": "13cdfaac7db946ed668f4bcce35d002b3d67d2ce546a1afb88f24d09db1d0384",
             "ktx2": {
-              "bytes": 7065,
-              "sha256": "2cd10a71d5b43c17c4ffa5293b3afe8f3884df51e3023b492ce83ccac88ad4d2"
+              "bytes": 6738,
+              "sha256": "f60beb406446e841f43d20e800e2c057b6bd97a2fa35e68d7c5463102764e193"
             }
           },
           "height": {
@@ -292,14 +292,14 @@
             "height": 512,
             "format": "WEBP",
             "channels": "srgb",
-            "mean": 0.301623,
-            "bytes": 36888,
-            "edgeDifference": 2.22575,
+            "mean": 0.302605,
+            "bytes": 35234,
+            "edgeDifference": 1.95592,
             "clipping": null,
-            "sha256": "d4b4d4c1327c2136fdb97f854d65c773dc11eb869c12c0c0dde1c4ceb5d99e9a",
+            "sha256": "8c5a5147478ac2ca8050c8a3b642238674227e321722d0d436b8de0dc7ab833e",
             "ktx2": {
-              "bytes": 53227,
-              "sha256": "5dfbf42a61081444aaf99589e3756ae41372380ee13e53ac019eedd54495daf4"
+              "bytes": 52771,
+              "sha256": "7f0ddffcf33b9975ceb3d199938e4911465a0b4fb86e1998b4f86e24ae7ac142"
             }
           },
           "emissive": {
@@ -416,10 +416,10 @@
       },
       "review": {
         "reviewer": "Codex visual QA",
-        "reviewedAt": "2026-09-09T17:47:28.853Z",
+        "reviewedAt": "2026-09-14T17:44:58.479Z",
         "decision": "approved",
         "scores": {
-          "tileability": 3,
+          "tileability": 4,
           "depthResponse": 4,
           "lightNeutrality": 4,
           "materialIdentity": 4,
@@ -440,17 +440,17 @@
             "height": 512,
             "format": "WEBP",
             "channels": "srgb",
-            "mean": 0.390219,
-            "bytes": 61556,
-            "edgeDifference": 3.25215,
+            "mean": 0.390568,
+            "bytes": 57910,
+            "edgeDifference": 2.34446,
             "clipping": {
               "shadows": 0,
               "highlights": 0
             },
-            "sha256": "3ab288f7e82dfb998a599fb9e98a1ced8dc8e74839f74f91f7fa51ac14faef0a",
+            "sha256": "9d2a19f2c86832c55b0e99258da4d6a91b43b3fbcc3fa0aeabeb172cb8267c57",
             "ktx2": {
-              "bytes": 69902,
-              "sha256": "cbfeac97d618e91c6fe0ba9f9b2f9d7f990e1b49387d286c3d2150b286050346"
+              "bytes": 69824,
+              "sha256": "c648a977f2f53a69f64486e6aebf95e14c8e531d81fc612bd3aeb6dc7c06f4e6"
             }
           },
           "normal": {
@@ -458,14 +458,14 @@
             "height": 512,
             "format": "WEBP",
             "channels": "srgb",
-            "mean": 0.665997,
-            "bytes": 12166,
-            "edgeDifference": 2.93271,
+            "mean": 0.666059,
+            "bytes": 11940,
+            "edgeDifference": 1.32887,
             "clipping": null,
-            "sha256": "9797231d0ada69f8990b183b011238ffd7c7c11281f78ddcb08ef477d79888c2",
+            "sha256": "3a0ea8e98f475218374791396c27f789cc28f266344b5c208e6a3a11f804a420",
             "ktx2": {
-              "bytes": 199884,
-              "sha256": "4d7023a9f41af490b55f380b2507926604524412fd8c04a9245c4347f6a210e5"
+              "bytes": 189897,
+              "sha256": "2aa70a682e91e7bb554e5cea46548ccce7a2cc472701afcf08ba89996a7d0170"
             }
           },
           "roughness": {
@@ -473,14 +473,14 @@
             "height": 512,
             "format": "WEBP",
             "channels": "srgb",
-            "mean": 0.855792,
-            "bytes": 6974,
-            "edgeDifference": 1.22656,
+            "mean": 0.855677,
+            "bytes": 6876,
+            "edgeDifference": 0.65625,
             "clipping": null,
-            "sha256": "118c5d5f0e00bf676a84b9855a56fd2c8deb8dffa606568cfbaaf2ea4955135f",
+            "sha256": "a5156cebb74b4aaa239dd9e40270fe09c26c5ed40f692321dde1e1da6bd990bb",
             "ktx2": {
-              "bytes": 19453,
-              "sha256": "e1140e8ff6f6d2c09832e42f9e24b66f4a972ba8e9285ff848a794fca115d352"
+              "bytes": 18701,
+              "sha256": "ca914c269beea1b8e98f9592bb4011ed9a10be1e58d83ce1bcabd2623601f2f0"
             }
           },
           "ao": {
@@ -488,14 +488,14 @@
             "height": 512,
             "format": "WEBP",
             "channels": "srgb",
-            "mean": 0.835445,
-            "bytes": 1954,
-            "edgeDifference": 0.396484,
+            "mean": 0.835511,
+            "bytes": 1944,
+            "edgeDifference": 0.316406,
             "clipping": null,
-            "sha256": "7433345195dce8752b49bbce311fc48064f063b55ba7f4a5dc6ccc01873549a1",
+            "sha256": "af9b637d0d85db7a13ac6af0933991f127d6340a161b78a666de76c8bd6854dc",
             "ktx2": {
-              "bytes": 6910,
-              "sha256": "9e718db51c23074b6b9b78c3893c030cdae0e694f75a5ed0d8f37c457fd95d29"
+              "bytes": 6866,
+              "sha256": "b780b58d7490707d2c880bb18c23d6309e20c79130c76a1694de6ac3f81b564e"
             }
           },
           "height": {
@@ -503,14 +503,14 @@
             "height": 512,
             "format": "WEBP",
             "channels": "srgb",
-            "mean": 0.373909,
-            "bytes": 25150,
-            "edgeDifference": 2.24582,
+            "mean": 0.37426,
+            "bytes": 24166,
+            "edgeDifference": 1.52678,
             "clipping": null,
-            "sha256": "f167891a02f78986e616c04d2d39ca5194e64550787a0f82a9539dc72aab8b9f",
+            "sha256": "595b0ee735bf4ea045d9f05fb192d728debf7940c40dcc70cc27445f8422c46e",
             "ktx2": {
-              "bytes": 49614,
-              "sha256": "3d10be72e2c2efac8edc52d4853621638c38195bdd94e21f725aafa35f86f61d"
+              "bytes": 48967,
+              "sha256": "90b9e75beeec4e8d986dc4916c4624190d85ba492cf822e7529bc1c95ead754b"
             }
           },
           "emissive": {
@@ -518,14 +518,14 @@
             "height": 512,
             "format": "WEBP",
             "channels": "srgb",
-            "mean": 0.000074439,
-            "bytes": 638,
-            "edgeDifference": 0.0742188,
+            "mean": 0.0000275705,
+            "bytes": 576,
+            "edgeDifference": 0,
             "clipping": null,
-            "sha256": "640619563a14b6d8781a513a36c6c790afbff51bbffe260be9ef2e6ed8108848",
+            "sha256": "55f5a764208dbd171edc16a23b6cb82f816a1c8a393c59fb2bb103b53bca3643",
             "ktx2": {
-              "bytes": 1477,
-              "sha256": "b0f920726f354e28884386c48115876f510c377ad0a73e92a067930e8c2bc71a"
+              "bytes": 1306,
+              "sha256": "745f9aaadce98f5e256e3422bb4b62bb5d0f85017b21177ae96efd5649b64e60"
             }
           }
         },
@@ -627,10 +627,10 @@
       },
       "review": {
         "reviewer": "Codex visual QA",
-        "reviewedAt": "2026-09-09T17:47:28.956Z",
+        "reviewedAt": "2026-09-14T17:44:59.132Z",
         "decision": "approved",
         "scores": {
-          "tileability": 3,
+          "tileability": 4,
           "depthResponse": 4,
           "lightNeutrality": 4,
           "materialIdentity": 4,
@@ -651,17 +651,17 @@
             "height": 512,
             "format": "WEBP",
             "channels": "srgb",
-            "mean": 0.319929,
-            "bytes": 77800,
-            "edgeDifference": 2.93756,
+            "mean": 0.316145,
+            "bytes": 73484,
+            "edgeDifference": 2.61406,
             "clipping": {
               "shadows": 0,
               "highlights": 0
             },
-            "sha256": "d50b6009e9ccf48673f1ee250481f9c23bb67e8ef0b414884301a966ba2adf80",
+            "sha256": "56050dcbc6332a6f00e52a599d17f76c2aee7abaa62e2b885c79db1ea997a9f8",
             "ktx2": {
-              "bytes": 71330,
-              "sha256": "21b910fb9974657f6dc9d65e5d8d3e6be6319ce58f94ea8973ad7945f356b565"
+              "bytes": 71464,
+              "sha256": "69f5d83a7744d34270f5d92d925ca99bf56291194bbbff4a76319c3bd9f3b1f8"
             }
           },
           "normal": {
@@ -669,14 +669,14 @@
             "height": 512,
             "format": "WEBP",
             "channels": "srgb",
-            "mean": 0.6657,
-            "bytes": 21018,
-            "edgeDifference": 3.76539,
+            "mean": 0.665958,
+            "bytes": 21080,
+            "edgeDifference": 2.81225,
             "clipping": null,
-            "sha256": "7e3f43e3f26216a0b7cb8ddf77c12b18f0a44f077d932b68e60661de993373fa",
+            "sha256": "4a42cdb7eb280285899c93e0abf1b70196dfd0bcb3a4c98930ba323a29c6d531",
             "ktx2": {
-              "bytes": 254363,
-              "sha256": "b258011213ecd55a87fca8c41604bc1abdb0953c71f0566bcb5ddc1211ce5bfc"
+              "bytes": 251390,
+              "sha256": "cbf1ee47b6d150928867da30a7a468abe840e23cbd008cb1e5fda98f47e1899c"
             }
           },
           "roughness": {
@@ -684,14 +684,14 @@
             "height": 512,
             "format": "WEBP",
             "channels": "srgb",
-            "mean": 0.880437,
-            "bytes": 10678,
-            "edgeDifference": 1.38867,
+            "mean": 0.881576,
+            "bytes": 10960,
+            "edgeDifference": 1.12109,
             "clipping": null,
-            "sha256": "60860aee17409a3fcfd7334389838b416ab5b884035af711e2fa8a9e5670190c",
+            "sha256": "223ce176bdae1e89e3ae326229b060e62454164142353b50fd837eec638d0932",
             "ktx2": {
-              "bytes": 27461,
-              "sha256": "033e0cde4bdd175e1bc0ba3ee318eb6f2e7f433c35423c035a8bb452a93eab74"
+              "bytes": 26338,
+              "sha256": "062763fd404c9ec5bbf9c26aad386d1a0cc63fee1385481d5c04b95de156fcf1"
             }
           },
           "ao": {
@@ -699,14 +699,14 @@
             "height": 512,
             "format": "WEBP",
             "channels": "srgb",
-            "mean": 0.818437,
-            "bytes": 1762,
-            "edgeDifference": 0.263672,
+            "mean": 0.817382,
+            "bytes": 1890,
+            "edgeDifference": 0.503906,
             "clipping": null,
-            "sha256": "138f8ae16dc40fa9e1250ab1c67f7605d0b52ba0836c6967f74d708334000a77",
+            "sha256": "fb3251661af0b41961552ee6fb17682deb249c988f7e422ace66a5de2ff90280",
             "ktx2": {
-              "bytes": 6325,
-              "sha256": "f7cb10ac029894d43749939d427eef776bf1f5b80344db2f19aac92f57c335a8"
+              "bytes": 6873,
+              "sha256": "2ad1b81e6340d333c4d0c489ffd3cc80dd110c6fa374c86347f9dfef8cf7d2ab"
             }
           },
           "height": {
@@ -714,14 +714,14 @@
             "height": 512,
             "format": "WEBP",
             "channels": "srgb",
-            "mean": 0.286359,
-            "bytes": 36610,
-            "edgeDifference": 2.35909,
+            "mean": 0.282027,
+            "bytes": 35368,
+            "edgeDifference": 1.93359,
             "clipping": null,
-            "sha256": "520af55afd4baa880796a73fbdd462da8985d7556c3fa72a3b5fe7c139235a77",
+            "sha256": "f6a93793d0a0a5fb4c1b2ca55162757f5f8b27debc41a4c6dddb77f1f4664422",
             "ktx2": {
-              "bytes": 53217,
-              "sha256": "e3d9c5a9aa868115eb15f9ec6ae90602db6e69fccd7979e25426258faabb56df"
+              "bytes": 52968,
+              "sha256": "caf5925c33105b33d7a83724e3b547730dd6f4728b3f23c31a179b38aea31870"
             }
           },
           "emissive": {
@@ -729,14 +729,14 @@
             "height": 512,
             "format": "WEBP",
             "channels": "srgb",
-            "mean": 0,
-            "bytes": 528,
+            "mean": 0.00000188491,
+            "bytes": 538,
             "edgeDifference": 0,
             "clipping": null,
-            "sha256": "8383219e546eb515dd2e1a8c02557888e126423cc82014fe2eea79006155a62f",
+            "sha256": "b4c5db824b32756f41441a7e4893337e132bd0cd03f49c261b542a77853a56fd",
             "ktx2": {
-              "bytes": 1060,
-              "sha256": "c82f3641a07391bb1c756915400def6390a6ea48eeb33422412afea225b122d3"
+              "bytes": 1080,
+              "sha256": "21c0f45b68687d48084e2eaf9d3c0c7f9a764ded3a8a039a825199b74a71f90c"
             }
           }
         },
@@ -838,10 +838,10 @@
       },
       "review": {
         "reviewer": "Codex visual QA",
-        "reviewedAt": "2026-09-09T17:47:29.048Z",
+        "reviewedAt": "2026-09-14T17:44:59.691Z",
         "decision": "approved",
         "scores": {
-          "tileability": 3,
+          "tileability": 4,
           "depthResponse": 4,
           "lightNeutrality": 4,
           "materialIdentity": 4,
@@ -862,17 +862,17 @@
             "height": 512,
             "format": "WEBP",
             "channels": "srgb",
-            "mean": 0.236562,
-            "bytes": 65462,
-            "edgeDifference": 2.87952,
+            "mean": 0.208977,
+            "bytes": 31228,
+            "edgeDifference": 1.9213,
             "clipping": {
               "shadows": 0,
               "highlights": 0
             },
-            "sha256": "524e1b82e53f493b21f4290413cc0d9167baa1ea963a1eca0ea6b26dd7d1c34f",
+            "sha256": "cb1a18cfc9271d881eca79a07693ccca0a55ecdf7e24b18822dc353ff36efcb2",
             "ktx2": {
-              "bytes": 67132,
-              "sha256": "5bec2de02cccad277778d052435ca752206248c518d880fc67ab793a13aabb79"
+              "bytes": 59058,
+              "sha256": "a3c1b84a5ecbcd5c8dcb689fc28a9befeb89112c119469fd2e5aceed84418dd3"
             }
           },
           "normal": {
@@ -880,14 +880,14 @@
             "height": 512,
             "format": "WEBP",
             "channels": "srgb",
-            "mean": 0.666039,
-            "bytes": 12352,
-            "edgeDifference": 2.258,
+            "mean": 0.666511,
+            "bytes": 2864,
+            "edgeDifference": 0.386656,
             "clipping": null,
-            "sha256": "4ebda82af3b3807dd00eb1d84d1c4df409706b555d7900fbec8123b0a027a268",
+            "sha256": "050cd6240cebd925211ddc455d56a2f36e533f0ca59dd61aa3f14e5f3ee5f365",
             "ktx2": {
-              "bytes": 176553,
-              "sha256": "19ad1c147914b227c255619e38d7c2b256a0e74e3133333d3efe207c6477ab7d"
+              "bytes": 50219,
+              "sha256": "69342bb85c4786e027bad4fef5c0b3f258c80c355707e39918e447713ac2a260"
             }
           },
           "roughness": {
@@ -895,14 +895,14 @@
             "height": 512,
             "format": "WEBP",
             "channels": "srgb",
-            "mean": 0.906188,
-            "bytes": 6562,
-            "edgeDifference": 0.787109,
+            "mean": 0.916914,
+            "bytes": 2408,
+            "edgeDifference": 0.417969,
             "clipping": null,
-            "sha256": "20486e19976130197a15124de6ae270ae493d2fead3b7f5e7894a083a3afbca4",
+            "sha256": "44ed81774928a7c75d4bc87706af696c2ae51b9413fb6265af22836a73e47d20",
             "ktx2": {
-              "bytes": 15423,
-              "sha256": "608f352c7e03156f737f6d3abe211d02d0235fe13dbf0ebf709c21277218e0a5"
+              "bytes": 4051,
+              "sha256": "3a8e099a937f3115a63e36c6a783d05ae82879d3a8db50e8d7bcab4ff474379d"
             }
           },
           "ao": {
@@ -910,14 +910,14 @@
             "height": 512,
             "format": "WEBP",
             "channels": "srgb",
-            "mean": 0.799951,
-            "bytes": 1540,
-            "edgeDifference": 0.289062,
+            "mean": 0.793341,
+            "bytes": 826,
+            "edgeDifference": 0.21875,
             "clipping": null,
-            "sha256": "af0fb6a9c071b4912de6a5c6322cd7404d248493f12036d9548dd1bd7b09d3f7",
+            "sha256": "3adffc74b337c3df60fcad443d76be69e8ce9156a099b7ffd88d61c55f98ccc2",
             "ktx2": {
-              "bytes": 4408,
-              "sha256": "7779fd56ca029050975b0005c16ca19cd50f4f3a809df2100e92f7097b54f530"
+              "bytes": 2334,
+              "sha256": "d2e796fd1e35d504ef05513cedaed707f0a2481f6046b3d30f0ab7a917a8c02c"
             }
           },
           "height": {
@@ -925,14 +925,14 @@
             "height": 512,
             "format": "WEBP",
             "channels": "srgb",
-            "mean": 0.198016,
-            "bytes": 28656,
-            "edgeDifference": 2.08203,
+            "mean": 0.154826,
+            "bytes": 12162,
+            "edgeDifference": 1.61914,
             "clipping": null,
-            "sha256": "58c1189b7227389ed3f5a3783ae486ea2cbf1ad1e7cb3a00ba3aa68907de56a6",
+            "sha256": "745484ae2776c1460385a94bf1378bdebd9f7773448da53ab2fa92f39a1f1d98",
             "ktx2": {
-              "bytes": 50012,
-              "sha256": "5e7cd25458f4bf582761f83c51dd9cd4dba27675e2824513217e74a832c93b9b"
+              "bytes": 30474,
+              "sha256": "b25ff123bda9645fba94f3a950b11430a2f9bca7df51ff5b1c7846eb860fb743"
             }
           },
           "emissive": {
@@ -957,17 +957,17 @@
             "height": 512,
             "format": "WEBP",
             "channels": "srgb",
-            "mean": 0.236593,
-            "bytes": 8656,
-            "edgeDifference": 1.15057,
+            "mean": 0.209283,
+            "bytes": 4516,
+            "edgeDifference": 0.904637,
             "clipping": {
               "shadows": 0,
               "highlights": 0
             },
-            "sha256": "e092ce2f5da6c008f353d860862ea1579238ec041ae4e51869c3994c94ae1b75",
+            "sha256": "422be2bfa6a1ed34c3a665fa1fdf95215ff06cae96ff2a151bf98b605678cd4f",
             "ktx2": {
-              "bytes": 38211,
-              "sha256": "810e274415c61fdd6dd2d3518ca947465b0df9f3e3b410cd14920a2b3fa6b5f4"
+              "bytes": 21107,
+              "sha256": "c4240a394bab2f6ed140bc086bffba2be7a87a9285a70476cdec5e0a52693459"
             }
           },
           "normal": {
@@ -975,14 +975,14 @@
             "height": 512,
             "format": "WEBP",
             "channels": "srgb",
-            "mean": 0.666545,
-            "bytes": 2366,
-            "edgeDifference": 0.703655,
+            "mean": 0.666641,
+            "bytes": 726,
+            "edgeDifference": 0.0850197,
             "clipping": null,
-            "sha256": "44f4c057a4b1f29505cde06e43c4263adf6fd4c10caa62fdac4f893b7d3160c5",
+            "sha256": "3cefa9dedd1951eba8e1ff6e05463202de59a74c3b2ae13507a0f84e4219d598",
             "ktx2": {
-              "bytes": 31710,
-              "sha256": "c5af26b80d205e5fbdc905eb5f760c2ca43981bc50fea4cf981ee723e8d6e182"
+              "bytes": 3857,
+              "sha256": "a344329c6a020495eda7f372af7c5227fb8b60934c39edf246a80009576a9a18"
             }
           },
           "roughness": {
@@ -990,14 +990,14 @@
             "height": 512,
             "format": "WEBP",
             "channels": "srgb",
-            "mean": 0.907156,
-            "bytes": 2212,
-            "edgeDifference": 0.472656,
+            "mean": 0.91671,
+            "bytes": 1286,
+            "edgeDifference": 0.21875,
             "clipping": null,
-            "sha256": "22670cd31e1bb2aace5f2cc0a8e0f93de04289ca93c253b149042b93e8d2125f",
+            "sha256": "24182a784a39b90bf9327684a25a18b711ec177d4445bf80b5cdbfed58e4f093",
             "ktx2": {
-              "bytes": 7058,
-              "sha256": "fda972dd190fc550e9922075f7b92cef0c745c78b6f3af466a6b57cf0d01c145"
+              "bytes": 2277,
+              "sha256": "03dbf1c51f706d741f0917de65451f36be8a8a58491ebabba467a244d2505a19"
             }
           },
           "ao": {
@@ -1005,14 +1005,14 @@
             "height": 512,
             "format": "WEBP",
             "channels": "srgb",
-            "mean": 0.79987,
-            "bytes": 1282,
-            "edgeDifference": 0.132812,
+            "mean": 0.793494,
+            "bytes": 804,
+            "edgeDifference": 0.1875,
             "clipping": null,
-            "sha256": "ac9b1ba33397211237ac775164647e8186f4ccc7e079e04d022ef56238e88ad1",
+            "sha256": "5ea5feb5c3543c3d7ce061094e65ec00e3c2df480153248f7a9714f9a3b618cd",
             "ktx2": {
-              "bytes": 3474,
-              "sha256": "d660a8702c83ebc15ef5afa8d74478b7ac5ffaa7b175338cfef45ec138b268cc"
+              "bytes": 2269,
+              "sha256": "e2766733181ac70f28adc77d966fd02358a522e52c4f8d61f33021d4ba1bfcd9"
             }
           },
           "height": {
@@ -1020,14 +1020,14 @@
             "height": 512,
             "format": "WEBP",
             "channels": "srgb",
-            "mean": 0.197649,
-            "bytes": 7778,
-            "edgeDifference": 1.19336,
+            "mean": 0.154681,
+            "bytes": 3578,
+            "edgeDifference": 0.734375,
             "clipping": null,
-            "sha256": "3f862345369b8e19bbe8e7569e2943c46a25cea4be22d9205ad8bbc6ba0f3752",
+            "sha256": "722a2c008e3843225594a17a5636c99e7ea320065afb58c0aac3d917e2d69add",
             "ktx2": {
-              "bytes": 24287,
-              "sha256": "66bcddf2e9a0f5741ac38db5759fda2999aca45719775e3946f9fea4d7077aab"
+              "bytes": 11868,
+              "sha256": "10ffe98a4f19bcf64f01803db340a5c9e1b2456031043f56994771c89cc34c92"
             }
           },
           "emissive": {
@@ -1049,14 +1049,14 @@
       },
       "review": {
         "reviewer": "Codex visual QA",
-        "reviewedAt": "2026-09-09T17:47:29.129Z",
+        "reviewedAt": "2026-09-14T17:14:20.640Z",
         "decision": "approved",
         "scores": {
-          "tileability": 3,
+          "tileability": 4,
           "depthResponse": 3,
           "lightNeutrality": 4,
           "materialIdentity": 3,
-          "stateLegibility": 3,
+          "stateLegibility": 4,
           "accessibility": 4
         }
       }
@@ -1073,17 +1073,17 @@
             "height": 512,
             "format": "WEBP",
             "channels": "srgb",
-            "mean": 0.212855,
-            "bytes": 49022,
-            "edgeDifference": 2.79114,
+            "mean": 0.263388,
+            "bytes": 56370,
+            "edgeDifference": 2.4561,
             "clipping": {
               "shadows": 0,
               "highlights": 0
             },
-            "sha256": "779c5c513537bb9d6df0bcb16271bd7bda7e7d9a129ab8bcf683e567ab749d24",
+            "sha256": "96f46e7b605adfba69a34e749fb0343dc771e6abdca6cf862cd572726d7e29df",
             "ktx2": {
-              "bytes": 67732,
-              "sha256": "b8a32917f2b3a601ac84eef00a04ded1df27e4ff926693b7aca4e01c17d0823f"
+              "bytes": 70014,
+              "sha256": "48f03d365308b01058330c0c9132770fdd28ec549daeb45af5486e0104ed8660"
             }
           },
           "normal": {
@@ -1091,14 +1091,14 @@
             "height": 512,
             "format": "WEBP",
             "channels": "srgb",
-            "mean": 0.666108,
-            "bytes": 10472,
-            "edgeDifference": 2.11099,
+            "mean": 0.666018,
+            "bytes": 13704,
+            "edgeDifference": 1.31479,
             "clipping": null,
-            "sha256": "5db0abddb143f7ea3c9fee3c3b3233949a8ca2af69cff0de38a924f859b6a002",
+            "sha256": "7fae2ada957af8d86fb3310eb444798ee83ed04d8ac7e29188ad792056709a27",
             "ktx2": {
-              "bytes": 176819,
-              "sha256": "32bcdbdf979c1c9cfd5af1d1afc345143ee3ee1e5ff66eb6da049e4a5350eed1"
+              "bytes": 202457,
+              "sha256": "b2f2ae92c0ff2cb67b680b82e2451b2a6b1a411502df4f0bfd78d0e4e4f4e715"
             }
           },
           "roughness": {
@@ -1106,14 +1106,14 @@
             "height": 512,
             "format": "WEBP",
             "channels": "srgb",
-            "mean": 0.918848,
-            "bytes": 6530,
-            "edgeDifference": 1.10547,
+            "mean": 0.902133,
+            "bytes": 7978,
+            "edgeDifference": 0.740234,
             "clipping": null,
-            "sha256": "3d25ae5a45bdfc5c63b94b3794e375ca3de1c7f6336b174b0d19a7341bb0c54e",
+            "sha256": "79cdc8f2ef80f6d245f30be3c81507d5f06a12b988eb2b58fff8b8c4f21ef3c5",
             "ktx2": {
-              "bytes": 16456,
-              "sha256": "35f44bc87f753cf89a069ccede8e107bba197d59caf483a33edd1e54ad30d170"
+              "bytes": 21154,
+              "sha256": "0ced890d7e88d5ee13f144b9977f73aae80df3e59fecf4e8caa5912ea4c90a3a"
             }
           },
           "ao": {
@@ -1121,14 +1121,14 @@
             "height": 512,
             "format": "WEBP",
             "channels": "srgb",
-            "mean": 0.790986,
-            "bytes": 1742,
-            "edgeDifference": 0.347656,
+            "mean": 0.802881,
+            "bytes": 2060,
+            "edgeDifference": 0.666016,
             "clipping": null,
-            "sha256": "4dd6904238868a2c140988b4fa50c84a7e10fd23242ead9942b414dc7438696b",
+            "sha256": "08473af28279b9e9d9849cde95f2cbbb45e73473b8eef298f5b1a6109ad8aaf5",
             "ktx2": {
-              "bytes": 5750,
-              "sha256": "037447fae37aa6c93ce98e2c363de52d5a7a5998ba82f8d13a8bd917eb6a6be5"
+              "bytes": 7355,
+              "sha256": "7efded3655a10fbb6ca5847c42c56d1b71a09cb756c3d263b61a25820b7007ce"
             }
           },
           "height": {
@@ -1136,14 +1136,14 @@
             "height": 512,
             "format": "WEBP",
             "channels": "srgb",
-            "mean": 0.150398,
-            "bytes": 23052,
-            "edgeDifference": 2.19728,
+            "mean": 0.209971,
+            "bytes": 26870,
+            "edgeDifference": 1.82031,
             "clipping": null,
-            "sha256": "989b32f1b85622b9eb21b0e01de997b27a0b73b83ab7896bd9d4de59c82970ca",
+            "sha256": "fa69ad97cfd319f8733794d3501b7eb5b724a52e122402668c9007f7073a90c3",
             "ktx2": {
-              "bytes": 48518,
-              "sha256": "b92579cd3a051597230931a3ef0b93eee31df705781c213a2aa1753a8ddf3bf5"
+              "bytes": 50766,
+              "sha256": "84a93c5910b1fe7caf96360f355873e3ad4f9b18cc370fed721e522b4f0ec7ae"
             }
           },
           "emissive": {
@@ -1151,14 +1151,14 @@
             "height": 512,
             "format": "WEBP",
             "channels": "srgb",
-            "mean": 0,
-            "bytes": 528,
+            "mean": 0.000103994,
+            "bytes": 634,
             "edgeDifference": 0,
             "clipping": null,
-            "sha256": "8383219e546eb515dd2e1a8c02557888e126423cc82014fe2eea79006155a62f",
+            "sha256": "ffb9da77d5b85248fb3a950c9b2851110465f87c029a3720af5936e42618e6e4",
             "ktx2": {
-              "bytes": 1060,
-              "sha256": "c82f3641a07391bb1c756915400def6390a6ea48eeb33422412afea225b122d3"
+              "bytes": 1678,
+              "sha256": "8383523696efc099b3453fdb6373ad8cf5d9660d891855d7f2e01c4b029e5c4c"
             }
           }
         },
@@ -1260,10 +1260,10 @@
       },
       "review": {
         "reviewer": "Codex visual QA",
-        "reviewedAt": "2026-09-09T17:47:29.208Z",
+        "reviewedAt": "2026-09-14T17:45:00.221Z",
         "decision": "approved",
         "scores": {
-          "tileability": 3,
+          "tileability": 4,
           "depthResponse": 4,
           "lightNeutrality": 4,
           "materialIdentity": 4,
@@ -1275,29 +1275,29 @@
   ],
   "runtime": {
     "board": {
-      "generatedAt": "2026-09-10T03:02:36.669Z",
+      "generatedAt": "2026-09-14T17:46:32.921Z",
       "materialSystemVersion": "1.0.0",
       "states": [
         {
           "lens": "ready",
-          "drawCalls": 74,
-          "triangles": 3444,
-          "textures": 2,
+          "drawCalls": 82,
+          "triangles": 5384,
+          "textures": 13,
           "lightingRig": "neutral"
         },
         {
           "lens": "danger",
-          "drawCalls": 74,
-          "triangles": 4824,
-          "textures": 61,
+          "drawCalls": 82,
+          "triangles": 6764,
+          "textures": 13,
           "lightingRig": "danger"
         }
       ]
     },
     "frame": {
-      "generatedAt": "2026-09-10T03:02:53.703Z",
+      "generatedAt": "2026-09-14T17:40:31.486Z",
       "frameP95Ms": 100,
-      "renderP95Ms": 1.9,
+      "renderP95Ms": 2.6,
       "pixelRatio": 1,
       "quality": "balanced"
     }

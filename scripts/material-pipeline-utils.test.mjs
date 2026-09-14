@@ -52,6 +52,12 @@ test('validates a complete surface and lighting contract', () => {
   assert.deepEqual(validateMaterialSystem(fixture), []);
 });
 
+test('rejects an unknown source seam mode', () => {
+  const invalid = structuredClone(fixture);
+  invalid.materials[0].seamMode = 'wishful-thinking';
+  assert.ok(validateMaterialSystem(invalid).some((error) => error.includes('seamMode')));
+});
+
 test('builds predictable top and side channel paths', () => {
   const profile = fixture.materials[0];
   assert.match(materialOutputPaths('C:/repo', profile).normal, /output-1[\\/]normal\.webp$/);

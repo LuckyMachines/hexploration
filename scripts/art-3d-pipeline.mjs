@@ -2,13 +2,16 @@
 
 import { createHash } from 'node:crypto';
 import {
+  copyFileSync,
   existsSync,
+  mkdtempSync,
   mkdirSync,
   readFileSync,
+  rmSync,
   statSync,
   writeFileSync,
 } from 'node:fs';
-import { homedir } from 'node:os';
+import { homedir, tmpdir } from 'node:os';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
@@ -19,6 +22,9 @@ import {
   buildFluxTurntablePrompt,
   buildTrellisArgs,
   cellGeometry,
+  evaluateRuntimeModel,
+  inspectGlbBuffer,
+  validateTransparentView,
   validate3dManifest,
 } from './art-3d-pipeline-utils.mjs';
 
@@ -26,11 +32,15 @@ const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..'
 const directionPath = path.join(repoRoot, 'app', 'src', 'art-pipeline', 'art-direction.json');
 const sourceManifestPath = path.join(repoRoot, 'app', 'src', 'art-pipeline', 'asset-manifest.json');
 const manifestPath = path.join(repoRoot, 'app', 'src', 'art-pipeline', 'asset-3d-manifest.json');
+const reviewPath = path.join(repoRoot, 'app', 'src', 'art-pipeline', 'asset-3d-review.json');
+const runtimeRegistryPath = path.join(repoRoot, 'app', 'src', 'art-pipeline', 'runtime-models.json');
 const direction = JSON.parse(readFileSync(directionPath, 'utf8'));
 const sourceManifest = JSON.parse(readFileSync(sourceManifestPath, 'utf8'));
 const manifest = JSON.parse(readFileSync(manifestPath, 'utf8'));
+const review = JSON.parse(readFileSync(reviewPath, 'utf8'));
 const sourceById = new Map(sourceManifest.assets.map((asset) => [asset.id, asset]));
 const entryById = new Map(manifest.assets.map((asset) => [asset.id, asset]));
+const reviewById = new Map(review.assets.map((asset) => [asset.id, asset]));
 const codexRoot = process.env.CODEX_HOME || path.join(homedir(), '.codex');
 const azureGenerate = path.join(codexRoot, 'azure-image.sh');
 const azureEdit = path.join(codexRoot, 'azure-image-edit.sh');
@@ -38,6 +48,9 @@ const removeChroma = path.join(codexRoot, 'skills', '.system', 'imagegen', 'scri
 const trellisRoot = process.env.TRELLIS2_ROOT || path.join(homedir(), 'Desktop', 'imgntn_repos', 'local_music_scene', 'tools', 'trellis2-local');
 const blenderExe = process.env.BLENDER_EXE || path.join('C:', 'Program Files', 'Blender Foundation', 'Blender 4.5', 'blender.exe');
 const glbReviewScript = process.env.GLB_REVIEW_SCRIPT || path.join(homedir(), 'Desktop', 'imgntn_repos', 'bbb', 'scripts', 'render-glb-review.py');
+const runtimePrepScript = path.join(repoRoot, 'scripts', 'prepare-glb-runtime.py');
+const gltfTransformCli = process.env.GLTF_TRANSFORM_CLI
+  || path.join(path.dirname(process.execPath), 'node_modules', '@gltf-transform', 'cli', 'bin', 'cli.js');
 
 function usage() {
   console.log(`Xenovoya six-view image-to-3D pipeline
@@ -45,12 +58,16 @@ function usage() {
 Usage:
   node scripts/art-3d-pipeline.mjs doctor
   node scripts/art-3d-pipeline.mjs plan [asset-id]
-  node scripts/art-3d-pipeline.mjs generate [asset-id] --write [--replace|--reprocess]
+  node scripts/art-3d-pipeline.mjs generate [asset-id] --write [--replace|--replace-cardinal|--reprocess]
   node scripts/art-3d-pipeline.mjs contact-sheet [asset-id] --write [--replace]
   node scripts/art-3d-pipeline.mjs trellis [asset-id] --write [--replace]
   node scripts/art-3d-pipeline.mjs trellis-six [asset-id] --write [--replace]
   node scripts/art-3d-pipeline.mjs render [asset-id] --write [--replace]
   node scripts/art-3d-pipeline.mjs render-six [asset-id] --write [--replace]
+  node scripts/art-3d-pipeline.mjs prepare-runtime [asset-id] --write [--replace]
+  node scripts/art-3d-pipeline.mjs render-runtime [asset-id] --write [--replace]
+  node scripts/art-3d-pipeline.mjs promote-runtime [asset-id] --write [--replace]
+  node scripts/art-3d-pipeline.mjs runtime-doctor
   node scripts/art-3d-pipeline.mjs all [asset-id] --write [--replace]
 
 Omit asset-id to process all entries. Generation is resumable and preserves provider output,
@@ -59,11 +76,12 @@ compiled prompts, fingerprints, six transparent views, TRELLIS receipts, and rev
 
 function parseArgs(argv) {
   const [command = 'help', ...rest] = argv;
-  const flags = { write: false, replace: false, reprocess: false };
+  const flags = { write: false, replace: false, replaceCardinal: false, reprocess: false };
   let assetId = null;
   for (const value of rest) {
     if (value === '--write') flags.write = true;
     else if (value === '--replace') flags.replace = true;
+    else if (value === '--replace-cardinal') flags.replaceCardinal = true;
     else if (value === '--reprocess') flags.reprocess = true;
     else if (value.startsWith('--')) throw new Error(`Unknown option: ${value}`);
     else if (!assetId) assetId = value;
@@ -113,6 +131,11 @@ function run(command, args, label, options = {}) {
   return result;
 }
 
+function runGltfTransform(args, label, options = {}) {
+  if (!existsSync(gltfTransformCli)) throw new Error(`glTF Transform CLI is unavailable: ${gltfTransformCli}`);
+  return run(process.execPath, [gltfTransformCli, ...args], label, options);
+}
+
 function writeJson(filePath, value) {
   mkdirSync(path.dirname(filePath), { recursive: true });
   writeFileSync(filePath, `${JSON.stringify(value, null, 2)}\n`, 'utf8');
@@ -135,14 +158,15 @@ function ensureWrite(flags, command) {
 }
 
 function inspectImage(filePath) {
-  const result = run('magick', ['identify', '-quiet', '-format', '%w|%h|%m|%[channels]|%[opaque]', filePath], `inspect ${path.basename(filePath)}`, { capture: true });
-  const [width, height, format, channels, opaque] = result.stdout.trim().split('|');
+  const result = run('magick', ['identify', '-quiet', '-format', '%w|%h|%m|%[channels]|%[opaque]|%[fx:mean.a]', filePath], `inspect ${path.basename(filePath)}`, { capture: true });
+  const [width, height, format, channels, opaque, alphaMean] = result.stdout.trim().split('|');
   return {
     width: Number(width),
     height: Number(height),
     format: String(format || '').toLowerCase(),
     channels: String(channels || '').toLowerCase(),
     opaque: String(opaque || '').toLowerCase() === 'true',
+    alphaMean: Number(alphaMean),
     bytes: statSync(filePath).size,
   };
 }
@@ -168,6 +192,25 @@ function matteThresholds(input) {
   if (maximum <= 48) return { transparent: '8', opaque: '40', despill: false, key: channels };
   if (minimum >= 207) return { transparent: '40', opaque: '180', despill: false, key: channels };
   return { transparent: '32', opaque: '150', despill: true, key: channels };
+}
+
+function removeBackground(entry, input, output, label, stage) {
+  const matte = matteThresholds(input);
+  const mode = stage === 'cardinal'
+    ? (entry.cardinalMatteMode || entry.matteMode)
+    : (entry.orbitMatteMode || entry.matteMode);
+  if (mode === 'connected-border') {
+    const key = `rgb(${matte.key.join(',')})`;
+    const fuzz = `${entry.matteFuzzPercent ?? 10}%`;
+    console.log(`MATTE ${label} connected-border key ${key} fuzz ${fuzz}`);
+    run('magick', [input, '-alpha', 'on', '-bordercolor', key, '-border', '1', '-fuzz', fuzz, '-fill', 'none', '-draw', 'color 0,0 floodfill', '-shave', '1x1', `PNG32:${output}`], `${label} alpha`);
+    return;
+  }
+  const matteArgs = [removeChroma, '--input', input, '--out', output, '--auto-key', 'border', '--soft-matte', '--transparent-threshold', matte.transparent, '--opaque-threshold', matte.opaque];
+  if (matte.despill) matteArgs.push('--despill');
+  matteArgs.push('--force');
+  console.log(`MATTE ${label} key rgb(${matte.key.join(',')}) thresholds ${matte.transparent}/${matte.opaque}`);
+  run('python', matteArgs, `${label} alpha`);
 }
 
 function generateFlux(entry, source, prompt, paths, flags) {
@@ -210,20 +253,21 @@ function generateCanonical(entry, source, sourcePath, prompt, paths, flags) {
 }
 
 function generateCardinal(entry, source, sourcePath, prompt, paths, flags) {
-  if (existsSync(paths.cardinalSheet) && !flags.replace && !flags.reprocess) {
+  if (existsSync(paths.cardinalSheet) && !flags.replace && !flags.replaceCardinal && !flags.reprocess) {
     console.log(`SKIP  ${entry.id} GPT Image 2 cardinal sheet already exists`);
     return;
   }
   writeFileSync(path.join(paths.prompts, 'gpt-image-2-cardinal.prompt.md'), `# ${source.name} - GPT Image 2 cardinal elevations\n\n${prompt}\n`, 'utf8');
-  if (!existsSync(paths.cardinalProviderOutput) || flags.replace) {
+  if (!existsSync(paths.cardinalProviderOutput) || flags.replace || flags.replaceCardinal) {
+    const referencePaths = entry.cardinalReferenceMode === 'identity-only'
+      ? [paths.canonicalSheet]
+      : [sourcePath, paths.fluxSheet, paths.canonicalSheet];
     run('bash', [
       bashPath(azureEdit),
       prompt,
       bashPath(paths.cardinalProviderOutput),
       '1024x1024',
-      bashPath(sourcePath),
-      bashPath(paths.fluxSheet),
-      bashPath(paths.canonicalSheet),
+      ...referencePaths.map(bashPath),
     ], `${entry.id} GPT Image 2 cardinal elevations`);
   } else {
     console.log(`REUSE ${entry.id} preserved GPT Image 2 cardinal provider output`);
@@ -240,21 +284,17 @@ function extractViews(entry, paths, flags) {
     const rawCrop = path.join(paths.rawCropRoot, `${view.id}.png`);
     const output = path.join(paths.viewRoot, `${view.id}.png`);
     if (!existsSync(output) || flags.replace || flags.reprocess) {
-      const geometry = cellGeometry(manifest, view);
-      run('magick', [paths.canonicalSheet, '-crop', `${geometry.width}x${geometry.height}+${geometry.x}+${geometry.y}`, '+repage', `PNG32:${rawCrop}`], `${entry.id} crop ${view.id}`);
-      const matte = matteThresholds(rawCrop);
-      const matteArgs = [removeChroma, '--input', rawCrop, '--out', output, '--auto-key', 'border', '--soft-matte', '--transparent-threshold', matte.transparent, '--opaque-threshold', matte.opaque];
-      if (matte.despill) matteArgs.push('--despill');
-      matteArgs.push('--force');
-      console.log(`MATTE ${entry.id}/${view.id} key rgb(${matte.key.join(',')}) thresholds ${matte.transparent}/${matte.opaque}`);
-      run('python', matteArgs, `${entry.id} alpha ${view.id}`);
+      const geometry = cellGeometry(manifest, view, entry.orbitCrop);
+      const sheetKey = matteThresholds(paths.canonicalSheet).key;
+      const background = `rgb(${sheetKey.join(',')})`;
+      run('magick', [paths.canonicalSheet, '-crop', `${geometry.width}x${geometry.height}+${geometry.x}+${geometry.y}`, '+repage', '-resize', '480x480', '-gravity', 'center', '-background', background, '-extent', '512x512', `PNG32:${rawCrop}`], `${entry.id} crop ${view.id}`);
+      removeBackground(entry, rawCrop, output, `${entry.id}/${view.id}`, 'orbit');
     } else {
       console.log(`SKIP  ${entry.id} ${view.id} view already exists`);
     }
     const observed = inspectImage(output);
-    if (observed.width !== 512 || observed.height !== 512 || !observed.channels.includes('a') || observed.opaque) {
-      throw new Error(`${entry.id}/${view.id}: expected a 512x512 image with visible alpha, received ${JSON.stringify(observed)}`);
-    }
+    const coverageErrors = validateTransparentView(observed);
+    if (coverageErrors.length) throw new Error(`${entry.id}/${view.id}: ${coverageErrors.join('; ')}; received ${JSON.stringify(observed)}`);
     viewReceipts.push({
       id: view.id,
       yaw: view.yaw,
@@ -291,21 +331,15 @@ function extractCardinalViews(entry, paths, flags) {
   for (const view of cardinals) {
     const rawCrop = path.join(paths.cardinalRawCropRoot, `${view.id}.png`);
     const output = path.join(paths.cardinalRoot, `${view.id}.png`);
-    if (!existsSync(output) || flags.replace || flags.reprocess) {
+    if (!existsSync(output) || flags.replace || flags.replaceCardinal || flags.reprocess) {
       const sheetKey = matteThresholds(paths.cardinalSheet).key;
       const background = `rgb(${sheetKey.join(',')})`;
       run('magick', [paths.cardinalSheet, '-crop', `${view.width}x${view.height}+${view.x}+${view.y}`, '+repage', '-resize', '480x480', '-gravity', 'center', '-background', background, '-extent', '512x512', `PNG32:${rawCrop}`], `${entry.id} crop cardinal ${view.id}`);
-      const matte = matteThresholds(rawCrop);
-      const matteArgs = [removeChroma, '--input', rawCrop, '--out', output, '--auto-key', 'border', '--soft-matte', '--transparent-threshold', matte.transparent, '--opaque-threshold', matte.opaque];
-      if (matte.despill) matteArgs.push('--despill');
-      matteArgs.push('--force');
-      console.log(`MATTE ${entry.id}/cardinal-${view.id} key rgb(${matte.key.join(',')}) thresholds ${matte.transparent}/${matte.opaque}`);
-      run('python', matteArgs, `${entry.id} alpha cardinal ${view.id}`);
+      removeBackground(entry, rawCrop, output, `${entry.id}/cardinal-${view.id}`, 'cardinal');
     }
     const observed = inspectImage(output);
-    if (observed.width !== 512 || observed.height !== 512 || !observed.channels.includes('a') || observed.opaque) {
-      throw new Error(`${entry.id}/cardinal-${view.id}: expected a 512x512 image with visible alpha, received ${JSON.stringify(observed)}`);
-    }
+    const coverageErrors = validateTransparentView(observed);
+    if (coverageErrors.length) throw new Error(`${entry.id}/cardinal-${view.id}: ${coverageErrors.join('; ')}; received ${JSON.stringify(observed)}`);
     receipts.push({ id: view.id, path: repoRelative(output), sha256: sha256File(output), observed });
   }
   return receipts;
@@ -348,7 +382,9 @@ function generationReceipt(entry, source, sourcePath, paths, fluxPrompt, consist
       cardinalElevations: {
         provider: manifest.generation.provider,
         model: manifest.generation.consistencyModel,
-        inputRoles: ['approved 2D identity reference', 'FLUX.2-pro turnaround draft', 'GPT Image 2 six-view identity sheet'],
+        inputRoles: entry.cardinalReferenceMode === 'identity-only'
+          ? ['GPT Image 2 six-view identity sheet']
+          : ['approved 2D identity reference', 'FLUX.2-pro turnaround draft', 'GPT Image 2 six-view identity sheet'],
         promptPath: repoRelative(path.join(paths.prompts, 'gpt-image-2-cardinal.prompt.md')),
         promptSha256: sha256Text(cardinalPrompt),
         rawProviderOutput: repoRelative(paths.cardinalProviderOutput),
@@ -588,6 +624,240 @@ function commandRenderSix(entry, flags) {
   console.log(`REVIEW ${repoRelative(paths.experimentalModelContactSheet)}`);
 }
 
+function reviewedRuntimeSource(entry) {
+  const selected = reviewById.get(entry.id);
+  if (!selected) throw new Error(`${entry.id}: no reviewed reconstruction lane exists`);
+  if (selected.status !== 'cleanup-candidate') {
+    throw new Error(`${entry.id}: review status ${selected.status} is not eligible for runtime preparation`);
+  }
+  const assetRoot = path.resolve(repoRoot, 'artifacts', 'art', '3d', entry.id);
+  const selectedPath = path.resolve(repoRoot, selected.selectedModel);
+  if (selectedPath !== assetRoot && !selectedPath.startsWith(`${assetRoot}${path.sep}`)) {
+    throw new Error(`${entry.id}: reviewed model escapes its asset workspace`);
+  }
+  if (!existsSync(selectedPath)) throw new Error(`${entry.id}: reviewed model is missing: ${selected.selectedModel}`);
+  return { selected, selectedPath };
+}
+
+function commandPrepareRuntime(entry, flags) {
+  ensureWrite(flags, 'prepare-runtime');
+  const { selected, selectedPath } = reviewedRuntimeSource(entry);
+  const paths = assetPaths(repoRoot, entry.id);
+  const runtimeModels = manifest.runtime.lods.map((lod) => ({
+    lod: {
+      ...lod,
+      ...(entry.lodBudgetOverrides?.[lod.id] || {}),
+      simplifyRatio: entry.lodSimplifyRatios?.[lod.id] ?? lod.simplifyRatio,
+    },
+    output: paths.runtimeModels[lod.id],
+  }));
+  if (!flags.replace && existsSync(paths.runtimeReceipt) && runtimeModels.every(({ output }) => existsSync(output))) {
+    console.log(`SKIP  ${entry.id} runtime candidates already exist`);
+    return;
+  }
+
+  mkdirSync(paths.runtimeRoot, { recursive: true });
+  const temporaryRoot = mkdtempSync(path.join(tmpdir(), 'xenovoya-art3d-'));
+  const results = [];
+  try {
+    for (const { lod, output } of runtimeModels) {
+      const decimatedPath = path.join(temporaryRoot, `${entry.id}-${lod.id}-decimated.glb`);
+      run(blenderExe, [
+        '--background',
+        '--python', runtimePrepScript,
+        '--', selectedPath, decimatedPath, String(lod.simplifyRatio), JSON.stringify(entry.materialOverride || {}),
+      ], `${entry.id} ground and decimate ${lod.id}`);
+      runGltfTransform([
+        'optimize', decimatedPath, output,
+        '--compress', 'quantize',
+        '--flatten', 'true',
+        '--join', 'true',
+        '--simplify', 'false',
+        '--texture-compress', 'webp',
+        '--texture-size', String(lod.textureSize),
+      ], `${entry.id} prepare ${lod.id}`);
+      const validation = runGltfTransform(['validate', output], `${entry.id} validate ${lod.id}`, { capture: true });
+      const stats = inspectGlbBuffer(readFileSync(output));
+      const budget = evaluateRuntimeModel(stats, manifest.runtime, lod);
+      results.push({
+        id: lod.id,
+        path: repoRelative(output),
+        sha256: sha256File(output),
+        stats,
+        budget,
+        validator: validation.stdout.trim().split(/\r?\n/).slice(-8),
+      });
+    }
+  } finally {
+    rmSync(temporaryRoot, { recursive: true, force: true });
+  }
+
+  const passed = results.length === manifest.runtime.lods.length && results.every((result) => result.budget.passed);
+  writeJson(paths.runtimeReceipt, {
+    schemaVersion: 1,
+    assetId: entry.id,
+    preparedAt: new Date().toISOString(),
+    status: passed ? 'awaiting-visual-approval' : 'budget-failed',
+    sourceReviewStatus: selected.status,
+    selectedLane: selected.selectedLane,
+    source: repoRelative(selectedPath),
+    sourceSha256: sha256File(selectedPath),
+    materialOverride: entry.materialOverride || null,
+    contract: {
+      ...manifest.runtime,
+      lods: runtimeModels.map(({ lod }) => lod),
+    },
+    models: results,
+  });
+  if (!passed) {
+    const failures = results.flatMap((result) => result.budget.failures.map((failure) => `${result.id}: ${failure}`));
+    throw new Error(`${entry.id}: runtime preparation failed budgets: ${failures.join('; ')}`);
+  }
+  console.log(`READY ${entry.id}: ${results.map((result) => `${result.id} ${result.stats.triangles} tris/${result.stats.bytes} bytes`).join(', ')}`);
+  console.log(`RECEIPT ${repoRelative(paths.runtimeReceipt)}`);
+}
+
+function commandRenderRuntime(entry, flags) {
+  ensureWrite(flags, 'render-runtime');
+  reviewedRuntimeSource(entry);
+  const paths = assetPaths(repoRoot, entry.id);
+  if (existsSync(paths.runtimeContactSheet) && !flags.replace) {
+    console.log(`SKIP  ${entry.id} runtime review already exists`);
+    return;
+  }
+  if (!existsSync(blenderExe)) throw new Error(`Blender is unavailable: ${blenderExe}`);
+  if (!existsSync(glbReviewScript)) throw new Error(`GLB review renderer is unavailable: ${glbReviewScript}`);
+  const renderInputs = [];
+  for (const lod of manifest.runtime.lods) {
+    const model = paths.runtimeModels[lod.id];
+    if (!existsSync(model)) throw new Error(`${entry.id}: runtime model is missing: ${repoRelative(model)}`);
+    const reviewRoot = path.join(paths.runtimeReviewRoot, lod.id);
+    mkdirSync(reviewRoot, { recursive: true });
+    run(blenderExe, [
+      '--background',
+      '--python', glbReviewScript,
+      '--', model, reviewRoot,
+      'front,side,back,top,perspective',
+    ], `${entry.id} ${lod.id} five-angle runtime review`);
+    for (const view of ['front', 'side', 'back', 'top', 'perspective']) {
+      const rendered = path.join(reviewRoot, `${view}.png`);
+      if (!existsSync(rendered)) throw new Error(`${entry.id}: runtime review is missing ${repoRelative(rendered)}`);
+      renderInputs.push({ path: rendered, label: `${lod.id}/${view}` });
+    }
+  }
+  mkdirSync(path.dirname(paths.runtimeContactSheet), { recursive: true });
+  const montageInputs = renderInputs.flatMap((input) => ['-label', input.label, input.path]);
+  run('magick', [
+    'montage', ...montageInputs,
+    '-thumbnail', '480x480',
+    '-tile', `5x${manifest.runtime.lods.length}`,
+    '-geometry', '480x480+14+36',
+    '-background', '#0d0f0a',
+    '-fill', '#f5efd8',
+    '-stroke', 'none',
+    '-pointsize', '18',
+    paths.runtimeContactSheet,
+  ], `${entry.id} runtime LOD review contact sheet`);
+  const receipt = readReceipt(paths.runtimeReceipt);
+  receipt.visualReview = {
+    renderedAt: new Date().toISOString(),
+    status: 'awaiting-human-approval',
+    views: renderInputs.map((input) => ({ label: input.label, path: repoRelative(input.path) })),
+    contactSheet: repoRelative(paths.runtimeContactSheet),
+    renderer: glbReviewScript,
+  };
+  writeJson(paths.runtimeReceipt, receipt);
+  console.log(`REVIEW ${repoRelative(paths.runtimeContactSheet)}`);
+}
+
+function runtimeRegistry() {
+  return existsSync(runtimeRegistryPath)
+    ? JSON.parse(readFileSync(runtimeRegistryPath, 'utf8'))
+    : { schemaVersion: 1, generatedAt: null, assets: [] };
+}
+
+function validatedRuntimeEvidence(entry) {
+  const selected = reviewById.get(entry.id);
+  const paths = assetPaths(repoRoot, entry.id);
+  const decision = selected?.runtimeReview;
+  if (!decision) throw new Error(`${entry.id}: runtime visual review is missing`);
+  if (!existsSync(paths.runtimeReceipt)) throw new Error(`${entry.id}: runtime receipt is missing`);
+  if (!existsSync(paths.runtimeContactSheet)) throw new Error(`${entry.id}: runtime contact sheet is missing`);
+  const receipt = readReceipt(paths.runtimeReceipt);
+  const models = new Map((receipt.models || []).map((model) => [model.id, model]));
+  for (const lod of manifest.runtime.lods) {
+    const model = models.get(lod.id);
+    const modelPath = paths.runtimeModels[lod.id];
+    if (!model || !existsSync(modelPath)) throw new Error(`${entry.id}: ${lod.id} runtime model evidence is missing`);
+    if (!model.budget?.passed) throw new Error(`${entry.id}: ${lod.id} failed its runtime budget`);
+    if (model.sha256 !== sha256File(modelPath)) throw new Error(`${entry.id}: ${lod.id} fingerprint drifted after review`);
+  }
+  return { selected, paths, decision, receipt };
+}
+
+function commandPromoteRuntime(entry, flags) {
+  ensureWrite(flags, 'promote-runtime');
+  const { paths, decision, receipt } = validatedRuntimeEvidence(entry);
+  if (decision.decision !== 'approved') throw new Error(`${entry.id}: runtime review decision is ${decision.decision}, not approved`);
+  const outputs = [];
+  for (const model of receipt.models) {
+    const source = paths.runtimeModels[model.id];
+    const destination = path.join(repoRoot, 'app', 'public', 'models', `${entry.id}-${model.id}.glb`);
+    mkdirSync(path.dirname(destination), { recursive: true });
+    if (existsSync(destination) && !flags.replace) {
+      if (sha256File(destination) !== model.sha256) throw new Error(`${entry.id}: promoted ${model.id} exists with a different fingerprint; add --replace after review`);
+    } else {
+      copyFileSync(source, destination);
+    }
+    outputs.push({ id: model.id, path: `/${repoRelative(destination).replace(/^app\/public\//, '')}`, sha256: sha256File(destination), ...model.stats });
+  }
+  const registry = runtimeRegistry();
+  registry.generatedAt = new Date().toISOString();
+  registry.assets = [
+    ...registry.assets.filter((asset) => asset.id !== entry.id),
+    {
+      id: entry.id,
+      reviewDecision: decision.decision,
+      reviewPath: repoRelative(reviewPath),
+      contactSheet: decision.contactSheet,
+      models: outputs,
+    },
+  ].sort((left, right) => left.id.localeCompare(right.id));
+  writeJson(runtimeRegistryPath, registry);
+  receipt.status = 'promoted';
+  receipt.promotedAt = registry.generatedAt;
+  receipt.promotedModels = outputs;
+  writeJson(paths.runtimeReceipt, receipt);
+  console.log(`PROMOTED ${entry.id}: ${outputs.map((output) => `${output.id} ${output.path}`).join(', ')}`);
+}
+
+function commandRuntimeDoctor() {
+  const errors = [];
+  const registry = runtimeRegistry();
+  const registered = new Map(registry.assets.map((asset) => [asset.id, asset]));
+  for (const entry of manifest.assets) {
+    const selected = reviewById.get(entry.id);
+    if (selected?.status === 'rework-required') continue;
+    try {
+      const { decision } = validatedRuntimeEvidence(entry);
+      const registeredAsset = registered.get(entry.id);
+      if (decision.decision === 'approved') {
+        if (!registeredAsset) throw new Error(`${entry.id}: approved runtime asset is not promoted`);
+        for (const model of registeredAsset.models || []) {
+          const filePath = path.join(repoRoot, 'app', 'public', model.path.replace(/^\//, ''));
+          if (!existsSync(filePath) || sha256File(filePath) !== model.sha256) throw new Error(`${entry.id}: promoted ${model.id} is missing or fingerprint-drifted`);
+        }
+      } else if (registeredAsset) {
+        throw new Error(`${entry.id}: rework decision cannot remain in the promoted registry`);
+      }
+    } catch (error) {
+      errors.push(error.message);
+    }
+  }
+  if (errors.length) throw new Error(`Runtime 3D doctor found ${errors.length} problem(s):\n- ${errors.join('\n- ')}`);
+  console.log(`OK runtime 3D evidence: ${registry.assets.length} approved assets promoted; ${manifest.assets.length - registry.assets.length} retained as review or rework candidates`);
+}
+
 function commandPlan(entries) {
   for (const entry of entries) {
     const { source, sourcePath } = sourceFor(entry);
@@ -607,7 +877,7 @@ function commandPlan(entries) {
 
 function commandDoctor() {
   const errors = validate3dManifest(direction, sourceManifest, manifest);
-  for (const filePath of [azureGenerate, azureEdit, removeChroma, path.join(trellisRoot, 'scripts', 'submit.py'), blenderExe, glbReviewScript]) {
+  for (const filePath of [azureGenerate, azureEdit, removeChroma, path.join(trellisRoot, 'scripts', 'submit.py'), blenderExe, glbReviewScript, runtimePrepScript, gltfTransformCli]) {
     if (!existsSync(filePath)) errors.push(`Required tool is missing: ${filePath}`);
   }
   if (!process.env.AZURE_OPENAI_API_KEY) errors.push('AZURE_OPENAI_API_KEY is not available in the current environment');
@@ -633,11 +903,12 @@ function main() {
   const { command, assetId, flags } = parseArgs(process.argv.slice(2));
   if (command === 'help' || command === '--help' || command === '-h') return usage();
   if (command === 'doctor') return commandDoctor();
+  if (command === 'runtime-doctor') return commandRuntimeDoctor();
   const errors = validate3dManifest(direction, sourceManifest, manifest);
   if (errors.length) throw new Error(`Invalid 3D manifest:\n- ${errors.join('\n- ')}`);
   const entries = selectedEntries(assetId);
   if (command === 'plan') return commandPlan(entries);
-  if (!['generate', 'contact-sheet', 'trellis', 'trellis-six', 'render', 'render-six', 'all'].includes(command)) throw new Error(`Unknown command: ${command}`);
+  if (!['generate', 'contact-sheet', 'trellis', 'trellis-six', 'render', 'render-six', 'prepare-runtime', 'render-runtime', 'promote-runtime', 'all'].includes(command)) throw new Error(`Unknown command: ${command}`);
   for (const entry of entries) {
     if (command === 'generate') commandGenerate(entry, flags);
     else if (command === 'contact-sheet') commandContactSheet(entry, flags);
@@ -645,6 +916,9 @@ function main() {
     else if (command === 'trellis-six') commandTrellisSix(entry, flags);
     else if (command === 'render') commandRender(entry, flags);
     else if (command === 'render-six') commandRenderSix(entry, flags);
+    else if (command === 'prepare-runtime') commandPrepareRuntime(entry, flags);
+    else if (command === 'render-runtime') commandRenderRuntime(entry, flags);
+    else if (command === 'promote-runtime') commandPromoteRuntime(entry, flags);
     else {
       commandGenerate(entry, flags);
       commandContactSheet(entry, flags);

@@ -21,7 +21,7 @@ describe('art pipeline contracts', () => {
   test('the checked-in art direction and manifest are internally valid', () => {
     const result = validateArtSystem(direction, manifest, { repoRoot });
     assert.deepEqual(result.errors, []);
-    assert.equal(summarizeArtSystem(direction, manifest).assets, 79);
+    assert.equal(summarizeArtSystem(direction, manifest).assets, 85);
   });
 
   test('generation briefs combine visual DNA, emotional purpose, delivery, and avoid rules', () => {
@@ -137,6 +137,32 @@ describe('art pipeline contracts', () => {
     const validationOptions = { repoRoot, checkFiles: true, imageInspector: inspectManifestAsset };
     const unmanaged = validateArtSystem(direction, withoutDelegation, validationOptions);
     assert.ok(unmanaged.errors.some((error) => error.includes('app/public/images/art/materials/')));
+    assert.deepEqual(validateArtSystem(direction, manifest, validationOptions).errors, []);
+  });
+
+  test('delegates runtime derivatives to their checked-in delivery manifest', () => {
+    const withoutRuntimeManifest = structuredClone(manifest);
+    withoutRuntimeManifest.managedOutputManifests = [];
+    const validationOptions = {
+      repoRoot,
+      checkFiles: true,
+      imageInspector: (filePath) => {
+        const relativePath = path.relative(repoRoot, filePath).replaceAll('\\', '/');
+        const asset = manifest.assets.find((item) => item.output.path === relativePath);
+        assert.ok(asset, `Expected ${relativePath} to belong to a canonical manifest asset`);
+        return {
+          width: asset.output.width,
+          height: asset.output.height,
+          format: asset.output.format,
+          channels: asset.output.alpha ? 'srgba' : 'srgb',
+          colorSpace: 'srgb',
+          opaque: !asset.output.alpha,
+          bytes: 1,
+        };
+      },
+    };
+    const unmanaged = validateArtSystem(direction, withoutRuntimeManifest, validationOptions);
+    assert.ok(unmanaged.errors.some((error) => error.includes('.runtime.webp')));
     assert.deepEqual(validateArtSystem(direction, manifest, validationOptions).errors, []);
   });
 

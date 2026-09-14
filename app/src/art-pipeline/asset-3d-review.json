@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "reviewedAt": "2026-09-08T08:02:00Z",
+  "reviewedAt": "2026-09-14T13:14:00Z",
   "policy": "A generated GLB remains a source candidate until it passes identity, volume, rear construction, material, pivot, scale, topology, LOD, and in-game performance review.",
   "aggregateImageInputs": "artifacts/art/3d/reviews/all-assets-image-inputs-contact.png",
   "aggregateMethodComparison": "artifacts/art/3d/reviews/all-trellis2-method-comparison.png",
@@ -8,38 +8,64 @@
     {
       "id": "relic-sunstone-lens-focal",
       "status": "cleanup-candidate",
-      "selectedLane": "cardinal-multiview",
-      "selectedModel": "artifacts/art/3d/relic-sunstone-lens-focal/relic-sunstone-lens-focal-trellis2-multiview.glb",
-      "scores": { "recognition": 3, "volume": 4, "identity": 3, "materials": 2, "topology": 2 },
+      "selectedLane": "authored-hard-surface",
+      "selectedModel": "artifacts/art/3d/relic-sunstone-lens-focal/relic-sunstone-lens-focal-authored-hard-surface.glb",
+      "scores": { "recognition": 5, "volume": 5, "identity": 5, "materials": 4, "topology": 5 },
       "notes": [
-        "The cardinal model preserves the thick octagonal lens housing and coherent rear mass.",
-        "The six-orbit model fuses the views into an elongated barrel and is rejected.",
-        "Remove loose internal filaments, correct orientation, and rebake the over-bright metal before runtime use."
-      ]
+        "The regenerated cardinal sources are clean and correctly isolated, but TRELLIS reconstructs a broken U-shaped housing or a background-like slab.",
+        "The six-orbit reconstruction is solid but loses the defining amber lens and collapses toward a generic silver sphere.",
+        "The selected fallback is a reproducible authored hard-surface reconstruction derived from the approved four-view sheet: one thick octagonal housing, mechanically captured amber aperture, concentric lens rings, rear service plate, perimeter braces, and grounded pedestal.",
+        "The failed image-driven reconstructions remain preserved as negative evidence; only the authored lane may proceed to runtime review."
+      ],
+      "runtimeReview": {
+        "reviewedAt": "2026-09-14T14:32:00Z",
+        "decision": "approved",
+        "contactSheet": "artifacts/art/3d/reviews/relic-sunstone-lens-focal-runtime-contact.png",
+        "receipt": "artifacts/art/3d/relic-sunstone-lens-focal/runtime/relic-sunstone-lens-focal-runtime.receipt.json",
+        "scores": { "silhouette": 5, "grounding": 5, "lodContinuity": 5, "materials": 4, "construction": 5 },
+        "notes": "The octagonal housing, mechanically captured amber aperture, concentric rings, rear service plate, perimeter braces, and grounded pedestal remain clean and recognizable across 3,880, 2,793, and 1,862 triangle LODs. The authored lane is deliberately simpler than the weathered identity painting, but preserves the gameplay-critical identity that both TRELLIS reconstructions lost."
+      }
     },
     {
       "id": "relic-atlas-spindle-focal",
       "status": "cleanup-candidate",
       "selectedLane": "cardinal-multiview",
       "selectedModel": "artifacts/art/3d/relic-atlas-spindle-focal/relic-atlas-spindle-focal-trellis2-multiview.glb",
-      "scores": { "recognition": 4, "volume": 4, "identity": 3, "materials": 3, "topology": 3 },
+      "scores": { "recognition": 5, "volume": 4, "identity": 4, "materials": 4, "topology": 4 },
       "notes": [
-        "The cardinal model preserves the open spindle cage and suspended crystal from every direction.",
-        "The six-orbit model contains an opaque rectangular background plane and is rejected.",
-        "Consolidate fine orbital strands and validate the crystal support before runtime use."
-      ]
+        "The rebuilt cardinal model preserves the open spindle cage, connected outer frame, top-captured crystal, and coherent rear construction from every direction.",
+        "Stage-specific soft-color matting removed the enclosed cyan panel that invalidated the earlier reconstruction.",
+        "Fine orbital filaments simplify progressively across LODs without damaging the gameplay silhouette."
+      ],
+      "runtimeReview": {
+        "reviewedAt": "2026-09-14T12:44:00Z",
+        "decision": "approved",
+        "contactSheet": "artifacts/art/3d/reviews/relic-atlas-spindle-focal-runtime-contact.png",
+        "receipt": "artifacts/art/3d/relic-atlas-spindle-focal/runtime/relic-atlas-spindle-focal-runtime.receipt.json",
+        "scores": { "silhouette": 5, "grounding": 5, "lodContinuity": 5, "materials": 4, "construction": 4 },
+        "notes": "The connected cage, captured crystal, rear construction, and material identity remain coherent across 12,011, 5,254, and 2,701 triangle LODs; thin filaments simplify safely at distance."
+      }
     },
     {
       "id": "relic-tideglass-heart",
       "status": "cleanup-candidate",
       "selectedLane": "cardinal-multiview",
       "selectedModel": "artifacts/art/3d/relic-tideglass-heart/relic-tideglass-heart-trellis2-multiview.glb",
-      "scores": { "recognition": 4, "volume": 2, "identity": 4, "materials": 3, "topology": 3 },
+      "scores": { "recognition": 4, "volume": 5, "identity": 4, "materials": 4, "topology": 4 },
       "notes": [
-        "The cardinal model best preserves the green Tideglass chamber and asymmetric bronze cradle.",
-        "The six-orbit model changes the chamber to magenta and alters the cradle silhouette.",
-        "Increase minimum thickness and verify the pendant connection before runtime use."
-      ]
+        "Identity-only cardinal generation replaces the fragile pendant with a compact, thick cradle and deeply captured chamber.",
+        "The reconstructed volume is coherent and freestanding with a useful rear shell.",
+        "The selected cardinal reconstruction baked a near-monochrome base-color atlas and near-fully-metallic response despite the approved source identity.",
+        "The manifest-governed PBR correction and luminance-preserving emerald/bronze remap restore the chamber identity without changing the reviewed geometry."
+      ],
+      "runtimeReview": {
+        "reviewedAt": "2026-09-14T13:55:00Z",
+        "decision": "approved",
+        "contactSheet": "artifacts/art/3d/reviews/relic-tideglass-heart-runtime-contact.png",
+        "receipt": "artifacts/art/3d/relic-tideglass-heart/runtime/relic-tideglass-heart-runtime.receipt.json",
+        "scores": { "silhouette": 4, "grounding": 5, "lodContinuity": 4, "materials": 4, "construction": 4 },
+        "notes": "The solid cradle, enclosed emerald chamber, freestanding base, and rear shell remain readable across 11,321, 4,952, and 2,547 triangle LODs. The governed material cleanup restores the intended green-and-bronze identity while preserving texture detail."
+      }
     },
     {
       "id": "prop-landing-beacon",
@@ -51,19 +77,35 @@
         "The six-orbit model preserves the beacon head, glass vane, housing, and three-legged stance.",
         "The cardinal model collapses into a textured plane and is rejected.",
         "Correct the local forward axis, establish ground contact, and make gameplay LODs before runtime use."
-      ]
+      ],
+      "runtimeReview": {
+        "reviewedAt": "2026-09-14T10:46:40Z",
+        "decision": "approved",
+        "contactSheet": "artifacts/art/3d/reviews/prop-landing-beacon-runtime-contact.png",
+        "receipt": "artifacts/art/3d/prop-landing-beacon/runtime/prop-landing-beacon-runtime.receipt.json",
+        "scores": { "silhouette": 5, "grounding": 5, "lodContinuity": 5, "materials": 4, "construction": 4 },
+        "notes": "The three-legged stance, central housing, glass vane, front/back construction, and readable silhouette hold across all three bounded LODs."
+      }
     },
     {
       "id": "prop-campsite-shelter",
-      "status": "rework-required",
-      "selectedLane": "six-orbit-multiimage",
-      "selectedModel": "artifacts/art/3d/prop-campsite-shelter/prop-campsite-shelter-trellis2-multiimage-experimental.glb",
-      "scores": { "recognition": 3, "volume": 3, "identity": 3, "materials": 2, "topology": 1 },
+      "status": "cleanup-candidate",
+      "selectedLane": "cardinal-multiview",
+      "selectedModel": "artifacts/art/3d/prop-campsite-shelter/prop-campsite-shelter-trellis2-multiview.glb",
+      "scores": { "recognition": 5, "volume": 5, "identity": 4, "materials": 4, "topology": 4 },
       "notes": [
-        "The six-orbit model gives the strongest shelter volume and prop arrangement.",
-        "Both lanes bake a large ground slab into the mesh, so neither is runtime-ready.",
-        "Split the shelter, packs, lantern, and terrain into separate generation targets before reconstructing again."
-      ]
+        "The rebuilt cardinal model is a freestanding shelter with independent feet, coherent rear construction, and no baked terrain slab.",
+        "Packs and the warm lantern remain attached to the shelter body and readable from multiple directions.",
+        "Validate foot continuity, lantern readability, and silhouette retention across runtime LODs before promotion."
+      ],
+      "runtimeReview": {
+        "reviewedAt": "2026-09-14T13:14:00Z",
+        "decision": "approved",
+        "contactSheet": "artifacts/art/3d/reviews/prop-campsite-shelter-runtime-contact.png",
+        "receipt": "artifacts/art/3d/prop-campsite-shelter/runtime/prop-campsite-shelter-runtime.receipt.json",
+        "scores": { "silhouette": 5, "grounding": 5, "lodContinuity": 5, "materials": 4, "construction": 4 },
+        "notes": "The shelter remains freestanding and readable with intact feet, rear volume, packs, and warm lantern. Its artifact-free far delivery mesh uses the per-asset 7,298-triangle budget documented in the runtime receipt."
+      }
     },
     {
       "id": "prop-route-fork-marker",
@@ -75,7 +117,15 @@
         "The six-orbit model preserves the unequal Y-shaped fork and colored mineral tips.",
         "The cardinal model loses one fork and is rejected.",
         "Thicken the narrow vanes, set the ground pivot, and make gameplay LODs before runtime use."
-      ]
+      ],
+      "runtimeReview": {
+        "reviewedAt": "2026-09-14T10:46:40Z",
+        "decision": "approved",
+        "contactSheet": "artifacts/art/3d/reviews/prop-route-fork-marker-runtime-contact.png",
+        "receipt": "artifacts/art/3d/prop-route-fork-marker/runtime/prop-route-fork-marker-runtime.receipt.json",
+        "scores": { "silhouette": 5, "grounding": 5, "lodContinuity": 5, "materials": 4, "construction": 4 },
+        "notes": "The unequal fork, colored mineral tips, rear geometry, base stake, and silhouette remain coherent at all three runtime LODs."
+      }
     }
   ]
 }

@@ -16,11 +16,24 @@ import {
   markdownForApplyReport,
   parseGitStatus,
   pathsOutsideDeclared,
+  parseControlPlaneInvocation,
   selectCommands,
+  shouldPersistPortfolio,
   validateConfig,
   validatePromotionTransition,
   validateQualityRecords,
 } from './improvement-control-plane-utils.mjs';
+
+test('help flags never fall through to the mutating default command', () => {
+  assert.deepEqual(parseControlPlaneInvocation(['--help']), { command: 'help', args: [] });
+  assert.deepEqual(parseControlPlaneInvocation(['-h']), { command: 'help', args: [] });
+  assert.deepEqual(parseControlPlaneInvocation([]), { command: 'apply', args: [] });
+});
+
+test('unverified portfolio runs cannot replace canonical evidence', () => {
+  assert.equal(shouldPersistPortfolio(['--no-verify']), false);
+  assert.equal(shouldPersistPortfolio(['--quick']), true);
+});
 
 function fixture() {
   return {

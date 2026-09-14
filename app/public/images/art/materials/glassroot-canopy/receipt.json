@@ -1,34 +1,34 @@
 {
   "materialSystemVersion": "1.0.0",
   "materialId": "glassroot-canopy",
-  "generatedAt": "2026-09-09T17:39:39.223Z",
+  "generatedAt": "2026-09-14T17:35:39.732Z",
   "source": "app/public/images/art/terrain/glassroot-canopy.webp",
   "sourceSha256": "9cecffde3ed906996ffdd78d6e9d6676fd503c6c6347bb5cda5a93614d8ae7e4",
-  "process": "neutralize -> mirrored seamless field -> scalar maps -> tangent normal",
+  "process": "neutralize -> localized opposing-edge blend -> scalar maps -> tangent normal; mirrored sidewall derivation",
   "top": {
     "baseColor": {
       "path": "app/public/images/art/materials/glassroot-canopy/baseColor.webp",
-      "sha256": "9ec2f50d04d0a1158203203221c057b76ec018176aa5857d1645acd77cffc001"
+      "sha256": "959f0a11bf30752c497d42437b2c78cf0de88f8e0f42a74e6c12efa7c8e036fa"
     },
     "normal": {
       "path": "app/public/images/art/materials/glassroot-canopy/normal.webp",
-      "sha256": "71bb793c4285d0e7c51595a3750d7862a64a5f99bb96e90d351f855bfc0b2569"
+      "sha256": "66a55df6118e6ef93a621d16a837fca22144d9240a1b30a0fff164d136217807"
     },
     "roughness": {
       "path": "app/public/images/art/materials/glassroot-canopy/roughness.webp",
-      "sha256": "254b492b3f177f1b652624d20a4af9e6d5c00fc23ac7ee847c6440a3cdea911b"
+      "sha256": "cbb01581a567b457901d087b68fe849f0e8c6d857f28345410cf2dfae4b52cb0"
     },
     "ao": {
       "path": "app/public/images/art/materials/glassroot-canopy/ao.webp",
-      "sha256": "23c06e64bd22dfeed071830c7b74d2bba2e100cf2efe1d71f88134040ed4bc6e"
+      "sha256": "4bd1fc0bd35b267e8be30957361ee9a8e459ee833db3bbb4d1978b054a6408ae"
     },
     "height": {
       "path": "app/public/images/art/materials/glassroot-canopy/height.webp",
-      "sha256": "37330aff845e1d189b5a61a75fd7531fd1073c0bb59a4d43690d26ee95a041b4"
+      "sha256": "dd6940c8f45a677168478d4a7ae37d9c4588422e4ab10e0ce8b05d3024dc8c32"
     },
     "emissive": {
       "path": "app/public/images/art/materials/glassroot-canopy/emissive.webp",
-      "sha256": "39ddcdbdbfc84677d164ad9d7bea527b8ead8d1d006c214d60660457511fce5a"
+      "sha256": "8383219e546eb515dd2e1a8c02557888e126423cc82014fe2eea79006155a62f"
     }
   },
   "side": {
@@ -60,27 +60,27 @@
   "compressedTop": {
     "baseColor": {
       "path": "app/public/images/art/materials/glassroot-canopy/baseColor.ktx2",
-      "sha256": "9da806c4682b3748fd1430e44c5d330be7415814e960c7b846c57e7a2a3c8dfb"
+      "sha256": "315fcead9c2aa2509d9df3850d109118b89b9cfca49ac985f4465b2460dd281c"
     },
     "normal": {
       "path": "app/public/images/art/materials/glassroot-canopy/normal.ktx2",
-      "sha256": "0dbafbaa83b29ef71f6d080914c409341f117787536c3e841015e41890faab31"
+      "sha256": "53064f7016addf8165611178eec8f426b7b6bc1d2576d71787fc56af67bd0b1d"
     },
     "roughness": {
       "path": "app/public/images/art/materials/glassroot-canopy/roughness.ktx2",
-      "sha256": "baa0cd64b6283d8a3164b7a138d55e77bb0e45bf7e6ec652bbefb0c353ea44f8"
+      "sha256": "a36187ab24588f5f74fd60cba1227a41b2c1a1532e93b0eac30e3a70d1a87a5b"
     },
     "ao": {
       "path": "app/public/images/art/materials/glassroot-canopy/ao.ktx2",
-      "sha256": "ca6d0272f96d703f0034eb3ec4e2ca3dcbff49f87b77e3a7a4991505379a1015"
+      "sha256": "56fffebe839b7c9f022aeb355ab31f9661cfcc1bc5d3254d38cc3175f467cc94"
     },
     "height": {
       "path": "app/public/images/art/materials/glassroot-canopy/height.ktx2",
-      "sha256": "365fbb0d59c2a415762006236f50a2dcc436ed241b22ff6f75329d0b75e57544"
+      "sha256": "3ec8758d128b28494717c20cb1e85ca2b5c5cdec6928ff28dfbfe25bd509cac0"
     },
     "emissive": {
       "path": "app/public/images/art/materials/glassroot-canopy/emissive.ktx2",
-      "sha256": "30b4fc16c32a50f50dbd773dbde523b65ee2421382d66ee1b7ee152c2a0c41eb"
+      "sha256": "c82f3641a07391bb1c756915400def6390a6ea48eeb33422412afea225b122d3"
     }
   },
   "compressedSide": {

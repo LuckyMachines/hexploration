@@ -1,34 +1,34 @@
 {
   "materialSystemVersion": "1.0.0",
   "materialId": "emberglass-dunes",
-  "generatedAt": "2026-09-09T17:39:55.262Z",
+  "generatedAt": "2026-09-14T17:36:00.964Z",
   "source": "app/public/images/art/terrain/emberglass-dunes.webp",
   "sourceSha256": "6d14ca1c2e647c76bbf7b70d2abf5dc8d320207587c05f356cd4a9a7a14e23b8",
-  "process": "neutralize -> mirrored seamless field -> scalar maps -> tangent normal",
+  "process": "neutralize -> localized opposing-edge blend -> scalar maps -> tangent normal; mirrored sidewall derivation",
   "top": {
     "baseColor": {
       "path": "app/public/images/art/materials/emberglass-dunes/baseColor.webp",
-      "sha256": "3ab288f7e82dfb998a599fb9e98a1ced8dc8e74839f74f91f7fa51ac14faef0a"
+      "sha256": "9d2a19f2c86832c55b0e99258da4d6a91b43b3fbcc3fa0aeabeb172cb8267c57"
     },
     "normal": {
       "path": "app/public/images/art/materials/emberglass-dunes/normal.webp",
-      "sha256": "9797231d0ada69f8990b183b011238ffd7c7c11281f78ddcb08ef477d79888c2"
+      "sha256": "3a0ea8e98f475218374791396c27f789cc28f266344b5c208e6a3a11f804a420"
     },
     "roughness": {
       "path": "app/public/images/art/materials/emberglass-dunes/roughness.webp",
-      "sha256": "118c5d5f0e00bf676a84b9855a56fd2c8deb8dffa606568cfbaaf2ea4955135f"
+      "sha256": "a5156cebb74b4aaa239dd9e40270fe09c26c5ed40f692321dde1e1da6bd990bb"
     },
     "ao": {
       "path": "app/public/images/art/materials/emberglass-dunes/ao.webp",
-      "sha256": "7433345195dce8752b49bbce311fc48064f063b55ba7f4a5dc6ccc01873549a1"
+      "sha256": "af9b637d0d85db7a13ac6af0933991f127d6340a161b78a666de76c8bd6854dc"
     },
     "height": {
       "path": "app/public/images/art/materials/emberglass-dunes/height.webp",
-      "sha256": "f167891a02f78986e616c04d2d39ca5194e64550787a0f82a9539dc72aab8b9f"
+      "sha256": "595b0ee735bf4ea045d9f05fb192d728debf7940c40dcc70cc27445f8422c46e"
     },
     "emissive": {
       "path": "app/public/images/art/materials/emberglass-dunes/emissive.webp",
-      "sha256": "640619563a14b6d8781a513a36c6c790afbff51bbffe260be9ef2e6ed8108848"
+      "sha256": "55f5a764208dbd171edc16a23b6cb82f816a1c8a393c59fb2bb103b53bca3643"
     }
   },
   "side": {
@@ -60,27 +60,27 @@
   "compressedTop": {
     "baseColor": {
       "path": "app/public/images/art/materials/emberglass-dunes/baseColor.ktx2",
-      "sha256": "cbfeac97d618e91c6fe0ba9f9b2f9d7f990e1b49387d286c3d2150b286050346"
+      "sha256": "c648a977f2f53a69f64486e6aebf95e14c8e531d81fc612bd3aeb6dc7c06f4e6"
     },
     "normal": {
       "path": "app/public/images/art/materials/emberglass-dunes/normal.ktx2",
-      "sha256": "4d7023a9f41af490b55f380b2507926604524412fd8c04a9245c4347f6a210e5"
+      "sha256": "2aa70a682e91e7bb554e5cea46548ccce7a2cc472701afcf08ba89996a7d0170"
     },
     "roughness": {
       "path": "app/public/images/art/materials/emberglass-dunes/roughness.ktx2",
-      "sha256": "e1140e8ff6f6d2c09832e42f9e24b66f4a972ba8e9285ff848a794fca115d352"
+      "sha256": "ca914c269beea1b8e98f9592bb4011ed9a10be1e58d83ce1bcabd2623601f2f0"
     },
     "ao": {
       "path": "app/public/images/art/materials/emberglass-dunes/ao.ktx2",
-      "sha256": "9e718db51c23074b6b9b78c3893c030cdae0e694f75a5ed0d8f37c457fd95d29"
+      "sha256": "b780b58d7490707d2c880bb18c23d6309e20c79130c76a1694de6ac3f81b564e"
     },
     "height": {
       "path": "app/public/images/art/materials/emberglass-dunes/height.ktx2",
-      "sha256": "3d10be72e2c2efac8edc52d4853621638c38195bdd94e21f725aafa35f86f61d"
+      "sha256": "90b9e75beeec4e8d986dc4916c4624190d85ba492cf822e7529bc1c95ead754b"
     },
     "emissive": {
       "path": "app/public/images/art/materials/emberglass-dunes/emissive.ktx2",
-      "sha256": "b0f920726f354e28884386c48115876f510c377ad0a73e92a067930e8c2bc71a"
+      "sha256": "745f9aaadce98f5e256e3422bb4b62bb5d0f85017b21177ae96efd5649b64e60"
     }
   },
   "compressedSide": {

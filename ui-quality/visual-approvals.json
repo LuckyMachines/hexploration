@@ -2,11 +2,11 @@
   "schemaVersion": 1,
   "scenes": {
     "home-desktop": {
-      "approvedAt": "2026-09-09T02:13:32.339Z",
-      "owner": "codex-ux-evidence-review",
-      "reason": "Renew source-bound baselines after semantic accessibility, touch-target, and evidence-label updates; all nine scenes reviewed with no visual regression",
-      "sourceHash": "07531cdb34b824fc790a57c0860a0315461fb5fd070ca4f66cd4de18c9c9b5f8",
-      "baselineHash": "1d2cb993a59cf6bf2bc8632735db907c152e0a31e5f3ef2149a830ae1d598fd0",
+      "approvedAt": "2026-09-14T19:51:06.534Z",
+      "owner": "Codex visual QA",
+      "reason": "Approved after original-resolution review of all five source-invalidated board pairs; non-mirrored materials and bounded renderer warm-up improve clarity and resilience without changing hierarchy, camera, controls, responsive composition, or state semantics.",
+      "sourceHash": "94644376aec1896046cccd5f199c19162eb2fd568946ae56b3c4e8773680b0ae",
+      "baselineHash": "93992e4c79bdebe8dc4db93ed54b5efade9c59817359ea0ebb64d6b2a9eff2bb",
       "sources": [
         "src/pages/HomePage.jsx",
         "src/index.css",
@@ -14,11 +14,11 @@
       ]
     },
     "home-mobile": {
-      "approvedAt": "2026-09-09T02:13:32.339Z",
-      "owner": "codex-ux-evidence-review",
-      "reason": "Renew source-bound baselines after semantic accessibility, touch-target, and evidence-label updates; all nine scenes reviewed with no visual regression",
-      "sourceHash": "0284e6a8d67842ae807139aae95d64f0819161dc48a15025546c58e2148d0e43",
-      "baselineHash": "8b412326d8ad2e569a03555e3c9814157f0ee47a90d65873a708dda966156355",
+      "approvedAt": "2026-09-14T19:51:06.534Z",
+      "owner": "Codex visual QA",
+      "reason": "Approved after original-resolution review of all five source-invalidated board pairs; non-mirrored materials and bounded renderer warm-up improve clarity and resilience without changing hierarchy, camera, controls, responsive composition, or state semantics.",
+      "sourceHash": "21a85fe60c1eadc7655ba630f5a9b34ecf873eb03347ca4aaf22a8605834fb8a",
+      "baselineHash": "b355a77c6d97a6e5e8e0e48ae01a8483659d7d75efc19bc960f29dfc3097a87a",
       "sources": [
         "src/pages/HomePage.jsx",
         "src/index.css",
@@ -26,11 +26,11 @@
       ]
     },
     "board-ready": {
-      "approvedAt": "2026-09-09T02:13:32.339Z",
-      "owner": "codex-ux-evidence-review",
-      "reason": "Renew source-bound baselines after semantic accessibility, touch-target, and evidence-label updates; all nine scenes reviewed with no visual regression",
-      "sourceHash": "a877b192e2a9a5930f1199b8646c1bce3a068fd912906eb93586b24cb153aa18",
-      "baselineHash": "4e18a8e6d3229034da9ca3d866ccdcf8304a5a06297b55ebdcca4134d17dd4f8",
+      "approvedAt": "2026-09-14T19:51:06.534Z",
+      "owner": "Codex visual QA",
+      "reason": "Approved after original-resolution review of all five source-invalidated board pairs; non-mirrored materials and bounded renderer warm-up improve clarity and resilience without changing hierarchy, camera, controls, responsive composition, or state semantics.",
+      "sourceHash": "fb8031e8fbd611ea381f863fedf4d17141f3ae23e8b7716947877188c022c365",
+      "baselineHash": "3c4dddc423eabb163ae3c17e80a48fa1c06eeab6e118bc6df7e04838717dab50",
       "sources": [
         "src/pages/DesignSystemPage.jsx",
         "src/components/board/ThreeBoard.jsx",
@@ -43,11 +43,11 @@
       ]
     },
     "board-danger-comparison": {
-      "approvedAt": "2026-09-09T02:13:32.339Z",
-      "owner": "codex-ux-evidence-review",
-      "reason": "Renew source-bound baselines after semantic accessibility, touch-target, and evidence-label updates; all nine scenes reviewed with no visual regression",
-      "sourceHash": "5f152d82b585fe1f65bebe76f4303206f3d0a07582586b88730607ca7e4f2b83",
-      "baselineHash": "37bee94601f6fc85a76f445eb0b4e579449c518b270af062799a1363b403ce19",
+      "approvedAt": "2026-09-14T19:51:06.534Z",
+      "owner": "Codex visual QA",
+      "reason": "Approved after original-resolution review of all five source-invalidated board pairs; non-mirrored materials and bounded renderer warm-up improve clarity and resilience without changing hierarchy, camera, controls, responsive composition, or state semantics.",
+      "sourceHash": "e60d59f841cff95888b21ad4febdf2ec0c05179999863b0cea468f90580a0687",
+      "baselineHash": "292ed9587d230bba94ac902dc5f14e5f6e1a49560ebc122ff7a3c8d204b4bf3b",
       "sources": [
         "src/pages/DesignSystemPage.jsx",
         "src/components/board/ThreeBoard.jsx",
@@ -58,11 +58,11 @@
       ]
     },
     "recovery-mobile": {
-      "approvedAt": "2026-09-09T02:13:32.339Z",
-      "owner": "codex-ux-evidence-review",
-      "reason": "Renew source-bound baselines after semantic accessibility, touch-target, and evidence-label updates; all nine scenes reviewed with no visual regression",
-      "sourceHash": "c60b351fef18df0d6ce74f90c77914c954d8ba5ddb970bf125276d4de89aa5f0",
-      "baselineHash": "b5a609263af82b5f845ee5f97cd807512a0bf040bd6d4308fc254b58c1403a0f",
+      "approvedAt": "2026-09-14T19:51:06.534Z",
+      "owner": "Codex visual QA",
+      "reason": "Approved after original-resolution review of all five source-invalidated board pairs; non-mirrored materials and bounded renderer warm-up improve clarity and resilience without changing hierarchy, camera, controls, responsive composition, or state semantics.",
+      "sourceHash": "1ddb5492a4a1d0bea4f9136032464bbacfd38f731273bfd904beb312d0632743",
+      "baselineHash": "2f82682b4e434cb9de22c89291482efed06a2508ddc076a0cd6e736b72cc197b",
       "sources": [
         "src/pages/DesignSystemPage.jsx",
         "src/components/shared/TxStatus.jsx",
@@ -72,11 +72,11 @@
       ]
     },
     "responsive-contracts": {
-      "approvedAt": "2026-09-09T02:13:32.339Z",
-      "owner": "codex-ux-evidence-review",
-      "reason": "Renew source-bound baselines after semantic accessibility, touch-target, and evidence-label updates; all nine scenes reviewed with no visual regression",
-      "sourceHash": "a32a7a1f91225ff0fa374ec5a3d3a98b0dd7de97c78a78a38ce0204ebe33818e",
-      "baselineHash": "1a53f5a085e0a90de5de4cb44cbc03b8a42fa07f97f9a353d6bdeaee89bb5534",
+      "approvedAt": "2026-09-14T19:51:06.534Z",
+      "owner": "Codex visual QA",
+      "reason": "Approved after original-resolution review of all five source-invalidated board pairs; non-mirrored materials and bounded renderer warm-up improve clarity and resilience without changing hierarchy, camera, controls, responsive composition, or state semantics.",
+      "sourceHash": "ddd49fc88e307de5bf92e4a7da422d3c806a657fa06b648a101b560d8ef993ab",
+      "baselineHash": "1ed18407207d297f045d0281e72b46dfcd9c701c3e49b6a8ebfd75b1928dce5b",
       "sources": [
         "src/pages/DesignSystemPage.jsx",
         "src/components/actions/ActionSimulator.jsx",
@@ -88,11 +88,11 @@
       ]
     },
     "return-loop-desktop": {
-      "approvedAt": "2026-09-09T02:13:32.339Z",
-      "owner": "codex-ux-evidence-review",
-      "reason": "Renew source-bound baselines after semantic accessibility, touch-target, and evidence-label updates; all nine scenes reviewed with no visual regression",
-      "sourceHash": "d3c0fe4139f30d8fdba452431d2060ce3e9d5c741dfc432e3fe66b98865154f3",
-      "baselineHash": "a629fdde54da370c203515ab0301710b5d58de9468d938fa98b0fdfa321c5c1b",
+      "approvedAt": "2026-09-14T19:51:06.534Z",
+      "owner": "Codex visual QA",
+      "reason": "Approved after original-resolution review of all five source-invalidated board pairs; non-mirrored materials and bounded renderer warm-up improve clarity and resilience without changing hierarchy, camera, controls, responsive composition, or state semantics.",
+      "sourceHash": "c6f9382181c28d954eab05602a756d4d8e9a7f354897028604c3fae19c358dd5",
+      "baselineHash": "14cb5194bfb04a42337d2539ab198e9177f96283f75dd19fa129d61c2c6128fd",
       "sources": [
         "src/pages/HomePage.jsx",
         "src/components/expedition/ReturnLoopPanel.jsx",
@@ -101,11 +101,11 @@
       ]
     },
     "board-waiting": {
-      "approvedAt": "2026-09-09T02:13:32.339Z",
-      "owner": "codex-ux-evidence-review",
-      "reason": "Renew source-bound baselines after semantic accessibility, touch-target, and evidence-label updates; all nine scenes reviewed with no visual regression",
-      "sourceHash": "e1200bc57390f0fc618d1c2f4701d52d169cdfa701515d6ba98ee25feb8a034c",
-      "baselineHash": "0e1df0a0339e51f9d9a17483de1400e5936d1956b811efa26317660f047e3f36",
+      "approvedAt": "2026-09-14T19:51:06.534Z",
+      "owner": "Codex visual QA",
+      "reason": "Approved after original-resolution review of all five source-invalidated board pairs; non-mirrored materials and bounded renderer warm-up improve clarity and resilience without changing hierarchy, camera, controls, responsive composition, or state semantics.",
+      "sourceHash": "30ebc14c5a1b8354c8fb441fbc623d603fbbc53bac15f2e2a5e8a43f5c8d94c4",
+      "baselineHash": "064895865a682f310785b200779f10bbc231118e0eabe9d9b33db6eb34d7b2c4",
       "sources": [
         "src/pages/DesignSystemPage.jsx",
         "src/components/board/ThreeBoard.jsx",
@@ -114,18 +114,44 @@
       ]
     },
     "aftermath-complete": {
-      "approvedAt": "2026-09-09T02:13:32.339Z",
-      "owner": "codex-ux-evidence-review",
-      "reason": "Renew source-bound baselines after semantic accessibility, touch-target, and evidence-label updates; all nine scenes reviewed with no visual regression",
-      "sourceHash": "e54efd895b7190afbb9fb5169af16bf1beeaa1b98cb6963e252eda48a90f988c",
-      "baselineHash": "9fc845346efcf4b881d9ecb7094c8925bb13274138e1ba79170fe15de40da611",
+      "approvedAt": "2026-09-14T19:51:06.534Z",
+      "owner": "Codex visual QA",
+      "reason": "Approved after original-resolution review of all five source-invalidated board pairs; non-mirrored materials and bounded renderer warm-up improve clarity and resilience without changing hierarchy, camera, controls, responsive composition, or state semantics.",
+      "sourceHash": "1b5b921f6e40eb3e6fb135e5aec8badbe6beec5c0b3f1366070b7a78ef4280ca",
+      "baselineHash": "87b0322dd1d4997a19da35bd283d9fbd95836a52e897090d673c1f5d79f7ee1a",
       "sources": [
         "src/pages/DesignSystemPage.jsx",
         "src/components/memory/BadgeShelf.jsx",
         "src/components/memory/BeatThisChallenge.jsx",
         "src/index.css"
       ]
+    },
+    "guest-expedition-desktop": {
+      "approvedAt": "2026-09-14T19:51:06.534Z",
+      "owner": "Codex visual QA",
+      "reason": "Approved after original-resolution review of all five source-invalidated board pairs; non-mirrored materials and bounded renderer warm-up improve clarity and resilience without changing hierarchy, camera, controls, responsive composition, or state semantics.",
+      "sourceHash": "94a08cc81dad2d67648314817abe44b5147002ef4fafc04f769f530ffd4b4a76",
+      "baselineHash": "7def866b2d78e2705137008590dbb6f4ca5ec4edad04a25a76d62d3a6982c006",
+      "sources": [
+        "src/pages/GuestExpeditionPage.jsx",
+        "src/components/board/ThreeBoard.jsx",
+        "src/lib/guestExpedition.js",
+        "src/index.css"
+      ]
+    },
+    "guest-expedition-mobile": {
+      "approvedAt": "2026-09-14T19:51:06.534Z",
+      "owner": "Codex visual QA",
+      "reason": "Approved after original-resolution review of all five source-invalidated board pairs; non-mirrored materials and bounded renderer warm-up improve clarity and resilience without changing hierarchy, camera, controls, responsive composition, or state semantics.",
+      "sourceHash": "94a08cc81dad2d67648314817abe44b5147002ef4fafc04f769f530ffd4b4a76",
+      "baselineHash": "5d108905b7ec81d387bb60fe79e1f478ef876f23d44e3c43a10a373259f9554b",
+      "sources": [
+        "src/pages/GuestExpeditionPage.jsx",
+        "src/components/board/ThreeBoard.jsx",
+        "src/lib/guestExpedition.js",
+        "src/index.css"
+      ]
     }
   },
-  "updatedAt": "2026-09-09T02:13:32.339Z"
+  "updatedAt": "2026-09-14T19:51:06.534Z"
 }

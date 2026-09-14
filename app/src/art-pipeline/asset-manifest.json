@@ -1,6 +1,6 @@
 {
   "$schema": "./schema/asset-manifest.schema.json",
-  "version": "1.10.0",
+  "version": "1.12.0",
   "artDirectionVersion": "1.2.0",
   "managedRoots": [
     "app/public/images/site-refresh",
@@ -8,6 +8,9 @@
   ],
   "delegatedRoots": [
     "app/public/images/art/materials"
+  ],
+  "managedOutputManifests": [
+    "app/src/art-pipeline/runtime-image-delivery.json"
   ],
   "assets": [
     {
@@ -454,7 +457,7 @@
       "assetType": "tileable-texture",
       "partRole": "texture",
       "output": {
-        "path": "app/public/images/art/terrain/verdant-signal-base.webp",
+        "path": "app/public/images/art/terrain/verdant-signal-base-v2.webp",
         "width": 1024,
         "height": 1024,
         "format": "webp",
@@ -474,7 +477,7 @@
           "No baked hex outline",
           "No text"
         ],
-        "variationDirection": "emphasize large calm basalt plates, sparse moss-like circuitry, and extremely subtle seam transitions. Keep all four edges seamless and avoid any center focal point."
+        "variationDirection": "emphasize large calm basalt plates, sparse moss-like circuitry, and extremely subtle seam transitions. Keep all four edges seamless and avoid any center focal point.\nVariation direction: Produce a production-ready authored seamless master rather than a mirrored collage. Make opposite edges match naturally in both axes. Use large calm blue-black basalt plates, fine irregular mineral grain, sparse oxide-green moss circuitry, and a few tiny muted gold signal flecks. Keep lighting perfectly even and orthographic. Avoid bilateral symmetry, kaleidoscope seams, a centered motif, directional shadows, route markings, hex outlines, objects, text, logos, and watermark."
       },
       "references": [
         {
@@ -484,10 +487,10 @@
       ],
       "provenance": {
         "origin": "azure-image-generation",
-        "reviewedAt": "2026-09-06",
-        "sha256": "c4537d475dc1cc45339aa8f8aa7b5b381ef0240bfbca90967b0313802e768dfa",
+        "reviewedAt": "2026-09-14",
+        "sha256": "9b29dfe117cff121d000e5f85c69be2088b280d08299e23fd8326564d4088198",
         "review": "app/src/art-pipeline/reviews/terrain-verdant-signal-base.json",
-        "promptSha256": "25d2b9850d9c780dcc3e72af11491f7137de23f765e58e066d6803a756c65c43"
+        "promptSha256": "bded0a889beb5dd7518369cb710548e294bdf984abe06eb1b170989ee9e195d6"
       }
     },
     {
@@ -528,7 +531,7 @@
       ],
       "provenance": {
         "origin": "azure-image-generation",
-        "reviewedAt": "2026-09-07",
+        "reviewedAt": "2026-09-14",
         "sha256": "9cecffde3ed906996ffdd78d6e9d6676fd503c6c6347bb5cda5a93614d8ae7e4",
         "review": "app/src/art-pipeline/reviews/terrain-glassroot-canopy.json",
         "promptSha256": "b208eec3a3b713f23ce6840e1e01a9ec4a52af82c53e5a08f7d7eea5ceb73090"
@@ -566,7 +569,7 @@
       },
       "references": [
         {
-          "path": "app/public/images/art/terrain/verdant-signal-base.webp",
+          "path": "app/public/images/art/terrain/verdant-signal-base-v2.webp",
           "role": "approved scale and restraint reference"
         }
       ],
@@ -575,7 +578,7 @@
         "reviewedAt": "2026-09-07",
         "sha256": "1db422db5782cf4e08905186a841a2a86f47f8b9cadc1834e56c0e38297ace6d",
         "review": "app/src/art-pipeline/reviews/terrain-lantern-moss.json",
-        "promptSha256": "feb153d09dbedf6f034800d70bf5e08dce9ab35cfda321ac03f17896be816b92"
+        "promptSha256": "4d8d98dffae4369507d9533f3b2f99bb0fc1851119976b4708154cbd5f61e6e7"
       }
     },
     {
@@ -2143,7 +2146,7 @@
       ],
       "provenance": {
         "origin": "azure-image-generation",
-        "reviewedAt": "2026-09-13",
+        "reviewedAt": "2026-09-14",
         "sha256": "178d6b5080444a3b63281e4991f038de2dc7c1e04ee02e38728176c9e7300305",
         "review": "app/src/art-pipeline/reviews/environment-beaconfall-basin.json",
         "promptSha256": "eb6f0d69b89cec242f56df21b2ac0dbb2798e92fc5d88b4b7552547e766aa948"
@@ -3528,6 +3531,210 @@
         "sha256": "4a0990782ecf532e2c44fef19a5ab1cb20dca7f7b8db36501c3bc21d9e9d5f13",
         "review": "app/src/art-pipeline/reviews/relic-hushgrass-spindle.json",
         "promptSha256": "5c43e842b4118a602466dad841501b29e11284eb639fdaa50e9ef7f753a7a6af"
+      }
+    },
+    {
+      "id": "tile-reference-landing-variants",
+      "name": "Landing Tile Variant Plate",
+      "family": "tile-reference",
+      "status": "reference",
+      "emotionalBeat": "agency",
+      "assetType": "reference-only",
+      "partRole": "proof",
+      "output": {
+        "path": "app/public/images/art/tile-concepts/landing-variants.webp",
+        "width": 1024,
+        "height": 1024,
+        "format": "webp",
+        "alpha": false,
+        "maxBytes": 250000,
+        "safeZone": "center"
+      },
+      "prompt": {
+        "primaryRequest": "Three modular landing-tile variants for the Xenovoya expedition board",
+        "scene": "Three isolated hex tiles on a near-black neutral concept background",
+        "subject": "Weathered survey metal, inset enamel, cyan guidance channels, and beacon sockets",
+        "composition": "Consistent orthographic three-quarter view with shelf, fracture, and crown variants",
+        "lighting": "Soft neutral studio illumination with localized cyan signal light",
+        "constraints": ["Reference only", "No interface or text", "Do not bake generated state into runtime geometry"]
+      },
+      "references": [{ "path": "app/public/images/art/terrain/verdant-signal-base-v2.webp", "role": "approved landing-surface reference" }],
+      "provenance": {
+        "origin": "azure-image-generation",
+        "reviewedAt": "2026-09-13",
+        "sha256": "d0aaff8d3e1c146d187ba04101dd8bda15af6d5e6886ff798f9908affa897fc0",
+        "review": "app/src/art-pipeline/reviews/tile-reference-landing-variants.json",
+        "promptSha256": "a1df53065bd4130c5ad5eaf8cd904cb5d15201d9ffb0103d51f11ad9f82c30ea"
+      }
+    },
+    {
+      "id": "tile-reference-plains-variants",
+      "name": "Plains Tile Variant Plate",
+      "family": "tile-reference",
+      "status": "reference",
+      "emotionalBeat": "relief",
+      "assetType": "reference-only",
+      "partRole": "proof",
+      "output": {
+        "path": "app/public/images/art/tile-concepts/plains-variants.webp",
+        "width": 1024,
+        "height": 1024,
+        "format": "webp",
+        "alpha": false,
+        "maxBytes": 250000,
+        "safeZone": "center"
+      },
+      "prompt": {
+        "primaryRequest": "Three modular plains-tile variants for the Xenovoya expedition board",
+        "scene": "Three isolated hex tiles on a near-black neutral concept background",
+        "subject": "Dry mineral loam, lantern moss, warm spores, route stones, and shallow erosion",
+        "composition": "Consistent orthographic three-quarter view with shelf, fracture, and crown variants",
+        "lighting": "Soft neutral studio illumination with restrained warm spore light",
+        "constraints": ["Reference only", "No generic green grass", "Keep broad navigable top surfaces"]
+      },
+      "references": [{ "path": "app/public/images/art/terrain/lantern-moss.webp", "role": "approved plains-surface reference" }],
+      "provenance": {
+        "origin": "azure-image-generation",
+        "reviewedAt": "2026-09-13",
+        "sha256": "0e5268d429c2489746ada5933c5ab4015719311e812e622144b4d421e39b409d",
+        "review": "app/src/art-pipeline/reviews/tile-reference-plains-variants.json",
+        "promptSha256": "1137a4cfb9a7445345ee0dc66b4443d27e954c6ba387b5a8bc36bfbda0c62f2e"
+      }
+    },
+    {
+      "id": "tile-reference-jungle-variants",
+      "name": "Jungle Tile Variant Plate",
+      "family": "tile-reference",
+      "status": "reference",
+      "emotionalBeat": "discovery",
+      "assetType": "reference-only",
+      "partRole": "proof",
+      "output": {
+        "path": "app/public/images/art/tile-concepts/jungle-variants.webp",
+        "width": 1024,
+        "height": 1024,
+        "format": "webp",
+        "alpha": false,
+        "maxBytes": 250000,
+        "safeZone": "center"
+      },
+      "prompt": {
+        "primaryRequest": "Three modular jungle-tile variants for the Xenovoya expedition board",
+        "scene": "Three isolated hex tiles on a near-black neutral concept background",
+        "subject": "Charcoal basalt, pale glassroot lattice, compact silver-green fronds, and mint nodes",
+        "composition": "Consistent orthographic three-quarter view with shelf, fracture, and crown variants",
+        "lighting": "Soft neutral studio illumination with localized mint bioluminescence",
+        "constraints": ["Reference only", "No conventional tropical jungle", "Keep routes and standees readable"]
+      },
+      "references": [{ "path": "app/public/images/art/terrain/glassroot-canopy.webp", "role": "approved jungle-surface reference" }],
+      "provenance": {
+        "origin": "azure-image-generation",
+        "reviewedAt": "2026-09-13",
+        "sha256": "342db9ab665a99b1e5ca609824020f57c05dfc79c2fd5634757c6541ffa2fdca",
+        "review": "app/src/art-pipeline/reviews/tile-reference-jungle-variants.json",
+        "promptSha256": "042398089aa1423533d968ad3bed3e167ca9e845d56666e28d6b142bec25918d"
+      }
+    },
+    {
+      "id": "tile-reference-desert-variants",
+      "name": "Desert Tile Variant Plate",
+      "family": "tile-reference",
+      "status": "reference",
+      "emotionalBeat": "jeopardy",
+      "assetType": "reference-only",
+      "partRole": "proof",
+      "output": {
+        "path": "app/public/images/art/tile-concepts/desert-variants.webp",
+        "width": 1024,
+        "height": 1024,
+        "format": "webp",
+        "alpha": false,
+        "maxBytes": 250000,
+        "safeZone": "center"
+      },
+      "prompt": {
+        "primaryRequest": "Three modular desert-tile variants for the Xenovoya expedition board",
+        "scene": "Three isolated hex tiles on a near-black neutral concept background",
+        "subject": "Iron-mineral dust, wind strata, cooled glass, emberglass shards, and restrained orange seams",
+        "composition": "Consistent orthographic three-quarter view with shelf, fracture, and crown variants",
+        "lighting": "Soft neutral studio illumination with localized ember seams",
+        "constraints": ["Reference only", "Avoid full-frame orange", "Preserve a clear traversal plane"]
+      },
+      "references": [{ "path": "app/public/images/art/terrain/emberglass-dunes.webp", "role": "approved desert-surface reference" }],
+      "provenance": {
+        "origin": "azure-image-generation",
+        "reviewedAt": "2026-09-13",
+        "sha256": "b4847d2193ec4afed150f3edfb89a113107436997bd05895034eb7538ecd574e",
+        "review": "app/src/art-pipeline/reviews/tile-reference-desert-variants.json",
+        "promptSha256": "c6300feaf0dd6d31d59918b96af28c9331fc69295dee3e6b6f97b8af905ebbdf"
+      }
+    },
+    {
+      "id": "tile-reference-mountain-variants",
+      "name": "Mountain Tile Variant Plate",
+      "family": "tile-reference",
+      "status": "reference",
+      "emotionalBeat": "jeopardy",
+      "assetType": "reference-only",
+      "partRole": "proof",
+      "output": {
+        "path": "app/public/images/art/tile-concepts/mountain-variants.webp",
+        "width": 1024,
+        "height": 1024,
+        "format": "webp",
+        "alpha": false,
+        "maxBytes": 250000,
+        "safeZone": "center"
+      },
+      "prompt": {
+        "primaryRequest": "Three modular mountain-tile variants for the Xenovoya expedition board",
+        "scene": "Three isolated hex tiles on a near-black neutral concept background",
+        "subject": "Blue-black slate, stepped pressure fractures, mica edges, angular spires, and cyan inclusions",
+        "composition": "Consistent orthographic three-quarter view with shelf, fracture, and crown variants",
+        "lighting": "Soft neutral studio illumination with cold mineral glints",
+        "constraints": ["Reference only", "Retain a shared hex footprint", "Keep one traversable top path"]
+      },
+      "references": [{ "path": "app/public/images/art/terrain/slate-spires.webp", "role": "approved mountain-surface reference" }],
+      "provenance": {
+        "origin": "azure-image-generation",
+        "reviewedAt": "2026-09-13",
+        "sha256": "3e8e89f3a3219a45a0dca39778e15a73ea62ddc1d7792f2a0dbd6932b0a29171",
+        "review": "app/src/art-pipeline/reviews/tile-reference-mountain-variants.json",
+        "promptSha256": "cbbe2bff5cb7a385e56ed13580080781dcea6597113f24a76129cfa145e58654"
+      }
+    },
+    {
+      "id": "tile-reference-relic-variants",
+      "name": "Relic Tile Variant Plate",
+      "family": "tile-reference",
+      "status": "reference",
+      "emotionalBeat": "remembrance",
+      "assetType": "reference-only",
+      "partRole": "proof",
+      "output": {
+        "path": "app/public/images/art/tile-concepts/relic-variants.webp",
+        "width": 1024,
+        "height": 1024,
+        "format": "webp",
+        "alpha": false,
+        "maxBytes": 250000,
+        "safeZone": "center"
+      },
+      "prompt": {
+        "primaryRequest": "Three modular relic-tile variants for the Xenovoya expedition board",
+        "scene": "Three isolated hex tiles on a near-black neutral concept background",
+        "subject": "Ceremonial memory stone, inset rings, violet glass filament, survey pins, and reliquary sockets",
+        "composition": "Consistent orthographic three-quarter view with shelf, fracture, and crown variants",
+        "lighting": "Soft neutral studio illumination with precious localized violet light",
+        "constraints": ["Reference only", "No neon clutter", "Reserve the center for a modular relic"]
+      },
+      "references": [{ "path": "app/public/images/art/terrain/violet-reliquary.webp", "role": "approved relic-surface reference" }],
+      "provenance": {
+        "origin": "azure-image-generation",
+        "reviewedAt": "2026-09-13",
+        "sha256": "49ce5fd18231cbef4d755899d9f52ac5f3f2c1d721cb713a6822d199a02f3a57",
+        "review": "app/src/art-pipeline/reviews/tile-reference-relic-variants.json",
+        "promptSha256": "346530c14c99df0498a8c17664ed6d073d1ae81dc9c4d994612b99ab938de58b"
       }
     }
   ],

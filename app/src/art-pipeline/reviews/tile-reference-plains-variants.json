@@ -1,0 +1,20 @@
+{
+  "assetId": "tile-reference-plains-variants",
+  "candidate": "app/public/images/art/tile-concepts/plains-variants.webp",
+  "reviewer": "Codex visual QA",
+  "reviewedAt": "2026-09-13",
+  "scores": { "recognition": 4, "agency": 3, "specificity": 4, "restraint": 4, "continuity": 4, "reusability": 4, "accessibility": 4 },
+  "notes": {
+    "recognition": "Low loam shelves and moss margins distinguish the calm traversal family quickly.",
+    "agency": "Broad centers and route stones support movement decisions without dictating them.",
+    "specificity": "Lantern growth and mineral plates avoid generic grassland language.",
+    "restraint": "Warm points stay peripheral and the center remains quiet.",
+    "continuity": "Olive mineral values and contained gold signals fit the field-instrument palette.",
+    "reusability": "The three edge rhythms adapt cleanly to deterministic hex forms.",
+    "accessibility": "Loam plates, moss islands, and low silhouette separate through shape and value."
+  },
+  "decision": "approved",
+  "candidateSha256": "0e5268d429c2489746ada5933c5ab4015719311e812e622144b4d421e39b409d",
+  "generation": { "mode": "azure-image-generation", "tool": "azure-foundry", "model": "gpt-image-2", "promptSha256": "1137a4cfb9a7445345ee0dc66b4443d27e954c6ba387b5a8bc36bfbda0c62f2e" },
+  "joyScore": 9.5
+}

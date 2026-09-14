@@ -34,6 +34,19 @@ function checkText({ id, label, file, patterns, required = true }) {
   };
 }
 
+function checkAbsentText({ id, label, file, patterns, required = true }) {
+  const text = read(file);
+  const unexpected = patterns.filter((pattern) => pattern.test(text));
+  return {
+    id,
+    label,
+    file,
+    required,
+    ok: unexpected.length === 0,
+    missing: unexpected.map((pattern) => `remove ${String(pattern)}`),
+  };
+}
+
 function checkFile({ id, label, path, required = true }) {
   return {
     id,
@@ -83,40 +96,40 @@ function buildReport() {
       path: 'docs/marketing-site-improvement-plan.md',
     }),
     checkText({
-      id: 'hero-live-client',
-      label: 'Homepage points players to the live client',
+      id: 'player-entry-hierarchy',
+      label: 'Player homepage identifies the playable client and asks for one mode choice',
       file: 'app/src/pages/HomePage.jsx',
-      patterns: [/Enter live lobby/i, /#live-expedition/i, /Open alpha on Sepolia testnet/i],
+      patterns: [/Choose your expedition/i, /You are in the playable client/i, /function PlayOptions/i],
+    }),
+    checkAbsentText({
+      id: 'distinct-site-role',
+      label: 'Player entry does not duplicate the long-form marketing narrative',
+      file: 'app/src/pages/HomePage.jsx',
+      patterns: [/The first turn/i, /Why it feels alive/i, /Featured scenarios/i, /Same-engine simulator/i],
     }),
     checkText({
-      id: 'visual-proof',
-      label: 'Homepage includes board visual and first-turn explanation',
+      id: 'play-mode-funnel',
+      label: 'Player entry exposes solo, spectate, and crew modes without a preview detour',
       file: 'app/src/pages/HomePage.jsx',
-      patterns: [/HeroBoardScene/i, /The first turn/i, /see what changed/i],
-    }),
-    checkText({
-      id: 'no-preview-funnel',
-      label: 'Homepage routes wallet-free players into the production 3D world',
-      file: 'app/src/pages/HomePage.jsx',
-      patterns: [/Explore the 3D world/i, /to="\/guest"/i, /Enter live lobby/i],
+      patterns: [/title="Play solo"/i, /title="Observe live"/i, /title="Join or create"/i, /to="\/guest"/i],
     }),
     checkText({
       id: 'player-safe-copy',
-      label: 'Homepage explains the public player path',
+      label: 'Entry copy promises play before connection and avoids wallet-first framing',
       file: 'app/src/pages/HomePage.jsx',
-      patterns: [/Browse the live world before connecting/i, /observer mode/i, /Start a local 3D expedition/i],
+      patterns: [/Start solo, observe a live route/i, /connect when you are ready to join a crew/i, /Connect only when you choose a crew action/i],
     }),
     checkText({
       id: 'wallet-context',
-      label: 'Homepage explains wallet-backed live surveys',
+      label: 'Wallet language explains when and why a signature is requested',
       file: 'app/src/pages/HomePage.jsx',
-      patterns: [/wallet signatures/i, /Connect only when you are ready/i, /Sepolia testnet expedition/i],
+      patterns: [/wallet signature/i, /Wallet only when needed/i, /Expedition console \/ Sepolia/i],
     }),
     checkText({
       id: 'public-nav',
-      label: 'Header exposes live-client navigation without preview links',
+      label: 'Public navigation prioritizes play and hides internal preview routes',
       file: 'app/src/components/layout/Header.jsx',
-      patterns: [/Live lobby/i, /#live-expedition/i, /internalToolsEnabled/i],
+      patterns: [/Player navigation/i, /\['\/#play-options', 'Play'\]/i, /\['\/guest', 'Solo'\]/i, /internalToolsEnabled/i],
     }),
     checkText({
       id: 'footer-nav',

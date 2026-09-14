@@ -42,6 +42,7 @@ const BOARD_SOURCE_PATHS = [
   'app/src/components/board/boardWorld.js',
   'app/src/components/board/lightingRigs.js',
   'app/src/components/board/surfaceCatalog.js',
+  'app/src/components/board/tileKit.js',
   'app/src/pages/BoardLabPage.jsx',
   'app/e2e/board-system.spec.js',
 ];

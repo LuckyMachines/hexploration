@@ -9,6 +9,7 @@
     "artDirectionVersion": { "type": "string" },
     "managedRoots": { "type": "array", "minItems": 1, "items": { "type": "string" } },
     "delegatedRoots": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+    "managedOutputManifests": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
     "assets": {
       "type": "array",
       "items": {

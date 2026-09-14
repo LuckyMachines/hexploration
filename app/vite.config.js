@@ -37,6 +37,10 @@ function emitReleaseMetadata(env) {
           service: 'xenovoya-player',
           environment: env.VITE_APP_ENV || 'development',
           release: env.VITE_RELEASE_SHA || 'unknown',
+          capabilities: {
+            returnApi: Boolean(env.VITE_RETURN_API_URL),
+            sponsorDelegation: env.VITE_CONTROLLER_SUPPORTS_DELEGATION === 'true',
+          },
         })}\n`,
       });
     },

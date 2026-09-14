@@ -4,7 +4,7 @@ Date: 2026-09-09
 
 ## Outcome
 
-The board moved from a flat, ad hoc texture treatment to a versioned PBR surface and semantic-lighting system. The implementation is now an A- production foundation: it is coherent, measurable, reviewable, and integrated into the live board. Final A/A+ status still depends on artist-authored seamless source maps and representative device profiling.
+The board moved from a flat, ad hoc texture treatment to a versioned PBR surface and semantic-lighting system. The automated implementation is now an A production foundation: it is coherent, measurable, reviewable, integrated into the live board, and no longer relies on whole-field mirrored texture construction. Final A+ release confidence still depends on representative physical-device profiling.
 
 | Dimension | Before | Now | Evidence |
 | --- | --- | --- | --- |
@@ -28,10 +28,18 @@ What now works:
 
 Remaining limits:
 
-- Mirrored source construction guarantees seams but creates some bilateral motifs at close range. Deterministic UV rotation and jitter reduce repetition on the board; artist-authored seamless masters are the right final replacement.
+- All six surface families now preserve their authored center and use a localized opposing-edge blend over only the outer 9.375%. The new GPT Image 2 Verdant Signal master establishes the governed source-authoring recipe; maximum measured channel seams remain below the 4.0 contract without whole-field bilateral mirroring.
 - The standardized sphere is intentionally unforgiving and exposes strong highlights. Board-scale slabs and hexes remain suitably rough, but final production art should validate the most reflective reliquary and signal materials on target GPUs.
 - Headless Chromium can be timer-throttled or software-rendered. The automated test therefore requires either the 24 ms target or proof that adaptive resolution reached its minimum; physical-device profiling remains a separate release gate.
 
 ## Next highest-leverage iteration
 
-Create one hand-authored seamless master for `verdant-signal-base`, because it has the lowest current identity and depth scores. Use it to establish the final source-authoring recipe before replacing the other five mirrored masters.
+Validate the six updated surfaces on the final supported low-end GPU and capture a representative mobile GPU memory trace. Automated Chromium, Firefox, and WebKit evidence is current; physical hardware evidence remains intentionally separate.
+
+## v1.1.0 - Authored seamless-source pass
+
+- Added an Azure GPT Image 2 Verdant Signal source with exact prompt and fingerprint provenance.
+- Replaced whole-field mirroring across all six surfaces with a bounded opposing-edge blend.
+- Regenerated top/side WebP and KTX2 bundles, then re-reviewed every changed fingerprint.
+- Chromium material capture passes 9/9; Firefox/WebKit integration passes 4/4.
+- Strict doctor passes all six materials. Maximum measured seam is 2.960 against the 4.000 limit; Verdant Signal is 1.921.

@@ -3,17 +3,17 @@
   "materialId": "slate-spires",
   "sourceSha256": "801892fb44f1ecdbf935c7aa176166462b609dc1e56c7680c8d0f6d233030865",
   "candidateSha256": {
-    "baseColor": "d50b6009e9ccf48673f1ee250481f9c23bb67e8ef0b414884301a966ba2adf80",
-    "normal": "7e3f43e3f26216a0b7cb8ddf77c12b18f0a44f077d932b68e60661de993373fa",
-    "roughness": "60860aee17409a3fcfd7334389838b416ab5b884035af711e2fa8a9e5670190c",
-    "ao": "138f8ae16dc40fa9e1250ab1c67f7605d0b52ba0836c6967f74d708334000a77",
-    "height": "520af55afd4baa880796a73fbdd462da8985d7556c3fa72a3b5fe7c139235a77",
-    "emissive": "8383219e546eb515dd2e1a8c02557888e126423cc82014fe2eea79006155a62f"
+    "baseColor": "56050dcbc6332a6f00e52a599d17f76c2aee7abaa62e2b885c79db1ea997a9f8",
+    "normal": "4a42cdb7eb280285899c93e0abf1b70196dfd0bcb3a4c98930ba323a29c6d531",
+    "roughness": "223ce176bdae1e89e3ae326229b060e62454164142353b50fd837eec638d0932",
+    "ao": "fb3251661af0b41961552ee6fb17682deb249c988f7e422ace66a5de2ff90280",
+    "height": "f6a93793d0a0a5fb4c1b2ca55162757f5f8b27debc41a4c6dddb77f1f4664422",
+    "emissive": "b4c5db824b32756f41441a7e4893337e132bd0cd03f49c261b542a77853a56fd"
   },
   "reviewer": "Codex visual QA",
-  "reviewedAt": "2026-09-09T17:47:29.048Z",
+  "reviewedAt": "2026-09-14T17:44:59.691Z",
   "scores": {
-    "tileability": 3,
+    "tileability": 4,
     "depthResponse": 4,
     "lightNeutrality": 4,
     "materialIdentity": 4,
@@ -21,5 +21,5 @@
     "accessibility": 4
   },
   "decision": "approved",
-  "notes": "Approved after seam-safe Sobel normal generation; fractures and side strata reinforce raised terrain."
+  "notes": "Approved after localized opposing-edge blending removed whole-field mirrored symmetry. Slate fracture scale and cold mica accents retain mountain identity without a repeating mirrored motif."
 }

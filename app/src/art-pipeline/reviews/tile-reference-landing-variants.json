@@ -1,0 +1,20 @@
+{
+  "assetId": "tile-reference-landing-variants",
+  "candidate": "app/public/images/art/tile-concepts/landing-variants.webp",
+  "reviewer": "Codex visual QA",
+  "reviewedAt": "2026-09-14",
+  "scores": { "recognition": 4, "agency": 3, "specificity": 4, "restraint": 4, "continuity": 4, "reusability": 4, "accessibility": 4 },
+  "notes": {
+    "recognition": "Engineered metal, guidance channels, and beacon sockets read immediately at contact-sheet scale.",
+    "agency": "The sockets and clear traversal plane imply route origin and placement without inventing UI.",
+    "specificity": "Weathered survey construction and restrained cyan feel native to Xenovoya.",
+    "restraint": "Quiet centers protect standees, routes, and live state overlays.",
+    "continuity": "Metal wear, dark field, and localized information light match the established board.",
+    "reusability": "Shelf, fracture, and crown silhouettes translate into modular geometry recipes.",
+    "accessibility": "Panel breaks and engineered edge forms survive without cyan hue."
+  },
+  "decision": "approved",
+  "candidateSha256": "d0aaff8d3e1c146d187ba04101dd8bda15af6d5e6886ff798f9908affa897fc0",
+  "generation": { "mode": "azure-image-generation", "tool": "azure-foundry", "model": "gpt-image-2", "promptSha256": "a1df53065bd4130c5ad5eaf8cd904cb5d15201d9ffb0103d51f11ad9f82c30ea" },
+  "joyScore": 9.5
+}

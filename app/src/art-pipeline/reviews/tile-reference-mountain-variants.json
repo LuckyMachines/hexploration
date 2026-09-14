@@ -1,0 +1,20 @@
+{
+  "assetId": "tile-reference-mountain-variants",
+  "candidate": "app/public/images/art/tile-concepts/mountain-variants.webp",
+  "reviewer": "Codex visual QA",
+  "reviewedAt": "2026-09-13",
+  "scores": { "recognition": 4, "agency": 3, "specificity": 4, "restraint": 4, "continuity": 4, "reusability": 4, "accessibility": 4 },
+  "notes": {
+    "recognition": "Slate steps and angular spires establish the highest, hardest terrain family.",
+    "agency": "Every concept preserves one traversable top path despite the stronger silhouette.",
+    "specificity": "Pressure-cut slate and cold inclusions fit Xenovoya's mineral world.",
+    "restraint": "Cyan appears only in small seams and mineral nodes.",
+    "continuity": "Blue-black planes and mica edges match the approved slate surface.",
+    "reusability": "Spire clusters, stepped shoulders, and pass edges support modular combinations.",
+    "accessibility": "Elevation, steps, and spires communicate mountain identity independently of color."
+  },
+  "decision": "approved",
+  "candidateSha256": "3e8e89f3a3219a45a0dca39778e15a73ea62ddc1d7792f2a0dbd6932b0a29171",
+  "generation": { "mode": "azure-image-generation", "tool": "azure-foundry", "model": "gpt-image-2", "promptSha256": "cbbe2bff5cb7a385e56ed13580080781dcea6597113f24a76129cfa145e58654" },
+  "joyScore": 9.5
+}

@@ -41,7 +41,7 @@ export function buildExactRunPlan(store = {}, {
 export function classifyExactRunFailure({ status, stderr = '', stdout = '' } = {}) {
   const message = `${stderr}\n${stdout}`.toLowerCase();
   const infrastructure = status === null
-    || /econnrefused|rpc is not reachable|timed out|port .* in use|spawn|deployment|anvil/.test(message);
+    || /econnrefused|rpc is not reachable|http request failed|fetch failed|connection reset|timed out|port .* in use|spawn|deployment|memory allocation|exited unexpectedly|anvil/.test(message);
   return {
     category: infrastructure ? 'infrastructure' : 'gameplay-or-contract',
     retryable: infrastructure,

@@ -1,7 +1,7 @@
 {
   "$schema": "./schema/asset-3d-manifest.schema.json",
-  "version": "1.0.0",
-  "artDirectionVersion": "1.1.0",
+  "version": "1.1.0",
+  "artDirectionVersion": "1.2.0",
   "name": "Xenovoya Multi-view 3D Source Pipeline",
   "generation": {
     "provider": "azure-foundry",
@@ -48,46 +48,111 @@
     "holeFillAlgorithm": "flood_fill",
     "holeIterations": 2
   },
+  "runtime": {
+    "maxMaterials": 2,
+    "maxTextures": 2,
+    "allowedRequiredExtensions": ["EXT_texture_webp", "KHR_mesh_quantization"],
+    "lods": [
+      {
+        "id": "lod0",
+        "simplifyRatio": 0.08,
+        "simplifyError": 0.01,
+        "textureSize": 1024,
+        "maxBytes": 1500000,
+        "maxTriangles": 18000,
+        "maxVertices": 26000
+      },
+      {
+        "id": "lod1",
+        "simplifyRatio": 0.035,
+        "simplifyError": 0.025,
+        "textureSize": 512,
+        "maxBytes": 800000,
+        "maxTriangles": 8000,
+        "maxVertices": 14000
+      },
+      {
+        "id": "lod2",
+        "simplifyRatio": 0.018,
+        "simplifyError": 0.04,
+        "textureSize": 512,
+        "maxBytes": 600000,
+        "maxTriangles": 4500,
+        "maxVertices": 9000
+      }
+    ]
+  },
   "assets": [
     {
       "id": "relic-sunstone-lens-focal",
       "sourceAssetId": "relic-sunstone-lens-focal",
       "seed": 41001,
       "decimationTarget": 140000,
-      "cardinalCrop": { "layout": "2x2", "topInset": 0 },
-      "physicalBrief": "A palm-sized solid relic with believable thickness, a continuous faceted metal shell, inset glass aperture, and no floating pieces."
+      "lodSimplifyRatios": { "lod0": 1, "lod1": 0.72, "lod2": 0.48 },
+      "matteMode": "connected-border",
+      "cardinalMatteMode": "soft-color",
+      "matteFuzzPercent": 10,
+      "orbitCrop": { "bottomInset": 64 },
+      "cardinalCrop": {
+        "layout": "2x2",
+        "regions": {
+          "front": { "x": 30, "y": 20, "width": 450, "height": 430 },
+          "right": { "x": 545, "y": 20, "width": 450, "height": 430 },
+          "back": { "x": 545, "y": 540, "width": 450, "height": 430 },
+          "left": { "x": 30, "y": 540, "width": 450, "height": 430 }
+        }
+      },
+      "physicalBrief": "REWORK TARGET: one palm-sized, watertight octagonal relic. Build a single continuous dark-bronze faceted housing at least one-tenth of the object width thick, with one thick amber glass aperture deeply inset and mechanically captured by the housing. Convert every painted filament into an engraved groove or fused raised rib. Every visible part must touch the main shell. No loose internals, floating shards, thin wires, holes behind the aperture, white metal, silver wash, detached pieces, or transparent gaps."
     },
     {
       "id": "relic-atlas-spindle-focal",
       "sourceAssetId": "relic-atlas-spindle-focal",
       "seed": 41002,
       "decimationTarget": 160000,
+      "matteMode": "connected-border",
+      "cardinalMatteMode": "soft-color",
+      "matteFuzzPercent": 10,
       "cardinalCrop": {
-        "layout": "4x1",
+        "layout": "2x2",
         "regions": {
-          "front": { "x": 0, "y": 80, "width": 315, "height": 650 },
-          "right": { "x": 280, "y": 80, "width": 285, "height": 650 },
-          "back": { "x": 520, "y": 80, "width": 330, "height": 650 },
-          "left": { "x": 780, "y": 80, "width": 244, "height": 650 }
+          "front": { "x": 30, "y": 20, "width": 450, "height": 470 },
+          "right": { "x": 545, "y": 20, "width": 450, "height": 470 },
+          "back": { "x": 30, "y": 530, "width": 450, "height": 460 },
+          "left": { "x": 545, "y": 530, "width": 450, "height": 460 }
         }
       },
-      "physicalBrief": "A hand-scale open spindle frame with a physically supported suspended mineral shard and sufficient strut thickness for a watertight reconstruction."
+      "physicalBrief": "REWORK TARGET: one hand-scale connected spindle with a broad load-bearing base, four thick arched dark-bronze struts, and one violet mineral shard mechanically captured at both its top and bottom. Each strut must be at least one-twelfth of the total width and merge visibly into the base and crown. Reinterpret the painted gold route filament as one inset groove on the solid frame. No floating center, unsupported crystal, orbital strands, thin wires, chains, detached rings, or separate fragments."
     },
     {
       "id": "relic-tideglass-heart",
       "sourceAssetId": "relic-tideglass-heart",
       "seed": 41003,
       "decimationTarget": 150000,
-      "cardinalCrop": {
-        "layout": "4x1",
-        "regions": {
-          "front": { "x": 0, "y": 100, "width": 300, "height": 720 },
-          "right": { "x": 800, "y": 100, "width": 224, "height": 720 },
-          "back": { "x": 250, "y": 100, "width": 330, "height": 720 },
-          "left": { "x": 570, "y": 100, "width": 270, "height": 720 }
+      "matteMode": "connected-border",
+      "cardinalMatteMode": "soft-color",
+      "cardinalReferenceMode": "identity-only",
+      "matteFuzzPercent": 10,
+      "materialOverride": {
+        "metallicFactor": 0.08,
+        "roughnessFactor": 0.42,
+        "baseColorRemap": {
+          "shadow": "#0d5a43",
+          "highlight": "#b98557",
+          "blackPoint": 0.01,
+          "whitePoint": 0.48,
+          "gamma": 0.78
         }
       },
-      "physicalBrief": "A hand-scale crescent cradle with a continuous rounded metal body and securely seated translucent sea-glass chamber."
+      "cardinalCrop": {
+        "layout": "2x2",
+        "regions": {
+          "front": { "x": 25, "y": 20, "width": 470, "height": 460 },
+          "right": { "x": 540, "y": 20, "width": 450, "height": 460 },
+          "back": { "x": 25, "y": 535, "width": 470, "height": 440 },
+          "left": { "x": 540, "y": 535, "width": 450, "height": 440 }
+        }
+      },
+      "physicalBrief": "REWORK TARGET: one hand-scale solid crescent cradle with a wide continuous rounded dark-bronze body. Seat the thick green sea-glass chamber deeply inside the cradle so at least forty percent of the chamber is physically enclosed, with both arms visibly joined beneath it. Minimum metal thickness is one-tenth of total width. No pendant, wire, chain, floating glass, needle tips, detached ornament, open unsupported gap, anatomical heart, or bottle silhouette."
     },
     {
       "id": "prop-landing-beacon",
@@ -110,8 +175,22 @@
       "sourceAssetId": "prop-campsite-shelter",
       "seed": 41005,
       "decimationTarget": 220000,
-      "cardinalCrop": { "layout": "2x2", "topInset": 28 },
-      "physicalBrief": "One connected low expedition shelter assembly with believable fabric thickness, a coherent rear wall, two attached packs, and one contained safety lantern."
+      "matteMode": "connected-border",
+      "cardinalMatteMode": "soft-color",
+      "cardinalReferenceMode": "identity-only",
+      "matteFuzzPercent": 10,
+      "lodSimplifyRatios": { "lod2": 0.035 },
+      "lodBudgetOverrides": { "lod2": { "maxTriangles": 8000, "maxVertices": 14000 } },
+      "cardinalCrop": {
+        "layout": "2x2",
+        "regions": {
+          "front": { "x": 0, "y": 20, "width": 570, "height": 450 },
+          "right": { "x": 575, "y": 20, "width": 449, "height": 450 },
+          "back": { "x": 0, "y": 530, "width": 535, "height": 440 },
+          "left": { "x": 555, "y": 530, "width": 469, "height": 440 }
+        }
+      },
+      "physicalBrief": "REWORK TARGET: one connected low expedition shelter only, with thick weathered fabric stretched over a sturdy arched frame, a coherent rear wall, and five visible pole feet. Two compact packs and one shielded safety lantern must be physically strapped to the shelter body rather than placed beside it. The uniform background must remain visible beneath and around the shelter between its feet. Absolutely no ground, terrain, rock, floor, platform, plinth, tile, shadow slab, loose prop, or detached debris."
     },
     {
       "id": "prop-route-fork-marker",

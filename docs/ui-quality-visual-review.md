@@ -29,3 +29,42 @@ The cropped board-world depth comparison is `artifacts/ui-quality/spatial/board-
 - PASS: frame pacing in deterministic local capture
 - OPEN: observed-player comprehension, joy, and return intent
 
+## September 14 tile-kit and relic integration pass
+
+The complete 11-scene reference-left/current-right sheet is `artifacts/ui-quality/contact-sheets/latest.png`. Five scenes were source-invalidated by the modular tile geometry and governed relic integration: `guest-expedition-desktop`, `guest-expedition-mobile`, `board-ready`, `board-danger-comparison`, and `board-waiting`.
+
+Original-resolution inspection found one stable 2% pixel difference in `board-danger-comparison`. The change is intentional: deeper family-specific tile silhouettes and the approved Tideglass relic replace the earlier generic terrain/relic presentation. Page composition, typography, action hierarchy, controls, camera, copy, and responsive geometry remain aligned. The current comparison is `artifacts/ui-quality/comparisons/board-danger-comparison-current.png`.
+
+The refreshed relative-depth comparison is `artifacts/ui-quality/depth/tile-kit-pass/board-danger-depth-comparison.png`, generated with `depth-anything/Depth-Anything-V2-Small-hf`. It preserves the same foreground terrain, middle interaction/character plane, and receding cavern order; warm/bright indicates relatively nearer regions and is not a metric distance measurement. The camera did not change, so the existing perspective calibration remains authoritative at `artifacts/ui-quality/spatial/runtime-3d-board-perspective.png`: normalized vanishing point (-3.1080, 2.7105), stylized-isometric horizon assumption, 35.21 px mean line residual.
+
+Acceptance checklist:
+
+- [x] All 11 reference/current pairs inspected at original resolution.
+- [x] Desktop and mobile compositions preserve hierarchy and reflow.
+- [x] Board base transforms and camera remain stable across transient states.
+- [x] Refreshed relative-depth evidence preserves grounding and plane order.
+- [x] The existing perspective hypothesis remains valid because camera geometry did not change.
+- [x] Zero horizontal overflow, small interactive targets, layout shift, serious accessibility findings, or critical accessibility findings.
+- [x] Chromium capture passes 11/11 after explicit approval.
+- [x] Chromium, Firefox, WebKit, Pixel 7, and iPhone 13 contracts pass 10/10.
+
+Current automated UI result: Grade A, 11/11 approved scenes current. Human comprehension, joy, and return intent remain a separate observation gate and were not simulated.
+
+## September 14 renderer-readiness and material-source pass
+
+The current source fingerprint invalidated five board-bearing approvals after the non-mirrored terrain-source upgrade and renderer-readiness hardening: `guest-expedition-desktop`, `guest-expedition-mobile`, `board-ready`, `board-danger-comparison`, and `board-waiting`. Each reference/current pair was inspected individually at original resolution in `artifacts/ui-quality/comparisons/`, in addition to the complete sheet at `artifacts/ui-quality/contact-sheets/latest.png`.
+
+The current render intentionally presents broader, cleaner basalt planes and clearer family silhouettes. Guest Expedition gains a quieter mist field behind the board; board-ready, danger, and waiting retain the same camera, route topology, action hierarchy, semantic colors, typography, control positions, and stable tile matrices. The result makes characters, standees, route rings, and action state more legible without flattening the diorama.
+
+No camera or geometry change was introduced by the readiness fix, so the September 14 tile-kit depth and perspective evidence remains authoritative. Shader compilation is now observable and bounded: Safari/WebKit uses the synchronous path, while Chromium and Firefox retain an eight-second async warm-up budget. This changes failure behavior, not the approved composition.
+
+Acceptance checklist:
+
+- [x] All five invalidated reference/current pairs inspected individually at original resolution.
+- [x] Complete 11-scene contact sheet inspected at original resolution.
+- [x] Board hierarchy, camera, route topology, controls, copy, and responsive reflow remain stable.
+- [x] Material changes preserve foreground, interaction, and background plane order.
+- [x] Ready, danger, and waiting remain distinguishable without moving the base board.
+- [x] Chromium UI capture passes 11/11.
+- [x] Firefox and WebKit board compatibility passes 12/12 without retry.
+- [x] Human comprehension and delight remain explicitly unclaimed pending observed sessions.

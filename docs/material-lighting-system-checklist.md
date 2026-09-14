@@ -39,6 +39,6 @@
 
 ## Deliberate future headroom
 
-- [ ] Replace mirrored source tiling with artist-authored seamless source textures when final environment production begins.
+- [x] Replace whole-field mirrored source tiling with localized edge-authored blending across all six surfaces; establish the final recipe with a new Azure GPT Image 2 Verdant Signal master and fingerprinted provenance.
 - [ ] Validate frame pacing on the final supported low-end hardware matrix; headless software rendering is only a fallback-behavior check.
 - [ ] Add a mobile GPU memory trace when representative target devices are available.

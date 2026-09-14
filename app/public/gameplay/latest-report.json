@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "systemVersion": "1.2.0",
-  "generatedAt": "2026-09-10T05:57:29.880Z",
+  "generatedAt": "2026-09-14T19:52:35.292Z",
   "grade": "A",
   "grades": {
     "architecture": "A",
@@ -53,24 +53,14 @@
     "reportPath": "reports/gameplay-improvement/exact-runner/latest-report.json",
     "exists": true,
     "passed": true,
-    "generatedAt": "2026-09-10T04:12:35.488Z",
+    "generatedAt": "2026-09-14T16:18:05.148Z",
     "batch": 10,
     "managedRpc": true,
     "scenarioIds": [
-      "solo-artifact-hunt",
-      "escape-pressure-4p",
-      "first-discovery-solo",
-      "cooperative-rescue-2p",
-      "artifact-extraction-2p",
-      "three-player-regroup-3p"
+      "artifact-extraction-2p"
     ],
     "passedScenarioIds": [
-      "solo-artifact-hunt",
-      "escape-pressure-4p",
-      "first-discovery-solo",
-      "cooperative-rescue-2p",
-      "artifact-extraction-2p",
-      "three-player-regroup-3p"
+      "artifact-extraction-2p"
     ],
     "failedScenarioIds": [],
     "cachedScenarioIds": [],
@@ -157,8 +147,8 @@
       "outputExists": true,
       "missingInputs": [],
       "fresh": true,
-      "outputHash": "2d65983d6dc1a08a207929a0f7792265a966ba9a838f8b65ed8efaa5b3c4dfa5",
-      "outputModifiedAt": "2026-09-10T05:54:29.118Z",
+      "outputHash": "4292ba0986c4d6a77362226a33412c732183d933b2042e4a60f69d7ae46dd6cb",
+      "outputModifiedAt": "2026-09-14T16:34:10.050Z",
       "newestInputAt": "2026-09-10T01:58:55.939Z"
     },
     {
@@ -172,9 +162,9 @@
       "outputExists": true,
       "missingInputs": [],
       "fresh": true,
-      "outputHash": "cce2d89bdfe8b875d3d26a98c54aba3e6ca50857a2d7e880daf7a2b0385c3c03",
-      "outputModifiedAt": "2026-09-10T05:55:21.527Z",
-      "newestInputAt": "2026-09-10T05:54:29.118Z"
+      "outputHash": "390cb2f700e3f2d559d1a97e47c7750543503e4b877f0b1516a9146bcd5d95fa",
+      "outputModifiedAt": "2026-09-14T16:48:56.426Z",
+      "newestInputAt": "2026-09-14T16:34:10.050Z"
     },
     {
       "id": "feeling",
@@ -186,9 +176,9 @@
       "outputExists": true,
       "missingInputs": [],
       "fresh": true,
-      "outputHash": "317391a02ae90c9f0250249f8071a871f650a35bc49f9e90cdb76d213f8252b0",
-      "outputModifiedAt": "2026-09-10T05:55:30.484Z",
-      "newestInputAt": "2026-09-10T05:55:21.527Z"
+      "outputHash": "a1c917c23619fe76d062dfbd1c6b2277f01a5eed2dff892a9df1bec0a5a9e05f",
+      "outputModifiedAt": "2026-09-14T16:49:04.120Z",
+      "newestInputAt": "2026-09-14T16:48:56.426Z"
     },
     {
       "id": "memory",
@@ -201,9 +191,9 @@
       "outputExists": true,
       "missingInputs": [],
       "fresh": true,
-      "outputHash": "c416eadca35a9a5f250c635abf9e1b81a0b240c6d8eb02ae3769d3537eb1c86b",
-      "outputModifiedAt": "2026-09-10T05:55:32.969Z",
-      "newestInputAt": "2026-09-10T05:55:30.484Z"
+      "outputHash": "670b00e92eed7a452ad0bb1a35fc7d8d6eb192329a8e1813a19c88c80aaceec4",
+      "outputModifiedAt": "2026-09-14T16:49:08.486Z",
+      "newestInputAt": "2026-09-14T16:49:04.120Z"
     },
     {
       "id": "time-machine",
@@ -215,9 +205,9 @@
       "outputExists": true,
       "missingInputs": [],
       "fresh": true,
-      "outputHash": "032fcec9c6738549419d24510b3b98e00d5bf196d9b9e31c835f1ac36904f8f2",
-      "outputModifiedAt": "2026-09-10T05:55:35.750Z",
-      "newestInputAt": "2026-09-10T05:55:32.969Z"
+      "outputHash": "3d4c96c877418151f4d5c17624bb359728145b5c3616a0dba657e258813f0697",
+      "outputModifiedAt": "2026-09-14T16:49:12.595Z",
+      "newestInputAt": "2026-09-14T16:49:08.486Z"
     },
     {
       "id": "lab",
@@ -230,9 +220,9 @@
       "outputExists": true,
       "missingInputs": [],
       "fresh": true,
-      "outputHash": "d369eb457e2ace9653f42a49d5bc42962be7608ca65756effbe2ab2d2a84f85e",
-      "outputModifiedAt": "2026-09-10T05:56:00.371Z",
-      "newestInputAt": "2026-09-10T05:55:35.750Z"
+      "outputHash": "50a8fa688e762053c318ee1b972f6daf45f251da212f97236f9cf9ec2cee49b3",
+      "outputModifiedAt": "2026-09-14T16:49:41.668Z",
+      "newestInputAt": "2026-09-14T16:49:12.595Z"
     },
     {
       "id": "tutor",
@@ -245,9 +235,9 @@
       "outputExists": true,
       "missingInputs": [],
       "fresh": true,
-      "outputHash": "77bb1c89494746b8c91447f2464a8c885ee314ff31599ffe64ad5fe2a7ff722a",
-      "outputModifiedAt": "2026-09-10T05:56:03.176Z",
-      "newestInputAt": "2026-09-10T05:56:00.371Z"
+      "outputHash": "da1c4904915173164c492be40621ea1362137b4ab1685cbe801a2e5423eba248",
+      "outputModifiedAt": "2026-09-14T16:49:45.931Z",
+      "newestInputAt": "2026-09-14T16:49:41.668Z"
     },
     {
       "id": "bridge",
@@ -261,9 +251,9 @@
       "outputExists": true,
       "missingInputs": [],
       "fresh": true,
-      "outputHash": "3f9f2f6c91030144611f5d0ffcae97c5c1baec0dfe4287341d8497934f6128e9",
-      "outputModifiedAt": "2026-09-10T05:56:03.472Z",
-      "newestInputAt": "2026-09-10T05:56:03.176Z"
+      "outputHash": "d52d332672e1ca11bbbf33e09fde74fea519d66ca8b69162865d829793277bf1",
+      "outputModifiedAt": "2026-09-14T16:49:46.204Z",
+      "newestInputAt": "2026-09-14T16:49:45.931Z"
     },
     {
       "id": "fun",
@@ -277,9 +267,9 @@
       "outputExists": true,
       "missingInputs": [],
       "fresh": true,
-      "outputHash": "c2e55eb4f4b1bfb58e43ab638d8c012cec9f4a7867e8de45d375e196307e7169",
-      "outputModifiedAt": "2026-09-10T05:56:03.710Z",
-      "newestInputAt": "2026-09-10T05:56:03.472Z"
+      "outputHash": "45cdbeb61b017a13c08d0dff56d17a761631cd1b9fefd84f604bd62eb8723c17",
+      "outputModifiedAt": "2026-09-14T16:49:46.343Z",
+      "newestInputAt": "2026-09-14T16:49:46.204Z"
     }
   ],
   "calibration": {
@@ -293,13 +283,13 @@
     "calibrated": false
   },
   "effectiveness": {
-    "experiments": 2,
-    "resolvedExperiments": 2,
+    "experiments": 3,
+    "resolvedExperiments": 3,
     "experimentResolutionRate": 1,
     "recommendationAcceptanceRate": 0,
     "recordedDecisions": 2,
-    "regressionsCaught": 6,
-    "productionBlockers": 6,
+    "regressionsCaught": 5,
+    "productionBlockers": 5,
     "falsePositiveRate": 0,
     "medianTimeToLearningHours": null,
     "note": "False-positive rate and time-to-learning require completed experiments with timestamps."
@@ -310,10 +300,10 @@
     "simulator.agent-policies.json": "1f8ecb19548fc9961d1f314f01ff0045d7513896ae9409b399347002129d7b3b",
     "simulator.evaluation.json": "16a42578121a2998ecc8d4b2e7c9202f1f60aacee49c6c56baf024cce735f0ff",
     "gameplay.quality-contract.json": "372abeea3898c14b85e1b34f573e5cf337f0fe542631f80dacccb4508ee14b9d",
-    "gameplay.experiments.json": "2dd39be1d37fe89c21b3feef3b622dd90da5813b0d832ff82b4e393d13d10f07",
+    "gameplay.experiments.json": "94d12557eb7642c38d78fb49e0f41729d424fd6ec7a8b2b42a8ac427ddc6c213",
     "scripts/gameplay-simulator.mjs": "4f9268a0bc13ec5ee18b84257077d54363cd86ed8f49bda44f4ed0efebbddd56",
     "scripts/gameplay-oracle-utils.mjs": "f39319b156f3f9ee0e4b903b23aef614b9c16c1c1414db2a09425ddf225ce186",
-    "scripts/gameplay-exact-runner.mjs": "3a0378b592fd7157194860e8c9d0cb2e4ca48498671c047f0f0de8d91623f3ed"
+    "scripts/gameplay-exact-runner.mjs": "d70b8cffb31f4009293cca093a6b021dc9afde1b779d2120c6c9e0000c900144"
   },
   "blockers": []
 }
