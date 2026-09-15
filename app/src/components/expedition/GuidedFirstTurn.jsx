@@ -33,7 +33,7 @@ export default function GuidedFirstTurn({ isSpectator, hasSubmitted, movePathLen
   }
 
   const steps = [
-    ['1', isSpectator ? 'Register or watch' : 'Wallet ready', isSpectator ? 'This wallet is observing until registered.' : 'This wallet can submit for this explorer.'],
+    ['1', isSpectator ? 'Join or watch' : 'Player ready', isSpectator ? 'You are observing until you reserve a seat.' : 'Your player session can submit for this explorer.'],
     ['2', movePathLength > 0 ? 'Route drafted' : 'Choose an action', movePathLength > 0 ? 'Review the path, movement left, and pressure change.' : 'Move to chart nearby ground while Depart Pressure is low.'],
     ['3', hasSubmitted ? 'Submitted' : 'Pick reduction', hasSubmitted ? 'Wait for crew and queue resolution.' : `Check ${escapeCostPreview?.headline || departPressure?.band?.label || 'Depart Pressure'}, then reduce it or depart.`],
     ['4', turnState?.phaseLabel || 'Read aftermath', expeditionArc ? `Read aftermath, then follow ${expeditionArc.label}: ${expeditionArc.directive}` : departPressure?.readiness?.canFlee ? `You can depart; ${escapeCostPreview?.nextDelayWarning || 'decide whether one more chart is worth the pressure.'}` : 'Read Turn Aftermath, then decide whether to push deeper or start heading home.'],

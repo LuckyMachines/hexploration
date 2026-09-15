@@ -15,10 +15,10 @@ export function getActionBlockReason({
   activeInventory = {},
   departPressure,
 } = {}) {
-  if (isSpectator) return 'Connect with a registered crew wallet to submit actions.';
+  if (isSpectator) return 'Reserve a crew seat to submit actions.';
   if (hasSubmitted) return 'Your action is already locked for this turn.';
-  if (isPending) return 'Wallet signature is still pending.';
-  if (isConfirming) return 'The previous transaction is confirming on chain.';
+  if (isPending) return 'Your action is still being submitted.';
+  if (isConfirming) return 'The previous action is resolving.';
   if (action === Action.MOVE && movement <= 0) return 'Movement has not loaded or is zero.';
   if (action === Action.MOVE && movePath.length === 0) return 'Choose at least one reachable tile first.';
   if (action === Action.MOVE && routeStatus?.isValid === false) return routeStatus.invalidReason || 'The current route is invalid.';
@@ -77,7 +77,7 @@ export function getBestActionSuggestion({
   traitPreview,
   expeditionArc,
 } = {}) {
-  if (isSpectator) return { action: null, label: 'Watch the run', reason: 'This wallet is spectating.' };
+  if (isSpectator) return { action: null, label: 'Watch the run', reason: 'You are spectating this expedition.' };
   if (turnState?.state === TurnState.RESOLVING) return { action: null, label: 'Wait for resolution', reason: 'The queue is processing submitted actions.' };
   if (hasSubmitted) return { action: null, label: 'Wait for crew', reason: 'Your action is locked.' };
   if (expeditionArc?.id === EXPEDITION_ARC_IDS.FINAL_CALL) return { action: Action.FLEE, label: 'Final Call', reason: expeditionArc.directive };
@@ -142,9 +142,9 @@ export function getTurnGuidance({
   traitPreview,
   expeditionArc,
 } = {}) {
-  if (!isConnected) return { title: 'Connect wallet', body: 'Connect a wallet before joining or submitting actions.', tone: 'gold' };
-  if (isSpectator) return { title: 'Watching expedition', body: 'You can inspect the board and crew, but this wallet is not registered.', tone: 'blue' };
-  if (turnState?.state === TurnState.RESOLVING) return { title: 'Queue resolving', body: 'The crew has submitted enough actions. Wait for chain resolution.', tone: 'blue' };
+  if (!isConnected) return { title: 'Restoring session', body: 'Your private play session is being prepared.', tone: 'gold' };
+  if (isSpectator) return { title: 'Watching expedition', body: 'You can inspect the board and crew, then reserve a seat when one is available.', tone: 'blue' };
+  if (turnState?.state === TurnState.RESOLVING) return { title: 'Turn resolving', body: 'The crew has submitted enough actions. The world is resolving the outcome.', tone: 'blue' };
   if (hasSubmitted) return { title: 'Action locked', body: 'Your turn is submitted. Waiting on crew or queue processing.', tone: 'green' };
   if (movePath.length > 0 && routeStatus?.isValid === false) return { title: 'Fix route', body: routeStatus.invalidReason || 'Undo, clear, or choose a reachable adjacent tile.', tone: 'red' };
   if (expeditionArc?.id === EXPEDITION_ARC_IDS.FINAL_CALL) {

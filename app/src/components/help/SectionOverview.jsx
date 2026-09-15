@@ -23,7 +23,7 @@ export default function SectionOverview() {
         <li>
           <span className="text-exp-text-dim">Day Phase</span> &mdash;
           Each player chooses an action (Move, Dig, Rest, Help, Setup Camp, Break Down Camp)
-          and submits it on-chain.
+          and commits it to the shared expedition.
         </li>
         <li>
           <span className="text-exp-text-dim">Processing</span> &mdash;

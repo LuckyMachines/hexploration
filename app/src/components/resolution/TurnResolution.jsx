@@ -3,7 +3,6 @@ import { useLastPlayerActions } from '../../hooks/useLastPlayerActions';
 import { useLastDayPhaseEvents } from '../../hooks/useLastDayPhaseEvents';
 import { buildTurnReplay } from '../../lib/turnReplay';
 import { deriveTurnAftermath } from '../../lib/turnAftermath';
-import { truncateAddress } from '../../lib/formatting';
 import ActionResult from './ActionResult';
 import CardDraw from './CardDraw';
 import AftermathMoment from './AftermathMoment';
@@ -143,24 +142,17 @@ export default function TurnResolution({
                   <p className="font-mono text-xs uppercase tracking-wider text-blueprint">
                     {event.summary || event.name}
                   </p>
-                  <p className="mt-1 break-all font-mono text-[11px] text-exp-text-dim">
-                    block {event.blockNumber?.toString?.() || event.blockNumber || 'pending'}
-                  </p>
-                  {event.transactionHash && (
-                    <p className="mt-1 font-mono text-[10px] text-exp-text-dim">
-                      tx {truncateAddress(event.transactionHash)}
-                    </p>
-                  )}
+                  <p className="mt-1 font-mono text-[11px] text-exp-text-dim">Recorded in the expedition timeline</p>
                 </div>
               ))}
             </div>
             {replayProof.length > 0 && (
               <div className="mt-3 rounded border border-blueprint/25 bg-blueprint/5 px-3 py-2">
                 <p className="font-mono text-[10px] uppercase tracking-[0.26em] text-blueprint">
-                  Replay proof
+                  Replay record
                 </p>
                 <p className="mt-1 font-mono text-[11px] text-exp-text-dim">
-                  {replayProof.map((proof) => truncateAddress(proof.tx)).join(' / ')}
+                  {replayProof.length} verified step{replayProof.length === 1 ? '' : 's'} ready
                 </p>
               </div>
             )}

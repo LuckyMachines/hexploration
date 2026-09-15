@@ -257,7 +257,7 @@ async function writeAppEnv(addresses, rpcUrl, relayUrl) {
     'VITE_RPC_URL=',
     `VITE_FOUNDRY_RPC_URL=${rpcUrl}`,
     'VITE_CONTROLLER_SUPPORTS_DELEGATION=true',
-    `VITE_SPONSOR_RELAY_URL=${relayUrl}`,
+    `VITE_GAME_AUTHORITY_URL=${relayUrl}`,
   ];
   await fs.writeFile(appEnvFile, `${lines.join('\n')}\n`, 'utf8');
 }
@@ -546,8 +546,11 @@ async function main() {
         SPONSOR_RELAY_FORWARDER_ADDRESS: addresses.VITE_SESSION_FORWARDER_ADDRESS,
         SPONSOR_RELAY_CONTROLLER_ADDRESS: addresses.VITE_CONTROLLER_ADDRESS,
         SPONSOR_RELAY_BOARD_ADDRESS: addresses.VITE_BOARD_ADDRESS,
+        GAME_AUTHORITY_REGISTRY_ADDRESS: addresses.VITE_GAME_REGISTRY_ADDRESS,
+        GAME_AUTHORITY_READ_ADDRESSES: Object.values(addresses).join(','),
         SPONSOR_RELAYER_PRIVATE_KEY: RELAY_PK,
         SPONSOR_RELAY_ADMIN_TOKEN: 'anvil-e2e-admin-token-with-at-least-32-characters',
+        GAME_AUTHORITY_SECRET: 'anvil-e2e-game-authority-secret-with-at-least-32-characters',
         SPONSOR_RELAY_ALLOWED_ORIGINS: baseURL,
         SPONSOR_RELAY_STATE_FILE: relayStateFile,
         SPONSOR_RELAY_MIN_BALANCE_WEI: '1',

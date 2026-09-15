@@ -1,5 +1,4 @@
 import { usePlayerSession } from '../../contexts/PlayerSessionContext';
-import TransactionRecoveryCenter from '../shared/TransactionRecoveryCenter';
 
 const labels = {
   booting: 'Restoring player', hydrating: 'Loading expedition', lobby: 'Lobby ready', ready: 'Crew ready', active: 'Expedition live',
@@ -22,7 +21,6 @@ export default function SessionStatusBar() {
           {state.softPaused ? 'Resume focus' : 'Pause focus'}
         </button>
       )}
-      <TransactionRecoveryCenter />
     </div>
   );
 }

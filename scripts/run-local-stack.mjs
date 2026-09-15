@@ -632,7 +632,7 @@ async function writeAppEnvLocal(appAddrs) {
     'VITE_RPC_URL=',
     `VITE_FOUNDRY_RPC_URL=${RPC_URL}`,
     'VITE_CONTROLLER_SUPPORTS_DELEGATION=true',
-    `VITE_SPONSOR_RELAY_URL=${skipRelay ? '' : RELAY_URL}`,
+    `VITE_GAME_AUTHORITY_URL=${skipRelay ? '' : RELAY_URL}`,
   ];
   await fs.writeFile(envFile, `${lines.join('\n')}\n`, 'utf8');
   log(`Wrote ${envFile}`);
@@ -833,8 +833,11 @@ async function main() {
           SPONSOR_RELAY_FORWARDER_ADDRESS: appAddrs.VITE_SESSION_FORWARDER_ADDRESS,
           SPONSOR_RELAY_CONTROLLER_ADDRESS: appAddrs.VITE_CONTROLLER_ADDRESS,
           SPONSOR_RELAY_BOARD_ADDRESS: appAddrs.VITE_BOARD_ADDRESS,
+          GAME_AUTHORITY_REGISTRY_ADDRESS: appAddrs.VITE_GAME_REGISTRY_ADDRESS,
+          GAME_AUTHORITY_READ_ADDRESSES: Object.values(appAddrs).join(','),
           SPONSOR_RELAYER_PRIVATE_KEY: RELAY_PK,
           SPONSOR_RELAY_ADMIN_TOKEN: 'local-stack-admin-token-with-at-least-32-characters',
+          GAME_AUTHORITY_SECRET: 'local-stack-game-authority-secret-with-at-least-32-characters',
           SPONSOR_RELAY_ALLOWED_ORIGINS: 'http://localhost:5502,http://127.0.0.1:5502',
           SPONSOR_RELAY_STATE_FILE: relayStateFile,
           SPONSOR_RELAY_MIN_BALANCE_WEI: '1',

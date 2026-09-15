@@ -7,6 +7,7 @@ import { pathToFileURL } from 'node:url';
 import { SponsorBudgetLedger } from './sponsor-relay-ledger.mjs';
 import { parseRelayConfig, RelayError } from './sponsor-relay-core.mjs';
 import { createRelayClients, SponsorRelayService } from './sponsor-relay-service.mjs';
+import { bearerSession, issueAuthoritySession } from './game-authority.mjs';
 
 function log(event, details = {}) {
   process.stdout.write(`${JSON.stringify({ time: new Date().toISOString(), event, ...details })}\n`);
@@ -67,6 +68,8 @@ async function readJson(req, maxBytes) {
 
 export function createSponsorRelayHttpServer({ config, service, ledger }) {
   const ipWindows = new Map();
+  const sessionWindows = new Map();
+  const readWindows = new Map();
   const adminWindows = new Map();
   let inFlight = 0;
   return createServer(async (req, res) => {
@@ -94,13 +97,45 @@ export function createSponsorRelayHttpServer({ config, service, ledger }) {
       }
 
       if (req.method === 'GET' && url.pathname === '/livez') {
-        send(res, 200, { live: true, paused: config.forcedPaused || ledger.snapshot().paused }, cors);
+        send(res, 200, { live: true }, cors);
       } else if (req.method === 'GET' && url.pathname === '/healthz') {
         const health = await service.checkReadiness({ force: true });
-        send(res, health.ready ? 200 : 503, health, cors);
-      } else if (req.method === 'GET' && url.pathname === '/v1/sponsor/config') {
+        send(res, health.ready ? 200 : 503, { ready: health.ready }, cors);
+      } else if (req.method === 'POST' && url.pathname === '/v1/game/session') {
+        consumeRateLimit(sessionWindows, clientAddress(req, config.trustProxy), config.perIpHourlySessions);
+        const issued = issueAuthoritySession(config);
+        const session = bearerSession({ headers: { authorization: `Bearer ${issued.token}` } }, config);
+        send(res, 201, { ...issued, playerIdentity: service.playerIdentity(session).address }, cors);
+      } else if (req.method === 'GET' && url.pathname === '/v1/game/status') {
+        const health = await service.checkReadiness();
+        send(res, health.ready ? 200 : 503, { available: health.ready, maintenance: health.paused }, cors);
+      } else if (req.method === 'POST' && url.pathname === '/v1/game/state') {
+        consumeRateLimit(readWindows, clientAddress(req, config.trustProxy), config.perIpHourlyReads);
+        bearerSession(req, config);
+        const body = await readJson(req, config.maxBodyBytes);
+        send(res, 200, { result: await service.readAuthorityState(body) }, cors);
+      } else if (req.method === 'POST' && ['/v1/game/commands/create', '/v1/game/commands/join', '/v1/game/commands/action'].includes(url.pathname)) {
+        consumeRateLimit(ipWindows, clientAddress(req, config.trustProxy), config.perIpHourlyRequests);
+        if (inFlight >= config.maxInFlight) throw new RelayError(503, 'service_busy', 'Live play is busy; try again shortly');
+        const session = bearerSession(req, config);
+        const body = await readJson(req, config.maxBodyBytes);
+        inFlight += 1;
+        try {
+          const result = url.pathname.endsWith('/create')
+            ? await service.createAuthorityGame(session, body)
+            : url.pathname.endsWith('/join')
+              ? await service.registerAuthorityPlayer(session, body)
+              : await service.submitAuthorityAction(session, body);
+          send(res, 202, result, cors);
+        } finally {
+          inFlight -= 1;
+        }
+      } else if (req.method === 'GET' && /^\/v1\/game\/operations\/[a-zA-Z0-9_-]+$/.test(url.pathname)) {
+        bearerSession(req, config);
+        send(res, 200, await service.authorityStatus(url.pathname.split('/').at(-1)), cors);
+      } else if (config.legacySponsorApi && req.method === 'GET' && url.pathname === '/v1/sponsor/config') {
         send(res, 200, service.publicConfig(), cors);
-      } else if (req.method === 'POST' && ['/v1/sponsor/actions', '/v1/sponsor/actions/batch'].includes(url.pathname)) {
+      } else if (config.legacySponsorApi && req.method === 'POST' && ['/v1/sponsor/actions', '/v1/sponsor/actions/batch'].includes(url.pathname)) {
         consumeRateLimit(ipWindows, clientAddress(req, config.trustProxy), config.perIpHourlyRequests);
         if (inFlight >= config.maxInFlight) throw new RelayError(503, 'relay_busy', 'The sponsor relay is at its safe concurrency limit');
         const body = await readJson(req, config.maxBodyBytes);
@@ -112,8 +147,13 @@ export function createSponsorRelayHttpServer({ config, service, ledger }) {
         } finally {
           inFlight -= 1;
         }
-      } else if (req.method === 'GET' && /^\/v1\/sponsor\/actions\/0x[0-9a-fA-F]{64}$/.test(url.pathname)) {
+      } else if (config.legacySponsorApi && req.method === 'GET' && /^\/v1\/sponsor\/actions\/0x[0-9a-fA-F]{64}$/.test(url.pathname)) {
         send(res, 200, await service.status(url.pathname.split('/').at(-1)), cors);
+      } else if (req.method === 'GET' && url.pathname === '/admin/budget') {
+        consumeRateLimit(adminWindows, clientAddress(req, config.trustProxy), 20);
+        const bearer = String(req.headers.authorization || '').replace(/^Bearer\s+/i, '');
+        if (!tokenMatches(bearer, config.adminToken)) throw new RelayError(401, 'admin_auth_failed', 'Administrator authentication failed');
+        send(res, 200, service.spendStatus(), cors);
       } else if (req.method === 'POST' && ['/admin/pause', '/admin/resume'].includes(url.pathname)) {
         consumeRateLimit(adminWindows, clientAddress(req, config.trustProxy), 20);
         const bearer = String(req.headers.authorization || '').replace(/^Bearer\s+/i, '');
@@ -148,7 +188,7 @@ export async function startSponsorRelay(env = process.env) {
     server.once('error', reject);
     server.listen(config.port, config.host, resolve);
   });
-  log('sponsor_relay_started', { host: config.host, port: config.port, chainId: config.chainId, relayerAddress: clients.account.address });
+  log('game_authority_started', { host: config.host, port: config.port });
   return { config, ledger, service, server };
 }
 

@@ -4,12 +4,10 @@ import { useAllPlayers } from '../../hooks/useAllPlayers';
 import { useGameActions } from '../../hooks/useGameActions';
 import { usePlayerSummary } from '../../hooks/usePlayerSummary';
 import { usePlayerID } from '../../hooks/usePlayerID';
-import { truncateAddress } from '../../lib/formatting';
 import TxStatus from '../shared/TxStatus';
 import Spinner from '../shared/Spinner';
 import EmptyState from '../shared/EmptyState';
 import ShareGameLink from '../shared/ShareGameLink';
-import SocialHub from '../social/SocialHub';
 
 export default function GameLobby({ gameId }) {
   const { address } = useWallet();
@@ -59,13 +57,12 @@ export default function GameLobby({ gameId }) {
       <div className="px-6 py-5 space-y-5">
         {!address && (
           <div className="rounded border border-blueprint/30 bg-blueprint/5 px-4 py-3">
-            <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-blueprint">Observer briefing</p>
+            <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-blueprint">Preparing your seat</p>
             <p className="mt-2 font-mono text-xs leading-relaxed text-exp-text-dim">
-              Inspect this crew and staging state without a wallet. Connect from the header only if you choose to reserve a seat.
+              Your private play session is loading. You can inspect the crew while it finishes.
             </p>
           </div>
         )}
-        <SocialHub compact gameId={gameId} />
         <div>
           <h3 className="font-mono text-xs tracking-[0.3em] text-exp-text-dim uppercase mb-3">
             Expedition Crew ({players.length} enrolled)
@@ -90,7 +87,7 @@ export default function GameLobby({ gameId }) {
                   <li key={i} className="flex items-center gap-2 font-mono text-xs">
                     <span className="text-exp-text-dim w-4 text-right">{i + 1}.</span>
                     <span className={`${addr?.toLowerCase() === address?.toLowerCase() ? 'text-compass-bright' : 'text-exp-text'}`}>
-                      {truncateAddress(addr)}
+                      {addr?.toLowerCase() === address?.toLowerCase() ? 'You' : `Explorer ${String(i + 1).padStart(2, '0')}`}
                     </span>
                     {addr?.toLowerCase() === address?.toLowerCase() && (
                       <span className="text-xs text-compass/70 uppercase tracking-wider">(you)</span>

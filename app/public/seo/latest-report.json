@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-14T20:03:08.579Z",
+  "generatedAt": "2026-09-14T22:49:58.749Z",
   "ok": true,
   "strict": false,
   "site": {
@@ -25,7 +25,7 @@
       "errors": 0,
       "warnings": 0,
       "title": "Play Xenovoya | Xenovoya",
-      "description": "Launch the Xenovoya open alpha: a cooperative on-chain hex expedition on Sepolia about exploring, sharing discoveries, and escaping together.",
+      "description": "Launch the Xenovoya open alpha: a cooperative hex expedition about exploring, sharing discoveries, and escaping together.",
       "canonicalUrl": "https://play.xenovoya.com"
     },
     {
@@ -45,7 +45,7 @@
       "errors": 0,
       "warnings": 0,
       "title": "Xenovoya data and privacy | Xenovoya",
-      "description": "Understand local storage, optional wallet-linked return history, privacy-safe analytics, export, deletion, and public on-chain records.",
+      "description": "Understand local storage, optional cloud history, privacy-safe analytics, export, deletion, and shared game records.",
       "canonicalUrl": "https://play.xenovoya.com/privacy"
     }
   ],

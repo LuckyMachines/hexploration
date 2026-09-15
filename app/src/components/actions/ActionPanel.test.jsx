@@ -53,7 +53,7 @@ describe('ActionPanel', () => {
 
     await user.click(screen.getByRole('button', { name: /Submit Move/i }));
     expect(screen.getByRole('dialog', { name: /Confirm turn action/i })).toBeInTheDocument();
-    await user.click(screen.getByRole('button', { name: /Send Transaction/i }));
+    await user.click(screen.getByRole('button', { name: /Commit Action/i }));
 
     expect(submitActionMock).toHaveBeenCalledWith(
       1,
@@ -164,7 +164,7 @@ describe('ActionPanel', () => {
     await user.click(await screen.findByRole('button', { name: /Rescue P2/i }));
     expect(screen.getByText(/Rescue forecast/i)).toBeInTheDocument();
     expect(screen.getByText(/You give 1 Movement: 3 to 2\. P2 restores 2 there \(0 to 2\) and 1 in both other stats/i)).toBeInTheDocument();
-    await user.click(screen.getByRole('button', { name: /Send Transaction/i }));
+    await user.click(screen.getByRole('button', { name: /Commit Action/i }));
 
     expect(submitActionMock).toHaveBeenCalledWith(1, Action.HELP, ['2', 'Movement'], '', '', '1');
   });

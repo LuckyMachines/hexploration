@@ -2,7 +2,6 @@ import { Link } from 'react-router-dom';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useWallet } from '../../contexts/WalletContext';
 import { useExpedition } from '../../contexts/ExpeditionContext';
-import { truncateAddress } from '../../lib/formatting';
 import { PLAYER_COLORS } from '../../lib/constants';
 import { emitMusicDirectorState, trackForGameOverOutcome } from '../../lib/musicDirector';
 import { deriveDepartPressure } from '../../lib/departPressure';
@@ -282,7 +281,7 @@ export default function GameOver({ gameId }) {
       <div className="border border-blueprint/30 rounded bg-exp-panel overflow-hidden">
         <div className="bg-exp-dark border-b border-exp-border px-4 py-2 flex items-center justify-between gap-3">
           <span className="font-display text-xs tracking-[0.3em] text-exp-text-dim uppercase">
-            Resolution Proof
+            Expedition Replay
           </span>
           <span className="font-mono text-xs text-blueprint">
             {expedition.turnState?.label || 'Complete'}
@@ -315,15 +314,15 @@ export default function GameOver({ gameId }) {
                 className="flex flex-wrap items-center justify-between gap-2 rounded border border-exp-border bg-exp-dark/40 px-3 py-2"
               >
                 <span className="font-mono text-[10px] uppercase tracking-[0.24em] text-exp-text-dim">
-                  {proof.label} {proof.blockNumber ? `block ${proof.blockNumber}` : ''}
+                  {proof.label}
                 </span>
                 <span className="font-mono text-xs text-blueprint">
-                  {truncateAddress(proof.tx)}
+                  Recorded step {index + 1}
                 </span>
               </div>
             )) : (
               <div className="rounded border border-exp-border bg-exp-dark/35 px-3 py-2 font-mono text-xs text-exp-text-dim">
-                Replay proof is waiting on chain event history.
+                Expedition replay is still being assembled.
               </div>
             )}
           </div>
@@ -362,7 +361,7 @@ export default function GameOver({ gameId }) {
                       </div>
                       <div>
                         <span className="block font-mono text-xs text-exp-text">
-                          {truncateAddress(addr)}
+                          {isYou ? 'You' : `Explorer ${String(i + 1).padStart(2, '0')}`}
                         </span>
                         <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-exp-text-dim">
                           {player.currentZone || 'unknown'}

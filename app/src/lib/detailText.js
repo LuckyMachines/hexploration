@@ -45,7 +45,7 @@ const ACTION_DETAILS = {
     effect: 'Hold position while the expedition clock advances.',
     risk: 'Lost tempo. This should still feel like a tense posture, not nothing.',
     requirement: 'No input or no valid action chosen.',
-    blocked: 'Idle is only blocked by turn lock, wallet, or transaction state.',
+    blocked: 'Idle is only blocked by turn lock or action state.',
   },
   [Action.MOVE]: {
     effect: 'Spend movement to commit a route and potentially reveal or reposition.',
@@ -69,13 +69,13 @@ const ACTION_DETAILS = {
     effect: 'Search the current tile for artifacts, cards, or trouble.',
     risk: 'Dexterity pressure and event variance should be felt immediately.',
     requirement: 'A turn action and a tile worth searching.',
-    blocked: 'Digging is only blocked by global turn or transaction state.',
+    blocked: 'Digging is only blocked by global turn or action state.',
   },
   [Action.REST]: {
     effect: 'Recover one selected stat and make exhaustion readable.',
     risk: 'Safer body, slower expedition.',
     requirement: 'Choose which stat to restore.',
-    blocked: 'Rest is only blocked by global turn or transaction state.',
+    blocked: 'Rest is only blocked by global turn or action state.',
   },
   [Action.HELP]: {
     effect: 'Give 1 selected stat; a teammate restores 2 there and 1 in both other stats.',

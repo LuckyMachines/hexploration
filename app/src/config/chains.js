@@ -8,12 +8,9 @@ export const foundry = {
 
 export const sepolia = {
   id: 11155111,
-  name: 'Sepolia',
-  nativeCurrency: { name: 'Sepolia Ether', symbol: 'ETH', decimals: 18 },
-  rpcUrls: { default: { http: ['https://rpc.sepolia.org'] } },
-  blockExplorers: {
-    default: { name: 'Etherscan', url: 'https://sepolia.etherscan.io' },
-  },
+  name: 'Xenovoya Live',
+  nativeCurrency: { name: 'World Credit', symbol: 'XC', decimals: 18 },
+  rpcUrls: { default: { http: [] } },
   testnet: true,
 };
 
@@ -24,7 +21,7 @@ export const RPC_URLS = {
     import.meta.env.VITE_FOUNDRY_RPC_URL ||
     import.meta.env.VITE_LOCAL_RPC_URL ||
     (import.meta.env.DEV ? 'http://127.0.0.1:9955' : undefined),
-  [sepolia.id]: import.meta.env.VITE_RPC_URL || undefined,
+  [sepolia.id]: undefined,
 };
 
 export function getChainById(chainId) {

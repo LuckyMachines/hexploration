@@ -10,7 +10,6 @@ import SurveyTabletFrame from '../components/layout/SurveyTabletFrame';
 import { ExpeditionProvider } from '../contexts/ExpeditionContext';
 import { useGameOver } from '../hooks/useGameOver';
 import { parseUintId } from '../lib/ids';
-import { ReturnLoopSync } from '../components/expedition/ReturnLoopPanel';
 import SessionStatusBar from '../components/game/SessionStatusBar';
 import { usePlayerSession } from '../contexts/PlayerSessionContext';
 import { markSessionMilestone, measureSessionSpan } from '../lib/sessionTelemetry';
@@ -58,9 +57,9 @@ export default function GamePage() {
 
           {parsedGameId !== null && !isConnected && (
             <div className="rounded border border-blueprint/30 bg-blueprint/5 px-4 py-3">
-              <p className="font-mono text-xs uppercase tracking-[0.2em] text-blueprint">Observer access - no wallet needed</p>
+              <p className="font-mono text-xs uppercase tracking-[0.2em] text-blueprint">Restoring private session</p>
               <p className="mt-1 font-mono text-xs leading-relaxed text-exp-text-dim">
-                The live 3D board, crew, and expedition state are open to inspect. Connect only when you choose to join the crew or submit an action.
+                The live 3D board and expedition state remain available while your player session reconnects.
               </p>
             </div>
           )}
@@ -72,7 +71,7 @@ export default function GamePage() {
                 Restoring expedition...
               </span>
               <ol className="sr-only">
-                {(session.state.resumeSteps.length ? session.state.resumeSteps : ['identity', 'party', 'chain']).map((step) => <li key={step}>Checking {step}</li>)}
+                {(session.state.resumeSteps.length ? session.state.resumeSteps : ['identity', 'party', 'world']).map((step) => <li key={step}>Checking {step}</li>)}
               </ol>
             </div>
           )}
@@ -101,14 +100,12 @@ export default function GamePage() {
 
           {parsedGameId !== null && !isLoading && !error && gameStarted && !isGameOver && (
             <ExpeditionProvider gameId={normalizedGameId}>
-              {isConnected && <ReturnLoopSync gameId={normalizedGameId} />}
               <ExpeditionBench />
             </ExpeditionProvider>
           )}
 
           {parsedGameId !== null && !isLoading && !error && gameStarted && isGameOver && (
             <ExpeditionProvider gameId={normalizedGameId}>
-              {isConnected && <ReturnLoopSync gameId={normalizedGameId} isGameOver />}
               <GameOver gameId={normalizedGameId} />
             </ExpeditionProvider>
           )}

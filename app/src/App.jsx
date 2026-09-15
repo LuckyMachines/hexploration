@@ -1,5 +1,5 @@
 import { lazy, Suspense, useRef, useState } from 'react';
-import { Routes, Route, useLocation } from 'react-router-dom';
+import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
 import Modal from './components/shared/Modal';
@@ -17,7 +17,6 @@ const PseudoLocale = lazy(() => import('./components/shared/PseudoLocale'));
 const GamePage = lazy(() => import('./pages/GameClientPage'));
 const GuestExpeditionPage = lazy(() => import('./pages/GuestExpeditionPage'));
 const PrivacyPage = lazy(() => import('./pages/PrivacyPage'));
-const PartyInvitePage = lazy(() => import('./pages/PartyInvitePage'));
 const INCLUDE_INTERNAL_ROUTES = import.meta.env.VITE_ENABLE_INTERNAL_TOOLS === 'true';
 const GameUILab = INCLUDE_INTERNAL_ROUTES ? lazy(() => import('./pages/GameUILab')) : null;
 const DesignSystemPage = INCLUDE_INTERNAL_ROUTES ? lazy(() => import('./pages/DesignSystemPage')) : null;
@@ -92,7 +91,7 @@ export default function App() {
               <Route path="/guest" element={<GuestExpeditionPage />} />
               <Route path="/game/:gameId" element={<GamePage />} />
               <Route path="/privacy" element={<PrivacyPage />} />
-              <Route path="/invite/:inviteToken" element={<PartyInvitePage />} />
+              <Route path="/invite/:inviteToken" element={<Navigate to="/" replace />} />
               {INCLUDE_INTERNAL_ROUTES && (
                 <>
                   <Route path="/ui-lab" element={<InternalRoute component={GameUILab} />} />

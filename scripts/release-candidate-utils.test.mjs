@@ -22,7 +22,7 @@ function validInput() {
       service: 'xenovoya-player',
       environment: 'production',
       release: sha,
-      capabilities: { returnApi: true, sponsorDelegation: false },
+      capabilities: { returnApi: true, managedPlay: true },
     },
     rollbackPlan: {
       schemaVersion: 1,

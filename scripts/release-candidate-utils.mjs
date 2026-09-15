@@ -45,10 +45,10 @@ export function evaluateReleaseCandidate({
 
   const metadata = evaluateReleaseMetadata(buildMetadata || {}, expectedRelease);
   const capabilitiesComplete = typeof buildMetadata?.capabilities?.returnApi === 'boolean'
-    && typeof buildMetadata?.capabilities?.sponsorDelegation === 'boolean';
+    && typeof buildMetadata?.capabilities?.managedPlay === 'boolean';
   const metadataFailures = [
     ...metadata.failures,
-    ...(capabilitiesComplete ? [] : ['capabilities.returnApi and capabilities.sponsorDelegation must be declared']),
+    ...(capabilitiesComplete ? [] : ['capabilities.returnApi and capabilities.managedPlay must be declared']),
   ];
   checks.push(result('candidate.build-metadata', 'Production build identity', metadataFailures.length === 0, metadataFailures.length === 0 ? buildMetadata.release : metadataFailures.join('; ')));
 

@@ -46,7 +46,7 @@ export function deriveTurnState({
       hasSubmitted,
       isResolving,
       waitingFor: 0,
-      copy: 'This wallet is observing the expedition.',
+      copy: 'You are observing this expedition.',
     };
   }
 

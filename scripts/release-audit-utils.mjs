@@ -36,7 +36,7 @@ export function evaluateReleaseMetadata(payload = {}, expectedRelease = '', { se
   if (expectedRelease && payload.release !== expectedRelease) failures.push(`release does not match expected ${expectedRelease}`);
   if (payload.capabilities !== undefined) {
     if (typeof payload.capabilities?.returnApi !== 'boolean') failures.push('capabilities.returnApi must be boolean');
-    if (typeof payload.capabilities?.sponsorDelegation !== 'boolean') failures.push('capabilities.sponsorDelegation must be boolean');
+    if (typeof payload.capabilities?.managedPlay !== 'boolean') failures.push('capabilities.managedPlay must be boolean');
   }
   return { pass: failures.length === 0, failures };
 }

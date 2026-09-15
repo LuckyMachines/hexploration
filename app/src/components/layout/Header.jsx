@@ -1,14 +1,8 @@
-import { lazy, Suspense } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import ConnectButton from '../wallet/ConnectButton';
-import NetworkBadge from '../wallet/NetworkBadge';
 import HelpButton from '../help/HelpButton';
 import ScaleControl from './ScaleControl';
 import AudioControls from '../audio/AudioControls';
-import { useWallet } from '../../contexts/WalletContext';
 import { internalToolsEnabled } from '../../lib/internalTools';
-
-const AutomationStatus = lazy(() => import('../shared/AutomationStatus'));
 
 function SettingsMenu({ audio, onHelpClick }) {
   return (
@@ -52,7 +46,6 @@ function SettingsMenu({ audio, onHelpClick }) {
 }
 
 export default function Header({ onHelpClick, audio }) {
-  const { isConnected } = useWallet();
   const { pathname } = useLocation();
   const publicLinks = internalToolsEnabled() ? [
     ['/', 'Home'],
@@ -61,7 +54,6 @@ export default function Header({ onHelpClick, audio }) {
     ['/challenge', 'Challenge'],
     ['/progress', 'Progress'],
   ] : [['/#play-options', 'Play'], ['/guest', 'Solo']];
-  const showConnect = isConnected || pathname.startsWith('/game/') || pathname.startsWith('/invite/');
 
   return (
     <header className="sticky top-0 z-40 border-b border-exp-border bg-exp-surface/90 backdrop-blur-md">
@@ -91,13 +83,6 @@ export default function Header({ onHelpClick, audio }) {
             })}
           </nav>
           <SettingsMenu audio={audio} onHelpClick={onHelpClick} />
-          {isConnected && (
-            <div className="hidden lg:block">
-              <Suspense fallback={null}><AutomationStatus /></Suspense>
-            </div>
-          )}
-          {isConnected && <NetworkBadge />}
-          {showConnect && <ConnectButton />}
         </div>
       </div>
     </header>

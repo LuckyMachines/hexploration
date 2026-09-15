@@ -7,7 +7,7 @@ export const DEFAULT_SEO_CONFIG = {
   siteName: 'Xenovoya',
   siteUrl: 'https://play.xenovoya.com',
   defaultTitle: 'Play Xenovoya',
-  defaultDescription: 'Launch the Xenovoya open alpha: a cooperative on-chain hex expedition on Sepolia about exploring, sharing discoveries, and escaping together.',
+  defaultDescription: 'Launch the Xenovoya open alpha: a cooperative hex expedition about exploring, sharing discoveries, and escaping together.',
   defaultImage: '/seo/xenovoya-share-card.png',
   locale: 'en_US',
   twitterCard: 'summary_large_image',

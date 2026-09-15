@@ -2,19 +2,19 @@
   {
     "discoverable": true,
     "noindex": false,
-    "lastmod": "2026-09-14T20:03:08.579Z",
+    "lastmod": "2026-09-14T22:49:58.749Z",
     "image": "/seo/xenovoya-share-card.png",
     "path": "/",
     "type": "home",
     "title": "Play Xenovoya",
-    "description": "Launch the Xenovoya open alpha: a cooperative on-chain hex expedition on Sepolia about exploring, sharing discoveries, and escaping together.",
+    "description": "Launch the Xenovoya open alpha: a cooperative hex expedition about exploring, sharing discoveries, and escaping together.",
     "priority": 1,
     "changefreq": "weekly"
   },
   {
     "discoverable": true,
     "noindex": false,
-    "lastmod": "2026-09-14T20:03:08.579Z",
+    "lastmod": "2026-09-14T22:49:58.749Z",
     "image": "/seo/xenovoya-share-card.png",
     "path": "/guest",
     "type": "guest-expedition",
@@ -26,12 +26,12 @@
   {
     "discoverable": true,
     "noindex": false,
-    "lastmod": "2026-09-14T20:03:08.579Z",
+    "lastmod": "2026-09-14T22:49:58.749Z",
     "image": "/seo/xenovoya-share-card.png",
     "path": "/privacy",
     "type": "privacy",
     "title": "Xenovoya data and privacy",
-    "description": "Understand local storage, optional wallet-linked return history, privacy-safe analytics, export, deletion, and public on-chain records.",
+    "description": "Understand local storage, optional cloud history, privacy-safe analytics, export, deletion, and shared game records.",
     "priority": 0.4,
     "changefreq": "monthly"
   }

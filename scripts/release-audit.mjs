@@ -20,7 +20,6 @@ const origins = {
   player: process.env.XENOVOYA_PLAY_URL || 'https://play.xenovoya.com',
   marketing: process.env.XENOVOYA_MARKETING_URL || 'https://xenovoya.com',
   returnApi: process.env.XENOVOYA_RETURN_API_URL || 'https://return-api.xenovoya.com',
-  rpc: process.env.XENOVOYA_RPC_URL || 'https://ethereum-sepolia-rpc.publicnode.com',
   sponsorRelay: process.env.XENOVOYA_SPONSOR_RELAY_URL || '',
 };
 const expectedRelease = process.env.XENOVOYA_EXPECTED_RELEASE_SHA || '';
@@ -193,34 +192,20 @@ await check('return-api.readiness', 'Return API readiness', async () => {
 });
 
 if (origins.sponsorRelay) {
-  await check('sponsor-relay.scope', 'Sponsor relay scope', async () => {
-    const { response, body } = await request(new URL('/v1/sponsor/config', origins.sponsorRelay));
+  await check('game-authority.readiness', 'Game authority readiness', async () => {
+    const { response, body } = await request(new URL('/v1/game/status', origins.sponsorRelay));
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     const payload = JSON.parse(body);
-    if (!payload.chainId || !payload.forwarderAddress || !payload.boardAddress) throw new Error('relay scope is incomplete');
-    if (payload.paused) throw new Error('relay is paused');
-    return `chain ${payload.chainId}`;
+    if (!payload.available || payload.maintenance) throw new Error('game authority is unavailable');
+    return 'available';
   });
-} else if (releaseMetadata.capabilities?.sponsorDelegation === true) {
-  await check('sponsor-relay.scope', 'Sponsor relay scope', async () => {
-    throw new Error('deployed release enables delegation but XENOVOYA_SPONSOR_RELAY_URL was not supplied');
+} else if (releaseMetadata.capabilities?.managedPlay === true) {
+  await check('game-authority.readiness', 'Game authority readiness', async () => {
+    throw new Error('deployed release enables managed play but XENOVOYA_SPONSOR_RELAY_URL was not supplied');
   });
-} else if (releaseMetadata.capabilities?.sponsorDelegation === false) {
-  await check('sponsor-relay.scope', 'Sponsor relay scope', async () => 'not applicable; deployed release disables delegation', { required: false });
-} else skip('sponsor-relay.scope', 'Sponsor relay scope', 'deployed release predates capability metadata; supply XENOVOYA_SPONSOR_RELAY_URL if delegation is enabled');
-
-await check('chain.sepolia', 'Sepolia RPC', async () => {
-  const { response, body } = await request(origins.rpc, {
-    method: 'POST',
-    headers: { 'content-type': 'application/json' },
-    body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'eth_chainId', params: [] }),
-  });
-  if (!response.ok) throw new Error(`HTTP ${response.status}`);
-  const payload = JSON.parse(body);
-  const chainId = Number.parseInt(payload.result, 16);
-  if (chainId !== 11155111) throw new Error(`expected Sepolia 11155111, received ${chainId}`);
-  return 'chain 11155111';
-});
+} else if (releaseMetadata.capabilities?.managedPlay === false) {
+  await check('game-authority.readiness', 'Game authority readiness', async () => 'not applicable; deployed release does not enable managed play', { required: false });
+} else skip('game-authority.readiness', 'Game authority readiness', 'deployed release predates managed-play metadata; supply XENOVOYA_SPONSOR_RELAY_URL when enabled');
 
 let rollbackPlan = {};
 await check('rollback.contract', 'Rollback contract', async () => {

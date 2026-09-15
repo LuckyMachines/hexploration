@@ -1,7 +1,4 @@
-import { truncateAddress } from '../../lib/formatting';
-import { getDefaultChainId } from '../../config/clients';
-import { getChainById } from '../../config/chains';
-import { formatEstimatedGas, transactionExplorerUrl, transactionSignalSequence } from '../../lib/transactionExperience';
+import { transactionSignalSequence } from '../../lib/transactionExperience';
 
 export default function ReceiptDrawer({
   submission,
@@ -14,12 +11,11 @@ export default function ReceiptDrawer({
   lifecycle,
 }) {
   if (!submission && !hash && !isPending && !isConfirming && !isSuccess && !error) return null;
-  const chain = getChainById(lifecycle?.chainId || getDefaultChainId());
 
   const state = lifecycle?.phase === 'simulating'
     ? 'Preflight'
     : lifecycle?.phase === 'awaiting_signature'
-      ? 'Signature'
+      ? 'Submit'
       : error
     ? 'Failed'
     : isSuccess
@@ -27,7 +23,7 @@ export default function ReceiptDrawer({
       : isConfirming
         ? 'Confirming'
         : isPending
-          ? 'Signature'
+          ? 'Submitting'
           : 'Prepared';
   const signalSequence = transactionSignalSequence(
     lifecycle?.phase || (error ? 'failed' : isSuccess ? 'confirmed' : isConfirming ? 'confirming' : isPending ? 'awaiting_signature' : 'ready'),
@@ -49,8 +45,8 @@ export default function ReceiptDrawer({
           <p className="mt-1 font-mono text-xs text-compass-bright">{submission?.label || 'Pending'}</p>
         </div>
         <div className="rounded border border-exp-border/60 bg-exp-dark/35 px-3 py-2">
-          <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-exp-text-dim">Tx</p>
-          <p className="mt-1 font-mono text-xs text-blueprint">{hash ? truncateAddress(hash) : 'Not sent'}</p>
+          <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-exp-text-dim">Result</p>
+          <p className="mt-1 font-mono text-xs text-blueprint">{isSuccess ? 'Recorded' : isConfirming ? 'Resolving' : 'Pending'}</p>
         </div>
       </div>
       <ol className="mt-3 grid gap-1 sm:grid-cols-4" aria-label="Expedition signal progress">
@@ -66,16 +62,10 @@ export default function ReceiptDrawer({
       </ol>
       <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-2 font-mono text-[10px] uppercase tracking-[0.15em] text-exp-text-dim">
         <span>Preflight: {simulation?.status === 'ready' ? 'passed' : simulation?.status || 'not run'}</span>
-        {simulation?.estimatedGas != null && <span>Estimate: {formatEstimatedGas(simulation.estimatedGas)}</span>}
-        {hash && transactionExplorerUrl(chain, hash) && (
-          <a href={transactionExplorerUrl(chain, hash)} target="_blank" rel="noreferrer" className="text-blueprint underline decoration-blueprint/40 underline-offset-4">
-            Open chain receipt
-          </a>
-        )}
       </div>
       {(isPending || isConfirming) && submission && (
         <p className="mt-2 rounded border border-blueprint/25 bg-blueprint/5 px-3 py-2 font-mono text-[11px] leading-relaxed text-blueprint">
-          Optimistic intent is visible now. Authoritative stats and turn state update only after confirmation.
+          Action accepted. The board and crew stats update when the outcome resolves.
         </p>
       )}
       {submission?.options?.length > 0 && (

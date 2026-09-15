@@ -44,33 +44,33 @@ export function normalizeTransactionError(error) {
   const lower = message.toLowerCase();
 
   if (lower.includes('user rejected') || lower.includes('user denied')) {
-    return { code: 'rejected', title: 'Signature cancelled', message: 'Nothing was submitted. Review the action and try again when ready.', retryable: true };
+    return { code: 'rejected', title: 'Action cancelled', message: 'Nothing was submitted. Review the action and try again when ready.', retryable: true };
   }
   if (lower.includes('wrong network') || lower.includes('unsupported chain') || lower.includes('chain mismatch') || lower.includes('chain id')) {
-    return { code: 'wrong-network', title: 'Switch expedition network', message: 'Your planned action is preserved. Switch to the expedition network, then try the same action again.', retryable: true };
+    return { code: 'wrong-network', title: 'Expedition unavailable', message: 'Your planned action is preserved. Reconnect, then try the same action again.', retryable: true };
   }
   if (lower.includes('expired') || lower.includes('deadline')) {
-    return { code: 'expired', title: 'Authorization expired safely', message: 'Nothing new was submitted. Renew the scoped authorization or use a direct wallet action.', retryable: true };
+    return { code: 'expired', title: 'Session expired safely', message: 'Nothing new was submitted. Restore your session and try again.', retryable: true };
   }
   if (lower.includes('relay') || lower.includes('sponsor')) {
-    return { code: 'relay', title: 'Sponsored route unavailable', message: 'The action was not sponsored. Your intent is preserved and a direct wallet action remains available.', retryable: true };
+    return { code: 'relay', title: 'Live play unavailable', message: 'Your intent is preserved. Wait a moment and try again.', retryable: true };
   }
   if (lower.includes('insufficient funds')) {
-    return { code: 'funds', title: 'Not enough network funds', message: 'This account cannot currently cover the network fee.', retryable: false };
+    return { code: 'funds', title: 'Live play paused', message: 'The game service cannot process new actions right now.', retryable: false };
   }
   if (lower.includes('nonce')) {
-    return { code: 'nonce', title: 'Wallet sequence changed', message: 'Refresh the wallet state and retry this action.', retryable: true };
+    return { code: 'nonce', title: 'Action order changed', message: 'Refresh the expedition and retry this action.', retryable: true };
   }
   if (lower.includes('timed out') || lower.includes('timeout')) {
-    return { code: 'timeout', title: 'Confirmation is taking longer', message: 'The action may still be on-chain. Its receipt remains recoverable after reload.', retryable: false };
+    return { code: 'timeout', title: 'Resolution is taking longer', message: 'The action may still complete. Its status remains recoverable after reload.', retryable: false };
   }
   if (lower.includes('network') || lower.includes('fetch') || lower.includes('rpc')) {
     return { code: 'network', title: 'Network connection interrupted', message: 'Your intent is preserved. Reconnect before sending or checking the receipt.', retryable: true };
   }
   if (lower.includes('revert') || lower.includes('invalid action') || lower.includes('cannot submit')) {
-    return { code: 'reverted', title: 'Chain rules blocked this action', message: message || 'The action no longer matches authoritative chain state.', retryable: true };
+    return { code: 'reverted', title: 'Game rules blocked this action', message: message || 'The action no longer matches the shared game state.', retryable: true };
   }
-  return { code: 'unknown', title: 'Action could not be submitted', message: message || 'The wallet or network returned an unknown error.', retryable: true };
+  return { code: 'unknown', title: 'Action could not be submitted', message: message || 'The game service returned an unknown error.', retryable: true };
 }
 
 export function transactionExplorerUrl(chain, hash) {
@@ -113,9 +113,9 @@ export function formatEstimatedGas(value) {
 
 const SIGNAL_STAGES = Object.freeze([
   { id: 'preflight', label: 'Read the world', detail: 'Check the action against current expedition state.' },
-  { id: 'authorization', label: 'Authorize intent', detail: 'Your wallet approves only this prepared action.' },
-  { id: 'transmission', label: 'Transmit signal', detail: 'The action is traveling to the expedition contract.' },
-  { id: 'memory', label: 'Write memory', detail: 'Confirmation makes the result authoritative and recoverable.' },
+  { id: 'authorization', label: 'Commit intent', detail: 'Lock in this prepared action.' },
+  { id: 'transmission', label: 'Transmit signal', detail: 'The action is traveling to the expedition service.' },
+  { id: 'memory', label: 'Write memory', detail: 'Resolution makes the result authoritative and recoverable.' },
 ]);
 
 const SIGNAL_PHASE_INDEX = Object.freeze({

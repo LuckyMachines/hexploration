@@ -1,12 +1,12 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-11T08:56:52.869Z",
+  "generatedAt": "2026-09-15T05:59:08.633Z",
   "evaluationMode": "automated-only",
   "implementationGrade": "A",
   "productionEvidenceGrade": "B",
   "grade": "A",
-  "passed": 29,
-  "total": 29,
+  "passed": 32,
+  "total": 32,
   "ratio": 1,
   "checks": [
     {
@@ -30,7 +30,7 @@
       "ok": true
     },
     {
-      "id": "transaction-recovery",
+      "id": "operation-recovery",
       "ok": true
     },
     {
@@ -50,7 +50,7 @@
       "ok": true
     },
     {
-      "id": "rpc-failover",
+      "id": "protected-state-reads",
       "ok": true
     },
     {
@@ -82,15 +82,27 @@
       "ok": true
     },
     {
+      "id": "fee-bid-controls",
+      "ok": true
+    },
+    {
+      "id": "managed-action-batching",
+      "ok": true
+    },
+    {
+      "id": "actual-cost-reconciliation",
+      "ok": true
+    },
+    {
       "id": "sponsor-emergency-pause",
       "ok": true
     },
     {
-      "id": "browser-sponsored-actions",
+      "id": "managed-player-actions",
       "ok": true
     },
     {
-      "id": "local-sponsored-stack",
+      "id": "local-authority-stack",
       "ok": true
     },
     {
@@ -120,13 +132,13 @@
     {
       "id": "gameclientpage--bundle-budget",
       "ok": true,
-      "value": 329664,
+      "value": 259059,
       "budget": 430000
     },
     {
       "id": "three--bundle-budget",
       "ok": true,
-      "value": 784069,
+      "value": 828625,
       "budget": 850000
     }
   ],
@@ -147,11 +159,11 @@
     "cold-boot",
     "warm-cache",
     "offline-boot",
-    "refresh-during-transaction",
-    "replacement-transaction",
-    "reverted-transaction",
+    "refresh-during-action",
+    "delayed-action",
+    "rejected-action",
     "stale-cloud-write",
-    "wallet-switch",
+    "expired-play-session",
     "background-and-return",
     "multi-tab-write",
     "party-create-and-restore",
@@ -161,13 +173,13 @@
     "rpc-failover",
     "preflight-rejection",
     "reorg-reconciliation",
-    "delegated-action-expiry",
-    "sponsored-action-replay",
+    "authority-session-expiry",
+    "managed-action-replay",
     "portable-client-resume",
-    "sponsor-relay-budget-exhaustion",
-    "sponsor-relay-emergency-pause",
-    "sponsor-relay-low-balance",
-    "browser-sponsored-grant-use-revoke"
+    "authority-budget-exhaustion",
+    "authority-emergency-pause",
+    "authority-low-balance",
+    "managed-register-act-resume"
   ],
   "nextAction": "Deploy API contract 2026-09-10.1, run synthetic multi-context probes, and collect production percentiles."
 }

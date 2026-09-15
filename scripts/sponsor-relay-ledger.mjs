@@ -77,12 +77,16 @@ export class SponsorBudgetLedger {
     });
   }
 
-  async reserve({ digest, player, signer, gas, costWei, actionCount = 1 }) {
+  async reserve({ digest, player, signer, gas, costWei, actionCount = 1, participants = null }) {
     return this.mutate(() => {
       const existing = this.state.requests[digest];
       if (existing) return { duplicate: true, record: existing };
       if (this.state.paused) throw new RelayError(503, 'relay_paused', this.state.pauseReason || 'Sponsorship is paused');
       if (!Number.isSafeInteger(actionCount) || actionCount < 1 || actionCount > 8) throw new RelayError(400, 'invalid_batch', 'Sponsored action count must be between one and eight');
+      const allocations = participants || [{ player, signer, actionCount }];
+      if (!Array.isArray(allocations) || allocations.reduce((sum, item) => sum + Number(item.actionCount || 0), 0) !== actionCount) {
+        throw new RelayError(400, 'invalid_batch', 'Sponsored participant allocations must match the action count');
+      }
       if (gas > this.limits.maxGasPerAction * BigInt(actionCount)) throw new RelayError(422, 'gas_limit', 'This request exceeds its sponsored gas budget');
       if (costWei > this.limits.maxSponsoredCostWei * BigInt(actionCount)) throw new RelayError(422, 'cost_limit', 'This request exceeds its sponsorship value budget');
 
@@ -90,23 +94,44 @@ export class SponsorBudgetLedger {
       const day = dayKey(now);
       const hour = hourKey(now);
       const daily = this.state.days[day] ||= { actions: 0, gas: '0', costWei: '0', players: {} };
-      const playerDaily = daily.players[player] ||= { actions: 0, gas: '0', costWei: '0' };
       const hourly = this.state.hours[hour] ||= { signers: {} };
-      const signerHourly = hourly.signers[signer] ||= { actions: 0 };
 
       if (daily.actions + actionCount > this.limits.globalDailyActions) throw new RelayError(429, 'global_daily_limit', 'The daily sponsorship action budget is exhausted');
       if (bigint(daily.gas) + gas > this.limits.globalDailyGas) throw new RelayError(429, 'global_gas_limit', 'The daily sponsorship gas budget is exhausted');
       if (bigint(daily.costWei) + costWei > this.limits.globalDailyCostWei) throw new RelayError(429, 'global_cost_limit', 'The daily sponsorship value budget is exhausted');
-      if (playerDaily.actions + actionCount > this.limits.perPlayerDailyActions) throw new RelayError(429, 'player_daily_limit', 'This player has reached the daily sponsored-action limit');
-      if (signerHourly.actions + actionCount > this.limits.perSignerHourlyActions) throw new RelayError(429, 'signer_hourly_limit', 'This session key has reached its hourly sponsored-action limit');
+      for (const allocation of allocations) {
+        const playerDaily = daily.players[allocation.player] ||= { actions: 0, gas: '0', costWei: '0' };
+        const signerHourly = hourly.signers[allocation.signer] ||= { actions: 0 };
+        if (playerDaily.actions + allocation.actionCount > this.limits.perPlayerDailyActions) throw new RelayError(429, 'player_daily_limit', 'This player has reached the daily sponsored-action limit');
+        if (signerHourly.actions + allocation.actionCount > this.limits.perSignerHourlyActions) throw new RelayError(429, 'signer_hourly_limit', 'This session key has reached its hourly sponsored-action limit');
+      }
 
       daily.actions += actionCount;
       daily.gas = (bigint(daily.gas) + gas).toString();
       daily.costWei = (bigint(daily.costWei) + costWei).toString();
-      playerDaily.actions += actionCount;
-      playerDaily.gas = (bigint(playerDaily.gas) + gas).toString();
-      playerDaily.costWei = (bigint(playerDaily.costWei) + costWei).toString();
-      signerHourly.actions += actionCount;
+      let allocatedGas = 0n;
+      let allocatedCost = 0n;
+      const allocationRecords = [];
+      allocations.forEach((allocation, index) => {
+        const final = index === allocations.length - 1;
+        const shareGas = final ? gas - allocatedGas : gas * BigInt(allocation.actionCount) / BigInt(actionCount);
+        const shareCost = final ? costWei - allocatedCost : costWei * BigInt(allocation.actionCount) / BigInt(actionCount);
+        allocatedGas += shareGas;
+        allocatedCost += shareCost;
+        const playerDaily = daily.players[allocation.player];
+        const signerHourly = hourly.signers[allocation.signer];
+        playerDaily.actions += allocation.actionCount;
+        playerDaily.gas = (bigint(playerDaily.gas) + shareGas).toString();
+        playerDaily.costWei = (bigint(playerDaily.costWei) + shareCost).toString();
+        signerHourly.actions += allocation.actionCount;
+        allocationRecords.push({
+          player: allocation.player,
+          signer: allocation.signer,
+          actionCount: allocation.actionCount,
+          reservedGas: shareGas.toString(),
+          reservedCostWei: shareCost.toString(),
+        });
+      });
       const record = {
         digest,
         player,
@@ -115,6 +140,8 @@ export class SponsorBudgetLedger {
         estimatedGas: gas.toString(),
         reservedCostWei: costWei.toString(),
         actionCount,
+        budgetDay: day,
+        participants: allocationRecords,
         createdAt: new Date(now).toISOString(),
       };
       this.state.requests[digest] = record;
@@ -153,7 +180,39 @@ export class SponsorBudgetLedger {
         confirmedAt: new Date(this.now()).toISOString(),
       });
       const request = this.state.requests[transaction.digest];
-      if (request) Object.assign(request, transaction);
+      if (request) {
+        Object.assign(request, transaction);
+        if (!request.budgetReconciledAt && receipt.gasUsed !== undefined && receipt.effectiveGasPrice !== undefined) {
+          const actualGas = BigInt(receipt.gasUsed);
+          const actualCost = actualGas * BigInt(receipt.effectiveGasPrice);
+          const reservedGas = bigint(request.estimatedGas);
+          const reservedCost = bigint(request.reservedCostWei);
+          const daily = this.state.days[request.budgetDay];
+          if (daily) {
+            daily.gas = (bigint(daily.gas) - reservedGas + actualGas).toString();
+            daily.costWei = (bigint(daily.costWei) - reservedCost + actualCost).toString();
+            let assignedGas = 0n;
+            let assignedCost = 0n;
+            const participants = request.participants || [{ player: request.player, actionCount: request.actionCount || 1, reservedGas: request.estimatedGas, reservedCostWei: request.reservedCostWei }];
+            participants.forEach((participant, index) => {
+              const final = index === participants.length - 1;
+              const gasShare = final ? actualGas - assignedGas : actualGas * BigInt(participant.actionCount) / BigInt(request.actionCount || 1);
+              const costShare = final ? actualCost - assignedCost : actualCost * BigInt(participant.actionCount) / BigInt(request.actionCount || 1);
+              assignedGas += gasShare;
+              assignedCost += costShare;
+              const playerDaily = daily.players[participant.player];
+              if (playerDaily) {
+                playerDaily.gas = (bigint(playerDaily.gas) - bigint(participant.reservedGas) + gasShare).toString();
+                playerDaily.costWei = (bigint(playerDaily.costWei) - bigint(participant.reservedCostWei) + costShare).toString();
+              }
+            });
+          }
+          Object.assign(request, {
+            actualCostWei: actualCost.toString(),
+            budgetReconciledAt: new Date(this.now()).toISOString(),
+          });
+        }
+      }
       return transaction;
     });
   }

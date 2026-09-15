@@ -10,6 +10,13 @@ contract ActionControllerRecorder is IXenovoyaActionController {
     uint256 public lastPlayerID;
     uint8 public lastActionIndex;
     uint256 public callCount;
+    uint256 public registrationCount;
+
+    function registerForGameFor(address player, uint256 playerGameID, address) external {
+        lastPlayer = player;
+        lastPlayerID = playerGameID;
+        registrationCount += 1;
+    }
 
     function submitActionFor(
         address player,
@@ -138,6 +145,42 @@ contract XenovoyaSessionForwarderTest is Test {
         forwarder.submitActionWithSignature(action);
     }
 
+    function testRelayerCanBatchActionsFromDifferentCustodiedPlayers() public {
+        uint256 firstKey = 0xA11CE;
+        uint256 secondKey = 0xB0B;
+        address firstPlayer = vm.addr(firstKey);
+        address secondPlayer = vm.addr(secondKey);
+        string[] memory route = new string[](1);
+        route[0] = "2,3";
+        uint256 deadline = block.timestamp + 10 minutes;
+
+        XenovoyaSessionForwarder.RelayedAction[] memory actions = new XenovoyaSessionForwarder.RelayedAction[](2);
+        uint256[2] memory keys = [firstKey, secondKey];
+        address[2] memory players = [firstPlayer, secondPlayer];
+        for (uint256 i = 0; i < 2; i++) {
+            bytes32 digest = forwarder.actionAuthorizationDigest(players[i], i + 1, 1, route, "", "", 42, board, 0, deadline);
+            (uint8 v, bytes32 r, bytes32 s) = vm.sign(keys[i], digest);
+            actions[i] = XenovoyaSessionForwarder.RelayedAction({
+                player: players[i],
+                playerID: i + 1,
+                actionIndex: 1,
+                options: route,
+                leftHand: "",
+                rightHand: "",
+                gameID: 42,
+                boardAddress: board,
+                nonce: 0,
+                deadline: deadline,
+                signature: abi.encodePacked(r, s, v)
+            });
+        }
+
+        forwarder.submitActionsWithSignatures(actions);
+        assertEq(recorder.callCount(), 2);
+        assertEq(forwarder.actionNonces(firstPlayer), 1);
+        assertEq(forwarder.actionNonces(secondPlayer), 1);
+    }
+
     function testActionAuthorizationUsesTypedDataAndRecoversSigner() public view {
         uint256 privateKey = 0xA11CE;
         address signer = vm.addr(privateKey);
@@ -149,5 +192,30 @@ contract XenovoyaSessionForwarderTest is Test {
         );
         (uint8 v, bytes32 r, bytes32 s) = vm.sign(privateKey, digest);
         assertEq(ECDSA.recover(digest, abi.encodePacked(r, s, v)), signer);
+    }
+
+    function testRelayerCanRegisterCustodiedPlayerAndReplayFails() public {
+        uint256 privateKey = 0xA11CE;
+        address signer = vm.addr(privateKey);
+        uint256 deadline = block.timestamp + 10 minutes;
+        bytes32 digest = forwarder.registrationAuthorizationDigest(signer, 42, board, 0, deadline);
+        (uint8 v, bytes32 r, bytes32 s) = vm.sign(privateKey, digest);
+        XenovoyaSessionForwarder.RelayedRegistration memory registration = XenovoyaSessionForwarder.RelayedRegistration({
+            player: signer,
+            gameID: 42,
+            boardAddress: board,
+            nonce: 0,
+            deadline: deadline,
+            signature: abi.encodePacked(r, s, v)
+        });
+
+        vm.prank(address(0xCAFE));
+        forwarder.registerForGameWithSignature(registration);
+        assertEq(recorder.lastPlayer(), signer);
+        assertEq(recorder.registrationCount(), 1);
+        assertEq(forwarder.registrationNonces(signer), 1);
+
+        vm.expectRevert("Invalid registration nonce");
+        forwarder.registerForGameWithSignature(registration);
     }
 }

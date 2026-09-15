@@ -57,7 +57,7 @@ describe('GamePage', () => {
     expect(screen.getByText(/Invalid survey id/i)).toBeInTheDocument();
   });
 
-  it('opens a valid expedition in observer mode without a wallet', () => {
+  it('opens a valid expedition while restoring its private session', () => {
     render(
       <MemoryRouter initialEntries={['/game/42']}>
         <Routes>
@@ -66,8 +66,8 @@ describe('GamePage', () => {
       </MemoryRouter>,
     );
 
-    expect(screen.getByText(/Observer access - no wallet needed/i)).toBeInTheDocument();
+    expect(screen.getByText(/Restoring private session/i)).toBeInTheDocument();
     expect(screen.getByTestId('game-lobby')).toHaveTextContent('Lobby 42');
-    expect(screen.queryByText(/Connect your wallet to enter/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/wallet/i)).not.toBeInTheDocument();
   });
 });

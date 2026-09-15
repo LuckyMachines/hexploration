@@ -1,5 +1,4 @@
 import Modal from '../shared/Modal';
-import { formatEstimatedGas } from '../../lib/transactionExperience';
 
 export default function SubmitConfirmation({
   submission,
@@ -23,7 +22,7 @@ export default function SubmitConfirmation({
             {submission.drama?.title || submission.label}
           </h2>
           <p className="mt-2 font-mono text-xs leading-relaxed text-exp-text-dim">
-            {submission.drama?.body || 'This sends an on-chain transaction and locks the selected action for the turn.'}
+            {submission.drama?.body || 'This commits your choice and locks the selected action for the turn.'}
           </p>
         </div>
 
@@ -99,11 +98,11 @@ export default function SubmitConfirmation({
             }`}
             role="status"
             aria-live="polite"
-            data-testid="chain-preflight"
+            data-testid="action-preflight"
           >
             <div className="flex flex-wrap items-center justify-between gap-2">
               <p className="font-mono text-[10px] uppercase tracking-[0.26em] text-exp-text-dim">
-                Authoritative chain preflight
+                Action check
               </p>
               <p className={`font-mono text-[10px] uppercase tracking-[0.18em] ${
                 simulation.status === 'ready'
@@ -121,10 +120,10 @@ export default function SubmitConfirmation({
             </div>
             <p className="mt-2 font-mono text-xs leading-relaxed text-exp-text">
               {simulation.status === 'ready'
-                ? `The contract accepted this exact action. Estimated execution: ${formatEstimatedGas(simulation.estimatedGas)}.`
+                ? 'The game accepted this exact action and is ready to resolve it.'
                 : simulation.status === 'blocked'
-                  ? simulation.error?.message || 'The contract rejected this action before any wallet prompt.'
-                  : 'Simulating this exact action against the latest chain state. No signature is being requested yet.'}
+                  ? simulation.error?.message || 'The game rejected this action safely before anything changed.'
+                  : 'Checking this exact action against the latest shared game state.'}
             </p>
           </div>
         )}
@@ -163,12 +162,12 @@ export default function SubmitConfirmation({
             className="rounded border border-compass/45 bg-compass/10 px-4 py-2 font-mono text-xs uppercase tracking-[0.2em] text-compass-bright hover:bg-compass/15 disabled:cursor-not-allowed disabled:opacity-45"
           >
             {!simulation
-              ? 'Send Transaction'
+              ? 'Commit Action'
               : simulation.status === 'ready'
-                ? 'Sign Action'
+                ? 'Commit Action'
                 : simulation.status === 'blocked'
                   ? 'Action Blocked'
-                  : 'Checking Chain...'}
+                  : 'Checking...'}
           </button>
         </div>
       </div>

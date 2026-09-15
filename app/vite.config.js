@@ -39,7 +39,7 @@ function emitReleaseMetadata(env) {
           release: env.VITE_RELEASE_SHA || 'unknown',
           capabilities: {
             returnApi: Boolean(env.VITE_RETURN_API_URL),
-            sponsorDelegation: env.VITE_CONTROLLER_SUPPORTS_DELEGATION === 'true',
+            managedPlay: Boolean(env.VITE_GAME_AUTHORITY_URL),
           },
         })}\n`,
       });
@@ -55,14 +55,12 @@ function validateProductionEnvironment(env) {
   if (env.VITE_CONTROLLER_SUPPORTS_DELEGATION === 'true' && !/^0x[a-fA-F0-9]{40}$/.test(env.VITE_SESSION_FORWARDER_ADDRESS || '')) {
     failures.push('VITE_SESSION_FORWARDER_ADDRESS must identify the deployed session forwarder when delegation is enabled');
   }
-  if (env.VITE_CONTROLLER_SUPPORTS_DELEGATION === 'true') {
-    try {
-      if (new URL(env.VITE_SPONSOR_RELAY_URL).protocol !== 'https:') failures.push('VITE_SPONSOR_RELAY_URL must use HTTPS when delegation is enabled');
-    } catch {
-      failures.push('VITE_SPONSOR_RELAY_URL must be an absolute HTTPS URL when delegation is enabled');
-    }
+  try {
+    if (new URL(env.VITE_GAME_AUTHORITY_URL).protocol !== 'https:') failures.push('VITE_GAME_AUTHORITY_URL must use HTTPS for managed live play');
+  } catch {
+    failures.push('VITE_GAME_AUTHORITY_URL must be an absolute HTTPS URL for managed live play');
   }
-  for (const key of ['VITE_RPC_URL', 'VITE_LIVE_PLAY_URL', 'VITE_PLAUSIBLE_HOST', 'VITE_RETURN_API_URL']) {
+  for (const key of ['VITE_LIVE_PLAY_URL', 'VITE_PLAUSIBLE_HOST', 'VITE_RETURN_API_URL']) {
     try {
       if (new URL(env[key]).protocol !== 'https:') failures.push(`${key} must use HTTPS`);
     } catch {

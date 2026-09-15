@@ -241,7 +241,7 @@
     "contract:return": "node scripts/verify-return-api-contract.mjs",
     "relay:start": "node scripts/sponsor-relay-server.mjs",
     "relay:doctor": "node scripts/sponsor-relay-doctor.mjs",
-    "relay:test": "node --test scripts/sponsor-relay-*.test.mjs",
+    "relay:test": "node --test scripts/sponsor-relay-*.test.mjs scripts/game-authority.test.mjs",
     "test:e2e:anvil": "node scripts/run-anvil-e2e.mjs"
   },
   "repository": {

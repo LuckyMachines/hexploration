@@ -1,120 +1,45 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { getChainById, resolveReadChainId, SUPPORTED_CHAINS } from '../config/chains';
+import { getChainById } from '../config/chains';
 import { getRuntimeMode } from '../lib/runtimeMode';
-import { trackJourneyEvent } from '../lib/analytics';
+import { ensureGameSession } from '../lib/gameAuthority';
 
+// Compatibility facade for chain-backed read hooks. Player identity and signing are
+// owned by the game authority; no browser wallet or network interaction is required.
 const WalletContext = createContext(null);
-
-function parseChainId(hex) {
-  return typeof hex === 'string' ? parseInt(hex, 16) : Number(hex);
-}
-
-function preferredReadChainId() {
-  if (typeof window !== 'undefined') {
-    const requested = Number(new URLSearchParams(window.location.search).get('chain'));
-    if (SUPPORTED_CHAINS.some((chain) => chain.id === requested)) return requested;
-  }
-  return getRuntimeMode().chainId;
-}
 
 export function WalletProvider({ children }) {
   const [address, setAddress] = useState(null);
-  const [walletChainId, setWalletChainId] = useState(null);
-  const [isSwitching, setIsSwitching] = useState(false);
-
-  const syncAccounts = useCallback(async () => {
-    if (!window.ethereum) return;
-    try {
-      const accounts = await window.ethereum.request({ method: 'eth_accounts' });
-      setAddress(accounts[0] ?? null);
-    } catch {
-      setAddress(null);
-    }
-  }, []);
-
-  const syncChain = useCallback(async () => {
-    if (!window.ethereum) return;
-    try {
-      const hex = await window.ethereum.request({ method: 'eth_chainId' });
-      setWalletChainId(parseChainId(hex));
-    } catch {
-      setWalletChainId(null);
-    }
-  }, []);
-
-  useEffect(() => {
-    syncAccounts();
-    syncChain();
-
-    if (!window.ethereum) return;
-
-    const onAccountsChanged = (accounts) => setAddress(accounts[0] ?? null);
-    const onChainChanged = (hex) => setWalletChainId(parseChainId(hex));
-
-    window.ethereum.on('accountsChanged', onAccountsChanged);
-    window.ethereum.on('chainChanged', onChainChanged);
-    return () => {
-      window.ethereum.removeListener('accountsChanged', onAccountsChanged);
-      window.ethereum.removeListener('chainChanged', onChainChanged);
-    };
-  }, [syncAccounts, syncChain]);
+  const [isSwitching, setIsSwitching] = useState(true);
+  const chainId = getRuntimeMode().chainId;
+  const chain = useMemo(() => getChainById(chainId) ?? null, [chainId]);
 
   const connect = useCallback(async () => {
-    trackJourneyEvent('wallet_requested', { surface: window.location.pathname === '/' ? 'lobby' : 'global' }, { dedupeKey: `wallet-${Date.now()}` });
-    if (!window.ethereum) throw new Error('No wallet found');
-    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-    setAddress(accounts[0] ?? null);
-    await syncChain();
-    return accounts[0] ?? null;
-  }, [syncChain]);
-
-  const disconnect = useCallback(() => {
-    setAddress(null);
-  }, []);
-
-  const switchChain = useCallback(async ({ chainId: targetId }) => {
-    if (!window.ethereum) return;
     setIsSwitching(true);
     try {
-      await window.ethereum.request({
-        method: 'wallet_switchEthereumChain',
-        params: [{ chainId: `0x${targetId.toString(16)}` }],
-      });
-    } catch (err) {
-      if (err.code === 4902) {
-        const chain = getChainById(targetId);
-        if (chain) {
-          await window.ethereum.request({
-            method: 'wallet_addEthereumChain',
-            params: [{
-              chainId: `0x${targetId.toString(16)}`,
-              chainName: chain.name,
-              nativeCurrency: chain.nativeCurrency,
-              rpcUrls: [chain.rpcUrls.default.http[0]],
-              blockExplorerUrls: chain.blockExplorers
-                ? [chain.blockExplorers.default.url]
-                : undefined,
-            }],
-          });
-        }
-      } else {
-        throw err;
-      }
+      const session = await ensureGameSession();
+      setAddress(session.playerIdentity);
+      return session.playerIdentity;
     } finally {
       setIsSwitching(false);
     }
   }, []);
 
-  const isConnected = !!address;
-  const chainId = walletChainId;
-  const readChainId = resolveReadChainId({ isConnected, walletChainId, requestedChainId: preferredReadChainId(), fallbackChainId: getRuntimeMode().chainId });
-  const chain = useMemo(() => getChainById(walletChainId) ?? null, [walletChainId]);
-  const readChain = useMemo(() => getChainById(readChainId) ?? null, [readChainId]);
+  useEffect(() => { connect().catch(() => setIsSwitching(false)); }, [connect]);
 
-  const value = useMemo(
-    () => ({ address, isConnected, chain, chainId, walletChainId, readChain, readChainId, connect, disconnect, switchChain, isSwitching }),
-    [address, isConnected, chain, chainId, walletChainId, readChain, readChainId, connect, disconnect, switchChain, isSwitching],
-  );
+  const value = useMemo(() => ({
+    address,
+    isConnected: Boolean(address),
+    chain,
+    chainId,
+    walletChainId: chainId,
+    readChain: chain,
+    readChainId: chainId,
+    connect,
+    disconnect: () => {},
+    switchChain: async () => {},
+    isSwitching,
+    managedIdentity: true,
+  }), [address, chain, chainId, connect, isSwitching]);
 
   return <WalletContext.Provider value={value}>{children}</WalletContext.Provider>;
 }

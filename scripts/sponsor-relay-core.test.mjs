@@ -29,8 +29,11 @@ function config(overrides = {}) {
     SPONSOR_RELAY_FORWARDER_ADDRESS: forwarder,
     SPONSOR_RELAY_CONTROLLER_ADDRESS: controller,
     SPONSOR_RELAY_BOARD_ADDRESS: board,
+    GAME_AUTHORITY_REGISTRY_ADDRESS: player,
+    GAME_AUTHORITY_READ_ADDRESSES: [forwarder, controller, board, player].join(','),
     SPONSOR_RELAYER_PRIVATE_KEY: relayerPk,
     SPONSOR_RELAY_ADMIN_TOKEN: 'test-admin-token-that-is-at-least-32-characters',
+    GAME_AUTHORITY_SECRET: 'test-game-authority-secret-that-is-at-least-32-characters',
     SPONSOR_RELAY_ALLOWED_ORIGINS: 'http://127.0.0.1:3000',
     ...overrides,
   });
@@ -57,7 +60,10 @@ async function signedAction(relayConfig, overrides = {}) {
 
 test('relay config requires HTTPS except for explicitly allowed loopback RPC', () => {
   assert.equal(config().chainId, 31337);
+  assert.equal(config().maxPriorityFeePerGasWei, 50_000_000n);
+  assert.equal(config().authorityMaxBatchSize, 8);
   assert.throws(() => config({ SPONSOR_RELAY_ALLOW_LOCAL_HTTP: 'false' }), /must use HTTPS/);
+  assert.throws(() => config({ GAME_AUTHORITY_MAX_BATCH_SIZE: '9' }), /cannot exceed 8/);
   assert.throws(() => config({ SPONSOR_RELAY_ADMIN_TOKEN: 'short' }), /at least 32/);
   assert.throws(() => config({ SPONSOR_RELAY_ALLOWED_ORIGINS: 'http://attacker.example' }), /exact HTTPS origins/);
   assert.throws(() => config({ SPONSOR_RELAY_ALLOWED_ORIGINS: 'https://play.example/path' }), /exact HTTPS origins/);
@@ -91,6 +97,35 @@ test('durable budget ledger deduplicates requests and enforces signer limits', a
       (error) => error.code === 'signer_hourly_limit',
     );
     assert.equal(JSON.parse(await readFile(file, 'utf8')).requests['0x01'].status, 'reserved');
+  } finally {
+    await rm(temp, { recursive: true, force: true });
+  }
+});
+
+test('budget ledger reconciles reservations to actual receipt cost across a batch', async () => {
+  const temp = await mkdtemp(path.join(os.tmpdir(), 'xenovoya-relay-reconcile-'));
+  try {
+    const relayConfig = config();
+    const file = path.join(temp, 'state.json');
+    const ledger = await new SponsorBudgetLedger(file, relayConfig).init();
+    const secondPlayer = privateKeyToAccount(signerPk).address;
+    await ledger.reserve({
+      digest: '0xbatch', player, signer: player, gas: 200n, costWei: 2_000n, actionCount: 2,
+      participants: [
+        { player, signer: player, actionCount: 1 },
+        { player: secondPlayer, signer: secondPlayer, actionCount: 1 },
+      ],
+    });
+    const hash = `0x${'44'.repeat(32)}`;
+    await ledger.markSubmitted('0xbatch', hash);
+    await ledger.markReceipt(hash, { status: 'success', blockNumber: 10n, gasUsed: 100n, effectiveGasPrice: 5n });
+    const snapshot = ledger.snapshot();
+    const day = snapshot.days[Object.keys(snapshot.days)[0]];
+    assert.equal(day.gas, '100');
+    assert.equal(day.costWei, '500');
+    assert.equal(day.players[player].costWei, '250');
+    assert.equal(day.players[secondPlayer].costWei, '250');
+    assert.equal(snapshot.requests['0xbatch'].actualCostWei, '500');
   } finally {
     await rm(temp, { recursive: true, force: true });
   }

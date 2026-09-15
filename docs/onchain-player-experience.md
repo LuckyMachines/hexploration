@@ -1,5 +1,7 @@
 # On-chain player experience
 
+> Superseded for player-facing architecture. The browser-wallet and browser-signed session flow below is retained only as historical design context. New releases must use the walletless game-authority boundary in [authoritative-game-service.md](./authoritative-game-service.md); do not re-enable these controls or public APIs.
+
 The chain is the authoritative game engine. The browser makes that engine feel immediate, legible, and recoverable without inventing a second source of truth.
 
 ## Action lifecycle

@@ -24,6 +24,15 @@ export const ACTION_AUTHORIZATION_TYPES = {
     { name: 'deadline', type: 'uint256' },
   ],
 };
+export const REGISTRATION_AUTHORIZATION_TYPES = {
+  RegistrationAuthorization: [
+    { name: 'player', type: 'address' },
+    { name: 'gameID', type: 'uint256' },
+    { name: 'boardAddress', type: 'address' },
+    { name: 'nonce', type: 'uint256' },
+    { name: 'deadline', type: 'uint256' },
+  ],
+};
 
 export const SESSION_FORWARDER_ABI = [
   {
@@ -31,6 +40,9 @@ export const SESSION_FORWARDER_ABI = [
   },
   {
     type: 'function', name: 'actionNonces', stateMutability: 'view', inputs: [{ name: 'signer', type: 'address' }], outputs: [{ type: 'uint256' }],
+  },
+  {
+    type: 'function', name: 'registrationNonces', stateMutability: 'view', inputs: [{ name: 'player', type: 'address' }], outputs: [{ type: 'uint256' }],
   },
   {
     type: 'function', name: 'isSessionKeyAuthorized', stateMutability: 'view',
@@ -75,7 +87,31 @@ export const SESSION_FORWARDER_ABI = [
     }],
     outputs: [],
   },
+  {
+    type: 'function', name: 'registerForGameWithSignature', stateMutability: 'nonpayable',
+    inputs: [{
+      name: 'registration', type: 'tuple', components: [
+        { name: 'player', type: 'address' },
+        { name: 'gameID', type: 'uint256' },
+        { name: 'boardAddress', type: 'address' },
+        { name: 'nonce', type: 'uint256' },
+        { name: 'deadline', type: 'uint256' },
+        { name: 'signature', type: 'bytes' },
+      ],
+    }],
+    outputs: [],
+  },
 ];
+
+export const CONTROLLER_COMMAND_ABI = [{
+  type: 'function', name: 'requestNewGame', stateMutability: 'nonpayable',
+  inputs: [
+    { name: 'gameRegistryAddress', type: 'address' },
+    { name: 'boardAddress', type: 'address' },
+    { name: 'totalPlayers', type: 'uint256' },
+  ],
+  outputs: [],
+}];
 
 export const CONTROLLER_FORWARDER_ABI = [
   {
@@ -140,12 +176,23 @@ function requiredOrigins(value, allowHttp) {
   return new Set(entries);
 }
 
+function requiredAddresses(value, name) {
+  const entries = String(value || '').split(',').map((address) => address.trim()).filter(Boolean);
+  if (!entries.length) throw new Error(`${name} must contain at least one address`);
+  return new Set(entries.map((address) => requiredAddress(address, name).toLowerCase()));
+}
+
 export function parseRelayConfig(env = process.env, cwd = process.cwd()) {
   const allowHttp = env.SPONSOR_RELAY_ALLOW_LOCAL_HTTP === 'true';
   const privateKey = String(env.SPONSOR_RELAYER_PRIVATE_KEY || '');
   if (!/^0x[0-9a-fA-F]{64}$/.test(privateKey)) throw new Error('SPONSOR_RELAYER_PRIVATE_KEY must be a 32-byte hex private key');
   const adminToken = String(env.SPONSOR_RELAY_ADMIN_TOKEN || '');
   if (adminToken.length < 32) throw new Error('SPONSOR_RELAY_ADMIN_TOKEN must contain at least 32 characters');
+  const authoritySecret = String(env.GAME_AUTHORITY_SECRET || '');
+  if (authoritySecret.length < 32) throw new Error('GAME_AUTHORITY_SECRET must contain at least 32 characters');
+
+  const authorityMaxBatchSize = asPositiveInteger(env.GAME_AUTHORITY_MAX_BATCH_SIZE, 8, 'GAME_AUTHORITY_MAX_BATCH_SIZE');
+  if (authorityMaxBatchSize > 8) throw new Error('GAME_AUTHORITY_MAX_BATCH_SIZE cannot exceed 8');
 
   return {
     chainId: asPositiveInteger(env.SPONSOR_RELAY_CHAIN_ID, 11155111, 'SPONSOR_RELAY_CHAIN_ID'),
@@ -153,28 +200,61 @@ export function parseRelayConfig(env = process.env, cwd = process.cwd()) {
     forwarderAddress: requiredAddress(env.SPONSOR_RELAY_FORWARDER_ADDRESS, 'SPONSOR_RELAY_FORWARDER_ADDRESS'),
     controllerAddress: requiredAddress(env.SPONSOR_RELAY_CONTROLLER_ADDRESS, 'SPONSOR_RELAY_CONTROLLER_ADDRESS'),
     boardAddress: requiredAddress(env.SPONSOR_RELAY_BOARD_ADDRESS, 'SPONSOR_RELAY_BOARD_ADDRESS'),
+    gameRegistryAddress: requiredAddress(env.GAME_AUTHORITY_REGISTRY_ADDRESS, 'GAME_AUTHORITY_REGISTRY_ADDRESS'),
+    readAddresses: requiredAddresses(env.GAME_AUTHORITY_READ_ADDRESSES, 'GAME_AUTHORITY_READ_ADDRESSES'),
     privateKey,
     adminToken,
+    authoritySecret,
     allowedOrigins: requiredOrigins(env.SPONSOR_RELAY_ALLOWED_ORIGINS, allowHttp),
     port: asPositiveInteger(env.PORT || env.SPONSOR_RELAY_PORT, 8787, 'PORT'),
     host: String(env.SPONSOR_RELAY_HOST || '0.0.0.0'),
     trustProxy: env.SPONSOR_RELAY_TRUST_PROXY === 'true',
+    legacySponsorApi: env.SPONSOR_RELAY_LEGACY_API === 'true',
     stateFile: path.resolve(cwd, env.SPONSOR_RELAY_STATE_FILE || 'data/sponsor-relay-state.json'),
     confirmations: asPositiveInteger(env.SPONSOR_RELAY_CONFIRMATIONS, 2, 'SPONSOR_RELAY_CONFIRMATIONS'),
     maxBodyBytes: asPositiveInteger(env.SPONSOR_RELAY_MAX_BODY_BYTES, 65_536, 'SPONSOR_RELAY_MAX_BODY_BYTES'),
     maxInFlight: asPositiveInteger(env.SPONSOR_RELAY_MAX_IN_FLIGHT, 16, 'SPONSOR_RELAY_MAX_IN_FLIGHT'),
     maxDeadlineSeconds: asPositiveInteger(env.SPONSOR_RELAY_MAX_DEADLINE_SECONDS, 900, 'SPONSOR_RELAY_MAX_DEADLINE_SECONDS'),
+    authoritySessionSeconds: asPositiveInteger(env.GAME_AUTHORITY_SESSION_SECONDS, 2_592_000, 'GAME_AUTHORITY_SESSION_SECONDS'),
+    authorityBatchWindowMs: asPositiveInteger(env.GAME_AUTHORITY_BATCH_WINDOW_MS, 175, 'GAME_AUTHORITY_BATCH_WINDOW_MS'),
+    authorityMaxBatchSize,
     perIpHourlyRequests: asPositiveInteger(env.SPONSOR_RELAY_PER_IP_HOURLY_REQUESTS, 120, 'SPONSOR_RELAY_PER_IP_HOURLY_REQUESTS'),
+    perIpHourlySessions: asPositiveInteger(env.GAME_AUTHORITY_PER_IP_HOURLY_SESSIONS, 6, 'GAME_AUTHORITY_PER_IP_HOURLY_SESSIONS'),
+    perIpHourlyReads: asPositiveInteger(env.GAME_AUTHORITY_PER_IP_HOURLY_READS, 3_000, 'GAME_AUTHORITY_PER_IP_HOURLY_READS'),
     perSignerHourlyActions: asPositiveInteger(env.SPONSOR_RELAY_PER_SIGNER_HOURLY_ACTIONS, 30, 'SPONSOR_RELAY_PER_SIGNER_HOURLY_ACTIONS'),
     perPlayerDailyActions: asPositiveInteger(env.SPONSOR_RELAY_PER_PLAYER_DAILY_ACTIONS, 100, 'SPONSOR_RELAY_PER_PLAYER_DAILY_ACTIONS'),
     globalDailyActions: asPositiveInteger(env.SPONSOR_RELAY_GLOBAL_DAILY_ACTIONS, 500, 'SPONSOR_RELAY_GLOBAL_DAILY_ACTIONS'),
-    maxGasPerAction: asBigInt(env.SPONSOR_RELAY_MAX_GAS_PER_ACTION, 8_000_000n, 'SPONSOR_RELAY_MAX_GAS_PER_ACTION'),
-    globalDailyGas: asBigInt(env.SPONSOR_RELAY_GLOBAL_DAILY_GAS, 500_000_000n, 'SPONSOR_RELAY_GLOBAL_DAILY_GAS'),
-    maxSponsoredCostWei: asBigInt(env.SPONSOR_RELAY_MAX_COST_WEI, 20_000_000_000_000_000n, 'SPONSOR_RELAY_MAX_COST_WEI'),
-    globalDailyCostWei: asBigInt(env.SPONSOR_RELAY_GLOBAL_DAILY_COST_WEI, 500_000_000_000_000_000n, 'SPONSOR_RELAY_GLOBAL_DAILY_COST_WEI'),
-    minRelayerBalanceWei: asBigInt(env.SPONSOR_RELAY_MIN_BALANCE_WEI, 20_000_000_000_000_000n, 'SPONSOR_RELAY_MIN_BALANCE_WEI'),
+    maxGasPerAction: asBigInt(env.SPONSOR_RELAY_MAX_GAS_PER_ACTION, 2_000_000n, 'SPONSOR_RELAY_MAX_GAS_PER_ACTION'),
+    gasHeadroomBps: asBigInt(env.SPONSOR_RELAY_GAS_HEADROOM_BPS, 11_000n, 'SPONSOR_RELAY_GAS_HEADROOM_BPS'),
+    feeHeadroomBps: asBigInt(env.SPONSOR_RELAY_FEE_HEADROOM_BPS, 12_500n, 'SPONSOR_RELAY_FEE_HEADROOM_BPS'),
+    maxFeePerGasWei: asBigInt(env.SPONSOR_RELAY_MAX_FEE_PER_GAS_WEI, 10_000_000_000n, 'SPONSOR_RELAY_MAX_FEE_PER_GAS_WEI'),
+    maxPriorityFeePerGasWei: asBigInt(env.SPONSOR_RELAY_MAX_PRIORITY_FEE_PER_GAS_WEI, 50_000_000n, 'SPONSOR_RELAY_MAX_PRIORITY_FEE_PER_GAS_WEI'),
+    globalDailyGas: asBigInt(env.SPONSOR_RELAY_GLOBAL_DAILY_GAS, 80_000_000n, 'SPONSOR_RELAY_GLOBAL_DAILY_GAS'),
+    maxSponsoredCostWei: asBigInt(env.SPONSOR_RELAY_MAX_COST_WEI, 3_000_000_000_000_000n, 'SPONSOR_RELAY_MAX_COST_WEI'),
+    globalDailyCostWei: asBigInt(env.SPONSOR_RELAY_GLOBAL_DAILY_COST_WEI, 30_000_000_000_000_000n, 'SPONSOR_RELAY_GLOBAL_DAILY_COST_WEI'),
+    minRelayerBalanceWei: asBigInt(env.SPONSOR_RELAY_MIN_BALANCE_WEI, 2_000_000_000_000_000n, 'SPONSOR_RELAY_MIN_BALANCE_WEI'),
     forcedPaused: env.SPONSOR_RELAY_PAUSED === 'true',
     explorerUrl: String(env.SPONSOR_RELAY_EXPLORER_URL || (Number(env.SPONSOR_RELAY_CHAIN_ID || 11155111) === 11155111 ? 'https://sepolia.etherscan.io' : '')).replace(/\/$/, ''),
+  };
+}
+
+export function registrationTypedData(registration, config) {
+  return {
+    domain: {
+      name: 'Xenovoya',
+      version: '1',
+      chainId: config.chainId,
+      verifyingContract: config.forwarderAddress,
+    },
+    types: REGISTRATION_AUTHORIZATION_TYPES,
+    primaryType: 'RegistrationAuthorization',
+    message: {
+      player: getAddress(registration.player),
+      gameID: BigInt(registration.gameID),
+      boardAddress: getAddress(registration.boardAddress),
+      nonce: BigInt(registration.nonce),
+      deadline: BigInt(registration.deadline),
+    },
   };
 }
 

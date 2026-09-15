@@ -1,5 +1,4 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useReducer, useRef } from 'react';
-import { getPublicClient } from '../config/clients';
 import { useWallet } from './WalletContext';
 import {
   loadPendingTransactions,
@@ -10,7 +9,6 @@ import {
   subscribeSessionChanges,
 } from '../lib/sessionPersistence';
 import { initialSessionState, normalizeSessionState, sessionReducer } from '../lib/sessionState';
-import { isTransactionActive, TRANSACTION_PHASES } from '../lib/transactionExperience';
 
 const PlayerSessionContext = createContext(null);
 
@@ -67,46 +65,6 @@ export function PlayerSessionProvider({ children }) {
     if (!address) return;
     dispatch({ type: 'WALLET', wallet: address });
   }, [address]);
-
-  useEffect(() => {
-    if (!state.online || !state.visible) return;
-    let cancelled = false;
-    const recover = async () => {
-      const pending = loadPendingTransactions();
-      for (const transaction of pending.filter((item) => (
-        isTransactionActive(item.status)
-        && item.hash
-      ))) {
-        try {
-          const client = getPublicClient(transaction.chainId);
-          const receipt = await client.getTransactionReceipt({ hash: transaction.hash });
-          const latestBlock = await client.getBlockNumber();
-          const confirmations = latestBlock >= receipt.blockNumber
-            ? latestBlock - receipt.blockNumber + 1n
-            : 0n;
-          if (confirmations < 2n) continue;
-          settlePendingTransaction(
-            transaction.hash,
-            receipt.status === 'success' ? TRANSACTION_PHASES.CONFIRMED : TRANSACTION_PHASES.REVERTED,
-            undefined,
-            { blockNumber: receipt.blockNumber?.toString?.(), confirmations: Number(confirmations), recovered: true },
-          );
-        } catch {
-          const submittedAt = Date.parse(transaction.submittedAt || transaction.recordedAt || 0);
-          if (submittedAt && Date.now() - submittedAt > 120_000 && transaction.status !== TRANSACTION_PHASES.UNRESOLVED) {
-            settlePendingTransaction(transaction.hash, TRANSACTION_PHASES.UNRESOLVED, undefined, { recovered: true });
-          }
-        }
-      }
-      if (!cancelled) {
-        dispatch({ type: 'PENDING_TRANSACTIONS', transactions: loadPendingTransactions() });
-        if (state.phase === 'reconnecting') dispatch({ type: 'RESUME', preservePause: true });
-      }
-    };
-    recover();
-    const interval = window.setInterval(recover, 15_000);
-    return () => { cancelled = true; window.clearInterval(interval); };
-  }, [state.online, state.phase, state.visible]);
 
   const actions = useMemo(() => ({
     beginGame: (gameId) => dispatch({ type: 'BEGIN_GAME', gameId, online: state.online }),

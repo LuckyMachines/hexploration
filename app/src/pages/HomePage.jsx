@@ -7,16 +7,15 @@ import { trackJourneyEvent } from '../lib/analytics';
 import { normalizePlayMode, playModeTarget } from '../lib/playIntent';
 
 const LiveClientStack = lazy(() => import('../components/game/LiveClientStack'));
-const ReturnLoopPanel = lazy(() => import('../components/expedition/ReturnLoopPanel'));
 
 const faq = [
   {
-    question: 'Can I play without a wallet?',
-    answer: 'Yes. Play a complete solo 3D expedition without connecting. A wallet is only requested when you choose a shared action.',
+    question: 'Do I need an account to start?',
+    answer: 'No. A private play session is created automatically, so you can enter solo or shared play immediately.',
   },
   {
-    question: 'What does the wallet do?',
-    answer: 'It signs crew joins and expedition actions on the Sepolia test network. Browsing and observing remain public.',
+    question: 'How is progress saved?',
+    answer: 'The game service securely records accepted crew joins, actions, and expedition outcomes for you.',
   },
   {
     question: 'Where are the rules?',
@@ -43,10 +42,6 @@ function LiveClientLoading() {
       </div>
     </div>
   );
-}
-
-function ReturnLoopLoading() {
-  return <p className="p-5 font-mono text-xs text-exp-text-dim" role="status">Restoring expedition history...</p>;
 }
 
 function ModeLink({ eyebrow, title, detail, to, href, tone = 'compass', onClick, analyticsMode }) {
@@ -80,13 +75,13 @@ function PlayOptions({ onOpenLobby, onOpenCrew }) {
       <HeroBoardScene />
       <div className="relative mx-auto max-w-7xl px-4 py-7 sm:px-6 sm:py-14">
         <div className="max-w-3xl">
-          <p className="font-mono text-[11px] uppercase tracking-[0.28em] text-compass-bright">Expedition console / Sepolia</p>
+          <p className="font-mono text-[11px] uppercase tracking-[0.28em] text-compass-bright">Expedition console / Live alpha</p>
           <h1 id="play-options-title" className="mt-2 font-display text-3xl uppercase leading-none tracking-[0.06em] text-exp-text sm:mt-3 sm:text-6xl">
             Choose your expedition.
           </h1>
           <p className="mt-3 max-w-2xl font-mono text-xs leading-relaxed text-exp-text-dim sm:mt-4 sm:text-base">
             <span className="sm:hidden">Start solo, observe live, or join a crew.</span>
-            <span className="hidden sm:inline">You are in the playable client. Start solo, observe a live route, or connect when you are ready to join a crew.</span>
+            <span className="hidden sm:inline">You are in the playable client. Start solo, observe a live route, or join a crew immediately.</span>
           </p>
         </div>
 
@@ -102,7 +97,7 @@ function PlayOptions({ onOpenLobby, onOpenCrew }) {
             />
           ) : null}
           <ModeLink
-            eyebrow="No wallet"
+            eyebrow="Solo training"
             title="Play solo"
             detail="Enter the complete 3D expedition immediately."
             to="/guest"
@@ -120,7 +115,7 @@ function PlayOptions({ onOpenLobby, onOpenCrew }) {
           <ModeLink
             eyebrow="Shared play"
             title="Join or create"
-            detail="Connect only when you choose a crew action."
+            detail="Reserve a seat and begin with your crew."
             href="#crew-network"
             onClick={onOpenCrew}
             tone="oxide"
@@ -131,7 +126,7 @@ function PlayOptions({ onOpenLobby, onOpenCrew }) {
         <div className="mt-4 flex flex-wrap gap-x-4 gap-y-1.5 font-mono text-[11px] uppercase tracking-[0.13em] text-exp-text-dim sm:mt-6 sm:gap-x-6 sm:gap-y-2 sm:tracking-[0.16em]">
           <span><span className="text-oxide-green">Public</span> network</span>
           <span><span className="text-compass-bright">Open alpha</span> status</span>
-          <span><span className="text-blueprint">Wallet-free</span> solo</span>
+          <span><span className="text-blueprint">Instant</span> start</span>
         </div>
       </div>
     </section>
@@ -148,7 +143,7 @@ function LiveLobby({ isConnected, crewOpen, onCrewToggle }) {
             <h2 id="live-expedition-title" className="mt-2 font-display text-3xl uppercase tracking-[0.1em] text-exp-text sm:text-4xl">Choose a live route</h2>
           </div>
           <p className="max-w-xl font-mono text-xs leading-relaxed text-exp-text-dim">
-            Observe freely. Connect only to join a crew or create an expedition.
+            Observe freely, reserve a crew seat, or create a new expedition.
           </p>
         </div>
 
@@ -166,12 +161,12 @@ function LiveLobby({ isConnected, crewOpen, onCrewToggle }) {
 
           <aside className="space-y-3">
             <div className="rounded border border-blueprint/35 bg-blueprint/5 p-4">
-              <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-blueprint">Wallet only when needed</p>
+              <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-blueprint">Ready immediately</p>
               <p className="mt-3 font-mono text-xs leading-relaxed text-exp-text-dim">
-                Solo play and observation are open. Joining or creating a shared expedition asks for a wallet signature.
+                Solo, observation, and shared expeditions work without setup prompts or separate accounts.
               </p>
               <Link to="/guest" className="mt-4 inline-flex min-h-11 w-full items-center justify-center rounded border border-blueprint/45 bg-blueprint/10 px-3 py-2 font-mono text-xs uppercase tracking-[0.14em] text-blueprint">
-                Play solo - no wallet
+                Play solo
               </Link>
             </div>
             <details className="rounded border border-exp-border bg-exp-panel/80 p-4">
@@ -232,23 +227,6 @@ export default function HomePage() {
       <PlayOptions onOpenLobby={() => setCrewOpen(false)} onOpenCrew={() => setCrewOpen(true)} />
       <LiveLobby isConnected={isConnected} crewOpen={crewOpen} onCrewToggle={setCrewOpen} />
 
-      <section className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10">
-        <details
-          data-testid="return-loop-details"
-          defaultOpen={Boolean(state.activeGameId)}
-          className="rounded border border-exp-border bg-exp-surface/55"
-        >
-          <summary className="flex min-h-14 cursor-pointer items-center justify-between gap-3 px-5 py-4 font-mono text-xs uppercase tracking-[0.18em] text-exp-text">
-            <span>{state.activeGameId ? `Continue expedition #${state.activeGameId}` : 'Expedition history and return tools'}</span>
-            <span className="text-exp-text-dim">Optional</span>
-          </summary>
-          <div className="border-t border-exp-border p-4 sm:p-5">
-            <Suspense fallback={<ReturnLoopLoading />}>
-              <ReturnLoopPanel />
-            </Suspense>
-          </div>
-        </details>
-      </section>
     </div>
   );
 }

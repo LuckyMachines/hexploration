@@ -82,9 +82,22 @@ contract XenovoyaController is GameController, GameWallets, AutomationCompatible
 
     //Player Interactions
     function registerForGame(uint256 gameID, address boardAddress) public {
+        _registerForGame(_msgSender(), gameID, boardAddress);
+    }
+
+    /// @notice Registers a player through an authorized meta-transaction forwarder.
+    /// The forwarder is responsible for proving that `player` approved the request.
+    function registerForGameFor(address player, uint256 gameID, address boardAddress)
+        external
+        onlyRole(ACTION_FORWARDER_ROLE)
+    {
+        _registerForGame(player, gameID, boardAddress);
+    }
+
+    function _registerForGame(address player, uint256 gameID, address boardAddress) internal {
+        require(player != address(0), "Invalid player");
         XenovoyaBoard board = XenovoyaBoard(boardAddress);
         PlayerRegistry pr = PlayerRegistry(board.prAddress());
-        address player = _msgSender();
         board.registerPlayer(player, gameID);
         uint256 playerID = pr.playerID(gameID, player);
         // TODO: set to official values

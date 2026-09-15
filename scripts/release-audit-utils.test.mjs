@@ -11,7 +11,7 @@ import {
 test('validates production release metadata and an expected SHA', () => {
   const sha = 'a'.repeat(40);
   assert.equal(isFullCommitSha(sha), true);
-  assert.equal(evaluateReleaseMetadata({ service: 'xenovoya-player', environment: 'production', release: sha, capabilities: { returnApi: true, sponsorDelegation: false } }, sha).pass, true);
+  assert.equal(evaluateReleaseMetadata({ service: 'xenovoya-player', environment: 'production', release: sha, capabilities: { returnApi: true, managedPlay: true } }, sha).pass, true);
   assert.equal(evaluateReleaseMetadata({ service: 'xenovoya-player', environment: 'preview', release: 'short' }, sha).pass, false);
   assert.equal(evaluateReleaseMetadata({ service: 'xenovoya-player', environment: 'production', release: sha, capabilities: { returnApi: 'yes' } }, sha).pass, false);
   assert.equal(evaluateReleaseMetadata({ service: 'xenovoya-site', environment: 'production', release: sha }, sha, { service: 'xenovoya-site' }).pass, true);

@@ -1,5 +1,4 @@
 import { getActionMeta } from './actionMeta';
-import { transactionExplorerUrl } from './transactionExperience';
 
 function actionLabel(value) {
   const number = Number(value);
@@ -11,7 +10,7 @@ function storyForEvent(event) {
   const args = event.args || {};
   switch (event.name) {
     case 'GameRegistration': return { title: `Explorer P${args.playerID || '?'} joined`, body: 'The expedition gained another voice and another risk to carry.', tone: 'green' };
-    case 'GameStart': return { title: 'The expedition crossed the threshold', body: 'Registration closed and the shared on-chain journey began.', tone: 'gold' };
+    case 'GameStart': return { title: 'The expedition crossed the threshold', body: 'Registration closed and the shared journey began.', tone: 'gold' };
     case 'LandingSiteSet': return { title: `Landing beacon fixed at ${args.landingSite || args.zoneAlias || 'the frontier'}`, body: 'Every safe departure now leads back to this point.', tone: 'blue' };
     case 'ActionSubmit': return { title: `P${args.playerID || '?'} committed ${actionLabel(args.actionID)}`, body: 'A crew decision entered the permanent turn record.', tone: 'blue' };
     case 'TurnProcessingStart': return { title: 'The world answered', body: 'All committed actions entered resolution.', tone: 'gold' };
@@ -21,11 +20,11 @@ function storyForEvent(event) {
     case 'GameOver': return { title: 'The expedition became history', body: 'The final state is anchored and replayable.', tone: 'green' };
     case 'GamePhaseChange': return { title: 'The world changed phase', body: `Phase ${args.newPhase ?? '?'} is now authoritative.`, tone: 'neutral' };
     case 'ProcessingPhaseChange': return { title: 'Resolution advanced', body: `Processing phase ${args.newPhase ?? '?'} was recorded.`, tone: 'neutral' };
-    default: return { title: event.name, body: 'An on-chain expedition event was recorded.', tone: 'neutral' };
+    default: return { title: event.name, body: 'An expedition event was recorded.', tone: 'neutral' };
   }
 }
 
-export function buildExpeditionChronicle(events = [], { chain, confirmedBlock = 0 } = {}) {
+export function buildExpeditionChronicle(events = [], { confirmedBlock = 0 } = {}) {
   return events.map((event) => {
     const story = storyForEvent(event);
     const depth = confirmedBlock && event.blockNumber ? Math.max(0, confirmedBlock - event.blockNumber + 1) : 0;
@@ -34,20 +33,17 @@ export function buildExpeditionChronicle(events = [], { chain, confirmedBlock = 
       id: event.key,
       blockNumber: event.blockNumber,
       transactionHash: event.transactionHash,
-      proofUrl: transactionExplorerUrl(chain, event.transactionHash),
-      finality: depth >= 2 ? 'anchored' : 'settling',
+      finality: depth >= 2 ? 'recorded' : 'resolving',
     };
   });
 }
 
-export function buildExpeditionPassport({ gameId, chainId, url, contracts = {}, events = [] }) {
+export function buildExpeditionPassport({ gameId, url, events = [] }) {
   return {
     schema: 'xenovoya:expedition-passport:v1',
     gameId: String(gameId),
-    chainId: Number(chainId),
     resumeUrl: url,
-    contracts,
-    latestProof: events.at(-1)?.transactionHash || null,
+    recordedEvents: events.length,
     exportedAt: new Date().toISOString(),
   };
 }

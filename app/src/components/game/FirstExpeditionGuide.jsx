@@ -121,14 +121,14 @@ export default function FirstExpeditionGuide() {
         <Step
           number="1"
           title="Explore"
-          detail="Open the 3D world or inspect a live board before connecting anything."
+          detail="Open the 3D world or inspect a live board immediately."
           active={!isConnected}
           complete={isConnected}
         />
         <Step
           number="2"
           title="Join"
-          detail={address ? `Wallet ${address.slice(0, 6)}...${address.slice(-4)} can sign a live crew action.` : 'Connect only when you choose to reserve a live seat or submit a shared action.'}
+          detail={address ? 'Your private player session is ready for live crew actions.' : 'Your private player session is being prepared.'}
           active={isConnected && !hasOpenGame}
           complete={isConnected}
         />

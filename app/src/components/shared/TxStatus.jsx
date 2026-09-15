@@ -1,19 +1,18 @@
 import { useEffect, useRef } from 'react';
-import { useWallet } from '../../contexts/WalletContext';
 import { trackUXError, trackUXRecovery } from '../../lib/uxTelemetry';
-import { normalizeTransactionError, transactionExplorerUrl } from '../../lib/transactionExperience';
+import { normalizeTransactionError } from '../../lib/transactionExperience';
 
 const PHASE_COPY = {
-  simulating: ['Checking chain rules', 'No signature yet. The contract is validating this exact action.'],
-  ready: ['Ready to sign', 'The latest chain state accepts this action.'],
-  awaiting_signature: ['Awaiting signature', 'Approve this action in your wallet. Nothing is submitted until you sign.'],
-  submitted: ['Broadcast to network', 'The signed action has been sent.'],
-  confirming: ['Confirming on-chain', 'The optimistic board remains visible while finality settles.'],
-  replaced: ['Transaction updated', 'Your wallet replaced the original transaction and tracking followed it automatically.'],
-  confirmed: ['Confirmed', 'The action is final and the board is refreshing from authoritative state.'],
-  reverted: ['Reverted', 'Chain state was unchanged. Your planned action remains available to revise.'],
-  failed: ['Not submitted', 'Chain state was unchanged. Review the recovery detail below.'],
-  unresolved: ['Receipt recovery active', 'The action was broadcast, but confirmation is not visible yet. This device will keep checking safely.'],
+  simulating: ['Checking action', 'The game is validating this exact choice.'],
+  ready: ['Ready', 'The game can accept this action.'],
+  awaiting_signature: ['Submitting', 'Your action is being sent securely.'],
+  submitted: ['Action received', 'The game is processing your choice.'],
+  confirming: ['Resolving turn', 'The current board stays visible while the result settles.'],
+  replaced: ['Action updated', 'Tracking moved to the latest version automatically.'],
+  confirmed: ['Complete', 'The result is final and the board is refreshing.'],
+  reverted: ['Action declined', 'Nothing changed. Your planned action remains available to revise.'],
+  failed: ['Could not submit', 'Nothing changed. Review the recovery detail below.'],
+  unresolved: ['Recovery active', 'The result is taking longer than usual. This device will keep checking safely.'],
 };
 
 function fallbackPhase({ isPending, isConfirming, isSuccess, error }) {
@@ -26,10 +25,8 @@ function fallbackPhase({ isPending, isConfirming, isSuccess, error }) {
 
 export default function TxStatus({ hash, isPending, isConfirming, isSuccess, error, lifecycle }) {
   const failureRecorded = useRef(false);
-  const { chain } = useWallet();
   const phase = lifecycle?.phase || fallbackPhase({ isPending, isConfirming, isSuccess, error });
   const normalizedError = lifecycle?.error || normalizeTransactionError(error);
-  const explorerUrl = transactionExplorerUrl(chain, hash);
 
   useEffect(() => {
     if (error && !failureRecorded.current) {
@@ -64,12 +61,6 @@ export default function TxStatus({ hash, isPending, isConfirming, isSuccess, err
         <span className={`uppercase tracking-[0.18em] ${failed ? 'text-signal-red' : success ? 'text-oxide-green' : 'text-blueprint'}`}>
           {title}
         </span>
-        {hash && <span className="text-exp-text-dim">{hash.slice(0, 6)}...{hash.slice(-4)}</span>}
-        {explorerUrl && (
-          <a href={explorerUrl} target="_blank" rel="noreferrer" className="ml-auto text-blueprint underline decoration-blueprint/40 underline-offset-4">
-            View proof
-          </a>
-        )}
       </div>
       <p className="mt-1 pl-4 leading-relaxed text-exp-text-dim">{body}</p>
       {normalizedError && (

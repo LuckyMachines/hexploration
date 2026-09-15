@@ -8,6 +8,7 @@ import { SponsorBudgetLedger } from './sponsor-relay-ledger.mjs';
 import { actionTypedData, normalizeSignedAction, parseRelayConfig } from './sponsor-relay-core.mjs';
 import { SponsorRelayService } from './sponsor-relay-service.mjs';
 import { createSponsorRelayHttpServer } from './sponsor-relay-server.mjs';
+import { openOperation } from './game-authority.mjs';
 
 const relayerPk = '0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80';
 const signerPk = '0x59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d';
@@ -26,8 +27,11 @@ function config(stateFile) {
     SPONSOR_RELAY_FORWARDER_ADDRESS: forwarder,
     SPONSOR_RELAY_CONTROLLER_ADDRESS: controller,
     SPONSOR_RELAY_BOARD_ADDRESS: board,
+    GAME_AUTHORITY_REGISTRY_ADDRESS: player,
+    GAME_AUTHORITY_READ_ADDRESSES: [forwarder, controller, board, player].join(','),
     SPONSOR_RELAYER_PRIVATE_KEY: relayerPk,
     SPONSOR_RELAY_ADMIN_TOKEN: 'test-admin-token-that-is-at-least-32-characters',
+    GAME_AUTHORITY_SECRET: 'test-game-authority-secret-that-is-at-least-32-characters',
     SPONSOR_RELAY_ALLOWED_ORIGINS: 'http://127.0.0.1:3000',
     SPONSOR_RELAY_STATE_FILE: stateFile,
     SPONSOR_RELAY_MIN_BALANCE_WEI: '1',
@@ -55,12 +59,15 @@ function mockClients(relayConfig) {
       if (functionName === 'ACTION_FORWARDER_ROLE') return role;
       if (functionName === 'hasRole' || functionName === 'isSessionKeyAuthorized') return true;
       if (functionName === 'actionNonces') return 0n;
+      if (functionName === 'registrationNonces') return 0n;
       throw new Error(`Unexpected read ${functionName}`);
     },
     simulateContract: async (request) => ({ request }),
     estimateContractGas: async () => 100_000n,
-    estimateFeesPerGas: async () => ({ maxFeePerGas: 1_000_000_000n }),
+    getBlock: async () => ({ baseFeePerGas: 1_000_000_000n }),
+    estimateFeesPerGas: async () => ({ maxFeePerGas: 2_100_000_000n, maxPriorityFeePerGas: 100_000_000n }),
     waitForTransactionReceipt: async () => new Promise(() => {}),
+    request: async ({ method }) => method === 'eth_chainId' ? '0x7a69' : '0x1',
   };
   const walletClient = { writeContract: async () => hash };
   return { account, publicClient, walletClient };
@@ -107,6 +114,110 @@ test('service validates, budgets, and submits a consecutive signed batch', async
   }
 });
 
+test('authority signs and submits a player action without exposing chain receipt data', async () => {
+  const temp = await mkdtemp(path.join(os.tmpdir(), 'xenovoya-authority-action-'));
+  try {
+    const relayConfig = config(path.join(temp, 'state.json'));
+    const ledger = await new SponsorBudgetLedger(relayConfig.stateFile, relayConfig).init();
+    const service = new SponsorRelayService({ config: relayConfig, ledger, ...mockClients(relayConfig) });
+    const result = await service.submitAuthorityAction({ sid: 'ab'.repeat(24) }, {
+      playerID: '7', actionIndex: 1, options: ['2,3'], leftHand: '', rightHand: '', gameID: '42',
+    });
+    assert.deepEqual(Object.keys(result).sort(), ['duplicate', 'operationId', 'status']);
+    assert.equal(result.status, 'processing');
+    assert.equal(openOperation(result.operationId, relayConfig), hash);
+  } finally {
+    await rm(temp, { recursive: true, force: true });
+  }
+});
+
+test('authority batches compatible crew actions into one fee-controlled submission', async () => {
+  const temp = await mkdtemp(path.join(os.tmpdir(), 'xenovoya-authority-batch-'));
+  try {
+    const relayConfig = config(path.join(temp, 'state.json'));
+    const ledger = await new SponsorBudgetLedger(relayConfig.stateFile, relayConfig).init();
+    const clients = mockClients(relayConfig);
+    let submitted;
+    clients.walletClient.writeContract = async (request) => { submitted = request; return hash; };
+    const service = new SponsorRelayService({ config: relayConfig, ledger, ...clients });
+    const command = { playerID: '7', actionIndex: 1, options: ['2,3'], leftHand: '', rightHand: '', gameID: '42' };
+    const [first, second] = await Promise.all([
+      service.submitAuthorityAction({ sid: '11'.repeat(24) }, command),
+      service.submitAuthorityAction({ sid: '22'.repeat(24) }, { ...command, playerID: '8', options: ['3,3'] }),
+    ]);
+    assert.equal(submitted.functionName, 'submitActionsWithSignatures');
+    assert.equal(submitted.args[0].length, 2);
+    assert.equal(submitted.maxPriorityFeePerGas, relayConfig.maxPriorityFeePerGasWei);
+    assert.equal(submitted.gas, 110_000n);
+    assert.equal(openOperation(first.operationId, relayConfig), openOperation(second.operationId, relayConfig));
+    assert.equal(Object.values(ledger.snapshot().requests)[0].actionCount, 2);
+  } finally {
+    await rm(temp, { recursive: true, force: true });
+  }
+});
+
+test('fee policy waits rather than overspending during an expensive settlement window', async () => {
+  const temp = await mkdtemp(path.join(os.tmpdir(), 'xenovoya-authority-fees-'));
+  try {
+    const relayConfig = config(path.join(temp, 'state.json'));
+    const ledger = await new SponsorBudgetLedger(relayConfig.stateFile, relayConfig).init();
+    const clients = mockClients(relayConfig);
+    clients.publicClient.getBlock = async () => ({ baseFeePerGas: relayConfig.maxFeePerGasWei + 1n });
+    const service = new SponsorRelayService({ config: relayConfig, ledger, ...clients });
+    await assert.rejects(
+      () => service.submitAuthorityAction({ sid: '33'.repeat(24) }, {
+        playerID: '7', actionIndex: 1, options: ['2,3'], leftHand: '', rightHand: '', gameID: '42',
+      }),
+      (error) => error.code === 'action_unavailable',
+    );
+    assert.equal(Object.keys(ledger.snapshot().requests).length, 0);
+  } finally {
+    await rm(temp, { recursive: true, force: true });
+  }
+});
+
+test('authority registers its derived player through the signed forwarder path', async () => {
+  const temp = await mkdtemp(path.join(os.tmpdir(), 'xenovoya-authority-register-'));
+  try {
+    const relayConfig = config(path.join(temp, 'state.json'));
+    const ledger = await new SponsorBudgetLedger(relayConfig.stateFile, relayConfig).init();
+    const clients = mockClients(relayConfig);
+    let submitted;
+    clients.walletClient.writeContract = async (request) => { submitted = request; return hash; };
+    const service = new SponsorRelayService({ config: relayConfig, ledger, ...clients });
+    const result = await service.registerAuthorityPlayer({ sid: 'cd'.repeat(24) }, { gameId: '42' });
+    assert.equal(submitted.functionName, 'registerForGameWithSignature');
+    assert.equal(submitted.args[0].gameID, 42n);
+    assert.equal(openOperation(result.operationId, relayConfig), hash);
+  } finally {
+    await rm(temp, { recursive: true, force: true });
+  }
+});
+
+test('authority state reads are method, address, and range constrained', async () => {
+  const temp = await mkdtemp(path.join(os.tmpdir(), 'xenovoya-authority-read-'));
+  try {
+    const relayConfig = config(path.join(temp, 'state.json'));
+    const ledger = await new SponsorBudgetLedger(relayConfig.stateFile, relayConfig).init();
+    const service = new SponsorRelayService({ config: relayConfig, ledger, ...mockClients(relayConfig) });
+    assert.equal(await service.readAuthorityState({ method: 'eth_chainId', params: [] }), '0x7a69');
+    await assert.rejects(
+      () => service.readAuthorityState({ method: 'eth_sendRawTransaction', params: [] }),
+      (error) => error.code === 'read_not_allowed',
+    );
+    await assert.rejects(
+      () => service.readAuthorityState({ method: 'eth_call', params: [{ to: '0x0000000000000000000000000000000000000001', data: '0x' }, 'latest'] }),
+      (error) => error.code === 'read_scope_denied',
+    );
+    await assert.rejects(
+      () => service.readAuthorityState({ method: 'eth_getLogs', params: [{ address: board, fromBlock: '0x0', toBlock: '0x10000' }] }),
+      (error) => error.code === 'read_range_too_large',
+    );
+  } finally {
+    await rm(temp, { recursive: true, force: true });
+  }
+});
+
 test('readiness fails closed when the dedicated relay wallet is underfunded', async () => {
   const temp = await mkdtemp(path.join(os.tmpdir(), 'xenovoya-relay-balance-'));
   try {
@@ -135,7 +246,31 @@ test('HTTP boundary enforces origin policy and authenticated emergency pause', a
     server = createSponsorRelayHttpServer({ config: relayConfig, service, ledger });
     await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
     const base = `http://127.0.0.1:${server.address().port}`;
+    const sessionResponse = await fetch(`${base}/v1/game/session`, {
+      method: 'POST',
+      headers: { origin: 'http://127.0.0.1:3000' },
+    });
+    assert.equal(sessionResponse.status, 201);
+    const session = await sessionResponse.json();
+    assert.match(session.token, /^g1\./);
+    assert.match(session.playerIdentity, /^0x[0-9A-Fa-f]{40}$/);
+    assert.equal('chainId' in session, false);
+    const stateResponse = await fetch(`${base}/v1/game/state`, {
+      method: 'POST',
+      headers: { origin: 'http://127.0.0.1:3000', authorization: `Bearer ${session.token}`, 'content-type': 'application/json' },
+      body: JSON.stringify({ method: 'eth_chainId', params: [] }),
+    });
+    assert.equal(stateResponse.status, 200);
+    assert.equal((await stateResponse.json()).result, '0x7a69');
+    assert.equal((await fetch(`${base}/v1/game/state`, {
+      method: 'POST', headers: { origin: 'http://127.0.0.1:3000', 'content-type': 'application/json' }, body: '{}',
+    })).status, 401);
+    assert.equal((await fetch(`${base}/v1/sponsor/config`, { headers: { origin: 'http://127.0.0.1:3000' } })).status, 404);
     assert.equal((await fetch(`${base}/v1/sponsor/config`, { headers: { origin: 'https://attacker.example' } })).status, 403);
+    assert.equal((await fetch(`${base}/admin/budget`)).status, 401);
+    const budget = await fetch(`${base}/admin/budget`, { headers: { authorization: `Bearer ${relayConfig.adminToken}` } });
+    assert.equal(budget.status, 200);
+    assert.equal((await budget.json()).limits.maxPriorityFeePerGasWei, relayConfig.maxPriorityFeePerGasWei.toString());
     assert.equal((await fetch(`${base}/admin/pause`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: '{}' })).status, 401);
     const paused = await fetch(`${base}/admin/pause`, {
       method: 'POST',

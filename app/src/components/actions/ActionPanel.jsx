@@ -20,8 +20,6 @@ import { useUserPreferences } from '../../hooks/useUserPreferences';
 import EscapeCostPreview from '../expedition/EscapeCostPreview';
 import CostReductionActions from '../expedition/CostReductionActions';
 import TraitPreviewPanel from '../expedition/TraitPreviewPanel';
-import SponsoredSessionControl from './SponsoredSessionControl';
-import { useSponsoredSession } from '../../hooks/useSponsoredSession';
 
 const TABS = [
   Action.MOVE,
@@ -43,9 +41,9 @@ const ACTION_GLYPHS = {
 
 const TX_TONE = {
   Idle: 'border-exp-border/60 bg-exp-dark/40 text-exp-text-dim',
-  'Wallet Pending': 'alive-tx-pulse border-compass/45 bg-compass/10 text-compass-bright',
-  Confirming: 'alive-tx-pulse border-blueprint/45 bg-blueprint/10 text-blueprint',
-  Confirmed: 'border-oxide-green/45 bg-oxide-green/10 text-oxide-green',
+  'Submitting': 'alive-tx-pulse border-compass/45 bg-compass/10 text-compass-bright',
+  Resolving: 'alive-tx-pulse border-blueprint/45 bg-blueprint/10 text-blueprint',
+  Complete: 'border-oxide-green/45 bg-oxide-green/10 text-oxide-green',
   Failed: 'alive-invalid border-signal-red/45 bg-signal-red/10 text-signal-red',
 };
 
@@ -80,7 +78,6 @@ export default function ActionPanel({
   const [lastSubmission, setLastSubmission] = useState(null);
   const [optimisticSubmitted, setOptimisticSubmitted] = useState(null);
   const activeTab = controlledActiveTab ?? localActiveTab;
-  const sponsoredSession = useSponsoredSession({ gameId, playerID });
   const {
     submitAction,
     simulateAction,
@@ -92,14 +89,14 @@ export default function ActionPanel({
     isConfirming,
     isSuccess,
     error,
-  } = useGameActions({ sponsoredSession });
+  } = useGameActions();
   const { active: activeInv } = usePlayerInventory(gameId, playerID);
   const { preferences, setPreference } = useUserPreferences();
 
   const hasChainSubmission = currentAction && currentAction !== '' && currentAction !== 'Idle';
   const hasSubmitted = Boolean(optimisticSubmitted || hasChainSubmission);
   const isLocked = isSpectator || hasSubmitted || isPending || isConfirming;
-  const txPhase = isPending ? 'Wallet Pending' : isConfirming ? 'Confirming' : isSuccess ? 'Confirmed' : error ? 'Failed' : 'Idle';
+  const txPhase = isPending ? 'Submitting' : isConfirming ? 'Resolving' : isSuccess ? 'Complete' : error ? 'Failed' : 'Idle';
   const showControllerHints = boardInput?.inputMode === 'pad';
   const statusLabel = isSpectator
     ? 'SPECTATOR'
@@ -265,7 +262,6 @@ export default function ActionPanel({
         </span>
       </div>
 
-      {!isSpectator && <SponsoredSessionControl sponsored={sponsoredSession} />}
 
       <div className="px-4 pt-3">
         <div className="grid gap-2 grid-cols-2 lg:grid-cols-5">
@@ -288,7 +284,7 @@ export default function ActionPanel({
             </div>
           </div>
           <div className={`border rounded px-3 py-2 transition-[filter] ${TX_TONE[txPhase] || TX_TONE.Idle}`}>
-            <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-exp-text-dim">Tx</div>
+            <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-exp-text-dim">Action</div>
             <div className="mt-1 flex items-center gap-1.5 font-mono text-xs uppercase tracking-widest">
               <span className="h-2 w-2 rounded-full bg-current" />
               {txPhase}
