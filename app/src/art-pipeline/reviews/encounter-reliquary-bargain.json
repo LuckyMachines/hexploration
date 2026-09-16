@@ -1,0 +1,33 @@
+{
+  "assetId": "encounter-reliquary-bargain",
+  "candidate": "artifacts/art/exports/encounter-reliquary-bargain.webp",
+  "reviewer": "Codex visual QA",
+  "reviewedAt": "2026-09-15",
+  "scores": {
+    "recognition": 4,
+    "agency": 4,
+    "specificity": 4,
+    "restraint": 4,
+    "continuity": 4,
+    "reusability": 4,
+    "accessibility": 4
+  },
+  "notes": {
+    "recognition": "The corrected three-legged Warden visibly guards one small vessel in a quiet archive chamber.",
+    "agency": "A clear approach, guarded vessel, and visible retreat path establish offer, unlock, or withdraw choices.",
+    "specificity": "Canonical reliquary anatomy, violet memory seams, basalt archive, and survey hardware are unmistakably Xenovoya.",
+    "restraint": "The vessel and Warden share one localized violet focus within broad low-value architecture.",
+    "continuity": "The composite preserves the approved Warden exactly and fixes the white alpha pocket before scene use.",
+    "reusability": "Landscape framing provides stable UI-safe darkness and separable focal relationships.",
+    "accessibility": "Warden, vessel, path, and exit separate clearly through silhouette and value."
+  },
+  "decision": "approved",
+  "candidateSha256": "8c29c729b2a646460d68d57bbac4d64d31064cc736d846c090c3a29dd5b00690",
+  "generation": {
+    "mode": "azure-image-generation-composite",
+    "tool": "azure-foundry-plus-imagemagick",
+    "model": "gpt-image-2",
+    "promptSha256": "fd1a4dc9d0850f4727663ee5a7f4ebba5d7bfad0e6e4408aef2d54923244198e"
+  },
+  "joyScore": 10
+}

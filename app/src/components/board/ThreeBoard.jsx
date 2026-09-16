@@ -36,20 +36,24 @@ import { resolveBoardBeat } from './boardBeatDirector';
 import { cameraPresetAliases, clampBoardTarget, pointerExceededDragThreshold, resolvePickedAlias } from './boardInteraction';
 import { boardLayerSignatures, baseTileTransform } from './boardSceneState';
 import { deriveBoardViewModel } from './boardViewModel';
+import { ENCOUNTER_TEXTURES, encounterTextureKey, encounterTextureKeysForTileTypes } from './encounterRoster';
+import { bossPresentationFor, bossPresentationsForTileTypes } from './bossPresentation';
 import { premiumBeatKey, presentationFrame } from './premiumPresentation';
 import { DENSE_BOARD_LANDMARK_CAP, createTileGeometry, tileBatchId, tileFamilyFor, tileLandmarkRecipe, tileVariantFor } from './tileKit';
 import runtimeModels from '../../art-pipeline/runtime-models.json';
 const STATE_FX_TEXTURES = {
   discovery: '/images/art/fx/discovery-bloom.runtime.webp',
   danger: '/images/art/fx/redline-pressure.runtime.webp',
+  route: '/images/art/fx/route-confirmation.runtime.webp',
+  relic: '/images/art/fx/relic-awakening.runtime.webp',
 };
 const CUTOUT_PROP_TEXTURES = {
-  [Tile.LANDING]: '/images/art/props/landing-beacon.runtime.webp',
-  [Tile.JUNGLE]: '/images/art/props/glassroot-fronds.runtime.webp',
-  [Tile.PLAINS]: '/images/art/props/lantern-moss.runtime.webp',
-  [Tile.DESERT]: '/images/art/props/emberglass-shards.runtime.webp',
-  [Tile.MOUNTAIN]: '/images/art/props/slate-spires.runtime.webp',
-  [Tile.RELIC]: '/images/art/props/violet-reliquary.runtime.webp',
+  [Tile.LANDING]: ['/images/art/props/landing-beacon.runtime.webp', '/images/art/props/survey-sled.runtime.webp'],
+  [Tile.JUNGLE]: ['/images/art/props/glassroot-fronds.runtime.webp'],
+  [Tile.PLAINS]: ['/images/art/props/lantern-moss.runtime.webp', '/images/art/props/field-cooklight.runtime.webp'],
+  [Tile.DESERT]: ['/images/art/props/emberglass-shards.runtime.webp'],
+  [Tile.MOUNTAIN]: ['/images/art/props/slate-spires.runtime.webp', '/images/art/props/storm-anchor.runtime.webp'],
+  [Tile.RELIC]: ['/images/art/props/violet-reliquary.runtime.webp', '/images/art/props/tideglass-marker.runtime.webp'],
 };
 const CUTOUT_PROP_SCALES = {
   [Tile.LANDING]: [0.82, 1.08],
@@ -65,11 +69,9 @@ const ATLAS_SPINDLE_TEXTURE = '/images/art/relics/atlas-spindle.runtime.webp';
 const TIDEGLASS_CRADLE_TEXTURE = '/images/art/relics/tideglass-heart.runtime.webp';
 const CAVERN_BACKPLATE = '/images/art/environments/glassroot-cavern.webp';
 const EMBERGLASS_BACKPLATE = '/images/art/environments/emberglass-crossing.webp';
-const ENCOUNTER_TEXTURES = {
-  glassrootGrazer: '/images/art/encounters/glassroot-stalker.runtime.webp',
-  emberglassScuttler: '/images/art/encounters/emberglass-mimic.runtime.webp',
-};
 const ROUTE_FORK_TEXTURE = '/images/art/props/route-fork-marker.runtime.webp';
+const LANDING_SKIFF_TEXTURE = '/images/art/props/landing-skiff.runtime.webp';
+const LANDING_PAD_TEXTURE = '/images/art/tile-concepts/landing-pad-special.runtime.webp';
 const runtimeModelPath = (assetId, lodId = 'lod2') => runtimeModels.assets
   .find((asset) => asset.id === assetId)?.models
   .find((model) => model.id === lodId)?.path;
@@ -795,7 +797,15 @@ function buildIntentLayer(THREE, context, state) {
   const group = context.layers.intent;
   const intentTile = context.worldByAlias.get(state.intentAlias);
   const useRouteForkModel = Boolean(context.routeForkModel && state.activeAction !== Action.HELP && !state.hasSubmitted && !state.isDanger && !state.isResolving);
-  const stateFxTexture = context.fxTextures[state.isDanger ? 'danger' : 'discovery'];
+  const isPreviewingNewStep = state.signals?.isPreviewing ?? ((state.previewPath?.length || 0) > (state.selectedPath?.length || 0));
+  const stateFxKey = state.isDanger
+    ? 'danger'
+    : intentTile?.tileType === Tile.RELIC
+      ? 'relic'
+      : isPreviewingNewStep
+        ? 'route'
+        : 'discovery';
+  const stateFxTexture = context.fxTextures[stateFxKey];
   if (intentTile && stateFxTexture) {
     const stateFx = new THREE.Mesh(
       new THREE.PlaneGeometry(2.5, 1.66),
@@ -808,23 +818,32 @@ function buildIntentLayer(THREE, context, state) {
     group.add(stateFx);
   }
   const isRouteForkEncounter = state.encounterId === 'echo-fork';
+  const boss = bossPresentationFor(state.encounterId);
+  const bossTileTexture = boss ? context.bossTileTextures[boss.id] : null;
+  if (intentTile && bossTileTexture) {
+    const bossTileMap = bossTileTexture.clone();
+    bossTileMap.needsUpdate = true;
+    const bossTile = new THREE.Sprite(new THREE.SpriteMaterial({ map: bossTileMap, color: 0xffffff, transparent: true, opacity: 0.9, alphaTest: 0.06, depthWrite: false, toneMapped: true, fog: true }));
+    bossTile.name = `boss-arena:${boss.id}`;
+    bossTile.userData.kind = 'boss-arena-tile';
+    bossTile.center.set(0.5, 0.16);
+    bossTile.position.set(intentTile.x, intentTile.height + 0.025, intentTile.z);
+    bossTile.scale.set(2.08, 1.62, 1);
+    bossTile.renderOrder = 1;
+    group.add(bossTile);
+  }
+  const encounterKey = intentTile ? encounterTextureKey(intentTile, state.encounterId) : null;
   const encounterTexture = (state.isDanger || state.encounterId) && intentTile
     ? state.encounterId === 'echo-fork'
       ? useRouteForkModel ? null : context.routeForkTexture
-      : state.encounterId === 'wind-vault'
-        ? context.encounterTextures.emberglassScuttler
-        : intentTile.tileType === Tile.DESERT
-      ? context.encounterTextures.emberglassScuttler
-      : intentTile.tileType === Tile.JUNGLE
-        ? context.encounterTextures.glassrootGrazer
-        : null
+      : context.encounterTextures[boss?.enemyTextureKey || encounterKey]
     : null;
   if (encounterTexture) {
     const encounterPreview = new THREE.Group();
     encounterPreview.position.set(intentTile.x, intentTile.height + 0.03, intentTile.z);
     addCutoutProp(THREE, encounterPreview, intentTile, encounterTexture, seedForAlias(intentTile.alias) + 67, {
-      scale: intentTile.tileType === Tile.DESERT ? [0.72, 0.58] : [0.82, 0.58], x: 0.26, z: -0.18, mirror: false, persistent: true,
-      lightColor: intentTile.tileType === Tile.DESERT ? '#e8a243' : '#8ad9d1', lightIntensity: 0.36, kind: 'encounter-preview',
+      scale: boss?.standeeScale || (intentTile.tileType === Tile.DESERT ? [0.72, 0.58] : [0.82, 0.58]), x: boss ? 0.08 : 0.26, z: boss ? -0.12 : -0.18, mirror: false, persistent: true,
+      lightColor: boss?.lightColor || (intentTile.tileType === Tile.DESERT ? '#e8a243' : '#8ad9d1'), lightIntensity: boss ? 0.72 : 0.36, kind: boss ? 'boss-preview' : 'encounter-preview',
     });
     group.add(encounterPreview);
     animateInLayer(context, 'intent', { object: encounterPreview, kind: 'encounter-preview', baseY: encounterPreview.position.y });
@@ -844,7 +863,6 @@ function buildIntentLayer(THREE, context, state) {
     group.add(encounterModel);
     animateInLayer(context, 'intent', { object: encounterModel, kind: 'encounter-preview', baseY: encounterModel.position.y });
   }
-  const isPreviewingNewStep = state.signals?.isPreviewing ?? ((state.previewPath?.length || 0) > (state.selectedPath?.length || 0));
   if (intentTile && isPreviewingNewStep && (useRouteForkModel || context.routeForkTexture)) {
     const routeFork = new THREE.Group();
     routeFork.position.set(intentTile.x, intentTile.height + 0.03, intentTile.z);
@@ -975,7 +993,10 @@ function addDynamicWorld(THREE, context, state) {
   context.beatId = beat.id;
   context.beatKey = beatKey;
   const occupiedAliases = new Set(Object.entries(state.playerLocationMap || {}).filter(([, playerIndices]) => playerIndices?.length).map(([alias]) => alias));
-  context.propLandmarks.forEach((prop, alias) => { prop.visible = prop.userData.persistent || !occupiedAliases.has(alias); });
+  const activeBoss = bossPresentationFor(state.encounterId);
+  context.propLandmarks.forEach((prop, alias) => {
+    prop.visible = !(activeBoss && alias === state.intentAlias) && (prop.userData.persistent || !occupiedAliases.has(alias));
+  });
   const nextSignatures = boardLayerSignatures(state);
   const builders = {
     affordances: buildAffordanceLayer,
@@ -1117,17 +1138,31 @@ function createWorld(THREE, OrbitControls, RoomEnvironment, KTX2Loader, GLTFLoad
     texture.colorSpace = THREE.SRGBColorSpace;
     return [texturePath, texture];
   }));
-  const encounterTextures = quality.mode === 'efficient' ? {} : {
-    glassrootGrazer: usedTileTypes.has(Tile.JUNGLE) ? textureLoader.load(ENCOUNTER_TEXTURES.glassrootGrazer) : null,
-    emberglassScuttler: usedTileTypes.has(Tile.DESERT) ? textureLoader.load(ENCOUNTER_TEXTURES.emberglassScuttler) : null,
-  };
+  const relevantBosses = bossPresentationsForTileTypes(usedTileTypes);
+  const encounterTextureKeys = encounterTextureKeysForTileTypes(usedTileTypes);
+  relevantBosses.forEach((boss) => encounterTextureKeys.add(boss.enemyTextureKey));
+  const encounterTextures = quality.mode === 'efficient' ? {} : Object.fromEntries(
+    [...encounterTextureKeys].map((keyName) => [keyName, textureLoader.load(ENCOUNTER_TEXTURES[keyName])]),
+  );
   Object.values(encounterTextures).filter(Boolean).forEach((texture) => { texture.colorSpace = THREE.SRGBColorSpace; });
   const routeForkTexture = quality.mode === 'efficient' ? null : textureLoader.load(ROUTE_FORK_TEXTURE);
   if (routeForkTexture) routeForkTexture.colorSpace = THREE.SRGBColorSpace;
-  const propTextures = new Map(Object.entries(CUTOUT_PROP_TEXTURES).filter(([tileType]) => usedTileTypes.has(Number(tileType))).map(([tileType, texturePath]) => {
-    const texture = textureLoader.load(texturePath);
+  const bossTileTextures = quality.mode === 'efficient' ? {} : Object.fromEntries(relevantBosses.map((boss) => {
+    const texture = textureLoader.load(boss.tileTexture);
     texture.colorSpace = THREE.SRGBColorSpace;
-    return [Number(tileType), texture];
+    return [boss.id, texture];
+  }));
+  const landingSkiffTexture = usedTileTypes.has(Tile.LANDING) ? textureLoader.load(LANDING_SKIFF_TEXTURE) : null;
+  if (landingSkiffTexture) landingSkiffTexture.colorSpace = THREE.SRGBColorSpace;
+  const landingPadTexture = usedTileTypes.has(Tile.LANDING) && quality.mode !== 'efficient' ? textureLoader.load(LANDING_PAD_TEXTURE) : null;
+  if (landingPadTexture) landingPadTexture.colorSpace = THREE.SRGBColorSpace;
+  const propTextures = new Map(Object.entries(CUTOUT_PROP_TEXTURES).filter(([tileType]) => usedTileTypes.has(Number(tileType))).map(([tileType, texturePaths]) => {
+    const textures = texturePaths.map((texturePath) => {
+      const texture = textureLoader.load(texturePath);
+      texture.colorSpace = THREE.SRGBColorSpace;
+      return texture;
+    });
+    return [Number(tileType), textures];
   }));
   const campsiteTexture = hasCampsite ? textureLoader.load(CAMPSITE_PROP_TEXTURE) : null;
   if (campsiteTexture) campsiteTexture.colorSpace = THREE.SRGBColorSpace;
@@ -1153,7 +1188,10 @@ function createWorld(THREE, OrbitControls, RoomEnvironment, KTX2Loader, GLTFLoad
     fxTextures,
     characterTextures,
     encounterTextures,
+    bossTileTextures,
     routeForkTexture,
+    landingSkiffTexture,
+    landingPadTexture,
     routeForkModel: null,
     landingBeaconModels: [],
     campsiteModels: [],
@@ -1244,12 +1282,40 @@ function createWorld(THREE, OrbitControls, RoomEnvironment, KTX2Loader, GLTFLoad
       anchor.position.set(tile.x, tile.height / 2, tile.z);
       anchor.rotation.y = Math.PI / 6;
       const propLandmark = landmarkAliases.has(tile.alias)
-        ? addTerrainLandmarks(THREE, tile, anchor, propTextures.get(tile.tileType), campsiteTexture, { simplified: simplifiedLandmarks })
+        ? addTerrainLandmarks(THREE, tile, anchor, (() => {
+          const variants = propTextures.get(tile.tileType) || [];
+          return variants[seedForAlias(tile.alias) % Math.max(1, variants.length)] || null;
+        })(), campsiteTexture, { simplified: simplifiedLandmarks })
         : null;
       if (propLandmark) propLandmarks.set(tile.alias, propLandmark);
       tileAnchors.set(tile.alias, anchor);
       boardGroup.add(anchor);
     });
+  }
+
+  const landingTile = worldByAlias.get(initialState.landingSite)
+    || world.cells.find((tile) => tile.revealed && tile.tileType === Tile.LANDING);
+  const landingAnchor = landingTile ? tileAnchors.get(landingTile.alias) : null;
+  if (landingTile && landingAnchor && landingPadTexture) {
+    const landingPadMap = landingPadTexture.clone();
+    landingPadMap.needsUpdate = true;
+    const landingPad = new THREE.Sprite(new THREE.SpriteMaterial({ map: landingPadMap, color: 0xffffff, transparent: true, opacity: 0.86, alphaTest: 0.05, depthWrite: false, toneMapped: true, fog: true }));
+    landingPad.name = `landing-pad:${landingTile.alias}`;
+    landingPad.userData.kind = 'landing-pad-tile';
+    landingPad.center.set(0.5, 0.16);
+    landingPad.position.y = landingTile.height / 2 + 0.025;
+    landingPad.scale.set(1.72, 1.4, 1);
+    landingPad.renderOrder = 1;
+    landingAnchor.add(landingPad);
+  }
+  if (landingTile && landingAnchor && landingSkiffTexture) {
+    const landingSkiff = new THREE.Group();
+    landingSkiff.position.set(0, landingTile.height / 2 + 0.035, 0);
+    addCutoutProp(THREE, landingSkiff, landingTile, landingSkiffTexture, seedForAlias(`${landingTile.alias}:landing-skiff`), {
+      scale: [1.95, 1.28], x: 0.06, z: -0.08, mirror: false, persistent: true,
+      lightColor: '#8ad9d1', lightIntensity: 0.62, kind: 'landing-skiff',
+    });
+    landingAnchor.add(landingSkiff);
   }
 
   const landingBeaconModelPath = runtimeModelPath('prop-landing-beacon');
@@ -1807,8 +1873,11 @@ function createWorld(THREE, OrbitControls, RoomEnvironment, KTX2Loader, GLTFLoad
       Object.values(fxTextures).forEach((texture) => texture.dispose());
       Object.values(characterTextures).forEach((texture) => texture.dispose());
       Object.values(encounterTextures).filter(Boolean).forEach((texture) => texture.dispose());
+      Object.values(bossTileTextures).filter(Boolean).forEach((texture) => texture.dispose());
       routeForkTexture?.dispose();
-      propTextures.forEach((texture) => texture.dispose());
+      landingSkiffTexture?.dispose();
+      landingPadTexture?.dispose();
+      propTextures.forEach((textures) => textures.forEach((texture) => texture.dispose()));
       campsiteTexture?.dispose();
       sunstoneTexture?.dispose();
       atlasTexture?.dispose();
@@ -2001,7 +2070,8 @@ export default function ThreeBoard({
   const terrainBackplate = anchoredCell?.revealed && anchoredCell.tileType === Tile.DESERT
     ? EMBERGLASS_BACKPLATE
     : CAVERN_BACKPLATE;
-  const backplate = guestLocationArtwork(state.source.locationName, terrainBackplate);
+  const bossPresentation = bossPresentationFor(state.encounterId);
+  const backplate = bossPresentation?.sceneTexture || guestLocationArtwork(state.source.locationName, terrainBackplate);
 
   return (
     <div
@@ -2021,6 +2091,7 @@ export default function ThreeBoard({
       data-world-weather={state.source.weather || 'glass-mist'}
       data-world-intensity={state.source.intensity}
       data-board-encounter={state.encounterId || 'none'}
+      data-board-boss={bossPresentation?.id || 'none'}
       data-premium-presentation="true"
       data-view-model-version={state.schemaVersion}
       data-testid="three-board-world"
@@ -2143,7 +2214,9 @@ export default function ThreeBoard({
       {state.encounterId && !state.isDanger && !state.isResolving && (
         <div className="pointer-events-none absolute inset-0 z-[14]" role="status" aria-live="polite">
           <div className="absolute inset-x-[18%] top-0 h-px bg-compass/80 shadow-[0_0_24px_rgba(232,200,96,0.58)]" />
-          <p className="absolute left-1/2 top-4 -translate-x-1/2 rounded border border-compass/45 bg-exp-dark/80 px-3 py-2 font-mono text-[9px] uppercase tracking-[0.24em] text-compass-bright backdrop-blur-sm">Landmark decision</p>
+          <p className="absolute left-1/2 top-4 -translate-x-1/2 rounded border border-compass/45 bg-exp-dark/80 px-3 py-2 font-mono text-[9px] uppercase tracking-[0.24em] text-compass-bright backdrop-blur-sm">
+            {bossPresentation ? `Apex encounter / ${bossPresentation.label}` : 'Landmark decision'}
+          </p>
         </div>
       )}
       {state.isComplete && (

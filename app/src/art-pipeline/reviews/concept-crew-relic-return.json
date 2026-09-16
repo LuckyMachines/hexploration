@@ -1,0 +1,33 @@
+{
+  "assetId": "concept-crew-relic-return",
+  "candidate": "artifacts/art/exports/concept-crew-relic-return.webp",
+  "reviewer": "Codex visual QA",
+  "reviewedAt": "2026-09-15",
+  "scores": {
+    "recognition": 4,
+    "agency": 4,
+    "specificity": 4,
+    "restraint": 4,
+    "continuity": 4,
+    "reusability": 4,
+    "accessibility": 4
+  },
+  "notes": {
+    "recognition": "Exactly three explorers visibly share the weight of one living relic on the return route.",
+    "agency": "Protective spacing, touch, and the path toward safety express a cooperative earned outcome.",
+    "specificity": "Distinct field silhouettes, basalt archive threshold, living relic cradle, and route beacons make the scene proprietary.",
+    "restraint": "One warm relic focal and one green escape route are balanced by large dark stone masses.",
+    "continuity": "Violet memory behind, green safety ahead, and warm shared bounce follow the established signal hierarchy.",
+    "reusability": "Landscape cropping preserves all three figures, relic, route, and clear upper UI space.",
+    "accessibility": "Crew grouping, carried weight, and bright destination remain readable through value and posture."
+  },
+  "decision": "approved",
+  "candidateSha256": "ad42158cbe28a44323ff409262d56ebc2996dc504b030249182e396803bf6d3b",
+  "generation": {
+    "mode": "azure-image-generation",
+    "tool": "azure-foundry",
+    "model": "gpt-image-2",
+    "promptSha256": "3f244d8d31baf83c77eaf28a87c3e6947a8ae4f76e2301b0514750a6851af2d3"
+  },
+  "joyScore": 10
+}

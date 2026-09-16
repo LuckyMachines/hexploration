@@ -1,0 +1,33 @@
+{
+  "assetId": "fx-route-confirmation",
+  "candidate": "artifacts/art/exports/fx-route-confirmation.png",
+  "reviewer": "Codex visual QA",
+  "reviewedAt": "2026-09-15",
+  "scores": {
+    "recognition": 3,
+    "agency": 4,
+    "specificity": 4,
+    "restraint": 4,
+    "continuity": 4,
+    "reusability": 4,
+    "accessibility": 3
+  },
+  "notes": {
+    "recognition": "The curved travel sweep and endpoint read clearly at 220 px but become intentionally quiet at 72 px.",
+    "agency": "The gold origin and cyan destination reinforce a committed route without inventing outcome UI.",
+    "specificity": "Mineral motes and the compass-to-survey color transition avoid a generic neon line.",
+    "restraint": "The effect occupies a small middle band and leaves almost the entire canvas transparent.",
+    "continuity": "Compass gold for choice and cyan for navigable destination preserve the semantic palette.",
+    "reusability": "Clean alpha and generous padding support additive board placement and responsive scaling.",
+    "accessibility": "Arc geometry survives without color, though the 72 px presentation needs sufficient contrast behind it."
+  },
+  "decision": "approved",
+  "candidateSha256": "eb3c695fb892743ff3402f95c4abb767ce53a871cf0a472c9c45561f7522d227",
+  "generation": {
+    "mode": "azure-image-generation",
+    "tool": "azure-foundry",
+    "model": "gpt-image-2",
+    "promptSha256": "e32e7e3cf79c3d3b94838acabfcd1cd6062b093f79601329dc99d73c9d13771e"
+  },
+  "joyScore": 9.3
+}

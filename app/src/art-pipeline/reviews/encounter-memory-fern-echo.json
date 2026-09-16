@@ -1,0 +1,33 @@
+{
+  "assetId": "encounter-memory-fern-echo",
+  "candidate": "artifacts/art/exports/encounter-memory-fern-echo.png",
+  "reviewer": "Codex visual QA",
+  "reviewedAt": "2026-09-15",
+  "scores": {
+    "recognition": 4,
+    "agency": 3,
+    "specificity": 4,
+    "restraint": 4,
+    "continuity": 4,
+    "reusability": 4,
+    "accessibility": 4
+  },
+  "notes": {
+    "recognition": "Layered cyan fern fans and a compact memory core create an immediate echo-creature read.",
+    "agency": "Its open display posture suggests remember, record, or release choices.",
+    "specificity": "Paired living and spectral fern leaves visualize Xenovoya's memory ecology.",
+    "restraint": "One fan gesture and one violet core keep the subject controlled.",
+    "continuity": "Mineral feet, signal core, and botanical glass match the world grammar.",
+    "reusability": "The fan silhouette supports board, card, and memory-log crops.",
+    "accessibility": "Leaf layering and body mass communicate the idea apart from cyan color."
+  },
+  "decision": "approved",
+  "candidateSha256": "a664c0155fe0d6cfffba3664d1a89f1df5a2054193d58c2a8d191dc2dc040522",
+  "generation": {
+    "mode": "azure-image-generation",
+    "tool": "azure-foundry",
+    "model": "gpt-image-2",
+    "promptSha256": "436d6d9d14a08c56bf3f5681fee44d3bfa73813f58a908af2e514eab28d96191"
+  },
+  "joyScore": 9.5
+}

@@ -1,6 +1,6 @@
 {
   "$schema": "./schema/art-direction.schema.json",
-  "version": "1.2.0",
+  "version": "1.3.1",
   "name": "Xenovoya Expedition Art Direction",
   "promise": "Alien wonder made legible through a calm field instrument, then made memorable through consequence and crew care.",
   "visualDna": [
@@ -9,6 +9,33 @@
     "Light behaves like information: cyan reveals, gold invites, green reassures, red warns, and violet marks the rare.",
     "Every image has one unmistakable focal event and enough quiet space for interface hierarchy.",
     "Materials feel tactile and weathered while technology remains restrained, readable, and human-scale."
+  ],
+  "styleLock": "Handcrafted layered paper-cut miniature realism with painterly mineral textures, subtle fiber edges, sculpted geological relief, restrained expedition technology, and readable atmospheric depth. Subjects remain tactile and stylized rather than photorealistic, anime, glossy mobile-game, or flat vector art.",
+  "renderingContract": {
+    "sharedLighting": "Soft upper-left neutral key, restrained cool rim, readable contact darkening, and one localized semantic signal color.",
+    "cutoutCamera": "Eye-level or slightly elevated three-quarter view with no wide-angle distortion and one stable contact line.",
+    "cutoutCanvas": "Square transparent production canvas; complete silhouette; 10 to 14 percent safe margin; no scenery, floor plane, frame, or cast shadow baked into the image.",
+    "fxCanvas": "Transparent gameplay effects remain surface-independent: no floor patch, rubble, platform, horizon, object, or baked contact shadow; light and particles fade completely before the canvas edge.",
+    "vignetteCamera": "Three-quarter miniature-diorama view with foreground, playable midground, and atmospheric background kept visibly separate.",
+    "environmentCamera": "Human-scale traversal view with a readable foreground threshold, navigable midground, distant landmark, and reserved UI-safe quiet area.",
+    "thumbnailTest": "Primary silhouette, state, and semantic color remain legible at 64 pixels in grayscale and color.",
+    "grounding": "Runtime cutouts use a shared foot or base anchor and receive contact shadows from the engine rather than from baked art.",
+    "scaleEvidence": "Every object family declares a size band and is reviewed beside a human, tile, or shared silhouette ruler."
+  },
+  "scaleBands": [
+    { "id": "hand", "label": "Hand scale", "reference": "0.1 to 0.5 meters", "families": ["relic"] },
+    { "id": "crew", "label": "Crew scale", "reference": "1.5 to 2 meters", "families": ["character", "character-condition"] },
+    { "id": "encounter", "label": "Encounter scale", "reference": "0.5 to 4 meters", "families": ["encounter"] },
+    { "id": "tile", "label": "Tile scale", "reference": "one playable hex footprint", "families": ["environment-prop", "tile-reference"] },
+    { "id": "landmark", "label": "Landmark scale", "reference": "multiple playable hex footprints", "families": ["environment"] }
+  ],
+  "biomeKeys": [
+    { "id": "verdant-signal", "valueKey": "deep green-black with sparse cyan routes", "landmark": "survey beacon", "material": "weathered basalt and restrained moss", "enemyLanguage": "low silhouettes with signal-sensing apertures" },
+    { "id": "glassroot", "valueKey": "pale translucent crowns against charcoal roots", "landmark": "root arch", "material": "fibrous basalt and milky glass leaves", "enemyLanguage": "layered leaf armor and cautious weight-bearing anatomy" },
+    { "id": "lantern-moss", "valueKey": "olive shelf against warm pocket light", "landmark": "portable lantern shelter", "material": "soft moss, eroded stone, and cloth", "enemyLanguage": "camouflaged burrowers and listening fronds" },
+    { "id": "emberglass", "valueKey": "warm rust terrain with one amber fracture", "landmark": "crystal wake", "material": "dry mineral dust, black glass, and amber crystal", "enemyLanguage": "heat-scarred shells and asymmetrical crystal growth" },
+    { "id": "slate-spires", "valueKey": "cold pale sky against dark vertical stone", "landmark": "split needle", "material": "laminated slate and wind-polished metal", "enemyLanguage": "tall wind-shaped limbs and narrow profiles" },
+    { "id": "violet-reliquary", "valueKey": "near-black stone with contained violet depth", "landmark": "reliquary threshold", "material": "aged basalt, smoked metal, and rare violet glass", "enemyLanguage": "ritual geometry without humanoid armor or fantasy runes" }
   ],
   "palette": [
     { "id": "field-ink", "hex": "#0d0f0a", "job": "negative space and depth" },

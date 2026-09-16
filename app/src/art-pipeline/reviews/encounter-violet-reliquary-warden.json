@@ -1,0 +1,33 @@
+{
+  "assetId": "encounter-violet-reliquary-warden",
+  "candidate": "artifacts/art/exports/encounter-violet-reliquary-warden-alpha-v2.png",
+  "reviewer": "Codex visual QA",
+  "reviewedAt": "2026-09-15",
+  "scores": {
+    "recognition": 4,
+    "agency": 3,
+    "specificity": 4,
+    "restraint": 4,
+    "continuity": 4,
+    "reusability": 4,
+    "accessibility": 4
+  },
+  "notes": {
+    "recognition": "The broken crescent frame, violet vault, and three legs read as a relic guardian.",
+    "agency": "Its guarded central aperture supports offer, unlock, or retreat choices.",
+    "specificity": "An ambulatory reliquary with weathered ritual hardware is unmistakably world-specific.",
+    "restraint": "The violet core is isolated within one strong stone crescent.",
+    "continuity": "Carved mineral limbs, brass hinges, and signal glass preserve the roster grammar.",
+    "reusability": "The corrected all-background cutout removes the enclosed white pocket and now works on every review surface.",
+    "accessibility": "The crescent frame and protected core convey function without hue."
+  },
+  "decision": "approved",
+  "candidateSha256": "8432faefdf4c7fcf288d58006b0adbbda334e31fca64d46826a4ff6a5cc4dc4d",
+  "generation": {
+    "mode": "azure-image-generation",
+    "tool": "azure-foundry",
+    "model": "gpt-image-2",
+    "promptSha256": "370f0a8e1fe5b8d48ccbfebbea0e7eddedafb66916da889acf3f64e67948545c"
+  },
+  "joyScore": 9.5
+}

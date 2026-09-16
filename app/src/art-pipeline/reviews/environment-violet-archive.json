@@ -1,0 +1,33 @@
+{
+  "assetId": "environment-violet-archive",
+  "candidate": "artifacts/art/exports/environment-violet-archive.webp",
+  "reviewer": "Codex visual QA",
+  "reviewedAt": "2026-09-15",
+  "scores": {
+    "recognition": 4,
+    "agency": 4,
+    "specificity": 4,
+    "restraint": 4,
+    "continuity": 4,
+    "reusability": 4,
+    "accessibility": 4
+  },
+  "notes": {
+    "recognition": "A buried archive and its quiet memory seam read immediately after the landscape crop.",
+    "agency": "The central approach, flanking work surfaces, and exit threshold support investigation choices.",
+    "specificity": "Layered basalt, suspended memory fragments, survey hardware, and localized violet seams are Xenovoya-specific.",
+    "restraint": "The violet signal remains localized and broad shadow areas protect interface legibility.",
+    "continuity": "Material, value range, and gold confirmation points match the approved environment family.",
+    "reusability": "The 1024x700 crop preserves the approach, focal chamber, and UI-safe margins.",
+    "accessibility": "Strong depth layers and value contrast preserve the route without color."
+  },
+  "decision": "approved",
+  "candidateSha256": "f618b61f54161ab296e12cd83718e4f48d4792efc571955d99dd9668cec69dcb",
+  "generation": {
+    "mode": "azure-image-generation",
+    "tool": "azure-foundry",
+    "model": "gpt-image-2",
+    "promptSha256": "823ac41c2a696eb0e86a8d40bdadc22ffc4966035f5b4a40ed2f7b607a1d2ea5"
+  },
+  "joyScore": 10
+}

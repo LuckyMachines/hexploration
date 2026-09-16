@@ -1,0 +1,33 @@
+{
+  "assetId": "encounter-glassroot-crossing",
+  "candidate": "artifacts/art/exports/encounter-glassroot-crossing.webp",
+  "reviewer": "Codex visual QA",
+  "reviewedAt": "2026-09-15",
+  "scores": {
+    "recognition": 4,
+    "agency": 4,
+    "specificity": 4,
+    "restraint": 4,
+    "continuity": 4,
+    "reusability": 4,
+    "accessibility": 4
+  },
+  "notes": {
+    "recognition": "The lanternback visibly blocks the glass bridge while the safer right path remains readable.",
+    "agency": "Two spatially explicit routes make the approach-or-detour decision legible without interface art.",
+    "specificity": "Glassroot bridge fibers, mineral cavern, field equipment, and the biome creature create a proprietary encounter.",
+    "restraint": "The creature and two small gold signals sit inside large quiet cavern masses.",
+    "continuity": "The scene uses the approved cyan depth, black basalt, translucent root, and compass-gold hierarchy.",
+    "reusability": "The 1024x700 crop keeps both routes and provides dark UI-safe space at left.",
+    "accessibility": "Route geometry, creature mass, and depth remain understandable without color."
+  },
+  "decision": "approved",
+  "candidateSha256": "1b235aa3cd3a4e80106015f4479971ff6dba0d8266d87a4fb0705fe5709ede45",
+  "generation": {
+    "mode": "azure-image-generation",
+    "tool": "azure-foundry",
+    "model": "gpt-image-2",
+    "promptSha256": "69c8803c716a177d7d2fd39796ab9f3414213e1489c3efa2393e485c36fb46e7"
+  },
+  "joyScore": 10
+}

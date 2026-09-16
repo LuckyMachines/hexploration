@@ -1,0 +1,33 @@
+{
+  "assetId": "boss-emberglass-razorback-reveal",
+  "candidate": "app/public/images/art/bosses/emberglass-razorback-reveal.webp",
+  "reviewer": "Codex special encounter art pass",
+  "reviewedAt": "2026-09-16",
+  "scores": {
+    "recognition": 4,
+    "agency": 4,
+    "specificity": 4,
+    "restraint": 4,
+    "continuity": 4,
+    "reusability": 4,
+    "accessibility": 4
+  },
+  "notes": {
+    "recognition": "Emberglass Razorback Boss Reveal reads immediately at board or reveal scale.",
+    "agency": "The blocked route and surviving passage establish an immediate encounter decision.",
+    "specificity": "Weathered mineral, graphite, brass, and restrained signal light keep the asset specific to Xenovoya.",
+    "restraint": "One focal subject and one signal hierarchy remain dominant.",
+    "continuity": "Camera, materials, palette, and silhouette align with the approved board and encounter library.",
+    "reusability": "The wide crop supports encounter framing and responsive background positioning.",
+    "accessibility": "Silhouette, elevation, and route geometry communicate meaning without depending on hue."
+  },
+  "decision": "approved",
+  "candidateSha256": "3a9dfc4de5a564da435ca2894f0d97c3e97ef4953e31bbc6ac233ba99f8456b3",
+  "generation": {
+    "mode": "azure-image-edit",
+    "tool": "azure-foundry",
+    "model": "gpt-image-2",
+    "promptSha256": "7344b456a54df7661d13f5de0b5da9a96b94927e18cc1e5c70b31e8bea036b6c"
+  },
+  "joyScore": 10
+}

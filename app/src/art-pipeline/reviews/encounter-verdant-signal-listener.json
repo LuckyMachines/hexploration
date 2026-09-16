@@ -1,0 +1,33 @@
+{
+  "assetId": "encounter-verdant-signal-listener",
+  "candidate": "artifacts/art/exports/encounter-verdant-signal-listener.png",
+  "reviewer": "Codex visual QA",
+  "reviewedAt": "2026-09-15",
+  "scores": {
+    "recognition": 4,
+    "agency": 3,
+    "specificity": 4,
+    "restraint": 4,
+    "continuity": 4,
+    "reusability": 4,
+    "accessibility": 4
+  },
+  "notes": {
+    "recognition": "The shield-shaped listening hood and grounded four-leg stance read immediately.",
+    "agency": "Its receptive posture supports transmit, conceal, or redirect decisions.",
+    "specificity": "A mossed stone receiver grown into a creature is distinctly Xenovoya.",
+    "restraint": "The large geometric hood and single cyan target carry the entire read.",
+    "continuity": "Moss, carved basalt, and controlled signal light match the world materials.",
+    "reusability": "Its centered compact silhouette works for board, card, and UI portrait crops.",
+    "accessibility": "The hood, body, and listening posture remain clear independent of color."
+  },
+  "decision": "approved",
+  "candidateSha256": "dc07313b56ab60c9c356d9af269ca1d48951132a64edda7eaac303add5474928",
+  "generation": {
+    "mode": "azure-image-generation",
+    "tool": "azure-foundry",
+    "model": "gpt-image-2",
+    "promptSha256": "972b4d678e0298fc5e226393d4a02825401e0beb876fdd9cb10471b17576451a"
+  },
+  "joyScore": 9.5
+}

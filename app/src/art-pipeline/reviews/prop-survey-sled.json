@@ -1,0 +1,33 @@
+{
+  "assetId": "prop-survey-sled",
+  "candidate": "artifacts/art/exports/prop-survey-sled.png",
+  "reviewer": "Codex visual QA",
+  "reviewedAt": "2026-09-15",
+  "scores": {
+    "recognition": 4,
+    "agency": 3,
+    "specificity": 4,
+    "restraint": 4,
+    "continuity": 4,
+    "reusability": 4,
+    "accessibility": 4
+  },
+  "notes": {
+    "recognition": "Runners, tow loop, strapped cases, and low profile identify a survey sled even at 72 px.",
+    "agency": "The prop suggests hauling and supply choices; gameplay provides the explicit interaction.",
+    "specificity": "Weathered basalt-metal construction, modular cases, and cyan route-light seam fit Xenovoya field equipment.",
+    "restraint": "The silhouette is dense but controlled, with cyan limited to status and route accents.",
+    "continuity": "Materials, three-quarter camera, margins, and neutral light match the prop family contract.",
+    "reusability": "All-background alpha extraction preserves the tow-loop hole and reads cleanly on all three surfaces.",
+    "accessibility": "The runner-and-cargo silhouette communicates function without color."
+  },
+  "decision": "approved",
+  "candidateSha256": "08e83704e79e500703cd78640a2fd04878f02ac8faf5daaa969a5ec6ba16fd10",
+  "generation": {
+    "mode": "azure-image-generation",
+    "tool": "azure-foundry",
+    "model": "gpt-image-2",
+    "promptSha256": "6f7eea81b586a0efeed254d5d59b4f888c8771ceefe540ff8c1abf00237f227d"
+  },
+  "joyScore": 9.5
+}

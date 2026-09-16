@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { Action } from './constants';
 import {
   CHARACTER_ROSTER,
+  CHARACTER_STATES,
   ROLE_ROSTER,
   assignCrewCharacters,
   deriveCharacterState,
@@ -41,14 +42,16 @@ describe('character system', () => {
     expect(assigned[2]).toMatchObject({ roleId: 'scout', characterId: 'signal-cartographer' });
   });
 
-  it('resolves state priority and falls back without losing identity', () => {
+  it('resolves state priority and ships every required visual without fallback', () => {
     expect(deriveCharacterState({ isCurrent: true, lowStats: true, activeAction: Action.HELP })).toBe('strained');
     expect(deriveCharacterState({ isCurrent: true, activeAction: Action.HELP })).toBe('helping');
     const available = resolveCharacterVisual({ characterId: 'signal-cartographer', state: 'helping' });
     expect(available.path).toContain('signal-cartographer-helping.runtime.webp');
     expect(available.isFallback).toBe(false);
-    const fallback = resolveCharacterVisual({ characterId: 'signal-cartographer', state: 'downed' });
-    expect(fallback.path).toContain('signal-cartographer.runtime.webp');
-    expect(fallback.isFallback).toBe(true);
+    CHARACTER_ROSTER.forEach((character) => CHARACTER_STATES.forEach((state) => {
+      const visual = resolveCharacterVisual({ characterId: character.id, state });
+      expect(visual.isFallback, `${character.id}/${state}`).toBe(false);
+      expect(visual.path, `${character.id}/${state}`).toMatch(/\.runtime\.webp$/);
+    }));
   });
 });

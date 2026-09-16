@@ -1,11 +1,11 @@
 {
   "assetId": "character-relic-tender-discovery",
-  "candidate": "app/public/images/art/characters/relic-tender-discovery.webp",
-  "reviewer": "Codex final art QA",
-  "reviewedAt": "2026-09-13",
+  "candidate": "artifacts/art/exports/character-relic-tender-discovery-archive-composite-v4.webp",
+  "reviewer": "Codex visual convergence pass",
+  "reviewedAt": "2026-09-15",
   "scores": {
     "recognition": 4,
-    "agency": 4,
+    "agency": 3,
     "specificity": 4,
     "restraint": 4,
     "continuity": 4,
@@ -13,13 +13,13 @@
     "accessibility": 4
   },
   "notes": {
-    "recognition": "The established crew member and the new gameplay action remain readable at card scale.",
-    "agency": "The pose depicts a concrete field contribution rather than a passive portrait.",
-    "specificity": "Canonical equipment, practical field clothing, and miniature diorama treatment remain recognizably Xenovoya.",
-    "restraint": "One character, one action, and one localized signal dominate the vignette.",
-    "continuity": "Face, proportions, costume, palette, equipment language, and painterly treatment remain connected to the canonical reference.",
-    "reusability": "The square action vignette crops cleanly for ability cards, crew records, and narrative beats.",
-    "accessibility": "Gesture and equipment silhouette communicate the state without depending on signal color."
+    "recognition": "The Relic Tender and the small awakened relic read immediately at card and contact-sheet scale.",
+    "agency": "The cradled relic communicates discovery, although the preserved neutral stance is quieter than the strongest action dioramas.",
+    "specificity": "The violet archive, basalt field architecture, practical uniform, and localized relic signal are specific to Xenovoya.",
+    "restraint": "One character and one hand-scale relic remain the only foreground subjects; the archive is subdued support.",
+    "continuity": "The exact approved character art is retained while the background now aligns with the narrative vignette family.",
+    "reusability": "The square composition holds at card scale and keeps a quiet perimeter for UI crops.",
+    "accessibility": "The held-object gesture and silhouette communicate discovery without relying on violet alone."
   },
   "decision": "approved",
   "characterIdentity": {
@@ -37,21 +37,21 @@
       "stateRead": 4
     },
     "notes": {
-      "samePerson": "Facial structure, age, hair, skin tone, and bearing remain recognizably the same person as the canonical input.",
-      "face": "The defining facial proportions and expression language are preserved.",
-      "proportions": "Head-to-body ratio, stature, and limb proportions remain consistent with the canonical figure.",
-      "costume": "Layering, palette, garment construction, and practical field wear preserve the established costume.",
-      "equipment": "Signature equipment remains present and visually consistent while supporting the new action.",
-      "visualScale": "The character remains readable from full vignette down to ability-card scale.",
-      "stateRead": "The surveying, anchoring, discovery, or redline action is specific and immediately legible."
+      "samePerson": "The approved discovery figure is composited without generative alteration.",
+      "face": "Face pixels and expression are preserved from the approved identity-locked state.",
+      "proportions": "The complete approved figure and original body proportions are preserved.",
+      "costume": "All garment construction, colors, and wear are unchanged.",
+      "equipment": "The established belt, pouches, armor, boots, and held relic are unchanged with no invented foreground equipment.",
+      "visualScale": "The full figure remains readable at the same card-scale presentation size.",
+      "stateRead": "Both hands visibly cradle the awakened relic at chest height."
     }
   },
-  "candidateSha256": "4935f7b22ce732d0b02f09dac5582a28bdc9aee0c7f36cf3d54aac7847c86d48",
+  "candidateSha256": "6d5abc4f4d2800188d416b2aac7bebeae58c9298475a98756d03f9761c9dc10e",
   "generation": {
-    "mode": "azure-image-edit",
-    "tool": "azure-foundry",
+    "mode": "deterministic-composite",
+    "tool": "imagemagick",
     "model": "gpt-image-2",
-    "promptSha256": "90aa2411ffeeb308fb58a8ecd2526f32624386c4c5fb4d357f90774aa454f3f3"
+    "promptSha256": "cca921931ed95af54ead31f55903d0af60b5ec3aba5bea81663e59b8c26dd5ee"
   },
-  "joyScore": 10
+  "joyScore": 9.5
 }

@@ -1,0 +1,277 @@
+{
+  "$schema": "./schema/game-art-library.schema.json",
+  "version": "1.1.0",
+  "artDirectionVersion": "1.3.1",
+  "reviewSurfaces": [
+    {
+      "id": "field",
+      "hex": "#0d0f0a"
+    },
+    {
+      "id": "paper",
+      "hex": "#eee8d8"
+    },
+    {
+      "id": "emberglass",
+      "hex": "#3b2927"
+    },
+    {
+      "id": "glassroot",
+      "hex": "#19362d"
+    }
+  ],
+  "groups": [
+    {
+      "id": "tile-geometry",
+      "title": "Tile Geometry",
+      "description": "Orthographic tile silhouettes, elevations, edge profiles, and route affordances.",
+      "target": 10,
+      "columns": 3,
+      "thumbnail": "760x540>",
+      "selectors": [
+        {
+          "families": [
+            "tile-reference"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "terrain-materials",
+      "title": "Terrain Materials",
+      "description": "Production surface masters paired to the six playable biome families.",
+      "target": 6,
+      "columns": 3,
+      "thumbnail": "620x620>",
+      "selectors": [
+        {
+          "families": [
+            "game-part"
+          ],
+          "assetTypes": [
+            "tileable-texture"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "character-standees",
+      "title": "Character Standees",
+      "description": "Transparent board-ready crew identities and authored condition states.",
+      "target": 52,
+      "columns": 4,
+      "thumbnail": "560x560>",
+      "requiredAlpha": true,
+      "selectors": [
+        {
+          "families": [
+            "character"
+          ]
+        },
+        {
+          "families": [
+            "character-condition"
+          ],
+          "assetTypes": [
+            "transparent-focal"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "character-vignettes",
+      "title": "Character Vignettes",
+      "description": "Narrative ability moments that intentionally include environmental staging.",
+      "target": 4,
+      "columns": 4,
+      "thumbnail": "560x560>",
+      "selectors": [
+        {
+          "families": [
+            "character-condition"
+          ],
+          "assetTypes": [
+            "character-vignette"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "enemy-standees",
+      "title": "Enemy Standees",
+      "description": "Transparent encounter creatures with biome and threat-tier identity.",
+      "target": 12,
+      "columns": 4,
+      "thumbnail": "560x560>",
+      "requiredAlpha": true,
+      "selectors": [
+        {
+          "families": [
+            "encounter"
+          ],
+          "assetTypes": [
+            "transparent-focal"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "encounter-scenes",
+      "title": "Encounter Scenes",
+      "description": "Wide decision and consequence backplates with code-rendered interaction space.",
+      "target": 9,
+      "columns": 3,
+      "thumbnail": "760x500>",
+      "selectors": [
+        {
+          "families": [
+            "encounter"
+          ],
+          "assetTypes": [
+            "feature-landscape"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "environments",
+      "title": "Environments",
+      "description": "Traversal locations with distinct value keys, landmarks, and gameplay functions.",
+      "target": 24,
+      "columns": 4,
+      "thumbnail": "720x460>",
+      "selectors": [
+        {
+          "families": [
+            "environment"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "relics",
+      "title": "Relics",
+      "description": "Hand-scale artifacts differentiated by function, silhouette, and activation state.",
+      "target": 10,
+      "columns": 4,
+      "thumbnail": "560x560>",
+      "requiredAlpha": true,
+      "selectors": [
+        {
+          "families": [
+            "relic"
+          ]
+        },
+        {
+          "ids": [
+            "relic-sunstone-lens-focal"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "environment-props",
+      "title": "Environment Props",
+      "description": "Board-scale props and landmarks with shared grounding and scale evidence.",
+      "target": 13,
+      "columns": 4,
+      "thumbnail": "560x560>",
+      "requiredAlpha": true,
+      "selectors": [
+        {
+          "families": [
+            "environment-prop"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "effects",
+      "title": "Gameplay Effects",
+      "description": "Transparent state signals reviewed across light, dark, and biome surfaces.",
+      "target": 4,
+      "columns": 2,
+      "thumbnail": "760x500>",
+      "requiredAlpha": true,
+      "selectors": [
+        {
+          "families": [
+            "game-part"
+          ],
+          "assetTypes": [
+            "fx-overlay"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "memory-surfaces",
+      "title": "Memory Surfaces",
+      "description": "Archival and return-loop backplates kept separate from world props.",
+      "target": 3,
+      "columns": 3,
+      "thumbnail": "620x620>",
+      "selectors": [
+        {
+          "families": [
+            "memory"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "concept-scenes",
+      "title": "Concept Scenes",
+      "description": "Non-runtime exploration imagery that must never be presented as gameplay proof.",
+      "target": 2,
+      "columns": 2,
+      "thumbnail": "760x500>",
+      "selectors": [
+        {
+          "families": [
+            "concept-reference"
+          ]
+        }
+      ]
+    }
+  ],
+  "enemyTaxonomy": {
+    "targetPerBiome": 2,
+    "targetThreatTiers": [
+      "ambient",
+      "hazard",
+      "elite"
+    ],
+    "requiredStates": [
+      "idle",
+      "alert",
+      "attack",
+      "staggered",
+      "defeated"
+    ],
+    "rules": [
+      "Silhouette communicates locomotion and threat before color.",
+      "Every creature inherits one biome material without becoming a moving prop.",
+      "Eyes, mouths, and limbs remain species-specific rather than generically monstrous.",
+      "No creature depends on gore, spikes, or red wash to communicate danger."
+    ]
+  },
+  "relicTaxonomy": {
+    "silhouetteFamilies": [
+      "key",
+      "instrument",
+      "seed",
+      "map",
+      "lens",
+      "vessel",
+      "mechanism"
+    ],
+    "requiredStates": [
+      "dormant",
+      "discovered",
+      "activated",
+      "damaged",
+      "restored"
+    ]
+  }
+}

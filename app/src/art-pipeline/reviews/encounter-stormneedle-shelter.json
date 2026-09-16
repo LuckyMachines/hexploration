@@ -1,0 +1,33 @@
+{
+  "assetId": "encounter-stormneedle-shelter",
+  "candidate": "artifacts/art/exports/encounter-stormneedle-shelter.webp",
+  "reviewer": "Codex visual QA",
+  "reviewedAt": "2026-09-15",
+  "scores": {
+    "recognition": 4,
+    "agency": 3,
+    "specificity": 4,
+    "restraint": 4,
+    "continuity": 4,
+    "reusability": 4,
+    "accessibility": 4
+  },
+  "notes": {
+    "recognition": "The exact approved Strider stands across a narrow mountain route and reads immediately as the encounter obstacle.",
+    "agency": "The foreground shelf, exposed route, and distant continuation support shelter-or-cross play, though UI supplies the explicit choice.",
+    "specificity": "Slate needles, expedition beacons, red pressure seam, and the preserved creature identity are setting-specific.",
+    "restraint": "The creature is subordinate to the landscape and leaves broad quiet sky and rock masses.",
+    "continuity": "Deterministic compositing preserves the canonical Strider instead of accepting the rejected giant architecture variants.",
+    "reusability": "The landscape crop has clear text-safe regions and a stable focal layer for encounter presentation.",
+    "accessibility": "Creature silhouette and route geometry remain readable independent of cyan and red signals."
+  },
+  "decision": "approved",
+  "candidateSha256": "68114981cc0bd77c59bd0a5548900360336a9e7345a62a26cdc674d6d4aa7ad8",
+  "generation": {
+    "mode": "azure-image-generation-composite",
+    "tool": "azure-foundry-plus-imagemagick",
+    "model": "gpt-image-2",
+    "promptSha256": "d5835644c6df7b31d9e52040d183a08feb2c0423ba0b373b3b3406319e89b6c8"
+  },
+  "joyScore": 9.5
+}

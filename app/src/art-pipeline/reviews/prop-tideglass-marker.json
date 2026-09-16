@@ -1,0 +1,33 @@
+{
+  "assetId": "prop-tideglass-marker",
+  "candidate": "artifacts/art/exports/prop-tideglass-marker.png",
+  "reviewer": "Codex visual QA",
+  "reviewedAt": "2026-09-15",
+  "scores": {
+    "recognition": 4,
+    "agency": 3,
+    "specificity": 4,
+    "restraint": 4,
+    "continuity": 4,
+    "reusability": 4,
+    "accessibility": 4
+  },
+  "notes": {
+    "recognition": "Twin translucent fins, grounded stake, and blue route bead read as an amphibious marker at 72 px.",
+    "agency": "The unequal fin directions suggest changing path conditions without using an arrow icon.",
+    "specificity": "Tideglass fins, brass hinge, wrapped survey cloth, and mineral stake feel native to Xenovoya.",
+    "restraint": "Two fins and one blue bead form a disciplined vertical silhouette.",
+    "continuity": "Camera, material wear, alpha, light, and padding match the prop system.",
+    "reusability": "Clean internal and external alpha reads across light, night, and Emberglass surfaces.",
+    "accessibility": "The asymmetric fin geometry communicates direction independent of color."
+  },
+  "decision": "approved",
+  "candidateSha256": "4e700732625f751e524794c0a789877f0c5b3aeea58dfa83972c8b6f913b7d1d",
+  "generation": {
+    "mode": "azure-image-generation",
+    "tool": "azure-foundry",
+    "model": "gpt-image-2",
+    "promptSha256": "78924a57348eeb989d42b11b3ab8086145501459418097a86dd4bb425a7440d4"
+  },
+  "joyScore": 9.5
+}

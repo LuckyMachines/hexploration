@@ -1,0 +1,33 @@
+{
+  "assetId": "encounter-emberglass-awakening",
+  "candidate": "artifacts/art/exports/encounter-emberglass-awakening.webp",
+  "reviewer": "Codex visual QA",
+  "reviewedAt": "2026-09-15",
+  "scores": {
+    "recognition": 4,
+    "agency": 4,
+    "specificity": 4,
+    "restraint": 4,
+    "continuity": 4,
+    "reusability": 4,
+    "accessibility": 4
+  },
+  "notes": {
+    "recognition": "A large armored creature visibly wakes through the Emberglass route at first glance.",
+    "agency": "The cyan bypass on the left and dangerous fissure on the right form a clear brace-or-bypass decision.",
+    "specificity": "Slate shelves, iron dust, an embedded expedition relic, and ember-cracked anatomy feel native to Xenovoya.",
+    "restraint": "The localized dust event and orange fracture are contained by broad black terrain.",
+    "continuity": "The scene preserves the controlled cyan-safe and ember-danger signal hierarchy.",
+    "reusability": "Landscape cropping retains creature, bypass, foreground choice point, and interface-safe zones.",
+    "accessibility": "The route split and emerging mass remain clear through value and geometry alone."
+  },
+  "decision": "approved",
+  "candidateSha256": "e92c2c84378573f3cff25fd4218752d96eed9b6f73c22c9934a39db99ba620ca",
+  "generation": {
+    "mode": "azure-image-generation",
+    "tool": "azure-foundry",
+    "model": "gpt-image-2",
+    "promptSha256": "80aeb764ebcecd3c8fd968f426b77e795072df96953e95e09688ad8226396e78"
+  },
+  "joyScore": 10
+}

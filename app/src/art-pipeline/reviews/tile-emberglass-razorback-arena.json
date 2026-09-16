@@ -1,0 +1,33 @@
+{
+  "assetId": "tile-emberglass-razorback-arena",
+  "candidate": "app/public/images/art/bosses/emberglass-razorback-tile.png",
+  "reviewer": "Codex special encounter art pass",
+  "reviewedAt": "2026-09-16",
+  "scores": {
+    "recognition": 4,
+    "agency": 3,
+    "specificity": 4,
+    "restraint": 4,
+    "continuity": 4,
+    "reusability": 4,
+    "accessibility": 4
+  },
+  "notes": {
+    "recognition": "Emberglass Razorback Arena Tile reads immediately at board or reveal scale.",
+    "agency": "The open center preserves a legible player decision space.",
+    "specificity": "Weathered mineral, graphite, brass, and restrained signal light keep the asset specific to Xenovoya.",
+    "restraint": "One focal subject and one signal hierarchy remain dominant.",
+    "continuity": "Camera, materials, palette, and silhouette align with the approved board and encounter library.",
+    "reusability": "The transparent square asset layers cleanly into the Three.js board.",
+    "accessibility": "Silhouette, elevation, and route geometry communicate meaning without depending on hue."
+  },
+  "decision": "approved",
+  "candidateSha256": "b5d5f188e3be670a351487310d7ed770bb7a6385a0aea5a0ea8b61668419cb32",
+  "generation": {
+    "mode": "azure-image-edit",
+    "tool": "azure-foundry",
+    "model": "gpt-image-2",
+    "promptSha256": "217bdf099cb9457e9700ad88b9ea5b494d9184672103fe52b9684bf59929be91"
+  },
+  "joyScore": 9.5
+}

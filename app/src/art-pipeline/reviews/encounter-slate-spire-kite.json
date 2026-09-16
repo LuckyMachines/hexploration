@@ -1,0 +1,33 @@
+{
+  "assetId": "encounter-slate-spire-kite",
+  "candidate": "artifacts/art/exports/encounter-slate-spire-kite.png",
+  "reviewer": "Codex visual QA",
+  "reviewedAt": "2026-09-15",
+  "scores": {
+    "recognition": 4,
+    "agency": 3,
+    "specificity": 4,
+    "restraint": 4,
+    "continuity": 4,
+    "reusability": 3,
+    "accessibility": 4
+  },
+  "notes": {
+    "recognition": "The broad slate wings and trailing signal tendrils read instantly as a gliding scout.",
+    "agency": "Its circling profile supports follow, shelter, or signal choices.",
+    "specificity": "A flying creature assembled from thin slate-spire plates is setting-specific.",
+    "restraint": "The triangular wing gesture remains uncluttered and dominant.",
+    "continuity": "Stone membranes and cyan seam light preserve the mineral-tech family.",
+    "reusability": "Fine tendrils require padding but the wing wedge is powerful at small scale.",
+    "accessibility": "The wing geometry and flight direction remain clear without color."
+  },
+  "decision": "approved",
+  "candidateSha256": "5c9442437a5afb488860fd66c24c093e05efe64e994de198605ccf855ddf9ffe",
+  "generation": {
+    "mode": "azure-image-generation",
+    "tool": "azure-foundry",
+    "model": "gpt-image-2",
+    "promptSha256": "c5da53b82496749cd6c30286d452976012c8b520f55fc5d436d5a30ee57d18b6"
+  },
+  "joyScore": 9.3
+}

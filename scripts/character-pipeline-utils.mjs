@@ -25,6 +25,7 @@ const stateDirections = Object.freeze({
   escaping: 'Urgent forward movement while looking back toward the crew and keeping the route readable.',
   triumph: 'Quiet relief after an earned result, intimate and restrained rather than celebratory spectacle.',
   aftermath: 'Reflective post-expedition posture with one subtle trace of what the run cost or taught.',
+  'idle-alert': 'Calm watch posture distinct from neutral, listening to the environment while keeping the route and crew in view.',
 });
 
 export function loadCharacterSystem(repoRoot) {
@@ -161,6 +162,10 @@ export function validateCharacterSystem(catalog, { repoRoot, checkFiles = true }
     if ((character.identity?.immutableDetails || []).length < 3) errors.push(`${character.id}: at least three immutable identity details are required`);
     if ((character.identity?.signatureEquipment || []).length < 2) errors.push(`${character.id}: at least two signature equipment details are required`);
     if (character.standee?.billboard !== 'camera-facing') errors.push(`${character.id}: unsupported standee billboard contract`);
+    for (const requiredState of catalog.requiredStates.filter((state) => state !== 'neutral')) {
+      if (!character.assets?.states?.[requiredState]) errors.push(`${character.id}/${requiredState}: required state asset is missing`);
+      if (!character.assets?.stateAssetIds?.[requiredState]) errors.push(`${character.id}/${requiredState}: required state asset id is missing`);
+    }
     for (const state of Object.keys(character.assets?.states || {})) {
       if (!catalog.requiredStates.includes(state)) errors.push(`${character.id}: unknown authored state ${state}`);
       const assetId = character.assets.stateAssetIds?.[state];
@@ -220,18 +225,21 @@ export function validateCharacterSystem(catalog, { repoRoot, checkFiles = true }
 export function buildCharacterReport(catalog, validation) {
   const authoredStateCount = catalog.characters.reduce((sum, character) => sum + 1 + Object.keys(character.assets.states || {}).length, 0);
   const possibleStateCount = catalog.characters.length * catalog.requiredStates.length;
+  const fallbackCount = possibleStateCount - authoredStateCount;
   return {
     schemaVersion: 1,
     generatedAt: new Date().toISOString(),
     scope: 'automated-only',
     catalogVersion: catalog.version,
-    grade: validation.errors.length ? 'blocked' : 'A-',
+    grade: validation.errors.length ? 'blocked' : fallbackCount === 0 ? 'A' : 'A-',
     architectureGrade: validation.errors.length ? 'B' : 'A',
     evidenceGrade: validation.errors.length ? 'C' : 'B+',
     roster: { roles: catalog.roles.length, characters: catalog.characters.length, uniquePairings: new Set(catalog.roles.map((role) => role.characterId)).size },
-    coverage: { authoredStateCount, possibleStateCount, fallbackCount: possibleStateCount - authoredStateCount },
+    coverage: { authoredStateCount, possibleStateCount, fallbackCount },
     validation,
     evidenceLimits: ['No representative human attachment or recognition study has been collected.', 'Automated and expert visual review must not be described as player evidence.'],
-    nextAction: validation.errors[0] || 'Add authored states only when gameplay evidence shows the neutral fallback is insufficient.',
+    nextAction: validation.errors[0] || (fallbackCount
+      ? 'Author the remaining gameplay states while preserving canonical identity.'
+      : 'Maintain full state coverage and refresh a pose only when visual QA finds a concrete identity or readability regression.'),
   };
 }

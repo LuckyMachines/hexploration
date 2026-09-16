@@ -1,0 +1,33 @@
+{
+  "assetId": "encounter-lantern-moss-burrower",
+  "candidate": "artifacts/art/exports/encounter-lantern-moss-burrower.png",
+  "reviewer": "Codex visual QA",
+  "reviewedAt": "2026-09-15",
+  "scores": {
+    "recognition": 4,
+    "agency": 3,
+    "specificity": 4,
+    "restraint": 4,
+    "continuity": 4,
+    "reusability": 4,
+    "accessibility": 4
+  },
+  "notes": {
+    "recognition": "The mossy shell, digging claws, and warm lantern face form a friendly burrower read.",
+    "agency": "Its paused digging pose invites follow, feed, or leave choices.",
+    "specificity": "Lantern moss cultivated over ancient mineral armor is distinctive world ecology.",
+    "restraint": "Warm face light is contained beneath one broad quiet shell.",
+    "continuity": "Weathered stone plates and restrained bio-light fit the established roster.",
+    "reusability": "Its compact low silhouette is strong for board tokens and cards.",
+    "accessibility": "Shell, claws, and lamp remain separable in silhouette and grayscale."
+  },
+  "decision": "approved",
+  "candidateSha256": "a8dd181143db1396094c5dbd078cdc751670693d0e79770ac8ee65102752c678",
+  "generation": {
+    "mode": "azure-image-generation",
+    "tool": "azure-foundry",
+    "model": "gpt-image-2",
+    "promptSha256": "6630448173b04ae7838d90a15514887129152c3796ee566cd32d8b30f8a16a92"
+  },
+  "joyScore": 9.5
+}

@@ -1,0 +1,33 @@
+{
+  "assetId": "boss-violet-warden-reveal",
+  "candidate": "app/public/images/art/bosses/violet-warden-reveal.webp",
+  "reviewer": "Codex special encounter art pass",
+  "reviewedAt": "2026-09-16",
+  "scores": {
+    "recognition": 4,
+    "agency": 4,
+    "specificity": 4,
+    "restraint": 4,
+    "continuity": 4,
+    "reusability": 4,
+    "accessibility": 4
+  },
+  "notes": {
+    "recognition": "Violet Reliquary Warden Boss Reveal reads immediately at board or reveal scale.",
+    "agency": "The blocked route and surviving passage establish an immediate encounter decision.",
+    "specificity": "Weathered mineral, graphite, brass, and restrained signal light keep the asset specific to Xenovoya.",
+    "restraint": "One focal subject and one signal hierarchy remain dominant.",
+    "continuity": "Camera, materials, palette, and silhouette align with the approved board and encounter library.",
+    "reusability": "The wide crop supports encounter framing and responsive background positioning.",
+    "accessibility": "Silhouette, elevation, and route geometry communicate meaning without depending on hue."
+  },
+  "decision": "approved",
+  "candidateSha256": "c0964952f2a95ebf060cc356a11d607efcb43f4dc9c66b4114a17855e51bf40b",
+  "generation": {
+    "mode": "azure-image-edit",
+    "tool": "azure-foundry",
+    "model": "gpt-image-2",
+    "promptSha256": "3fd72fa5186fc292195a13cbaeb11cb6f0f3da3df0542ff083fd4a00b32e8379"
+  },
+  "joyScore": 10
+}

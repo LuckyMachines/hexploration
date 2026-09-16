@@ -43,6 +43,7 @@ const base = {
 };
 
 export const BOARD_LAB_STATES = Object.freeze([
+  { id: 'landing-site', label: 'Landing site', description: 'The authored pad and expedition skiff establish a memorable point of return.', input: { ...base, currentLocation: '0,0', intentAlias: '0,0', playerLocationMap: {}, crew: [], phase: 'planning', source: { ...base.source, locationName: 'Beaconfall Basin' } } },
   { id: 'ready', label: 'Ready', description: 'A quiet planning state with reachable choices.', input: { ...base, phase: 'planning' } },
   { id: 'hover', label: 'Hover', description: 'Transient intent without terrain movement.', input: { ...base, intentAlias: '0,1', previewPath: ['0,1'], phase: 'planning' } },
   { id: 'selected', label: 'Selected', description: 'A stable committed route segment.', input: { ...base, intentAlias: '1,1', selectedPath: ['1,1'], previewPath: ['1,1'], phase: 'planning' } },
@@ -52,6 +53,9 @@ export const BOARD_LAB_STATES = Object.freeze([
   { id: 'resolving', label: 'Resolving', description: 'The world answers the submitted route.', input: { ...base, intentAlias: '2,1', selectedPath: ['1,1', '2,1'], previewPath: ['1,1', '2,1'], hasSubmitted: true, isResolving: true, phase: 'resolving' } },
   { id: 'rescue', label: 'Rescue', description: 'A helper and endangered explorer share one tile.', input: { ...base, currentLocation: '1,0', intentAlias: '1,0', activeAction: Action.HELP, playerLocationMap: { '1,0': [0, 1], '1,1': [2], '2,2': [3] }, lowStats: true, phase: 'recovery' } },
   { id: 'recovery', label: 'Recovery', description: 'Low-stat pressure gives way to a clear recovery window.', input: { ...base, intentAlias: '1,0', activeAction: Action.REST, lowStats: true, phase: 'recovery' } },
+  { id: 'boss-emberglass', label: 'Boss / Emberglass', description: 'Razorback reveal with its authored arena, creature, and cinematic backplate.', input: { ...base, currentLocation: '1,1', intentAlias: '1,2', selectedPath: ['1,1', '1,2'], previewPath: ['1,1', '1,2'], encounterId: 'emberglass-awakening', phase: 'encounter', source: { ...base.source, locationName: 'Emberglass Crossing' } } },
+  { id: 'boss-stormneedle', label: 'Boss / Stormneedle', description: 'Strider reveal with its authored arena, creature, and cinematic backplate.', input: { ...base, currentLocation: '0,1', intentAlias: '0,3', selectedPath: ['0,1', '0,3'], previewPath: ['0,1', '0,3'], encounterId: 'wind-vault', phase: 'encounter', source: { ...base.source, locationName: 'Stormneedle Pass' } } },
+  { id: 'boss-violet', label: 'Boss / Violet Warden', description: 'Reliquary Warden reveal with its authored arena, creature, and cinematic backplate.', input: { ...base, currentLocation: '1,1', intentAlias: '2,1', selectedPath: ['1,1', '2,1'], previewPath: ['1,1', '2,1'], encounterId: 'reliquary-bargain', phase: 'encounter', source: { ...base.source, locationName: 'Violet Archive Hollow' } } },
   { id: 'complete', label: 'Complete', description: 'The expedition closes with the recovered relic visible.', input: { ...base, currentLocation: '0,0', intentAlias: '0,0', selectedPath: ['2,1', '1,1', '0,0'], previewPath: ['2,1', '1,1', '0,0'], playerLocationMap: { '0,0': [0, 1, 2, 3] }, hasSubmitted: true, isComplete: true, phase: 'complete' } },
 ]);
 

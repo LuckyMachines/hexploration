@@ -1,0 +1,33 @@
+{
+  "assetId": "encounter-hushgrass-whistler",
+  "candidate": "artifacts/art/exports/encounter-hushgrass-whistler.png",
+  "reviewer": "Codex visual QA",
+  "reviewedAt": "2026-09-15",
+  "scores": {
+    "recognition": 4,
+    "agency": 3,
+    "specificity": 4,
+    "restraint": 4,
+    "continuity": 4,
+    "reusability": 3,
+    "accessibility": 4
+  },
+  "notes": {
+    "recognition": "The tall reed crown and stilt body read as a listening sentinel in two seconds.",
+    "agency": "Its alert frontal stance supports hide, answer, or redirect encounter choices.",
+    "specificity": "Resonant hushgrass vanes mounted on a mineral listener body feel native to the setting.",
+    "restraint": "A disciplined crown and tiny cyan nodes create one clear vertical read.",
+    "continuity": "The mineral chassis and small signal accents align with the enemy family.",
+    "reusability": "Thin legs need generous padding at tiny size but the full silhouette remains usable.",
+    "accessibility": "The crown-to-stilt proportion communicates identity without color."
+  },
+  "decision": "approved",
+  "candidateSha256": "a3891caa560dc2b3618356452feb083f6531fc100c4c51afbf6c892d68b8f72f",
+  "generation": {
+    "mode": "azure-image-generation",
+    "tool": "azure-foundry",
+    "model": "gpt-image-2",
+    "promptSha256": "9b9aef888194e85891075526847c45ff13f7cd6c857b6445e32f90f0d49b5179"
+  },
+  "joyScore": 9.3
+}

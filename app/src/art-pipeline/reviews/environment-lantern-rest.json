@@ -1,0 +1,33 @@
+{
+  "assetId": "environment-lantern-rest",
+  "candidate": "artifacts/art/exports/environment-lantern-rest.webp",
+  "reviewer": "Codex visual QA",
+  "reviewedAt": "2026-09-15",
+  "scores": {
+    "recognition": 4,
+    "agency": 4,
+    "specificity": 4,
+    "restraint": 4,
+    "continuity": 4,
+    "reusability": 4,
+    "accessibility": 4
+  },
+  "notes": {
+    "recognition": "The sheltered tent, repair bench, sleep gear, and warm communal light instantly read as a safe expedition camp.",
+    "agency": "Distinct work, rest, storage, and onward-route zones support meaningful camp actions.",
+    "specificity": "Lantern moss, basalt overhang, route-light traces, and weathered survey equipment make the camp uniquely Xenovoya.",
+    "restraint": "Warm light is concentrated around the camp while the route and night remain quiet.",
+    "continuity": "Compass gold, cyan-green route signals, dark mineral terrain, and tactile field gear match the locked art direction.",
+    "reusability": "The landscape crop preserves the camp system, distant route, and dark UI-safe sky.",
+    "accessibility": "Shelter, workbench, light pool, and route remain distinct through value and spatial grouping."
+  },
+  "decision": "approved",
+  "candidateSha256": "379545718a1835d1194669b5bb792ffb4b11857ea0d8c507e671e12aaad37cc4",
+  "generation": {
+    "mode": "azure-image-generation",
+    "tool": "azure-foundry",
+    "model": "gpt-image-2",
+    "promptSha256": "e90aec5cd78023d55aae544e4d25b75a77ee7aa2d5294b37d6455018bad87b0f"
+  },
+  "joyScore": 10
+}

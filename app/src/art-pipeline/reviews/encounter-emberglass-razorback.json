@@ -1,0 +1,33 @@
+{
+  "assetId": "encounter-emberglass-razorback",
+  "candidate": "artifacts/art/exports/encounter-emberglass-razorback.png",
+  "reviewer": "Codex visual QA",
+  "reviewedAt": "2026-09-15",
+  "scores": {
+    "recognition": 4,
+    "agency": 3,
+    "specificity": 4,
+    "restraint": 4,
+    "continuity": 4,
+    "reusability": 4,
+    "accessibility": 4
+  },
+  "notes": {
+    "recognition": "A heavy boar-like profile with a blazing glass ridge reads as a charger at a glance.",
+    "agency": "The lowered head communicates an approach, evade, or brace decision.",
+    "specificity": "Emberglass crystal growth embedded in engineered basalt is setting-specific.",
+    "restraint": "The orange dorsal ridge is the single protected focal feature.",
+    "continuity": "Shared mineral joints and signal details make it kin to the full encounter roster.",
+    "reusability": "The broad side silhouette holds at board and card sizes.",
+    "accessibility": "Body weight and ridge profile communicate threat independent of color."
+  },
+  "decision": "approved",
+  "candidateSha256": "54e79d63d7f91ecd7366be62d6bfd5faac3457d54935610f3df729f53f54d825",
+  "generation": {
+    "mode": "azure-image-generation",
+    "tool": "azure-foundry",
+    "model": "gpt-image-2",
+    "promptSha256": "89f250cf321c9c4e26766058883ae4eb0a997603ba2409f452b90a0a7bed381b"
+  },
+  "joyScore": 9.5
+}

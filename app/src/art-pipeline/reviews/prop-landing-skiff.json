@@ -1,0 +1,33 @@
+{
+  "assetId": "prop-landing-skiff",
+  "candidate": "app/public/images/art/props/landing-skiff.png",
+  "reviewer": "Codex special encounter art pass",
+  "reviewedAt": "2026-09-16",
+  "scores": {
+    "recognition": 4,
+    "agency": 3,
+    "specificity": 4,
+    "restraint": 4,
+    "continuity": 4,
+    "reusability": 4,
+    "accessibility": 4
+  },
+  "notes": {
+    "recognition": "Expedition Landing Skiff reads immediately at board or reveal scale.",
+    "agency": "The ramp and landing stance imply arrival and extraction.",
+    "specificity": "Weathered mineral, graphite, brass, and restrained signal light keep the asset specific to Xenovoya.",
+    "restraint": "One focal subject and one signal hierarchy remain dominant.",
+    "continuity": "Camera, materials, palette, and silhouette align with the approved board and encounter library.",
+    "reusability": "The transparent square asset layers cleanly into the Three.js board.",
+    "accessibility": "Silhouette, elevation, and route geometry communicate meaning without depending on hue."
+  },
+  "decision": "approved",
+  "candidateSha256": "51db3d31fb12f49293e1af73b989a676d3e0dd65f864e9553239f79e89cd3d58",
+  "generation": {
+    "mode": "azure-image-edit",
+    "tool": "azure-foundry",
+    "model": "gpt-image-2",
+    "promptSha256": "1fdf61c7cab0f97b0eacd14b60688844cff326ec4641f18c8d50ef5601ce4f8a"
+  },
+  "joyScore": 9.5
+}

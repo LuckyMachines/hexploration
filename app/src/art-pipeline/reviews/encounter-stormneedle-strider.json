@@ -1,0 +1,33 @@
+{
+  "assetId": "encounter-stormneedle-strider",
+  "candidate": "artifacts/art/exports/encounter-stormneedle-strider.png",
+  "reviewer": "Codex visual QA",
+  "reviewedAt": "2026-09-15",
+  "scores": {
+    "recognition": 4,
+    "agency": 3,
+    "specificity": 4,
+    "restraint": 4,
+    "continuity": 4,
+    "reusability": 3,
+    "accessibility": 4
+  },
+  "notes": {
+    "recognition": "Long conductive legs and split lightning antennae clearly read as a storm walker.",
+    "agency": "Its planted stance suggests ground, lure, or wait through a storm event.",
+    "specificity": "The creature turns Xenovoya's stormneedle geology into living anatomy.",
+    "restraint": "A narrow vertical silhouette and two restrained glow channels avoid noise.",
+    "continuity": "Black mineral plating and tiny cyan-orange signals match the encounter family.",
+    "reusability": "Tall thin legs need minimum-size rules but remain viable with padding.",
+    "accessibility": "Extreme proportions identify the creature without depending on hue."
+  },
+  "decision": "approved",
+  "candidateSha256": "8d2461f8cee1edd4afb5a819f6b1d698032594f8f0df707db3e1c320e89f964b",
+  "generation": {
+    "mode": "azure-image-generation",
+    "tool": "azure-foundry",
+    "model": "gpt-image-2",
+    "promptSha256": "ee151afa346df2caafc3fc2ba01dfc787082ce66ccce923af73d515de3529763"
+  },
+  "joyScore": 9.3
+}

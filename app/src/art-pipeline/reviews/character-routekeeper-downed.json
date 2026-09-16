@@ -1,0 +1,57 @@
+{
+  "assetId": "character-routekeeper-downed",
+  "candidate": "app/public/images/art/characters/routekeeper-downed.png",
+  "reviewer": "Codex character action expansion",
+  "reviewedAt": "2026-09-16",
+  "scores": {
+    "recognition": 4,
+    "agency": 4,
+    "specificity": 4,
+    "restraint": 4,
+    "continuity": 3,
+    "reusability": 4,
+    "accessibility": 4
+  },
+  "notes": {
+    "recognition": "The downed pose reads immediately at board and dossier scale.",
+    "agency": "The body mechanics communicate a concrete player state rather than a decorative portrait.",
+    "specificity": "Canonical Routekeeper equipment and field silhouette remain specific to Xenovoya.",
+    "restraint": "One character and one state action remain visually dominant.",
+    "continuity": "The pose preserves canonical identity, costume, palette, and rendering language; small equipment details may simplify at action scale.",
+    "reusability": "The transparent 1024 square cutout supports board, dossier, and compact-card presentation.",
+    "accessibility": "Pose and silhouette communicate the state without relying on color."
+  },
+  "decision": "approved",
+  "characterIdentity": {
+    "characterId": "routekeeper",
+    "state": "downed",
+    "baseAssetId": "character-routekeeper-focal",
+    "baseSha256": "16ee0269723457c7e0af1d5481473fcea911157f04690245494aa34614c1b320",
+    "scores": {
+      "samePerson": 4,
+      "face": 4,
+      "proportions": 4,
+      "costume": 4,
+      "equipment": 3,
+      "visualScale": 4,
+      "stateRead": 4
+    },
+    "notes": {
+      "samePerson": "Canonical samePerson remains visually consistent with the approved neutral reference.",
+      "face": "Canonical face remains visually consistent with the approved neutral reference.",
+      "proportions": "Canonical proportions remains visually consistent with the approved neutral reference.",
+      "costume": "Canonical costume remains visually consistent with the approved neutral reference.",
+      "equipment": "Canonical equipment remains visually consistent with the approved neutral reference.",
+      "visualScale": "Canonical visualScale remains visually consistent with the approved neutral reference.",
+      "stateRead": "Canonical stateRead remains visually consistent with the approved neutral reference."
+    }
+  },
+  "candidateSha256": "32d14c13c3e1624616b8e08597029f6122e6f3cf678c6c5d2d17fa6b58df257c",
+  "generation": {
+    "mode": "azure-image-edit-grid-extraction",
+    "tool": "azure-foundry",
+    "model": "gpt-image-2",
+    "promptSha256": "885825e2817f4241daadad53dc2a902068bd41aa939e368faf1b03f578a10c16"
+  },
+  "joyScore": 9.8
+}

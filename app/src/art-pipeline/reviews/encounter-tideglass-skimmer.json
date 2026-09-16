@@ -1,0 +1,33 @@
+{
+  "assetId": "encounter-tideglass-skimmer",
+  "candidate": "artifacts/art/exports/encounter-tideglass-skimmer.png",
+  "reviewer": "Codex visual QA",
+  "reviewedAt": "2026-09-15",
+  "scores": {
+    "recognition": 4,
+    "agency": 3,
+    "specificity": 4,
+    "restraint": 4,
+    "continuity": 4,
+    "reusability": 4,
+    "accessibility": 4
+  },
+  "notes": {
+    "recognition": "The manta-like tideglass shell and hooked fins read clearly as a water skimmer.",
+    "agency": "Its lateral glide supports race, follow, or redirect encounter choices.",
+    "specificity": "Sea-green glass plates joined by old brass signal hardware belong to this world.",
+    "restraint": "One long aquatic gesture protects the silhouette from detail noise.",
+    "continuity": "The mineral carapace and embedded signal lens align with the shared creature system.",
+    "reusability": "The horizontal shape works across board, card, and codex placements.",
+    "accessibility": "Manta body and hook fins remain recognizable in monochrome."
+  },
+  "decision": "approved",
+  "candidateSha256": "af3dd138685438e726940b4ee37919d2e76089796809ffca3050efc466bbd3d5",
+  "generation": {
+    "mode": "azure-image-generation",
+    "tool": "azure-foundry",
+    "model": "gpt-image-2",
+    "promptSha256": "a853554fbb940593d8c621df9c74584f85b01b3de3c12933a282f08517d030d7"
+  },
+  "joyScore": 9.5
+}

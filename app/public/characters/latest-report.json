@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-09T10:44:51.185Z",
+  "generatedAt": "2026-09-16T05:29:00.976Z",
   "scope": "automated-only",
-  "catalogVersion": "1.0.0",
-  "grade": "A-",
+  "catalogVersion": "1.1.0",
+  "grade": "A",
   "architectureGrade": "A",
   "evidenceGrade": "B+",
   "roster": {
@@ -12,9 +12,9 @@
     "uniquePairings": 4
   },
   "coverage": {
-    "authoredStateCount": 8,
-    "possibleStateCount": 48,
-    "fallbackCount": 40
+    "authoredStateCount": 52,
+    "possibleStateCount": 52,
+    "fallbackCount": 0
   },
   "validation": {
     "errors": [],
@@ -24,5 +24,5 @@
     "No representative human attachment or recognition study has been collected.",
     "Automated and expert visual review must not be described as player evidence."
   ],
-  "nextAction": "Add authored states only when gameplay evidence shows the neutral fallback is insufficient."
+  "nextAction": "Maintain full state coverage and refresh a pose only when visual QA finds a concrete identity or readability regression."
 }

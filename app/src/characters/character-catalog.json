@@ -1,6 +1,6 @@
 {
   "$schema": "./schema/character-catalog.schema.json",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "requiredStates": [
     "neutral",
     "selected",
@@ -13,7 +13,8 @@
     "carrying",
     "escaping",
     "triumph",
-    "aftermath"
+    "aftermath",
+    "idle-alert"
   ],
   "roleAliases": {
     "warden": "guard",
@@ -26,7 +27,11 @@
       "characterId": "signal-cartographer",
       "contribution": "Reveals safe routes and reads distant signals",
       "ability": "Move can reveal an extra zone.",
-      "verbs": ["listen", "map", "reveal"]
+      "verbs": [
+        "listen",
+        "map",
+        "reveal"
+      ]
     },
     {
       "id": "medic",
@@ -34,7 +39,11 @@
       "characterId": "field-mender",
       "contribution": "Restores the crew and turns setbacks into another chance",
       "ability": "Rest and Help recover more morale.",
-      "verbs": ["mend", "steady", "restore"]
+      "verbs": [
+        "mend",
+        "steady",
+        "restore"
+      ]
     },
     {
       "id": "carrier",
@@ -42,7 +51,11 @@
       "characterId": "relic-tender",
       "contribution": "Protects recovered relics and interprets their needs",
       "ability": "Carried artifacts lower departure risk.",
-      "verbs": ["shelter", "carry", "attune"]
+      "verbs": [
+        "shelter",
+        "carry",
+        "attune"
+      ]
     },
     {
       "id": "guard",
@@ -50,7 +63,11 @@
       "characterId": "routekeeper",
       "contribution": "Stabilizes crossings and protects the crew's way home",
       "ability": "Danger spikes are softened.",
-      "verbs": ["anchor", "guide", "protect"]
+      "verbs": [
+        "anchor",
+        "guide",
+        "protect"
+      ]
     }
   ],
   "characters": [
@@ -66,22 +83,70 @@
         "face": "Mature angular face, straight brows, blue-gray eyes, long nose, clean-shaven jaw.",
         "hair": "Short dark-brown hair swept high and back with closely cropped sides.",
         "proportions": "Tall lean adult with long legs and restrained, attentive posture.",
-        "palette": ["#151a20", "#5de1d3", "#75c989", "#5a4637"],
-        "signatureEquipment": ["square left-shoulder signal array with cyan display", "paired antennae rising behind the left shoulder", "rectangular mineral satchel at the left hip"],
-        "immutableDetails": ["mature clean-shaven face", "swept-back dark hair", "left-shoulder signal array", "paired cyan and green signals", "low left-hip satchel"],
-        "avoid": ["young fashion-model face", "facial hair", "removing the shoulder array", "moving the satchel to the opposite hip", "military weaponry"]
+        "palette": [
+          "#151a20",
+          "#5de1d3",
+          "#75c989",
+          "#5a4637"
+        ],
+        "signatureEquipment": [
+          "square left-shoulder signal array with cyan display",
+          "paired antennae rising behind the left shoulder",
+          "rectangular mineral satchel at the left hip"
+        ],
+        "immutableDetails": [
+          "mature clean-shaven face",
+          "swept-back dark hair",
+          "left-shoulder signal array",
+          "paired cyan and green signals",
+          "low left-hip satchel"
+        ],
+        "avoid": [
+          "young fashion-model face",
+          "facial hair",
+          "removing the shoulder array",
+          "moving the satchel to the opposite hip",
+          "military weaponry"
+        ]
       },
       "assets": {
         "neutral": "/images/art/characters/signal-cartographer.png",
         "neutralAssetId": "character-signal-cartographer-focal",
         "states": {
-          "helping": "/images/art/characters/signal-cartographer-helping.png"
+          "helping": "/images/art/characters/signal-cartographer-helping.png",
+          "selected": "/images/art/characters/signal-cartographer-selected.png",
+          "moving": "/images/art/characters/signal-cartographer-moving.png",
+          "digging": "/images/art/characters/signal-cartographer-digging.png",
+          "recovering": "/images/art/characters/signal-cartographer-recovering.png",
+          "strained": "/images/art/characters/signal-cartographer-strained.png",
+          "downed": "/images/art/characters/signal-cartographer-downed.png",
+          "carrying": "/images/art/characters/signal-cartographer-carrying.png",
+          "escaping": "/images/art/characters/signal-cartographer-escaping.png",
+          "triumph": "/images/art/characters/signal-cartographer-triumph.png",
+          "aftermath": "/images/art/characters/signal-cartographer-aftermath.png",
+          "idle-alert": "/images/art/characters/signal-cartographer-idle-alert.png"
         },
         "stateAssetIds": {
-          "helping": "character-cartographer-helping"
+          "helping": "character-cartographer-helping",
+          "selected": "character-signal-cartographer-selected",
+          "moving": "character-signal-cartographer-moving",
+          "digging": "character-signal-cartographer-digging",
+          "recovering": "character-signal-cartographer-recovering",
+          "strained": "character-signal-cartographer-strained",
+          "downed": "character-signal-cartographer-downed",
+          "carrying": "character-signal-cartographer-carrying",
+          "escaping": "character-signal-cartographer-escaping",
+          "triumph": "character-signal-cartographer-triumph",
+          "aftermath": "character-signal-cartographer-aftermath",
+          "idle-alert": "character-signal-cartographer-idle-alert"
         }
       },
-      "standee": { "visualScale": 1, "footAnchor": 0.08, "billboard": "camera-facing", "shadowWidth": 0.96 }
+      "standee": {
+        "visualScale": 1,
+        "footAnchor": 0.08,
+        "billboard": "camera-facing",
+        "shadowWidth": 0.96
+      }
     },
     {
       "id": "field-mender",
@@ -95,22 +160,71 @@
         "face": "Older broad face with warm dark-brown skin, high cheekbones, a soft square jaw, and a narrow scar through the left eyebrow.",
         "hair": "Close-cropped silver curls with a clean rounded hairline.",
         "proportions": "Short, broad, sturdy adult with grounded feet and relaxed shoulders.",
-        "palette": ["#18201c", "#78c88a", "#d4b85f", "#6d4938"],
-        "signatureEquipment": ["rounded moss-green field case worn cross-body", "three oxide-green luminous repair vials at the right hip", "thick rolled blanket collar"],
-        "immutableDetails": ["older broad face", "silver close-cropped curls", "left-eyebrow scar", "rounded field case", "three green vials"],
-        "avoid": ["youthful narrow face", "long hair", "white medical uniform", "red cross symbol", "weapons", "bulky power armor"]
+        "palette": [
+          "#18201c",
+          "#78c88a",
+          "#d4b85f",
+          "#6d4938"
+        ],
+        "signatureEquipment": [
+          "rounded moss-green field case worn cross-body",
+          "three oxide-green luminous repair vials at the right hip",
+          "thick rolled blanket collar"
+        ],
+        "immutableDetails": [
+          "older broad face",
+          "silver close-cropped curls",
+          "left-eyebrow scar",
+          "rounded field case",
+          "three green vials"
+        ],
+        "avoid": [
+          "youthful narrow face",
+          "long hair",
+          "white medical uniform",
+          "red cross symbol",
+          "weapons",
+          "bulky power armor"
+        ]
       },
       "assets": {
         "neutral": "/images/art/characters/field-mender.png",
         "neutralAssetId": "character-field-mender-focal",
         "states": {
-          "recovering": "/images/art/characters/field-mender-recovering.png"
+          "recovering": "/images/art/characters/field-mender-recovering.png",
+          "selected": "/images/art/characters/field-mender-selected.png",
+          "moving": "/images/art/characters/field-mender-moving.png",
+          "digging": "/images/art/characters/field-mender-digging.png",
+          "helping": "/images/art/characters/field-mender-helping.png",
+          "strained": "/images/art/characters/field-mender-strained.png",
+          "downed": "/images/art/characters/field-mender-downed.png",
+          "carrying": "/images/art/characters/field-mender-carrying.png",
+          "escaping": "/images/art/characters/field-mender-escaping.png",
+          "triumph": "/images/art/characters/field-mender-triumph.png",
+          "aftermath": "/images/art/characters/field-mender-aftermath.png",
+          "idle-alert": "/images/art/characters/field-mender-idle-alert.png"
         },
         "stateAssetIds": {
-          "recovering": "character-field-mender-recovering"
+          "recovering": "character-field-mender-recovering",
+          "selected": "character-field-mender-selected",
+          "moving": "character-field-mender-moving",
+          "digging": "character-field-mender-digging",
+          "helping": "character-field-mender-helping",
+          "strained": "character-field-mender-strained",
+          "downed": "character-field-mender-downed",
+          "carrying": "character-field-mender-carrying",
+          "escaping": "character-field-mender-escaping",
+          "triumph": "character-field-mender-triumph",
+          "aftermath": "character-field-mender-aftermath",
+          "idle-alert": "character-field-mender-idle-alert"
         }
       },
-      "standee": { "visualScale": 1.04, "footAnchor": 0.08, "billboard": "camera-facing", "shadowWidth": 1.08 }
+      "standee": {
+        "visualScale": 1.04,
+        "footAnchor": 0.08,
+        "billboard": "camera-facing",
+        "shadowWidth": 1.08
+      }
     },
     {
       "id": "relic-tender",
@@ -124,22 +238,70 @@
         "face": "Young adult oval face, warm light-brown skin, large dark eyes, soft straight brows, and a small rounded chin.",
         "hair": "Medium-brown hair center-parted into a low ponytail with two short face-framing strands.",
         "proportions": "Medium-height slender adult with protective inward arm shapes and an unhurried stance.",
-        "palette": ["#28312f", "#847d73", "#d58a43", "#514036"],
-        "signatureEquipment": ["gray protective fabric sling across the chest", "single warm mineral seed", "long split-front field tunic"],
-        "immutableDetails": ["low brown ponytail", "oval youthful face", "gray chest sling", "warm seed relic", "split-front tunic"],
-        "avoid": ["blue trophy device", "armored breastplate", "short tactical jacket", "celebrity pose", "weapons"]
+        "palette": [
+          "#28312f",
+          "#847d73",
+          "#d58a43",
+          "#514036"
+        ],
+        "signatureEquipment": [
+          "gray protective fabric sling across the chest",
+          "single warm mineral seed",
+          "long split-front field tunic"
+        ],
+        "immutableDetails": [
+          "low brown ponytail",
+          "oval youthful face",
+          "gray chest sling",
+          "warm seed relic",
+          "split-front tunic"
+        ],
+        "avoid": [
+          "blue trophy device",
+          "armored breastplate",
+          "short tactical jacket",
+          "celebrity pose",
+          "weapons"
+        ]
       },
       "assets": {
         "neutral": "/images/art/characters/relic-tender.png",
         "neutralAssetId": "character-relic-tender-focal",
         "states": {
-          "triumph": "/images/art/characters/relic-tender-relief.png"
+          "triumph": "/images/art/characters/relic-tender-relief.png",
+          "selected": "/images/art/characters/relic-tender-selected.png",
+          "moving": "/images/art/characters/relic-tender-moving.png",
+          "digging": "/images/art/characters/relic-tender-digging.png",
+          "helping": "/images/art/characters/relic-tender-helping.png",
+          "recovering": "/images/art/characters/relic-tender-recovering.png",
+          "strained": "/images/art/characters/relic-tender-strained.png",
+          "downed": "/images/art/characters/relic-tender-downed.png",
+          "carrying": "/images/art/characters/relic-tender-carrying.png",
+          "escaping": "/images/art/characters/relic-tender-escaping.png",
+          "aftermath": "/images/art/characters/relic-tender-aftermath.png",
+          "idle-alert": "/images/art/characters/relic-tender-idle-alert.png"
         },
         "stateAssetIds": {
-          "triumph": "character-relic-tender-relief"
+          "triumph": "character-relic-tender-relief",
+          "selected": "character-relic-tender-selected",
+          "moving": "character-relic-tender-moving",
+          "digging": "character-relic-tender-digging",
+          "helping": "character-relic-tender-helping",
+          "recovering": "character-relic-tender-recovering",
+          "strained": "character-relic-tender-strained",
+          "downed": "character-relic-tender-downed",
+          "carrying": "character-relic-tender-carrying",
+          "escaping": "character-relic-tender-escaping",
+          "aftermath": "character-relic-tender-aftermath",
+          "idle-alert": "character-relic-tender-idle-alert"
         }
       },
-      "standee": { "visualScale": 1.02, "footAnchor": 0.08, "billboard": "camera-facing", "shadowWidth": 0.94 }
+      "standee": {
+        "visualScale": 1.02,
+        "footAnchor": 0.08,
+        "billboard": "camera-facing",
+        "shadowWidth": 0.94
+      }
     },
     {
       "id": "routekeeper",
@@ -153,28 +315,93 @@
         "face": "Adult long oval face, warm olive skin, strong straight brows, narrow brown eyes, and a squared chin.",
         "hair": "Dark-brown hair center-parted and tied into a low short ponytail.",
         "proportions": "Tall athletic adult with long legs, broad mantle, and grounded stance.",
-        "palette": ["#17191b", "#4a443d", "#e0bd58", "#65cfc9"],
-        "signatureEquipment": ["large square brass route lantern", "weathered asymmetrical survey mantle", "round cyan route instrument at the right hip"],
-        "immutableDetails": ["long oval face", "center-parted tied-back dark hair", "square lantern", "asymmetrical mantle", "cyan hip instrument"],
-        "avoid": ["small oval hand lamp", "additional lantern", "heavy shoulder armor", "changing age or facial structure", "weapons"]
+        "palette": [
+          "#17191b",
+          "#4a443d",
+          "#e0bd58",
+          "#65cfc9"
+        ],
+        "signatureEquipment": [
+          "large square brass route lantern",
+          "weathered asymmetrical survey mantle",
+          "round cyan route instrument at the right hip"
+        ],
+        "immutableDetails": [
+          "long oval face",
+          "center-parted tied-back dark hair",
+          "square lantern",
+          "asymmetrical mantle",
+          "cyan hip instrument"
+        ],
+        "avoid": [
+          "small oval hand lamp",
+          "additional lantern",
+          "heavy shoulder armor",
+          "changing age or facial structure",
+          "weapons"
+        ]
       },
       "assets": {
         "neutral": "/images/art/characters/routekeeper.png",
         "neutralAssetId": "character-routekeeper-focal",
         "states": {
-          "strained": "/images/art/characters/routekeeper-strained.png"
+          "strained": "/images/art/characters/routekeeper-strained.png",
+          "selected": "/images/art/characters/routekeeper-selected.png",
+          "moving": "/images/art/characters/routekeeper-moving.png",
+          "digging": "/images/art/characters/routekeeper-digging.png",
+          "helping": "/images/art/characters/routekeeper-helping.png",
+          "recovering": "/images/art/characters/routekeeper-recovering.png",
+          "downed": "/images/art/characters/routekeeper-downed.png",
+          "carrying": "/images/art/characters/routekeeper-carrying.png",
+          "escaping": "/images/art/characters/routekeeper-escaping.png",
+          "triumph": "/images/art/characters/routekeeper-triumph.png",
+          "aftermath": "/images/art/characters/routekeeper-aftermath.png",
+          "idle-alert": "/images/art/characters/routekeeper-idle-alert.png"
         },
         "stateAssetIds": {
-          "strained": "character-routekeeper-strained"
+          "strained": "character-routekeeper-strained",
+          "selected": "character-routekeeper-selected",
+          "moving": "character-routekeeper-moving",
+          "digging": "character-routekeeper-digging",
+          "helping": "character-routekeeper-helping",
+          "recovering": "character-routekeeper-recovering",
+          "downed": "character-routekeeper-downed",
+          "carrying": "character-routekeeper-carrying",
+          "escaping": "character-routekeeper-escaping",
+          "triumph": "character-routekeeper-triumph",
+          "aftermath": "character-routekeeper-aftermath",
+          "idle-alert": "character-routekeeper-idle-alert"
         }
       },
-      "standee": { "visualScale": 1, "footAnchor": 0.08, "billboard": "camera-facing", "shadowWidth": 1.04 }
+      "standee": {
+        "visualScale": 1,
+        "footAnchor": 0.08,
+        "billboard": "camera-facing",
+        "shadowWidth": 1.04
+      }
     }
   ],
   "qualityContract": {
     "minimumRelationalScore": 3,
-    "thumbnailSizes": [32, 64, 128],
-    "requiredContexts": ["crew-lineup", "board", "dossier", "grayscale-silhouette"],
-    "identityDimensions": ["samePerson", "face", "proportions", "costume", "equipment", "visualScale", "stateRead"]
+    "thumbnailSizes": [
+      32,
+      64,
+      128
+    ],
+    "requiredContexts": [
+      "crew-lineup",
+      "board",
+      "dossier",
+      "grayscale-silhouette"
+    ],
+    "identityDimensions": [
+      "samePerson",
+      "face",
+      "proportions",
+      "costume",
+      "equipment",
+      "visualScale",
+      "stateRead"
+    ]
   }
 }

@@ -1,0 +1,33 @@
+{
+  "assetId": "memory-crew-return-backplate",
+  "candidate": "artifacts/art/exports/memory-crew-return-backplate.webp",
+  "reviewer": "Codex visual QA",
+  "reviewedAt": "2026-09-15",
+  "scores": {
+    "recognition": 4,
+    "agency": 3,
+    "specificity": 3,
+    "restraint": 3,
+    "continuity": 4,
+    "reusability": 4,
+    "accessibility": 4
+  },
+  "notes": {
+    "recognition": "Multiple traveled traces converge at one repaired gold point, reading as a shared return memory.",
+    "agency": "The converging paths imply separate journeys resolving into a cooperative outcome.",
+    "specificity": "Weathered basalt, embedded route residue, repair clamps, and field instruments fit Xenovoya, though the diagram motif is familiar.",
+    "restraint": "Broad dark stone supports code-rendered results, but the circular etched traces add moderate decorative density.",
+    "continuity": "Cyan, green, violet, and gold preserve the route, safety, memory, and completion palette.",
+    "reusability": "The square backplate has a protected center, dark margins, and no baked text or literal result data.",
+    "accessibility": "Convergence and repair remain clear from luminous paths and cracked stone structure without relying on hue."
+  },
+  "decision": "approved",
+  "candidateSha256": "7464e39a8f963bc9fb39a26847f3170720dac025572d53857066a8f5b18595f8",
+  "generation": {
+    "mode": "azure-image-generation",
+    "tool": "azure-foundry",
+    "model": "gpt-image-2",
+    "promptSha256": "16c6ebcbb711004b321204251bc6999da32869b54439ab31cb865e666f3f4e22"
+  },
+  "joyScore": 8.8
+}

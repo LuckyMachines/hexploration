@@ -1,0 +1,33 @@
+{
+  "assetId": "encounter-glassroot-lanternback",
+  "candidate": "artifacts/art/exports/encounter-glassroot-lanternback.png",
+  "reviewer": "Codex visual QA",
+  "reviewedAt": "2026-09-15",
+  "scores": {
+    "recognition": 4,
+    "agency": 3,
+    "specificity": 4,
+    "restraint": 4,
+    "continuity": 4,
+    "reusability": 4,
+    "accessibility": 4
+  },
+  "notes": {
+    "recognition": "The translucent leaf shell and lantern face make this gentle grazer instantly identifiable.",
+    "agency": "Its inquisitive stance supports approach, observe, or harvest choices.",
+    "specificity": "Veined glassroot leaves growing from a mineral insect body are uniquely Xenovoya.",
+    "restraint": "The pale shell carries the focus without excess particles or ornament.",
+    "continuity": "It extends the Glassroot material palette while retaining the shared machine-creature joints.",
+    "reusability": "The compact silhouette and large shell survive small board presentation.",
+    "accessibility": "Shell mass, face lamp, and leg rhythm remain distinct in grayscale."
+  },
+  "decision": "approved",
+  "candidateSha256": "a96aabfa9cb7ed3aeb834127df05f0cf50a3d55023f13e3eaf5ab3768570e0ae",
+  "generation": {
+    "mode": "azure-image-generation",
+    "tool": "azure-foundry",
+    "model": "gpt-image-2",
+    "promptSha256": "ccac3908d88798573f796ffdae26bae80e454c872a50874a5f2116ccf9627c61"
+  },
+  "joyScore": 9.5
+}

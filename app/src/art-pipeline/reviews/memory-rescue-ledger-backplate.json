@@ -1,0 +1,33 @@
+{
+  "assetId": "memory-rescue-ledger-backplate",
+  "candidate": "artifacts/art/exports/memory-rescue-ledger-backplate.webp",
+  "reviewer": "Codex visual QA",
+  "reviewedAt": "2026-09-15",
+  "scores": {
+    "recognition": 4,
+    "agency": 4,
+    "specificity": 4,
+    "restraint": 4,
+    "continuity": 4,
+    "reusability": 4,
+    "accessibility": 4
+  },
+  "notes": {
+    "recognition": "A broken cyan route visibly rejoined by one warm seam reads as rescue and repair immediately.",
+    "agency": "The before-and-after route traces communicate a consequential intervention without inventing result text.",
+    "specificity": "Weathered mineral ledger, field compass, restrained memory residue, and repair material fit Xenovoya.",
+    "restraint": "The repaired crossing is small and centered within a large quiet dark field.",
+    "continuity": "Cyan route, violet memory echo, and gold repair preserve the semantic color system.",
+    "reusability": "The square surface leaves broad central and edge zones for code-rendered result content.",
+    "accessibility": "The cracked path, rejoined seam, and before-route echo remain legible through value and topology."
+  },
+  "decision": "approved",
+  "candidateSha256": "ae597e60f160731a7dfaff0544c18e30a7efda66d62a0158781d59cdbb548173",
+  "generation": {
+    "mode": "azure-image-generation",
+    "tool": "azure-foundry",
+    "model": "gpt-image-2",
+    "promptSha256": "a2410e929253c77a649fe848a204823e99ca09f1eab687e4651f166f5dfb57a4"
+  },
+  "joyScore": 10
+}

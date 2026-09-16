@@ -1,0 +1,57 @@
+{
+  "assetId": "character-field-mender-downed",
+  "candidate": "app/public/images/art/characters/field-mender-downed.png",
+  "reviewer": "Codex character action expansion",
+  "reviewedAt": "2026-09-16",
+  "scores": {
+    "recognition": 4,
+    "agency": 4,
+    "specificity": 4,
+    "restraint": 4,
+    "continuity": 3,
+    "reusability": 4,
+    "accessibility": 4
+  },
+  "notes": {
+    "recognition": "The downed pose reads immediately at board and dossier scale.",
+    "agency": "The body mechanics communicate a concrete player state rather than a decorative portrait.",
+    "specificity": "Canonical Field Mender equipment and field silhouette remain specific to Xenovoya.",
+    "restraint": "One character and one state action remain visually dominant.",
+    "continuity": "The pose preserves canonical identity, costume, palette, and rendering language; small equipment details may simplify at action scale.",
+    "reusability": "The transparent 1024 square cutout supports board, dossier, and compact-card presentation.",
+    "accessibility": "Pose and silhouette communicate the state without relying on color."
+  },
+  "decision": "approved",
+  "characterIdentity": {
+    "characterId": "field-mender",
+    "state": "downed",
+    "baseAssetId": "character-field-mender-focal",
+    "baseSha256": "b36e23b4b252b1a4a3d74fe8ae731614ecab946ef9091f94785a4634f9ff0cd7",
+    "scores": {
+      "samePerson": 4,
+      "face": 4,
+      "proportions": 4,
+      "costume": 4,
+      "equipment": 3,
+      "visualScale": 4,
+      "stateRead": 4
+    },
+    "notes": {
+      "samePerson": "Canonical samePerson remains visually consistent with the approved neutral reference.",
+      "face": "Canonical face remains visually consistent with the approved neutral reference.",
+      "proportions": "Canonical proportions remains visually consistent with the approved neutral reference.",
+      "costume": "Canonical costume remains visually consistent with the approved neutral reference.",
+      "equipment": "Canonical equipment remains visually consistent with the approved neutral reference.",
+      "visualScale": "Canonical visualScale remains visually consistent with the approved neutral reference.",
+      "stateRead": "Canonical stateRead remains visually consistent with the approved neutral reference."
+    }
+  },
+  "candidateSha256": "4609cb195c2ad93d4d1491332d3cc23aa2779338b470c42f85b6b380fdf25c0b",
+  "generation": {
+    "mode": "azure-image-edit-grid-extraction",
+    "tool": "azure-foundry",
+    "model": "gpt-image-2",
+    "promptSha256": "efac1461bb91c64fb6bc03a887982a0e8e0f0023c4a18bccaa87ce7ca87a554b"
+  },
+  "joyScore": 9.8
+}

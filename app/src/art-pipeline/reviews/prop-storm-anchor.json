@@ -1,0 +1,33 @@
+{
+  "assetId": "prop-storm-anchor",
+  "candidate": "artifacts/art/exports/prop-storm-anchor.png",
+  "reviewer": "Codex visual QA",
+  "reviewedAt": "2026-09-15",
+  "scores": {
+    "recognition": 4,
+    "agency": 3,
+    "specificity": 4,
+    "restraint": 4,
+    "continuity": 4,
+    "reusability": 4,
+    "accessibility": 4
+  },
+  "notes": {
+    "recognition": "Three broad grounding claws, copper coil, and narrow mast clearly read as a deployable storm anchor.",
+    "agency": "Its planted state supports deploy, stabilize, or recover interactions.",
+    "specificity": "Slate jaws, wrapped conductor, weathered survey mechanism, and split cyan-red state cues fit Xenovoya.",
+    "restraint": "A strong tripod silhouette contains the technical detail and keeps signals localized.",
+    "continuity": "Camera, mineral-metal construction, alpha, neutral lighting, and margins follow the prop contract.",
+    "reusability": "The complete base and mast remain clean on all tested surfaces and at board scale.",
+    "accessibility": "The wide claw base and tall conductor identify function without hue."
+  },
+  "decision": "approved",
+  "candidateSha256": "ca397e316e27be5f0637456ecb494bce871cfdc44768644b68ecc0bbc1ede251",
+  "generation": {
+    "mode": "azure-image-generation",
+    "tool": "azure-foundry",
+    "model": "gpt-image-2",
+    "promptSha256": "dc3bc84961f851e76de18cd2f29680c439d104e0e48d85f764edff0efebae4ab"
+  },
+  "joyScore": 9.5
+}

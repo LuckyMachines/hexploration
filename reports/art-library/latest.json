@@ -1,0 +1,1387 @@
+{
+  "version": "1.1.0",
+  "artDirectionVersion": "1.3.1",
+  "generatedAt": "2026-09-16T05:29:01.448Z",
+  "grade": "A",
+  "score": 100,
+  "totals": {
+    "groups": 12,
+    "targetGroups": 12,
+    "assets": 150,
+    "approved": 144,
+    "ready": 150,
+    "missingFiles": 0
+  },
+  "groups": [
+    {
+      "id": "tile-geometry",
+      "title": "Tile Geometry",
+      "description": "Orthographic tile silhouettes, elevations, edge profiles, and route affordances.",
+      "target": 10,
+      "count": 10,
+      "approved": 4,
+      "ready": 10,
+      "missing": [],
+      "targetMet": true,
+      "coverageRatio": 1,
+      "assets": [
+        {
+          "id": "tile-reference-desert-variants",
+          "name": "Desert Tile Variant Plate",
+          "family": "tile-reference",
+          "assetType": "reference-only",
+          "status": "reference",
+          "output": "app/public/images/art/tile-concepts/desert-variants.webp"
+        },
+        {
+          "id": "tile-emberglass-razorback-arena",
+          "name": "Emberglass Razorback Arena Tile",
+          "family": "tile-reference",
+          "assetType": "transparent-prop",
+          "status": "approved",
+          "output": "app/public/images/art/bosses/emberglass-razorback-tile.png"
+        },
+        {
+          "id": "tile-reference-jungle-variants",
+          "name": "Jungle Tile Variant Plate",
+          "family": "tile-reference",
+          "assetType": "reference-only",
+          "status": "reference",
+          "output": "app/public/images/art/tile-concepts/jungle-variants.webp"
+        },
+        {
+          "id": "tile-landing-pad-special",
+          "name": "Landing Pad Special Tile",
+          "family": "tile-reference",
+          "assetType": "transparent-prop",
+          "status": "approved",
+          "output": "app/public/images/art/tile-concepts/landing-pad-special.png"
+        },
+        {
+          "id": "tile-reference-landing-variants",
+          "name": "Landing Tile Variant Plate",
+          "family": "tile-reference",
+          "assetType": "reference-only",
+          "status": "reference",
+          "output": "app/public/images/art/tile-concepts/landing-variants.webp"
+        },
+        {
+          "id": "tile-reference-mountain-variants",
+          "name": "Mountain Tile Variant Plate",
+          "family": "tile-reference",
+          "assetType": "reference-only",
+          "status": "reference",
+          "output": "app/public/images/art/tile-concepts/mountain-variants.webp"
+        },
+        {
+          "id": "tile-reference-plains-variants",
+          "name": "Plains Tile Variant Plate",
+          "family": "tile-reference",
+          "assetType": "reference-only",
+          "status": "reference",
+          "output": "app/public/images/art/tile-concepts/plains-variants.webp"
+        },
+        {
+          "id": "tile-reference-relic-variants",
+          "name": "Relic Tile Variant Plate",
+          "family": "tile-reference",
+          "assetType": "reference-only",
+          "status": "reference",
+          "output": "app/public/images/art/tile-concepts/relic-variants.webp"
+        },
+        {
+          "id": "tile-stormneedle-strider-arena",
+          "name": "Stormneedle Strider Arena Tile",
+          "family": "tile-reference",
+          "assetType": "transparent-prop",
+          "status": "approved",
+          "output": "app/public/images/art/bosses/stormneedle-strider-tile.png"
+        },
+        {
+          "id": "tile-violet-warden-arena",
+          "name": "Violet Reliquary Warden Arena Tile",
+          "family": "tile-reference",
+          "assetType": "transparent-prop",
+          "status": "approved",
+          "output": "app/public/images/art/bosses/violet-warden-tile.png"
+        }
+      ]
+    },
+    {
+      "id": "terrain-materials",
+      "title": "Terrain Materials",
+      "description": "Production surface masters paired to the six playable biome families.",
+      "target": 6,
+      "count": 6,
+      "approved": 6,
+      "ready": 6,
+      "missing": [],
+      "targetMet": true,
+      "coverageRatio": 1,
+      "assets": [
+        {
+          "id": "terrain-emberglass-dunes",
+          "name": "Emberglass Dunes Terrain",
+          "family": "game-part",
+          "assetType": "tileable-texture",
+          "status": "approved",
+          "output": "app/public/images/art/terrain/emberglass-dunes.webp"
+        },
+        {
+          "id": "terrain-glassroot-canopy",
+          "name": "Glassroot Canopy Terrain",
+          "family": "game-part",
+          "assetType": "tileable-texture",
+          "status": "approved",
+          "output": "app/public/images/art/terrain/glassroot-canopy.webp"
+        },
+        {
+          "id": "terrain-lantern-moss",
+          "name": "Lantern Moss Plains Terrain",
+          "family": "game-part",
+          "assetType": "tileable-texture",
+          "status": "approved",
+          "output": "app/public/images/art/terrain/lantern-moss.webp"
+        },
+        {
+          "id": "terrain-slate-spires",
+          "name": "Slate Spires Mountain Terrain",
+          "family": "game-part",
+          "assetType": "tileable-texture",
+          "status": "approved",
+          "output": "app/public/images/art/terrain/slate-spires.webp"
+        },
+        {
+          "id": "terrain-verdant-signal-base",
+          "name": "Verdant Signal Terrain Base",
+          "family": "game-part",
+          "assetType": "tileable-texture",
+          "status": "approved",
+          "output": "app/public/images/art/terrain/verdant-signal-base-v2.webp"
+        },
+        {
+          "id": "terrain-violet-reliquary",
+          "name": "Violet Reliquary Terrain",
+          "family": "game-part",
+          "assetType": "tileable-texture",
+          "status": "approved",
+          "output": "app/public/images/art/terrain/violet-reliquary.webp"
+        }
+      ]
+    },
+    {
+      "id": "character-standees",
+      "title": "Character Standees",
+      "description": "Transparent board-ready crew identities and authored condition states.",
+      "target": 52,
+      "count": 52,
+      "approved": 52,
+      "ready": 52,
+      "missing": [],
+      "targetMet": true,
+      "coverageRatio": 1,
+      "assets": [
+        {
+          "id": "character-field-mender-aftermath",
+          "name": "Aftermath Field Mender",
+          "family": "character-condition",
+          "assetType": "transparent-focal",
+          "status": "approved",
+          "output": "app/public/images/art/characters/field-mender-aftermath.png"
+        },
+        {
+          "id": "character-relic-tender-aftermath",
+          "name": "Aftermath Relic Tender",
+          "family": "character-condition",
+          "assetType": "transparent-focal",
+          "status": "approved",
+          "output": "app/public/images/art/characters/relic-tender-aftermath.png"
+        },
+        {
+          "id": "character-routekeeper-aftermath",
+          "name": "Aftermath Routekeeper",
+          "family": "character-condition",
+          "assetType": "transparent-focal",
+          "status": "approved",
+          "output": "app/public/images/art/characters/routekeeper-aftermath.png"
+        },
+        {
+          "id": "character-signal-cartographer-aftermath",
+          "name": "Aftermath Signal Cartographer",
+          "family": "character-condition",
+          "assetType": "transparent-focal",
+          "status": "approved",
+          "output": "app/public/images/art/characters/signal-cartographer-aftermath.png"
+        },
+        {
+          "id": "character-field-mender-carrying",
+          "name": "Carrying Field Mender",
+          "family": "character-condition",
+          "assetType": "transparent-focal",
+          "status": "approved",
+          "output": "app/public/images/art/characters/field-mender-carrying.png"
+        },
+        {
+          "id": "character-relic-tender-carrying",
+          "name": "Carrying Relic Tender",
+          "family": "character-condition",
+          "assetType": "transparent-focal",
+          "status": "approved",
+          "output": "app/public/images/art/characters/relic-tender-carrying.png"
+        },
+        {
+          "id": "character-routekeeper-carrying",
+          "name": "Carrying Routekeeper",
+          "family": "character-condition",
+          "assetType": "transparent-focal",
+          "status": "approved",
+          "output": "app/public/images/art/characters/routekeeper-carrying.png"
+        },
+        {
+          "id": "character-signal-cartographer-carrying",
+          "name": "Carrying Signal Cartographer",
+          "family": "character-condition",
+          "assetType": "transparent-focal",
+          "status": "approved",
+          "output": "app/public/images/art/characters/signal-cartographer-carrying.png"
+        },
+        {
+          "id": "character-field-mender-digging",
+          "name": "Digging Field Mender",
+          "family": "character-condition",
+          "assetType": "transparent-focal",
+          "status": "approved",
+          "output": "app/public/images/art/characters/field-mender-digging.png"
+        },
+        {
+          "id": "character-relic-tender-digging",
+          "name": "Digging Relic Tender",
+          "family": "character-condition",
+          "assetType": "transparent-focal",
+          "status": "approved",
+          "output": "app/public/images/art/characters/relic-tender-digging.png"
+        },
+        {
+          "id": "character-routekeeper-digging",
+          "name": "Digging Routekeeper",
+          "family": "character-condition",
+          "assetType": "transparent-focal",
+          "status": "approved",
+          "output": "app/public/images/art/characters/routekeeper-digging.png"
+        },
+        {
+          "id": "character-signal-cartographer-digging",
+          "name": "Digging Signal Cartographer",
+          "family": "character-condition",
+          "assetType": "transparent-focal",
+          "status": "approved",
+          "output": "app/public/images/art/characters/signal-cartographer-digging.png"
+        },
+        {
+          "id": "character-field-mender-downed",
+          "name": "Downed Field Mender",
+          "family": "character-condition",
+          "assetType": "transparent-focal",
+          "status": "approved",
+          "output": "app/public/images/art/characters/field-mender-downed.png"
+        },
+        {
+          "id": "character-relic-tender-downed",
+          "name": "Downed Relic Tender",
+          "family": "character-condition",
+          "assetType": "transparent-focal",
+          "status": "approved",
+          "output": "app/public/images/art/characters/relic-tender-downed.png"
+        },
+        {
+          "id": "character-routekeeper-downed",
+          "name": "Downed Routekeeper",
+          "family": "character-condition",
+          "assetType": "transparent-focal",
+          "status": "approved",
+          "output": "app/public/images/art/characters/routekeeper-downed.png"
+        },
+        {
+          "id": "character-signal-cartographer-downed",
+          "name": "Downed Signal Cartographer",
+          "family": "character-condition",
+          "assetType": "transparent-focal",
+          "status": "approved",
+          "output": "app/public/images/art/characters/signal-cartographer-downed.png"
+        },
+        {
+          "id": "character-field-mender-escaping",
+          "name": "Escaping Field Mender",
+          "family": "character-condition",
+          "assetType": "transparent-focal",
+          "status": "approved",
+          "output": "app/public/images/art/characters/field-mender-escaping.png"
+        },
+        {
+          "id": "character-relic-tender-escaping",
+          "name": "Escaping Relic Tender",
+          "family": "character-condition",
+          "assetType": "transparent-focal",
+          "status": "approved",
+          "output": "app/public/images/art/characters/relic-tender-escaping.png"
+        },
+        {
+          "id": "character-routekeeper-escaping",
+          "name": "Escaping Routekeeper",
+          "family": "character-condition",
+          "assetType": "transparent-focal",
+          "status": "approved",
+          "output": "app/public/images/art/characters/routekeeper-escaping.png"
+        },
+        {
+          "id": "character-signal-cartographer-escaping",
+          "name": "Escaping Signal Cartographer",
+          "family": "character-condition",
+          "assetType": "transparent-focal",
+          "status": "approved",
+          "output": "app/public/images/art/characters/signal-cartographer-escaping.png"
+        },
+        {
+          "id": "character-field-mender-focal",
+          "name": "Field Mender Explorer",
+          "family": "character",
+          "assetType": "transparent-focal",
+          "status": "approved",
+          "output": "app/public/images/art/characters/field-mender.png"
+        },
+        {
+          "id": "character-field-mender-helping",
+          "name": "Helping Field Mender",
+          "family": "character-condition",
+          "assetType": "transparent-focal",
+          "status": "approved",
+          "output": "app/public/images/art/characters/field-mender-helping.png"
+        },
+        {
+          "id": "character-relic-tender-helping",
+          "name": "Helping Relic Tender",
+          "family": "character-condition",
+          "assetType": "transparent-focal",
+          "status": "approved",
+          "output": "app/public/images/art/characters/relic-tender-helping.png"
+        },
+        {
+          "id": "character-routekeeper-helping",
+          "name": "Helping Routekeeper",
+          "family": "character-condition",
+          "assetType": "transparent-focal",
+          "status": "approved",
+          "output": "app/public/images/art/characters/routekeeper-helping.png"
+        },
+        {
+          "id": "character-cartographer-helping",
+          "name": "Helping Signal Cartographer",
+          "family": "character-condition",
+          "assetType": "transparent-focal",
+          "status": "approved",
+          "output": "app/public/images/art/characters/signal-cartographer-helping.png"
+        },
+        {
+          "id": "character-field-mender-idle-alert",
+          "name": "Idle Alert Field Mender",
+          "family": "character-condition",
+          "assetType": "transparent-focal",
+          "status": "approved",
+          "output": "app/public/images/art/characters/field-mender-idle-alert.png"
+        },
+        {
+          "id": "character-relic-tender-idle-alert",
+          "name": "Idle Alert Relic Tender",
+          "family": "character-condition",
+          "assetType": "transparent-focal",
+          "status": "approved",
+          "output": "app/public/images/art/characters/relic-tender-idle-alert.png"
+        },
+        {
+          "id": "character-routekeeper-idle-alert",
+          "name": "Idle Alert Routekeeper",
+          "family": "character-condition",
+          "assetType": "transparent-focal",
+          "status": "approved",
+          "output": "app/public/images/art/characters/routekeeper-idle-alert.png"
+        },
+        {
+          "id": "character-signal-cartographer-idle-alert",
+          "name": "Idle Alert Signal Cartographer",
+          "family": "character-condition",
+          "assetType": "transparent-focal",
+          "status": "approved",
+          "output": "app/public/images/art/characters/signal-cartographer-idle-alert.png"
+        },
+        {
+          "id": "character-field-mender-moving",
+          "name": "Moving Field Mender",
+          "family": "character-condition",
+          "assetType": "transparent-focal",
+          "status": "approved",
+          "output": "app/public/images/art/characters/field-mender-moving.png"
+        },
+        {
+          "id": "character-relic-tender-moving",
+          "name": "Moving Relic Tender",
+          "family": "character-condition",
+          "assetType": "transparent-focal",
+          "status": "approved",
+          "output": "app/public/images/art/characters/relic-tender-moving.png"
+        },
+        {
+          "id": "character-routekeeper-moving",
+          "name": "Moving Routekeeper",
+          "family": "character-condition",
+          "assetType": "transparent-focal",
+          "status": "approved",
+          "output": "app/public/images/art/characters/routekeeper-moving.png"
+        },
+        {
+          "id": "character-signal-cartographer-moving",
+          "name": "Moving Signal Cartographer",
+          "family": "character-condition",
+          "assetType": "transparent-focal",
+          "status": "approved",
+          "output": "app/public/images/art/characters/signal-cartographer-moving.png"
+        },
+        {
+          "id": "character-field-mender-recovering",
+          "name": "Recovering Field Mender",
+          "family": "character-condition",
+          "assetType": "transparent-focal",
+          "status": "approved",
+          "output": "app/public/images/art/characters/field-mender-recovering.png"
+        },
+        {
+          "id": "character-relic-tender-recovering",
+          "name": "Recovering Relic Tender",
+          "family": "character-condition",
+          "assetType": "transparent-focal",
+          "status": "approved",
+          "output": "app/public/images/art/characters/relic-tender-recovering.png"
+        },
+        {
+          "id": "character-routekeeper-recovering",
+          "name": "Recovering Routekeeper",
+          "family": "character-condition",
+          "assetType": "transparent-focal",
+          "status": "approved",
+          "output": "app/public/images/art/characters/routekeeper-recovering.png"
+        },
+        {
+          "id": "character-signal-cartographer-recovering",
+          "name": "Recovering Signal Cartographer",
+          "family": "character-condition",
+          "assetType": "transparent-focal",
+          "status": "approved",
+          "output": "app/public/images/art/characters/signal-cartographer-recovering.png"
+        },
+        {
+          "id": "character-relic-tender-focal",
+          "name": "Relic Tender Explorer",
+          "family": "character",
+          "assetType": "transparent-focal",
+          "status": "approved",
+          "output": "app/public/images/art/characters/relic-tender.png"
+        },
+        {
+          "id": "character-relic-tender-relief",
+          "name": "Relic Tender Relief",
+          "family": "character-condition",
+          "assetType": "transparent-focal",
+          "status": "approved",
+          "output": "app/public/images/art/characters/relic-tender-relief.png"
+        },
+        {
+          "id": "character-routekeeper-focal",
+          "name": "Routekeeper Explorer",
+          "family": "character",
+          "assetType": "transparent-focal",
+          "status": "approved",
+          "output": "app/public/images/art/characters/routekeeper.png"
+        },
+        {
+          "id": "character-field-mender-selected",
+          "name": "Selected Field Mender",
+          "family": "character-condition",
+          "assetType": "transparent-focal",
+          "status": "approved",
+          "output": "app/public/images/art/characters/field-mender-selected.png"
+        },
+        {
+          "id": "character-relic-tender-selected",
+          "name": "Selected Relic Tender",
+          "family": "character-condition",
+          "assetType": "transparent-focal",
+          "status": "approved",
+          "output": "app/public/images/art/characters/relic-tender-selected.png"
+        },
+        {
+          "id": "character-routekeeper-selected",
+          "name": "Selected Routekeeper",
+          "family": "character-condition",
+          "assetType": "transparent-focal",
+          "status": "approved",
+          "output": "app/public/images/art/characters/routekeeper-selected.png"
+        },
+        {
+          "id": "character-signal-cartographer-selected",
+          "name": "Selected Signal Cartographer",
+          "family": "character-condition",
+          "assetType": "transparent-focal",
+          "status": "approved",
+          "output": "app/public/images/art/characters/signal-cartographer-selected.png"
+        },
+        {
+          "id": "character-signal-cartographer-focal",
+          "name": "Signal Cartographer Explorer",
+          "family": "character",
+          "assetType": "transparent-focal",
+          "status": "approved",
+          "output": "app/public/images/art/characters/signal-cartographer.png"
+        },
+        {
+          "id": "character-field-mender-strained",
+          "name": "Strained Field Mender",
+          "family": "character-condition",
+          "assetType": "transparent-focal",
+          "status": "approved",
+          "output": "app/public/images/art/characters/field-mender-strained.png"
+        },
+        {
+          "id": "character-relic-tender-strained",
+          "name": "Strained Relic Tender",
+          "family": "character-condition",
+          "assetType": "transparent-focal",
+          "status": "approved",
+          "output": "app/public/images/art/characters/relic-tender-strained.png"
+        },
+        {
+          "id": "character-routekeeper-strained",
+          "name": "Strained Routekeeper",
+          "family": "character-condition",
+          "assetType": "transparent-focal",
+          "status": "approved",
+          "output": "app/public/images/art/characters/routekeeper-strained.png"
+        },
+        {
+          "id": "character-signal-cartographer-strained",
+          "name": "Strained Signal Cartographer",
+          "family": "character-condition",
+          "assetType": "transparent-focal",
+          "status": "approved",
+          "output": "app/public/images/art/characters/signal-cartographer-strained.png"
+        },
+        {
+          "id": "character-field-mender-triumph",
+          "name": "Triumph Field Mender",
+          "family": "character-condition",
+          "assetType": "transparent-focal",
+          "status": "approved",
+          "output": "app/public/images/art/characters/field-mender-triumph.png"
+        },
+        {
+          "id": "character-routekeeper-triumph",
+          "name": "Triumph Routekeeper",
+          "family": "character-condition",
+          "assetType": "transparent-focal",
+          "status": "approved",
+          "output": "app/public/images/art/characters/routekeeper-triumph.png"
+        },
+        {
+          "id": "character-signal-cartographer-triumph",
+          "name": "Triumph Signal Cartographer",
+          "family": "character-condition",
+          "assetType": "transparent-focal",
+          "status": "approved",
+          "output": "app/public/images/art/characters/signal-cartographer-triumph.png"
+        }
+      ]
+    },
+    {
+      "id": "character-vignettes",
+      "title": "Character Vignettes",
+      "description": "Narrative ability moments that intentionally include environmental staging.",
+      "target": 4,
+      "count": 4,
+      "approved": 4,
+      "ready": 4,
+      "missing": [],
+      "targetMet": true,
+      "coverageRatio": 1,
+      "assets": [
+        {
+          "id": "character-routekeeper-anchoring",
+          "name": "Anchoring Routekeeper",
+          "family": "character-condition",
+          "assetType": "character-vignette",
+          "status": "approved",
+          "output": "app/public/images/art/characters/routekeeper-anchoring.webp"
+        },
+        {
+          "id": "character-relic-tender-discovery",
+          "name": "Discovering Relic Tender",
+          "family": "character-condition",
+          "assetType": "character-vignette",
+          "status": "approved",
+          "output": "app/public/images/art/characters/relic-tender-discovery.webp"
+        },
+        {
+          "id": "character-field-mender-redline",
+          "name": "Redline Field Mender",
+          "family": "character-condition",
+          "assetType": "character-vignette",
+          "status": "approved",
+          "output": "app/public/images/art/characters/field-mender-redline.webp"
+        },
+        {
+          "id": "character-cartographer-surveying",
+          "name": "Surveying Signal Cartographer",
+          "family": "character-condition",
+          "assetType": "character-vignette",
+          "status": "approved",
+          "output": "app/public/images/art/characters/signal-cartographer-surveying.webp"
+        }
+      ]
+    },
+    {
+      "id": "enemy-standees",
+      "title": "Enemy Standees",
+      "description": "Transparent encounter creatures with biome and threat-tier identity.",
+      "target": 12,
+      "count": 13,
+      "approved": 13,
+      "ready": 13,
+      "missing": [],
+      "targetMet": true,
+      "coverageRatio": 1,
+      "assets": [
+        {
+          "id": "encounter-cinderwake-siphon",
+          "name": "Cinderwake Siphon",
+          "family": "encounter",
+          "assetType": "transparent-focal",
+          "status": "approved",
+          "output": "app/public/images/art/encounters/cinderwake-siphon.png"
+        },
+        {
+          "id": "encounter-emberglass-razorback",
+          "name": "Emberglass Razorback",
+          "family": "encounter",
+          "assetType": "transparent-focal",
+          "status": "approved",
+          "output": "app/public/images/art/encounters/emberglass-razorback.png"
+        },
+        {
+          "id": "encounter-emberglass-mimic",
+          "name": "Emberglass Scuttler",
+          "family": "encounter",
+          "assetType": "transparent-focal",
+          "status": "approved",
+          "output": "app/public/images/art/encounters/emberglass-mimic.png"
+        },
+        {
+          "id": "encounter-glassroot-stalker",
+          "name": "Glassroot Grazer",
+          "family": "encounter",
+          "assetType": "transparent-focal",
+          "status": "approved",
+          "output": "app/public/images/art/encounters/glassroot-stalker.png"
+        },
+        {
+          "id": "encounter-glassroot-lanternback",
+          "name": "Glassroot Lanternback",
+          "family": "encounter",
+          "assetType": "transparent-focal",
+          "status": "approved",
+          "output": "app/public/images/art/encounters/glassroot-lanternback.png"
+        },
+        {
+          "id": "encounter-hushgrass-whistler",
+          "name": "Hushgrass Whistler",
+          "family": "encounter",
+          "assetType": "transparent-focal",
+          "status": "approved",
+          "output": "app/public/images/art/encounters/hushgrass-whistler.png"
+        },
+        {
+          "id": "encounter-lantern-moss-burrower",
+          "name": "Lantern Moss Burrower",
+          "family": "encounter",
+          "assetType": "transparent-focal",
+          "status": "approved",
+          "output": "app/public/images/art/encounters/lantern-moss-burrower.png"
+        },
+        {
+          "id": "encounter-memory-fern-echo",
+          "name": "Memory Fern Echo",
+          "family": "encounter",
+          "assetType": "transparent-focal",
+          "status": "approved",
+          "output": "app/public/images/art/encounters/memory-fern-echo.png"
+        },
+        {
+          "id": "encounter-violet-reliquary-warden",
+          "name": "Reliquary Warden",
+          "family": "encounter",
+          "assetType": "transparent-focal",
+          "status": "approved",
+          "output": "app/public/images/art/encounters/violet-reliquary-warden.png"
+        },
+        {
+          "id": "encounter-slate-spire-kite",
+          "name": "Slate Spire Kite",
+          "family": "encounter",
+          "assetType": "transparent-focal",
+          "status": "approved",
+          "output": "app/public/images/art/encounters/slate-spire-kite.png"
+        },
+        {
+          "id": "encounter-stormneedle-strider",
+          "name": "Stormneedle Strider",
+          "family": "encounter",
+          "assetType": "transparent-focal",
+          "status": "approved",
+          "output": "app/public/images/art/encounters/stormneedle-strider.png"
+        },
+        {
+          "id": "encounter-tideglass-skimmer",
+          "name": "Tideglass Skimmer",
+          "family": "encounter",
+          "assetType": "transparent-focal",
+          "status": "approved",
+          "output": "app/public/images/art/encounters/tideglass-skimmer.png"
+        },
+        {
+          "id": "encounter-verdant-signal-listener",
+          "name": "Verdant Signal Listener",
+          "family": "encounter",
+          "assetType": "transparent-focal",
+          "status": "approved",
+          "output": "app/public/images/art/encounters/verdant-signal-listener.png"
+        }
+      ]
+    },
+    {
+      "id": "encounter-scenes",
+      "title": "Encounter Scenes",
+      "description": "Wide decision and consequence backplates with code-rendered interaction space.",
+      "target": 9,
+      "count": 9,
+      "approved": 9,
+      "ready": 9,
+      "missing": [],
+      "targetMet": true,
+      "coverageRatio": 1,
+      "assets": [
+        {
+          "id": "encounter-echo-fork-decision",
+          "name": "Echo Fork Decision",
+          "family": "encounter",
+          "assetType": "feature-landscape",
+          "status": "approved",
+          "output": "app/public/images/art/encounters/echo-fork-decision.webp"
+        },
+        {
+          "id": "encounter-emberglass-awakening",
+          "name": "Emberglass Awakening Encounter",
+          "family": "encounter",
+          "assetType": "feature-landscape",
+          "status": "approved",
+          "output": "app/public/images/art/encounters/emberglass-awakening.webp"
+        },
+        {
+          "id": "boss-emberglass-razorback-reveal",
+          "name": "Emberglass Razorback Boss Reveal",
+          "family": "encounter",
+          "assetType": "feature-landscape",
+          "status": "approved",
+          "output": "app/public/images/art/bosses/emberglass-razorback-reveal.webp"
+        },
+        {
+          "id": "encounter-glassroot-crossing",
+          "name": "Glassroot Crossing Encounter",
+          "family": "encounter",
+          "assetType": "feature-landscape",
+          "status": "approved",
+          "output": "app/public/images/art/encounters/glassroot-crossing.webp"
+        },
+        {
+          "id": "encounter-reliquary-bargain",
+          "name": "Reliquary Bargain Encounter",
+          "family": "encounter",
+          "assetType": "feature-landscape",
+          "status": "approved",
+          "output": "app/public/images/art/encounters/reliquary-bargain.webp"
+        },
+        {
+          "id": "encounter-stormneedle-shelter",
+          "name": "Stormneedle Shelter Encounter",
+          "family": "encounter",
+          "assetType": "feature-landscape",
+          "status": "approved",
+          "output": "app/public/images/art/encounters/stormneedle-shelter.webp"
+        },
+        {
+          "id": "boss-stormneedle-strider-reveal",
+          "name": "Stormneedle Strider Boss Reveal",
+          "family": "encounter",
+          "assetType": "feature-landscape",
+          "status": "approved",
+          "output": "app/public/images/art/bosses/stormneedle-strider-reveal.webp"
+        },
+        {
+          "id": "boss-violet-warden-reveal",
+          "name": "Violet Reliquary Warden Boss Reveal",
+          "family": "encounter",
+          "assetType": "feature-landscape",
+          "status": "approved",
+          "output": "app/public/images/art/bosses/violet-warden-reveal.webp"
+        },
+        {
+          "id": "encounter-wind-vault-decision",
+          "name": "Wind Vault Decision",
+          "family": "encounter",
+          "assetType": "feature-landscape",
+          "status": "approved",
+          "output": "app/public/images/art/encounters/wind-vault-decision.webp"
+        }
+      ]
+    },
+    {
+      "id": "environments",
+      "title": "Environments",
+      "description": "Traversal locations with distinct value keys, landmarks, and gameplay functions.",
+      "target": 24,
+      "count": 24,
+      "approved": 24,
+      "ready": 24,
+      "missing": [],
+      "targetMet": true,
+      "coverageRatio": 1,
+      "assets": [
+        {
+          "id": "environment-ashwake-verge",
+          "name": "Ashwake Verge",
+          "family": "environment",
+          "assetType": "feature-landscape",
+          "status": "approved",
+          "output": "app/public/images/art/environments/ashwake-verge.webp"
+        },
+        {
+          "id": "environment-atlas-spindle",
+          "name": "Atlas Spindle",
+          "family": "environment",
+          "assetType": "feature-landscape",
+          "status": "approved",
+          "output": "app/public/images/art/environments/atlas-spindle.webp"
+        },
+        {
+          "id": "environment-beaconfall-basin",
+          "name": "Beaconfall Basin",
+          "family": "environment",
+          "assetType": "feature-landscape",
+          "status": "approved",
+          "output": "app/public/images/art/environments/beaconfall-basin.webp"
+        },
+        {
+          "id": "environment-bellstone-rise",
+          "name": "Bellstone Rise",
+          "family": "environment",
+          "assetType": "feature-landscape",
+          "status": "approved",
+          "output": "app/public/images/art/environments/bellstone-rise.webp"
+        },
+        {
+          "id": "environment-cinderwake-flats",
+          "name": "Cinderwake Flats",
+          "family": "environment",
+          "assetType": "feature-landscape",
+          "status": "approved",
+          "output": "app/public/images/art/environments/cinderwake-flats.webp"
+        },
+        {
+          "id": "environment-echo-fork",
+          "name": "Echo Fork",
+          "family": "environment",
+          "assetType": "feature-landscape",
+          "status": "approved",
+          "output": "app/public/images/art/environments/echo-fork.webp"
+        },
+        {
+          "id": "environment-emberglass-crossing",
+          "name": "Emberglass Crossing",
+          "family": "environment",
+          "assetType": "feature-landscape",
+          "status": "approved",
+          "output": "app/public/images/art/environments/emberglass-crossing.webp"
+        },
+        {
+          "id": "environment-far-slate",
+          "name": "Far Slate",
+          "family": "environment",
+          "assetType": "feature-landscape",
+          "status": "approved",
+          "output": "app/public/images/art/environments/far-slate.webp"
+        },
+        {
+          "id": "environment-furnace-scar",
+          "name": "Furnace Scar",
+          "family": "environment",
+          "assetType": "feature-landscape",
+          "status": "approved",
+          "output": "app/public/images/art/environments/furnace-scar.webp"
+        },
+        {
+          "id": "environment-glassroot-cavern",
+          "name": "Glassroot Cavern",
+          "family": "environment",
+          "assetType": "feature-landscape",
+          "status": "approved",
+          "output": "app/public/images/art/environments/glassroot-cavern.webp"
+        },
+        {
+          "id": "environment-glassroot-choir",
+          "name": "Glassroot Choir",
+          "family": "environment",
+          "assetType": "feature-landscape",
+          "status": "approved",
+          "output": "app/public/images/art/environments/glassroot-choir.webp"
+        },
+        {
+          "id": "environment-hushgrass-shelf",
+          "name": "Hushgrass Shelf",
+          "family": "environment",
+          "assetType": "feature-landscape",
+          "status": "approved",
+          "output": "app/public/images/art/environments/hushgrass-shelf.webp"
+        },
+        {
+          "id": "environment-lantern-rest",
+          "name": "Lantern Rest Camp",
+          "family": "environment",
+          "assetType": "feature-landscape",
+          "status": "approved",
+          "output": "app/public/images/art/environments/lantern-rest-camp.webp"
+        },
+        {
+          "id": "environment-memory-ferns",
+          "name": "Memory Ferns",
+          "family": "environment",
+          "assetType": "feature-landscape",
+          "status": "approved",
+          "output": "app/public/images/art/environments/memory-ferns.webp"
+        },
+        {
+          "id": "environment-mossglass-gate",
+          "name": "Mossglass Gate",
+          "family": "environment",
+          "assetType": "feature-landscape",
+          "status": "approved",
+          "output": "app/public/images/art/environments/mossglass-gate.webp"
+        },
+        {
+          "id": "environment-pale-compass-field",
+          "name": "Pale Compass Field",
+          "family": "environment",
+          "assetType": "feature-landscape",
+          "status": "approved",
+          "output": "app/public/images/art/environments/pale-compass-field.webp"
+        },
+        {
+          "id": "environment-quiet-step",
+          "name": "Quiet Step",
+          "family": "environment",
+          "assetType": "feature-landscape",
+          "status": "approved",
+          "output": "app/public/images/art/environments/quiet-step.webp"
+        },
+        {
+          "id": "environment-rootlight-vale",
+          "name": "Rootlight Vale",
+          "family": "environment",
+          "assetType": "feature-landscape",
+          "status": "approved",
+          "output": "app/public/images/art/environments/rootlight-vale.webp"
+        },
+        {
+          "id": "environment-split-needle",
+          "name": "Split Needle",
+          "family": "environment",
+          "assetType": "feature-landscape",
+          "status": "approved",
+          "output": "app/public/images/art/environments/split-needle.webp"
+        },
+        {
+          "id": "environment-stormneedle-pass",
+          "name": "Stormneedle Pass",
+          "family": "environment",
+          "assetType": "feature-landscape",
+          "status": "approved",
+          "output": "app/public/images/art/environments/stormneedle-pass.webp"
+        },
+        {
+          "id": "environment-tideglass-cradle",
+          "name": "Tideglass Cradle",
+          "family": "environment",
+          "assetType": "feature-landscape",
+          "status": "approved",
+          "output": "app/public/images/art/environments/tideglass-cradle.webp"
+        },
+        {
+          "id": "environment-veilwood-fringe",
+          "name": "Veilwood Fringe",
+          "family": "environment",
+          "assetType": "feature-landscape",
+          "status": "approved",
+          "output": "app/public/images/art/environments/veilwood-fringe.webp"
+        },
+        {
+          "id": "environment-violet-archive",
+          "name": "Violet Archive Hollow",
+          "family": "environment",
+          "assetType": "feature-landscape",
+          "status": "approved",
+          "output": "app/public/images/art/environments/violet-archive-hollow.webp"
+        },
+        {
+          "id": "environment-wind-vault",
+          "name": "Wind Vault",
+          "family": "environment",
+          "assetType": "feature-landscape",
+          "status": "approved",
+          "output": "app/public/images/art/environments/wind-vault.webp"
+        }
+      ]
+    },
+    {
+      "id": "relics",
+      "title": "Relics",
+      "description": "Hand-scale artifacts differentiated by function, silhouette, and activation state.",
+      "target": 10,
+      "count": 10,
+      "approved": 10,
+      "ready": 10,
+      "missing": [],
+      "targetMet": true,
+      "coverageRatio": 1,
+      "assets": [
+        {
+          "id": "relic-ashwake-key",
+          "name": "Ashwake Key",
+          "family": "relic",
+          "assetType": "transparent-focal",
+          "status": "approved",
+          "output": "app/public/images/art/relics/ashwake-key.png"
+        },
+        {
+          "id": "relic-atlas-spindle-focal",
+          "name": "Atlas Spindle Relic",
+          "family": "relic",
+          "assetType": "transparent-focal",
+          "status": "approved",
+          "output": "app/public/images/art/relics/atlas-spindle.png"
+        },
+        {
+          "id": "relic-bellstone-clapper",
+          "name": "Bellstone Clapper",
+          "family": "relic",
+          "assetType": "transparent-focal",
+          "status": "approved",
+          "output": "app/public/images/art/relics/bellstone-clapper.png"
+        },
+        {
+          "id": "relic-choir-seed-focal",
+          "name": "Choir Seed Relic",
+          "family": "relic",
+          "assetType": "transparent-focal",
+          "status": "approved",
+          "output": "app/public/images/art/relics/choir-seed.png"
+        },
+        {
+          "id": "relic-echo-compass",
+          "name": "Echo Compass",
+          "family": "relic",
+          "assetType": "transparent-focal",
+          "status": "approved",
+          "output": "app/public/images/art/relics/echo-compass.png"
+        },
+        {
+          "id": "relic-hushgrass-spindle",
+          "name": "Hushgrass Spindle",
+          "family": "relic",
+          "assetType": "transparent-focal",
+          "status": "approved",
+          "output": "app/public/images/art/relics/hushgrass-spindle.png"
+        },
+        {
+          "id": "relic-stormglass-seed",
+          "name": "Stormglass Seed",
+          "family": "relic",
+          "assetType": "transparent-focal",
+          "status": "approved",
+          "output": "app/public/images/art/relics/stormglass-seed.png"
+        },
+        {
+          "id": "relic-sunstone-lens-focal",
+          "name": "Sunstone Lens Focal",
+          "family": "game-part",
+          "assetType": "transparent-focal",
+          "status": "approved",
+          "output": "app/public/images/art/relics/sunstone-lens.png"
+        },
+        {
+          "id": "relic-tideglass-heart",
+          "name": "Tideglass Cradle Relic",
+          "family": "relic",
+          "assetType": "transparent-focal",
+          "status": "approved",
+          "output": "app/public/images/art/relics/tideglass-heart.png"
+        },
+        {
+          "id": "relic-veilglass-map",
+          "name": "Veilglass Map",
+          "family": "relic",
+          "assetType": "transparent-focal",
+          "status": "approved",
+          "output": "app/public/images/art/relics/veilglass-map.png"
+        }
+      ]
+    },
+    {
+      "id": "environment-props",
+      "title": "Environment Props",
+      "description": "Board-scale props and landmarks with shared grounding and scale evidence.",
+      "target": 13,
+      "count": 13,
+      "approved": 13,
+      "ready": 13,
+      "missing": [],
+      "targetMet": true,
+      "coverageRatio": 1,
+      "assets": [
+        {
+          "id": "prop-campsite-shelter",
+          "name": "Campsite Shelter Cutout",
+          "family": "environment-prop",
+          "assetType": "transparent-prop",
+          "status": "approved",
+          "output": "app/public/images/art/props/campsite-shelter.png"
+        },
+        {
+          "id": "prop-emberglass-shards",
+          "name": "Emberglass Shard Cutout",
+          "family": "environment-prop",
+          "assetType": "transparent-prop",
+          "status": "approved",
+          "output": "app/public/images/art/props/emberglass-shards.png"
+        },
+        {
+          "id": "prop-landing-skiff",
+          "name": "Expedition Landing Skiff",
+          "family": "environment-prop",
+          "assetType": "transparent-prop",
+          "status": "approved",
+          "output": "app/public/images/art/props/landing-skiff.png"
+        },
+        {
+          "id": "prop-field-cooklight",
+          "name": "Field Cooklight",
+          "family": "environment-prop",
+          "assetType": "transparent-prop",
+          "status": "approved",
+          "output": "app/public/images/art/props/field-cooklight.png"
+        },
+        {
+          "id": "prop-glassroot-fronds",
+          "name": "Glassroot Frond Cutout",
+          "family": "environment-prop",
+          "assetType": "transparent-prop",
+          "status": "approved",
+          "output": "app/public/images/art/props/glassroot-fronds.png"
+        },
+        {
+          "id": "prop-landing-beacon",
+          "name": "Landing Beacon Cutout",
+          "family": "environment-prop",
+          "assetType": "transparent-prop",
+          "status": "approved",
+          "output": "app/public/images/art/props/landing-beacon.png"
+        },
+        {
+          "id": "prop-lantern-moss",
+          "name": "Lantern Moss Cutout",
+          "family": "environment-prop",
+          "assetType": "transparent-prop",
+          "status": "approved",
+          "output": "app/public/images/art/props/lantern-moss.png"
+        },
+        {
+          "id": "prop-route-fork-marker",
+          "name": "Route Fork Marker",
+          "family": "environment-prop",
+          "assetType": "transparent-prop",
+          "status": "approved",
+          "output": "app/public/images/art/props/route-fork-marker.png"
+        },
+        {
+          "id": "prop-slate-spires",
+          "name": "Slate Spire Cutout",
+          "family": "environment-prop",
+          "assetType": "transparent-prop",
+          "status": "approved",
+          "output": "app/public/images/art/props/slate-spires.png"
+        },
+        {
+          "id": "prop-storm-anchor",
+          "name": "Storm Anchor",
+          "family": "environment-prop",
+          "assetType": "transparent-prop",
+          "status": "approved",
+          "output": "app/public/images/art/props/storm-anchor.png"
+        },
+        {
+          "id": "prop-survey-sled",
+          "name": "Survey Sled",
+          "family": "environment-prop",
+          "assetType": "transparent-prop",
+          "status": "approved",
+          "output": "app/public/images/art/props/survey-sled.png"
+        },
+        {
+          "id": "prop-tideglass-marker",
+          "name": "Tideglass Route Marker",
+          "family": "environment-prop",
+          "assetType": "transparent-prop",
+          "status": "approved",
+          "output": "app/public/images/art/props/tideglass-marker.png"
+        },
+        {
+          "id": "prop-violet-reliquary",
+          "name": "Violet Reliquary Cutout",
+          "family": "environment-prop",
+          "assetType": "transparent-prop",
+          "status": "approved",
+          "output": "app/public/images/art/props/violet-reliquary.png"
+        }
+      ]
+    },
+    {
+      "id": "effects",
+      "title": "Gameplay Effects",
+      "description": "Transparent state signals reviewed across light, dark, and biome surfaces.",
+      "target": 4,
+      "count": 4,
+      "approved": 4,
+      "ready": 4,
+      "missing": [],
+      "targetMet": true,
+      "coverageRatio": 1,
+      "assets": [
+        {
+          "id": "fx-discovery-bloom",
+          "name": "Discovery Bloom Overlay",
+          "family": "game-part",
+          "assetType": "fx-overlay",
+          "status": "approved",
+          "output": "app/public/images/art/fx/discovery-bloom.png"
+        },
+        {
+          "id": "fx-redline-pressure",
+          "name": "Redline Pressure Overlay",
+          "family": "game-part",
+          "assetType": "fx-overlay",
+          "status": "approved",
+          "output": "app/public/images/art/fx/redline-pressure.png"
+        },
+        {
+          "id": "fx-relic-awakening",
+          "name": "Relic Awakening Effect",
+          "family": "game-part",
+          "assetType": "fx-overlay",
+          "status": "approved",
+          "output": "app/public/images/art/fx/relic-awakening.png"
+        },
+        {
+          "id": "fx-route-confirmation",
+          "name": "Route Confirmation Effect",
+          "family": "game-part",
+          "assetType": "fx-overlay",
+          "status": "approved",
+          "output": "app/public/images/art/fx/route-confirmation.png"
+        }
+      ]
+    },
+    {
+      "id": "memory-surfaces",
+      "title": "Memory Surfaces",
+      "description": "Archival and return-loop backplates kept separate from world props.",
+      "target": 3,
+      "count": 3,
+      "approved": 3,
+      "ready": 3,
+      "missing": [],
+      "targetMet": true,
+      "coverageRatio": 1,
+      "assets": [
+        {
+          "id": "memory-crew-return-backplate",
+          "name": "Crew Return Memory Backplate",
+          "family": "memory",
+          "assetType": "social-square",
+          "status": "approved",
+          "output": "app/public/images/art/memory/crew-return-backplate.webp"
+        },
+        {
+          "id": "memory-lantern-route-backplate",
+          "name": "Lantern Route Memory Backplate",
+          "family": "memory",
+          "assetType": "social-square",
+          "status": "approved",
+          "output": "app/public/images/art/memory/lantern-route-backplate.webp"
+        },
+        {
+          "id": "memory-rescue-ledger-backplate",
+          "name": "Rescue Ledger Memory Backplate",
+          "family": "memory",
+          "assetType": "social-square",
+          "status": "approved",
+          "output": "app/public/images/art/memory/rescue-ledger-backplate.webp"
+        }
+      ]
+    },
+    {
+      "id": "concept-scenes",
+      "title": "Concept Scenes",
+      "description": "Non-runtime exploration imagery that must never be presented as gameplay proof.",
+      "target": 2,
+      "count": 2,
+      "approved": 2,
+      "ready": 2,
+      "missing": [],
+      "targetMet": true,
+      "coverageRatio": 1,
+      "assets": [
+        {
+          "id": "concept-crew-relic-return",
+          "name": "Crew Relic Return Concept",
+          "family": "concept-reference",
+          "assetType": "feature-landscape",
+          "status": "approved",
+          "output": "app/public/images/art/concepts/crew-relic-return.webp"
+        },
+        {
+          "id": "concept-first-relic-encounter",
+          "name": "First Relic Encounter Concept",
+          "family": "concept-reference",
+          "assetType": "feature-landscape",
+          "status": "approved",
+          "output": "app/public/images/art/concepts/first-relic-encounter.webp"
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "warnings": []
+}

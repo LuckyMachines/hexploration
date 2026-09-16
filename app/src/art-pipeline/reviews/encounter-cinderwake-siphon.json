@@ -1,0 +1,33 @@
+{
+  "assetId": "encounter-cinderwake-siphon",
+  "candidate": "artifacts/art/exports/encounter-cinderwake-siphon.png",
+  "reviewer": "Codex visual QA",
+  "reviewedAt": "2026-09-15",
+  "scores": {
+    "recognition": 4,
+    "agency": 3,
+    "specificity": 4,
+    "restraint": 4,
+    "continuity": 4,
+    "reusability": 4,
+    "accessibility": 4
+  },
+  "notes": {
+    "recognition": "The low armored siphon silhouette and glowing intake read immediately at board scale.",
+    "agency": "Its feeding posture implies an interrupt-or-avoid encounter; gameplay supplies the decision.",
+    "specificity": "Basalt plates, ember fissures, and the cyan signal barb bind it to Xenovoya.",
+    "restraint": "One hot amber focal channel is protected by a compact dark body.",
+    "continuity": "The mineral anatomy and restrained signal color match the creature family.",
+    "reusability": "The horizontal contour crops cleanly for board, card, and codex uses.",
+    "accessibility": "Mass, intake shape, and posture remain readable without relying on hue."
+  },
+  "decision": "approved",
+  "candidateSha256": "6e2e23189daf618c2395e3785b6f57828167846b4780bd527f2293b6305838e1",
+  "generation": {
+    "mode": "azure-image-generation",
+    "tool": "azure-foundry",
+    "model": "gpt-image-2",
+    "promptSha256": "c1605b19ff32987cebebcbb7a4d44c7447dbd6c6cf0d0975400c42bb7c19e5e3"
+  },
+  "joyScore": 9.5
+}

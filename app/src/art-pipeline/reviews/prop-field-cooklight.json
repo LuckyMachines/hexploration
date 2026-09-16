@@ -1,0 +1,33 @@
+{
+  "assetId": "prop-field-cooklight",
+  "candidate": "artifacts/art/exports/prop-field-cooklight.png",
+  "reviewer": "Codex visual QA",
+  "reviewedAt": "2026-09-15",
+  "scores": {
+    "recognition": 4,
+    "agency": 3,
+    "specificity": 4,
+    "restraint": 4,
+    "continuity": 4,
+    "reusability": 4,
+    "accessibility": 4
+  },
+  "notes": {
+    "recognition": "The broad ceramic bowl, warm heating core, and stable tripod read immediately as a field cooklight.",
+    "agency": "It supports rest and camp-care actions without implying a specific result.",
+    "specificity": "Basalt ceramic, articulated brass legs, cloth grips, and restrained cyan readiness bead fit the expedition kit.",
+    "restraint": "The invented icon panel was removed; one warm heat source and one cyan bead now carry the read.",
+    "continuity": "Camera, material wear, lighting, canvas, and safe margin match the prop system.",
+    "reusability": "Clean alpha and open space between the three legs remain legible on light and dark surfaces.",
+    "accessibility": "Bowl and tripod geometry communicate function without reliance on color."
+  },
+  "decision": "approved",
+  "candidateSha256": "5b693cf13f1da43fc33da33530e02d35f4cab69acb81bb276d0a464535f1e5f9",
+  "generation": {
+    "mode": "azure-image-generation-composite",
+    "tool": "azure-foundry-plus-imagemagick",
+    "model": "gpt-image-2",
+    "promptSha256": "255f1e6be36d0bc0d2ff959d016266cc814a2e50a2dbd2e53a1f73d7e0438323"
+  },
+  "joyScore": 9.5
+}

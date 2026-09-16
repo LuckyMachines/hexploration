@@ -1,0 +1,33 @@
+{
+  "assetId": "concept-first-relic-encounter",
+  "candidate": "artifacts/art/exports/concept-first-relic-encounter.webp",
+  "reviewer": "Codex visual QA",
+  "reviewedAt": "2026-09-15",
+  "scores": {
+    "recognition": 4,
+    "agency": 4,
+    "specificity": 4,
+    "restraint": 4,
+    "continuity": 4,
+    "reusability": 4,
+    "accessibility": 4
+  },
+  "notes": {
+    "recognition": "One explorer encountering one hand-scale relic reads immediately at landscape scale.",
+    "agency": "The explorer pauses between the continuing route and the grounded relic, making the choice visible.",
+    "specificity": "Glassroot strands, basalt shelves, survey pack, and localized relic response establish Xenovoya.",
+    "restraint": "The small violet relic remains the single warm focal event inside broad cavern darkness.",
+    "continuity": "Cyan depth, mineral roots, weathered gear, and warm discovery light follow the locked palette.",
+    "reusability": "The crop preserves the explorer, relic, route, and a large dark UI-safe left field.",
+    "accessibility": "Figure, ledge, relic, and route remain distinct by value and silhouette alone."
+  },
+  "decision": "approved",
+  "candidateSha256": "88df37f6f1400301d4ea162848957039d92e618c3e311949e4f538d3a30411ab",
+  "generation": {
+    "mode": "azure-image-generation",
+    "tool": "azure-foundry",
+    "model": "gpt-image-2",
+    "promptSha256": "28021a5653ca674c3b512dbef630460c1e85990db9a692c521d1355bea8a9520"
+  },
+  "joyScore": 10
+}

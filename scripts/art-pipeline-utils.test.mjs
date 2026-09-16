@@ -21,7 +21,9 @@ describe('art pipeline contracts', () => {
   test('the checked-in art direction and manifest are internally valid', () => {
     const result = validateArtSystem(direction, manifest, { repoRoot });
     assert.deepEqual(result.errors, []);
-    assert.equal(summarizeArtSystem(direction, manifest).assets, 85);
+    const summary = summarizeArtSystem(direction, manifest);
+    assert.equal(summary.assets, manifest.assets.length);
+    assert.ok(summary.assets >= 100, 'the expanded production library should retain at least 100 contracted assets');
   });
 
   test('generation briefs combine visual DNA, emotional purpose, delivery, and avoid rules', () => {

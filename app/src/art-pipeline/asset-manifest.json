@@ -1,7 +1,7 @@
 {
   "$schema": "./schema/asset-manifest.schema.json",
-  "version": "1.12.0",
-  "artDirectionVersion": "1.2.0",
+  "version": "1.16.0",
+  "artDirectionVersion": "1.3.1",
   "managedRoots": [
     "app/public/images/site-refresh",
     "app/public/images/art"
@@ -1035,7 +1035,7 @@
       "id": "environment-violet-archive",
       "name": "Violet Archive Hollow",
       "family": "environment",
-      "status": "candidate",
+      "status": "approved",
       "emotionalBeat": "remembrance",
       "assetType": "feature-landscape",
       "partRole": "backplate",
@@ -1069,7 +1069,11 @@
         }
       ],
       "provenance": {
-        "origin": "planned-azure-image-generation"
+        "origin": "azure-image-generation",
+        "reviewedAt": "2026-09-15",
+        "sha256": "f618b61f54161ab296e12cd83718e4f48d4792efc571955d99dd9668cec69dcb",
+        "review": "app/src/art-pipeline/reviews/environment-violet-archive.json",
+        "promptSha256": "823ac41c2a696eb0e86a8d40bdadc22ffc4966035f5b4a40ed2f7b607a1d2ea5"
       }
     },
     {
@@ -1899,6 +1903,567 @@
       }
     },
     {
+      "id": "encounter-verdant-signal-listener",
+      "name": "Verdant Signal Listener",
+      "family": "encounter",
+      "status": "approved",
+      "emotionalBeat": "discovery",
+      "assetType": "transparent-focal",
+      "partRole": "focal",
+      "encounter": {
+        "biome": "verdant-signal",
+        "threatTier": "ambient",
+        "states": [
+          "idle"
+        ]
+      },
+      "output": {
+        "path": "app/public/images/art/encounters/verdant-signal-listener.png",
+        "width": 1024,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "12-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "A Verdant Signal Listener, a calm alien route-sensing creature whose silhouette suggests attentive navigation rather than a pet or familiar Earth animal.",
+        "scene": "A perfectly uniform pure white isolation background with no floor, horizon, scenery, or cast shadow.",
+        "subject": "One low six-limbed basalt creature with a broad listening crown, two restrained cyan signal apertures, soft moss seams, and a stable forward-facing stance.",
+        "composition": "Complete side-three-quarter board-standee silhouette on one contact line, all limbs visible, generous margin, readable at 64 pixels.",
+        "lighting": "Soft upper-left neutral key, restrained cool rim, and localized cyan information light.",
+        "constraints": [
+          "One creature only",
+          "Tactile painterly paper-cut miniature realism",
+          "No weapon, gore, mascot face, text, logo, watermark, floor, scenery, or cast shadow",
+          "Pure white isolation background"
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/props/landing-beacon.png",
+          "role": "approved cyan signal, restrained technology, and cutout finish reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-generation",
+        "reviewedAt": "2026-09-15",
+        "sha256": "dc07313b56ab60c9c356d9af269ca1d48951132a64edda7eaac303add5474928",
+        "review": "app/src/art-pipeline/reviews/encounter-verdant-signal-listener.json",
+        "promptSha256": "972b4d678e0298fc5e226393d4a02825401e0beb876fdd9cb10471b17576451a"
+      }
+    },
+    {
+      "id": "encounter-glassroot-lanternback",
+      "name": "Glassroot Lanternback",
+      "family": "encounter",
+      "status": "approved",
+      "emotionalBeat": "jeopardy",
+      "assetType": "transparent-focal",
+      "partRole": "focal",
+      "encounter": {
+        "biome": "glassroot",
+        "threatTier": "hazard",
+        "states": [
+          "idle"
+        ]
+      },
+      "output": {
+        "path": "app/public/images/art/encounters/glassroot-lanternback.png",
+        "width": 1024,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "12-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "A Glassroot Lanternback that blocks narrow routes by unfolding a luminous mineral canopy when startled.",
+        "scene": "A perfectly uniform pure white isolation background with no floor, horizon, scenery, or cast shadow.",
+        "subject": "One compact four-legged alien with a dark fibrous body, folded milky-glass leaf armor, one green lantern organ, and a defensive arched silhouette.",
+        "composition": "Complete side-three-quarter board-standee silhouette, all feet visible on one contact line, generous margin, readable at 64 pixels.",
+        "lighting": "Soft upper-left neutral key with contained oxide-green translucency and cool mineral rim.",
+        "constraints": [
+          "One creature only",
+          "Tactile painterly paper-cut miniature realism",
+          "No spikes, gore, teeth, text, logo, watermark, floor, scenery, or cast shadow",
+          "Pure white isolation background"
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/props/glassroot-fronds.png",
+          "role": "approved glassroot material, contour, and cutout finish reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-generation",
+        "reviewedAt": "2026-09-15",
+        "sha256": "a96aabfa9cb7ed3aeb834127df05f0cf50a3d55023f13e3eaf5ab3768570e0ae",
+        "review": "app/src/art-pipeline/reviews/encounter-glassroot-lanternback.json",
+        "promptSha256": "ccac3908d88798573f796ffdae26bae80e454c872a50874a5f2116ccf9627c61"
+      }
+    },
+    {
+      "id": "encounter-lantern-moss-burrower",
+      "name": "Lantern Moss Burrower",
+      "family": "encounter",
+      "status": "approved",
+      "emotionalBeat": "discovery",
+      "assetType": "transparent-focal",
+      "partRole": "focal",
+      "encounter": {
+        "biome": "lantern-moss",
+        "threatTier": "ambient",
+        "states": [
+          "idle"
+        ]
+      },
+      "output": {
+        "path": "app/public/images/art/encounters/lantern-moss-burrower.png",
+        "width": 1024,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "12-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "A Lantern Moss Burrower, a shy alien digger that disguises its broad back as a warm moss-covered trail stone.",
+        "scene": "A perfectly uniform pure white isolation background with no floor, horizon, scenery, or cast shadow.",
+        "subject": "One squat wedge-shaped creature with powerful shovel forelimbs, layered basalt plates, soft olive moss, three small gold sensory bulbs, and no visible mouth.",
+        "composition": "Complete low side-three-quarter silhouette with all contact points visible, generous margin, readable at 64 pixels.",
+        "lighting": "Soft upper-left neutral key with a contained warm lantern glow and quiet green bounce.",
+        "constraints": [
+          "One creature only",
+          "Tactile painterly paper-cut miniature realism",
+          "No cute mascot proportions, weapon, gore, text, logo, watermark, floor, scenery, or cast shadow",
+          "Pure white isolation background"
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/props/lantern-moss.png",
+          "role": "approved lantern-moss material, palette, and cutout finish reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-generation",
+        "reviewedAt": "2026-09-15",
+        "sha256": "a8dd181143db1396094c5dbd078cdc751670693d0e79770ac8ee65102752c678",
+        "review": "app/src/art-pipeline/reviews/encounter-lantern-moss-burrower.json",
+        "promptSha256": "6630448173b04ae7838d90a15514887129152c3796ee566cd32d8b30f8a16a92"
+      }
+    },
+    {
+      "id": "encounter-hushgrass-whistler",
+      "name": "Hushgrass Whistler",
+      "family": "encounter",
+      "status": "approved",
+      "emotionalBeat": "jeopardy",
+      "assetType": "transparent-focal",
+      "partRole": "focal",
+      "encounter": {
+        "biome": "lantern-moss",
+        "threatTier": "hazard",
+        "states": [
+          "idle"
+        ]
+      },
+      "output": {
+        "path": "app/public/images/art/encounters/hushgrass-whistler.png",
+        "width": 1024,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "12-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "A Hushgrass Whistler that redirects expedition signals through a crown of resonant mineral reeds.",
+        "scene": "A perfectly uniform pure white isolation background with no floor, horizon, scenery, or cast shadow.",
+        "subject": "One tall narrow three-legged creature with a charcoal body, a fan of pale grass-like resonator vanes, a closed faceless head, and a tense listening posture.",
+        "composition": "Complete three-quarter board-standee silhouette, legs clearly separated on one contact line, generous margin, readable at 64 pixels.",
+        "lighting": "Soft upper-left neutral key with sparse cyan harmonics and a faint signal-red interruption.",
+        "constraints": [
+          "One creature only",
+          "Tactile painterly paper-cut miniature realism",
+          "No humanoid armor, feathers, weapon, gore, text, logo, watermark, floor, scenery, or cast shadow",
+          "Pure white isolation background"
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/environments/hushgrass-shelf.webp",
+          "role": "approved hushgrass silhouette, atmosphere, and palette reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-generation",
+        "reviewedAt": "2026-09-15",
+        "sha256": "a3891caa560dc2b3618356452feb083f6531fc100c4c51afbf6c892d68b8f72f",
+        "review": "app/src/art-pipeline/reviews/encounter-hushgrass-whistler.json",
+        "promptSha256": "9b9aef888194e85891075526847c45ff13f7cd6c857b6445e32f90f0d49b5179"
+      }
+    },
+    {
+      "id": "encounter-emberglass-razorback",
+      "name": "Emberglass Razorback",
+      "family": "encounter",
+      "status": "approved",
+      "emotionalBeat": "jeopardy",
+      "assetType": "transparent-focal",
+      "partRole": "focal",
+      "encounter": {
+        "biome": "emberglass",
+        "threatTier": "elite",
+        "states": [
+          "idle"
+        ]
+      },
+      "output": {
+        "path": "app/public/images/art/encounters/emberglass-razorback.png",
+        "width": 1024,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "12-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "An Emberglass Razorback, a high-threat alien charger formed around one fractured ridge of heat-dark crystal.",
+        "scene": "A perfectly uniform pure white isolation background with no floor, horizon, scenery, or cast shadow.",
+        "subject": "One heavy quadruped with a low basalt skull, asymmetric amber glass ridge, heat-scarred shoulders, compact legs, and one narrow cyan sensory slit.",
+        "composition": "Complete side-three-quarter board-standee silhouette, weight pitched forward but not attacking, all feet visible, generous margin.",
+        "lighting": "Soft upper-left neutral key with contained amber internal light and restrained red heat fractures.",
+        "constraints": [
+          "One creature only",
+          "Tactile painterly paper-cut miniature realism",
+          "No dinosaur cliche, horns, gore, flame cloud, text, logo, watermark, floor, scenery, or cast shadow",
+          "Pure white isolation background"
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/props/emberglass-shards.png",
+          "role": "approved emberglass material and cutout finish reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-generation",
+        "reviewedAt": "2026-09-15",
+        "sha256": "54e79d63d7f91ecd7366be62d6bfd5faac3457d54935610f3df729f53f54d825",
+        "review": "app/src/art-pipeline/reviews/encounter-emberglass-razorback.json",
+        "promptSha256": "89f250cf321c9c4e26766058883ae4eb0a997603ba2409f452b90a0a7bed381b"
+      }
+    },
+    {
+      "id": "encounter-cinderwake-siphon",
+      "name": "Cinderwake Siphon",
+      "family": "encounter",
+      "status": "approved",
+      "emotionalBeat": "jeopardy",
+      "assetType": "transparent-focal",
+      "partRole": "focal",
+      "encounter": {
+        "biome": "emberglass",
+        "threatTier": "hazard",
+        "states": [
+          "idle"
+        ]
+      },
+      "output": {
+        "path": "app/public/images/art/encounters/cinderwake-siphon.png",
+        "width": 1024,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "12-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "A Cinderwake Siphon, an alien heat-feeding crawler that dims safe route lights as it passes.",
+        "scene": "A perfectly uniform pure white isolation background with no floor, horizon, scenery, or cast shadow.",
+        "subject": "One elongated low crawler with layered charcoal plates, a curved translucent amber intake, four compact gripping limbs, and a trailing ribbon-like heat membrane.",
+        "composition": "Complete side-three-quarter board-standee silhouette with clear front and rear, all limbs visible, generous margin.",
+        "lighting": "Soft upper-left neutral key with a contained amber core and one fading cyan edge.",
+        "constraints": [
+          "One creature only",
+          "Tactile painterly paper-cut miniature realism",
+          "No snake, dragon, weapon, gore, text, logo, watermark, floor, scenery, or cast shadow",
+          "Pure white isolation background"
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/terrain/emberglass-dunes.webp",
+          "role": "approved cinderwake surface, heat palette, and weathering reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-generation",
+        "reviewedAt": "2026-09-15",
+        "sha256": "6e2e23189daf618c2395e3785b6f57828167846b4780bd527f2293b6305838e1",
+        "review": "app/src/art-pipeline/reviews/encounter-cinderwake-siphon.json",
+        "promptSha256": "c1605b19ff32987cebebcbb7a4d44c7447dbd6c6cf0d0975400c42bb7c19e5e3"
+      }
+    },
+    {
+      "id": "encounter-slate-spire-kite",
+      "name": "Slate Spire Kite",
+      "family": "encounter",
+      "status": "approved",
+      "emotionalBeat": "discovery",
+      "assetType": "transparent-focal",
+      "partRole": "focal",
+      "encounter": {
+        "biome": "slate-spires",
+        "threatTier": "ambient",
+        "states": [
+          "idle"
+        ]
+      },
+      "output": {
+        "path": "app/public/images/art/encounters/slate-spire-kite.png",
+        "width": 1024,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "12-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "A Slate Spire Kite, a windborne alien animal that folds into a shard-like silhouette when it lands.",
+        "scene": "A perfectly uniform pure white isolation background with no floor, horizon, scenery, or cast shadow.",
+        "subject": "One gliding creature with a narrow central body, two broad laminated slate membranes, three trailing mineral tendons, and a tiny gold orientation organ.",
+        "composition": "Complete three-quarter gliding silhouette with wings fully readable, centered with generous margin, readable at 64 pixels.",
+        "lighting": "Soft upper-left neutral key with cool rim light and one restrained gold point.",
+        "constraints": [
+          "One creature only",
+          "Tactile painterly paper-cut miniature realism",
+          "No bird feathers, dragon wings, weapon, gore, text, logo, watermark, scenery, or cast shadow",
+          "Pure white isolation background"
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/props/slate-spires.png",
+          "role": "approved laminated-slate material and silhouette reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-generation",
+        "reviewedAt": "2026-09-15",
+        "sha256": "5c9442437a5afb488860fd66c24c093e05efe64e994de198605ccf855ddf9ffe",
+        "review": "app/src/art-pipeline/reviews/encounter-slate-spire-kite.json",
+        "promptSha256": "c5da53b82496749cd6c30286d452976012c8b520f55fc5d436d5a30ee57d18b6"
+      }
+    },
+    {
+      "id": "encounter-stormneedle-strider",
+      "name": "Stormneedle Strider",
+      "family": "encounter",
+      "status": "approved",
+      "emotionalBeat": "jeopardy",
+      "assetType": "transparent-focal",
+      "partRole": "focal",
+      "encounter": {
+        "biome": "slate-spires",
+        "threatTier": "elite",
+        "states": [
+          "idle"
+        ]
+      },
+      "output": {
+        "path": "app/public/images/art/encounters/stormneedle-strider.png",
+        "width": 1024,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "12-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "A Stormneedle Strider, a tall high-threat alien that braces against lightning and redirects it through the ground.",
+        "scene": "A perfectly uniform pure white isolation background with no floor, horizon, scenery, or cast shadow.",
+        "subject": "One four-legged creature with very tall narrow slate limbs, a compact suspended torso, two asymmetrical conductive fins, and one dim cyan core.",
+        "composition": "Complete side-three-quarter board-standee silhouette, all feet visible on one contact line, tall but safely inside the canvas, generous margin.",
+        "lighting": "Soft upper-left neutral key with contained cyan charge and one localized red fracture warning.",
+        "constraints": [
+          "One creature only",
+          "Tactile painterly paper-cut miniature realism",
+          "No humanoid robot, spider cliche, gore, text, logo, watermark, floor, scenery, or cast shadow",
+          "Pure white isolation background"
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/environments/stormneedle-pass.webp",
+          "role": "approved stormneedle scale, palette, and material reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-generation",
+        "reviewedAt": "2026-09-15",
+        "sha256": "8d2461f8cee1edd4afb5a819f6b1d698032594f8f0df707db3e1c320e89f964b",
+        "review": "app/src/art-pipeline/reviews/encounter-stormneedle-strider.json",
+        "promptSha256": "ee151afa346df2caafc3fc2ba01dfc787082ce66ccce923af73d515de3529763"
+      }
+    },
+    {
+      "id": "encounter-violet-reliquary-warden",
+      "name": "Reliquary Warden",
+      "family": "encounter",
+      "status": "approved",
+      "emotionalBeat": "jeopardy",
+      "assetType": "transparent-focal",
+      "partRole": "focal",
+      "encounter": {
+        "biome": "violet-reliquary",
+        "threatTier": "elite",
+        "states": [
+          "idle"
+        ]
+      },
+      "output": {
+        "path": "app/public/images/art/encounters/violet-reliquary-warden.png",
+        "width": 1024,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "12-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "A Reliquary Warden, an ancient non-humanoid alien guardian that closes around rare artifacts when a route becomes unstable.",
+        "scene": "A perfectly uniform pure white isolation background with no floor, horizon, scenery, or cast shadow.",
+        "subject": "One asymmetric ring-bodied creature supported by three stone-metal limbs, with a shuttered violet glass cavity and weathered articulated plates.",
+        "composition": "Complete three-quarter board-standee silhouette, open negative space through the ring, all supports visible, generous margin.",
+        "lighting": "Soft upper-left neutral key with contained violet depth and a thin signal-red seam.",
+        "constraints": [
+          "One creature only",
+          "Tactile painterly paper-cut miniature realism",
+          "No humanoid armor, rune text, portal, weapon, gore, logo, watermark, floor, scenery, or cast shadow",
+          "Pure white isolation background"
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/props/violet-reliquary.png",
+          "role": "approved violet-reliquary material and arch silhouette reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-generation",
+        "reviewedAt": "2026-09-15",
+        "sha256": "8432faefdf4c7fcf288d58006b0adbbda334e31fca64d46826a4ff6a5cc4dc4d",
+        "review": "app/src/art-pipeline/reviews/encounter-violet-reliquary-warden.json",
+        "promptSha256": "370f0a8e1fe5b8d48ccbfebbea0e7eddedafb66916da889acf3f64e67948545c"
+      }
+    },
+    {
+      "id": "encounter-tideglass-skimmer",
+      "name": "Tideglass Skimmer",
+      "family": "encounter",
+      "status": "approved",
+      "emotionalBeat": "discovery",
+      "assetType": "transparent-focal",
+      "partRole": "focal",
+      "encounter": {
+        "biome": "verdant-signal",
+        "threatTier": "hazard",
+        "states": [
+          "idle"
+        ]
+      },
+      "output": {
+        "path": "app/public/images/art/encounters/tideglass-skimmer.png",
+        "width": 1024,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "12-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "A Tideglass Skimmer, a fast alien shelf-runner that draws a dangerous wake through shallow mineral water.",
+        "scene": "A perfectly uniform pure white isolation background with no floor, horizon, scenery, or cast shadow.",
+        "subject": "One low crescent-bodied creature with four fin-like contact limbs, layered teal glass plates, a dark weathered underside, and one forward sensory groove.",
+        "composition": "Complete side-three-quarter board-standee silhouette, all contact limbs visible, strong lateral movement shape, generous margin.",
+        "lighting": "Soft upper-left neutral key with contained cyan-green translucency and no broad glow.",
+        "constraints": [
+          "One creature only",
+          "Tactile painterly paper-cut miniature realism",
+          "No fish tail, wings, weapon, gore, text, logo, watermark, floor, scenery, or cast shadow",
+          "Pure white isolation background"
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/relics/tideglass-heart.png",
+          "role": "approved tideglass material and translucent color reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-generation",
+        "reviewedAt": "2026-09-15",
+        "sha256": "af3dd138685438e726940b4ee37919d2e76089796809ffca3050efc466bbd3d5",
+        "review": "app/src/art-pipeline/reviews/encounter-tideglass-skimmer.json",
+        "promptSha256": "a853554fbb940593d8c621df9c74584f85b01b3de3c12933a282f08517d030d7"
+      }
+    },
+    {
+      "id": "encounter-memory-fern-echo",
+      "name": "Memory Fern Echo",
+      "family": "encounter",
+      "status": "approved",
+      "emotionalBeat": "remembrance",
+      "assetType": "transparent-focal",
+      "partRole": "focal",
+      "encounter": {
+        "biome": "glassroot",
+        "threatTier": "hazard",
+        "states": [
+          "idle"
+        ]
+      },
+      "output": {
+        "path": "app/public/images/art/encounters/memory-fern-echo.png",
+        "width": 1024,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "12-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "A Memory Fern Echo, a non-humanoid alien organism that repeats the silhouette of a passing explorer several seconds late.",
+        "scene": "A perfectly uniform pure white isolation background with no floor, horizon, scenery, or cast shadow.",
+        "subject": "One rooted mobile organism with a compact basalt core, three layered translucent fern fans, two short stabilizing limbs, and offset cyan afterimage membranes.",
+        "composition": "Complete three-quarter board-standee silhouette with one solid body and clearly subordinate echo layers, generous margin, readable at 64 pixels.",
+        "lighting": "Soft upper-left neutral key with restrained cyan afterimages and a tiny violet memory accent.",
+        "constraints": [
+          "One creature only",
+          "Tactile painterly paper-cut miniature realism",
+          "No human face, ghost, horror, weapon, gore, text, logo, watermark, floor, scenery, or cast shadow",
+          "Pure white isolation background"
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/environments/memory-ferns.webp",
+          "role": "approved memory-fern layering, color, and atmosphere reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-generation",
+        "reviewedAt": "2026-09-15",
+        "sha256": "a664c0155fe0d6cfffba3664d1a89f1df5a2054193d58c2a8d191dc2dc040522",
+        "review": "app/src/art-pipeline/reviews/encounter-memory-fern-echo.json",
+        "promptSha256": "436d6d9d14a08c56bf3f5681fee44d3bfa73813f58a908af2e514eab28d96191"
+      }
+    },
+    {
       "id": "relic-tideglass-heart",
       "name": "Tideglass Cradle Relic",
       "family": "relic",
@@ -2031,7 +2596,7 @@
       "id": "concept-first-relic-encounter",
       "name": "First Relic Encounter Concept",
       "family": "concept-reference",
-      "status": "candidate",
+      "status": "approved",
       "emotionalBeat": "discovery",
       "assetType": "feature-landscape",
       "partRole": "backplate",
@@ -2065,14 +2630,18 @@
         }
       ],
       "provenance": {
-        "origin": "planned-azure-image-generation"
+        "origin": "azure-image-generation",
+        "reviewedAt": "2026-09-15",
+        "sha256": "88df37f6f1400301d4ea162848957039d92e618c3e311949e4f538d3a30411ab",
+        "review": "app/src/art-pipeline/reviews/concept-first-relic-encounter.json",
+        "promptSha256": "28021a5653ca674c3b512dbef630460c1e85990db9a692c521d1355bea8a9520"
       }
     },
     {
       "id": "concept-crew-relic-return",
       "name": "Crew Relic Return Concept",
       "family": "concept-reference",
-      "status": "candidate",
+      "status": "approved",
       "emotionalBeat": "cooperation",
       "assetType": "feature-landscape",
       "partRole": "backplate",
@@ -2106,7 +2675,11 @@
         }
       ],
       "provenance": {
-        "origin": "planned-azure-image-generation"
+        "origin": "azure-image-generation",
+        "reviewedAt": "2026-09-15",
+        "sha256": "ad42158cbe28a44323ff409262d56ebc2996dc504b030249182e396803bf6d3b",
+        "review": "app/src/art-pipeline/reviews/concept-crew-relic-return.json",
+        "promptSha256": "3f244d8d31baf83c77eaf28a87c3e6947a8ae4f76e2301b0514750a6851af2d3"
       }
     },
     {
@@ -2673,12 +3246,12 @@
       },
       "prompt": {
         "primaryRequest": "the exact same Relic Tender carefully cradling a newly awakened hand-scale glass relic at chest height, expression of disciplined wonder rather than celebration",
-        "scene": "perfectly uniform pure white isolation background, no floor or cast shadow",
+        "scene": "a compact violet archive alcove at the instant a hand-scale relic wakes, with weathered basalt shelving, one restrained violet crystal glow, and a faint cyan route trace underfoot",
         "subject": "the exact same Relic Tender carefully cradling a newly awakened hand-scale glass relic at chest height, expression of disciplined wonder rather than celebration",
-        "composition": "complete full body, hands and boots visible, contained relic-violet glow, generous margin",
-        "lighting": "Soft neutral character key with only the localized action signal from the approved palette",
+        "composition": "square narrative diorama, complete full body and hands visible, character occupying the central 55 percent, one readable relic interaction, quiet perimeter for card crops",
+        "lighting": "soft cool archive ambience with a contained relic-violet key on the face and hands; warm skin remains readable and signal color stays localized",
         "constraints": [
-          "one adult and one small relic only, no redesign, no trophy pose, no text, no logo, no watermark",
+          "one adult and one small relic only, no redesign, no trophy pose, no white studio background, no text, no logo, no watermark",
           "Preserve the Xenovoya field-ink palette and keep signal color localized",
           "Maintain one readable focal event and production-safe negative space"
         ],
@@ -2697,11 +3270,11 @@
         }
       ],
       "provenance": {
-        "origin": "azure-image-edit",
-        "reviewedAt": "2026-09-13",
-        "sha256": "4935f7b22ce732d0b02f09dac5582a28bdc9aee0c7f36cf3d54aac7847c86d48",
+        "origin": "deterministic-composite",
+        "reviewedAt": "2026-09-15",
+        "sha256": "6d5abc4f4d2800188d416b2aac7bebeae58c9298475a98756d03f9761c9dc10e",
         "review": "app/src/art-pipeline/reviews/character-relic-tender-discovery.json",
-        "promptSha256": "90aa2411ffeeb308fb58a8ecd2526f32624386c4c5fb4d357f90774aa454f3f3"
+        "promptSha256": "cca921931ed95af54ead31f55903d0af60b5ec3aba5bea81663e59b8c26dd5ee"
       }
     },
     {
@@ -3556,9 +4129,18 @@
         "subject": "Weathered survey metal, inset enamel, cyan guidance channels, and beacon sockets",
         "composition": "Consistent orthographic three-quarter view with shelf, fracture, and crown variants",
         "lighting": "Soft neutral studio illumination with localized cyan signal light",
-        "constraints": ["Reference only", "No interface or text", "Do not bake generated state into runtime geometry"]
+        "constraints": [
+          "Reference only",
+          "No interface or text",
+          "Do not bake generated state into runtime geometry"
+        ]
       },
-      "references": [{ "path": "app/public/images/art/terrain/verdant-signal-base-v2.webp", "role": "approved landing-surface reference" }],
+      "references": [
+        {
+          "path": "app/public/images/art/terrain/verdant-signal-base-v2.webp",
+          "role": "approved landing-surface reference"
+        }
+      ],
       "provenance": {
         "origin": "azure-image-generation",
         "reviewedAt": "2026-09-13",
@@ -3590,9 +4172,18 @@
         "subject": "Dry mineral loam, lantern moss, warm spores, route stones, and shallow erosion",
         "composition": "Consistent orthographic three-quarter view with shelf, fracture, and crown variants",
         "lighting": "Soft neutral studio illumination with restrained warm spore light",
-        "constraints": ["Reference only", "No generic green grass", "Keep broad navigable top surfaces"]
+        "constraints": [
+          "Reference only",
+          "No generic green grass",
+          "Keep broad navigable top surfaces"
+        ]
       },
-      "references": [{ "path": "app/public/images/art/terrain/lantern-moss.webp", "role": "approved plains-surface reference" }],
+      "references": [
+        {
+          "path": "app/public/images/art/terrain/lantern-moss.webp",
+          "role": "approved plains-surface reference"
+        }
+      ],
       "provenance": {
         "origin": "azure-image-generation",
         "reviewedAt": "2026-09-13",
@@ -3624,9 +4215,18 @@
         "subject": "Charcoal basalt, pale glassroot lattice, compact silver-green fronds, and mint nodes",
         "composition": "Consistent orthographic three-quarter view with shelf, fracture, and crown variants",
         "lighting": "Soft neutral studio illumination with localized mint bioluminescence",
-        "constraints": ["Reference only", "No conventional tropical jungle", "Keep routes and standees readable"]
+        "constraints": [
+          "Reference only",
+          "No conventional tropical jungle",
+          "Keep routes and standees readable"
+        ]
       },
-      "references": [{ "path": "app/public/images/art/terrain/glassroot-canopy.webp", "role": "approved jungle-surface reference" }],
+      "references": [
+        {
+          "path": "app/public/images/art/terrain/glassroot-canopy.webp",
+          "role": "approved jungle-surface reference"
+        }
+      ],
       "provenance": {
         "origin": "azure-image-generation",
         "reviewedAt": "2026-09-13",
@@ -3658,9 +4258,18 @@
         "subject": "Iron-mineral dust, wind strata, cooled glass, emberglass shards, and restrained orange seams",
         "composition": "Consistent orthographic three-quarter view with shelf, fracture, and crown variants",
         "lighting": "Soft neutral studio illumination with localized ember seams",
-        "constraints": ["Reference only", "Avoid full-frame orange", "Preserve a clear traversal plane"]
+        "constraints": [
+          "Reference only",
+          "Avoid full-frame orange",
+          "Preserve a clear traversal plane"
+        ]
       },
-      "references": [{ "path": "app/public/images/art/terrain/emberglass-dunes.webp", "role": "approved desert-surface reference" }],
+      "references": [
+        {
+          "path": "app/public/images/art/terrain/emberglass-dunes.webp",
+          "role": "approved desert-surface reference"
+        }
+      ],
       "provenance": {
         "origin": "azure-image-generation",
         "reviewedAt": "2026-09-13",
@@ -3692,9 +4301,18 @@
         "subject": "Blue-black slate, stepped pressure fractures, mica edges, angular spires, and cyan inclusions",
         "composition": "Consistent orthographic three-quarter view with shelf, fracture, and crown variants",
         "lighting": "Soft neutral studio illumination with cold mineral glints",
-        "constraints": ["Reference only", "Retain a shared hex footprint", "Keep one traversable top path"]
+        "constraints": [
+          "Reference only",
+          "Retain a shared hex footprint",
+          "Keep one traversable top path"
+        ]
       },
-      "references": [{ "path": "app/public/images/art/terrain/slate-spires.webp", "role": "approved mountain-surface reference" }],
+      "references": [
+        {
+          "path": "app/public/images/art/terrain/slate-spires.webp",
+          "role": "approved mountain-surface reference"
+        }
+      ],
       "provenance": {
         "origin": "azure-image-generation",
         "reviewedAt": "2026-09-13",
@@ -3726,15 +4344,3444 @@
         "subject": "Ceremonial memory stone, inset rings, violet glass filament, survey pins, and reliquary sockets",
         "composition": "Consistent orthographic three-quarter view with shelf, fracture, and crown variants",
         "lighting": "Soft neutral studio illumination with precious localized violet light",
-        "constraints": ["Reference only", "No neon clutter", "Reserve the center for a modular relic"]
+        "constraints": [
+          "Reference only",
+          "No neon clutter",
+          "Reserve the center for a modular relic"
+        ]
       },
-      "references": [{ "path": "app/public/images/art/terrain/violet-reliquary.webp", "role": "approved relic-surface reference" }],
+      "references": [
+        {
+          "path": "app/public/images/art/terrain/violet-reliquary.webp",
+          "role": "approved relic-surface reference"
+        }
+      ],
       "provenance": {
         "origin": "azure-image-generation",
         "reviewedAt": "2026-09-13",
         "sha256": "49ce5fd18231cbef4d755899d9f52ac5f3f2c1d721cb713a6822d199a02f3a57",
         "review": "app/src/art-pipeline/reviews/tile-reference-relic-variants.json",
         "promptSha256": "346530c14c99df0498a8c17664ed6d073d1ae81dc9c4d994612b99ab938de58b"
+      }
+    },
+    {
+      "id": "encounter-glassroot-crossing",
+      "name": "Glassroot Crossing Encounter",
+      "family": "encounter",
+      "status": "approved",
+      "emotionalBeat": "agency",
+      "assetType": "feature-landscape",
+      "partRole": "backplate",
+      "metadata": {
+        "biome": "glassroot",
+        "decision": "cross-or-calm"
+      },
+      "output": {
+        "path": "app/public/images/art/encounters/glassroot-crossing.webp",
+        "width": 1024,
+        "height": 700,
+        "format": "webp",
+        "alpha": false,
+        "maxBytes": 180000,
+        "safeZone": "left-35-percent"
+      },
+      "prompt": {
+        "primaryRequest": "A playable Glassroot encounter where a lanternback blocks a fragile mineral bridge and the route visibly offers a calm detour.",
+        "scene": "Weathered basalt ravine, translucent root bridge, quiet alternate shelf, sparse mist.",
+        "subject": "One small lanternback creature centered at the route decision, environmental scale dominant.",
+        "composition": "Human-eye landscape view with clear foreground approach, two readable paths, and dark left UI space.",
+        "lighting": "Cool cyan depth with restrained mint shell light and one compass-gold safe marker.",
+        "constraints": [
+          "No text or interface",
+          "No combat pose",
+          "One creature only",
+          "Believable traversal scale",
+          "No full-frame neon"
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/environments/glassroot-cavern.webp",
+          "role": "approved biome and traversal reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-generation",
+        "reviewedAt": "2026-09-15",
+        "sha256": "1b235aa3cd3a4e80106015f4479971ff6dba0d8266d87a4fb0705fe5709ede45",
+        "review": "app/src/art-pipeline/reviews/encounter-glassroot-crossing.json",
+        "promptSha256": "69c8803c716a177d7d2fd39796ab9f3414213e1489c3efa2393e485c36fb46e7"
+      }
+    },
+    {
+      "id": "encounter-emberglass-awakening",
+      "name": "Emberglass Awakening Encounter",
+      "family": "encounter",
+      "status": "approved",
+      "emotionalBeat": "jeopardy",
+      "assetType": "feature-landscape",
+      "partRole": "backplate",
+      "metadata": {
+        "biome": "emberglass",
+        "decision": "brace-or-bypass"
+      },
+      "output": {
+        "path": "app/public/images/art/encounters/emberglass-awakening.webp",
+        "width": 1024,
+        "height": 700,
+        "format": "webp",
+        "alpha": false,
+        "maxBytes": 180000,
+        "safeZone": "center-left"
+      },
+      "prompt": {
+        "primaryRequest": "A tense Emberglass route where a buried razorback wakes beneath fractured mineral dunes.",
+        "scene": "Iron dust basin, cooled black glass shelves, sparse orange fissures, visible bypass ridge.",
+        "subject": "One emerging razorback whose movement disturbs the route without filling the frame.",
+        "composition": "Low landscape view, readable route fork, creature in right middle distance, calm left UI space.",
+        "lighting": "Deep field-ink shadows, localized ember seams, cool cyan safety point beyond.",
+        "constraints": [
+          "No text or interface",
+          "No explosion",
+          "One creature only",
+          "Playable terrain",
+          "No orange wash"
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/environments/emberglass-crossing.webp",
+          "role": "approved biome and value-key reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-generation",
+        "reviewedAt": "2026-09-15",
+        "sha256": "e92c2c84378573f3cff25fd4218752d96eed9b6f73c22c9934a39db99ba620ca",
+        "review": "app/src/art-pipeline/reviews/encounter-emberglass-awakening.json",
+        "promptSha256": "80aeb764ebcecd3c8fd968f426b77e795072df96953e95e09688ad8226396e78"
+      }
+    },
+    {
+      "id": "encounter-stormneedle-shelter",
+      "name": "Stormneedle Shelter Encounter",
+      "family": "encounter",
+      "status": "approved",
+      "emotionalBeat": "cooperation",
+      "assetType": "feature-landscape",
+      "partRole": "backplate",
+      "metadata": {
+        "biome": "slate-spires",
+        "decision": "ground-or-shelter"
+      },
+      "output": {
+        "path": "app/public/images/art/encounters/stormneedle-shelter.webp",
+        "width": 1024,
+        "height": 700,
+        "format": "webp",
+        "alpha": false,
+        "maxBytes": 180000,
+        "safeZone": "right-35-percent"
+      },
+      "prompt": {
+        "primaryRequest": "A playable slate-spire pass where a stormneedle strider offers a narrow safe zone beneath an electrical front.",
+        "scene": "Blue-black slate terraces, tall conductive needles, one sheltered route cut into rock.",
+        "subject": "One distant strider grounding a localized storm while the safe path remains obvious.",
+        "composition": "Wide human-eye view with deep layers, foreground cover, and quiet right UI space.",
+        "lighting": "Cold overcast key, one restrained cyan ground channel, tiny gold shelter confirmation.",
+        "constraints": [
+          "No text or interface",
+          "No lightning wall",
+          "One creature only",
+          "Human-scale paths",
+          "No battle spectacle"
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/environments/stormneedle-pass.webp",
+          "role": "approved biome and terrain scale reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-generation-composite",
+        "reviewedAt": "2026-09-15",
+        "sha256": "68114981cc0bd77c59bd0a5548900360336a9e7345a62a26cdc674d6d4aa7ad8",
+        "review": "app/src/art-pipeline/reviews/encounter-stormneedle-shelter.json",
+        "promptSha256": "d5835644c6df7b31d9e52040d183a08feb2c0423ba0b373b3b3406319e89b6c8"
+      }
+    },
+    {
+      "id": "encounter-reliquary-bargain",
+      "name": "Reliquary Bargain Encounter",
+      "family": "encounter",
+      "status": "approved",
+      "emotionalBeat": "remembrance",
+      "assetType": "feature-landscape",
+      "partRole": "backplate",
+      "metadata": {
+        "biome": "violet-reliquary",
+        "decision": "offer-or-unlock"
+      },
+      "output": {
+        "path": "app/public/images/art/encounters/reliquary-bargain.webp",
+        "width": 1024,
+        "height": 700,
+        "format": "webp",
+        "alpha": false,
+        "maxBytes": 180000,
+        "safeZone": "left-35-percent"
+      },
+      "prompt": {
+        "primaryRequest": "A quiet reliquary chamber where a three-legged warden protects a hand-scale memory vessel and waits for an offering.",
+        "scene": "Weathered basalt archive, recessed violet seams, modest ritual platform, clear exit route.",
+        "subject": "One warden and one small grounded vessel, separated clearly in space.",
+        "composition": "Wide eye-level view, restrained central ritual, dark left UI space, readable approach and retreat.",
+        "lighting": "Subsurface violet memory light with one warm offering point and broad neutral darkness.",
+        "constraints": [
+          "No text or glyph wall",
+          "No throne",
+          "One creature and one relic",
+          "No purple wash",
+          "Playable scale"
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/memory/lantern-route-backplate.webp",
+          "role": "approved memory restraint reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-generation-composite",
+        "reviewedAt": "2026-09-15",
+        "sha256": "8c29c729b2a646460d68d57bbac4d64d31064cc736d846c090c3a29dd5b00690",
+        "review": "app/src/art-pipeline/reviews/encounter-reliquary-bargain.json",
+        "promptSha256": "fd1a4dc9d0850f4727663ee5a7f4ebba5d7bfad0e6e4408aef2d54923244198e"
+      }
+    },
+    {
+      "id": "environment-lantern-rest",
+      "name": "Lantern Rest Camp",
+      "family": "environment",
+      "status": "approved",
+      "emotionalBeat": "cooperation",
+      "assetType": "feature-landscape",
+      "partRole": "backplate",
+      "metadata": {
+        "biome": "lantern-moss",
+        "function": "safe-rest"
+      },
+      "output": {
+        "path": "app/public/images/art/environments/lantern-rest-camp.webp",
+        "width": 1024,
+        "height": 700,
+        "format": "webp",
+        "alpha": false,
+        "maxBytes": 180000,
+        "safeZone": "center-left"
+      },
+      "prompt": {
+        "primaryRequest": "A premium playable safe camp that makes rest, repair, and crew warmth visible inside Xenovoya's alien wilderness.",
+        "scene": "Low basalt shelf under arching lantern moss, compact survey shelter, repaired route gear, distant dark plain.",
+        "subject": "An unoccupied but recently used three-person camp with one warm communal light.",
+        "composition": "Human-eye landscape, sheltered foreground, readable work and sleep zones, open route beyond, quiet UI area.",
+        "lighting": "Soft compass-gold camp pool against cool green moss and deep field-ink night.",
+        "constraints": [
+          "No characters",
+          "No text or interface",
+          "No suburban campsite",
+          "No excessive clutter",
+          "Believable gameplay scale"
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/props/campsite-shelter.png",
+          "role": "approved shelter construction reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-generation",
+        "reviewedAt": "2026-09-15",
+        "sha256": "379545718a1835d1194669b5bb792ffb4b11857ea0d8c507e671e12aaad37cc4",
+        "review": "app/src/art-pipeline/reviews/environment-lantern-rest.json",
+        "promptSha256": "e90aec5cd78023d55aae544e4d25b75a77ee7aa2d5294b37d6455018bad87b0f"
+      }
+    },
+    {
+      "id": "prop-survey-sled",
+      "name": "Survey Sled",
+      "family": "environment-prop",
+      "status": "approved",
+      "emotionalBeat": "cooperation",
+      "assetType": "transparent-prop",
+      "partRole": "prop",
+      "output": {
+        "path": "app/public/images/art/props/survey-sled.png",
+        "width": 1024,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "12-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "One compact hand-pulled Xenovoya survey sled carrying neatly secured expedition cases.",
+        "scene": "Perfectly uniform pure white isolation background, no floor, horizon, environment, or cast shadow.",
+        "subject": "Low weathered basalt-metal sled, two runners, folded tow bar, three strapped modular cases, tiny cyan status lamp.",
+        "composition": "Complete three-quarter object, one connected silhouette, generous margin, readable at 64 pixels.",
+        "lighting": "Soft neutral studio key with localized cyan and one tiny compass-gold latch.",
+        "constraints": [
+          "One connected prop",
+          "Pure white background",
+          "No text, logo, wheels, character, loose debris, floor, or shadow"
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/props/landing-beacon.png",
+          "role": "approved survey construction reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-generation",
+        "reviewedAt": "2026-09-15",
+        "sha256": "08e83704e79e500703cd78640a2fd04878f02ac8faf5daaa969a5ec6ba16fd10",
+        "review": "app/src/art-pipeline/reviews/prop-survey-sled.json",
+        "promptSha256": "6f7eea81b586a0efeed254d5d59b4f888c8771ceefe540ff8c1abf00237f227d"
+      }
+    },
+    {
+      "id": "prop-field-cooklight",
+      "name": "Field Cooklight",
+      "family": "environment-prop",
+      "status": "approved",
+      "emotionalBeat": "cooperation",
+      "assetType": "transparent-prop",
+      "partRole": "prop",
+      "output": {
+        "path": "app/public/images/art/props/field-cooklight.png",
+        "width": 1024,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "12-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "One portable Xenovoya cooklight that communicates shared warmth and practical field care.",
+        "scene": "Perfectly uniform pure white isolation background, no floor, horizon, environment, or cast shadow.",
+        "subject": "Low tripod cooker with basalt ceramic bowl, folding brass arms, soft amber heat core, small cyan readiness bead.",
+        "composition": "Complete three-quarter prop, compact triangular silhouette, generous margin, readable at 64 pixels.",
+        "lighting": "Soft neutral studio key and restrained localized amber glow.",
+        "constraints": [
+          "One connected prop",
+          "Pure white background",
+          "No food, text, logo, character, floor, smoke, or detached pieces"
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/props/campsite-shelter.png",
+          "role": "approved field-kit material reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-generation-composite",
+        "reviewedAt": "2026-09-15",
+        "sha256": "5b693cf13f1da43fc33da33530e02d35f4cab69acb81bb276d0a464535f1e5f9",
+        "review": "app/src/art-pipeline/reviews/prop-field-cooklight.json",
+        "promptSha256": "255f1e6be36d0bc0d2ff959d016266cc814a2e50a2dbd2e53a1f73d7e0438323"
+      }
+    },
+    {
+      "id": "prop-tideglass-marker",
+      "name": "Tideglass Route Marker",
+      "family": "environment-prop",
+      "status": "approved",
+      "emotionalBeat": "agency",
+      "assetType": "transparent-prop",
+      "partRole": "route",
+      "output": {
+        "path": "app/public/images/art/props/tideglass-marker.png",
+        "width": 1024,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "12-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "One amphibious route marker built to show changing safe paths through tideglass terrain.",
+        "scene": "Perfectly uniform pure white isolation background, no floor, horizon, environment, or cast shadow.",
+        "subject": "Short mineral stake with two layered sea-green glass fins, brass tide hinge, single cyan route bead.",
+        "composition": "Complete upright three-quarter object, asymmetrical fin silhouette, generous margin, readable at 64 pixels.",
+        "lighting": "Soft neutral studio key showing translucent glass without bloom.",
+        "constraints": [
+          "One connected prop",
+          "Pure white background",
+          "No arrows, text, logo, character, water, floor, or shadow"
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/props/route-fork-marker.png",
+          "role": "approved route-marker grammar"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-generation",
+        "reviewedAt": "2026-09-15",
+        "sha256": "4e700732625f751e524794c0a789877f0c5b3aeea58dfa83972c8b6f913b7d1d",
+        "review": "app/src/art-pipeline/reviews/prop-tideglass-marker.json",
+        "promptSha256": "78924a57348eeb989d42b11b3ab8086145501459418097a86dd4bb425a7440d4"
+      }
+    },
+    {
+      "id": "prop-storm-anchor",
+      "name": "Storm Anchor",
+      "family": "environment-prop",
+      "status": "approved",
+      "emotionalBeat": "jeopardy",
+      "assetType": "transparent-prop",
+      "partRole": "prop",
+      "output": {
+        "path": "app/public/images/art/props/storm-anchor.png",
+        "width": 1024,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "12-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "One deployable Xenovoya storm anchor that grounds electrical pressure before a mountain crossing.",
+        "scene": "Perfectly uniform pure white isolation background, no floor, horizon, environment, or cast shadow.",
+        "subject": "Heavy three-claw basalt anchor, folding conductive slate mast, wrapped copper coil, tiny cyan grounded indicator.",
+        "composition": "Complete three-quarter prop with stable wide base and narrow mast, generous margin.",
+        "lighting": "Soft neutral studio key with no dramatic lightning.",
+        "constraints": [
+          "One connected prop",
+          "Pure white background",
+          "No text, logo, character, cable pile, lightning, floor, or shadow"
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/props/slate-spires.png",
+          "role": "approved mountain material reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-generation",
+        "reviewedAt": "2026-09-15",
+        "sha256": "ca397e316e27be5f0637456ecb494bce871cfdc44768644b68ecc0bbc1ede251",
+        "review": "app/src/art-pipeline/reviews/prop-storm-anchor.json",
+        "promptSha256": "dc3bc84961f851e76de18cd2f29680c439d104e0e48d85f764edff0efebae4ab"
+      }
+    },
+    {
+      "id": "fx-route-confirmation",
+      "name": "Route Confirmation Effect",
+      "family": "game-part",
+      "status": "approved",
+      "emotionalBeat": "agency",
+      "assetType": "fx-overlay",
+      "partRole": "signal",
+      "output": {
+        "path": "app/public/images/art/fx/route-confirmation.png",
+        "width": 1536,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "center"
+      },
+      "prompt": {
+        "primaryRequest": "A restrained route-confirmation light sweep for additive gameplay layering.",
+        "scene": "Perfectly uniform pure black background for alpha extraction.",
+        "subject": "One shallow compass-gold arc advancing toward a small cyan endpoint, with exactly four mineral motes.",
+        "composition": "Effect occupies the middle horizontal third with broad empty outer space and soft falloff.",
+        "lighting": "Localized gold-to-cyan emissive trace, no white bloom.",
+        "constraints": [
+          "The compass-gold arc must stay shallow and incomplete",
+          "Exactly four mineral motes and one cyan endpoint",
+          "No text, arrows, icons, interface frame, landscape, portal, radial grid, or full-frame haze"
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/fx/discovery-bloom.png",
+          "role": "approved restrained VFX density"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-generation",
+        "reviewedAt": "2026-09-15",
+        "sha256": "eb3c695fb892743ff3402f95c4abb767ce53a871cf0a472c9c45561f7522d227",
+        "review": "app/src/art-pipeline/reviews/fx-route-confirmation.json",
+        "promptSha256": "e32e7e3cf79c3d3b94838acabfcd1cd6062b093f79601329dc99d73c9d13771e"
+      }
+    },
+    {
+      "id": "fx-relic-awakening",
+      "name": "Relic Awakening Effect",
+      "family": "game-part",
+      "status": "approved",
+      "emotionalBeat": "discovery",
+      "assetType": "fx-overlay",
+      "partRole": "signal",
+      "output": {
+        "path": "app/public/images/art/fx/relic-awakening.png",
+        "width": 1536,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "center"
+      },
+      "prompt": {
+        "primaryRequest": "A quiet relic-awakening pulse that feels precious rather than explosive.",
+        "scene": "Perfectly uniform pure black background for alpha extraction.",
+        "subject": "One small violet-gold subsurface halo, three rising memory filaments, and five sparse motes.",
+        "composition": "Centered lower-third effect with empty edges and a soft irregular falloff.",
+        "lighting": "Restrained violet core, hairline gold confirmation, transparent darkness.",
+        "constraints": [
+          "No relic object",
+          "No text, symbols, interface, portal, lightning, explosion, radial spokes, or full-frame haze"
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/fx/discovery-bloom.png",
+          "role": "approved transparent VFX restraint"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-generation",
+        "reviewedAt": "2026-09-15",
+        "sha256": "8f517c6b1e73e03965e8a7d4d94d20ae231a507b0a3362cc840a72015856195e",
+        "review": "app/src/art-pipeline/reviews/fx-relic-awakening.json",
+        "promptSha256": "9c7f04f57ef63fb97f5b8889968b598f09e903f9d82c43ef1f265ce6897d3aa4"
+      }
+    },
+    {
+      "id": "memory-crew-return-backplate",
+      "name": "Crew Return Memory Backplate",
+      "family": "memory",
+      "status": "approved",
+      "emotionalBeat": "cooperation",
+      "assetType": "social-square",
+      "partRole": "backplate",
+      "output": {
+        "path": "app/public/images/art/memory/crew-return-backplate.webp",
+        "width": 1200,
+        "height": 1200,
+        "format": "webp",
+        "alpha": false,
+        "maxBytes": 450000,
+        "safeZone": "center"
+      },
+      "prompt": {
+        "primaryRequest": "An archival memory surface showing the warm trace left by a crew returning together, without depicting literal people.",
+        "scene": "Dark basalt record slab with three overlapping route impressions converging at a sheltered gold point.",
+        "subject": "Layered mineral wear, repaired seam, and three distinct but connected path residues.",
+        "composition": "Square quiet backplate with protected center and generous dark margins for code-rendered results.",
+        "lighting": "Subtle green and violet memory afterimages with one small compass-gold completion glow.",
+        "constraints": [
+          "No characters",
+          "No text, glyphs, interface, map labels, portal, or decorative frame",
+          "Keep center readable"
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/memory/lantern-route-backplate.webp",
+          "role": "approved archival material and restraint"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-generation",
+        "reviewedAt": "2026-09-15",
+        "sha256": "7464e39a8f963bc9fb39a26847f3170720dac025572d53857066a8f5b18595f8",
+        "review": "app/src/art-pipeline/reviews/memory-crew-return-backplate.json",
+        "promptSha256": "16c6ebcbb711004b321204251bc6999da32869b54439ab31cb865e666f3f4e22"
+      }
+    },
+    {
+      "id": "memory-rescue-ledger-backplate",
+      "name": "Rescue Ledger Memory Backplate",
+      "family": "memory",
+      "status": "approved",
+      "emotionalBeat": "remembrance",
+      "assetType": "social-square",
+      "partRole": "backplate",
+      "output": {
+        "path": "app/public/images/art/memory/rescue-ledger-backplate.webp",
+        "width": 1200,
+        "height": 1200,
+        "format": "webp",
+        "alpha": false,
+        "maxBytes": 450000,
+        "safeZone": "center"
+      },
+      "prompt": {
+        "primaryRequest": "An archival stone surface where one interrupted route has been carefully repaired and preserved as a rescue memory.",
+        "scene": "Weathered dark mineral ledger with a broken cyan path rejoined by a warm hand-worked gold seam.",
+        "subject": "One repaired crossing, a few pressure marks, and a faint violet echo of the route before rescue.",
+        "composition": "Square restrained backplate with quiet center, asymmetric route trace, broad UI-safe negative space.",
+        "lighting": "Low subsurface cyan and violet with one small warm repair seam.",
+        "constraints": [
+          "No people",
+          "No text, numbers, glyphs, interface, map labels, or ornate border",
+          "No full-frame glow"
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/memory/lantern-route-backplate.webp",
+          "role": "approved archival material and value range"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-generation",
+        "reviewedAt": "2026-09-15",
+        "sha256": "ae597e60f160731a7dfaff0544c18e30a7efda66d62a0158781d59cdbb548173",
+        "review": "app/src/art-pipeline/reviews/memory-rescue-ledger-backplate.json",
+        "promptSha256": "a2410e929253c77a649fe848a204823e99ca09f1eab687e4651f166f5dfb57a4"
+      }
+    },
+    {
+      "id": "character-signal-cartographer-selected",
+      "name": "Selected Signal Cartographer",
+      "family": "character-condition",
+      "character": {
+        "id": "signal-cartographer",
+        "state": "selected",
+        "baseAssetId": "character-signal-cartographer-focal"
+      },
+      "status": "approved",
+      "emotionalBeat": "agency",
+      "assetType": "transparent-focal",
+      "partRole": "focal",
+      "output": {
+        "path": "app/public/images/art/characters/signal-cartographer-selected.png",
+        "width": 1024,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "10-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "The exact same Signal Cartographer in the selected gameplay state.",
+        "scene": "Transparent isolation with no floor, horizon, scenery, frame, or cast shadow.",
+        "subject": "Signal Cartographer: balanced ready stance angled toward the viewer, one hand near signature equipment.",
+        "composition": "Complete full-body three-quarter game standee, head, hands, and both boots visible, consistent foot line, generous margin, readable at 64 pixels.",
+        "lighting": "Soft neutral character key with signal color restricted to established equipment.",
+        "constraints": [
+          "Preserve the exact canonical face, age, hair, body proportions, costume construction, equipment placement, and signature props.",
+          "One adult only; no extra people, weapons, costume redesign, text, logo, watermark, frame, floor, or scenery.",
+          "The selected body mechanics must remain readable without depending on color."
+        ],
+        "identityLocks": [
+          "Preserve mature clean-shaven face.",
+          "Preserve swept-back dark hair.",
+          "Preserve left-shoulder signal array.",
+          "Preserve paired cyan and green signals.",
+          "Preserve low left-hip satchel.",
+          "Keep the full action readable at small gameplay-card and board scale."
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/characters/signal-cartographer.png",
+          "role": "canonical character identity, costume, proportion, and equipment reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-edit-grid-extraction",
+        "reviewedAt": "2026-09-16",
+        "sha256": "26ba0129642659dcdff7a445968d56a340a0ed47c25c903dc0b369e8b6a5b359",
+        "review": "app/src/art-pipeline/reviews/character-signal-cartographer-selected.json",
+        "promptSha256": "f3784c7308d718e0f66ab0e5752ee65f8d025e03fc40a1f50257033c7b2e2b3f"
+      }
+    },
+    {
+      "id": "character-signal-cartographer-moving",
+      "name": "Moving Signal Cartographer",
+      "family": "character-condition",
+      "character": {
+        "id": "signal-cartographer",
+        "state": "moving",
+        "baseAssetId": "character-signal-cartographer-focal"
+      },
+      "status": "approved",
+      "emotionalBeat": "agency",
+      "assetType": "transparent-focal",
+      "partRole": "focal",
+      "output": {
+        "path": "app/public/images/art/characters/signal-cartographer-moving.png",
+        "width": 1024,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "10-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "The exact same Signal Cartographer in the moving gameplay state.",
+        "scene": "Transparent isolation with no floor, horizon, scenery, frame, or cast shadow.",
+        "subject": "Signal Cartographer: unmistakable controlled forward stride with both boots visible.",
+        "composition": "Complete full-body three-quarter game standee, head, hands, and both boots visible, consistent foot line, generous margin, readable at 64 pixels.",
+        "lighting": "Soft neutral character key with signal color restricted to established equipment.",
+        "constraints": [
+          "Preserve the exact canonical face, age, hair, body proportions, costume construction, equipment placement, and signature props.",
+          "One adult only; no extra people, weapons, costume redesign, text, logo, watermark, frame, floor, or scenery.",
+          "The moving body mechanics must remain readable without depending on color."
+        ],
+        "identityLocks": [
+          "Preserve mature clean-shaven face.",
+          "Preserve swept-back dark hair.",
+          "Preserve left-shoulder signal array.",
+          "Preserve paired cyan and green signals.",
+          "Preserve low left-hip satchel.",
+          "Keep the full action readable at small gameplay-card and board scale."
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/characters/signal-cartographer.png",
+          "role": "canonical character identity, costume, proportion, and equipment reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-edit-grid-extraction",
+        "reviewedAt": "2026-09-16",
+        "sha256": "2a49a8b9bb67c3baadfc6428fe968e7b366b424a68be5ca7cbefb42e32b2105a",
+        "review": "app/src/art-pipeline/reviews/character-signal-cartographer-moving.json",
+        "promptSha256": "8f4585d018d3fa87b41a54accf98b009bc5fa5a12fb79a3b6fb82f6ac9aa195a"
+      }
+    },
+    {
+      "id": "character-signal-cartographer-digging",
+      "name": "Digging Signal Cartographer",
+      "family": "character-condition",
+      "character": {
+        "id": "signal-cartographer",
+        "state": "digging",
+        "baseAssetId": "character-signal-cartographer-focal"
+      },
+      "status": "approved",
+      "emotionalBeat": "discovery",
+      "assetType": "transparent-focal",
+      "partRole": "focal",
+      "output": {
+        "path": "app/public/images/art/characters/signal-cartographer-digging.png",
+        "width": 1024,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "10-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "The exact same Signal Cartographer in the digging gameplay state.",
+        "scene": "Transparent isolation with no floor, horizon, scenery, frame, or cast shadow.",
+        "subject": "Signal Cartographer: grounded crouch using one compact hand geology probe against the ground.",
+        "composition": "Complete full-body three-quarter game standee, head, hands, and both boots visible, consistent foot line, generous margin, readable at 64 pixels.",
+        "lighting": "Soft neutral character key with signal color restricted to established equipment.",
+        "constraints": [
+          "Preserve the exact canonical face, age, hair, body proportions, costume construction, equipment placement, and signature props.",
+          "One adult only; no extra people, weapons, costume redesign, text, logo, watermark, frame, floor, or scenery.",
+          "The digging body mechanics must remain readable without depending on color."
+        ],
+        "identityLocks": [
+          "Preserve mature clean-shaven face.",
+          "Preserve swept-back dark hair.",
+          "Preserve left-shoulder signal array.",
+          "Preserve paired cyan and green signals.",
+          "Preserve low left-hip satchel.",
+          "Keep the full action readable at small gameplay-card and board scale."
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/characters/signal-cartographer.png",
+          "role": "canonical character identity, costume, proportion, and equipment reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-edit-grid-extraction",
+        "reviewedAt": "2026-09-16",
+        "sha256": "027391e4969ab081d1e5ba5d1683037d7a7758af62f740d870690519dcd4ca27",
+        "review": "app/src/art-pipeline/reviews/character-signal-cartographer-digging.json",
+        "promptSha256": "a72e9b68d241d24f3948490ccbbf5443874e6f9df8c7eb96ad4a4fcdbcbf481b"
+      }
+    },
+    {
+      "id": "character-signal-cartographer-recovering",
+      "name": "Recovering Signal Cartographer",
+      "family": "character-condition",
+      "character": {
+        "id": "signal-cartographer",
+        "state": "recovering",
+        "baseAssetId": "character-signal-cartographer-focal"
+      },
+      "status": "approved",
+      "emotionalBeat": "relief",
+      "assetType": "transparent-focal",
+      "partRole": "focal",
+      "output": {
+        "path": "app/public/images/art/characters/signal-cartographer-recovering.png",
+        "width": 1024,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "10-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "The exact same Signal Cartographer in the recovering gameplay state.",
+        "scene": "Transparent isolation with no floor, horizon, scenery, frame, or cast shadow.",
+        "subject": "Signal Cartographer: seated on one heel, catching breath while checking signature equipment.",
+        "composition": "Complete full-body three-quarter game standee, head, hands, and both boots visible, consistent foot line, generous margin, readable at 64 pixels.",
+        "lighting": "Soft neutral character key with signal color restricted to established equipment.",
+        "constraints": [
+          "Preserve the exact canonical face, age, hair, body proportions, costume construction, equipment placement, and signature props.",
+          "One adult only; no extra people, weapons, costume redesign, text, logo, watermark, frame, floor, or scenery.",
+          "The recovering body mechanics must remain readable without depending on color."
+        ],
+        "identityLocks": [
+          "Preserve mature clean-shaven face.",
+          "Preserve swept-back dark hair.",
+          "Preserve left-shoulder signal array.",
+          "Preserve paired cyan and green signals.",
+          "Preserve low left-hip satchel.",
+          "Keep the full action readable at small gameplay-card and board scale."
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/characters/signal-cartographer.png",
+          "role": "canonical character identity, costume, proportion, and equipment reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-edit-grid-extraction",
+        "reviewedAt": "2026-09-16",
+        "sha256": "f0fd7828d73a29cfcf1a8c7886e990bbc9a5ef55888f52434d203a398be830e1",
+        "review": "app/src/art-pipeline/reviews/character-signal-cartographer-recovering.json",
+        "promptSha256": "ea814fa00ce87ee7334c9ca211fd3359609bb55779fe33bf47208e9dbc52db41"
+      }
+    },
+    {
+      "id": "character-signal-cartographer-strained",
+      "name": "Strained Signal Cartographer",
+      "family": "character-condition",
+      "character": {
+        "id": "signal-cartographer",
+        "state": "strained",
+        "baseAssetId": "character-signal-cartographer-focal"
+      },
+      "status": "approved",
+      "emotionalBeat": "jeopardy",
+      "assetType": "transparent-focal",
+      "partRole": "focal",
+      "output": {
+        "path": "app/public/images/art/characters/signal-cartographer-strained.png",
+        "width": 1024,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "10-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "The exact same Signal Cartographer in the strained gameplay state.",
+        "scene": "Transparent isolation with no floor, horizon, scenery, frame, or cast shadow.",
+        "subject": "Signal Cartographer: standing but visibly exhausted with uneven weight, still alert.",
+        "composition": "Complete full-body three-quarter game standee, head, hands, and both boots visible, consistent foot line, generous margin, readable at 64 pixels.",
+        "lighting": "Soft neutral character key with signal color restricted to established equipment.",
+        "constraints": [
+          "Preserve the exact canonical face, age, hair, body proportions, costume construction, equipment placement, and signature props.",
+          "One adult only; no extra people, weapons, costume redesign, text, logo, watermark, frame, floor, or scenery.",
+          "The strained body mechanics must remain readable without depending on color."
+        ],
+        "identityLocks": [
+          "Preserve mature clean-shaven face.",
+          "Preserve swept-back dark hair.",
+          "Preserve left-shoulder signal array.",
+          "Preserve paired cyan and green signals.",
+          "Preserve low left-hip satchel.",
+          "Keep the full action readable at small gameplay-card and board scale."
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/characters/signal-cartographer.png",
+          "role": "canonical character identity, costume, proportion, and equipment reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-edit-grid-extraction",
+        "reviewedAt": "2026-09-16",
+        "sha256": "f49a411865aec2b1fc92d46bae9e7acd3fd6e8df2d52004a8b42e68ccc05af85",
+        "review": "app/src/art-pipeline/reviews/character-signal-cartographer-strained.json",
+        "promptSha256": "1ca9119d52b540819de55c7d002b2b050e3c4bcf0df85333bd744d3773b400cb"
+      }
+    },
+    {
+      "id": "character-signal-cartographer-downed",
+      "name": "Downed Signal Cartographer",
+      "family": "character-condition",
+      "character": {
+        "id": "signal-cartographer",
+        "state": "downed",
+        "baseAssetId": "character-signal-cartographer-focal"
+      },
+      "status": "approved",
+      "emotionalBeat": "jeopardy",
+      "assetType": "transparent-focal",
+      "partRole": "focal",
+      "output": {
+        "path": "app/public/images/art/characters/signal-cartographer-downed.png",
+        "width": 1024,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "10-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "The exact same Signal Cartographer in the downed gameplay state.",
+        "scene": "Transparent isolation with no floor, horizon, scenery, frame, or cast shadow.",
+        "subject": "Signal Cartographer: safe seated braced posture communicating temporary incapacity without gore.",
+        "composition": "Complete full-body three-quarter game standee, head, hands, and both boots visible, consistent foot line, generous margin, readable at 64 pixels.",
+        "lighting": "Soft neutral character key with signal color restricted to established equipment.",
+        "constraints": [
+          "Preserve the exact canonical face, age, hair, body proportions, costume construction, equipment placement, and signature props.",
+          "One adult only; no extra people, weapons, costume redesign, text, logo, watermark, frame, floor, or scenery.",
+          "The downed body mechanics must remain readable without depending on color."
+        ],
+        "identityLocks": [
+          "Preserve mature clean-shaven face.",
+          "Preserve swept-back dark hair.",
+          "Preserve left-shoulder signal array.",
+          "Preserve paired cyan and green signals.",
+          "Preserve low left-hip satchel.",
+          "Keep the full action readable at small gameplay-card and board scale."
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/characters/signal-cartographer.png",
+          "role": "canonical character identity, costume, proportion, and equipment reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-edit-grid-extraction",
+        "reviewedAt": "2026-09-16",
+        "sha256": "fb421beec4876f4dca026848124e117d0371778c5dc76c39fcf7e0b910000b28",
+        "review": "app/src/art-pipeline/reviews/character-signal-cartographer-downed.json",
+        "promptSha256": "aad3c42d2a795a76beaf7c311175fd51ab3921ff37912ae95c5aedd24881a969"
+      }
+    },
+    {
+      "id": "character-signal-cartographer-carrying",
+      "name": "Carrying Signal Cartographer",
+      "family": "character-condition",
+      "character": {
+        "id": "signal-cartographer",
+        "state": "carrying",
+        "baseAssetId": "character-signal-cartographer-focal"
+      },
+      "status": "approved",
+      "emotionalBeat": "trust",
+      "assetType": "transparent-focal",
+      "partRole": "focal",
+      "output": {
+        "path": "app/public/images/art/characters/signal-cartographer-carrying.png",
+        "width": 1024,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "10-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "The exact same Signal Cartographer in the carrying gameplay state.",
+        "scene": "Transparent isolation with no floor, horizon, scenery, frame, or cast shadow.",
+        "subject": "Signal Cartographer: protective two-handed carry of one hand-scale recovered mineral relic.",
+        "composition": "Complete full-body three-quarter game standee, head, hands, and both boots visible, consistent foot line, generous margin, readable at 64 pixels.",
+        "lighting": "Soft neutral character key with signal color restricted to established equipment.",
+        "constraints": [
+          "Preserve the exact canonical face, age, hair, body proportions, costume construction, equipment placement, and signature props.",
+          "One adult only; no extra people, weapons, costume redesign, text, logo, watermark, frame, floor, or scenery.",
+          "The carrying body mechanics must remain readable without depending on color."
+        ],
+        "identityLocks": [
+          "Preserve mature clean-shaven face.",
+          "Preserve swept-back dark hair.",
+          "Preserve left-shoulder signal array.",
+          "Preserve paired cyan and green signals.",
+          "Preserve low left-hip satchel.",
+          "Keep the full action readable at small gameplay-card and board scale."
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/characters/signal-cartographer.png",
+          "role": "canonical character identity, costume, proportion, and equipment reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-edit-grid-extraction",
+        "reviewedAt": "2026-09-16",
+        "sha256": "7229af48b8c5f26281c271a108855ef685d155aad518835877e6495be67a00a8",
+        "review": "app/src/art-pipeline/reviews/character-signal-cartographer-carrying.json",
+        "promptSha256": "7afaa6c1c708ac40e954a475f41bbd716aa3daabe901684c1f589cc39a1fc954"
+      }
+    },
+    {
+      "id": "character-signal-cartographer-escaping",
+      "name": "Escaping Signal Cartographer",
+      "family": "character-condition",
+      "character": {
+        "id": "signal-cartographer",
+        "state": "escaping",
+        "baseAssetId": "character-signal-cartographer-focal"
+      },
+      "status": "approved",
+      "emotionalBeat": "jeopardy",
+      "assetType": "transparent-focal",
+      "partRole": "focal",
+      "output": {
+        "path": "app/public/images/art/characters/signal-cartographer-escaping.png",
+        "width": 1024,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "10-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "The exact same Signal Cartographer in the escaping gameplay state.",
+        "scene": "Transparent isolation with no floor, horizon, scenery, frame, or cast shadow.",
+        "subject": "Signal Cartographer: urgent forward run while looking back toward the crew.",
+        "composition": "Complete full-body three-quarter game standee, head, hands, and both boots visible, consistent foot line, generous margin, readable at 64 pixels.",
+        "lighting": "Soft neutral character key with signal color restricted to established equipment.",
+        "constraints": [
+          "Preserve the exact canonical face, age, hair, body proportions, costume construction, equipment placement, and signature props.",
+          "One adult only; no extra people, weapons, costume redesign, text, logo, watermark, frame, floor, or scenery.",
+          "The escaping body mechanics must remain readable without depending on color."
+        ],
+        "identityLocks": [
+          "Preserve mature clean-shaven face.",
+          "Preserve swept-back dark hair.",
+          "Preserve left-shoulder signal array.",
+          "Preserve paired cyan and green signals.",
+          "Preserve low left-hip satchel.",
+          "Keep the full action readable at small gameplay-card and board scale."
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/characters/signal-cartographer.png",
+          "role": "canonical character identity, costume, proportion, and equipment reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-edit-grid-extraction",
+        "reviewedAt": "2026-09-16",
+        "sha256": "bc6560802741503501e26a8a49b1393c770aa4133bc6588cb45b24a62e7e64cf",
+        "review": "app/src/art-pipeline/reviews/character-signal-cartographer-escaping.json",
+        "promptSha256": "75c9fba48e6bece70279a788f66c666090be780e0a880706cc3a83f7071a9fc1"
+      }
+    },
+    {
+      "id": "character-signal-cartographer-triumph",
+      "name": "Triumph Signal Cartographer",
+      "family": "character-condition",
+      "character": {
+        "id": "signal-cartographer",
+        "state": "triumph",
+        "baseAssetId": "character-signal-cartographer-focal"
+      },
+      "status": "approved",
+      "emotionalBeat": "triumph",
+      "assetType": "transparent-focal",
+      "partRole": "focal",
+      "output": {
+        "path": "app/public/images/art/characters/signal-cartographer-triumph.png",
+        "width": 1024,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "10-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "The exact same Signal Cartographer in the triumph gameplay state.",
+        "scene": "Transparent isolation with no floor, horizon, scenery, frame, or cast shadow.",
+        "subject": "Signal Cartographer: quiet earned relief with released shoulders and a restrained smile.",
+        "composition": "Complete full-body three-quarter game standee, head, hands, and both boots visible, consistent foot line, generous margin, readable at 64 pixels.",
+        "lighting": "Soft neutral character key with signal color restricted to established equipment.",
+        "constraints": [
+          "Preserve the exact canonical face, age, hair, body proportions, costume construction, equipment placement, and signature props.",
+          "One adult only; no extra people, weapons, costume redesign, text, logo, watermark, frame, floor, or scenery.",
+          "The triumph body mechanics must remain readable without depending on color."
+        ],
+        "identityLocks": [
+          "Preserve mature clean-shaven face.",
+          "Preserve swept-back dark hair.",
+          "Preserve left-shoulder signal array.",
+          "Preserve paired cyan and green signals.",
+          "Preserve low left-hip satchel.",
+          "Keep the full action readable at small gameplay-card and board scale."
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/characters/signal-cartographer.png",
+          "role": "canonical character identity, costume, proportion, and equipment reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-edit-grid-extraction",
+        "reviewedAt": "2026-09-16",
+        "sha256": "ad445449b5665a83e5f1d8fac9637210e61382dda705acee72e4677d9fc187e6",
+        "review": "app/src/art-pipeline/reviews/character-signal-cartographer-triumph.json",
+        "promptSha256": "676c5b0f885f76223f41638c66f5194d361b845c5da520d9a8f2defe609bf91f"
+      }
+    },
+    {
+      "id": "character-signal-cartographer-aftermath",
+      "name": "Aftermath Signal Cartographer",
+      "family": "character-condition",
+      "character": {
+        "id": "signal-cartographer",
+        "state": "aftermath",
+        "baseAssetId": "character-signal-cartographer-focal"
+      },
+      "status": "approved",
+      "emotionalBeat": "remembrance",
+      "assetType": "transparent-focal",
+      "partRole": "focal",
+      "output": {
+        "path": "app/public/images/art/characters/signal-cartographer-aftermath.png",
+        "width": 1024,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "10-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "The exact same Signal Cartographer in the aftermath gameplay state.",
+        "scene": "Transparent isolation with no floor, horizon, scenery, frame, or cast shadow.",
+        "subject": "Signal Cartographer: reflective post-expedition stance examining one scuffed piece of signature equipment.",
+        "composition": "Complete full-body three-quarter game standee, head, hands, and both boots visible, consistent foot line, generous margin, readable at 64 pixels.",
+        "lighting": "Soft neutral character key with signal color restricted to established equipment.",
+        "constraints": [
+          "Preserve the exact canonical face, age, hair, body proportions, costume construction, equipment placement, and signature props.",
+          "One adult only; no extra people, weapons, costume redesign, text, logo, watermark, frame, floor, or scenery.",
+          "The aftermath body mechanics must remain readable without depending on color."
+        ],
+        "identityLocks": [
+          "Preserve mature clean-shaven face.",
+          "Preserve swept-back dark hair.",
+          "Preserve left-shoulder signal array.",
+          "Preserve paired cyan and green signals.",
+          "Preserve low left-hip satchel.",
+          "Keep the full action readable at small gameplay-card and board scale."
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/characters/signal-cartographer.png",
+          "role": "canonical character identity, costume, proportion, and equipment reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-edit-grid-extraction",
+        "reviewedAt": "2026-09-16",
+        "sha256": "60a7aa4ea2e37bc8bf878ca74fe17b79b30dcf89bb837d691e06235b7bc0ffac",
+        "review": "app/src/art-pipeline/reviews/character-signal-cartographer-aftermath.json",
+        "promptSha256": "f07115627985faf21e4acdf38ab9e0283ca2992be5832185faa5f8a0f04555cb"
+      }
+    },
+    {
+      "id": "character-signal-cartographer-idle-alert",
+      "name": "Idle Alert Signal Cartographer",
+      "family": "character-condition",
+      "character": {
+        "id": "signal-cartographer",
+        "state": "idle-alert",
+        "baseAssetId": "character-signal-cartographer-focal"
+      },
+      "status": "approved",
+      "emotionalBeat": "trust",
+      "assetType": "transparent-focal",
+      "partRole": "focal",
+      "output": {
+        "path": "app/public/images/art/characters/signal-cartographer-idle-alert.png",
+        "width": 1024,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "10-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "The exact same Signal Cartographer in the idle-alert gameplay state.",
+        "scene": "Transparent isolation with no floor, horizon, scenery, frame, or cast shadow.",
+        "subject": "Signal Cartographer: calm alert watch posture distinct from the canonical neutral pose.",
+        "composition": "Complete full-body three-quarter game standee, head, hands, and both boots visible, consistent foot line, generous margin, readable at 64 pixels.",
+        "lighting": "Soft neutral character key with signal color restricted to established equipment.",
+        "constraints": [
+          "Preserve the exact canonical face, age, hair, body proportions, costume construction, equipment placement, and signature props.",
+          "One adult only; no extra people, weapons, costume redesign, text, logo, watermark, frame, floor, or scenery.",
+          "The idle-alert body mechanics must remain readable without depending on color."
+        ],
+        "identityLocks": [
+          "Preserve mature clean-shaven face.",
+          "Preserve swept-back dark hair.",
+          "Preserve left-shoulder signal array.",
+          "Preserve paired cyan and green signals.",
+          "Preserve low left-hip satchel.",
+          "Keep the full action readable at small gameplay-card and board scale."
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/characters/signal-cartographer.png",
+          "role": "canonical character identity, costume, proportion, and equipment reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-edit-grid-extraction",
+        "reviewedAt": "2026-09-16",
+        "sha256": "a9a28807766087d2ce582ea86579430ecb8bd07578d923134bf5fc01a55cc634",
+        "review": "app/src/art-pipeline/reviews/character-signal-cartographer-idle-alert.json",
+        "promptSha256": "fcedf3862fef82d5eccd496e0ef97fcce56c0d87e72f6f2d1e8cfb5fc5934c83"
+      }
+    },
+    {
+      "id": "character-field-mender-selected",
+      "name": "Selected Field Mender",
+      "family": "character-condition",
+      "character": {
+        "id": "field-mender",
+        "state": "selected",
+        "baseAssetId": "character-field-mender-focal"
+      },
+      "status": "approved",
+      "emotionalBeat": "agency",
+      "assetType": "transparent-focal",
+      "partRole": "focal",
+      "output": {
+        "path": "app/public/images/art/characters/field-mender-selected.png",
+        "width": 1024,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "10-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "The exact same Field Mender in the selected gameplay state.",
+        "scene": "Transparent isolation with no floor, horizon, scenery, frame, or cast shadow.",
+        "subject": "Field Mender: balanced ready stance angled toward the viewer, one hand near signature equipment.",
+        "composition": "Complete full-body three-quarter game standee, head, hands, and both boots visible, consistent foot line, generous margin, readable at 64 pixels.",
+        "lighting": "Soft neutral character key with signal color restricted to established equipment.",
+        "constraints": [
+          "Preserve the exact canonical face, age, hair, body proportions, costume construction, equipment placement, and signature props.",
+          "One adult only; no extra people, weapons, costume redesign, text, logo, watermark, frame, floor, or scenery.",
+          "The selected body mechanics must remain readable without depending on color."
+        ],
+        "identityLocks": [
+          "Preserve older broad face.",
+          "Preserve silver close-cropped curls.",
+          "Preserve left-eyebrow scar.",
+          "Preserve rounded field case.",
+          "Preserve three green vials.",
+          "Keep the full action readable at small gameplay-card and board scale."
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/characters/field-mender.png",
+          "role": "canonical character identity, costume, proportion, and equipment reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-edit-grid-extraction",
+        "reviewedAt": "2026-09-16",
+        "sha256": "a03e2435a302920f02e20001cf454d121e85860a4fde3f42536151c5088a5560",
+        "review": "app/src/art-pipeline/reviews/character-field-mender-selected.json",
+        "promptSha256": "49bf8a31f26105c6fcf471b6aa2da7c43d2a0947878c6bf2d99bea62bfd65544"
+      }
+    },
+    {
+      "id": "character-field-mender-moving",
+      "name": "Moving Field Mender",
+      "family": "character-condition",
+      "character": {
+        "id": "field-mender",
+        "state": "moving",
+        "baseAssetId": "character-field-mender-focal"
+      },
+      "status": "approved",
+      "emotionalBeat": "agency",
+      "assetType": "transparent-focal",
+      "partRole": "focal",
+      "output": {
+        "path": "app/public/images/art/characters/field-mender-moving.png",
+        "width": 1024,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "10-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "The exact same Field Mender in the moving gameplay state.",
+        "scene": "Transparent isolation with no floor, horizon, scenery, frame, or cast shadow.",
+        "subject": "Field Mender: unmistakable controlled forward stride with both boots visible.",
+        "composition": "Complete full-body three-quarter game standee, head, hands, and both boots visible, consistent foot line, generous margin, readable at 64 pixels.",
+        "lighting": "Soft neutral character key with signal color restricted to established equipment.",
+        "constraints": [
+          "Preserve the exact canonical face, age, hair, body proportions, costume construction, equipment placement, and signature props.",
+          "One adult only; no extra people, weapons, costume redesign, text, logo, watermark, frame, floor, or scenery.",
+          "The moving body mechanics must remain readable without depending on color."
+        ],
+        "identityLocks": [
+          "Preserve older broad face.",
+          "Preserve silver close-cropped curls.",
+          "Preserve left-eyebrow scar.",
+          "Preserve rounded field case.",
+          "Preserve three green vials.",
+          "Keep the full action readable at small gameplay-card and board scale."
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/characters/field-mender.png",
+          "role": "canonical character identity, costume, proportion, and equipment reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-edit-grid-extraction",
+        "reviewedAt": "2026-09-16",
+        "sha256": "5bceb391038761c5f2e072a11cec8eb97ae47374e20d467a9b029a303a1fc1f4",
+        "review": "app/src/art-pipeline/reviews/character-field-mender-moving.json",
+        "promptSha256": "f5cc2eca328bc09a95d85de6f222fb57d2271cb434f44dd807df0354418d9422"
+      }
+    },
+    {
+      "id": "character-field-mender-digging",
+      "name": "Digging Field Mender",
+      "family": "character-condition",
+      "character": {
+        "id": "field-mender",
+        "state": "digging",
+        "baseAssetId": "character-field-mender-focal"
+      },
+      "status": "approved",
+      "emotionalBeat": "discovery",
+      "assetType": "transparent-focal",
+      "partRole": "focal",
+      "output": {
+        "path": "app/public/images/art/characters/field-mender-digging.png",
+        "width": 1024,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "10-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "The exact same Field Mender in the digging gameplay state.",
+        "scene": "Transparent isolation with no floor, horizon, scenery, frame, or cast shadow.",
+        "subject": "Field Mender: grounded crouch using one compact hand geology probe against the ground.",
+        "composition": "Complete full-body three-quarter game standee, head, hands, and both boots visible, consistent foot line, generous margin, readable at 64 pixels.",
+        "lighting": "Soft neutral character key with signal color restricted to established equipment.",
+        "constraints": [
+          "Preserve the exact canonical face, age, hair, body proportions, costume construction, equipment placement, and signature props.",
+          "One adult only; no extra people, weapons, costume redesign, text, logo, watermark, frame, floor, or scenery.",
+          "The digging body mechanics must remain readable without depending on color."
+        ],
+        "identityLocks": [
+          "Preserve older broad face.",
+          "Preserve silver close-cropped curls.",
+          "Preserve left-eyebrow scar.",
+          "Preserve rounded field case.",
+          "Preserve three green vials.",
+          "Keep the full action readable at small gameplay-card and board scale."
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/characters/field-mender.png",
+          "role": "canonical character identity, costume, proportion, and equipment reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-edit-grid-extraction",
+        "reviewedAt": "2026-09-16",
+        "sha256": "6cd67afec056ee3fb906752ab24ce0ccadfbb1ce609ac39404bc601dac43de47",
+        "review": "app/src/art-pipeline/reviews/character-field-mender-digging.json",
+        "promptSha256": "8bcec12a7ceac3c59f9a03e1268c32ecef000dc8ec183a37214567d88b9d9560"
+      }
+    },
+    {
+      "id": "character-field-mender-helping",
+      "name": "Helping Field Mender",
+      "family": "character-condition",
+      "character": {
+        "id": "field-mender",
+        "state": "helping",
+        "baseAssetId": "character-field-mender-focal"
+      },
+      "status": "approved",
+      "emotionalBeat": "cooperation",
+      "assetType": "transparent-focal",
+      "partRole": "focal",
+      "output": {
+        "path": "app/public/images/art/characters/field-mender-helping.png",
+        "width": 1024,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "10-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "The exact same Field Mender in the helping gameplay state.",
+        "scene": "Transparent isolation with no floor, horizon, scenery, frame, or cast shadow.",
+        "subject": "Field Mender: open-handed braced gesture reaching toward an off-frame crewmate.",
+        "composition": "Complete full-body three-quarter game standee, head, hands, and both boots visible, consistent foot line, generous margin, readable at 64 pixels.",
+        "lighting": "Soft neutral character key with signal color restricted to established equipment.",
+        "constraints": [
+          "Preserve the exact canonical face, age, hair, body proportions, costume construction, equipment placement, and signature props.",
+          "One adult only; no extra people, weapons, costume redesign, text, logo, watermark, frame, floor, or scenery.",
+          "The helping body mechanics must remain readable without depending on color."
+        ],
+        "identityLocks": [
+          "Preserve older broad face.",
+          "Preserve silver close-cropped curls.",
+          "Preserve left-eyebrow scar.",
+          "Preserve rounded field case.",
+          "Preserve three green vials.",
+          "Keep the full action readable at small gameplay-card and board scale."
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/characters/field-mender.png",
+          "role": "canonical character identity, costume, proportion, and equipment reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-edit-grid-extraction",
+        "reviewedAt": "2026-09-16",
+        "sha256": "2aa53fc3ecee961357beb0134d447b1582b65c02c10ad204537fff11d51427d5",
+        "review": "app/src/art-pipeline/reviews/character-field-mender-helping.json",
+        "promptSha256": "6fa90fac799d33b90855054e8e3b20bf0bb4a4ebe416014436e9e133acb1e928"
+      }
+    },
+    {
+      "id": "character-field-mender-strained",
+      "name": "Strained Field Mender",
+      "family": "character-condition",
+      "character": {
+        "id": "field-mender",
+        "state": "strained",
+        "baseAssetId": "character-field-mender-focal"
+      },
+      "status": "approved",
+      "emotionalBeat": "jeopardy",
+      "assetType": "transparent-focal",
+      "partRole": "focal",
+      "output": {
+        "path": "app/public/images/art/characters/field-mender-strained.png",
+        "width": 1024,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "10-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "The exact same Field Mender in the strained gameplay state.",
+        "scene": "Transparent isolation with no floor, horizon, scenery, frame, or cast shadow.",
+        "subject": "Field Mender: standing but visibly exhausted with uneven weight, still alert.",
+        "composition": "Complete full-body three-quarter game standee, head, hands, and both boots visible, consistent foot line, generous margin, readable at 64 pixels.",
+        "lighting": "Soft neutral character key with signal color restricted to established equipment.",
+        "constraints": [
+          "Preserve the exact canonical face, age, hair, body proportions, costume construction, equipment placement, and signature props.",
+          "One adult only; no extra people, weapons, costume redesign, text, logo, watermark, frame, floor, or scenery.",
+          "The strained body mechanics must remain readable without depending on color."
+        ],
+        "identityLocks": [
+          "Preserve older broad face.",
+          "Preserve silver close-cropped curls.",
+          "Preserve left-eyebrow scar.",
+          "Preserve rounded field case.",
+          "Preserve three green vials.",
+          "Keep the full action readable at small gameplay-card and board scale."
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/characters/field-mender.png",
+          "role": "canonical character identity, costume, proportion, and equipment reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-edit-grid-extraction",
+        "reviewedAt": "2026-09-16",
+        "sha256": "fe169ac3b066b1b04a3978c3fade2cd4720480cf3cdc30038fb90a064ed651aa",
+        "review": "app/src/art-pipeline/reviews/character-field-mender-strained.json",
+        "promptSha256": "71c927f32a1f44443391cf8908a7a8e8b901cf2f742a267db25aa25a5e18564c"
+      }
+    },
+    {
+      "id": "character-field-mender-downed",
+      "name": "Downed Field Mender",
+      "family": "character-condition",
+      "character": {
+        "id": "field-mender",
+        "state": "downed",
+        "baseAssetId": "character-field-mender-focal"
+      },
+      "status": "approved",
+      "emotionalBeat": "jeopardy",
+      "assetType": "transparent-focal",
+      "partRole": "focal",
+      "output": {
+        "path": "app/public/images/art/characters/field-mender-downed.png",
+        "width": 1024,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "10-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "The exact same Field Mender in the downed gameplay state.",
+        "scene": "Transparent isolation with no floor, horizon, scenery, frame, or cast shadow.",
+        "subject": "Field Mender: safe seated braced posture communicating temporary incapacity without gore.",
+        "composition": "Complete full-body three-quarter game standee, head, hands, and both boots visible, consistent foot line, generous margin, readable at 64 pixels.",
+        "lighting": "Soft neutral character key with signal color restricted to established equipment.",
+        "constraints": [
+          "Preserve the exact canonical face, age, hair, body proportions, costume construction, equipment placement, and signature props.",
+          "One adult only; no extra people, weapons, costume redesign, text, logo, watermark, frame, floor, or scenery.",
+          "The downed body mechanics must remain readable without depending on color."
+        ],
+        "identityLocks": [
+          "Preserve older broad face.",
+          "Preserve silver close-cropped curls.",
+          "Preserve left-eyebrow scar.",
+          "Preserve rounded field case.",
+          "Preserve three green vials.",
+          "Keep the full action readable at small gameplay-card and board scale."
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/characters/field-mender.png",
+          "role": "canonical character identity, costume, proportion, and equipment reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-edit-grid-extraction",
+        "reviewedAt": "2026-09-16",
+        "sha256": "4609cb195c2ad93d4d1491332d3cc23aa2779338b470c42f85b6b380fdf25c0b",
+        "review": "app/src/art-pipeline/reviews/character-field-mender-downed.json",
+        "promptSha256": "efac1461bb91c64fb6bc03a887982a0e8e0f0023c4a18bccaa87ce7ca87a554b"
+      }
+    },
+    {
+      "id": "character-field-mender-carrying",
+      "name": "Carrying Field Mender",
+      "family": "character-condition",
+      "character": {
+        "id": "field-mender",
+        "state": "carrying",
+        "baseAssetId": "character-field-mender-focal"
+      },
+      "status": "approved",
+      "emotionalBeat": "trust",
+      "assetType": "transparent-focal",
+      "partRole": "focal",
+      "output": {
+        "path": "app/public/images/art/characters/field-mender-carrying.png",
+        "width": 1024,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "10-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "The exact same Field Mender in the carrying gameplay state.",
+        "scene": "Transparent isolation with no floor, horizon, scenery, frame, or cast shadow.",
+        "subject": "Field Mender: protective two-handed carry of one hand-scale recovered mineral relic.",
+        "composition": "Complete full-body three-quarter game standee, head, hands, and both boots visible, consistent foot line, generous margin, readable at 64 pixels.",
+        "lighting": "Soft neutral character key with signal color restricted to established equipment.",
+        "constraints": [
+          "Preserve the exact canonical face, age, hair, body proportions, costume construction, equipment placement, and signature props.",
+          "One adult only; no extra people, weapons, costume redesign, text, logo, watermark, frame, floor, or scenery.",
+          "The carrying body mechanics must remain readable without depending on color."
+        ],
+        "identityLocks": [
+          "Preserve older broad face.",
+          "Preserve silver close-cropped curls.",
+          "Preserve left-eyebrow scar.",
+          "Preserve rounded field case.",
+          "Preserve three green vials.",
+          "Keep the full action readable at small gameplay-card and board scale."
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/characters/field-mender.png",
+          "role": "canonical character identity, costume, proportion, and equipment reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-edit-grid-extraction",
+        "reviewedAt": "2026-09-16",
+        "sha256": "f1bb30722420e6fac25b39f99c69acf6725b90b74d94338372a27c82be621db0",
+        "review": "app/src/art-pipeline/reviews/character-field-mender-carrying.json",
+        "promptSha256": "4cfce3d3c9e861cbbf46a93f0224e282428fb1c3ac135554ed1bf4c949eedaf1"
+      }
+    },
+    {
+      "id": "character-field-mender-escaping",
+      "name": "Escaping Field Mender",
+      "family": "character-condition",
+      "character": {
+        "id": "field-mender",
+        "state": "escaping",
+        "baseAssetId": "character-field-mender-focal"
+      },
+      "status": "approved",
+      "emotionalBeat": "jeopardy",
+      "assetType": "transparent-focal",
+      "partRole": "focal",
+      "output": {
+        "path": "app/public/images/art/characters/field-mender-escaping.png",
+        "width": 1024,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "10-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "The exact same Field Mender in the escaping gameplay state.",
+        "scene": "Transparent isolation with no floor, horizon, scenery, frame, or cast shadow.",
+        "subject": "Field Mender: urgent forward run while looking back toward the crew.",
+        "composition": "Complete full-body three-quarter game standee, head, hands, and both boots visible, consistent foot line, generous margin, readable at 64 pixels.",
+        "lighting": "Soft neutral character key with signal color restricted to established equipment.",
+        "constraints": [
+          "Preserve the exact canonical face, age, hair, body proportions, costume construction, equipment placement, and signature props.",
+          "One adult only; no extra people, weapons, costume redesign, text, logo, watermark, frame, floor, or scenery.",
+          "The escaping body mechanics must remain readable without depending on color."
+        ],
+        "identityLocks": [
+          "Preserve older broad face.",
+          "Preserve silver close-cropped curls.",
+          "Preserve left-eyebrow scar.",
+          "Preserve rounded field case.",
+          "Preserve three green vials.",
+          "Keep the full action readable at small gameplay-card and board scale."
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/characters/field-mender.png",
+          "role": "canonical character identity, costume, proportion, and equipment reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-edit-grid-extraction",
+        "reviewedAt": "2026-09-16",
+        "sha256": "38df9faf300512592955a43024f5b1c795615487cbbd222c0e37a0337a545d14",
+        "review": "app/src/art-pipeline/reviews/character-field-mender-escaping.json",
+        "promptSha256": "af5b6744b1518132ff08e266f6b6410c73784b9ac72d41192f0c8dfecb881461"
+      }
+    },
+    {
+      "id": "character-field-mender-triumph",
+      "name": "Triumph Field Mender",
+      "family": "character-condition",
+      "character": {
+        "id": "field-mender",
+        "state": "triumph",
+        "baseAssetId": "character-field-mender-focal"
+      },
+      "status": "approved",
+      "emotionalBeat": "triumph",
+      "assetType": "transparent-focal",
+      "partRole": "focal",
+      "output": {
+        "path": "app/public/images/art/characters/field-mender-triumph.png",
+        "width": 1024,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "10-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "The exact same Field Mender in the triumph gameplay state.",
+        "scene": "Transparent isolation with no floor, horizon, scenery, frame, or cast shadow.",
+        "subject": "Field Mender: quiet earned relief with released shoulders and a restrained smile.",
+        "composition": "Complete full-body three-quarter game standee, head, hands, and both boots visible, consistent foot line, generous margin, readable at 64 pixels.",
+        "lighting": "Soft neutral character key with signal color restricted to established equipment.",
+        "constraints": [
+          "Preserve the exact canonical face, age, hair, body proportions, costume construction, equipment placement, and signature props.",
+          "One adult only; no extra people, weapons, costume redesign, text, logo, watermark, frame, floor, or scenery.",
+          "The triumph body mechanics must remain readable without depending on color."
+        ],
+        "identityLocks": [
+          "Preserve older broad face.",
+          "Preserve silver close-cropped curls.",
+          "Preserve left-eyebrow scar.",
+          "Preserve rounded field case.",
+          "Preserve three green vials.",
+          "Keep the full action readable at small gameplay-card and board scale."
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/characters/field-mender.png",
+          "role": "canonical character identity, costume, proportion, and equipment reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-edit-grid-extraction",
+        "reviewedAt": "2026-09-16",
+        "sha256": "f2a7dc30972c675babe9b751d6f1e2a9c24b6ccf911f0aaf57f85a7b2afc82e5",
+        "review": "app/src/art-pipeline/reviews/character-field-mender-triumph.json",
+        "promptSha256": "141c28ae3d97f1526c5ee9d2b06c9c1e86d3544d0f2a2dcc45362eac06e5d833"
+      }
+    },
+    {
+      "id": "character-field-mender-aftermath",
+      "name": "Aftermath Field Mender",
+      "family": "character-condition",
+      "character": {
+        "id": "field-mender",
+        "state": "aftermath",
+        "baseAssetId": "character-field-mender-focal"
+      },
+      "status": "approved",
+      "emotionalBeat": "remembrance",
+      "assetType": "transparent-focal",
+      "partRole": "focal",
+      "output": {
+        "path": "app/public/images/art/characters/field-mender-aftermath.png",
+        "width": 1024,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "10-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "The exact same Field Mender in the aftermath gameplay state.",
+        "scene": "Transparent isolation with no floor, horizon, scenery, frame, or cast shadow.",
+        "subject": "Field Mender: reflective post-expedition stance examining one scuffed piece of signature equipment.",
+        "composition": "Complete full-body three-quarter game standee, head, hands, and both boots visible, consistent foot line, generous margin, readable at 64 pixels.",
+        "lighting": "Soft neutral character key with signal color restricted to established equipment.",
+        "constraints": [
+          "Preserve the exact canonical face, age, hair, body proportions, costume construction, equipment placement, and signature props.",
+          "One adult only; no extra people, weapons, costume redesign, text, logo, watermark, frame, floor, or scenery.",
+          "The aftermath body mechanics must remain readable without depending on color."
+        ],
+        "identityLocks": [
+          "Preserve older broad face.",
+          "Preserve silver close-cropped curls.",
+          "Preserve left-eyebrow scar.",
+          "Preserve rounded field case.",
+          "Preserve three green vials.",
+          "Keep the full action readable at small gameplay-card and board scale."
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/characters/field-mender.png",
+          "role": "canonical character identity, costume, proportion, and equipment reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-edit-grid-extraction",
+        "reviewedAt": "2026-09-16",
+        "sha256": "3a58f813bf3b5e5ebfcc29ba5d6c8601c7b801b4982704e97cc18504f3b54c6f",
+        "review": "app/src/art-pipeline/reviews/character-field-mender-aftermath.json",
+        "promptSha256": "852d4139e149184640d5c37c1ac2d79a390cbeab0799c8376cb4eb2d3967b8ad"
+      }
+    },
+    {
+      "id": "character-field-mender-idle-alert",
+      "name": "Idle Alert Field Mender",
+      "family": "character-condition",
+      "character": {
+        "id": "field-mender",
+        "state": "idle-alert",
+        "baseAssetId": "character-field-mender-focal"
+      },
+      "status": "approved",
+      "emotionalBeat": "trust",
+      "assetType": "transparent-focal",
+      "partRole": "focal",
+      "output": {
+        "path": "app/public/images/art/characters/field-mender-idle-alert.png",
+        "width": 1024,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "10-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "The exact same Field Mender in the idle-alert gameplay state.",
+        "scene": "Transparent isolation with no floor, horizon, scenery, frame, or cast shadow.",
+        "subject": "Field Mender: calm alert watch posture distinct from the canonical neutral pose.",
+        "composition": "Complete full-body three-quarter game standee, head, hands, and both boots visible, consistent foot line, generous margin, readable at 64 pixels.",
+        "lighting": "Soft neutral character key with signal color restricted to established equipment.",
+        "constraints": [
+          "Preserve the exact canonical face, age, hair, body proportions, costume construction, equipment placement, and signature props.",
+          "One adult only; no extra people, weapons, costume redesign, text, logo, watermark, frame, floor, or scenery.",
+          "The idle-alert body mechanics must remain readable without depending on color."
+        ],
+        "identityLocks": [
+          "Preserve older broad face.",
+          "Preserve silver close-cropped curls.",
+          "Preserve left-eyebrow scar.",
+          "Preserve rounded field case.",
+          "Preserve three green vials.",
+          "Keep the full action readable at small gameplay-card and board scale."
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/characters/field-mender.png",
+          "role": "canonical character identity, costume, proportion, and equipment reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-edit-grid-extraction",
+        "reviewedAt": "2026-09-16",
+        "sha256": "bdde117e061b0244e51a002800ea4370a784c4a94f096782b1a51c654b78e337",
+        "review": "app/src/art-pipeline/reviews/character-field-mender-idle-alert.json",
+        "promptSha256": "93b3cc1076f5a313740876693bde8bdb6bc4fa83507cdb630241e6a520a3d510"
+      }
+    },
+    {
+      "id": "character-relic-tender-selected",
+      "name": "Selected Relic Tender",
+      "family": "character-condition",
+      "character": {
+        "id": "relic-tender",
+        "state": "selected",
+        "baseAssetId": "character-relic-tender-focal"
+      },
+      "status": "approved",
+      "emotionalBeat": "agency",
+      "assetType": "transparent-focal",
+      "partRole": "focal",
+      "output": {
+        "path": "app/public/images/art/characters/relic-tender-selected.png",
+        "width": 1024,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "10-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "The exact same Relic Tender in the selected gameplay state.",
+        "scene": "Transparent isolation with no floor, horizon, scenery, frame, or cast shadow.",
+        "subject": "Relic Tender: balanced ready stance angled toward the viewer, one hand near signature equipment.",
+        "composition": "Complete full-body three-quarter game standee, head, hands, and both boots visible, consistent foot line, generous margin, readable at 64 pixels.",
+        "lighting": "Soft neutral character key with signal color restricted to established equipment.",
+        "constraints": [
+          "Preserve the exact canonical face, age, hair, body proportions, costume construction, equipment placement, and signature props.",
+          "One adult only; no extra people, weapons, costume redesign, text, logo, watermark, frame, floor, or scenery.",
+          "The selected body mechanics must remain readable without depending on color."
+        ],
+        "identityLocks": [
+          "Preserve low brown ponytail.",
+          "Preserve oval youthful face.",
+          "Preserve gray chest sling.",
+          "Preserve warm seed relic.",
+          "Preserve split-front tunic.",
+          "Keep the full action readable at small gameplay-card and board scale."
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/characters/relic-tender.png",
+          "role": "canonical character identity, costume, proportion, and equipment reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-edit-grid-extraction",
+        "reviewedAt": "2026-09-16",
+        "sha256": "18dda36b97cf4f07d93270f035bb872435e2b430b80cd03d86ecae74c8885a86",
+        "review": "app/src/art-pipeline/reviews/character-relic-tender-selected.json",
+        "promptSha256": "b4724354730dabbb5aecbfd13adf3f0f45ae2772a1481441eba497df0bb76864"
+      }
+    },
+    {
+      "id": "character-relic-tender-moving",
+      "name": "Moving Relic Tender",
+      "family": "character-condition",
+      "character": {
+        "id": "relic-tender",
+        "state": "moving",
+        "baseAssetId": "character-relic-tender-focal"
+      },
+      "status": "approved",
+      "emotionalBeat": "agency",
+      "assetType": "transparent-focal",
+      "partRole": "focal",
+      "output": {
+        "path": "app/public/images/art/characters/relic-tender-moving.png",
+        "width": 1024,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "10-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "The exact same Relic Tender in the moving gameplay state.",
+        "scene": "Transparent isolation with no floor, horizon, scenery, frame, or cast shadow.",
+        "subject": "Relic Tender: unmistakable controlled forward stride with both boots visible.",
+        "composition": "Complete full-body three-quarter game standee, head, hands, and both boots visible, consistent foot line, generous margin, readable at 64 pixels.",
+        "lighting": "Soft neutral character key with signal color restricted to established equipment.",
+        "constraints": [
+          "Preserve the exact canonical face, age, hair, body proportions, costume construction, equipment placement, and signature props.",
+          "One adult only; no extra people, weapons, costume redesign, text, logo, watermark, frame, floor, or scenery.",
+          "The moving body mechanics must remain readable without depending on color."
+        ],
+        "identityLocks": [
+          "Preserve low brown ponytail.",
+          "Preserve oval youthful face.",
+          "Preserve gray chest sling.",
+          "Preserve warm seed relic.",
+          "Preserve split-front tunic.",
+          "Keep the full action readable at small gameplay-card and board scale."
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/characters/relic-tender.png",
+          "role": "canonical character identity, costume, proportion, and equipment reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-edit-grid-extraction",
+        "reviewedAt": "2026-09-16",
+        "sha256": "4539ba26cf4b93ad5347c9c5091bf9d800880e7e46fe077e3760082361162bc7",
+        "review": "app/src/art-pipeline/reviews/character-relic-tender-moving.json",
+        "promptSha256": "6ff65405fd4ffee1b53f692949dceddcb991fcf75dd020373fcaa48620085da7"
+      }
+    },
+    {
+      "id": "character-relic-tender-digging",
+      "name": "Digging Relic Tender",
+      "family": "character-condition",
+      "character": {
+        "id": "relic-tender",
+        "state": "digging",
+        "baseAssetId": "character-relic-tender-focal"
+      },
+      "status": "approved",
+      "emotionalBeat": "discovery",
+      "assetType": "transparent-focal",
+      "partRole": "focal",
+      "output": {
+        "path": "app/public/images/art/characters/relic-tender-digging.png",
+        "width": 1024,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "10-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "The exact same Relic Tender in the digging gameplay state.",
+        "scene": "Transparent isolation with no floor, horizon, scenery, frame, or cast shadow.",
+        "subject": "Relic Tender: grounded crouch using one compact hand geology probe against the ground.",
+        "composition": "Complete full-body three-quarter game standee, head, hands, and both boots visible, consistent foot line, generous margin, readable at 64 pixels.",
+        "lighting": "Soft neutral character key with signal color restricted to established equipment.",
+        "constraints": [
+          "Preserve the exact canonical face, age, hair, body proportions, costume construction, equipment placement, and signature props.",
+          "One adult only; no extra people, weapons, costume redesign, text, logo, watermark, frame, floor, or scenery.",
+          "The digging body mechanics must remain readable without depending on color."
+        ],
+        "identityLocks": [
+          "Preserve low brown ponytail.",
+          "Preserve oval youthful face.",
+          "Preserve gray chest sling.",
+          "Preserve warm seed relic.",
+          "Preserve split-front tunic.",
+          "Keep the full action readable at small gameplay-card and board scale."
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/characters/relic-tender.png",
+          "role": "canonical character identity, costume, proportion, and equipment reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-edit-grid-extraction",
+        "reviewedAt": "2026-09-16",
+        "sha256": "615f48b62a8562ebd5ddda2d5c4ee0593bb28b68c8159efd4c2f5dcb9017bd66",
+        "review": "app/src/art-pipeline/reviews/character-relic-tender-digging.json",
+        "promptSha256": "ca5ed590937ccc1ff016a83c7e63372845ca37ca88794a7373b25c3e2db21812"
+      }
+    },
+    {
+      "id": "character-relic-tender-helping",
+      "name": "Helping Relic Tender",
+      "family": "character-condition",
+      "character": {
+        "id": "relic-tender",
+        "state": "helping",
+        "baseAssetId": "character-relic-tender-focal"
+      },
+      "status": "approved",
+      "emotionalBeat": "cooperation",
+      "assetType": "transparent-focal",
+      "partRole": "focal",
+      "output": {
+        "path": "app/public/images/art/characters/relic-tender-helping.png",
+        "width": 1024,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "10-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "The exact same Relic Tender in the helping gameplay state.",
+        "scene": "Transparent isolation with no floor, horizon, scenery, frame, or cast shadow.",
+        "subject": "Relic Tender: open-handed braced gesture reaching toward an off-frame crewmate.",
+        "composition": "Complete full-body three-quarter game standee, head, hands, and both boots visible, consistent foot line, generous margin, readable at 64 pixels.",
+        "lighting": "Soft neutral character key with signal color restricted to established equipment.",
+        "constraints": [
+          "Preserve the exact canonical face, age, hair, body proportions, costume construction, equipment placement, and signature props.",
+          "One adult only; no extra people, weapons, costume redesign, text, logo, watermark, frame, floor, or scenery.",
+          "The helping body mechanics must remain readable without depending on color."
+        ],
+        "identityLocks": [
+          "Preserve low brown ponytail.",
+          "Preserve oval youthful face.",
+          "Preserve gray chest sling.",
+          "Preserve warm seed relic.",
+          "Preserve split-front tunic.",
+          "Keep the full action readable at small gameplay-card and board scale."
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/characters/relic-tender.png",
+          "role": "canonical character identity, costume, proportion, and equipment reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-edit-grid-extraction",
+        "reviewedAt": "2026-09-16",
+        "sha256": "f5ff4120f80cc4113b61f4e366a4729e668303db200dc6958705a27fba7966e1",
+        "review": "app/src/art-pipeline/reviews/character-relic-tender-helping.json",
+        "promptSha256": "47271017a52eca5416eeecf127f02d4a85a8baec29f9be9ae0107217935a47b0"
+      }
+    },
+    {
+      "id": "character-relic-tender-recovering",
+      "name": "Recovering Relic Tender",
+      "family": "character-condition",
+      "character": {
+        "id": "relic-tender",
+        "state": "recovering",
+        "baseAssetId": "character-relic-tender-focal"
+      },
+      "status": "approved",
+      "emotionalBeat": "relief",
+      "assetType": "transparent-focal",
+      "partRole": "focal",
+      "output": {
+        "path": "app/public/images/art/characters/relic-tender-recovering.png",
+        "width": 1024,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "10-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "The exact same Relic Tender in the recovering gameplay state.",
+        "scene": "Transparent isolation with no floor, horizon, scenery, frame, or cast shadow.",
+        "subject": "Relic Tender: seated on one heel, catching breath while checking signature equipment.",
+        "composition": "Complete full-body three-quarter game standee, head, hands, and both boots visible, consistent foot line, generous margin, readable at 64 pixels.",
+        "lighting": "Soft neutral character key with signal color restricted to established equipment.",
+        "constraints": [
+          "Preserve the exact canonical face, age, hair, body proportions, costume construction, equipment placement, and signature props.",
+          "One adult only; no extra people, weapons, costume redesign, text, logo, watermark, frame, floor, or scenery.",
+          "The recovering body mechanics must remain readable without depending on color."
+        ],
+        "identityLocks": [
+          "Preserve low brown ponytail.",
+          "Preserve oval youthful face.",
+          "Preserve gray chest sling.",
+          "Preserve warm seed relic.",
+          "Preserve split-front tunic.",
+          "Keep the full action readable at small gameplay-card and board scale."
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/characters/relic-tender.png",
+          "role": "canonical character identity, costume, proportion, and equipment reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-edit-grid-extraction",
+        "reviewedAt": "2026-09-16",
+        "sha256": "4f28d3dae1058f370baeb95f46e6ca1def769b57ee5b5838c4799a4eae844ec1",
+        "review": "app/src/art-pipeline/reviews/character-relic-tender-recovering.json",
+        "promptSha256": "e40ede48e0661e5666e6c80b2fea913d0ca38f7de0be4d43b46edb92580e721c"
+      }
+    },
+    {
+      "id": "character-relic-tender-strained",
+      "name": "Strained Relic Tender",
+      "family": "character-condition",
+      "character": {
+        "id": "relic-tender",
+        "state": "strained",
+        "baseAssetId": "character-relic-tender-focal"
+      },
+      "status": "approved",
+      "emotionalBeat": "jeopardy",
+      "assetType": "transparent-focal",
+      "partRole": "focal",
+      "output": {
+        "path": "app/public/images/art/characters/relic-tender-strained.png",
+        "width": 1024,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "10-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "The exact same Relic Tender in the strained gameplay state.",
+        "scene": "Transparent isolation with no floor, horizon, scenery, frame, or cast shadow.",
+        "subject": "Relic Tender: standing but visibly exhausted with uneven weight, still alert.",
+        "composition": "Complete full-body three-quarter game standee, head, hands, and both boots visible, consistent foot line, generous margin, readable at 64 pixels.",
+        "lighting": "Soft neutral character key with signal color restricted to established equipment.",
+        "constraints": [
+          "Preserve the exact canonical face, age, hair, body proportions, costume construction, equipment placement, and signature props.",
+          "One adult only; no extra people, weapons, costume redesign, text, logo, watermark, frame, floor, or scenery.",
+          "The strained body mechanics must remain readable without depending on color."
+        ],
+        "identityLocks": [
+          "Preserve low brown ponytail.",
+          "Preserve oval youthful face.",
+          "Preserve gray chest sling.",
+          "Preserve warm seed relic.",
+          "Preserve split-front tunic.",
+          "Keep the full action readable at small gameplay-card and board scale."
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/characters/relic-tender.png",
+          "role": "canonical character identity, costume, proportion, and equipment reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-edit-grid-extraction",
+        "reviewedAt": "2026-09-16",
+        "sha256": "69226d9bffeaafc695b211cf59224ad2ead5b8bd519368bbd9decca516ce7072",
+        "review": "app/src/art-pipeline/reviews/character-relic-tender-strained.json",
+        "promptSha256": "dacf601ae5bfcdfd1e6e39a6ff7e16a9f0831444f522c3d821aed73606bc0ac0"
+      }
+    },
+    {
+      "id": "character-relic-tender-downed",
+      "name": "Downed Relic Tender",
+      "family": "character-condition",
+      "character": {
+        "id": "relic-tender",
+        "state": "downed",
+        "baseAssetId": "character-relic-tender-focal"
+      },
+      "status": "approved",
+      "emotionalBeat": "jeopardy",
+      "assetType": "transparent-focal",
+      "partRole": "focal",
+      "output": {
+        "path": "app/public/images/art/characters/relic-tender-downed.png",
+        "width": 1024,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "10-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "The exact same Relic Tender in the downed gameplay state.",
+        "scene": "Transparent isolation with no floor, horizon, scenery, frame, or cast shadow.",
+        "subject": "Relic Tender: safe seated braced posture communicating temporary incapacity without gore.",
+        "composition": "Complete full-body three-quarter game standee, head, hands, and both boots visible, consistent foot line, generous margin, readable at 64 pixels.",
+        "lighting": "Soft neutral character key with signal color restricted to established equipment.",
+        "constraints": [
+          "Preserve the exact canonical face, age, hair, body proportions, costume construction, equipment placement, and signature props.",
+          "One adult only; no extra people, weapons, costume redesign, text, logo, watermark, frame, floor, or scenery.",
+          "The downed body mechanics must remain readable without depending on color."
+        ],
+        "identityLocks": [
+          "Preserve low brown ponytail.",
+          "Preserve oval youthful face.",
+          "Preserve gray chest sling.",
+          "Preserve warm seed relic.",
+          "Preserve split-front tunic.",
+          "Keep the full action readable at small gameplay-card and board scale."
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/characters/relic-tender.png",
+          "role": "canonical character identity, costume, proportion, and equipment reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-edit-grid-extraction",
+        "reviewedAt": "2026-09-16",
+        "sha256": "af201eac9c4768ceda4b5184a256fcbdb22d3e174bfd3f16aa6f5f4961f30b23",
+        "review": "app/src/art-pipeline/reviews/character-relic-tender-downed.json",
+        "promptSha256": "63a7af568203bbc9dc0801b2face8883c6afba051b5a768d7ef72c51cbd22587"
+      }
+    },
+    {
+      "id": "character-relic-tender-carrying",
+      "name": "Carrying Relic Tender",
+      "family": "character-condition",
+      "character": {
+        "id": "relic-tender",
+        "state": "carrying",
+        "baseAssetId": "character-relic-tender-focal"
+      },
+      "status": "approved",
+      "emotionalBeat": "trust",
+      "assetType": "transparent-focal",
+      "partRole": "focal",
+      "output": {
+        "path": "app/public/images/art/characters/relic-tender-carrying.png",
+        "width": 1024,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "10-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "The exact same Relic Tender in the carrying gameplay state.",
+        "scene": "Transparent isolation with no floor, horizon, scenery, frame, or cast shadow.",
+        "subject": "Relic Tender: protective two-handed carry of one hand-scale recovered mineral relic.",
+        "composition": "Complete full-body three-quarter game standee, head, hands, and both boots visible, consistent foot line, generous margin, readable at 64 pixels.",
+        "lighting": "Soft neutral character key with signal color restricted to established equipment.",
+        "constraints": [
+          "Preserve the exact canonical face, age, hair, body proportions, costume construction, equipment placement, and signature props.",
+          "One adult only; no extra people, weapons, costume redesign, text, logo, watermark, frame, floor, or scenery.",
+          "The carrying body mechanics must remain readable without depending on color."
+        ],
+        "identityLocks": [
+          "Preserve low brown ponytail.",
+          "Preserve oval youthful face.",
+          "Preserve gray chest sling.",
+          "Preserve warm seed relic.",
+          "Preserve split-front tunic.",
+          "Keep the full action readable at small gameplay-card and board scale."
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/characters/relic-tender.png",
+          "role": "canonical character identity, costume, proportion, and equipment reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-edit-grid-extraction",
+        "reviewedAt": "2026-09-16",
+        "sha256": "2ac134f806fde50bb6018e44f34dc532c0e6a4ddb17cfcf727188a447a564c2f",
+        "review": "app/src/art-pipeline/reviews/character-relic-tender-carrying.json",
+        "promptSha256": "996988f16933a008d126d79beb711acf3d7523497cbc3f8f708d61fb662770ee"
+      }
+    },
+    {
+      "id": "character-relic-tender-escaping",
+      "name": "Escaping Relic Tender",
+      "family": "character-condition",
+      "character": {
+        "id": "relic-tender",
+        "state": "escaping",
+        "baseAssetId": "character-relic-tender-focal"
+      },
+      "status": "approved",
+      "emotionalBeat": "jeopardy",
+      "assetType": "transparent-focal",
+      "partRole": "focal",
+      "output": {
+        "path": "app/public/images/art/characters/relic-tender-escaping.png",
+        "width": 1024,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "10-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "The exact same Relic Tender in the escaping gameplay state.",
+        "scene": "Transparent isolation with no floor, horizon, scenery, frame, or cast shadow.",
+        "subject": "Relic Tender: urgent forward run while looking back toward the crew.",
+        "composition": "Complete full-body three-quarter game standee, head, hands, and both boots visible, consistent foot line, generous margin, readable at 64 pixels.",
+        "lighting": "Soft neutral character key with signal color restricted to established equipment.",
+        "constraints": [
+          "Preserve the exact canonical face, age, hair, body proportions, costume construction, equipment placement, and signature props.",
+          "One adult only; no extra people, weapons, costume redesign, text, logo, watermark, frame, floor, or scenery.",
+          "The escaping body mechanics must remain readable without depending on color."
+        ],
+        "identityLocks": [
+          "Preserve low brown ponytail.",
+          "Preserve oval youthful face.",
+          "Preserve gray chest sling.",
+          "Preserve warm seed relic.",
+          "Preserve split-front tunic.",
+          "Keep the full action readable at small gameplay-card and board scale."
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/characters/relic-tender.png",
+          "role": "canonical character identity, costume, proportion, and equipment reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-edit-grid-extraction",
+        "reviewedAt": "2026-09-16",
+        "sha256": "782721334457aad72b886747737e8067752abaa9947dc0ee679e604a36d7fe32",
+        "review": "app/src/art-pipeline/reviews/character-relic-tender-escaping.json",
+        "promptSha256": "29cc9dd6d246fc14b26eb1d9ecb15106f33847abefc648df405280a76d4c10be"
+      }
+    },
+    {
+      "id": "character-relic-tender-aftermath",
+      "name": "Aftermath Relic Tender",
+      "family": "character-condition",
+      "character": {
+        "id": "relic-tender",
+        "state": "aftermath",
+        "baseAssetId": "character-relic-tender-focal"
+      },
+      "status": "approved",
+      "emotionalBeat": "remembrance",
+      "assetType": "transparent-focal",
+      "partRole": "focal",
+      "output": {
+        "path": "app/public/images/art/characters/relic-tender-aftermath.png",
+        "width": 1024,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "10-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "The exact same Relic Tender in the aftermath gameplay state.",
+        "scene": "Transparent isolation with no floor, horizon, scenery, frame, or cast shadow.",
+        "subject": "Relic Tender: reflective post-expedition stance examining one scuffed piece of signature equipment.",
+        "composition": "Complete full-body three-quarter game standee, head, hands, and both boots visible, consistent foot line, generous margin, readable at 64 pixels.",
+        "lighting": "Soft neutral character key with signal color restricted to established equipment.",
+        "constraints": [
+          "Preserve the exact canonical face, age, hair, body proportions, costume construction, equipment placement, and signature props.",
+          "One adult only; no extra people, weapons, costume redesign, text, logo, watermark, frame, floor, or scenery.",
+          "The aftermath body mechanics must remain readable without depending on color."
+        ],
+        "identityLocks": [
+          "Preserve low brown ponytail.",
+          "Preserve oval youthful face.",
+          "Preserve gray chest sling.",
+          "Preserve warm seed relic.",
+          "Preserve split-front tunic.",
+          "Keep the full action readable at small gameplay-card and board scale."
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/characters/relic-tender.png",
+          "role": "canonical character identity, costume, proportion, and equipment reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-edit-grid-extraction",
+        "reviewedAt": "2026-09-16",
+        "sha256": "6076282351e347b3ac060b4a50ad3ad17f4091f2136f813a3086725e767dfb33",
+        "review": "app/src/art-pipeline/reviews/character-relic-tender-aftermath.json",
+        "promptSha256": "2a8fd8b655ed7da3924e6535419dd2452e7d351b96c66e155eb8ce04158574f2"
+      }
+    },
+    {
+      "id": "character-relic-tender-idle-alert",
+      "name": "Idle Alert Relic Tender",
+      "family": "character-condition",
+      "character": {
+        "id": "relic-tender",
+        "state": "idle-alert",
+        "baseAssetId": "character-relic-tender-focal"
+      },
+      "status": "approved",
+      "emotionalBeat": "trust",
+      "assetType": "transparent-focal",
+      "partRole": "focal",
+      "output": {
+        "path": "app/public/images/art/characters/relic-tender-idle-alert.png",
+        "width": 1024,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "10-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "The exact same Relic Tender in the idle-alert gameplay state.",
+        "scene": "Transparent isolation with no floor, horizon, scenery, frame, or cast shadow.",
+        "subject": "Relic Tender: calm alert watch posture distinct from the canonical neutral pose.",
+        "composition": "Complete full-body three-quarter game standee, head, hands, and both boots visible, consistent foot line, generous margin, readable at 64 pixels.",
+        "lighting": "Soft neutral character key with signal color restricted to established equipment.",
+        "constraints": [
+          "Preserve the exact canonical face, age, hair, body proportions, costume construction, equipment placement, and signature props.",
+          "One adult only; no extra people, weapons, costume redesign, text, logo, watermark, frame, floor, or scenery.",
+          "The idle-alert body mechanics must remain readable without depending on color."
+        ],
+        "identityLocks": [
+          "Preserve low brown ponytail.",
+          "Preserve oval youthful face.",
+          "Preserve gray chest sling.",
+          "Preserve warm seed relic.",
+          "Preserve split-front tunic.",
+          "Keep the full action readable at small gameplay-card and board scale."
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/characters/relic-tender.png",
+          "role": "canonical character identity, costume, proportion, and equipment reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-edit-grid-extraction",
+        "reviewedAt": "2026-09-16",
+        "sha256": "de7d4fa5ca5ff198255647943cda32e5b80c587a398942c846e7fb4c0ac2bbaa",
+        "review": "app/src/art-pipeline/reviews/character-relic-tender-idle-alert.json",
+        "promptSha256": "446464cf2762635b79b4486d0d03c0af7d583d6763a568d2c7b0cb809676f4c8"
+      }
+    },
+    {
+      "id": "character-routekeeper-selected",
+      "name": "Selected Routekeeper",
+      "family": "character-condition",
+      "character": {
+        "id": "routekeeper",
+        "state": "selected",
+        "baseAssetId": "character-routekeeper-focal"
+      },
+      "status": "approved",
+      "emotionalBeat": "agency",
+      "assetType": "transparent-focal",
+      "partRole": "focal",
+      "output": {
+        "path": "app/public/images/art/characters/routekeeper-selected.png",
+        "width": 1024,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "10-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "The exact same Routekeeper in the selected gameplay state.",
+        "scene": "Transparent isolation with no floor, horizon, scenery, frame, or cast shadow.",
+        "subject": "Routekeeper: balanced ready stance angled toward the viewer, one hand near signature equipment.",
+        "composition": "Complete full-body three-quarter game standee, head, hands, and both boots visible, consistent foot line, generous margin, readable at 64 pixels.",
+        "lighting": "Soft neutral character key with signal color restricted to established equipment.",
+        "constraints": [
+          "Preserve the exact canonical face, age, hair, body proportions, costume construction, equipment placement, and signature props.",
+          "One adult only; no extra people, weapons, costume redesign, text, logo, watermark, frame, floor, or scenery.",
+          "The selected body mechanics must remain readable without depending on color."
+        ],
+        "identityLocks": [
+          "Preserve long oval face.",
+          "Preserve center-parted tied-back dark hair.",
+          "Preserve square lantern.",
+          "Preserve asymmetrical mantle.",
+          "Preserve cyan hip instrument.",
+          "Keep the full action readable at small gameplay-card and board scale."
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/characters/routekeeper.png",
+          "role": "canonical character identity, costume, proportion, and equipment reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-edit-grid-extraction",
+        "reviewedAt": "2026-09-16",
+        "sha256": "a3916911529304f54b028333bde19c4b50740ebbab74bd5365eb7dc04a0523a8",
+        "review": "app/src/art-pipeline/reviews/character-routekeeper-selected.json",
+        "promptSha256": "8cd6165cfbffba2af5dade61c34b6537bb1a89b0fbff2e0d3352aceda90d554d"
+      }
+    },
+    {
+      "id": "character-routekeeper-moving",
+      "name": "Moving Routekeeper",
+      "family": "character-condition",
+      "character": {
+        "id": "routekeeper",
+        "state": "moving",
+        "baseAssetId": "character-routekeeper-focal"
+      },
+      "status": "approved",
+      "emotionalBeat": "agency",
+      "assetType": "transparent-focal",
+      "partRole": "focal",
+      "output": {
+        "path": "app/public/images/art/characters/routekeeper-moving.png",
+        "width": 1024,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "10-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "The exact same Routekeeper in the moving gameplay state.",
+        "scene": "Transparent isolation with no floor, horizon, scenery, frame, or cast shadow.",
+        "subject": "Routekeeper: unmistakable controlled forward stride with both boots visible.",
+        "composition": "Complete full-body three-quarter game standee, head, hands, and both boots visible, consistent foot line, generous margin, readable at 64 pixels.",
+        "lighting": "Soft neutral character key with signal color restricted to established equipment.",
+        "constraints": [
+          "Preserve the exact canonical face, age, hair, body proportions, costume construction, equipment placement, and signature props.",
+          "One adult only; no extra people, weapons, costume redesign, text, logo, watermark, frame, floor, or scenery.",
+          "The moving body mechanics must remain readable without depending on color."
+        ],
+        "identityLocks": [
+          "Preserve long oval face.",
+          "Preserve center-parted tied-back dark hair.",
+          "Preserve square lantern.",
+          "Preserve asymmetrical mantle.",
+          "Preserve cyan hip instrument.",
+          "Keep the full action readable at small gameplay-card and board scale."
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/characters/routekeeper.png",
+          "role": "canonical character identity, costume, proportion, and equipment reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-edit-grid-extraction",
+        "reviewedAt": "2026-09-16",
+        "sha256": "15e823adb256acce7c9836b8dafdae28e142078ea29dd18cdfaa199caff1ef58",
+        "review": "app/src/art-pipeline/reviews/character-routekeeper-moving.json",
+        "promptSha256": "263c2542118f5cae1e6c7e8788c7b05c8cf064f19f4028adb9aa1117abb7deb6"
+      }
+    },
+    {
+      "id": "character-routekeeper-digging",
+      "name": "Digging Routekeeper",
+      "family": "character-condition",
+      "character": {
+        "id": "routekeeper",
+        "state": "digging",
+        "baseAssetId": "character-routekeeper-focal"
+      },
+      "status": "approved",
+      "emotionalBeat": "discovery",
+      "assetType": "transparent-focal",
+      "partRole": "focal",
+      "output": {
+        "path": "app/public/images/art/characters/routekeeper-digging.png",
+        "width": 1024,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "10-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "The exact same Routekeeper in the digging gameplay state.",
+        "scene": "Transparent isolation with no floor, horizon, scenery, frame, or cast shadow.",
+        "subject": "Routekeeper: grounded crouch using one compact hand geology probe against the ground.",
+        "composition": "Complete full-body three-quarter game standee, head, hands, and both boots visible, consistent foot line, generous margin, readable at 64 pixels.",
+        "lighting": "Soft neutral character key with signal color restricted to established equipment.",
+        "constraints": [
+          "Preserve the exact canonical face, age, hair, body proportions, costume construction, equipment placement, and signature props.",
+          "One adult only; no extra people, weapons, costume redesign, text, logo, watermark, frame, floor, or scenery.",
+          "The digging body mechanics must remain readable without depending on color."
+        ],
+        "identityLocks": [
+          "Preserve long oval face.",
+          "Preserve center-parted tied-back dark hair.",
+          "Preserve square lantern.",
+          "Preserve asymmetrical mantle.",
+          "Preserve cyan hip instrument.",
+          "Keep the full action readable at small gameplay-card and board scale."
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/characters/routekeeper.png",
+          "role": "canonical character identity, costume, proportion, and equipment reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-edit-grid-extraction",
+        "reviewedAt": "2026-09-16",
+        "sha256": "405184e9c532dd47cb051b600a89e0c4c3eba7e9f7ac5db43e331d57cd2165c3",
+        "review": "app/src/art-pipeline/reviews/character-routekeeper-digging.json",
+        "promptSha256": "0fa38a3891cbc1253c59058e3e709b07ecddd7044fae79759f065ac17014fdb1"
+      }
+    },
+    {
+      "id": "character-routekeeper-helping",
+      "name": "Helping Routekeeper",
+      "family": "character-condition",
+      "character": {
+        "id": "routekeeper",
+        "state": "helping",
+        "baseAssetId": "character-routekeeper-focal"
+      },
+      "status": "approved",
+      "emotionalBeat": "cooperation",
+      "assetType": "transparent-focal",
+      "partRole": "focal",
+      "output": {
+        "path": "app/public/images/art/characters/routekeeper-helping.png",
+        "width": 1024,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "10-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "The exact same Routekeeper in the helping gameplay state.",
+        "scene": "Transparent isolation with no floor, horizon, scenery, frame, or cast shadow.",
+        "subject": "Routekeeper: open-handed braced gesture reaching toward an off-frame crewmate.",
+        "composition": "Complete full-body three-quarter game standee, head, hands, and both boots visible, consistent foot line, generous margin, readable at 64 pixels.",
+        "lighting": "Soft neutral character key with signal color restricted to established equipment.",
+        "constraints": [
+          "Preserve the exact canonical face, age, hair, body proportions, costume construction, equipment placement, and signature props.",
+          "One adult only; no extra people, weapons, costume redesign, text, logo, watermark, frame, floor, or scenery.",
+          "The helping body mechanics must remain readable without depending on color."
+        ],
+        "identityLocks": [
+          "Preserve long oval face.",
+          "Preserve center-parted tied-back dark hair.",
+          "Preserve square lantern.",
+          "Preserve asymmetrical mantle.",
+          "Preserve cyan hip instrument.",
+          "Keep the full action readable at small gameplay-card and board scale."
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/characters/routekeeper.png",
+          "role": "canonical character identity, costume, proportion, and equipment reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-edit-grid-extraction",
+        "reviewedAt": "2026-09-16",
+        "sha256": "a867e78792f766423aead09dbd9877de485490b090e676aad8b306aa813c4ffc",
+        "review": "app/src/art-pipeline/reviews/character-routekeeper-helping.json",
+        "promptSha256": "dcdba3eb2d833f0df75c368d64ed0cd0c693ca62f0eff782c19adb5506ef1a3e"
+      }
+    },
+    {
+      "id": "character-routekeeper-recovering",
+      "name": "Recovering Routekeeper",
+      "family": "character-condition",
+      "character": {
+        "id": "routekeeper",
+        "state": "recovering",
+        "baseAssetId": "character-routekeeper-focal"
+      },
+      "status": "approved",
+      "emotionalBeat": "relief",
+      "assetType": "transparent-focal",
+      "partRole": "focal",
+      "output": {
+        "path": "app/public/images/art/characters/routekeeper-recovering.png",
+        "width": 1024,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "10-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "The exact same Routekeeper in the recovering gameplay state.",
+        "scene": "Transparent isolation with no floor, horizon, scenery, frame, or cast shadow.",
+        "subject": "Routekeeper: seated on one heel, catching breath while checking signature equipment.",
+        "composition": "Complete full-body three-quarter game standee, head, hands, and both boots visible, consistent foot line, generous margin, readable at 64 pixels.",
+        "lighting": "Soft neutral character key with signal color restricted to established equipment.",
+        "constraints": [
+          "Preserve the exact canonical face, age, hair, body proportions, costume construction, equipment placement, and signature props.",
+          "One adult only; no extra people, weapons, costume redesign, text, logo, watermark, frame, floor, or scenery.",
+          "The recovering body mechanics must remain readable without depending on color."
+        ],
+        "identityLocks": [
+          "Preserve long oval face.",
+          "Preserve center-parted tied-back dark hair.",
+          "Preserve square lantern.",
+          "Preserve asymmetrical mantle.",
+          "Preserve cyan hip instrument.",
+          "Keep the full action readable at small gameplay-card and board scale."
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/characters/routekeeper.png",
+          "role": "canonical character identity, costume, proportion, and equipment reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-edit-grid-extraction",
+        "reviewedAt": "2026-09-16",
+        "sha256": "6a128f225acd8372fe12e5e2df9441d6f5dc4e544b1481b8be40599c440fc1e1",
+        "review": "app/src/art-pipeline/reviews/character-routekeeper-recovering.json",
+        "promptSha256": "9ac18cf30b91098cec3255be4d071dc8a0401353720301aff13caacf0ddeb9c9"
+      }
+    },
+    {
+      "id": "character-routekeeper-downed",
+      "name": "Downed Routekeeper",
+      "family": "character-condition",
+      "character": {
+        "id": "routekeeper",
+        "state": "downed",
+        "baseAssetId": "character-routekeeper-focal"
+      },
+      "status": "approved",
+      "emotionalBeat": "jeopardy",
+      "assetType": "transparent-focal",
+      "partRole": "focal",
+      "output": {
+        "path": "app/public/images/art/characters/routekeeper-downed.png",
+        "width": 1024,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "10-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "The exact same Routekeeper in the downed gameplay state.",
+        "scene": "Transparent isolation with no floor, horizon, scenery, frame, or cast shadow.",
+        "subject": "Routekeeper: safe seated braced posture communicating temporary incapacity without gore.",
+        "composition": "Complete full-body three-quarter game standee, head, hands, and both boots visible, consistent foot line, generous margin, readable at 64 pixels.",
+        "lighting": "Soft neutral character key with signal color restricted to established equipment.",
+        "constraints": [
+          "Preserve the exact canonical face, age, hair, body proportions, costume construction, equipment placement, and signature props.",
+          "One adult only; no extra people, weapons, costume redesign, text, logo, watermark, frame, floor, or scenery.",
+          "The downed body mechanics must remain readable without depending on color."
+        ],
+        "identityLocks": [
+          "Preserve long oval face.",
+          "Preserve center-parted tied-back dark hair.",
+          "Preserve square lantern.",
+          "Preserve asymmetrical mantle.",
+          "Preserve cyan hip instrument.",
+          "Keep the full action readable at small gameplay-card and board scale."
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/characters/routekeeper.png",
+          "role": "canonical character identity, costume, proportion, and equipment reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-edit-grid-extraction",
+        "reviewedAt": "2026-09-16",
+        "sha256": "32d14c13c3e1624616b8e08597029f6122e6f3cf678c6c5d2d17fa6b58df257c",
+        "review": "app/src/art-pipeline/reviews/character-routekeeper-downed.json",
+        "promptSha256": "885825e2817f4241daadad53dc2a902068bd41aa939e368faf1b03f578a10c16"
+      }
+    },
+    {
+      "id": "character-routekeeper-carrying",
+      "name": "Carrying Routekeeper",
+      "family": "character-condition",
+      "character": {
+        "id": "routekeeper",
+        "state": "carrying",
+        "baseAssetId": "character-routekeeper-focal"
+      },
+      "status": "approved",
+      "emotionalBeat": "trust",
+      "assetType": "transparent-focal",
+      "partRole": "focal",
+      "output": {
+        "path": "app/public/images/art/characters/routekeeper-carrying.png",
+        "width": 1024,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "10-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "The exact same Routekeeper in the carrying gameplay state.",
+        "scene": "Transparent isolation with no floor, horizon, scenery, frame, or cast shadow.",
+        "subject": "Routekeeper: protective two-handed carry of one hand-scale recovered mineral relic.",
+        "composition": "Complete full-body three-quarter game standee, head, hands, and both boots visible, consistent foot line, generous margin, readable at 64 pixels.",
+        "lighting": "Soft neutral character key with signal color restricted to established equipment.",
+        "constraints": [
+          "Preserve the exact canonical face, age, hair, body proportions, costume construction, equipment placement, and signature props.",
+          "One adult only; no extra people, weapons, costume redesign, text, logo, watermark, frame, floor, or scenery.",
+          "The carrying body mechanics must remain readable without depending on color."
+        ],
+        "identityLocks": [
+          "Preserve long oval face.",
+          "Preserve center-parted tied-back dark hair.",
+          "Preserve square lantern.",
+          "Preserve asymmetrical mantle.",
+          "Preserve cyan hip instrument.",
+          "Keep the full action readable at small gameplay-card and board scale."
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/characters/routekeeper.png",
+          "role": "canonical character identity, costume, proportion, and equipment reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-edit-grid-extraction",
+        "reviewedAt": "2026-09-16",
+        "sha256": "e112f0144b3fac48b4d22e5790d0dfbd8b50bc02bc92d891bf16cae933d8173c",
+        "review": "app/src/art-pipeline/reviews/character-routekeeper-carrying.json",
+        "promptSha256": "65888e407d6bf780a24bb7f1dccf857e813e94d8f01dd973798e3c9da9bdcfe5"
+      }
+    },
+    {
+      "id": "character-routekeeper-escaping",
+      "name": "Escaping Routekeeper",
+      "family": "character-condition",
+      "character": {
+        "id": "routekeeper",
+        "state": "escaping",
+        "baseAssetId": "character-routekeeper-focal"
+      },
+      "status": "approved",
+      "emotionalBeat": "jeopardy",
+      "assetType": "transparent-focal",
+      "partRole": "focal",
+      "output": {
+        "path": "app/public/images/art/characters/routekeeper-escaping.png",
+        "width": 1024,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "10-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "The exact same Routekeeper in the escaping gameplay state.",
+        "scene": "Transparent isolation with no floor, horizon, scenery, frame, or cast shadow.",
+        "subject": "Routekeeper: urgent forward run while looking back toward the crew.",
+        "composition": "Complete full-body three-quarter game standee, head, hands, and both boots visible, consistent foot line, generous margin, readable at 64 pixels.",
+        "lighting": "Soft neutral character key with signal color restricted to established equipment.",
+        "constraints": [
+          "Preserve the exact canonical face, age, hair, body proportions, costume construction, equipment placement, and signature props.",
+          "One adult only; no extra people, weapons, costume redesign, text, logo, watermark, frame, floor, or scenery.",
+          "The escaping body mechanics must remain readable without depending on color."
+        ],
+        "identityLocks": [
+          "Preserve long oval face.",
+          "Preserve center-parted tied-back dark hair.",
+          "Preserve square lantern.",
+          "Preserve asymmetrical mantle.",
+          "Preserve cyan hip instrument.",
+          "Keep the full action readable at small gameplay-card and board scale."
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/characters/routekeeper.png",
+          "role": "canonical character identity, costume, proportion, and equipment reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-edit-grid-extraction",
+        "reviewedAt": "2026-09-16",
+        "sha256": "8a133ba38a3222e7fee36d83d30247a4b5baf7ba5b5fe9f8cf3c60afb72cc0e9",
+        "review": "app/src/art-pipeline/reviews/character-routekeeper-escaping.json",
+        "promptSha256": "d3de38dc9e57f5f1cc45f15425cabdbbd0a5174555d003136e73208c3caec681"
+      }
+    },
+    {
+      "id": "character-routekeeper-triumph",
+      "name": "Triumph Routekeeper",
+      "family": "character-condition",
+      "character": {
+        "id": "routekeeper",
+        "state": "triumph",
+        "baseAssetId": "character-routekeeper-focal"
+      },
+      "status": "approved",
+      "emotionalBeat": "triumph",
+      "assetType": "transparent-focal",
+      "partRole": "focal",
+      "output": {
+        "path": "app/public/images/art/characters/routekeeper-triumph.png",
+        "width": 1024,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "10-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "The exact same Routekeeper in the triumph gameplay state.",
+        "scene": "Transparent isolation with no floor, horizon, scenery, frame, or cast shadow.",
+        "subject": "Routekeeper: quiet earned relief with released shoulders and a restrained smile.",
+        "composition": "Complete full-body three-quarter game standee, head, hands, and both boots visible, consistent foot line, generous margin, readable at 64 pixels.",
+        "lighting": "Soft neutral character key with signal color restricted to established equipment.",
+        "constraints": [
+          "Preserve the exact canonical face, age, hair, body proportions, costume construction, equipment placement, and signature props.",
+          "One adult only; no extra people, weapons, costume redesign, text, logo, watermark, frame, floor, or scenery.",
+          "The triumph body mechanics must remain readable without depending on color."
+        ],
+        "identityLocks": [
+          "Preserve long oval face.",
+          "Preserve center-parted tied-back dark hair.",
+          "Preserve square lantern.",
+          "Preserve asymmetrical mantle.",
+          "Preserve cyan hip instrument.",
+          "Keep the full action readable at small gameplay-card and board scale."
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/characters/routekeeper.png",
+          "role": "canonical character identity, costume, proportion, and equipment reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-edit-grid-extraction",
+        "reviewedAt": "2026-09-16",
+        "sha256": "8060c9241a86054b64b58c7f12694430aa7c7c7120af065afb699a96b43ad782",
+        "review": "app/src/art-pipeline/reviews/character-routekeeper-triumph.json",
+        "promptSha256": "065bb3ec59a2f602b4ab07e547d190a8d904b41413da510b83aac24e8d8e0af7"
+      }
+    },
+    {
+      "id": "character-routekeeper-aftermath",
+      "name": "Aftermath Routekeeper",
+      "family": "character-condition",
+      "character": {
+        "id": "routekeeper",
+        "state": "aftermath",
+        "baseAssetId": "character-routekeeper-focal"
+      },
+      "status": "approved",
+      "emotionalBeat": "remembrance",
+      "assetType": "transparent-focal",
+      "partRole": "focal",
+      "output": {
+        "path": "app/public/images/art/characters/routekeeper-aftermath.png",
+        "width": 1024,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "10-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "The exact same Routekeeper in the aftermath gameplay state.",
+        "scene": "Transparent isolation with no floor, horizon, scenery, frame, or cast shadow.",
+        "subject": "Routekeeper: reflective post-expedition stance examining one scuffed piece of signature equipment.",
+        "composition": "Complete full-body three-quarter game standee, head, hands, and both boots visible, consistent foot line, generous margin, readable at 64 pixels.",
+        "lighting": "Soft neutral character key with signal color restricted to established equipment.",
+        "constraints": [
+          "Preserve the exact canonical face, age, hair, body proportions, costume construction, equipment placement, and signature props.",
+          "One adult only; no extra people, weapons, costume redesign, text, logo, watermark, frame, floor, or scenery.",
+          "The aftermath body mechanics must remain readable without depending on color."
+        ],
+        "identityLocks": [
+          "Preserve long oval face.",
+          "Preserve center-parted tied-back dark hair.",
+          "Preserve square lantern.",
+          "Preserve asymmetrical mantle.",
+          "Preserve cyan hip instrument.",
+          "Keep the full action readable at small gameplay-card and board scale."
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/characters/routekeeper.png",
+          "role": "canonical character identity, costume, proportion, and equipment reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-edit-grid-extraction",
+        "reviewedAt": "2026-09-16",
+        "sha256": "47efede8a0b15777373fd0d4c69e9858b0b9af9330d7609488bd2885e3488239",
+        "review": "app/src/art-pipeline/reviews/character-routekeeper-aftermath.json",
+        "promptSha256": "f37585c038c146196ec33075c5915ccea44db6d88aec7222c558b0d9a96f20e7"
+      }
+    },
+    {
+      "id": "character-routekeeper-idle-alert",
+      "name": "Idle Alert Routekeeper",
+      "family": "character-condition",
+      "character": {
+        "id": "routekeeper",
+        "state": "idle-alert",
+        "baseAssetId": "character-routekeeper-focal"
+      },
+      "status": "approved",
+      "emotionalBeat": "trust",
+      "assetType": "transparent-focal",
+      "partRole": "focal",
+      "output": {
+        "path": "app/public/images/art/characters/routekeeper-idle-alert.png",
+        "width": 1024,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "10-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "The exact same Routekeeper in the idle-alert gameplay state.",
+        "scene": "Transparent isolation with no floor, horizon, scenery, frame, or cast shadow.",
+        "subject": "Routekeeper: calm alert watch posture distinct from the canonical neutral pose.",
+        "composition": "Complete full-body three-quarter game standee, head, hands, and both boots visible, consistent foot line, generous margin, readable at 64 pixels.",
+        "lighting": "Soft neutral character key with signal color restricted to established equipment.",
+        "constraints": [
+          "Preserve the exact canonical face, age, hair, body proportions, costume construction, equipment placement, and signature props.",
+          "One adult only; no extra people, weapons, costume redesign, text, logo, watermark, frame, floor, or scenery.",
+          "The idle-alert body mechanics must remain readable without depending on color."
+        ],
+        "identityLocks": [
+          "Preserve long oval face.",
+          "Preserve center-parted tied-back dark hair.",
+          "Preserve square lantern.",
+          "Preserve asymmetrical mantle.",
+          "Preserve cyan hip instrument.",
+          "Keep the full action readable at small gameplay-card and board scale."
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/characters/routekeeper.png",
+          "role": "canonical character identity, costume, proportion, and equipment reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-edit-grid-extraction",
+        "reviewedAt": "2026-09-16",
+        "sha256": "5ebd417b92f441766f8da919e568e6eb0bec1b3296f3ffb99f084a0178a36835",
+        "review": "app/src/art-pipeline/reviews/character-routekeeper-idle-alert.json",
+        "promptSha256": "3b0fa6a5f5c6015f683c667a5b224137311f4a405dce4158b7a006b135bc3c76"
+      }
+    },
+    {
+      "id": "prop-landing-skiff",
+      "name": "Expedition Landing Skiff",
+      "family": "environment-prop",
+      "status": "approved",
+      "emotionalBeat": "trust",
+      "assetType": "transparent-prop",
+      "partRole": "prop",
+      "output": {
+        "path": "app/public/images/art/props/landing-skiff.png",
+        "width": 1024,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "10-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "One rugged four-person Xenovoya landing skiff with a low ramp, folded stabilizers, landing feet, and restrained cyan guidance lights.",
+        "scene": "Transparent board-ready isolation.",
+        "subject": "A practical graphite and weathered-brass expedition VTOL.",
+        "composition": "Complete three-quarter silhouette with generous margin and a clear front ramp.",
+        "lighting": "Soft neutral key with localized cyan landing signals.",
+        "constraints": [
+          "No crew, weapon, text, logo, floor, horizon, scenery, exhaust, or cast shadow.",
+          "Keep one complete connected silhouette with generous transparent margin."
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/props/landing-beacon.png",
+          "role": "approved identity, material, and camera-language reference"
+        },
+        {
+          "path": "app/public/images/art/props/survey-sled.png",
+          "role": "approved identity, material, and camera-language reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-edit",
+        "reviewedAt": "2026-09-16",
+        "sha256": "51db3d31fb12f49293e1af73b989a676d3e0dd65f864e9553239f79e89cd3d58",
+        "review": "app/src/art-pipeline/reviews/prop-landing-skiff.json",
+        "promptSha256": "1fdf61c7cab0f97b0eacd14b60688844cff326ec4641f18c8d50ef5601ce4f8a"
+      }
+    },
+    {
+      "id": "tile-landing-pad-special",
+      "name": "Landing Pad Special Tile",
+      "family": "tile-reference",
+      "status": "approved",
+      "emotionalBeat": "agency",
+      "assetType": "transparent-prop",
+      "partRole": "prop",
+      "output": {
+        "path": "app/public/images/art/tile-concepts/landing-pad-special.png",
+        "width": 1024,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "10-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "One complete landing-pad hex with an empty skiff footprint, graphite plates, cyan guide lights, and one gold route notch.",
+        "scene": "Transparent board-ready isolation.",
+        "subject": "A rain-dark basalt and graphite arrival tile.",
+        "composition": "Complete isometric hex footprint with readable side walls and generous margin.",
+        "lighting": "Soft overcast key with restrained cyan guides.",
+        "constraints": [
+          "No ship, character, labels, symbols, interface, scenery, floor, horizon, or detached parts.",
+          "Keep one complete connected silhouette with generous transparent margin."
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/tile-concepts/landing-variants.webp",
+          "role": "approved identity, material, and camera-language reference"
+        },
+        {
+          "path": "app/public/images/art/terrain/verdant-signal-base-v2.webp",
+          "role": "approved identity, material, and camera-language reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-edit",
+        "reviewedAt": "2026-09-16",
+        "sha256": "bcbc9dfb50d056f3d1f0eb1a4437303d993ff00263a0e7a1a9f46945ddbb6269",
+        "review": "app/src/art-pipeline/reviews/tile-landing-pad-special.json",
+        "promptSha256": "9eec9e43c53a23e1e701ccf1895085fc74c7b184348d34a65660ecf60420d734"
+      }
+    },
+    {
+      "id": "boss-emberglass-razorback-reveal",
+      "name": "Emberglass Razorback Boss Reveal",
+      "family": "encounter",
+      "status": "approved",
+      "emotionalBeat": "jeopardy",
+      "assetType": "feature-landscape",
+      "partRole": "backplate",
+      "output": {
+        "path": "app/public/images/art/bosses/emberglass-razorback-reveal.webp",
+        "width": 1024,
+        "height": 700,
+        "format": "webp",
+        "alpha": false,
+        "maxBytes": 180000,
+        "safeZone": "lower-20-percent"
+      },
+      "prompt": {
+        "primaryRequest": "The exact Emberglass Razorback bursting into a fractured arena while a survivable route remains readable.",
+        "scene": "A dark Emberglass basin of basalt plates and restrained amber crystal.",
+        "subject": "One colossal heat-scarred mineral quadruped with an asymmetric orange-glass ridge.",
+        "composition": "Wide low reveal, creature dominant and fully visible, with quiet lower UI space.",
+        "lighting": "Dust-soft ambient light with one controlled amber fracture source.",
+        "constraints": [
+          "No people, text, logo, interface, duplicate creature, fireball spectacle, or generic lava-monster redesign.",
+          "Keep the lower edge quiet enough for code-native encounter controls."
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/encounters/emberglass-razorback.png",
+          "role": "approved identity, material, and camera-language reference"
+        },
+        {
+          "path": "app/public/images/art/environments/emberglass-crossing.webp",
+          "role": "approved identity, material, and camera-language reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-edit",
+        "reviewedAt": "2026-09-16",
+        "sha256": "3a9dfc4de5a564da435ca2894f0d97c3e97ef4953e31bbc6ac233ba99f8456b3",
+        "review": "app/src/art-pipeline/reviews/boss-emberglass-razorback-reveal.json",
+        "promptSha256": "7344b456a54df7661d13f5de0b5da9a96b94927e18cc1e5c70b31e8bea036b6c"
+      }
+    },
+    {
+      "id": "tile-emberglass-razorback-arena",
+      "name": "Emberglass Razorback Arena Tile",
+      "family": "tile-reference",
+      "status": "approved",
+      "emotionalBeat": "jeopardy",
+      "assetType": "transparent-prop",
+      "partRole": "prop",
+      "output": {
+        "path": "app/public/images/art/bosses/emberglass-razorback-tile.png",
+        "width": 1024,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "10-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "One complete Emberglass boss-arena hex with a broad combat socket, radial glass fractures, and an intact retreat notch.",
+        "scene": "Transparent board-ready isolation.",
+        "subject": "A dark basalt arena shaped by the Razorback encounter.",
+        "composition": "Complete isometric hex footprint with an open center and readable perimeter damage.",
+        "lighting": "Warm fracture light against dry dark stone.",
+        "constraints": [
+          "No creature, character, text, symbol, interface, scenery, floor, horizon, or detached debris.",
+          "Keep one complete connected silhouette with generous transparent margin."
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/tile-concepts/desert-variants.webp",
+          "role": "approved identity, material, and camera-language reference"
+        },
+        {
+          "path": "app/public/images/art/encounters/emberglass-razorback.png",
+          "role": "approved identity, material, and camera-language reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-edit",
+        "reviewedAt": "2026-09-16",
+        "sha256": "b5d5f188e3be670a351487310d7ed770bb7a6385a0aea5a0ea8b61668419cb32",
+        "review": "app/src/art-pipeline/reviews/tile-emberglass-razorback-arena.json",
+        "promptSha256": "217bdf099cb9457e9700ad88b9ea5b494d9184672103fe52b9684bf59929be91"
+      }
+    },
+    {
+      "id": "boss-stormneedle-strider-reveal",
+      "name": "Stormneedle Strider Boss Reveal",
+      "family": "encounter",
+      "status": "approved",
+      "emotionalBeat": "jeopardy",
+      "assetType": "feature-landscape",
+      "partRole": "backplate",
+      "output": {
+        "path": "app/public/images/art/bosses/stormneedle-strider-reveal.webp",
+        "width": 1024,
+        "height": 700,
+        "format": "webp",
+        "alpha": false,
+        "maxBytes": 180000,
+        "safeZone": "lower-20-percent"
+      },
+      "prompt": {
+        "primaryRequest": "The exact Stormneedle Strider bridging a shattered mountain route while one sheltered passage remains legible.",
+        "scene": "A storm pass of layered slate needles and deep atmospheric distance.",
+        "subject": "One towering long-legged mineral construct with a cyan signal core.",
+        "composition": "Wide low reveal, full creature silhouette, route leading through foreground, quiet lower UI edge.",
+        "lighting": "Cold storm light with restrained cyan core and sparse distant hazard signals.",
+        "constraints": [
+          "No people, duplicate creature, extra legs, text, logo, interface, or generic robot redesign.",
+          "Keep the lower edge quiet enough for code-native encounter controls."
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/encounters/stormneedle-strider.png",
+          "role": "approved identity, material, and camera-language reference"
+        },
+        {
+          "path": "app/public/images/art/environments/stormneedle-pass.webp",
+          "role": "approved identity, material, and camera-language reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-edit",
+        "reviewedAt": "2026-09-16",
+        "sha256": "cd9f549f14f27d7886e1f29253a1cfbfb692eaae14fce3e6882004e2c3abec0b",
+        "review": "app/src/art-pipeline/reviews/boss-stormneedle-strider-reveal.json",
+        "promptSha256": "8f75c55872874360f4a539ef8c963d81b72089e2903e11ea1e099172fb69ebe1"
+      }
+    },
+    {
+      "id": "tile-stormneedle-strider-arena",
+      "name": "Stormneedle Strider Arena Tile",
+      "family": "tile-reference",
+      "status": "approved",
+      "emotionalBeat": "jeopardy",
+      "assetType": "transparent-prop",
+      "partRole": "prop",
+      "output": {
+        "path": "app/public/images/art/bosses/stormneedle-strider-tile.png",
+        "width": 1024,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "10-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "One complete Stormneedle boss-arena hex with an open combat socket, four perimeter spires, storm channels, and a sheltered notch.",
+        "scene": "Transparent board-ready isolation.",
+        "subject": "A layered slate arena shaped by the Strider encounter.",
+        "composition": "Complete isometric hex footprint with readable edges and generous margin.",
+        "lighting": "Cold diffuse key with controlled cyan storm channels.",
+        "constraints": [
+          "No creature, character, text, symbol, interface, scenery, floor, horizon, floating rock, or detached debris.",
+          "Keep one complete connected silhouette with generous transparent margin."
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/tile-concepts/mountain-variants.webp",
+          "role": "approved identity, material, and camera-language reference"
+        },
+        {
+          "path": "app/public/images/art/encounters/stormneedle-strider.png",
+          "role": "approved identity, material, and camera-language reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-edit",
+        "reviewedAt": "2026-09-16",
+        "sha256": "01e94aac7501718f787e66efc7efcd2a9e616986c7470b263e78e66dcaa00fcb",
+        "review": "app/src/art-pipeline/reviews/tile-stormneedle-strider-arena.json",
+        "promptSha256": "6e61789665c8258e9c7c9f77725e7f7b3afbddf2dabf2ffe5832ef171b306e02"
+      }
+    },
+    {
+      "id": "boss-violet-warden-reveal",
+      "name": "Violet Reliquary Warden Boss Reveal",
+      "family": "encounter",
+      "status": "approved",
+      "emotionalBeat": "discovery",
+      "assetType": "feature-landscape",
+      "partRole": "backplate",
+      "output": {
+        "path": "app/public/images/art/bosses/violet-warden-reveal.webp",
+        "width": 1024,
+        "height": 700,
+        "format": "webp",
+        "alpha": false,
+        "maxBytes": 180000,
+        "safeZone": "lower-20-percent"
+      },
+      "prompt": {
+        "primaryRequest": "The exact Violet Reliquary Warden unfolding around a sealed relic dais while a narrow negotiated route remains visible.",
+        "scene": "A near-black archive hollow of aged basalt and suspended violet glass.",
+        "subject": "One imposing non-humanoid circular guardian construct.",
+        "composition": "Wide centered reveal with full guardian silhouette and quiet lower UI edge.",
+        "lighting": "Contained violet depth with muted gold navigation accents.",
+        "constraints": [
+          "No humanoid face, extra creature, people, text, logo, interface, portal, throne, or generic fantasy-golem redesign.",
+          "Keep the lower edge quiet enough for code-native encounter controls."
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/encounters/violet-reliquary-warden.png",
+          "role": "approved identity, material, and camera-language reference"
+        },
+        {
+          "path": "app/public/images/art/environments/violet-archive-hollow.webp",
+          "role": "approved identity, material, and camera-language reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-edit",
+        "reviewedAt": "2026-09-16",
+        "sha256": "c0964952f2a95ebf060cc356a11d607efcb43f4dc9c66b4114a17855e51bf40b",
+        "review": "app/src/art-pipeline/reviews/boss-violet-warden-reveal.json",
+        "promptSha256": "3fd72fa5186fc292195a13cbaeb11cb6f0f3da3df0542ff083fd4a00b32e8379"
+      }
+    },
+    {
+      "id": "tile-violet-warden-arena",
+      "name": "Violet Reliquary Warden Arena Tile",
+      "family": "tile-reference",
+      "status": "approved",
+      "emotionalBeat": "discovery",
+      "assetType": "transparent-prop",
+      "partRole": "prop",
+      "output": {
+        "path": "app/public/images/art/bosses/violet-warden-tile.png",
+        "width": 1024,
+        "height": 1024,
+        "format": "png",
+        "alpha": true,
+        "maxBytes": 1800000,
+        "safeZone": "10-percent-all-sides"
+      },
+      "prompt": {
+        "primaryRequest": "One complete reliquary boss-arena hex with a guardian socket, asymmetric crystal buttresses, negotiation route, and muted gold seal.",
+        "scene": "Transparent board-ready isolation.",
+        "subject": "A basalt and violet-glass arena shaped by the Warden encounter.",
+        "composition": "Complete isometric hex footprint with an open center and clear perimeter landmarks.",
+        "lighting": "Restrained violet depth with one muted gold seal.",
+        "constraints": [
+          "No creature, humanoid, text, symbol, interface, scenery, floor, horizon, portal, or detached debris.",
+          "Keep one complete connected silhouette with generous transparent margin."
+        ]
+      },
+      "references": [
+        {
+          "path": "app/public/images/art/tile-concepts/relic-variants.webp",
+          "role": "approved identity, material, and camera-language reference"
+        },
+        {
+          "path": "app/public/images/art/encounters/violet-reliquary-warden.png",
+          "role": "approved identity, material, and camera-language reference"
+        }
+      ],
+      "provenance": {
+        "origin": "azure-image-edit",
+        "reviewedAt": "2026-09-16",
+        "sha256": "1addbf12476ecf65aa5b06318587e643579f66418e4f792be9a5b05567a85c69",
+        "review": "app/src/art-pipeline/reviews/tile-violet-warden-arena.json",
+        "promptSha256": "ebc5a0c4c33f336b4af201adb1d71b9f8f76c51891c5889ce40e19e2e42245d5"
       }
     }
   ],

@@ -1,0 +1,33 @@
+{
+  "assetId": "fx-relic-awakening",
+  "candidate": "artifacts/art/exports/fx-relic-awakening.png",
+  "reviewer": "Codex visual QA",
+  "reviewedAt": "2026-09-15",
+  "scores": {
+    "recognition": 3,
+    "agency": 3,
+    "specificity": 4,
+    "restraint": 4,
+    "continuity": 4,
+    "reusability": 4,
+    "accessibility": 3
+  },
+  "notes": {
+    "recognition": "Three rising memory filaments read as a contained awakening at 220 px and a quiet spark at 72 px.",
+    "agency": "The effect confirms a relic response without depicting the relic or deciding the player's outcome.",
+    "specificity": "Violet memory filaments, gold confirmation points, and sparse suspended motes match Xenovoya's relic language.",
+    "restraint": "The replacement removes the rejected floor patch and leaves broad true-alpha margins.",
+    "continuity": "Localized violet and compass-gold light preserve the established semantic palette.",
+    "reusability": "Surface-independent alpha works on paper, night, and Emberglass fields without a pasted-on base.",
+    "accessibility": "The vertical filament silhouette survives without hue, though the smallest presentation needs contrast protection."
+  },
+  "decision": "approved",
+  "candidateSha256": "8f517c6b1e73e03965e8a7d4d94d20ae231a507b0a3362cc840a72015856195e",
+  "generation": {
+    "mode": "azure-image-generation",
+    "tool": "azure-foundry",
+    "model": "gpt-image-2",
+    "promptSha256": "9c7f04f57ef63fb97f5b8889968b598f09e903f9d82c43ef1f265ce6897d3aa4"
+  },
+  "joyScore": 8.8
+}
