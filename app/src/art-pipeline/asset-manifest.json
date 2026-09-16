@@ -5227,7 +5227,7 @@
       "provenance": {
         "origin": "azure-image-edit-grid-extraction",
         "reviewedAt": "2026-09-16",
-        "sha256": "f49a411865aec2b1fc92d46bae9e7acd3fd6e8df2d52004a8b42e68ccc05af85",
+        "sha256": "c19b176ea316371806ebe15b18a3315838a2cd6f1f43dac128f75767c4d521b6",
         "review": "app/src/art-pipeline/reviews/character-signal-cartographer-strained.json",
         "promptSha256": "1ca9119d52b540819de55c7d002b2b050e3c4bcf0df85333bd744d3773b400cb"
       }
@@ -5843,7 +5843,7 @@
       "provenance": {
         "origin": "azure-image-edit-grid-extraction",
         "reviewedAt": "2026-09-16",
-        "sha256": "fe169ac3b066b1b04a3978c3fade2cd4720480cf3cdc30038fb90a064ed651aa",
+        "sha256": "36270f47b166d8b34fa309e98bd4f51b499dc1b8c31bf8c5dacbcd6106317c03",
         "review": "app/src/art-pipeline/reviews/character-field-mender-strained.json",
         "promptSha256": "71c927f32a1f44443391cf8908a7a8e8b901cf2f742a267db25aa25a5e18564c"
       }
@@ -6291,7 +6291,7 @@
       "provenance": {
         "origin": "azure-image-edit-grid-extraction",
         "reviewedAt": "2026-09-16",
-        "sha256": "4539ba26cf4b93ad5347c9c5091bf9d800880e7e46fe077e3760082361162bc7",
+        "sha256": "33f53ac0e31432c86a1b2e4f6e5b2323e8b591c116a8dffd70d90e8335f96120",
         "review": "app/src/art-pipeline/reviews/character-relic-tender-moving.json",
         "promptSha256": "6ff65405fd4ffee1b53f692949dceddcb991fcf75dd020373fcaa48620085da7"
       }
@@ -6401,9 +6401,9 @@
         }
       ],
       "provenance": {
-        "origin": "azure-image-edit-grid-extraction",
+        "origin": "azure-image-edit-individual-repair",
         "reviewedAt": "2026-09-16",
-        "sha256": "f5ff4120f80cc4113b61f4e366a4729e668303db200dc6958705a27fba7966e1",
+        "sha256": "d5a6e47940e29d81791335823635b07c60510bd446138a565fc030d31f4360ec",
         "review": "app/src/art-pipeline/reviews/character-relic-tender-helping.json",
         "promptSha256": "47271017a52eca5416eeecf127f02d4a85a8baec29f9be9ae0107217935a47b0"
       }
@@ -6515,7 +6515,7 @@
       "provenance": {
         "origin": "azure-image-edit-grid-extraction",
         "reviewedAt": "2026-09-16",
-        "sha256": "69226d9bffeaafc695b211cf59224ad2ead5b8bd519368bbd9decca516ce7072",
+        "sha256": "5512b56bdcd28060cad82ad50094aa09bb260b61b2215ce57b520d075aa586a8",
         "review": "app/src/art-pipeline/reviews/character-relic-tender-strained.json",
         "promptSha256": "dacf601ae5bfcdfd1e6e39a6ff7e16a9f0831444f522c3d821aed73606bc0ac0"
       }
@@ -6625,9 +6625,9 @@
         }
       ],
       "provenance": {
-        "origin": "azure-image-edit-grid-extraction",
+        "origin": "azure-image-edit-individual-repair",
         "reviewedAt": "2026-09-16",
-        "sha256": "2ac134f806fde50bb6018e44f34dc532c0e6a4ddb17cfcf727188a447a564c2f",
+        "sha256": "7d2c0ea778373c644444968a98b59db576d588eead2b3ddb3998f15b30004e54",
         "review": "app/src/art-pipeline/reviews/character-relic-tender-carrying.json",
         "promptSha256": "996988f16933a008d126d79beb711acf3d7523497cbc3f8f708d61fb662770ee"
       }
@@ -6681,9 +6681,9 @@
         }
       ],
       "provenance": {
-        "origin": "azure-image-edit-grid-extraction",
+        "origin": "azure-image-edit-individual-repair",
         "reviewedAt": "2026-09-16",
-        "sha256": "782721334457aad72b886747737e8067752abaa9947dc0ee679e604a36d7fe32",
+        "sha256": "f10535147ab2b20b132495345996423474dcc154a854856a3d8ad205ab9098ee",
         "review": "app/src/art-pipeline/reviews/character-relic-tender-escaping.json",
         "promptSha256": "29cc9dd6d246fc14b26eb1d9ecb15106f33847abefc648df405280a76d4c10be"
       }
@@ -6737,9 +6737,9 @@
         }
       ],
       "provenance": {
-        "origin": "azure-image-edit-grid-extraction",
+        "origin": "azure-image-edit-individual-repair",
         "reviewedAt": "2026-09-16",
-        "sha256": "6076282351e347b3ac060b4a50ad3ad17f4091f2136f813a3086725e767dfb33",
+        "sha256": "afb1d726872b3c593226929baffcd09b0bb85af6bd742c2b5b41638f3be8dea4",
         "review": "app/src/art-pipeline/reviews/character-relic-tender-aftermath.json",
         "promptSha256": "2a8fd8b655ed7da3924e6535419dd2452e7d351b96c66e155eb8ce04158574f2"
       }
@@ -6793,9 +6793,9 @@
         }
       ],
       "provenance": {
-        "origin": "azure-image-edit-grid-extraction",
+        "origin": "azure-image-edit-individual-repair",
         "reviewedAt": "2026-09-16",
-        "sha256": "de7d4fa5ca5ff198255647943cda32e5b80c587a398942c846e7fb4c0ac2bbaa",
+        "sha256": "00816c8c627d9e0f9ce9b7e187b04d89b878ea4ce210adce7f89bfe422291627",
         "review": "app/src/art-pipeline/reviews/character-relic-tender-idle-alert.json",
         "promptSha256": "446464cf2762635b79b4486d0d03c0af7d583d6763a568d2c7b0cb809676f4c8"
       }
@@ -6851,7 +6851,7 @@
       "provenance": {
         "origin": "azure-image-edit-grid-extraction",
         "reviewedAt": "2026-09-16",
-        "sha256": "a3916911529304f54b028333bde19c4b50740ebbab74bd5365eb7dc04a0523a8",
+        "sha256": "f1c9cf6f17dffc996d4f7342bd9bfb4e1fcd41678ed664a45d6cb6b7b6fb3081",
         "review": "app/src/art-pipeline/reviews/character-routekeeper-selected.json",
         "promptSha256": "8cd6165cfbffba2af5dade61c34b6537bb1a89b0fbff2e0d3352aceda90d554d"
       }

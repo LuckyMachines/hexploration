@@ -204,10 +204,10 @@ for (const [assetId, cleanup] of Object.entries(cleanupByAssetId)) {
     );
   }
   if (cleanup.clearFromY) {
-    args.push('-channel', 'A', '-fill', 'black', '-draw', `rectangle 0,${cleanup.clearFromY} 1024,1024`, '+channel');
+    args.push('-region', `1024x${1024 - cleanup.clearFromY}+0+${cleanup.clearFromY}`, '-channel', 'A', '-evaluate', 'set', '0', '+channel', '+region');
   }
   for (const points of cleanup.clearPolygons || []) {
-    args.push('-channel', 'A', '-fill', 'black', '-draw', `polygon ${points}`, '+channel');
+    args.push('-channel', 'A', '-fill', 'none', '-draw', `polygon ${points}`, '+channel');
   }
   args.push('-background', 'none');
   args.push(temporaryOutput);
@@ -224,8 +224,8 @@ for (const [assetId, cleanup] of Object.entries(cleanupByAssetId)) {
 }
 
 catalog.version = '1.1.0';
-manifest.version = '1.15.0';
-runtime.version = '1.1.0';
+manifest.version = '1.16.0';
+runtime.version = '1.2.0';
 writeJson(catalogPath, catalog);
 writeJson(manifestPath, manifest);
 writeJson(runtimePath, runtime);

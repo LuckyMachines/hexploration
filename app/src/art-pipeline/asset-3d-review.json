@@ -60,11 +60,11 @@
       ],
       "runtimeReview": {
         "reviewedAt": "2026-09-14T13:55:00Z",
-        "decision": "approved",
+        "decision": "rejected",
         "contactSheet": "artifacts/art/3d/reviews/relic-tideglass-heart-runtime-contact.png",
         "receipt": "artifacts/art/3d/relic-tideglass-heart/runtime/relic-tideglass-heart-runtime.receipt.json",
-        "scores": { "silhouette": 4, "grounding": 5, "lodContinuity": 4, "materials": 4, "construction": 4 },
-        "notes": "The solid cradle, enclosed emerald chamber, freestanding base, and rear shell remain readable across 11,321, 4,952, and 2,547 triangle LODs. The governed material cleanup restores the intended green-and-bronze identity while preserving texture detail."
+        "scores": { "silhouette": 4, "grounding": 1, "lodContinuity": 4, "materials": 4, "construction": 2 },
+        "notes": "Rejected after integrated board review: every LOD contains a large cyan rectangular floor plane. Keep the transparent cutout fallback active until the source mesh is rebuilt without environment geometry."
       }
     },
     {
@@ -100,11 +100,11 @@
       ],
       "runtimeReview": {
         "reviewedAt": "2026-09-14T13:14:00Z",
-        "decision": "approved",
+        "decision": "rejected",
         "contactSheet": "artifacts/art/3d/reviews/prop-campsite-shelter-runtime-contact.png",
         "receipt": "artifacts/art/3d/prop-campsite-shelter/runtime/prop-campsite-shelter-runtime.receipt.json",
-        "scores": { "silhouette": 5, "grounding": 5, "lodContinuity": 5, "materials": 4, "construction": 4 },
-        "notes": "The shelter remains freestanding and readable with intact feet, rear volume, packs, and warm lantern. Its artifact-free far delivery mesh uses the per-asset 7,298-triangle budget documented in the runtime receipt."
+        "scores": { "silhouette": 5, "grounding": 1, "lodContinuity": 5, "materials": 4, "construction": 2 },
+        "notes": "Rejected after integrated board review: every LOD contains a rectangular floor plane that conflicts with the host hex. Keep the cutout fallback active until the mesh is rebuilt as object-only geometry."
       }
     },
     {

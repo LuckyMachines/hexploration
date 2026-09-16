@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "version": "1.2.0",
-  "generatedAt": "2026-09-16T05:28:20.639Z",
+  "generatedAt": "2026-09-16T09:31:36.657Z",
   "encoding": "lossless WebP via ImageMagick method 6",
   "assets": [
     {
@@ -537,12 +537,12 @@
       "source": "app/public/images/art/characters/signal-cartographer-strained.png",
       "output": "app/public/images/art/characters/signal-cartographer-strained.runtime.webp",
       "maxByteRatio": 0.7,
-      "sourceSha256": "f49a411865aec2b1fc92d46bae9e7acd3fd6e8df2d52004a8b42e68ccc05af85",
-      "outputSha256": "20777c4a5ad44e90f7891c7f9260c11467290d65020d8da785c248701c0070e9",
+      "sourceSha256": "c19b176ea316371806ebe15b18a3315838a2cd6f1f43dac128f75767c4d521b6",
+      "outputSha256": "fed0be5872f005f50dda04e855329c3d6526553ad05771991b2bfcd4c8a36b0e",
       "width": 1024,
       "height": 1024,
-      "sourceBytes": 322709,
-      "outputBytes": 185628
+      "sourceBytes": 322653,
+      "outputBytes": 185624
     },
     {
       "id": "character-signal-cartographer-downed",
@@ -669,12 +669,12 @@
       "source": "app/public/images/art/characters/field-mender-strained.png",
       "output": "app/public/images/art/characters/field-mender-strained.runtime.webp",
       "maxByteRatio": 0.7,
-      "sourceSha256": "fe169ac3b066b1b04a3978c3fade2cd4720480cf3cdc30038fb90a064ed651aa",
-      "outputSha256": "5ffafef5bb6b5eb31cdffa5dd0cd8f9745c17f599058e1afeb647a8bdf0ee804",
+      "sourceSha256": "36270f47b166d8b34fa309e98bd4f51b499dc1b8c31bf8c5dacbcd6106317c03",
+      "outputSha256": "656f66d41807240e4393e5c381df076d4c23eda5b5ccb6a6d5ff3cb8313e3910",
       "width": 1024,
       "height": 1024,
-      "sourceBytes": 484676,
-      "outputBytes": 292150
+      "sourceBytes": 484408,
+      "outputBytes": 292076
     },
     {
       "id": "character-field-mender-downed",
@@ -765,12 +765,12 @@
       "source": "app/public/images/art/characters/relic-tender-moving.png",
       "output": "app/public/images/art/characters/relic-tender-moving.runtime.webp",
       "maxByteRatio": 0.7,
-      "sourceSha256": "4539ba26cf4b93ad5347c9c5091bf9d800880e7e46fe077e3760082361162bc7",
-      "outputSha256": "c4091453668387866af371d0a28bd9fb749acd3ce79ff8913566eb301e558e09",
+      "sourceSha256": "33f53ac0e31432c86a1b2e4f6e5b2323e8b591c116a8dffd70d90e8335f96120",
+      "outputSha256": "876c7e3ec27a8d950a670c6a24c071ea47b7304fd8cc7f9dd711ee3137297b64",
       "width": 1024,
       "height": 1024,
-      "sourceBytes": 288390,
-      "outputBytes": 161206
+      "sourceBytes": 288140,
+      "outputBytes": 161198
     },
     {
       "id": "character-relic-tender-digging",
@@ -789,12 +789,12 @@
       "source": "app/public/images/art/characters/relic-tender-helping.png",
       "output": "app/public/images/art/characters/relic-tender-helping.runtime.webp",
       "maxByteRatio": 0.7,
-      "sourceSha256": "f5ff4120f80cc4113b61f4e366a4729e668303db200dc6958705a27fba7966e1",
-      "outputSha256": "b8079b3f0060debfc513451a688e55fcfa66397161e65111af174c00d75b8a98",
+      "sourceSha256": "d5a6e47940e29d81791335823635b07c60510bd446138a565fc030d31f4360ec",
+      "outputSha256": "9f3ab3f8e6ad45d23f39f60b6025b5bf96ad30400616534dd3d60569a852da3a",
       "width": 1024,
       "height": 1024,
-      "sourceBytes": 357743,
-      "outputBytes": 208308
+      "sourceBytes": 420875,
+      "outputBytes": 254664
     },
     {
       "id": "character-relic-tender-recovering",
@@ -813,12 +813,12 @@
       "source": "app/public/images/art/characters/relic-tender-strained.png",
       "output": "app/public/images/art/characters/relic-tender-strained.runtime.webp",
       "maxByteRatio": 0.7,
-      "sourceSha256": "69226d9bffeaafc695b211cf59224ad2ead5b8bd519368bbd9decca516ce7072",
-      "outputSha256": "313e2a10b858aaa3da98d6cb028851cc82d9c4a76d672562ea429e6ce6bfb88f",
+      "sourceSha256": "5512b56bdcd28060cad82ad50094aa09bb260b61b2215ce57b520d075aa586a8",
+      "outputSha256": "aa5dff147726bd5ef666d69a171b70026b7eeba760feeb1b0d1a58fca54bf037",
       "width": 1024,
       "height": 1024,
-      "sourceBytes": 304555,
-      "outputBytes": 173864
+      "sourceBytes": 304286,
+      "outputBytes": 173032
     },
     {
       "id": "character-relic-tender-downed",
@@ -837,55 +837,55 @@
       "source": "app/public/images/art/characters/relic-tender-carrying.png",
       "output": "app/public/images/art/characters/relic-tender-carrying.runtime.webp",
       "maxByteRatio": 0.7,
-      "sourceSha256": "2ac134f806fde50bb6018e44f34dc532c0e6a4ddb17cfcf727188a447a564c2f",
-      "outputSha256": "24567f35014c86650d40ebe44b9810de9c7205c73e386ee964830390f125e8d6",
+      "sourceSha256": "7d2c0ea778373c644444968a98b59db576d588eead2b3ddb3998f15b30004e54",
+      "outputSha256": "ee4f2093a576aae2404dd005f178312f3a9b14aa9fbfcf75469dcf5eb812f3b8",
       "width": 1024,
       "height": 1024,
-      "sourceBytes": 347743,
-      "outputBytes": 203530
+      "sourceBytes": 275236,
+      "outputBytes": 161094
     },
     {
       "id": "character-relic-tender-escaping",
       "source": "app/public/images/art/characters/relic-tender-escaping.png",
       "output": "app/public/images/art/characters/relic-tender-escaping.runtime.webp",
       "maxByteRatio": 0.7,
-      "sourceSha256": "782721334457aad72b886747737e8067752abaa9947dc0ee679e604a36d7fe32",
-      "outputSha256": "a5562aa9aeeb0fee10d7d2d47065d71c3d58430ad4252c5f8f00bc88a69ac752",
+      "sourceSha256": "f10535147ab2b20b132495345996423474dcc154a854856a3d8ad205ab9098ee",
+      "outputSha256": "20d35d4972c960d9d44b13d5030419bcd9a420ce25d337ff2ae07d9eff5973a2",
       "width": 1024,
       "height": 1024,
-      "sourceBytes": 204066,
-      "outputBytes": 112844
+      "sourceBytes": 334798,
+      "outputBytes": 197496
     },
     {
       "id": "character-relic-tender-aftermath",
       "source": "app/public/images/art/characters/relic-tender-aftermath.png",
       "output": "app/public/images/art/characters/relic-tender-aftermath.runtime.webp",
       "maxByteRatio": 0.7,
-      "sourceSha256": "6076282351e347b3ac060b4a50ad3ad17f4091f2136f813a3086725e767dfb33",
-      "outputSha256": "7ca484de2c98d14ba2e7c24c10709645b001f4aa35e57ea22c96721143047911",
+      "sourceSha256": "afb1d726872b3c593226929baffcd09b0bb85af6bd742c2b5b41638f3be8dea4",
+      "outputSha256": "be98d4138b99aa7f52db148915ae1dea9b46631345854247be84a6d6aca4119e",
       "width": 1024,
       "height": 1024,
-      "sourceBytes": 168050,
-      "outputBytes": 90838
+      "sourceBytes": 308902,
+      "outputBytes": 182062
     },
     {
       "id": "character-relic-tender-idle-alert",
       "source": "app/public/images/art/characters/relic-tender-idle-alert.png",
       "output": "app/public/images/art/characters/relic-tender-idle-alert.runtime.webp",
       "maxByteRatio": 0.7,
-      "sourceSha256": "de7d4fa5ca5ff198255647943cda32e5b80c587a398942c846e7fb4c0ac2bbaa",
-      "outputSha256": "74f2ce8d456b018df214d65b6688983ad63d347c89ab4b18bafe78b1a3ab6828",
+      "sourceSha256": "00816c8c627d9e0f9ce9b7e187b04d89b878ea4ce210adce7f89bfe422291627",
+      "outputSha256": "f6985f6b39e0ee88c7c32f83f13c5151228800cb0d127b487a22991193302905",
       "width": 1024,
       "height": 1024,
-      "sourceBytes": 146633,
-      "outputBytes": 77458
+      "sourceBytes": 297996,
+      "outputBytes": 176706
     },
     {
       "id": "character-routekeeper-selected",
       "source": "app/public/images/art/characters/routekeeper-selected.png",
       "output": "app/public/images/art/characters/routekeeper-selected.runtime.webp",
       "maxByteRatio": 0.7,
-      "sourceSha256": "a3916911529304f54b028333bde19c4b50740ebbab74bd5365eb7dc04a0523a8",
+      "sourceSha256": "f1c9cf6f17dffc996d4f7342bd9bfb4e1fcd41678ed664a45d6cb6b7b6fb3081",
       "outputSha256": "85e9506f08135ceee9ad12c6d52ed5ec3a7c6d7736281b827ddacd3543aeab66",
       "width": 1024,
       "height": 1024,

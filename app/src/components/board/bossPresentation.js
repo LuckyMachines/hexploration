@@ -10,6 +10,8 @@ export const BOSS_PRESENTATIONS = Object.freeze([
     sceneTexture: '/images/art/bosses/emberglass-razorback-reveal.webp',
     tileTexture: '/images/art/bosses/emberglass-razorback-tile.runtime.webp',
     lightColor: '#e8a243',
+    surfaceColor: '#5d2918',
+    surfaceEmissive: '#48140b',
     standeeScale: Object.freeze([1.48, 1.05]),
   }),
   Object.freeze({
@@ -21,6 +23,8 @@ export const BOSS_PRESENTATIONS = Object.freeze([
     sceneTexture: '/images/art/bosses/stormneedle-strider-reveal.webp',
     tileTexture: '/images/art/bosses/stormneedle-strider-tile.runtime.webp',
     lightColor: '#8ad9d1',
+    surfaceColor: '#253d40',
+    surfaceEmissive: '#12383d',
     standeeScale: Object.freeze([1.38, 1.48]),
   }),
   Object.freeze({
@@ -32,6 +36,8 @@ export const BOSS_PRESENTATIONS = Object.freeze([
     sceneTexture: '/images/art/bosses/violet-warden-reveal.webp',
     tileTexture: '/images/art/bosses/violet-warden-tile.runtime.webp',
     lightColor: '#b994e6',
+    surfaceColor: '#382b45',
+    surfaceEmissive: '#30184b',
     standeeScale: Object.freeze([1.42, 1.36]),
   }),
 ]);

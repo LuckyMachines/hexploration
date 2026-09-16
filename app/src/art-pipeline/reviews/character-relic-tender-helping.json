@@ -46,12 +46,11 @@
       "stateRead": "Canonical stateRead remains visually consistent with the approved neutral reference."
     }
   },
-  "candidateSha256": "f5ff4120f80cc4113b61f4e366a4729e668303db200dc6958705a27fba7966e1",
+  "candidateSha256": "d5a6e47940e29d81791335823635b07c60510bd446138a565fc030d31f4360ec",
   "generation": {
-    "mode": "azure-image-edit-grid-extraction",
+    "mode": "azure-image-edit-individual-repair",
     "tool": "azure-foundry",
-    "model": "gpt-image-2",
-    "promptSha256": "47271017a52eca5416eeecf127f02d4a85a8baec29f9be9ae0107217935a47b0"
+    "model": "gpt-image-2"
   },
   "joyScore": 9.8
 }

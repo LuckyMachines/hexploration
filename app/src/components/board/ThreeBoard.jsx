@@ -38,7 +38,9 @@ import { boardLayerSignatures, baseTileTransform } from './boardSceneState';
 import { deriveBoardViewModel } from './boardViewModel';
 import { ENCOUNTER_TEXTURES, encounterTextureKey, encounterTextureKeysForTileTypes } from './encounterRoster';
 import { bossPresentationFor, bossPresentationsForTileTypes } from './bossPresentation';
+import { characterGroundingFor } from './characterGrounding';
 import { premiumBeatKey, presentationFrame } from './premiumPresentation';
+import { approvedRuntimeModelPath } from './runtimeModelCatalog';
 import { DENSE_BOARD_LANDMARK_CAP, createTileGeometry, tileBatchId, tileFamilyFor, tileLandmarkRecipe, tileVariantFor } from './tileKit';
 import runtimeModels from '../../art-pipeline/runtime-models.json';
 const STATE_FX_TEXTURES = {
@@ -49,10 +51,10 @@ const STATE_FX_TEXTURES = {
 };
 const CUTOUT_PROP_TEXTURES = {
   [Tile.LANDING]: ['/images/art/props/landing-beacon.runtime.webp', '/images/art/props/survey-sled.runtime.webp'],
-  [Tile.JUNGLE]: ['/images/art/props/glassroot-fronds.runtime.webp'],
-  [Tile.PLAINS]: ['/images/art/props/lantern-moss.runtime.webp', '/images/art/props/field-cooklight.runtime.webp'],
-  [Tile.DESERT]: ['/images/art/props/emberglass-shards.runtime.webp'],
-  [Tile.MOUNTAIN]: ['/images/art/props/slate-spires.runtime.webp', '/images/art/props/storm-anchor.runtime.webp'],
+  [Tile.JUNGLE]: [],
+  [Tile.PLAINS]: ['/images/art/props/field-cooklight.runtime.webp'],
+  [Tile.DESERT]: [],
+  [Tile.MOUNTAIN]: ['/images/art/props/storm-anchor.runtime.webp'],
   [Tile.RELIC]: ['/images/art/props/violet-reliquary.runtime.webp', '/images/art/props/tideglass-marker.runtime.webp'],
 };
 const CUTOUT_PROP_SCALES = {
@@ -63,7 +65,9 @@ const CUTOUT_PROP_SCALES = {
   [Tile.MOUNTAIN]: [1.18, 1.1],
   [Tile.RELIC]: [1.12, 1.14],
 };
-const CAMPSITE_PROP_TEXTURE = '/images/art/props/campsite-shelter.runtime.webp';
+// Terrain-baked cutouts remain in the art library as references but are excluded
+// from the 3D board until their object-only replacements pass integrated review.
+const CAMPSITE_PROP_TEXTURE = null;
 const SUNSTONE_LENS_TEXTURE = '/images/art/relics/sunstone-lens.runtime.webp';
 const ATLAS_SPINDLE_TEXTURE = '/images/art/relics/atlas-spindle.runtime.webp';
 const TIDEGLASS_CRADLE_TEXTURE = '/images/art/relics/tideglass-heart.runtime.webp';
@@ -71,10 +75,7 @@ const CAVERN_BACKPLATE = '/images/art/environments/glassroot-cavern.webp';
 const EMBERGLASS_BACKPLATE = '/images/art/environments/emberglass-crossing.webp';
 const ROUTE_FORK_TEXTURE = '/images/art/props/route-fork-marker.runtime.webp';
 const LANDING_SKIFF_TEXTURE = '/images/art/props/landing-skiff.runtime.webp';
-const LANDING_PAD_TEXTURE = '/images/art/tile-concepts/landing-pad-special.runtime.webp';
-const runtimeModelPath = (assetId, lodId = 'lod2') => runtimeModels.assets
-  .find((asset) => asset.id === assetId)?.models
-  .find((model) => model.id === lodId)?.path;
+const runtimeModelPath = (assetId, lodId = 'lod2') => approvedRuntimeModelPath(runtimeModels, assetId, lodId);
 const HERO_RELICS = Object.freeze([
   Object.freeze({
     id: 'sunstone-lens',
@@ -83,6 +84,9 @@ const HERO_RELICS = Object.freeze([
     scale: 1.04,
     lightColor: '#f0a94f',
     emissive: '#6f2f0c',
+    materialTint: '#9f6638',
+    roughness: 0.68,
+    metalness: 0.14,
   }),
   Object.freeze({
     id: 'tideglass-heart',
@@ -91,6 +95,9 @@ const HERO_RELICS = Object.freeze([
     scale: 1.06,
     lightColor: '#73d8ab',
     emissive: '#174d39',
+    materialTint: '#477f69',
+    roughness: 0.58,
+    metalness: 0.16,
   }),
   Object.freeze({
     id: 'atlas-spindle',
@@ -99,6 +106,9 @@ const HERO_RELICS = Object.freeze([
     scale: 1.28,
     lightColor: '#c8a2f0',
     emissive: '#472a63',
+    materialTint: '#7f62a2',
+    roughness: 0.56,
+    metalness: 0.16,
   }),
 ]);
 const heroRelicForAlias = (alias = 'relic') => HERO_RELICS[seedForAlias(alias) % HERO_RELICS.length];
@@ -178,6 +188,36 @@ function addRuntimeModelProp(THREE, group, sourceModel, options = {}) {
   return model;
 }
 
+function tuneRuntimeModelMaterials(THREE, sourceModel, {
+  tint,
+  tintStrength = 0.18,
+  roughness = 0.58,
+  metalness = 0.18,
+  emissive,
+  emissiveIntensity = 0.18,
+} = {}) {
+  sourceModel.traverse((object) => {
+    if (!object.isMesh) return;
+    const sourceMaterials = Array.isArray(object.material) ? object.material : [object.material];
+    const tunedMaterials = sourceMaterials.map((sourceMaterial) => {
+      const tuned = sourceMaterial.clone();
+      if (tint && tuned.color?.lerp) tuned.color.lerp(new THREE.Color(tint), tintStrength);
+      if ('roughness' in tuned) tuned.roughness = Math.max(roughness, tuned.roughness || 0);
+      if ('metalness' in tuned) tuned.metalness = Math.min(metalness, tuned.metalness || 0);
+      if ('envMapIntensity' in tuned) tuned.envMapIntensity = 0.72;
+      if (emissive && tuned.emissive?.set) {
+        tuned.emissive.set(emissive);
+        tuned.emissiveIntensity = Math.max(emissiveIntensity, tuned.emissiveIntensity || 0);
+      }
+      return tuned;
+    });
+    object.material = Array.isArray(object.material) ? tunedMaterials : tunedMaterials[0];
+    object.castShadow = true;
+    object.receiveShadow = true;
+  });
+  return sourceModel;
+}
+
 function material(THREE, color, options = {}) {
   return new THREE.MeshStandardMaterial({
     color,
@@ -208,6 +248,7 @@ function addCrystal(THREE, group, { x, z, height, color = '#8bd9d0', scale = 1 }
   crystal.rotation.y = (x + z) * 1.9;
   crystal.castShadow = true;
   group.add(crystal);
+  return crystal;
 }
 
 function addHeroRelicGeometry(THREE, group, seed) {
@@ -385,13 +426,14 @@ function addTerrainLandmarks(THREE, tile, mesh, propTexture, campsiteTexture, { 
       trunk.rotation.z = offset(index * 3 + 1) * 0.18;
       trunk.castShadow = true;
       group.add(trunk);
-      addCrystal(THREE, group, {
+      const frond = addCrystal(THREE, group, {
         x: trunk.position.x,
         z: trunk.position.z,
-        height: 0.22,
-        color: '#6cc48d',
-        scale: 0.72,
+        height: 0.28 + index * 0.035,
+        color: index === 1 ? '#8ad9d1' : '#6cc48d',
+        scale: 0.78,
       });
+      frond.rotation.z = (index - 1) * 0.28;
     }
   }
 
@@ -409,13 +451,23 @@ function addTerrainLandmarks(THREE, tile, mesh, propTexture, campsiteTexture, { 
   }
 
   if (!propTexture && tile.tileType === Tile.DESERT) {
-    for (let index = 0; index < 3; index += 1) {
+    for (let index = 0; index < 4; index += 1) {
+      const angle = (index / 4) * Math.PI * 2 + offset(index) * 0.4;
+      const radius = index === 0 ? 0.04 : 0.13 + index * 0.018;
+      const shard = addCrystal(THREE, group, {
+        x: Math.cos(angle) * radius,
+        z: Math.sin(angle) * radius,
+        height: 0.25 + index * 0.055,
+        color: index % 2 ? '#ef9c38' : '#f1c15f',
+        scale: 0.9,
+      });
+      shard.rotation.z = (index - 1.5) * 0.14;
       const rock = new THREE.Mesh(
-        new THREE.DodecahedronGeometry(0.11 + index * 0.025, 0),
-        material(THREE, index === 0 ? '#a7773b' : '#66502e', { roughness: 1 }),
+        new THREE.DodecahedronGeometry(0.065 + index * 0.008, 0),
+        material(THREE, '#59452f', { roughness: 1 }),
       );
-      rock.scale.y = 0.55 + index * 0.18;
-      rock.position.set(offset(index * 4), 0.08, offset(index * 4 + 1));
+      rock.scale.y = 0.5 + index * 0.08;
+      rock.position.set(Math.cos(angle) * (radius + 0.08), 0.045, Math.sin(angle) * (radius + 0.08));
       rock.rotation.set(offset(index) * 0.7, offset(index + 1) * 2, 0);
       rock.castShadow = true;
       group.add(rock);
@@ -501,39 +553,50 @@ function addTerrainLandmarks(THREE, tile, mesh, propTexture, campsiteTexture, { 
     });
   } else if (tile.hasCampsite) {
     const tent = new THREE.Mesh(
-      new THREE.ConeGeometry(0.25, 0.34, 3),
-      material(THREE, '#789d79', { roughness: 0.95 }),
+      new THREE.ConeGeometry(0.29, 0.38, 3),
+      material(THREE, '#607b64', { roughness: 0.96 }),
     );
     tent.position.set(0.32, 0.17, -0.24);
     tent.rotation.y = Math.PI / 6;
     tent.castShadow = true;
     group.add(tent);
+
+    const pole = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.012, 0.016, 0.42, 6),
+      material(THREE, '#6b5034', { roughness: 0.9 }),
+    );
+    pole.position.set(0.32, 0.21, -0.05);
+    pole.rotation.z = -0.08;
+    group.add(pole);
+
+    const lantern = new THREE.Mesh(
+      new THREE.OctahedronGeometry(0.052, 0),
+      material(THREE, '#efc866', { emissive: '#d99831', emissiveIntensity: 2.1, roughness: 0.28 }),
+    );
+    lantern.position.set(0.32, 0.25, -0.04);
+    group.add(lantern);
+    const campLight = new THREE.PointLight('#e8b85e', 0.48, 1.45, 2);
+    campLight.position.copy(lantern.position);
+    group.add(campLight);
   }
 
   mesh.add(group);
   return cutoutProp;
 }
 
-function createPawn(THREE, color, isCurrent, standeeTexture, standeeProfile = {}) {
+function createPawn(THREE, color, isCurrent, standeeTexture, standeeProfile = {}, characterId = '', characterState = 'neutral') {
   const group = new THREE.Group();
-  const visualScale = standeeProfile.visualScale || 1;
-  const shadowWidth = standeeProfile.shadowWidth || 1;
+  const grounding = characterGroundingFor(characterId, characterState, standeeProfile);
+  const visualScale = grounding.visualScale;
   const contactShadow = new THREE.Mesh(
     new THREE.CircleGeometry(0.34, 24),
-    new THREE.MeshBasicMaterial({ color: '#010302', transparent: true, opacity: 0.62, depthWrite: false }),
+    new THREE.MeshBasicMaterial({ color: '#010302', transparent: true, opacity: grounding.shadowOpacity, depthWrite: false }),
   );
   contactShadow.rotation.x = -Math.PI / 2;
-  contactShadow.scale.set(shadowWidth, 0.48, 1);
+  contactShadow.rotation.z = grounding.pose === 'motion' ? -0.36 : 0;
+  contactShadow.scale.set(grounding.shadowScaleX, grounding.shadowScaleY, 1);
   contactShadow.position.y = 0.006;
   group.add(contactShadow);
-
-  const base = new THREE.Mesh(
-    new THREE.CylinderGeometry(0.24, 0.29, 0.12, 10),
-    material(THREE, '#111712', { roughness: 0.8, metalness: 0.2 }),
-  );
-  base.position.y = 0.06;
-  base.castShadow = true;
-  group.add(base);
 
   if (standeeTexture) {
     const backingTexture = standeeTexture.clone();
@@ -548,8 +611,8 @@ function createPawn(THREE, color, isCurrent, standeeTexture, standeeProfile = {}
       toneMapped: true,
       fog: true,
     }));
-    backing.center.set(0.5, standeeProfile.footAnchor || 0.08);
-    backing.position.y = 0.095;
+    backing.center.set(0.5, 0);
+    backing.position.y = grounding.footY - (grounding.bottomPaddingRatio * 2.36 * visualScale);
     backing.scale.set(2.08 * visualScale, 2.36 * visualScale, 1);
     backing.renderOrder = 2;
     group.add(backing);
@@ -566,8 +629,8 @@ function createPawn(THREE, color, isCurrent, standeeTexture, standeeProfile = {}
       toneMapped: true,
       fog: true,
     }));
-    standee.center.set(0.5, standeeProfile.footAnchor || 0.08);
-    standee.position.y = 0.1;
+    standee.center.set(0.5, 0);
+    standee.position.y = grounding.footY - (grounding.bottomPaddingRatio * 2.22 * visualScale);
     standee.scale.set(1.96 * visualScale, 2.22 * visualScale, 1);
     standee.renderOrder = 3;
     group.add(standee);
@@ -606,6 +669,59 @@ function createPawn(THREE, color, isCurrent, standeeTexture, standeeProfile = {}
     group.add(lantern);
   }
   group.userData.kind = isCurrent ? 'current-pawn' : 'pawn';
+  return group;
+}
+
+function createHexSurfaceOverlay(THREE, {
+  color,
+  emissive,
+  opacity = 0.72,
+  ringColor = color,
+  kind = 'hex-surface-overlay',
+  pattern = 'rings',
+} = {}) {
+  const group = new THREE.Group();
+  group.userData.kind = kind;
+  const surface = new THREE.Mesh(
+    new THREE.CircleGeometry(0.79, 6),
+    material(THREE, color, {
+      emissive,
+      emissiveIntensity: 0.42,
+      roughness: 0.72,
+      metalness: 0.08,
+      transparent: true,
+      opacity,
+      depthWrite: false,
+    }),
+  );
+  surface.rotation.x = -Math.PI / 2;
+  surface.rotation.z = Math.PI / 6;
+  surface.position.y = 0.006;
+  surface.receiveShadow = true;
+  group.add(surface);
+
+  const radii = pattern === 'landing' ? [0.28, 0.52] : pattern === 'relic' ? [0.22, 0.48, 0.66] : [0.42, 0.65];
+  radii.forEach((radius, index) => {
+    const ring = new THREE.Mesh(
+      new THREE.TorusGeometry(radius, index === radii.length - 1 ? 0.016 : 0.012, 6, 48),
+      material(THREE, ringColor, { emissive: ringColor, emissiveIntensity: 1.15, transparent: true, opacity: 0.58 - index * 0.08, depthWrite: false }),
+    );
+    ring.rotation.x = Math.PI / 2;
+    ring.position.y = 0.016 + index * 0.002;
+    group.add(ring);
+  });
+
+  if (pattern === 'landing') {
+    for (let index = 0; index < 3; index += 1) {
+      const guide = new THREE.Mesh(
+        new THREE.BoxGeometry(0.035, 0.012, 0.32),
+        material(THREE, ringColor, { emissive: ringColor, emissiveIntensity: 1.1, transparent: true, opacity: 0.52, depthWrite: false }),
+      );
+      guide.rotation.y = (index / 3) * Math.PI * 2;
+      guide.position.y = 0.018;
+      group.add(guide);
+    }
+  }
   return group;
 }
 
@@ -819,18 +935,19 @@ function buildIntentLayer(THREE, context, state) {
   }
   const isRouteForkEncounter = state.encounterId === 'echo-fork';
   const boss = bossPresentationFor(state.encounterId);
-  const bossTileTexture = boss ? context.bossTileTextures[boss.id] : null;
-  if (intentTile && bossTileTexture) {
-    const bossTileMap = bossTileTexture.clone();
-    bossTileMap.needsUpdate = true;
-    const bossTile = new THREE.Sprite(new THREE.SpriteMaterial({ map: bossTileMap, color: 0xffffff, transparent: true, opacity: 0.9, alphaTest: 0.06, depthWrite: false, toneMapped: true, fog: true }));
-    bossTile.name = `boss-arena:${boss.id}`;
-    bossTile.userData.kind = 'boss-arena-tile';
-    bossTile.center.set(0.5, 0.16);
-    bossTile.position.set(intentTile.x, intentTile.height + 0.025, intentTile.z);
-    bossTile.scale.set(2.08, 1.62, 1);
-    bossTile.renderOrder = 1;
-    group.add(bossTile);
+  if (intentTile && boss) {
+    const pattern = boss.tileType === Tile.RELIC ? 'relic' : 'rings';
+    const bossSurface = createHexSurfaceOverlay(THREE, {
+      color: boss.surfaceColor,
+      emissive: boss.surfaceEmissive,
+      ringColor: boss.lightColor,
+      opacity: 0.76,
+      kind: 'boss-arena-surface',
+      pattern,
+    });
+    bossSurface.name = `boss-arena:${boss.id}`;
+    bossSurface.position.set(intentTile.x, intentTile.height + 0.025, intentTile.z);
+    group.add(bossSurface);
   }
   const encounterKey = intentTile ? encounterTextureKey(intentTile, state.encounterId) : null;
   const encounterTexture = (state.isDanger || state.encounterId) && intentTile
@@ -939,9 +1056,18 @@ function buildPartyLayer(THREE, context, state) {
       const presentation = resolveCharacterVisual({ characterId: character.id, state: characterState });
       const stateTexture = context.characterTextures[presentation.path];
       const standeeTexture = stateTexture || context.characterTextures[runtimeImagePath(character.assets.neutral)];
-      const pawn = createPawn(THREE, PLAYER_COLORS[playerIndex] || PLAYER_COLORS[0], playerIndex === state.currentPlayerIndex, standeeTexture, character.standee);
+      const resolvedCharacterState = stateTexture ? presentation.resolvedState : 'neutral';
+      const pawn = createPawn(
+        THREE,
+        PLAYER_COLORS[playerIndex] || PLAYER_COLORS[0],
+        playerIndex === state.currentPlayerIndex,
+        standeeTexture,
+        character.standee,
+        character.id,
+        resolvedCharacterState,
+      );
       pawn.userData.characterId = character.id;
-      pawn.userData.characterState = stateTexture ? presentation.resolvedState : 'neutral';
+      pawn.userData.characterState = resolvedCharacterState;
       const angle = (index / Math.max(1, indices.length)) * Math.PI * 2;
       const radius = indices.length > 1 ? (tile.tileType === Tile.RELIC ? 0.54 : 0.42) : 0;
       pawn.position.set(tile.x + Math.cos(angle) * radius, tile.height + 0.04, tile.z + Math.sin(angle) * radius);
@@ -1147,15 +1273,8 @@ function createWorld(THREE, OrbitControls, RoomEnvironment, KTX2Loader, GLTFLoad
   Object.values(encounterTextures).filter(Boolean).forEach((texture) => { texture.colorSpace = THREE.SRGBColorSpace; });
   const routeForkTexture = quality.mode === 'efficient' ? null : textureLoader.load(ROUTE_FORK_TEXTURE);
   if (routeForkTexture) routeForkTexture.colorSpace = THREE.SRGBColorSpace;
-  const bossTileTextures = quality.mode === 'efficient' ? {} : Object.fromEntries(relevantBosses.map((boss) => {
-    const texture = textureLoader.load(boss.tileTexture);
-    texture.colorSpace = THREE.SRGBColorSpace;
-    return [boss.id, texture];
-  }));
   const landingSkiffTexture = usedTileTypes.has(Tile.LANDING) ? textureLoader.load(LANDING_SKIFF_TEXTURE) : null;
   if (landingSkiffTexture) landingSkiffTexture.colorSpace = THREE.SRGBColorSpace;
-  const landingPadTexture = usedTileTypes.has(Tile.LANDING) && quality.mode !== 'efficient' ? textureLoader.load(LANDING_PAD_TEXTURE) : null;
-  if (landingPadTexture) landingPadTexture.colorSpace = THREE.SRGBColorSpace;
   const propTextures = new Map(Object.entries(CUTOUT_PROP_TEXTURES).filter(([tileType]) => usedTileTypes.has(Number(tileType))).map(([tileType, texturePaths]) => {
     const textures = texturePaths.map((texturePath) => {
       const texture = textureLoader.load(texturePath);
@@ -1164,7 +1283,7 @@ function createWorld(THREE, OrbitControls, RoomEnvironment, KTX2Loader, GLTFLoad
     });
     return [Number(tileType), textures];
   }));
-  const campsiteTexture = hasCampsite ? textureLoader.load(CAMPSITE_PROP_TEXTURE) : null;
+  const campsiteTexture = hasCampsite && CAMPSITE_PROP_TEXTURE ? textureLoader.load(CAMPSITE_PROP_TEXTURE) : null;
   if (campsiteTexture) campsiteTexture.colorSpace = THREE.SRGBColorSpace;
   const sunstoneTexture = usedTileTypes.has(Tile.RELIC) ? textureLoader.load(SUNSTONE_LENS_TEXTURE) : null;
   if (sunstoneTexture) sunstoneTexture.colorSpace = THREE.SRGBColorSpace;
@@ -1188,10 +1307,8 @@ function createWorld(THREE, OrbitControls, RoomEnvironment, KTX2Loader, GLTFLoad
     fxTextures,
     characterTextures,
     encounterTextures,
-    bossTileTextures,
     routeForkTexture,
     landingSkiffTexture,
-    landingPadTexture,
     routeForkModel: null,
     landingBeaconModels: [],
     campsiteModels: [],
@@ -1296,16 +1413,17 @@ function createWorld(THREE, OrbitControls, RoomEnvironment, KTX2Loader, GLTFLoad
   const landingTile = worldByAlias.get(initialState.landingSite)
     || world.cells.find((tile) => tile.revealed && tile.tileType === Tile.LANDING);
   const landingAnchor = landingTile ? tileAnchors.get(landingTile.alias) : null;
-  if (landingTile && landingAnchor && landingPadTexture) {
-    const landingPadMap = landingPadTexture.clone();
-    landingPadMap.needsUpdate = true;
-    const landingPad = new THREE.Sprite(new THREE.SpriteMaterial({ map: landingPadMap, color: 0xffffff, transparent: true, opacity: 0.86, alphaTest: 0.05, depthWrite: false, toneMapped: true, fog: true }));
+  if (landingTile && landingAnchor) {
+    const landingPad = createHexSurfaceOverlay(THREE, {
+      color: '#223833',
+      emissive: '#0e3b36',
+      ringColor: '#8ad9d1',
+      opacity: 0.78,
+      kind: 'landing-pad-surface',
+      pattern: 'landing',
+    });
     landingPad.name = `landing-pad:${landingTile.alias}`;
-    landingPad.userData.kind = 'landing-pad-tile';
-    landingPad.center.set(0.5, 0.16);
     landingPad.position.y = landingTile.height / 2 + 0.025;
-    landingPad.scale.set(1.72, 1.4, 1);
-    landingPad.renderOrder = 1;
     landingAnchor.add(landingPad);
   }
   if (landingTile && landingAnchor && landingSkiffTexture) {
@@ -1321,6 +1439,14 @@ function createWorld(THREE, OrbitControls, RoomEnvironment, KTX2Loader, GLTFLoad
   const landingBeaconModelPath = runtimeModelPath('prop-landing-beacon');
   if (landingBeaconModelPath && usedTileTypes.has(Tile.LANDING) && !simplifiedLandmarks) {
     modelLoader.load(landingBeaconModelPath, ({ scene: sourceModel }) => {
+      tuneRuntimeModelMaterials(THREE, sourceModel, {
+        tint: '#4f8f86',
+        tintStrength: 0.2,
+        roughness: 0.5,
+        metalness: 0.22,
+        emissive: '#174d49',
+        emissiveIntensity: 0.12,
+      });
       const landingTiles = world.cells.filter((tile) => tile.revealed && tile.tileType === Tile.LANDING && landmarkAliases.has(tile.alias));
       landingTiles.forEach((tile) => {
         const anchor = tileAnchors.get(tile.alias);
@@ -1354,7 +1480,14 @@ function createWorld(THREE, OrbitControls, RoomEnvironment, KTX2Loader, GLTFLoad
   const routeForkModelPath = runtimeModelPath('prop-route-fork-marker');
   if (routeForkModelPath) {
     modelLoader.load(routeForkModelPath, ({ scene: sourceModel }) => {
-      context.routeForkModel = sourceModel;
+      context.routeForkModel = tuneRuntimeModelMaterials(THREE, sourceModel, {
+        tint: '#b99752',
+        tintStrength: 0.14,
+        roughness: 0.62,
+        metalness: 0.2,
+        emissive: '#5e4219',
+        emissiveIntensity: 0.16,
+      });
       renderer.domElement.dataset.routeForkModel = 'lod2';
       addDynamicWorld(THREE, context, context.state || initialState);
       requestRender();
@@ -1405,23 +1538,13 @@ function createWorld(THREE, OrbitControls, RoomEnvironment, KTX2Loader, GLTFLoad
   const heroModelPath = heroRelic.modelPath;
   if (heroModelPath && heroTile && quality.mode !== 'efficient') {
     modelLoader.load(heroModelPath, ({ scene: sourceModel }) => {
-      sourceModel.traverse((object) => {
-        if (!object.isMesh) return;
-        object.castShadow = true;
-        object.receiveShadow = true;
-        const sourceMaterials = Array.isArray(object.material) ? object.material : [object.material];
-        const refinedMaterials = sourceMaterials.map((sourceMaterial) => {
-          const refined = sourceMaterial.clone();
-          if ('roughness' in refined) refined.roughness = Math.max(0.46, refined.roughness || 0);
-          if ('metalness' in refined) refined.metalness = Math.min(0.32, refined.metalness || 0);
-          if ('envMapIntensity' in refined) refined.envMapIntensity = 0.72;
-          if (refined.emissive?.set) {
-            refined.emissive.set(heroRelic.emissive);
-            refined.emissiveIntensity = Math.max(0.28, refined.emissiveIntensity || 0);
-          }
-          return refined;
-        });
-        object.material = Array.isArray(object.material) ? refinedMaterials : refinedMaterials[0];
+      tuneRuntimeModelMaterials(THREE, sourceModel, {
+        tint: heroRelic.materialTint,
+        tintStrength: 0.28,
+        roughness: heroRelic.roughness,
+        metalness: heroRelic.metalness,
+        emissive: heroRelic.emissive,
+        emissiveIntensity: 0.28,
       });
       [heroTile].filter(Boolean).forEach((tile) => {
         const anchor = tileAnchors.get(tile.alias);
@@ -1873,10 +1996,8 @@ function createWorld(THREE, OrbitControls, RoomEnvironment, KTX2Loader, GLTFLoad
       Object.values(fxTextures).forEach((texture) => texture.dispose());
       Object.values(characterTextures).forEach((texture) => texture.dispose());
       Object.values(encounterTextures).filter(Boolean).forEach((texture) => texture.dispose());
-      Object.values(bossTileTextures).filter(Boolean).forEach((texture) => texture.dispose());
       routeForkTexture?.dispose();
       landingSkiffTexture?.dispose();
-      landingPadTexture?.dispose();
       propTextures.forEach((textures) => textures.forEach((texture) => texture.dispose()));
       campsiteTexture?.dispose();
       sunstoneTexture?.dispose();
