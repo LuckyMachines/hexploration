@@ -35,7 +35,7 @@ ARG VITE_ENABLE_INTERNAL_TOOLS=false
 RUN VITE_RELEASE_SHA="${VITE_RELEASE_SHA:-${SOURCE_COMMIT}}" npm run build
 
 # -- Serve stage --
-FROM nginxinc/nginx-unprivileged:1.31.5-alpine3.24@sha256:aa8c9087d36d93e9d650c5365f883b421e8214aedbad24ade52b844c583358f1
+FROM nginxinc/nginx-unprivileged:1.31.6-alpine3.24@sha256:b54ac358b83fc6c965793fd271839b4ea4cdb6e99895bb19618cbc2ca152d972
 USER root
 RUN apk upgrade --no-cache libuuid libcrypto3 libssl3 && apk del --no-cache curl
 COPY nginx-player.conf /etc/nginx/conf.d/default.conf
