@@ -5,7 +5,7 @@ Scope: player entry, solo expedition, 3D board presentation, characters, encount
 
 ## Outcome
 
-The current source is substantially stronger than the public release, but neither public domain is serving its repository's current `main` commit. The first release task is therefore a real hosting migration and exact-SHA verification, not another cosmetic deployment claim. Product work proceeds against the current source and is promoted only after the final visual and automated gates pass.
+The reviewed player and marketing releases are now live from Coolify on Hetzner. The former Cloudflare Pages custom-domain bindings were removed, the three public DNS records were migrated, and exact release manifests now prove which commit each surface is serving. The playable solo experience and its marketing entry have a shared visual language, a shorter path to play, more authored encounters, a four-person crew, stronger board composition, and production security headers.
 
 ## Stricter A bar
 
@@ -17,21 +17,21 @@ A first-time player can enter solo play, understand the immediate objective, cho
 - Player `main` at start of pass: `5635bd0937b8f9e71ede20b79ae8e1957ded9613` (10 commits ahead).
 - Live marketing release: `2a206bfa991ca8b5c5ce7f02a245d42309ca50e6`.
 - Marketing `main` at start of pass: `59e132c487b8dbf945539524b3e6a0a5401d1611` (5 commits ahead).
-- `play.xenovoya.com` points to `hexploration-spa.pages.dev`.
-- `xenovoya.com` and `www.xenovoya.com` point to `xenovoya-site.pages.dev`.
-- The EU Coolify application inventory contains the return service and analytics monitor, but no player or marketing application.
-- The live marketing origin is missing the complete security-header contract.
+- `play.xenovoya.com` previously pointed to `hexploration-spa.pages.dev`.
+- `xenovoya.com` and `www.xenovoya.com` previously pointed to `xenovoya-site.pages.dev`.
+- The EU Coolify application inventory initially contained the return service and analytics monitor, but no player or marketing application.
+- The prior live marketing origin was missing the complete security-header contract.
 
 ## Sequenced implementation checklist
 
 ### P0 - Release truth and safety
 
-- [ ] Create verified Coolify applications for the player and marketing repositories.
-- [ ] Configure build-time release identity, production environment, health checks, domains, and automatic deployment from `main`.
-- [ ] Deploy reviewed commits, cut DNS from legacy Pages targets to Coolify, and verify rollback readiness.
-- [ ] Require exact player and marketing SHAs in the post-deploy live gate.
-- [ ] Apply the complete marketing security-header contract.
-- [ ] Remove blockchain, wallet, chain, transaction, and Sepolia language from every reachable player-facing surface.
+- [x] Create verified Coolify applications for the player and marketing repositories.
+- [x] Configure build-time release identity, production environment, health checks, domains, and automatic deployment from `main`.
+- [x] Deploy reviewed commits, cut DNS from legacy Pages targets to Coolify, and verify rollback readiness.
+- [x] Require exact player and marketing SHAs in the post-deploy live gate.
+- [x] Apply the complete marketing security-header contract.
+- [x] Remove blockchain, wallet, chain, transaction, and Sepolia language from every reachable player-facing surface.
 
 ### P1 - First expedition and responsive command flow
 
@@ -100,6 +100,16 @@ A first-time player can enter solo play, understand the immediate objective, cho
 - Generated four new 1536x1024 GPT Image 2 decision scenes through Azure, reviewed them individually, optimized runtime WebP derivatives, and connected them to gameplay.
 - Shortened the marketing homepage, removed the redundant mechanic sandbox and exposition section, made Play Solo the dominant cross-domain action, refreshed the live-gameplay proof, and eagerly loaded the three-act images.
 - Updated public marketing language and structured data to describe the current solo experience instead of promising public multiplayer behavior.
+- Added hardened production web-server configuration for the player SPA, including history fallback, immutable asset caching, release health, CSP, HSTS, permissions, referrer, and framing policies.
+- Migrated `xenovoya.com`, `www.xenovoya.com`, and `play.xenovoya.com` from Cloudflare Pages to healthy Coolify applications on Hetzner.
+- Detached the obsolete Pages custom-domain bindings, retained the Pages projects as rollback artifacts, and enabled Git-backed deployment through the configured GitHub App.
+
+## Production release evidence
+
+- Marketing: `046f62146e10efe1b638fb2d29866c5e6ccaa300` at `https://xenovoya.com/release.json`.
+- Player: `dece1fe9d49965773fffd0f6dc2cea764c23abb2` at `https://play.xenovoya.com/release.json`.
+- Coolify reports both applications `running:healthy`.
+- `/`, `/guest`, and both release manifests return HTTP 200 through Cloudflare with CSP and anti-framing headers.
 
 ## Visual review result
 
