@@ -37,8 +37,11 @@ describe('final art expansion catalog', () => {
   });
 
   it('connects encounter, crew ability, and future relic art to gameplay ids', () => {
-    expect(Object.keys(GUEST_ENCOUNTER_ART).sort()).toEqual(['echo-fork', 'wind-vault']);
-    expect(Object.keys(GUEST_ABILITY_ART).sort()).toEqual(['anchor', 'trace']);
+    expect(Object.keys(GUEST_ENCOUNTER_ART).sort()).toEqual([
+      'bellstone-rise', 'cinderwake-flats', 'echo-fork', 'far-slate', 'furnace-scar',
+      'glassroot-choir', 'rootlight-vale', 'stormneedle-pass', 'veilwood-fringe', 'wind-vault',
+    ]);
+    expect(Object.keys(GUEST_ABILITY_ART).sort()).toEqual(['anchor', 'attune', 'mend', 'trace']);
     expect(FUTURE_RELIC_SIGNALS.map(({ id }) => id)).toEqual([
       'echo-compass',
       'stormglass-seed',

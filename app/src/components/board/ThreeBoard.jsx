@@ -1069,7 +1069,7 @@ function buildPartyLayer(THREE, context, state) {
       pawn.userData.characterId = character.id;
       pawn.userData.characterState = resolvedCharacterState;
       const angle = (index / Math.max(1, indices.length)) * Math.PI * 2;
-      const radius = indices.length > 1 ? (tile.tileType === Tile.RELIC ? 0.54 : 0.42) : 0;
+      const radius = indices.length >= 4 ? 0.72 : indices.length === 3 ? 0.58 : indices.length > 1 ? 0.46 : 0;
       pawn.position.set(tile.x + Math.cos(angle) * radius, tile.height + 0.04, tile.z + Math.sin(angle) * radius);
       pawn.rotation.y = -0.45;
       context.layers.party.add(pawn);
@@ -1339,7 +1339,9 @@ function createWorld(THREE, OrbitControls, RoomEnvironment, KTX2Loader, GLTFLoad
   const matrixHelper = new THREE.Object3D();
   const tileTransformEvidence = [];
   const simplifiedLandmarks = world.cells.length > 32;
-  const landmarkCap = simplifiedLandmarks ? DENSE_BOARD_LANDMARK_CAP : world.cells.length;
+  const landmarkCap = simplifiedLandmarks
+    ? DENSE_BOARD_LANDMARK_CAP
+    : Math.min(8, Math.max(4, Math.ceil(world.cells.length * 0.25)));
   const eligibleLandmarks = world.cells.filter((tile) => tile.revealed && tile.tileType !== Tile.NONE);
   const landmarkAliases = new Set();
   const prioritizeLandmark = (alias) => {
@@ -1428,9 +1430,9 @@ function createWorld(THREE, OrbitControls, RoomEnvironment, KTX2Loader, GLTFLoad
   }
   if (landingTile && landingAnchor && landingSkiffTexture) {
     const landingSkiff = new THREE.Group();
-    landingSkiff.position.set(0, landingTile.height / 2 + 0.035, 0);
+    landingSkiff.position.set(0.78, landingTile.height / 2 + 0.035, 0.12);
     addCutoutProp(THREE, landingSkiff, landingTile, landingSkiffTexture, seedForAlias(`${landingTile.alias}:landing-skiff`), {
-      scale: [1.95, 1.28], x: 0.06, z: -0.08, mirror: false, persistent: true,
+      scale: [2.4, 1.55], x: 0, z: 0, mirror: false, persistent: true,
       lightColor: '#8ad9d1', lightIntensity: 0.62, kind: 'landing-skiff',
     });
     landingAnchor.add(landingSkiff);

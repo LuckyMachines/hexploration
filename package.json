@@ -1,7 +1,7 @@
 {
   "name": "xenovoya",
   "version": "0.2.0",
-  "description": "On-chain multiplayer explore & escape game.",
+  "description": "A cooperative science-fantasy exploration and escape game.",
   "scripts": {
     "build": "forge build",
     "test": "forge test",
@@ -125,6 +125,7 @@
     "art:brief": "node scripts/art-pipeline.mjs brief",
     "art:generate": "node scripts/art-pipeline.mjs generate",
     "art:generate-special-encounters": "node scripts/generate-special-encounter-art.mjs",
+    "art:generate-premium-solo": "node scripts/generate-premium-solo-encounter-art.mjs",
     "art:process-special-encounters": "node scripts/process-special-encounter-art.mjs",
     "art:generate-repairs": "node scripts/generate-asset-repairs.mjs",
     "art:process-repairs": "node scripts/process-asset-repairs.mjs",

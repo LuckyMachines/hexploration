@@ -31,11 +31,21 @@ export const GUEST_LOCATION_ART = Object.freeze({
 export const GUEST_ENCOUNTER_ART = Object.freeze({
   'echo-fork': '/images/art/encounters/echo-fork-decision.webp',
   'wind-vault': '/images/art/encounters/wind-vault-decision.webp',
+  'glassroot-choir': '/images/art/encounters/glassroot-choir-decision-v2.runtime.webp',
+  'cinderwake-flats': '/images/art/encounters/cinderwake-flats-decision-v2.runtime.webp',
+  'stormneedle-pass': '/images/art/encounters/stormneedle-strider.runtime.webp',
+  'furnace-scar': '/images/art/encounters/emberglass-razorback.runtime.webp',
+  'bellstone-rise': '/images/art/encounters/bellstone-rise-decision-v2.runtime.webp',
+  'rootlight-vale': '/images/art/encounters/lantern-moss-burrower.runtime.webp',
+  'veilwood-fringe': '/images/art/encounters/glassroot-stalker.runtime.webp',
+  'far-slate': '/images/art/encounters/far-slate-decision-v2.runtime.webp',
 });
 
 export const GUEST_ABILITY_ART = Object.freeze({
   trace: '/images/art/characters/signal-cartographer-surveying.webp',
   anchor: '/images/art/characters/routekeeper-anchoring.webp',
+  mend: '/images/art/characters/field-mender-helping.runtime.webp',
+  attune: '/images/art/characters/relic-tender-carrying.runtime.webp',
 });
 
 export const CHARACTER_MOMENT_ART = Object.freeze({

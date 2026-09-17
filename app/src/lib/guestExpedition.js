@@ -43,23 +43,23 @@ export const GUEST_TERRAIN = Object.freeze([
 export const GUEST_LOCATION_PROFILES = Object.freeze({
   '0,0': { name: 'Tideglass Cradle', motif: 'A suspended heart of glass pulls mist into orbit.', omen: 'The relic is listening to the same storm as the crew.', discovery: 'The Tideglass Cradle answers the lantern and wakes the entire horizon.', tone: 'gold' },
   '0,1': { name: 'Hushgrass Shelf', motif: 'Silver grass bends toward sounds the crew cannot hear.', omen: 'The wind is quiet enough to hide a route.', discovery: 'Hushgrass records the crew as a pale wake pointing home.', tone: 'blue' },
-  '0,2': { name: 'Glassroot Choir', motif: 'Translucent roots carry a chord beneath the soil.', omen: 'A living signal is following the lantern.', discovery: 'The roots repeat the beacon note and reveal an older crossing.', tone: 'green' },
-  '0,3': { name: 'Cinderwake Flats', motif: 'Black sand lifts in slow ribbons around warm glass.', omen: 'Heat is moving against the wind.', discovery: 'A buried ember seam redraws the southern edge of the map.', tone: 'red' },
+  '0,2': { name: 'Glassroot Choir', motif: 'Translucent roots carry a chord beneath the soil.', omen: 'A living signal is following the lantern.', discovery: 'The roots repeat the beacon note and reveal an older crossing.', tone: 'green', encounterId: 'glassroot-choir' },
+  '0,3': { name: 'Cinderwake Flats', motif: 'Black sand lifts in slow ribbons around warm glass.', omen: 'Heat is moving against the wind.', discovery: 'A buried ember seam redraws the southern edge of the map.', tone: 'red', encounterId: 'cinderwake-flats' },
   '1,0': { name: 'Mossglass Gate', motif: 'Fronds close behind each footstep, then bloom again.', omen: 'Something patient is keeping pace.', discovery: 'The gate parts around a route marker grown into living glass.', tone: 'green' },
   '1,1': { name: 'Echo Fork', motif: 'Three paths answer the same beacon call.', omen: 'One echo is real; two are weather.', discovery: 'The Cartographer finds a repeating note hidden inside the false routes.', tone: 'blue', encounterId: 'echo-fork' },
   '1,2': { name: 'Quiet Step', motif: 'Low stone terraces hold the landing light.', omen: 'The safest ground can still become a trap when the storm turns.', discovery: 'Old boot marks prove another crew once found the beacon from here.', tone: 'green' },
-  '1,3': { name: 'Stormneedle Pass', motif: 'Slate fins split the cloudbank into narrow channels.', omen: 'Static crawls down every exposed edge.', discovery: 'The pass offers a fast line home, but no shelter if pressure breaks.', tone: 'red' },
-  '2,0': { name: 'Furnace Scar', motif: 'A red seam glows beneath plates of cooled glass.', omen: 'Every flare arrives one breath earlier.', discovery: 'The scar is not cooling; it is counting down.', tone: 'red' },
+  '1,3': { name: 'Stormneedle Pass', motif: 'Slate fins split the cloudbank into narrow channels.', omen: 'Static crawls down every exposed edge.', discovery: 'The pass offers a fast line home, but no shelter if pressure breaks.', tone: 'red', encounterId: 'stormneedle-pass' },
+  '2,0': { name: 'Furnace Scar', motif: 'A red seam glows beneath plates of cooled glass.', omen: 'Every flare arrives one breath earlier.', discovery: 'The scar is not cooling; it is counting down.', tone: 'red', encounterId: 'furnace-scar' },
   '2,1': { name: 'Memory Ferns', motif: 'Each frond repeats the crew as a delayed silhouette.', omen: 'The reflections are watching the wrong horizon.', discovery: 'A reflected route exposes the cost of reaching the beacon from the north.', tone: 'blue' },
   '2,2': { name: 'Beaconfall Basin', motif: 'A cyan landing signal pools across wet basalt.', omen: 'This is the one place the storm cannot erase.', discovery: 'The landing beacon locks the route into a stable departure memory.', tone: 'green' },
   '2,3': { name: 'Pale Compass Field', motif: 'Needle-shaped flowers rotate toward buried metal.', omen: 'Their direction changes whenever the relics answer.', discovery: 'The flowers point to a second signal beyond the visible ridge.', tone: 'blue' },
-  '3,0': { name: 'Bellstone Rise', motif: 'Hollow pillars ring whenever pressure crosses the ridge.', omen: 'The next bell will bring the storm closer.', discovery: 'The Routekeeper marks a sheltered channel between the ringing stones.', tone: 'gold' },
+  '3,0': { name: 'Bellstone Rise', motif: 'Hollow pillars ring whenever pressure crosses the ridge.', omen: 'The next bell will bring the storm closer.', discovery: 'The Routekeeper marks a sheltered channel between the ringing stones.', tone: 'gold', encounterId: 'bellstone-rise' },
   '3,1': { name: 'Wind Vault', motif: 'A roofless ruin holds a pocket of perfectly still air.', omen: 'The quiet can shelter the crew or sharpen the signal.', discovery: 'The vault contains both a safe anchor and a dangerous listening chamber.', tone: 'gold', encounterId: 'wind-vault' },
   '3,2': { name: 'Split Needle', motif: 'A fractured spire frames the beacon like a sight.', omen: 'The homeward path narrows whenever lightning fills the gap.', discovery: 'A sheltered ledge keeps the route legible for one more crossing.', tone: 'red' },
-  '3,3': { name: 'Rootlight Vale', motif: 'Green lantern pods illuminate a path no map recorded.', omen: 'Their light dims when anyone turns away.', discovery: 'The vale reveals a living shortcut through the southern canopy.', tone: 'green' },
+  '3,3': { name: 'Rootlight Vale', motif: 'Green lantern pods illuminate a path no map recorded.', omen: 'Their light dims when anyone turns away.', discovery: 'The vale reveals a living shortcut through the southern canopy.', tone: 'green', encounterId: 'rootlight-vale' },
   '4,0': { name: 'Atlas Spindle', motif: 'A violet mechanism turns without touching the stone.', omen: 'Two relic harmonics overlap here.', discovery: 'The Atlas Spindle opens like a compass remembering a vanished north.', tone: 'gold' },
-  '4,1': { name: 'Veilwood Fringe', motif: 'Layered leaves erase depth until the lantern passes.', omen: 'A glassroot grazer is moving just beyond the veil.', discovery: 'The creature withdraws and leaves a luminous route through the trees.', tone: 'green' },
-  '4,2': { name: 'Far Slate', motif: 'Blue-black shelves rise beyond the easy return line.', omen: 'The beacon arrives here as a tremor rather than light.', discovery: 'The shelf gives a clear view of the storm front and nowhere to hide.', tone: 'blue' },
+  '4,1': { name: 'Veilwood Fringe', motif: 'Layered leaves erase depth until the lantern passes.', omen: 'A glassroot grazer is moving just beyond the veil.', discovery: 'The creature withdraws and leaves a luminous route through the trees.', tone: 'green', encounterId: 'veilwood-fringe' },
+  '4,2': { name: 'Far Slate', motif: 'Blue-black shelves rise beyond the easy return line.', omen: 'The beacon arrives here as a tremor rather than light.', discovery: 'The shelf gives a clear view of the storm front and nowhere to hide.', tone: 'blue', encounterId: 'far-slate' },
   '4,3': { name: 'Ashwake Verge', motif: 'Warm dust draws spirals around a buried machine.', omen: 'The machine moves only while unobserved.', discovery: 'Its wake records a route toward a signal outside this survey.', tone: 'red' },
 });
 
@@ -70,8 +70,8 @@ export const GUEST_ENCOUNTERS = Object.freeze({
     speaker: 'Signal Cartographer',
     prompt: 'Separate the true relic harmonic from two storm reflections.',
     choices: [
-      { id: 'trace', label: 'Trace every echo', detail: 'Reveal the two northern approaches. Pressure +7.', pressure: 7, supplies: 0, reveal: ['0,1', '1,0'] },
-      { id: 'mark', label: 'Mark only the sure route', detail: 'Preserve pressure and recover one supply.', pressure: 0, supplies: 1, reveal: ['0,1'] },
+      { id: 'trace', label: 'Trace every echo', detail: 'Reveal the two northern approaches. Pressure +7.', pressure: 7, supplies: 0, reveal: ['0,1', '1,0'], outcome: 'The Cartographer lets every echo finish. Two northern approaches become legible as the storm notices the signal.' },
+      { id: 'mark', label: 'Mark only the sure route', detail: 'Preserve pressure and recover one supply.', pressure: 0, supplies: 1, reveal: ['0,1'], outcome: 'The Cartographer rejects the false harmonics and recovers an untouched field cache.' },
     ],
   },
   'wind-vault': {
@@ -80,8 +80,72 @@ export const GUEST_ENCOUNTERS = Object.freeze({
     speaker: 'Routekeeper',
     prompt: 'Spend the shelter reinforcing home, or listen deeper into the storm.',
     choices: [
-      { id: 'anchor', label: 'Reinforce the return line', detail: 'Pressure -12. Spend one supply.', pressure: -12, supplies: -1, reveal: ['3,0'] },
-      { id: 'listen', label: 'Open the listening chamber', detail: 'Reveal Tideglass. Pressure +9.', pressure: 9, supplies: 0, reveal: ['4,0'] },
+      { id: 'anchor', label: 'Reinforce the return line', detail: 'Pressure -12. Spend one supply.', pressure: -12, supplies: -1, reveal: ['3,0'], outcome: 'The Routekeeper spends a line and fixes the homeward signal against the next pressure wave.' },
+      { id: 'listen', label: 'Open the listening chamber', detail: 'Reveal Tideglass. Pressure +9.', pressure: 9, supplies: 0, reveal: ['4,0'], outcome: 'The listening chamber opens. Tideglass answers from beyond the eastern ridge.' },
+    ],
+  },
+  'glassroot-choir': {
+    id: 'glassroot-choir', title: 'The Glassroot Choir Learns Your Names', speaker: 'Relic Tender',
+    prompt: 'Answer the living harmony, or pass quietly before it binds to the crew.',
+    choices: [
+      { id: 'harmonize', label: 'Join the root-song', detail: 'Reveal the western relic. Pressure +8.', pressure: 8, supplies: 0, reveal: ['0,0'], outcome: 'The Relic Tender gives the roots a careful answer. Their chorus resolves into the Tideglass signal.' },
+      { id: 'hush', label: 'Muffle the lanterns', detail: 'Recover one supply. Keep the relic hidden.', pressure: 0, supplies: 1, reveal: ['0,1'], outcome: 'The crew wraps every lantern. The roots fall quiet and uncover an intact survey cache.' },
+    ],
+  },
+  'cinderwake-flats': {
+    id: 'cinderwake-flats', title: 'A Cinderwake Siphon Breaks the Surface', speaker: 'Field Mender',
+    prompt: 'Vent the buried heat safely, or ride its eruption toward the next ridge.',
+    choices: [
+      { id: 'vent', label: 'Repair the heat vanes', detail: 'Pressure -9. Spend one supply.', pressure: -9, supplies: -1, reveal: ['1,3'], outcome: 'The Field Mender coaxes the vanes open. The flats cool enough to preserve the return line.' },
+      { id: 'ride', label: 'Ride the thermal wake', detail: 'Reveal two crossings. Pressure +11.', pressure: 11, supplies: 0, reveal: ['1,3', '2,3'], outcome: 'The crew rides a tower of hot glass-dust and maps two distant crossings before landing.' },
+    ],
+  },
+  'stormneedle-pass': {
+    id: 'stormneedle-pass', title: 'The Stormneedle Strider Blocks the Pass', speaker: 'Routekeeper',
+    prompt: 'Shelter beneath its stride, or draw it away from the homeward signal.',
+    choices: [
+      { id: 'shelter', label: 'Move beneath the strider', detail: 'Pressure -6. The nearby ridge is revealed.', pressure: -6, supplies: 0, reveal: ['3,2'], outcome: 'The crew matches the creature step for step, using its enormous frame as moving shelter.' },
+      { id: 'decoy', label: 'Cast a false beacon', detail: 'Pressure +5. Recover one supply.', pressure: 5, supplies: 1, reveal: ['2,3'], outcome: 'The false beacon draws the strider east and uncovers a storm-sealed ration case.' },
+    ],
+  },
+  'furnace-scar': {
+    id: 'furnace-scar', title: 'The Emberglass Razorback Charges', speaker: 'Field Mender',
+    prompt: 'Brace the brittle plates, or divert the creature through the cooling seam.',
+    choices: [
+      { id: 'brace', label: 'Brace and hold', detail: 'Spend one supply. Pressure -7.', pressure: -7, supplies: -1, reveal: ['1,0'], outcome: 'The Field Mender locks the plates together while the razorback thunders past.' },
+      { id: 'divert', label: 'Open the cooling seam', detail: 'Reveal the relic approach. Pressure +10.', pressure: 10, supplies: 0, reveal: ['0,0'], outcome: 'The seam flashes open. The creature turns, and a relic harmonic appears beyond it.' },
+    ],
+  },
+  'bellstone-rise': {
+    id: 'bellstone-rise', title: 'The Bellstones Begin Their Warning', speaker: 'Signal Cartographer',
+    prompt: 'Record the complete storm rhythm, or silence the loudest pillar.',
+    choices: [
+      { id: 'record', label: 'Record the full sequence', detail: 'Reveal Far Slate. Pressure +7.', pressure: 7, supplies: 0, reveal: ['4,2'], outcome: 'The bells describe the storm in advance, making the far shelf legible for one precious minute.' },
+      { id: 'silence', label: 'Bind the warning bell', detail: 'Pressure -8. Spend one supply.', pressure: -8, supplies: -1, reveal: ['3,1'], outcome: 'The Routekeeper binds the tallest pillar and the pressure wave passes without finding the crew.' },
+    ],
+  },
+  'rootlight-vale': {
+    id: 'rootlight-vale', title: 'Lantern Pods Follow the Relic Tender', speaker: 'Relic Tender',
+    prompt: 'Let the living lights guide you, or harvest their glow for the return.',
+    choices: [
+      { id: 'follow', label: 'Follow the lantern procession', detail: 'Reveal Veilwood. Pressure +6.', pressure: 6, supplies: 0, reveal: ['4,1'], outcome: 'The lantern pods drift ahead like a constellation and open a hidden way through Veilwood.' },
+      { id: 'harvest', label: 'Bottle the rootlight', detail: 'Recover two supplies. Pressure +4.', pressure: 4, supplies: 2, reveal: ['2,3'], outcome: 'The Relic Tender gathers only fallen light, leaving the vale alive and the crew better provisioned.' },
+    ],
+  },
+  'veilwood-fringe': {
+    id: 'veilwood-fringe', title: 'A Glassroot Stalker Mirrors the Crew', speaker: 'Signal Cartographer',
+    prompt: 'Offer it a route-marker, or break line of sight through the layered leaves.',
+    choices: [
+      { id: 'offer', label: 'Offer a route-marker', detail: 'Spend one supply. Reveal Atlas Spindle.', pressure: 0, supplies: -1, reveal: ['4,0'], outcome: 'The stalker accepts the marker and retraces a path directly toward the Atlas Spindle.' },
+      { id: 'vanish', label: 'Disappear into the veil', detail: 'Pressure -5. The trail remains hidden.', pressure: -5, supplies: 0, reveal: ['3,3'], outcome: 'The crew folds into the leaves until even the storm loses their outline.' },
+    ],
+  },
+  'far-slate': {
+    id: 'far-slate', title: 'A Slate-Spire Kite Hunts the Beacon', speaker: 'Routekeeper',
+    prompt: 'Ground its charged wings, or use its flight to map the storm edge.',
+    choices: [
+      { id: 'ground', label: 'Ground the charged wings', detail: 'Pressure -10. Spend one supply.', pressure: -10, supplies: -1, reveal: ['3,2'], outcome: 'The Routekeeper grounds the charge through a field line and the storm briefly loses its quarry.' },
+      { id: 'map', label: 'Follow its storm flight', detail: 'Reveal two eastern routes. Pressure +12.', pressure: 12, supplies: 0, reveal: ['4,0', '4,3'], outcome: 'The kite draws a brilliant arc across the front, exposing both the relic route and the Ashwake Verge.' },
     ],
   },
 });
@@ -100,6 +164,20 @@ export const GUEST_CREW_ABILITIES = Object.freeze({
     speaker: 'Routekeeper',
     label: 'Anchor the way home',
     detail: 'Once per expedition: reduce pressure by 18. Spend one supply.',
+  },
+  mend: {
+    id: 'mend',
+    characterId: 'field-mender',
+    speaker: 'Field Mender',
+    label: 'Restore the field kit',
+    detail: 'Once per expedition: recover two supplies. Pressure +4.',
+  },
+  attune: {
+    id: 'attune',
+    characterId: 'relic-tender',
+    speaker: 'Relic Tender',
+    label: 'Attune the nearest signal',
+    detail: 'Once per expedition: reveal the nearest relic route. Pressure +7.',
   },
 });
 
@@ -204,7 +282,7 @@ export function normalizeGuestExpedition(value) {
     supplies: clamp(value.supplies, 0, 10),
     relics: Math.max(0, Number(value.relics) || 0),
     turns: Math.max(0, Number(value.turns) || 0),
-    lastEvent: ['arrival', 'reveal', 'relic', 'danger', 'return', 'encounter', 'survey', 'anchor', 'safe-departure', 'emergency'].includes(value.lastEvent) ? value.lastEvent : fallback.lastEvent,
+    lastEvent: ['arrival', 'reveal', 'relic', 'danger', 'return', 'encounter', 'survey', 'anchor', 'mend', 'attune', 'safe-departure', 'emergency'].includes(value.lastEvent) ? value.lastEvent : fallback.lastEvent,
     completedAt: typeof value.completedAt === 'string' ? value.completedAt : null,
     message: typeof value.message === 'string' && value.message.trim() ? value.message : fallback.message,
   };
@@ -373,13 +451,13 @@ export function resolveGuestEncounter(state, choiceId) {
   const pressure = clamp(normalized.pressure + choice.pressure, 0, 100);
   const supplies = clamp(normalized.supplies + choice.supplies, 0, 10);
   const redline = (pressure >= 100 || supplies === 0) && normalized.currentLocation !== GUEST_LANDING_SITE;
-  const choiceBody = choice.id === 'trace'
+  const choiceBody = choice.outcome || (choice.id === 'trace'
     ? 'The Cartographer lets every echo finish. Two northern approaches become legible as the storm notices the signal.'
     : choice.id === 'mark'
       ? 'The Cartographer rejects the false harmonics and recovers an untouched field cache.'
       : choice.id === 'anchor'
         ? 'The Routekeeper spends a line and fixes the homeward signal against the next pressure wave.'
-        : 'The listening chamber opens. Tideglass answers from beyond the eastern ridge.';
+        : 'The listening chamber opens. Tideglass answers from beyond the eastern ridge.');
   return {
     ...normalized,
     status: redline ? 'redline' : 'exploring',
@@ -389,7 +467,7 @@ export function resolveGuestEncounter(state, choiceId) {
     pressure,
     supplies,
     lastChoice: { encounterId: encounter.id, choiceId: choice.id },
-    lastEvent: redline ? 'danger' : choice.id === 'anchor' ? 'anchor' : 'survey',
+    lastEvent: redline ? 'danger' : choice.pressure < 0 ? 'anchor' : 'survey',
     journal: addJournalEntry(normalized, {
       id: `encounter-${encounter.id}-${choice.id}`,
       title: `${encounter.title}: ${choice.label}`,
@@ -405,6 +483,8 @@ export function canUseGuestCrewAbility(state, abilityId) {
   if (!GUEST_CREW_ABILITIES[abilityId] || normalized.status !== 'exploring' || normalized.pendingEncounter) return false;
   if (normalized.usedAbilities.includes(abilityId)) return false;
   if (abilityId === 'anchor') return normalized.pressure >= 24 && normalized.supplies > 1;
+  if (abilityId === 'mend') return normalized.supplies <= 8;
+  if (abilityId === 'attune') return normalized.turns > 0 && normalized.collectedAliases.length < 2;
   return normalized.turns > 0;
 }
 
@@ -430,6 +510,47 @@ export function useGuestCrewAbility(state, abilityId) {
         title: 'The Hidden Routes Answered',
         body: 'The Signal Cartographer traded five pressure for a complete reading of the adjacent world.',
         tone: 'blue',
+      }),
+    };
+  }
+  if (abilityId === 'mend') {
+    return {
+      ...normalized,
+      selectedAlias: '',
+      usedAbilities: unique([...normalized.usedAbilities, abilityId]),
+      pressure: clamp(normalized.pressure + 4, 0, 100),
+      supplies: clamp(normalized.supplies + 2, 0, 10),
+      lastEvent: 'mend',
+      message: 'The Field Mender rebuilds two field kits from storm-scrap. The delay adds four pressure.',
+      journal: addJournalEntry(normalized, {
+        id: `ability-mend-${normalized.turns}`,
+        title: 'Nothing Useful Stays Broken',
+        body: 'The Field Mender recovered two supplies from wreckage while the storm closed by four pressure.',
+        tone: 'green',
+      }),
+    };
+  }
+  if (abilityId === 'attune') {
+    const relicTargets = GUEST_TERRAIN
+      .filter((cell) => cell.tileType === Tile.RELIC && !normalized.collectedAliases.includes(cell.alias))
+      .sort((left, right) => distanceBetween(normalized.currentLocation, new Set([left.alias])) - distanceBetween(normalized.currentLocation, new Set([right.alias])));
+    const reveal = relicTargets[0] ? [relicTargets[0].alias] : [];
+    const pressure = clamp(normalized.pressure + 7, 0, 100);
+    const redline = pressure >= 100 && normalized.currentLocation !== GUEST_LANDING_SITE;
+    return {
+      ...normalized,
+      status: redline ? 'redline' : 'exploring',
+      selectedAlias: '',
+      revealedAliases: validAliasList([...normalized.revealedAliases, ...reveal]),
+      usedAbilities: unique([...normalized.usedAbilities, abilityId]),
+      pressure,
+      lastEvent: redline ? 'danger' : 'attune',
+      message: redline ? 'The relic attunement crossed redline. Call emergency extraction.' : 'The Relic Tender quiets every false harmonic until the nearest true signal burns through the map.',
+      journal: addJournalEntry(normalized, {
+        id: `ability-attune-${normalized.turns}`,
+        title: 'A True Signal in the Weather',
+        body: 'The Relic Tender revealed the nearest unclaimed relic route at a cost of seven pressure.',
+        tone: 'gold',
       }),
     };
   }
@@ -643,6 +764,20 @@ export function guestEmotionalBeat(state) {
       whyItMatters: 'The crew converted a finite supply into more time and a safer extraction window.',
       nextPrompt: 'Spend that safety deliberately; the anchor cannot be used twice.',
     },
+    mend: {
+      tone: 'green',
+      title: 'The Field Kit Lives Again',
+      summary: normalized.message,
+      whyItMatters: 'Recovered supplies create two more possible crossings, but the repair gave the storm time to close in.',
+      nextPrompt: 'Spend the renewed range on a purposeful route, not a detour.',
+    },
+    attune: {
+      tone: 'gold',
+      title: 'One True Signal Remains',
+      summary: normalized.message,
+      whyItMatters: 'The nearest relic is now visible, turning exploration into a deliberate risk-and-return decision.',
+      nextPrompt: 'Decide whether the revealed prize is worth the pressure required to reach it.',
+    },
   };
   return beats[normalized.lastEvent] ? { ...common, ...beats[normalized.lastEvent] } : null;
 }
@@ -660,6 +795,8 @@ export function guestCrewBark(state) {
     encounter: { speaker: encounter?.speaker || 'Signal Cartographer', line: encounter?.prompt || 'The route needs an answer before we move.' },
     survey: { speaker: 'Signal Cartographer', line: 'There. The false notes are falling away. Use the map before the storm learns it too.' },
     anchor: { speaker: 'Routekeeper', line: 'The homeward line is holding. That bought us time, not permission to forget the cost.' },
+    mend: { speaker: 'Field Mender', line: 'Two kits back in service. I bought us distance, but the storm heard the tools.' },
+    attune: { speaker: 'Relic Tender', line: 'There. One note stays true when every other signal bends. That is where the relic waits.' },
     'safe-departure': { speaker: 'Routekeeper', line: 'Route closed. Promise kept. The Tideglass is coming home.' },
     emergency: { speaker: 'Routekeeper', line: 'Count people first. We can mourn the lost route after everyone is breathing.' },
   };
@@ -729,16 +866,26 @@ export function guestBoardInput(state, { isResolving = false } = {}) {
         : 'planning';
   const arc = guestExpeditionArc(normalized);
   const currentProfile = guestLocationProfile(normalized.currentLocation);
-  const routekeeperLeads = ['anchor', 'danger', 'relic', 'return', 'safe-departure', 'emergency'].includes(normalized.lastEvent);
+  const activeCrewIndex = normalized.lastEvent === 'mend'
+    ? 2
+    : normalized.lastEvent === 'attune'
+      ? 3
+      : ['anchor', 'danger', 'relic', 'return', 'safe-departure', 'emergency'].includes(normalized.lastEvent)
+        ? 1
+        : 0;
   const activeAction = normalized.status === 'complete'
     ? Action.FLEE
     : normalized.lastEvent === 'anchor'
       ? Action.REST
       : normalized.lastEvent === 'survey'
         ? Action.DIG
-        : normalized.pendingEncounter
+        : normalized.lastEvent === 'mend'
           ? Action.HELP
-          : Action.MOVE;
+          : normalized.lastEvent === 'attune'
+            ? Action.DIG
+            : normalized.pendingEncounter
+              ? Action.HELP
+              : Action.MOVE;
 
   return {
     source: {
@@ -762,12 +909,14 @@ export function guestBoardInput(state, { isResolving = false } = {}) {
     previewPath: selectedPath,
     reachableAliases,
     landingSite: GUEST_LANDING_SITE,
-    playerLocationMap: { [normalized.currentLocation]: [0, 1] },
+    playerLocationMap: { [normalized.currentLocation]: [0, 1, 2, 3] },
     crew: [
       { playerID: 1, name: 'Signal Cartographer', characterId: 'signal-cartographer', roleId: 'scout', currentZone: normalized.currentLocation, isActive: true, isStrained: normalized.pressure >= 72, hasUsedAbility: normalized.usedAbilities.includes('trace') },
       { playerID: 2, name: 'Routekeeper', characterId: 'routekeeper', roleId: 'guard', currentZone: normalized.currentLocation, isActive: true, isStrained: normalized.pressure >= 55, hasArtifact: normalized.relics > 0, hasUsedAbility: normalized.usedAbilities.includes('anchor') },
+      { playerID: 3, name: 'Field Mender', characterId: 'field-mender', roleId: 'support', currentZone: normalized.currentLocation, isActive: true, isStrained: normalized.supplies <= 2, hasUsedAbility: normalized.usedAbilities.includes('mend') },
+      { playerID: 4, name: 'Relic Tender', characterId: 'relic-tender', roleId: 'specialist', currentZone: normalized.currentLocation, isActive: true, isStrained: normalized.relics > 0 && normalized.pressure >= 65, hasArtifact: normalized.relics > 0, hasUsedAbility: normalized.usedAbilities.includes('attune') },
     ],
-    currentPlayerIndex: routekeeperLeads ? 1 : 0,
+    currentPlayerIndex: activeCrewIndex,
     activeAction,
     isResolving,
     isDanger: phase === 'danger',

@@ -101,6 +101,69 @@ function EncounterDecision({ encounter, isResolving, onChoose }) {
   );
 }
 
+function RouteDecision({
+  canDepart,
+  expedition,
+  isResolving,
+  onCommit,
+  onDepart,
+  onSelect,
+  reachableAliases,
+  recommendation,
+  selectedLocation,
+}) {
+  return (
+    <section className="rounded-lg border border-compass/45 bg-[linear-gradient(145deg,rgba(51,91,79,0.18),rgba(13,16,12,0.96))] p-4 shadow-[0_14px_36px_rgba(0,0,0,0.24)]" data-testid="guest-command-deck">
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <p className="font-mono text-xs uppercase tracking-[0.18em] text-compass">Your next decision</p>
+          <h2 className="mt-1 font-display text-lg uppercase tracking-[0.1em] text-exp-text">Choose the crossing</h2>
+        </div>
+        <span className="rounded border border-exp-border/70 bg-exp-dark/55 px-2 py-1 font-mono text-xs text-exp-text-dim">Turn {expedition.turns + 1}</span>
+      </div>
+      <p className="mt-2 text-sm leading-relaxed text-exp-text-dim">Select a neighboring place, compare its cost, then commit. The highlighted route is guidance - the choice is yours.</p>
+      <div className="mt-3 grid grid-cols-2 gap-2" role="group" aria-label="Reachable routes">
+        {reachableAliases.map((alias) => {
+          const profile = guestLocationProfile(alias);
+          const forecast = guestRouteForecast(expedition, alias);
+          const selected = expedition.selectedAlias === alias;
+          return (
+            <button
+              key={alias}
+              type="button"
+              data-route-alias={alias}
+              disabled={isResolving}
+              onClick={() => onSelect(alias)}
+              aria-pressed={selected}
+              className={`min-h-16 rounded-md border px-3 py-2 text-left transition ${selected ? 'border-blueprint bg-blueprint/15 text-blueprint shadow-[0_0_22px_rgba(76,145,219,0.14)]' : recommendation?.alias === alias ? 'border-compass/60 bg-compass/10 text-compass-bright' : 'border-exp-border bg-exp-dark/45 text-exp-text hover:border-blueprint/50'}`}
+            >
+              <span className="block font-display text-sm uppercase tracking-[0.06em]">{profile?.name || alias}</span>
+              <span className="mt-1 flex items-center justify-between gap-2 text-xs text-exp-text-dim"><span>{guestTerrainLabel(alias, expedition)}</span><span>{forecast ? `+${forecast.pressure}%` : ''}</span></span>
+              {recommendation?.alias === alias && <span className="mt-1 block font-mono text-[10px] uppercase tracking-[0.08em] text-compass-bright">Recommended</span>}
+            </button>
+          );
+        })}
+      </div>
+      <div className="sticky bottom-2 z-20 mt-3 rounded-md bg-exp-dark/90 p-1 backdrop-blur sm:static sm:bg-transparent sm:p-0">
+        <button
+          type="button"
+          data-testid="commit-guest-route"
+          onClick={onCommit}
+          disabled={!expedition.selectedAlias || isResolving}
+          className="min-h-12 w-full rounded-md border border-compass bg-compass px-4 py-3 font-display text-sm font-semibold uppercase tracking-[0.12em] text-exp-dark transition hover:bg-compass-bright disabled:cursor-not-allowed disabled:border-exp-border disabled:bg-exp-dark disabled:text-exp-text-dim"
+        >
+          {isResolving ? 'World resolving...' : expedition.selectedAlias ? `Commit to ${selectedLocation?.name || expedition.selectedAlias}` : 'Select a neighboring place'}
+        </button>
+        {canDepart && (
+          <button type="button" onClick={onDepart} className="mt-2 min-h-11 w-full rounded border border-oxide-green/55 bg-oxide-green/10 px-4 py-2 font-display text-sm uppercase tracking-[0.12em] text-oxide-green hover:bg-oxide-green/20">
+            {expedition.relics ? `Depart with ${expedition.relics} relic${expedition.relics === 1 ? '' : 's'}` : 'Depart with the completed map'}
+          </button>
+        )}
+      </div>
+    </section>
+  );
+}
+
 function GuestTacticalBoard({ expedition, reachableAliases, recommendation, onSelect }) {
   const revealed = new Set(expedition.revealedAliases);
   return (
@@ -305,7 +368,7 @@ export default function GuestExpeditionPage() {
               <div className="flex flex-wrap gap-2 font-mono text-[11px] uppercase tracking-[0.14em]">
                 <span className="rounded border border-blueprint/35 bg-blueprint/10 px-3 py-2 text-blueprint">Living 3D world</span>
                 <span className="rounded border border-oxide-green/35 bg-oxide-green/10 px-3 py-2 text-oxide-green">Progress remembered</span>
-                <span className="rounded border border-exp-border bg-exp-dark/50 px-3 py-2 text-exp-text-dim">Two crew abilities</span>
+                <span className="rounded border border-exp-border bg-exp-dark/50 px-3 py-2 text-exp-text-dim">Four crew abilities</span>
               </div>
             </div>
           ) : (
@@ -321,7 +384,7 @@ export default function GuestExpeditionPage() {
 
         <div className={`grid gap-4 p-3 sm:p-4 xl:grid-cols-[minmax(0,2.2fr)_minmax(300px,0.62fr)] ${focusMode ? 'min-h-0 flex-1 xl:grid-cols-[minmax(0,1fr)_22rem]' : ''}`}>
           <div className={`min-w-0 ${focusMode ? 'min-h-0' : 'xl:sticky xl:top-20 xl:self-start'}`}>
-            <div className={`relative overflow-hidden rounded-xl border border-exp-border bg-exp-dark ${focusMode ? 'h-full min-h-[28rem]' : 'h-[66svh] min-h-[34rem] max-h-[54rem]'}`}>
+            <div className={`relative overflow-hidden rounded-xl border border-exp-border bg-exp-dark ${focusMode ? 'h-full min-h-[28rem]' : 'h-[54svh] min-h-[25rem] max-h-[38rem] sm:h-[62svh] sm:min-h-[32rem] sm:max-h-[46rem] xl:h-[calc(100svh-9rem)] xl:min-h-[36rem] xl:max-h-[52rem]'}`}>
               {tacticalBoard ? (
                 <GuestTacticalBoard expedition={expedition} reachableAliases={reachableAliases} recommendation={recommendation} onSelect={(alias) => setExpedition((current) => selectGuestTile(current, alias))} />
               ) : (
@@ -344,7 +407,7 @@ export default function GuestExpeditionPage() {
             </div>
           </div>
 
-          <aside className="space-y-4" aria-label="Guest expedition controls">
+          <aside className="space-y-4 xl:max-h-[calc(100svh-9rem)] xl:overflow-y-auto xl:pr-1" aria-label="Guest expedition controls">
             <div className="grid grid-cols-2 gap-2">
               <StatCard label="Pressure" value={`${expedition.pressure}%`} detail="Redline at 100" tone={pressureTone} />
               <StatCard label="Supplies" value={expedition.supplies} detail="One used per move" tone={expedition.supplies <= 2 ? 'text-signal-red' : 'text-exp-text'} />
@@ -353,6 +416,20 @@ export default function GuestExpeditionPage() {
             </div>
 
             {pendingEncounter && <EncounterDecision encounter={pendingEncounter} isResolving={isResolving} onChoose={chooseEncounter} />}
+
+            {expedition.status === 'exploring' && !pendingEncounter && (
+              <RouteDecision
+                canDepart={canDepart}
+                expedition={expedition}
+                isResolving={isResolving}
+                onCommit={commitRoute}
+                onDepart={depart}
+                onSelect={(alias) => setExpedition((current) => selectGuestTile(current, alias))}
+                reachableAliases={reachableAliases}
+                recommendation={recommendation}
+                selectedLocation={selectedLocation}
+              />
+            )}
 
             {expedition.status !== 'complete' && <GuestArcRail arc={expeditionArc} />}
 
@@ -427,47 +504,6 @@ export default function GuestExpeditionPage() {
                     );
                   })}
                 </div>
-              </div>
-            )}
-
-            {expedition.status === 'exploring' && !pendingEncounter && (
-              <div className="rounded border border-exp-border bg-exp-panel/75 p-4">
-                <h2 className="font-display text-lg uppercase tracking-[0.12em] text-exp-text">Choose the next crossing</h2>
-                <p className="mt-2 font-mono text-[11px] leading-relaxed text-exp-text-dim">Select an adjacent hex in the world or use a route control below. The recommendation is guidance, not an automatic move.</p>
-                <div className="mt-3 grid grid-cols-2 gap-2" role="group" aria-label="Reachable routes">
-                  {reachableAliases.map((alias) => {
-                    const profile = guestLocationProfile(alias);
-                    const forecast = guestRouteForecast(expedition, alias);
-                    return (
-                      <button
-                        key={alias}
-                        type="button"
-                        data-route-alias={alias}
-                        disabled={isResolving}
-                        onClick={() => setExpedition((current) => selectGuestTile(current, alias))}
-                        aria-pressed={expedition.selectedAlias === alias}
-                        className={`min-h-14 rounded border px-3 py-2 text-left font-mono text-[11px] uppercase tracking-[0.1em] transition-colors ${expedition.selectedAlias === alias ? 'border-blueprint bg-blueprint/15 text-blueprint' : recommendation?.alias === alias ? 'border-compass/60 bg-compass/10 text-compass-bright' : 'border-exp-border bg-exp-dark/45 text-exp-text hover:border-blueprint/50'}`}
-                      >
-                        <span className="flex items-center justify-between gap-2"><span>{profile?.name || alias}</span>{recommendation?.alias === alias && <span className="text-[9px] tracking-[0.06em]">Recommended</span>}</span>
-                        <span className="mt-1 flex items-center justify-between gap-2 normal-case tracking-normal text-exp-text-dim"><span>{guestTerrainLabel(alias, expedition)}</span><span>{forecast ? `+${forecast.pressure} pressure` : ''}</span></span>
-                      </button>
-                    );
-                  })}
-                </div>
-                <button
-                  type="button"
-                  data-testid="commit-guest-route"
-                  onClick={commitRoute}
-                  disabled={!expedition.selectedAlias || isResolving}
-                  className="mt-3 min-h-12 w-full rounded border border-compass bg-compass px-4 py-3 font-display text-sm font-semibold uppercase tracking-[0.14em] text-exp-dark transition hover:bg-compass-bright disabled:cursor-not-allowed disabled:border-exp-border disabled:bg-exp-dark disabled:text-exp-text-dim"
-                >
-                  {isResolving ? 'World resolving...' : expedition.selectedAlias ? `Commit route to ${selectedLocation?.name || expedition.selectedAlias}` : 'Select a reachable route'}
-                </button>
-                {canDepart && (
-                  <button type="button" onClick={depart} className="mt-2 min-h-11 w-full rounded border border-oxide-green/55 bg-oxide-green/10 px-4 py-2 font-mono text-xs uppercase tracking-[0.16em] text-oxide-green hover:bg-oxide-green/20">
-                    {expedition.relics ? `Depart with ${expedition.relics} relic${expedition.relics === 1 ? '' : 's'}` : 'Depart with the completed map'}
-                  </button>
-                )}
               </div>
             )}
 

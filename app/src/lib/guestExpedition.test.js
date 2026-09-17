@@ -114,7 +114,7 @@ describe('guest expedition', () => {
     expect(guestExpeditionArc(carrying).id).toBe('greed-window');
   });
 
-  it('gives each crew member one consequential expedition ability', () => {
+  it('gives all four crew members one consequential expedition ability', () => {
     let state = move(createGuestExpedition(), '2,1');
     expect(canUseGuestCrewAbility(state, 'trace')).toBe(true);
     state = useGuestCrewAbility(state, 'trace');
@@ -127,6 +127,25 @@ describe('guest expedition', () => {
     expect(canUseGuestCrewAbility(state, 'anchor')).toBe(true);
     state = useGuestCrewAbility(state, 'anchor');
     expect(state).toMatchObject({ pressure: 22, supplies: 7, lastEvent: 'anchor' });
+
+    state = { ...state, supplies: 6 };
+    expect(canUseGuestCrewAbility(state, 'mend')).toBe(true);
+    state = useGuestCrewAbility(state, 'mend');
+    expect(state).toMatchObject({ pressure: 26, supplies: 8, lastEvent: 'mend' });
+
+    expect(canUseGuestCrewAbility(state, 'attune')).toBe(true);
+    state = useGuestCrewAbility(state, 'attune');
+    expect(state.usedAbilities).toEqual(expect.arrayContaining(['trace', 'anchor', 'mend', 'attune']));
+    expect(state.revealedAliases).toContain('0,0');
+    expect(state.pressure).toBe(33);
+    expect(guestBoardInput(state).crew).toHaveLength(4);
+  });
+
+  it('authors a meaningful landmark decision across every biome route', () => {
+    expect(Object.keys(GUEST_ENCOUNTERS)).toHaveLength(10);
+    for (const encounter of Object.values(GUEST_ENCOUNTERS)) {
+      expect(encounter.choices.every((choice) => choice.outcome)).toBe(true);
+    }
   });
 
   it('allows a safe departure after a full return and creates a scored outcome', () => {

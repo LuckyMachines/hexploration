@@ -14,12 +14,12 @@ describe('transaction experience', () => {
     expect(transactionRequestKey(request)).toBe(transactionRequestKey({ ...request }));
   });
 
-  it('turns wallet and chain errors into useful recovery language', () => {
+  it('turns infrastructure errors into player-facing recovery language', () => {
     expect(normalizeTransactionError({ shortMessage: 'User rejected the request.' })).toMatchObject({ code: 'rejected', retryable: true });
-    expect(normalizeTransactionError({ message: 'execution reverted: Invalid action submitted' })).toMatchObject({ code: 'reverted', title: 'Chain rules blocked this action' });
+    expect(normalizeTransactionError({ message: 'execution reverted: Invalid action submitted' })).toMatchObject({ code: 'reverted', title: 'Game rules blocked this action' });
     expect(normalizeTransactionError({ message: 'RPC request timed out' })).toMatchObject({ code: 'timeout', retryable: false });
-    expect(normalizeTransactionError({ message: 'Unsupported chain ID' })).toMatchObject({ code: 'wrong-network', title: 'Switch expedition network' });
-    expect(normalizeTransactionError({ message: 'Sponsor relay deadline expired' })).toMatchObject({ code: 'expired', title: 'Authorization expired safely' });
+    expect(normalizeTransactionError({ message: 'Unsupported chain ID' })).toMatchObject({ code: 'wrong-network', title: 'Expedition unavailable' });
+    expect(normalizeTransactionError({ message: 'Sponsor relay deadline expired' })).toMatchObject({ code: 'expired', title: 'Session expired safely' });
   });
 
   it('detects optional wallet acceleration without claiming support', () => {
